@@ -1,0 +1,173 @@
+﻿@namespace Blazor.ExtraDry
+@typeparam T
+@inherits OwningComponentBase
+
+<div class="field @CssClass">
+    <label class="@CssClass" @onclick="ToggleDescription" title="@Description">
+        @Property.FieldCaption
+        @if(Property.HasDescription) {
+            <i class="description"></i>
+        }
+        @if(Editable) { 
+            if(Property.IsRequired) {
+                <i class="required"></i>
+            }
+            else {
+                <i class="optional"></i>
+            }
+        }
+        @if(ReadOnly) { 
+            <i class="read-only"></i>
+        }
+    </label>
+    @if(showDescription) {
+        <span class="description @CssClass">@((MarkupString)Description)</span>
+    }
+    @if(Property.HasBooleanValues) {
+        var value = ((bool?)Property.GetValue(Model) ?? false) == true;
+        <input type="checkbox" checked="@value" @onchange="OnChange" />
+    }
+    else if(Property.HasDiscreteValues) {
+        var selectedValue = Property.GetValue(Model);
+        @if(ReadOnly) {
+            <select class="@CssClass readonly" disabled>
+                <option value="@selectedValue.ToString()" selected>@selectedValue.ToString()</option>
+            </select>
+        }
+        else { 
+            <select class="@CssClass" @onchange="OnChange" >
+                @foreach (var value in Property.GetDiscreteValues()) {
+                    var selected = value.Key?.ToString() == selectedValue?.ToString(); // force object to enum compare
+                    <option value="@value.Key" selected="@selected">@value.Value</option>
+                }
+            </select>
+        }
+    }
+    else if(Property.HasTextRepresentation) {
+        <input class="@CssClass" type="text" value="@Value" readonly="@ReadOnly" placeholder="@Property.Display?.Prompt" @onchange="OnChange" />
+    } 
+    else if(LookupProviderOptions != null) {
+        var selectedValue = Property.GetValue(Model);
+        @if(ReadOnly) {
+            <select class="@CssClass readonly" disabled>
+                <option value="@selectedValue.ToString()" selected>@selectedValue.ToString()</option>
+            </select>
+        }
+        else { 
+            <select class="@CssClass" @onchange="OnChange">
+                @if(selectedValue == null) {
+                    <option value="" disabled selected>@Property.Display?.Prompt</option>
+                }
+                @foreach(var option in LookupProviderOptions) {
+                    var selected = option.Equals(selectedValue);
+                    <option value="@option" selected="@selected">@option.ToString()</option>
+                }
+            </select>
+        }
+    }
+    else { 
+        <progress>loading...</progress>
+    }
+    @if(!valid) {
+        <span class="validation @CssClass">@validationMessage</span>
+    }
+</div>
+
+@code {
+
+    [Parameter]
+    public T Model { get; set; }
+
+    [Parameter]
+    public DryProperty Property { get; set; }
+
+    [Parameter]
+    public string PropertyName { get; set; }
+
+    [CascadingParameter]
+    public EditMode EditMode { get; set; } = EditMode.Create;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Property ??= new DryProperty(typeof(T).GetProperty(PropertyName));
+        if(Property.HasTextRepresentation == false) {
+            await FetchLookupProviderOptions();
+        }
+    }
+
+    private List<object> LookupProviderOptions { get; set; }
+
+    private bool RulesAllowUpdate => (Property.Rules?.UpdateAction ?? UpdateAction.AllowChanges) == UpdateAction.AllowChanges;
+
+    private bool Editable => EditMode == EditMode.Create || EditMode == EditMode.Update && RulesAllowUpdate;
+
+    private bool ReadOnly => !Editable;
+
+    private string Value => Property.DisplayValue(Model);
+
+    private string validationMessage;
+
+    private bool valid = true;
+
+    private string CssClass => valid ? "valid" : "invalid";
+
+    private bool showDescription;
+
+    private async Task FetchLookupProviderOptions() {
+        var untypedOptionProvider = typeof(IOptionProvider<>);
+        var typedOptionProvider = untypedOptionProvider.MakeGenericType(Property.Property.PropertyType);
+        var optionProvider = ScopedServices.GetService(typedOptionProvider);
+        if(optionProvider != null) {
+            var method = typedOptionProvider.GetMethod("ListAsync");
+            dynamic task = method.Invoke(optionProvider, new object[] { new object[] { } });
+            var optList = (await task) as ICollection;
+            LookupProviderOptions = optList.Cast<object>().ToList();
+        }
+    }
+
+    private string Description {
+        get {
+            if (Editable)
+            {
+                return Property.Description + (Property.IsRequired ? " (required)" : "");
+            }
+            else
+            {
+                return $"{Property.Description} (read&#8209;only)"; // non-breaking-hyphen.
+            }
+        }
+    }
+
+    private void ToggleDescription(MouseEventArgs args)
+    {
+        showDescription = !showDescription;
+    }
+
+    private void OnChange(ChangeEventArgs args)
+    {
+        Console.WriteLine("Changed");
+        var value = args.Value;
+        if(LookupProviderOptions != null && value is string strValue) {
+            value = LookupProviderOptions.FirstOrDefault(e => e.ToString() == strValue);
+        }
+        Console.WriteLine($"Model: {Model} to Value: {value}");
+        Property.SetValue(Model, value);
+        Validate();
+    }
+
+    private void Validate()
+    {
+        var validator = new DataValidator();
+        if (validator.ValidateProperties(Model, Property.Property.Name))
+        {
+            validationMessage = "";
+            valid = true;
+        }
+        else
+        {
+            validationMessage = validator.Errors.First().ErrorMessage;
+            valid = false;
+        }
+    }
+
+}

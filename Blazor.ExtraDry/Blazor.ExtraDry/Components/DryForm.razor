@@ -1,0 +1,42 @@
+﻿@namespace Blazor.ExtraDry
+@typeparam T
+ 
+@if(Model == null) {
+    <progress>Loading...</progress>
+}
+else {
+    <CascadingValue Value="@EditMode">
+        <form onsubmit="return false;" action="/" method="GET">
+            <div class="columns">
+                @foreach(var columnType in new ColumnType[] { ColumnType.Primary, ColumnType.Alternate }) {
+                    <div class="column @columnType.ToString().ToLowerInvariant()">
+                        @foreach(var fieldset in Fieldsets.Where(e => e.Column == columnType)) {
+                            <fieldset>
+                                <legend>@fieldset.Legend</legend>
+                                @foreach(var line in fieldset.Lines) {
+                                    var redundant = line.FormProperties.Count == 1 && line.FormProperties.First().FieldCaption == fieldset.Legend ? "redundant" : "";
+                                    <div class="line @redundant">
+                                        @foreach(var property in line.FormProperties) {
+                                            <DryInput Model="@line.Model" Property="@property" />
+                                        }
+                                    </div>
+                                }
+                            </fieldset>
+                        }
+                    </div>
+                }
+            </div>
+            @if(error != null) {
+                <div class="alert danger">
+                    <h5><i></i> Error</h5>
+                    @error
+                </div>
+            }
+            <div class="line">
+                <div class="field">
+                    <DryButtonBar Commands="@description.Commands" Target="@Model" />
+                </div>
+            </div>
+        </form>
+    </CascadingValue>
+}

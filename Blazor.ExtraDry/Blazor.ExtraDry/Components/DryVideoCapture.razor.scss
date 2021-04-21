@@ -1,0 +1,24 @@
+﻿$width: 250px;
+
+div.video-capture {
+    position: relative;
+    width: $width;
+    height: $width;
+    background-color: silver;
+    color: white;
+
+    video, canvas, div {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+
+    video, canvas {
+        transform: scaleX(-1);
+    }
+
+    div {
+        display: grid;
+        background-color: silver;
+    }
+}

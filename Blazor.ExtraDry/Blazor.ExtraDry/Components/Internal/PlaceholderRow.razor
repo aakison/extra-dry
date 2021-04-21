@@ -1,0 +1,24 @@
+﻿@typeparam T
+
+<tr class="placeholder" style="height: @($"{Height}px")">
+    @switch(Description.ListSelectMode) {
+        case ListSelectMode.Multiple:
+            <td class="checkbox"></td>
+            break;
+        case ListSelectMode.Single:
+            <td class="radio"></td>
+            break;
+        default:
+            break;
+    }
+    @foreach(var column in Description.TableProperties) {
+        var cssClass = column.DisplayClass;
+        var width = column.HasDiscreteValues ? 40 : Random.Next(80, 120);
+        <td class="@cssClass" data-label="@column.ColumnCaption">
+            <span style="width: @($"{width}px");"></span>
+        </td>
+    }
+    @if(Description.ContextCommands.Any()) {
+        <td class="commands"></td>
+    }
+</tr>
