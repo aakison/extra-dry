@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Blazor.ExtraDry;
+using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Blazor.ExtraDry.Sample.Shared
+namespace Sample.Shared
 {
     public class Employee
     {
