@@ -11,7 +11,10 @@ namespace Sample.Shared {
         [Rules(UpdateAction.BlockChanges)]
         public int Id { get; set; }
 
-        public Guid UniqueId { get; set; }
+        public Guid UniqueId { get; set; } = Guid.NewGuid();
+
+        [Display(Name = "Name", ShortName = "Name")]
+        public string Name { get; set; }
 
         [Rules(UpdateAction.AllowChanges)]
         [Display(Name = "Social Media")]

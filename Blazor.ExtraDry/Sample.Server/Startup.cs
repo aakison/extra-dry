@@ -27,7 +27,14 @@ namespace Sample.Server {
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<SampleContext>(opt => opt.UseInMemoryDatabase("sample"));
+            services.AddScoped(services => {
+                var dbOptionsBuilder = new DbContextOptionsBuilder<SampleContext>().UseInMemoryDatabase("sample");
+                var context = new SampleContext(dbOptionsBuilder.Options);
+                var data = new DummyData();
+                data.PopulateCompanies(context, 50);
+                data.PopulateEmployees(context, 1000);
+                return context;
+            });
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddSwaggerGen(c => {

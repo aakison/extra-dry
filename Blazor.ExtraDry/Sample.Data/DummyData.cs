@@ -1,5 +1,6 @@
 ﻿using Sample.Shared;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Sample.Data
@@ -7,8 +8,29 @@ namespace Sample.Data
     public class DummyData
     {
 
+        public void PopulateCompanies(SampleContext database, int count)
+        {
+            var trademarks = new List<string>();
+            while(trademarks.Count < count) {
+                var first = PickRandom(companyPrefixes);
+                var last = PickRandom(companySuffixes);
+                var name = $"{first}{last}";
+                if(!trademarks.Contains(name)) {
+                    trademarks.Add(name);
+                    var company = new Company { Name = name };
+                    database.Companies.Add(company);
+                }
+            }
+            database.SaveChanges();
+        }
 
-        public async Task PopulateEmployees(SampleContext database, int count)
+        private string[] companyPrefixes = { "High Tide", "Tempest", "Jupiter", "Cyclor", "Ant", "Jungle", 
+            "Grotto", "Ace", "Wood", "Ceas", "Jet" };
+
+        private string[] companySuffixes = { " Lighting", " Arts", "ation", "arts", "tainment", "search", "gate",
+            "worth", " Microsystems", " Electronics", " King" };
+
+        public void PopulateEmployees(SampleContext database, int count)
         {
             for(int i = 0; i < count; ++i) {
                 var first = PickRandom(firstNames);
@@ -16,7 +38,7 @@ namespace Sample.Data
                 var employee = new Employee { FirstName = first, LastName = last };
                 database.Employees.Add(employee);
             }
-            await database.SaveChangesAsync();
+            database.SaveChanges();
         }
 
         private string PickRandom(string[] candidates) => candidates[random.Next(0, candidates.Length)];
