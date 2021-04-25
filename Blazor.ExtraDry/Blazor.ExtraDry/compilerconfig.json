@@ -1,0 +1,10 @@
+﻿[
+  {
+    "outputFile": "Components/DryVideoCapture.razor.es5.js",
+    "inputFile": "Components/DryVideoCapture.razor.js"
+  },
+  {
+    "outputFile": "Components/DryVideoCapture.razor.css",
+    "inputFile": "Components/DryVideoCapture.razor.scss"
+  }
+]

@@ -1,0 +1,41 @@
+﻿@typeparam T
+
+<tr class="@CssClass" @onclick="RowClick" style="height: @($"{Height}px")">
+    @switch(Description.ListSelectMode) {
+        case ListSelectMode.Multiple:
+            <td class="checkbox"><input type="checkbox" @onchange="CheckChanged" checked="@IsSelected" /></td>
+            break;
+        case ListSelectMode.Single:
+            <td class="radio"><input type="radio" @onchange="CheckChanged" checked="@IsSelected" name="@RadioButtonScope" /></td>
+            break;
+        default:
+            break;
+    }
+    @foreach(var column in Description.TableProperties) {
+        var cssClass = column.DisplayClass;
+        var displayValue = column.DisplayValue(Item.Item);
+        if (column.HasDiscreteValues) {
+            var enumValue = column.GetValue(Item.Item);
+            cssClass += $" {enumValue.ToString().ToLowerInvariant()}";
+        }
+        <td class="@cssClass" data-label="@column.ColumnCaption">
+            @if(column.Property.Name == Grouping?.GroupingColumn) {
+                var cssGroupClass = $"level{Grouping.GroupingDepth}";
+                var cssAction = (Grouping.IsGroup, Grouping.IsExpanded) switch {
+                    (false, _) => "child",
+                    (true, false) => "collapsed",
+                    (true, true) => "expanded"
+                };
+                <span class="group @cssAction @cssGroupClass" @onclick="(e => Grouping.Toggle())" @onclick:stopPropagation="true"></span>
+            }
+            <span class="@cssClass">@displayValue</span>
+        </td>
+    }
+    @if(Description.ContextCommands.Any()) {
+        <td class="commands">
+            @foreach(var command in Description.ContextCommands) {
+                <DryButton Command="@command" Target="@Item.Item" IconOnly="true" />
+            }
+        </td>
+    }
+</tr>
