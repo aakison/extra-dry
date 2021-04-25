@@ -3,10 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Sample.Data
-{
-    public class DummyData
-    {
+namespace Sample.Data {
+    public class DummyData {
 
         public void PopulateCompanies(SampleContext database, int count)
         {
@@ -24,10 +22,10 @@ namespace Sample.Data
             database.SaveChanges();
         }
 
-        private string[] companyPrefixes = { "High Tide", "Tempest", "Jupiter", "Cyclor", "Ant", "Jungle", 
+        private readonly string[] companyPrefixes = { "High Tide", "Tempest", "Jupiter", "Cyclor", "Ant", "Jungle",
             "Grotto", "Ace", "Wood", "Ceas", "Jet" };
 
-        private string[] companySuffixes = { " Lighting", " Arts", "ation", "arts", "tainment", "search", "gate",
+        private readonly string[] companySuffixes = { " Lighting", " Arts", "ation", "arts", "tainment", "search", "gate",
             "worth", " Microsystems", " Electronics", " King" };
 
         public void PopulateEmployees(SampleContext database, int count)
@@ -52,9 +50,9 @@ namespace Sample.Data
             "Larry", "Justin", "Scott", "Brandon", "Benjamin", "Samuel", "Frank", "Gregory", "Raymond",
             "Alexander", "Patrick", "Jack", "Dennis", "Jerry", "Mary", "Patricia", "Jennifer", "Linda",
             "Elizabeth", "Barbara", "Susan", "Jessica", "Sarah", "Karen", "Nancy", "Lisa", "Margaret", "Betty",
-            "Sandra", "Ashley", "Dorothy", "Kimberly", "Emily", "Donna", "Michelle", "Carol", "Amanda", 
+            "Sandra", "Ashley", "Dorothy", "Kimberly", "Emily", "Donna", "Michelle", "Carol", "Amanda",
             "Melissa", "Deborah", "Stephanie", "Rebecca", "Laura", "Sharon", "Cynthia", "Kathleen", "Amy",
-            "Shirley", "Angela", "Helen", "Anna", "Brenda", "Pamela", "Nicole", "Samantha", "Katherine", 
+            "Shirley", "Angela", "Helen", "Anna", "Brenda", "Pamela", "Nicole", "Samantha", "Katherine",
             "Emma", "Ruth", "Christine", "Catherine", "Debra", "Rachel", "Carolyn", "Janet", "Virginia" };
 
 

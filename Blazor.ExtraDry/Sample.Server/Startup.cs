@@ -27,14 +27,7 @@ namespace Sample.Server {
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped(services => {
-                var dbOptionsBuilder = new DbContextOptionsBuilder<SampleContext>().UseInMemoryDatabase("sample");
-                var context = new SampleContext(dbOptionsBuilder.Options);
-                var data = new DummyData();
-                data.PopulateCompanies(context, 50);
-                data.PopulateEmployees(context, 1000);
-                return context;
-            });
+            services.AddDbContext<SampleContext>(opt => opt.UseInMemoryDatabase("sample"));
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddSwaggerGen(c => {
@@ -52,7 +45,7 @@ namespace Sample.Server {
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, SampleContext context)
         {
             if(env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
@@ -80,6 +73,10 @@ namespace Sample.Server {
                 endpoints.MapControllers();
                 endpoints.MapFallbackToFile("index.html");
             });
+
+            var sampleData = new DummyData();
+            sampleData.PopulateCompanies(context, 50);
+            sampleData.PopulateEmployees(context, 100);
         }
     }
 }
