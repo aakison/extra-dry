@@ -17,11 +17,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Shared", "Sample.Sha
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blazor.ExtraDry", "Blazor.ExtraDry\Blazor.ExtraDry.csproj", "{F910E6A0-FEA2-45D8-B541-A05DB0C66ACE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.Data", "Sample.Data\Sample.Data.csproj", "{F098333B-F93D-4570-85EA-803440A897A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Data", "Sample.Data\Sample.Data.csproj", "{F098333B-F93D-4570-85EA-803440A897A2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Server", "Sample.Server\Sample.Server.csproj", "{9F948B97-1BA0-4B3C-A526-FBC6AEEE679F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Client", "Sample.Client\Sample.Client.csproj", "{79E093D3-5B11-4D3A-A9B6-F9B6587D3598}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blazor.ExtraDry.Tests", "Blazor.ExtraDry.Tests\Blazor.ExtraDry.Tests.csproj", "{DDB539A2-0653-4834-8B2A-F20991FCDC68}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +55,10 @@ Global
 		{79E093D3-5B11-4D3A-A9B6-F9B6587D3598}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{79E093D3-5B11-4D3A-A9B6-F9B6587D3598}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79E093D3-5B11-4D3A-A9B6-F9B6587D3598}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDB539A2-0653-4834-8B2A-F20991FCDC68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDB539A2-0653-4834-8B2A-F20991FCDC68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDB539A2-0653-4834-8B2A-F20991FCDC68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDB539A2-0653-4834-8B2A-F20991FCDC68}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
