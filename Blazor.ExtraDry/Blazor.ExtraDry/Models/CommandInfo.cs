@@ -91,9 +91,9 @@ namespace Blazor.ExtraDry.Models {
         /// Executes the underlying method with the provided arguments, ensuring that the proper number of arguments are provided.
         /// </summary>
         public async Task ExecuteAsync(object? arg = null) {
-            if(Arguments == CommandArguments.None && arg != null) {
-                throw new InvalidOperationException("Command does not take any arguments but one was supplied");
-            }
+            //if(Arguments == CommandArguments.None && arg != null) {
+            //    throw new InvalidOperationException("Command does not take any arguments but one was supplied");
+            //}
             object?[]? args = Arguments switch {
                 CommandArguments.Single => new object?[] { arg },
                 CommandArguments.Multiple => new object?[] { GetStrongTypedSubset(arg) },

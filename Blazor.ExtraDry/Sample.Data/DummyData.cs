@@ -15,25 +15,26 @@ namespace Sample.Data {
                 var name = $"{first}{last}";
                 if(!trademarks.Contains(name)) {
                     trademarks.Add(name);
-                    var company = new Company { Name = name };
+                    var company = new Company { 
+                        UniqueId = PseudoRandomGuid(),
+                        Name = name 
+                    };
                     database.Companies.Add(company);
                 }
             }
             database.SaveChanges();
         }
 
-        private readonly string[] companyPrefixes = { "High Tide", "Tempest", "Jupiter", "Cyclor", "Ant", "Jungle",
-            "Grotto", "Ace", "Wood", "Ceas", "Jet" };
-
-        private readonly string[] companySuffixes = { " Lighting", " Arts", "ation", "arts", "tainment", "search", "gate",
-            "worth", " Microsystems", " Electronics", " King" };
-
         public void PopulateEmployees(SampleContext database, int count)
         {
             for(int i = 0; i < count; ++i) {
                 var first = PickRandom(firstNames);
                 var last = PickRandom(lastNames);
-                var employee = new Employee { FirstName = first, LastName = last };
+                var employee = new Employee { 
+                    UniqueId = PseudoRandomGuid(),
+                    FirstName = first, 
+                    LastName = last 
+                };
                 database.Employees.Add(employee);
             }
             database.SaveChanges();
@@ -41,7 +42,21 @@ namespace Sample.Data {
 
         private string PickRandom(string[] candidates) => candidates[random.Next(0, candidates.Length)];
 
+        private Guid PseudoRandomGuid()
+        {
+            // Create a fake Guid, one that is consistently created based on the random seed below, don't use Guid.NewGuid().
+            var bytes = new byte[16];
+            random.NextBytes(bytes);
+            return new Guid(bytes);
+        }
+
         private readonly Random random = new(123);
+
+        private readonly string[] companyPrefixes = { "High Tide", "Tempest", "Jupiter", "Cyclor", "Ant", "Jungle",
+            "Grotto", "Ace", "Wood", "Ceas", "Jet" };
+
+        private readonly string[] companySuffixes = { " Lighting", " Arts", "ation", "arts", "tainment", "search", "gate",
+            "worth", " Microsystems", " Electronics", " King" };
 
         private readonly string[] firstNames = {"James", "John", "Robert", "Michael", "William", "David", "Richard",
             "Joseph", "Thomas", "Charles",  "Christopher", "Daniel", "Matthew", "Anthony", "Donald", "Mark",

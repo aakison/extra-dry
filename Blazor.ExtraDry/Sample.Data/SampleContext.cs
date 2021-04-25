@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Sample.Shared;
+using System.Collections.ObjectModel;
 using System.Text.Json;
 
 namespace Sample.Data {
@@ -18,6 +19,10 @@ namespace Sample.Data {
             modelBuilder.Entity<Company>().Property(e => e.SocialMedia).HasConversion(
                 e => JsonSerializer.Serialize(e, null),
                 e => JsonSerializer.Deserialize<SocialMedia>(e, null));
+
+            modelBuilder.Entity<Company>().Property(e => e.Videos).HasConversion(
+                e => JsonSerializer.Serialize(e, null),
+                e => JsonSerializer.Deserialize<Collection<Video>>(e, null));
 
         }
     }

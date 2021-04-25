@@ -1,6 +1,7 @@
 ﻿using Blazor.ExtraDry;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
@@ -17,8 +18,11 @@ namespace Sample.Shared {
         public string Name { get; set; }
 
         [Rules(UpdateAction.AllowChanges)]
-        [Display(Name = "Social Media")]
+        //[Display(Name = "Social Media")]
         public SocialMedia SocialMedia { get; set; } = new SocialMedia();
+
+        [Display(Name = "Videos")]
+        public ICollection<Video> Videos { get; set; } = new Collection<Video>();
 
     }
 }

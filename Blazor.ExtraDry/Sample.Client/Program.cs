@@ -21,6 +21,9 @@ namespace Sample.Client
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
+            builder.Services.AddScoped(e =>
+                new CrudService<Company>(e.GetService<HttpClient>(), "/api/companies/{0}"));
+
             builder.Services.AddScoped<IListService<Company>>(e =>
                 new RestfulListService<List<Company>, Company>(e.GetService<HttpClient>(), "/api/companies"));
 
