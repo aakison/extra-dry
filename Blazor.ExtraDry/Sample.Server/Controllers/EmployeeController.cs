@@ -1,36 +1,37 @@
-﻿using Blazor.ExtraDry.Sample.Data.Services;
-using Blazor.ExtraDry.Sample.Shared;
+﻿using Sample.Data.Services;
+using Sample.Shared;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web.Http;
+using Swashbuckle.AspNetCore.Annotations;
 
-namespace Blazor.ExtraDry.Sample.Server.Controllers {
+namespace Sample.Server.Controllers {
 
-    public class EmployeeController : ApiController {
+    public class EmployeeController : Controller {
         
-        public EmployeeController()
+        public EmployeeController(EmployeeService employeeService)
         {
-            // Note: In non-sample/production app, replace this with DI.
-            employees = new EmployeeService();
+            employees = employeeService;
         }
 
-        [HttpGet, Route("employees")]
+        [HttpGet("employees")]
+        [SwaggerOperation("List all employees")]
         public async Task<IEnumerable<Employee>> List()
         {
             return await employees.List();
         }
 
-        [HttpGet, Route("employees/{uniqueId}")]
+        [HttpGet("employees/{uniqueId}")]
+        [SwaggerOperation("Retreive a specific employee")]
         public async Task<Employee> Retrieve(Guid uniqueId)
         {
             return await employees.Retrieve(uniqueId);
         }
 
-        [HttpPost, Route("employees/{uniqueId}")]
+        [HttpPost("employees/{uniqueId}")]
+        [SwaggerOperation("Create a new employee.", "Create a new employee at the URI, the uniqueId in the URI must match the Id in the payload.")]
         public async Task Create(Guid uniqueId, [FromBody] Employee value)
         {
             if(uniqueId != value?.UniqueId) {
@@ -39,7 +40,8 @@ namespace Blazor.ExtraDry.Sample.Server.Controllers {
             await employees.Create(value);
         }
 
-        [HttpPut, Route("employees/{uniqueId}")]
+        [HttpPut("employees/{uniqueId}")]
+        [SwaggerOperation("Update an existing employee.", "Update the employee at the URI, the uniqueId in the URI must match the Id in the payload.")]
         public async Task Update(Guid uniqueId, [FromBody] Employee value)
         {
             if(uniqueId != value?.UniqueId) {
@@ -48,7 +50,8 @@ namespace Blazor.ExtraDry.Sample.Server.Controllers {
             await employees.Update(value);
         }
 
-        [HttpDelete, Route("employees/{uniqueId}")]
+        [HttpDelete("employees/{uniqueId}")]
+        [SwaggerOperation("Delete an existing employee.")]
         public async Task Delete(Guid uniqueId)
         {
             await employees.Delete(uniqueId);

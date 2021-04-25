@@ -6,8 +6,8 @@ namespace Sample.Shared
 {
     public class Employee
     {
-        [Rules(UpdateAction.BlockChanges)]
         [Key]
+        [Rules(UpdateAction.BlockChanges)]
         public int Id { get; set; }
 
         public Guid UniqueId { get; set; }
