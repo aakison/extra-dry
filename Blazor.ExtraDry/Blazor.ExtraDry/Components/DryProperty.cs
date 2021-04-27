@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
@@ -10,25 +11,19 @@ namespace Blazor.ExtraDry {
 
         public DryProperty(PropertyInfo property)
         {
-            var display = property.GetCustomAttribute<DisplayAttribute>();
-            var format = property.GetCustomAttribute<DisplayFormatAttribute>();
-            var required = property.GetCustomAttribute<RequiredAttribute>();
-            var rules = property.GetCustomAttribute<RulesAttribute>();
-            var length = property.GetCustomAttribute<MaxLengthAttribute>();
-            var header = property.GetCustomAttribute<HeaderAttribute>();
-            Rules = rules;
-            MaxLength = length;
-            FieldCaption = display?.Name ?? property.Name;
-            ColumnCaption = display?.ShortName ?? property.Name;
-            Header = header;
-            Display = display;
-            Format = format;
             Property = property;
-            IsRequired = required != null;
-            Description = display?.Description;
+            Display = Property.GetCustomAttribute<DisplayAttribute>();
+            Format = Property.GetCustomAttribute<DisplayFormatAttribute>();
+            Rules = Property.GetCustomAttribute<RulesAttribute>();
+            Header = Property.GetCustomAttribute<HeaderAttribute>();
+            MaxLength = Property.GetCustomAttribute<MaxLengthAttribute>();
+            IsRequired = Property.GetCustomAttribute<RequiredAttribute>() != null;
+            FieldCaption = Display?.Name ?? Property.Name;
+            ColumnCaption = Display?.ShortName ?? Property.Name;
+            Description = Display?.Description;
             HasDescription = !string.IsNullOrWhiteSpace(Description);
             if(HasDiscreteValues) {
-                var enumValues = property.PropertyType.GetFields(BindingFlags.Public | BindingFlags.Static);
+                var enumValues = Property.PropertyType.GetFields(BindingFlags.Public | BindingFlags.Static);
                 foreach(var enumValue in enumValues) {
                     var value = (int)enumValue.GetValue(null);
                     var enumDisplay = enumValue.GetCustomAttribute<DisplayAttribute>();
@@ -36,7 +31,7 @@ namespace Blazor.ExtraDry {
                 }
             }
             ++recursionDepth;
-            if(recursionDepth < 10 && Rules?.CreateAction == CreateAction.CreateNew) {
+            if(recursionDepth < 10 && Rules?.CreateAction == CreateAction.CreateNew) { // Create new signals to recurse
                 ChildModel = new ViewModelDescription(Property.PropertyType, this);
             }
             --recursionDepth;
@@ -44,7 +39,7 @@ namespace Blazor.ExtraDry {
 
         /// <summary>
         /// It is possible that mapping through ChildModel's will create an infinite loop;
-        /// Check and limit the number of layer, in practice a UI will be horrible if recursion is even 2-3 levels.
+        /// Check and limit the number of layers, in practice a UI will be horrible if recursion is even 2-3 levels.
         /// </summary>
         private static int recursionDepth = 0;
 
@@ -127,6 +122,8 @@ namespace Blazor.ExtraDry {
                 return false;
             }
         }
+
+        public bool HasArrayValues => typeof(IEnumerable).IsAssignableFrom(Property.PropertyType) && !typeof(string).IsAssignableFrom(Property.PropertyType);
 
         private readonly Dictionary<int, DisplayAttribute> discreteDisplayAttributes = new();
 

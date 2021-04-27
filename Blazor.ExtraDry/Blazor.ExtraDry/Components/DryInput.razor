@@ -33,7 +33,7 @@
             <select class="@CssClass readonly" disabled>
                 <option value="@selectedValue.ToString()" selected>@selectedValue.ToString()</option>
             </select>
-        }
+        } 
         else { 
             <select class="@CssClass" @onchange="OnChange" >
                 @foreach (var value in Property.GetDiscreteValues()) {

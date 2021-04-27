@@ -17,11 +17,12 @@ namespace Sample.Shared {
         [Display(Name = "Name", ShortName = "Name")]
         public string Name { get; set; }
 
-        [Rules(UpdateAction.AllowChanges)]
-        //[Display(Name = "Social Media")]
-        public SocialMedia SocialMedia { get; set; } = new SocialMedia();
+        [Display(Name = "Banking Details")]
+        [Rules(UpdateAction.AllowChanges, CreateAction = CreateAction.CreateNew)]
+        public BankingDetails BankingDetails { get; set; } = new BankingDetails();
 
         [Display(Name = "Videos")]
+        [Rules(UpdateAction.AllowChanges, CreateAction = CreateAction.CreateNew)]
         public ICollection<Video> Videos { get; set; } = new Collection<Video>();
 
     }
