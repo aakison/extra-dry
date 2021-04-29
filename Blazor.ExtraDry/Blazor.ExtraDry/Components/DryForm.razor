@@ -8,16 +8,20 @@ else {
     <CascadingValue Value="@EditMode">
         <form onsubmit="return false;" action="/" method="GET">
             <div class="columns">
-                @foreach(var columnType in new ColumnType[] { ColumnType.Primary, ColumnType.Alternate }) {
-                    <div class="column @columnType.ToString().ToLowerInvariant()">
-                        @foreach(var fieldset in Fieldsets.Where(e => e.Column == columnType)) {
+                @foreach(var column in FormDescription.Columns) {
+                    <div class="column @column.ClassName">
+                        @foreach(var fieldset in column.Fieldsets) {
                             <fieldset>
                                 <legend>@fieldset.Legend</legend>
-                                @foreach(var line in fieldset.Lines) {
-                                    var redundant = line.FormProperties.Count == 1 && line.FormProperties.First().FieldCaption == fieldset.Legend ? "redundant" : "";
-                                    <div class="line @redundant">
-                                        @foreach(var property in line.FormProperties) {
-                                            <DryInput Model="@line.Model" Property="@property" />
+                                @foreach(var group in fieldset.Groups) {
+                                    var redundant = "";// line.FormProperties.Count == 1 && line.FormProperties.First().FieldCaption == fieldset.Legend ? "redundant" : "";
+                                    <div class="group @group.ClassName">
+                                        @foreach (var line in group.Lines) {
+                                            <div class="line @redundant">
+                                                @foreach (var property in line.FormProperties) {
+                                                    <DryInput Model="@line.Model" Property="@property" />
+                                                }
+                                            </div>
                                         }
                                     </div>
                                 }
@@ -34,7 +38,7 @@ else {
             }
             <div class="line">
                 <div class="field">
-                    <DryButtonBar Commands="@description.Commands" Target="@Model" />
+                    <DryButtonBar Commands="@Description.Commands" Target="@Model" />
                 </div>
             </div>
         </form>
