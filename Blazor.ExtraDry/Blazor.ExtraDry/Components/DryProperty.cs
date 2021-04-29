@@ -32,7 +32,13 @@ namespace Blazor.ExtraDry {
             }
             ++recursionDepth;
             if(recursionDepth < 10 && Rules?.CreateAction == CreateAction.CreateNew) { // Create new signals to recurse
-                ChildModel = new ViewModelDescription(Property.PropertyType, this);
+                if(HasArrayValues) {
+                    var elementProperty = Property.PropertyType.GenericTypeArguments.First();
+                    ChildModel = new ViewModelDescription(elementProperty, this);
+                }
+                else {
+                    ChildModel = new ViewModelDescription(Property.PropertyType, this);
+                }
             }
             --recursionDepth;
         }
@@ -129,7 +135,7 @@ namespace Blazor.ExtraDry {
 
         public bool HasTextRepresentation {
             get {
-                var types = new List<Type> { typeof(decimal), typeof(decimal?), typeof(string) };
+                var types = new List<Type> { typeof(decimal), typeof(decimal?), typeof(string), typeof(Uri) };
                 return types.Contains(Property.PropertyType);
             }
         }

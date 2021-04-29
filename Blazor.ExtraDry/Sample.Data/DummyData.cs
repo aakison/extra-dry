@@ -19,6 +19,8 @@ namespace Sample.Data {
                         UniqueId = PseudoRandomGuid(),
                         Name = name 
                     };
+                    company.Videos.Add(new Video { Title = "Huzzah 1", Uri = new Uri("https://www.example.com/huzzah1") });
+                    company.Videos.Add(new Video { Title = "Huzzah 2", Uri = new Uri("https://www.example.com/huzzah2") });
                     database.Companies.Add(company);
                 }
             }

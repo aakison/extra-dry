@@ -25,5 +25,6 @@ namespace Sample.Shared {
         [Rules(UpdateAction.AllowChanges, CreateAction = CreateAction.CreateNew)]
         public ICollection<Video> Videos { get; set; } = new Collection<Video>();
 
+
     }
 }
