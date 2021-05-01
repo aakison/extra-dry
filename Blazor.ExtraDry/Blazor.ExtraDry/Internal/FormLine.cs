@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using Blazor.ExtraDry.Models;
 using System.Collections.ObjectModel;
 
 namespace Blazor.ExtraDry.Internal {
@@ -16,6 +17,8 @@ namespace Blazor.ExtraDry.Internal {
         }
 
         public Collection<DryProperty> FormProperties { get; } = new();
+
+        public Collection<FormCommand> Commands { get; } = new();
 
         public object Model { get; set; }
 

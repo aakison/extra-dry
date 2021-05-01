@@ -9,5 +9,7 @@ namespace Blazor.ExtraDry.Internal {
 
         Element,
 
+        Commands,
+
     }
 }
