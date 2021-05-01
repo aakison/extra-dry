@@ -44,7 +44,7 @@ steps:
   inputs:
     command: test
     projects: '**/*Tests/*.csproj'
-    arguments: '--configuration $(BuildConfiguration) --collect "Code coverage"'
+    arguments: '--configuration $(BuildConfiguration)' # TODO: --collect "Code coverage"???
 
 - task: PowerShell@2
   name: GitSemVer
@@ -94,6 +94,7 @@ steps:
       PublishVariable "semanticVersion" $semanticVersion
 
 - task: DotNetCoreCLI@2
+  displayName: Pack
   inputs:
     command: 'pack'
     packagesToPack: '**/Blazor.ExtraDry*/*.csproj'
