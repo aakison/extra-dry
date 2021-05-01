@@ -1,34 +1,118 @@
-# ASP.NET
-# Build and test ASP.NET projects.
-# Add steps that publish symbols, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 trigger:
 - main
+- release
+- develop
 
 pool:
   vmImage: 'windows-latest'
 
 variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  # Version details for `dotnet pack`, values to be overwritten by `GitSemVer`.
+  majorVersion: 0
+  minorVersion: 1
+  patchVersion: 0
+  prereleaseVersion: ''
+  semanticVersion: '0.1.0'  
+  projectsGlob: '**/Blazor.ExtraDry*.csproj' # don't build samples
 
 steps:
-- task: NuGetToolInstaller@1
-
-- task: NuGetCommand@2
+- task: UseDotNet@2
+  displayName: 'Install .NET 5.0 SDK'
   inputs:
-    restoreSolution: '$(solution)'
+    version: '5.0.x'
 
-- task: VSBuild@1
+- task: DotNetCoreCLI@2
+  displayName: Restore
   inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    command: restore
+    projects: $(projectsGlob)
 
-- task: VSTest@2
+- task: DotNetCoreCLI@2
+  displayName: Build
   inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    projects: $(projectsGlob)
+    arguments: '--configuration $(BuildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: Test
+  inputs:
+    command: test
+    projects: '**/*Tests/*.csproj'
+    arguments: '--configuration $(BuildConfiguration) --collect "Code coverage"'
+
+- task: PowerShell@2
+  name: GitSemVer
+  displayName: 'Evaluate Git Semantic Version'
+  inputs:
+    targetType: 'inline'
+    script: |
+      Write-Host "Trigger Branch is $Env:BUILD_SOURCEBRANCHNAME"
+      function HeadIsBranch($branch) {
+        if($Env:BUILD_SOURCEBRANCHNAME -eq $null) {
+          $headHash = git rev-parse HEAD
+          $branchHash = git rev-parse $branch
+          $headHash -eq $branchHash
+        }
+        else {
+          $Env:BUILD_SOURCEBRANCHNAME -eq $branch
+        }
+      }
+      function PublishVariable($name, $value) {
+        Write-Host "Setting Variable $name to: $value"
+        Write-Host "##vso[task.setvariable variable=$name]$value"
+      }
+      function Coallesce($value1, $value2) {
+        if($value1 -eq $null) { $value2 } else { $value1 }
+      }
+      $describe = git describe --tags
+      Write-Host "Git Version is $describe"
+      $bits = $describe.TrimStart("v").Split(".-")
+      $majorVersion = Coallesce $bits[0] 1
+      $minorVersion = Coallesce $bits[1] 0
+      $patchVersion = Coallesce $bits[2] 0
+      $prereleaseVersion = "head" # no semantic meaning
+      if(HeadIsBranch("develop")) {
+          $prereleaseVersion = "alpha"
+      }
+      if(HeadIsBranch("release")) {
+          $prereleaseVersion = "beta"
+      }
+      if(HeadIsBranch("master")) {
+          $prereleaseVersion = ""
+      }
+      $semanticVersion = "$majorVersion.$minorVersion.$patchVersion-$prereleaseVersion".TrimEnd("-")
+      PublishVariable "majorVersion" $majorVersion
+      PublishVariable "minorVersion" $minorVersion
+      PublishVariable "patchVersion" $patchVersion
+      PublishVariable "prereleaseVersion" $prereleaseVersion
+      PublishVariable "semanticVersion" $semanticVersion
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'pack'
+    packagesToPack: '**/Blazor.ExtraDry*/*.csproj'
+    versioningScheme: 'byEnvVar'
+    versionEnvVar: 'semanticVersion'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact'
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'
+
+# TODO: Here or move to Release stage?
+#- task: NuGetAuthenticate@0
+#  displayName: 'NuGet Authenticate'
+
+#- task: NuGetCommand@2
+#  displayName: 'NuGet push'
+#  inputs:
+#    command: push
+#    publishVstsFeed: 'SignOnDay/SignondayFeed'
+#    allowPackageConflicts: true
+
