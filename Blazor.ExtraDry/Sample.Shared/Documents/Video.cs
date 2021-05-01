@@ -11,7 +11,8 @@ namespace Sample.Shared {
 
 
         [Display(Name = "URL for Video", Description = "Link to the video, e.g. https://www.youtube.com/watch?abc", Prompt = "Enter link")]
-        public Uri Uri { get; set; }
+        [Url]
+        public string Uri { get; set; }
 
     }
 }

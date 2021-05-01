@@ -58,5 +58,22 @@ namespace Blazor.ExtraDry {
                 error = "Unrecognized error occurred";
             }
         }
+
+        private CommandInfo AddNewCommand =>
+            new(this, MethodInfoHelper.GetMethodInfo<DryForm<T>>(e => e.AddDefaultElementToList(Array.Empty<int>()))) {
+                    Arguments = CommandArguments.Single, Context = CommandContext.Alternate};
+
+        [Command(Name = "Add New", Icon = "plus")]
+        private void AddDefaultElementToList(IList items)
+        {
+            var type = items.GetType().SingleGenericType();
+            var instance = type.CreateDefaultInstance();
+            items.Add(instance);
+            if(Description != null && Model != null) {
+                FormDescription = new FormDescription(Description, Model); // re-build description to add/remove UI elements.
+            }
+            StateHasChanged();
+        }
+
     }
 }

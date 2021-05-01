@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using Blazor.ExtraDry.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -53,7 +54,14 @@ namespace Blazor.ExtraDry.Internal {
                     group.Lines.Add(line);
                     lineCapacity = 4;
                 }
-                line.FormProperties.Add(property.Property);
+                if(property.CommandRow) {
+                    if(property.Target is IList list) {
+                        line.Commands.Add(FormCommand.AddNew);
+                    }
+                }
+                else if(property.Property != null) {
+                    line.FormProperties.Add(property.Property);
+                }
                 lineCapacity -= property.Length;
                 lastModel = property.Target;
             }
@@ -74,19 +82,25 @@ namespace Blazor.ExtraDry.Internal {
                     }
                     else {
                         var collection = property.GetValue(model) as ICollection;
-                        var types = property.Property.PropertyType.GenericTypeArguments;
-                        if(types.Length == 0) {
-                            Console.WriteLine("  Can't handle untyped collections");
-                            break;
-                        }
-                        else if(types.Length > 1) {
-                            Console.WriteLine("  Can't handle collections with more than one generic type");
-                            break;
-                        }
-                        else {
+                        try {
+                            var type = property.Property.PropertyType.SingleGenericType();
                             foreach(var submodel in collection!) {
                                 ExtendProperties(property.ChildModel.FormProperties, columnType, fieldsetName, FormGroupType.Element, submodel);
                             }
+                            // TODO: different for IEnumerable?
+                            if(collection is IList list && type.HasDefaultConstructor()) {
+                                ExtendedProperties.Add(new ExtendedProperty(property, list) {
+                                    FieldsetTitle = fieldsetName,
+                                    ColumnType = columnType,
+                                    GroupType = FormGroupType.Commands,
+                                    Length = 4,
+                                    CommandRow = true,
+                                });
+                            }
+                        }
+                        catch(DryException ex) {
+                            Console.WriteLine(ex.Message);
+                            // TODO:
                         }
                     }
                 }
@@ -133,8 +147,9 @@ namespace Blazor.ExtraDry.Internal {
             public string FieldsetTitle { get; set; } = string.Empty;
             public FormGroupType GroupType { get; set; }
             public int Length { get; set; }
-            public DryProperty Property { get; set; }
+            public DryProperty? Property { get; set; }
             public object Target { get; set; }
+            public bool CommandRow { get; set; }
         }
 
     }

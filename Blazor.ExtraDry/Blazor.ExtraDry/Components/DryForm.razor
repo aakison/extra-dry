@@ -17,12 +17,20 @@ else {
                                     var redundant = "";// line.FormProperties.Count == 1 && line.FormProperties.First().FieldCaption == fieldset.Legend ? "redundant" : "";
                                     <div class="group @group.ClassName">
                                         @foreach (var line in group.Lines) {
-                                            <div class="line @redundant">
-                                                @foreach (var property in line.FormProperties) {
+                                            <div class="line properties @redundant">
+                                                @foreach(var property in line.FormProperties) {
                                                     <DryInput Model="@line.Model" Property="@property" />
                                                 }
+                                                @foreach(var command in line.Commands) { 
+                                                    if(command == Internal.FormCommand.AddNew) { 
+                                                        <DryButton Target="@line.Model" Command="@AddNewCommand" />
+                                                    }
+                                                    else {
+                                                        Console.WriteLine("Unrecognized command");
+                                                    }
+                                                }
                                             </div>
-                                        }
+                                        } 
                                     </div>
                                 }
                             </fieldset>

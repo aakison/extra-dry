@@ -152,7 +152,9 @@ namespace Blazor.ExtraDry.Models {
             if(!(arg is IEnumerable)) {
                 throw new ArgumentException("Parameter, while an object, must be of assignedable to type IEnumerable", nameof(arg));
             }
-            var type = Method.GetParameters()[0].ParameterType.GenericTypeArguments[0];
+
+            var parameterType = Method.GetParameters()[0].ParameterType;
+            var type = parameterType.GenericTypeArguments[0];
             var listType = typeof(List<>);
             var constructedListType = listType.MakeGenericType(type);
             var typedCollection = Activator.CreateInstance(constructedListType);
