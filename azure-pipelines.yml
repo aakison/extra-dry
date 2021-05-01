@@ -83,7 +83,7 @@ steps:
       if(HeadIsBranch("release")) {
           $prereleaseVersion = "beta"
       }
-      if(HeadIsBranch("master")) {
+      if(HeadIsBranch("main") -OR HeadIsBranch("master")) {
           $prereleaseVersion = ""
       }
       $semanticVersion = "$majorVersion.$minorVersion.$patchVersion-$prereleaseVersion".TrimEnd("-")
