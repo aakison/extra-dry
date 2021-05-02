@@ -32,9 +32,9 @@ namespace Blazor.ExtraDry {
 
         public Type ModelType { get; }
 
-        public Collection<DryProperty> FormProperties { get; } = new Collection<DryProperty>();
+        public Collection<PropertyDescription> FormProperties { get; } = new Collection<PropertyDescription>();
 
-        public Collection<DryProperty> TableProperties { get; } = new Collection<DryProperty>();
+        public Collection<PropertyDescription> TableProperties { get; } = new Collection<PropertyDescription>();
 
         public ListSelectMode ListSelectMode { get; private set; } = ListSelectMode.None;
 
@@ -56,7 +56,7 @@ namespace Blazor.ExtraDry {
             var properties = modelType.GetProperties();
             foreach(var property in properties) {
                 var display = property.GetCustomAttribute<DisplayAttribute>();
-                var col = new DryProperty(property);
+                var col = new PropertyDescription(property);
                 if(!string.IsNullOrEmpty(display?.Name)) {
                     FormProperties.Add(col);
                 }

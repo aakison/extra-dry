@@ -18,7 +18,7 @@ namespace Blazor.ExtraDry.Components.Internal {
             }
         }
 
-        public void SortBy(DryProperty property)
+        public void SortBy(PropertyDescription property)
         {
             
         }

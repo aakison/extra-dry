@@ -49,7 +49,7 @@ namespace Blazor.ExtraDry.Internal {
                     fieldset.Groups.Add(group);
                 }
                 var line = group.Lines.LastOrDefault();
-                if(line == null || lineCapacity < property.Length) {
+                if(line == null || lineCapacity < (int)property.Length) {
                     line = new FormLine(property.Target);
                     group.Lines.Add(line);
                     lineCapacity = 4;
@@ -62,12 +62,12 @@ namespace Blazor.ExtraDry.Internal {
                 else if(property.Property != null) {
                     line.FormProperties.Add(property.Property);
                 }
-                lineCapacity -= property.Length;
+                lineCapacity -= (int)property.Length;
                 lastModel = property.Target;
             }
         }
 
-        private void ExtendProperties(Collection<DryProperty> properties, ColumnType columnType, string fieldsetName, FormGroupType formGroup, object model)
+        private void ExtendProperties(Collection<PropertyDescription> properties, ColumnType columnType, string fieldsetName, FormGroupType formGroup, object model)
         {
             foreach(var property in properties) {
                 Console.WriteLine($"property: {property.Property.Name}, header: {property.Header?.Title}");
@@ -93,7 +93,7 @@ namespace Blazor.ExtraDry.Internal {
                                     FieldsetTitle = fieldsetName,
                                     ColumnType = columnType,
                                     GroupType = FormGroupType.Commands,
-                                    Length = 4,
+                                    Length = PropertySize.Jumbo,
                                     CommandRow = true,
                                 });
                             }
@@ -105,40 +105,19 @@ namespace Blazor.ExtraDry.Internal {
                     }
                 }
                 else {
-                    var size = PredictSize(property);
                     ExtendedProperties.Add(new ExtendedProperty(property, model) { 
                         FieldsetTitle = fieldsetName,
                         ColumnType = columnType,
                         GroupType = formGroup,
-                        Length = size,
+                        Length = property.Size,
                     });
                 }
             }
         }
 
-        private static int PredictSize(DryProperty property)
-        {
-            if(property.Property.PropertyType == typeof(string)) {
-                var length = property.MaxLength?.Length ?? 1000;
-                if(length <= 50) {
-                    return 1;
-                }
-                else if(length <= 100) {
-                    return 2;
-                }
-                else if(length <= 200) {
-                    return 3;
-                }
-                else {
-                    return 4;
-                }
-            }
-            return 1;
-        }
-
 
         private class ExtendedProperty {
-            public ExtendedProperty(DryProperty property, object target) {
+            public ExtendedProperty(PropertyDescription property, object target) {
                 Property = property;
                 Target = target;
             }
@@ -146,8 +125,8 @@ namespace Blazor.ExtraDry.Internal {
             public ColumnType ColumnType { get; set; }
             public string FieldsetTitle { get; set; } = string.Empty;
             public FormGroupType GroupType { get; set; }
-            public int Length { get; set; }
-            public DryProperty? Property { get; set; }
+            public PropertySize Length { get; set; }
+            public PropertyDescription? Property { get; set; }
             public object Target { get; set; }
             public bool CommandRow { get; set; }
         }

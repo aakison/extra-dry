@@ -8,9 +8,9 @@ using System.Linq;
 using System.Reflection;
 
 namespace Blazor.ExtraDry {
-    public class DryProperty {
+    public class PropertyDescription {
 
-        public DryProperty(PropertyInfo property)
+        public PropertyDescription(PropertyInfo property)
         {
             Property = property;
             Display = Property.GetCustomAttribute<DisplayAttribute>();
@@ -23,6 +23,7 @@ namespace Blazor.ExtraDry {
             ColumnCaption = Display?.ShortName ?? Property.Name;
             Description = Display?.Description;
             HasDescription = !string.IsNullOrWhiteSpace(Description);
+            Size = PredictSize();
             if(HasDiscreteValues) {
                 var enumValues = Property.PropertyType.GetFields(BindingFlags.Public | BindingFlags.Static);
                 foreach(var enumValue in enumValues) {
@@ -73,6 +74,8 @@ namespace Blazor.ExtraDry {
         public bool HasDescription { get; }
 
         public PropertyInfo Property { get; set; }
+
+        public PropertySize Size { get; set; }
 
         public string DisplayValue(object item)
         {
@@ -199,6 +202,26 @@ namespace Blazor.ExtraDry {
                 // fallback for object types
                 return value;
             }
+        }
+
+        private PropertySize PredictSize()
+        {
+            if(Property.PropertyType == typeof(string)) {
+                var length = MaxLength?.Length ?? 1000;
+                if(length <= 50) {
+                    return PropertySize.Small;
+                }
+                else if(length <= 100) {
+                    return PropertySize.Medium;
+                }
+                else if(length <= 200) {
+                    return PropertySize.Large;
+                }
+                else {
+                    return PropertySize.Jumbo;
+                }
+            }
+            return PropertySize.Small;
         }
 
         private static decimal? PercentageToDecimal(string percent) =>

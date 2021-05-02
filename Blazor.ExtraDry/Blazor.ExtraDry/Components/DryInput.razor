@@ -2,7 +2,7 @@
 @typeparam T
 @inherits OwningComponentBase
 
-<div class="field @CssClass">
+<div class="field @CssClass @SizeClass">
     <label class="@CssClass" @onclick="ToggleDescription" title="@Description">
         <span class="caption">@Property.FieldCaption</span>
         @if(Property.HasDescription) {
@@ -79,7 +79,7 @@
     public T Model { get; set; }
 
     [Parameter]
-    public DryProperty Property { get; set; }
+    public PropertyDescription Property { get; set; }
 
     [Parameter]
     public string PropertyName { get; set; }
@@ -89,7 +89,7 @@
 
     protected async override Task OnInitializedAsync()
     {
-        Property ??= new DryProperty(typeof(T).GetProperty(PropertyName));
+        Property ??= new PropertyDescription(typeof(T).GetProperty(PropertyName));
         if(Property.HasTextRepresentation == false) {
             await FetchLookupProviderOptions();
         }
@@ -110,6 +110,8 @@
     private bool valid = true;
 
     private string CssClass => valid ? "valid" : "invalid";
+
+    private string SizeClass => Property.Size.ToString().ToLowerInvariant();
 
     private bool showDescription;
 
