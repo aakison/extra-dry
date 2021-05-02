@@ -4,9 +4,12 @@
 
 <div class="field @CssClass">
     <label class="@CssClass" @onclick="ToggleDescription" title="@Description">
-        @Property.FieldCaption
+        <span class="caption">@Property.FieldCaption</span>
         @if(Property.HasDescription) {
             <i class="description"></i>
+        }
+        @if(ReadOnly) { 
+            <i class="read-only"></i>
         }
         @if(Editable) { 
             if(Property.IsRequired) {
@@ -15,9 +18,6 @@
             else {
                 <i class="optional"></i>
             }
-        }
-        @if(ReadOnly) { 
-            <i class="read-only"></i>
         }
     </label>
     @if(showDescription) {
