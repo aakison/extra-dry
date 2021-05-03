@@ -1,4 +1,3 @@
-# WARNING: While this appears to publish properly, the result doesn't show up in Nuget in VS
       
 function HeadIsBranch($branch) {
     if($Env:BUILD_SOURCEBRANCHNAME -eq $null) {

@@ -2,8 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>Blazor.ExtraDry.Core</PackageId>
     <Version>0.1</Version>
     <Authors>adrian.akison</Authors>
+    <Company>FMI Works</Company>
     <Description>Extensions to Blazor and DRY libraries to create Blazor client applications with a lower-code footprint.  Use this Core library for server side and shared library common elements.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/fmi-works/blazor-extra-dry</PackageProjectUrl>
