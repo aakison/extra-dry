@@ -37,7 +37,7 @@ namespace Blazor.ExtraDry {
             if(Description == null) {
                 Description = new ViewModelDescription(typeof(T), ViewModel);
             }
-            if(Model != null && FormDescription == null) {
+            if(Model != null) {
                 FormDescription = new FormDescription(Description, Model);
             }
         }
