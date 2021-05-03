@@ -11,7 +11,7 @@
         @if(ReadOnly) { 
             <i class="read-only"></i>
         }
-        @if(Editable) { 
+        @if(Editable && !Property.HasDiscreteValues) { 
             if(Property.IsRequired) {
                 <i class="required"></i>
             }
