@@ -45,7 +45,7 @@ namespace Blazor.ExtraDry.Internal {
                 }
                 var group = fieldset.Groups.LastOrDefault(e => e.Type == property.GroupType && e.Target == property.Target);
                 if(group == null) {
-                    group = new FormGroup(property.Target) { Type = property.GroupType };
+                    group = new FormGroup(property.Target) { Type = property.GroupType, ParentTarget = property.ParentTarget };
                     fieldset.Groups.Add(group);
                 }
                 var line = group.Lines.LastOrDefault();
@@ -67,7 +67,7 @@ namespace Blazor.ExtraDry.Internal {
             }
         }
 
-        private void ExtendProperties(Collection<PropertyDescription> properties, ColumnType columnType, string fieldsetName, FormGroupType formGroup, object model)
+        private void ExtendProperties(Collection<PropertyDescription> properties, ColumnType columnType, string fieldsetName, FormGroupType formGroup, object model, object? parentModel = null)
         {
             foreach(var property in properties) {
                 Console.WriteLine($"property: {property.Property.Name}, header: {property.Header?.Title}");
@@ -85,7 +85,7 @@ namespace Blazor.ExtraDry.Internal {
                         try {
                             var type = property.Property.PropertyType.SingleGenericType();
                             foreach(var submodel in collection!) {
-                                ExtendProperties(property.ChildModel.FormProperties, columnType, fieldsetName, FormGroupType.Element, submodel);
+                                ExtendProperties(property.ChildModel.FormProperties, columnType, fieldsetName, FormGroupType.Element, submodel, collection);
                             }
                             // TODO: different for IEnumerable?
                             if(collection is IList list && type.HasDefaultConstructor()) {
@@ -110,6 +110,7 @@ namespace Blazor.ExtraDry.Internal {
                         ColumnType = columnType,
                         GroupType = formGroup,
                         Length = property.Size,
+                        ParentTarget = parentModel,
                     });
                 }
             }
@@ -128,6 +129,7 @@ namespace Blazor.ExtraDry.Internal {
             public PropertySize Length { get; set; }
             public PropertyDescription? Property { get; set; }
             public object Target { get; set; }
+            public object? ParentTarget { get; set; }
             public bool CommandRow { get; set; }
         }
 

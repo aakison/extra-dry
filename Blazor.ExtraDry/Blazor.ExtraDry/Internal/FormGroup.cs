@@ -22,5 +22,7 @@ namespace Blazor.ExtraDry.Internal {
 
         public object Target { get; set; }
 
+        public object? ParentTarget { get; set; }
+
     }
 }

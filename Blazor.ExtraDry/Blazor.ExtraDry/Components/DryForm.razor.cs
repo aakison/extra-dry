@@ -75,5 +75,24 @@ namespace Blazor.ExtraDry {
             StateHasChanged();
         }
 
+        private void DeleteItem(object? items, object item)
+        {
+            Console.WriteLine("DeleteItem");
+            if(items == null) {
+                throw new ArgumentNullException(nameof(items));
+            }
+            if(items is IList list) {
+                Console.WriteLine("  A list");
+                list.Remove(item);
+                if(Description != null && Model != null) {
+                    FormDescription = new FormDescription(Description, Model); // re-build description to add/remove UI elements.
+                }
+                StateHasChanged();
+            }
+            else {
+                Console.WriteLine("  Not a list: " + items.GetType().ToString());
+            }
+        }
+
     }
 }
