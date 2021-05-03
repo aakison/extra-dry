@@ -51,7 +51,7 @@ namespace Blazor.ExtraDry {
 
         private bool ShowDescription { get; set; }
 
-        private bool HasDescription => !string.IsNullOrWhiteSpace(Description);
+        private bool HasDescription => Property.HasDescription;
 
         private async Task FetchLookupProviderOptions()
         {
@@ -66,16 +66,18 @@ namespace Blazor.ExtraDry {
             }
         }
 
-        private string Description {
+        private string TextDescription {
             get {
                 if(Editable) {
                     return Property.Description + (Property.IsRequired ? " (required)" : "");
                 }
                 else {
-                    return $"{Property.Description} (read&#8209;only)"; // non-breaking-hyphen.
+                    return $"{Property.Description} (read-only)"; 
                 }
             }
         }
+
+        private string HtmlDescription => TextDescription.Replace("-", "&#8209;"); // non-breaking-hyphen.
 
         private void ToggleDescription(MouseEventArgs args)
         {

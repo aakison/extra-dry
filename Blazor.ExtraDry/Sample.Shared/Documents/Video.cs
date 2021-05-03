@@ -6,7 +6,7 @@ using System.Text;
 namespace Sample.Shared {
     public class Video {
 
-        [Display(Name = "Video Title", ShortName = "Title", Description = "Title of video for display to users as links, etc.", Prompt = "Enter title")]
+        [Display(Name = "Video Title", ShortName = "Title", Prompt = "Enter title")]
         public string Title { get; set; }
 
 

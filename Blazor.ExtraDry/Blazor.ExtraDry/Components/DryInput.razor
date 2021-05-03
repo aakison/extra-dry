@@ -3,7 +3,7 @@
 @inherits OwningComponentBase
 
 <div class="field @CssClass @SizeClass">
-    <label class="@CssClass" @onclick="ToggleDescription" title="@Description">
+    <label class="@CssClass" @onclick="ToggleDescription" title="@TextDescription">
         <span class="caption">@Property.FieldCaption</span>
         @if(Property.HasDescription) {
             <i class="description"></i>
@@ -21,7 +21,7 @@
         }
     </label>
     @if(HasDescription && ShowDescription) {
-        <span class="description @CssClass">@((MarkupString)Description)</span>
+        <span class="description @CssClass">@((MarkupString)HtmlDescription)</span>
     }
     @if(Property.HasBooleanValues) {
         var value = ((bool?)Property.GetValue(Model) ?? false) == true;
