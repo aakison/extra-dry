@@ -7,6 +7,7 @@ namespace Sample.Shared {
     public class Video {
 
         [Display(Name = "Video Title", ShortName = "Title", Prompt = "Enter title")]
+        [Required]
         public string Title { get; set; }
 
 
