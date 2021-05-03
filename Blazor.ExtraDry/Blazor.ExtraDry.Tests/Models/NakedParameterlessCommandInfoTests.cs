@@ -43,13 +43,15 @@ namespace Blazor.ExtraDry.Tests.Models {
             Assert.Equal("NakedParameterlessCommand", lastMethodCalled);
         }
 
-        [Fact]
-        public async Task FailWhenParameterProvided()
-        {
-            var command = new CommandInfo(this, NakedParameterlessCommand);
+        // TODO: Review correctness: Removed as model commands may choose not to have a context (e.g. Cancel) which is valid.  
+        // Model is available the method doesn't want it so just don't pass it through.
+        //[Fact]
+        //public async Task FailWhenParameterProvided()
+        //{
+        //    var command = new CommandInfo(this, NakedParameterlessCommand);
 
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await command.ExecuteAsync(new object()));
-        }
+        //    await Assert.ThrowsAsync<InvalidOperationException>(async () => await command.ExecuteAsync(new object()));
+        //}
 
         [Fact]
         public async Task AsyncSuccessfulMethodCall()
