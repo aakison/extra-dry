@@ -1,3 +1,4 @@
+# WARNING: While this appears to publish properly, the result doesn't show up in Nuget in VS
       
 function HeadIsBranch($branch) {
     if($Env:BUILD_SOURCEBRANCHNAME -eq $null) {
@@ -37,6 +38,5 @@ Write-Host "Semenatic version is $semanticVersion"
 dotnet pack .\Blazor.ExtraDry.Core\Blazor.ExtraDry.Core.csproj -p:PackageVersion=$semanticVersion
 dotnet pack .\Blazor.ExtraDry\Blazor.ExtraDry.csproj -p:PackageVersion=$semanticVersion
 
-xcopy .\Blazor.ExtraDry.Core\bin\Debug\Blazor.ExtraDry.Core.$semanticVersion.nupkg $env:USERPROFILE\Repos\Nuget\ /i /c /r
-xcopy .\Blazor.ExtraDry\bin\Debug\Blazor.ExtraDry.$semanticVersion.nupkg $env:USERPROFILE\Repos\Nuget\ /i /c /r
-
+nuget add .\Blazor.ExtraDry.Core\bin\Debug\Blazor.ExtraDry.Core.$semanticVersion.nupkg -source $env:USERPROFILE\Repos\Nuget\
+nuget add .\Blazor.ExtraDry\bin\Debug\Blazor.ExtraDry.$semanticVersion.nupkg -source $env:USERPROFILE\Repos\Nuget\
