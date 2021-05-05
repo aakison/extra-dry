@@ -100,6 +100,8 @@ namespace Blazor.ExtraDry.Models {
 
         public bool HasIcon => !string.IsNullOrWhiteSpace(Icon);
 
+        public string GroupName => string.IsNullOrWhiteSpace(Group) ? "&nbsp;" : Group;
+
         /// <summary>
         /// Executes the underlying method with the provided arguments, ensuring that the proper number of arguments are provided.
         /// </summary>

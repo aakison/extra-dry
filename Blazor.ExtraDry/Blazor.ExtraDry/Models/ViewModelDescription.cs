@@ -54,7 +54,7 @@ namespace Blazor.ExtraDry {
 
         public bool HasNavigationGroups => Navigations.Any(e => !string.IsNullOrWhiteSpace(e.Group));
 
-        public IEnumerable<string> NavigationGroups => Navigations.Select(e => e.Group).Distinct();
+        public IEnumerable<string> NavigationGroups => Navigations.Select(e => e.GroupName).Distinct();
 
         public IEnumerable<NavigationDescription> NavigationsInGroup(string group) => Navigations.Where(e => e.Group == group);
 
