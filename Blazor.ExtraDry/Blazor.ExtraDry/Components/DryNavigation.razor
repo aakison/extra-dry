@@ -8,9 +8,13 @@ else {
         <ul>
             @if(Description.HasNavigationGroups) {
                 @foreach(var group in Description.NavigationGroups) {
-                    var display = string.IsNullOrWhiteSpace(group) ? "&nbsp;" : group;
                     <li>
-                        <div>@display</div>
+                        @if(string.IsNullOrWhiteSpace(group)) {
+                            <div>&nbsp;</div>
+                        }
+                        else {
+                            <div>@group</div>
+                        }
                         <ul>
                             @foreach(var item in Description.NavigationsInGroup(group)) {
                                 <li>
