@@ -25,6 +25,8 @@
     </ul>
 </div>
 
+<DryNavigation ViewModel="@this" />
+
 @code {
     private bool collapseNavMenu = true;
 
@@ -34,4 +36,21 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
+
+    [Inject]
+    private NavigationManager Navigation { get; set; }
+
+    [Navigation(Icon = "home")]
+    public string Home => $"/";
+
+    [Navigation(Icon = "people")]
+    public string Companies => $"companies";
+
+    [Navigation(Icon = "person", Order = 10)]
+    public void Employees() {
+        // Example of navigation as a function
+        Console.WriteLine("Executing Employees");
+        Navigation.NavigateTo("employees");
+    }
+
 }

@@ -15,7 +15,8 @@ namespace Blazor.ExtraDry {
         public ViewModelDescription(object viewModel)
         {
             ViewModel = viewModel;
-            GetReflectedViewModelProperties(viewModel);
+            GetReflectedViewModelCommands(viewModel);
+            GetReflectedViewModelNavigations(viewModel);
             SetListSelectMode();
         }
 
@@ -24,7 +25,8 @@ namespace Blazor.ExtraDry {
             ModelType = modelType;
             ViewModel = viewModel;
             GetReflectedModelProperties(modelType);
-            GetReflectedViewModelProperties(viewModel);
+            GetReflectedViewModelCommands(viewModel);
+            GetReflectedViewModelNavigations(viewModel);
             SetListSelectMode();
         }
 
@@ -40,6 +42,8 @@ namespace Blazor.ExtraDry {
 
         public Collection<CommandInfo> Commands { get; } = new Collection<CommandInfo>();
 
+        public List<NavigationDescription> Navigations { get; } = new();
+
         public CommandInfo SelectCommand => Commands.FirstOrDefault(e => e.Context == CommandContext.Primary && e.Arguments == CommandArguments.Single);
 
         public ReadOnlyCollection<CommandInfo> MenuCommands => new(Commands.Where(e => e.Arguments == CommandArguments.None).ToList());
@@ -47,6 +51,12 @@ namespace Blazor.ExtraDry {
         public ReadOnlyCollection<CommandInfo> ContextCommands => new(Commands.Where(e => e.Arguments == CommandArguments.Single).ToList());
 
         public ReadOnlyCollection<CommandInfo> MultiContextCommands => new(Commands.Where(e => e.Arguments == CommandArguments.Multiple).ToList());
+
+        public bool HasNavigationGroups => Navigations.Any(e => !string.IsNullOrWhiteSpace(e.Group));
+
+        public IEnumerable<string> NavigationGroups => Navigations.Select(e => e.Group).Distinct();
+
+        public IEnumerable<NavigationDescription> NavigationsInGroup(string group) => Navigations.Where(e => e.Group == group);
 
         private void GetReflectedModelProperties(Type modelType)
         {
@@ -66,7 +76,7 @@ namespace Blazor.ExtraDry {
             }
         }
 
-        private void GetReflectedViewModelProperties(object viewModel) { 
+        private void GetReflectedViewModelCommands(object viewModel) { 
             if(viewModel == null) {
                 return;
             }
@@ -78,6 +88,28 @@ namespace Blazor.ExtraDry {
                 .OrderBy(e => e.Context);
             foreach(var info in infos) {
                 Commands.Add(info);
+            }
+        }
+
+        private void GetReflectedViewModelNavigations(object viewModel)
+        {
+            if(viewModel == null) {
+                return;
+            }
+            var viewModelType = viewModel.GetType();
+            var members = viewModelType.GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            var navigationMembers = members.Where(e => e.GetCustomAttribute<NavigationAttribute>() != null);
+            var unorderedNavigations = new List<NavigationDescription>();
+            foreach(var member in navigationMembers) {
+                if(member is PropertyInfo property) {
+                    unorderedNavigations.Add(new NavigationDescription(viewModel, property));
+                }
+                if(member is MethodInfo method) {
+                    unorderedNavigations.Add(new NavigationDescription(viewModel, method));
+                }
+            }
+            foreach(var desc in unorderedNavigations.OrderBy(e => e.Order)) {
+                Navigations.Add(desc);
             }
         }
 
