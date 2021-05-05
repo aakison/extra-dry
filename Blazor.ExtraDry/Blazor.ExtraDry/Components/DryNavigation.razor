@@ -23,7 +23,7 @@ else {
                                         </a>
                                     }
                                     else { 
-                                        <a href="" @onclick="@item.ExecuteAsync">
+                                        <a href="javascript:void(0)" @onclick="@item.ExecuteAsync">
                                             @if(item.HasImage) { 
                                                 <img src="@item.Image" />
                                             }
@@ -50,7 +50,7 @@ else {
                             </a>
                         }
                         else { 
-                            <a @onclick="@item.ExecuteAsync">
+                            <a href="javascript:void(0)" @onclick="@item.ExecuteAsync">
                                 @if(item.HasImage) { 
                                     <img src="@item.Image" />
                                 }
