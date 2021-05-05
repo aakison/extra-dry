@@ -48,3 +48,34 @@ a, .btn-link {
         right: 0.75rem;
         top: 0.5rem;
     }
+
+
+nav > ul {
+  margin: 0;
+  padding: 0;
+}
+
+  nav > ul > li {
+    padding: 13px;
+    margin: 0px 15px 10px 15px;
+    list-style: none;
+    border-radius: 5px;
+    color: white;
+  }
+
+    nav > ul > li.active {
+      background-color: rgb(255 255 255 / 0.25);
+    }
+
+  nav > ul > li > a {
+      color: white;
+  }
+
+    nav > ul > li > a:hover {
+        color: white;
+        text-decoration: none;  
+    }
+  
+    nav > ul > li > a > i {
+      padding: 0 5px;
+    }

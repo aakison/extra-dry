@@ -2,11 +2,7 @@
 
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Blazor.ExtraDry {
     public partial class DryNavigation : ComponentBase {
@@ -19,6 +15,9 @@ namespace Blazor.ExtraDry {
 
         [Inject]
         private ILogger<DryNavigation>? Logger { get; set; }
+
+        [Inject]
+        private NavigationManager? Navigation { get; set; }
 
         protected override void OnParametersSet()
         {

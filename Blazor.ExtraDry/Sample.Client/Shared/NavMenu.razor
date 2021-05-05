@@ -5,27 +5,12 @@
     </button>
 </div>
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="companies">
-                <span class="oi oi-people" aria-hidden="true"></span> Companies
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="employees">
-                <span class="oi oi-person" aria-hidden="true"></span> Employees
-            </NavLink>
-        </li>
-    </ul>
-</div>
-
-<DryNavigation class="horizontal" ViewModel="@this" />
+<!-- Replace navigation with a DryNavigation component
+     If multiple navigation lists (e.g. both in `aside` and in `header`), share the ViewModel as an object beside `this`.
+     Style globally or using `nav.className` specifier.
+     See the methods decorated `[Navigation]` below for actual menu.
+-->
+<DryNavigation class="vertical" ViewModel="@this" />
 
 @code {
     private bool collapseNavMenu = true;
@@ -40,17 +25,23 @@
     [Inject]
     private NavigationManager Navigation { get; set; }
 
+    // Simple navigation example that goes to root, name is inferred from the MethodName.
+    // Property use used to define the navigation target, use an expression to change URL (e.g. in multi-tenant applications)
     [Navigation(Icon = "home")]
     public string Home => $"/";
 
-    [Navigation(Icon = "people")]
-    public string Companies => $"companies";
+    // Slightly more complicated, property name not suitable so override name in `Navigation` attribute.
+    [Navigation("Companies", Icon = "people")]
+    public string CompanyList => $"companies";
 
-    [Navigation(Icon = "person", Order = 10)]
+    // Finally for the most complicated cases, you can also navigate using a function instead of a URL.
+    // Use when menu link is context sensitive or otherwise requires late binding.
+    // Two issues, first is that the the order can't be inferred from position in file,
+    // so use `Order` attribute to make it show up after above properties.
+    // Also, as there is no HREF, use `ActiveMatch` to provide a unique subset of the URI to highlight when active.
+    [Navigation(Icon = "person", Order = 10, ActiveMatch = "employees")]
     public void Employees() {
-        // Example of navigation as a function
-        Console.WriteLine("Executing Employees");
-        Navigation.NavigateTo("employees");
+        Navigation.NavigateTo("employees"); 
     }
 
 }

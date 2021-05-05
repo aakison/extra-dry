@@ -23,5 +23,7 @@ namespace Blazor.ExtraDry {
 
         public int Order { get; set; }
 
+        public string ActiveMatch { get; set; }
+
     }
 }

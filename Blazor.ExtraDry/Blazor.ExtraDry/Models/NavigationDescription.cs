@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -74,6 +75,7 @@ namespace Blazor.ExtraDry.Models {
         /// </summary>
         public string? Image { get; set; }
 
+
         /// <summary>
         /// The optional order of the navigation item, if omitted then the file order is respected.
         /// Note, however, method based navigations will list before property based navigations.
@@ -85,6 +87,9 @@ namespace Blazor.ExtraDry.Models {
         /// Used by `ExecuteAsync` to invoke the command on the correct object instance.
         /// </summary>
         public object ViewModel { get; set; }
+
+
+        public string? ActiveMatch { get; set; }
 
         /// <summary>
         /// Indicates if the navigation uses an Href instead of an onclick...
@@ -99,6 +104,17 @@ namespace Blazor.ExtraDry.Models {
         public bool HasImage => !string.IsNullOrWhiteSpace(Image);
 
         public bool HasIcon => !string.IsNullOrWhiteSpace(Icon);
+
+        public bool UriMatch(NavigationManager navigation)
+        {
+            var relativeUri = navigation.Uri.Remove(0, navigation.BaseUri.Length);
+            var match = ActiveMatch == null ? Href.TrimStart('/') : ActiveMatch.TrimStart('/');
+            var isMatch = string.IsNullOrWhiteSpace(match) ? 
+                string.IsNullOrWhiteSpace(relativeUri) :
+                relativeUri?.Contains(match) ?? false;
+            Console.WriteLine($" URI Match: {relativeUri} against {match} is {isMatch}");
+            return isMatch;
+        }
 
         /// <summary>
         /// Executes the underlying method with the provided arguments, ensuring that the proper number of arguments are provided.
@@ -123,6 +139,7 @@ namespace Blazor.ExtraDry.Models {
             Image = Navigation?.Image;
             Group = Navigation?.Group;
             Order = Navigation?.Order ?? 0;
+            ActiveMatch = Navigation?.ActiveMatch;
         }
 
         /// <summary>
