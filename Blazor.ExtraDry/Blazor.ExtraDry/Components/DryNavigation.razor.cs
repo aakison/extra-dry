@@ -14,6 +14,9 @@ namespace Blazor.ExtraDry {
         [Parameter]
         public object? ViewModel { get; set; }
 
+        [Parameter(CaptureUnmatchedValues = true)]
+        public Dictionary<string, object>? InputAttributes { get; set; }
+
         [Inject]
         private ILogger<DryNavigation>? Logger { get; set; }
 

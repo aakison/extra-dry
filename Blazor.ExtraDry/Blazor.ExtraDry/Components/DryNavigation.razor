@@ -4,7 +4,7 @@
     <progress>loading nav</progress>
 }
 else {
-    <nav>
+    <nav @attributes="@InputAttributes">
         <ul>
             @if(Description.HasNavigationGroups) {
                 <li>
@@ -13,24 +13,13 @@ else {
                         <ul>
                             @foreach(var item in Description.NavigationsInGroup(group)) {
                                 <li>
-                                    @if(item.HasHref) { 
-                                        <a href="@item.Href">
-                                            @if(item.HasImage) { 
-                                                <img src="@item.Image" />
-                                            }
-                                            <DryIcon Key="@item.Icon" />
-                                            <span>@item.Caption</span>
-                                        </a>
-                                    }
-                                    else { 
-                                        <a href="javascript:void(0)" @onclick="@item.ExecuteAsync">
-                                            @if(item.HasImage) { 
-                                                <img src="@item.Image" />
-                                            }
-                                            <DryIcon Key="@item.Icon" />
-                                            <span>@item.Caption</span>
-                                        </a>
-                                    }
+                                    <a href="@item.Href" @onclick="@item.ExecuteAsync">
+                                        @if(item.HasImage) { 
+                                            <img src="@item.Image" />
+                                        }
+                                        <DryIcon Key="@item.Icon" />
+                                        <span>@item.Caption</span>
+                                    </a>
                                 </li>
                             }
                         </ul>
@@ -40,24 +29,13 @@ else {
             else { 
                 @foreach(var item in Description.Navigations) {
                     <li>
-                        @if(item.HasHref) { 
-                            <a href="@item.Href">
-                                @if(item.HasImage) { 
-                                    <img src="@item.Image" />
-                                }
-                                <DryIcon Key="@item.Icon" />
-                                <span>@item.Caption</span>
-                            </a>
-                        }
-                        else { 
-                            <a href="javascript:void(0)" @onclick="@item.ExecuteAsync">
-                                @if(item.HasImage) { 
-                                    <img src="@item.Image" />
-                                }
-                                <DryIcon Key="@item.Icon" />
-                                <span>@item.Caption</span>
-                            </a>
-                        }
+                        <a href="@item.Href" @onclick="@item.ExecuteAsync">
+                            @if(item.HasImage) { 
+                                <img src="@item.Image" />
+                            }
+                            <DryIcon Key="@item.Icon" />
+                            <span>@item.Caption</span>
+                        </a>
                     </li>
                 }
             }

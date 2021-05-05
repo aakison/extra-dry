@@ -92,9 +92,9 @@ namespace Blazor.ExtraDry.Models {
         public bool HasHref => Property != null;
 
         /// <summary>
-        /// The href as defined by the `Property` or "" if command based navigation.
+        /// The href as defined by the `Property` or non-functional placeholder otherwise if command based navigation.
         /// </summary>
-        public string Href => Property?.GetValue(ViewModel)?.ToString() ?? "";
+        public string Href => Property?.GetValue(ViewModel)?.ToString() ?? "javascript:void(0)";
 
         public bool HasImage => !string.IsNullOrWhiteSpace(Image);
 
@@ -103,13 +103,14 @@ namespace Blazor.ExtraDry.Models {
         /// <summary>
         /// Executes the underlying method with the provided arguments, ensuring that the proper number of arguments are provided.
         /// </summary>
-        public async Task<bool> ExecuteAsync()
+        public async Task ExecuteAsync()
         {
-            var result = Method?.Invoke(ViewModel, null);
-            if(result is Task task) {
-                await task;
+            if(Method != null) {
+                var result = Method.Invoke(ViewModel, null);
+                if(result is Task task) {
+                    await task;
+                }
             }
-            return false;
         }
 
         private void Initialize()
