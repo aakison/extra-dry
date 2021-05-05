@@ -7,8 +7,8 @@ else {
     <nav @attributes="@InputAttributes">
         <ul>
             @if(Description.HasNavigationGroups) {
-                <li>
-                    @foreach(var group in Description.NavigationGroups) {
+                @foreach(var group in Description.NavigationGroups) {
+                    <li>
                         <div>@group</div>
                         <ul>
                             @foreach(var item in Description.NavigationsInGroup(group)) {
@@ -23,8 +23,8 @@ else {
                                 </li>
                             }
                         </ul>
-                    }
-                </li>
+                    </li>
+                }
             }
             else { 
                 @foreach(var item in Description.Navigations) {
