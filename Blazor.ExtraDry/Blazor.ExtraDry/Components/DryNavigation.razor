@@ -19,7 +19,7 @@ else {
                             @foreach(var item in Description.NavigationsInGroup(group)) {
                                 var active = item.UriMatch(Navigation) ? "active" : "inactive";
                                 <li class="@active">
-                                    <a href="@item.Href" @onclick="@(e => MenuClicked(item))">
+                                    <a href="@item.Href" @onclick="@item.ExecuteAsync">
                                         @if(item.HasImage) { 
                                             <img src="@item.Image" />
                                         }
@@ -36,7 +36,7 @@ else {
                 @foreach(var item in Description.Navigations) {
                     var active = item.UriMatch(Navigation) ? "active" : "inactive";
                      <li class="@active">
-                        <a href="@item.Href" @onclick="@(e => MenuClicked(item))">
+                        <a href="@item.Href" @onclick="@item.ExecuteAsync">
                             @if (item.HasImage) {
                                 <img src="@item.Image" />
                             }
