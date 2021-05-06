@@ -112,7 +112,6 @@ namespace Blazor.ExtraDry.Models {
             var isMatch = string.IsNullOrWhiteSpace(match) ? 
                 string.IsNullOrWhiteSpace(relativeUri) :
                 relativeUri?.Contains(match) ?? false;
-            Console.WriteLine($" URI Match: {relativeUri} against {match} is {isMatch}");
             return isMatch;
         }
 

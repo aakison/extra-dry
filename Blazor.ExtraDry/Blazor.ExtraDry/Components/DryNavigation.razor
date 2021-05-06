@@ -17,7 +17,6 @@ else {
                         }
                         <ul>
                             @foreach(var item in Description.NavigationsInGroup(group)) {
-                                Console.WriteLine($"Checking {item.ActiveMatch} on {Navigation.Uri}");
                                 var active = item.UriMatch(Navigation) ? "active" : "inactive";
                                 <li class="@active">
                                     <a href="@item.Href" @onclick="@item.ExecuteAsync">
