@@ -10,7 +10,7 @@
      Style globally or using `nav.className` specifier.
      See the methods decorated `[Navigation]` below for actual menu.
 -->
-<DryNavigation class="vertical" ViewModel="@this" />
+<DryNavigation class="vertical" ViewModel="@this" OnNavigated="NavigationChanged" />
 
 @code {
     private bool collapseNavMenu = true;
@@ -20,6 +20,11 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    private void NavigationChanged(NavigationChangedEventArgs args)
+    {
+        Console.WriteLine(args.Name);
     }
 
     [Inject]
