@@ -6,7 +6,7 @@
 trigger:
 - main
 - release
-# - develop # Exclude develop branch from publishing to Nuget, use publish-local.ps1 for local repo during development
+- develop
 
 pool:
   vmImage: 'windows-latest'
