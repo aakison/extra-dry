@@ -40,9 +40,9 @@ namespace Blazor.ExtraDry {
 
         public ListSelectMode ListSelectMode { get; private set; } = ListSelectMode.None;
 
-        public Collection<CommandInfo> Commands { get; } = new Collection<CommandInfo>();
+        public Collection<CommandInfo> Commands { get; } = new();
 
-        public List<NavigationDescription> Navigations { get; } = new();
+        public Collection<NavigationDescription> Navigations { get; } = new();
 
         public CommandInfo SelectCommand => Commands.FirstOrDefault(e => e.Context == CommandContext.Primary && e.Arguments == CommandArguments.Single);
 

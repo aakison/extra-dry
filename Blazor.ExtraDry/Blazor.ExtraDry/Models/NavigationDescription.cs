@@ -1,12 +1,7 @@
 ﻿#nullable enable
 
 using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -113,6 +108,20 @@ namespace Blazor.ExtraDry.Models {
                 string.IsNullOrWhiteSpace(relativeUri) :
                 relativeUri?.Contains(match) ?? false;
             return isMatch;
+        }
+
+        /// <summary>
+        /// Navigates the link as if it were clicked.  
+        /// If a property has been supplied, uses the indicated HREF, otherwise executes the link method.
+        /// </summary>
+        public async Task Navigate(NavigationManager navigation)
+        {
+            if(HasHref) {
+                navigation.NavigateTo(Href);
+            }
+            else {
+                await ExecuteAsync();
+            }
         }
 
         /// <summary>
