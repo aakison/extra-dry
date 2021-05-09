@@ -24,7 +24,6 @@ namespace Blazor.ExtraDry {
                 .SkipWhile(e => e.UriMatch(Navigation))
                 .FirstOrDefault() ?? Description.Navigations.LastOrDefault();
             next?.Navigate(Navigation);
-            StateHasChanged();
         }
 
         public void NavigateToPrevious()
@@ -37,7 +36,6 @@ namespace Blazor.ExtraDry {
                 .SkipWhile(e => e.UriMatch(Navigation))
                 .FirstOrDefault() ?? Description.Navigations.FirstOrDefault();
             previous?.Navigate(Navigation);
-            StateHasChanged();
         }
 
         [Inject]
