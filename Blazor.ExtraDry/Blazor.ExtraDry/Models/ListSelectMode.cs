@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿#nullable enable
 
 namespace Blazor.ExtraDry {
 
+    /// <summary>
+    /// For a dry table, determines the action on a row selection.
+    /// </summary>
     public enum ListSelectMode {
 
         /// <summary>
