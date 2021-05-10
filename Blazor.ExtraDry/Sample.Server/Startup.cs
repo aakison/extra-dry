@@ -76,7 +76,7 @@ namespace Sample.Server {
 
             var sampleData = new DummyData();
             sampleData.PopulateCompanies(context, 50);
-            sampleData.PopulateEmployees(context, 100);
+            sampleData.PopulateEmployees(context, 5000);
         }
     }
 }

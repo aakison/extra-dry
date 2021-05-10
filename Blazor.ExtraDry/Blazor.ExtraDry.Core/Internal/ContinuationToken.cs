@@ -27,14 +27,8 @@ namespace Blazor.ExtraDry {
             Ascending = previous?.Ascending ?? ascending;
             Stabalizer = previous?.Stabalizer ?? stabalizer;
             // Use explicit values, fallback to token...
-            if(previous == null) {
-                Skip = skip + take;
-                Take = take;
-            }
-            else {
-                Skip = skip == 0 ? previous.Skip + previous.Take : skip;
-                Take = take > 0 ? take : previous.Take;
-            }
+            Take = ActualTake(previous, take);
+            Skip = ActualSkip(previous, skip) + Take;
         }
 
         public string Filter { get; set; } = string.Empty;
@@ -93,15 +87,29 @@ namespace Blazor.ExtraDry {
 
         private static ContinuationToken? lastToken;
 
-        internal static int ActualTake(ContinuationToken token, int take)
+        /// <summary>
+        /// Returns the winning `take` amount where API call can override token, but not make it 0.
+        /// </summary>
+        internal static int ActualTake(ContinuationToken? token, int take)
         {
-            var actual = token?.Take ?? take;
-            return actual <= 0 ? PartialQuery.DefaultTake : actual;
+            if(take > 0) {
+                return take;
+            }
+            else {
+                return token?.Take ?? PartialQuery.DefaultTake;
+            }
         }
 
-        internal static int ActualSkip(ContinuationToken token, int skip) {
-            var actual = token?.Skip ?? skip;
-            return Math.Min(actual, 0);
+        /// <summary>
+        /// Returns the winning `skip` amount where API call can override token (but both must agree to make it zero).
+        /// </summary>
+        internal static int ActualSkip(ContinuationToken? token, int skip) {
+            if(skip > 0) {
+                return skip;
+            }
+            else {
+                return token?.Skip ?? 0;
+            }
         }
     }
 }
