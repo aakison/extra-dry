@@ -62,10 +62,12 @@ namespace Blazor.ExtraDry {
         private PartialCollection<T> CreatePartialCollection(List<T> items)
         {
             var nextToken = new ContinuationToken(query.Filter, query.Sort, query.Ascending, "Id", query.Skip, query.Take, token);
-            var total = items.Count == nextToken.Take ? filteredQuery.Count() : items.Count;
+            var previousTake = ContinuationToken.ActualTake(token, query.Take);
+            var total = items.Count == previousTake ? filteredQuery.Count() : query.Skip + items.Count;
             return new PartialCollection<T>(items) {
+                Filter = nextToken.Filter,
                 Sort = nextToken.Sort,
-                Start = nextToken.Skip,
+                Start = query.Skip,
                 Total = total,
                 ContinuationToken = nextToken.ToString(),
             };

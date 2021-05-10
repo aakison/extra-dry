@@ -30,8 +30,7 @@ namespace Blazor.ExtraDry {
         public static IQueryable<T> Sort<T>(this IQueryable<T> source, PartialQuery partialQuery)
         {
             // TODO: Implement stabalizer using model meta-data.
-            var token = ContinuationToken.FromString(partialQuery.Token);
-            return source.Sort(partialQuery.Sort, partialQuery.Ascending, "Id", token);
+            return source.Sort(partialQuery.Sort, partialQuery.Ascending, "Id", partialQuery.Token);
         }
 
         /// <summary>
@@ -44,8 +43,9 @@ namespace Blazor.ExtraDry {
         /// <param name="ascending">Indicates if the order is ascending or not (optional, default true)</param>
         /// <param name="stabalizer">The name of a unique property to ensure paging works, use monotonically increasing value such as `int Identity` or created timestamp (required, case insensitive)</param>
         /// <param name="token">If this is not a new request, the token passed back from the previous request to maintain stability (optional)</param>
-        public static IQueryable<T> Sort<T>(this IQueryable<T> source, string sort, bool? ascending, string stabalizer, ContinuationToken token)
+        public static IQueryable<T> Sort<T>(this IQueryable<T> source, string sort, bool? ascending, string stabalizer, string continuationToken)
         {
+            var token = ContinuationToken.FromString(continuationToken);
             var actualSort = token?.Sort ?? sort;
             var actualStabalizer = token?.Stabalizer ?? stabalizer;
             var actualAscending = token?.Ascending ?? ascending ?? true;
@@ -67,8 +67,7 @@ namespace Blazor.ExtraDry {
         public static IQueryable<T> Page<T>(this IQueryable<T> source, PartialQuery partialQuery)
         {
             // TODO: Implement stabalizer using model meta-data.
-            var token = ContinuationToken.FromString(partialQuery.Token);
-            return source.Page(partialQuery.Skip, partialQuery.Take, token);
+            return source.Page(partialQuery.Skip, partialQuery.Take, partialQuery.Token);
         }
 
         /// <summary>
@@ -81,10 +80,11 @@ namespace Blazor.ExtraDry {
         /// <param name="skip">The number of records to skip, if paging this is the page number times the take size.</param>
         /// <param name="take">the number of records to take, this is the page size of the fetch.  Use to balance call API latency versus bandwidth</param>
         /// <param name="token">If this is not a new request, the token passed back from the previous request to maintain stability (optional)</param>
-        public static IQueryable<T> Page<T>(this IQueryable<T> source, int? skip, int? take, ContinuationToken token)
+        public static IQueryable<T> Page<T>(this IQueryable<T> source, int skip, int take, string continuationToken)
         {
-            var actualSkip = skip ?? token?.Skip ?? 0;
-            var actualTake = take ?? token?.Take ?? 100;
+            var token = ContinuationToken.FromString(continuationToken);
+            var actualSkip = ContinuationToken.ActualSkip(token, skip);
+            var actualTake = ContinuationToken.ActualTake(token, take);
             return source.Skip(actualSkip).Take(actualTake);
         }
 

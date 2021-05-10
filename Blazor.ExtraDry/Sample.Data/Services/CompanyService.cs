@@ -1,10 +1,9 @@
-﻿using Blazor.ExtraDry;
-using Sample.Shared;
+﻿#nullable enable
+
+using Blazor.ExtraDry;
 using Microsoft.EntityFrameworkCore;
+using Sample.Shared;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Sample.Data.Services {
