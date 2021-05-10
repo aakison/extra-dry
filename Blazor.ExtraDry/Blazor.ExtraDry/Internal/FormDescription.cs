@@ -100,7 +100,7 @@ namespace Blazor.ExtraDry.Internal {
                         }
                         catch(DryException ex) {
                             Console.WriteLine(ex.Message);
-                            // TODO:
+                            // TODO: Determine correct error behavior.
                         }
                     }
                 }
