@@ -10,6 +10,30 @@ namespace Blazor.ExtraDry {
     /// </summary>
     public static class LinqBuilder {
 
+        public static IPartialQueryable<T> QueryWith<T>(this IQueryable<T> source, PartialQuery partialQuery)
+        {
+            return new PartialQueryable<T>(source, partialQuery);
+        }
+
+        public static IQueryable<T> Filter<T>(this IQueryable<T> source, PartialQuery partialQuery)
+        {
+            // TODO: Implement filtering based on model meta-data.
+            return source;
+        }
+
+        public static IQueryable<T> Filter<T>(this IQueryable<T> source, string filter)
+        {
+            // TODO: Implement filtering based on model meta-data.
+            return source;
+        }
+
+        public static IQueryable<T> Sort<T>(this IQueryable<T> source, PartialQuery partialQuery)
+        {
+            // TODO: Implement stabalizer using model meta-data.
+            var token = ContinuationToken.FromString(partialQuery.Token);
+            return source.Sort(partialQuery.Sort, partialQuery.Ascending, "Id", token);
+        }
+
         /// <summary>
         /// Given a name of a property and an order, dynamically creates a sort query.
         /// Also merges in the continuation token to supply values for consisted paging.
@@ -38,6 +62,13 @@ namespace Blazor.ExtraDry {
                 query = query.OrderBy(stabalizer);
             }
             return query;
+        }
+
+        public static IQueryable<T> Page<T>(this IQueryable<T> source, PartialQuery partialQuery)
+        {
+            // TODO: Implement stabalizer using model meta-data.
+            var token = ContinuationToken.FromString(partialQuery.Token);
+            return source.Page(partialQuery.Skip, partialQuery.Take, token);
         }
 
         /// <summary>

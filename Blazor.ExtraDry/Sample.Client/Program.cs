@@ -25,7 +25,7 @@ namespace Sample.Client
                 new CrudService<Company>(e.GetService<HttpClient>(), "/api/companies/{0}"));
 
             builder.Services.AddScoped<IListService<Company>>(e =>
-                new RestfulListService<List<Company>, Company>(e.GetService<HttpClient>(), "/api/companies"));
+                new RestfulListService<PartialCollection<Company>, Company>(e.GetService<HttpClient>(), "/api/companies"));
 
             await builder.Build().RunAsync();
         }

@@ -39,19 +39,17 @@ namespace Blazor.ExtraDry {
 
         public override string ToString()
         {
-            using(var memory = new MemoryStream()) {
-                using(var writer = new BinaryWriter(memory)) {
-                    writer.Write(Filter);
-                    writer.Write(Sort);
-                    writer.Write(Ascending);
-                    writer.Write(Stabalizer);
-                    writer.Write(Skip);
-                    writer.Write(Take);
-                    var bytes = memory.ToArray();
-                    var base64 = Convert.ToBase64String(bytes);
-                    return base64;
-                }
-            }
+            using var memory = new MemoryStream(); 
+            using var writer = new BinaryWriter(memory); 
+            writer.Write(Filter);
+            writer.Write(Sort);
+            writer.Write(Ascending);
+            writer.Write(Stabalizer);
+            writer.Write(Skip);
+            writer.Write(Take);
+            var bytes = memory.ToArray();
+            var base64 = Convert.ToBase64String(bytes);
+            return base64;
         }
 
         public static ContinuationToken FromString(string token)
@@ -60,19 +58,17 @@ namespace Blazor.ExtraDry {
                 return null;
             }
             var bytes = Convert.FromBase64String(token);
-            using(var memory = new MemoryStream(bytes)) {
-                using(var reader = new BinaryReader(memory)) {
-                    var result = new ContinuationToken {
-                        Filter = reader.ReadString(),
-                        Sort = reader.ReadString(),
-                        Ascending = reader.ReadBoolean(),
-                        Stabalizer = reader.ReadString(),
-                        Skip = reader.ReadInt32(),
-                        Take = reader.ReadInt32(),
-                    };
-                    return result;
-                }
-            }
+            using var memory = new MemoryStream(bytes); 
+            using var reader = new BinaryReader(memory); 
+            var result = new ContinuationToken {
+                Filter = reader.ReadString(),
+                Sort = reader.ReadString(),
+                Ascending = reader.ReadBoolean(),
+                Stabalizer = reader.ReadString(),
+                Skip = reader.ReadInt32(),
+                Take = reader.ReadInt32(),
+            };
+            return result;
         }
     }
 }

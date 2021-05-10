@@ -16,9 +16,9 @@ namespace Sample.Data.Services {
             rules = ruleEngine;
         }
 
-        public async Task<IEnumerable<Company>> List()
+        public async Task<PartialCollection<Company>> List(PartialQuery query)
         {
-            return await database.Companies.ToListAsync();
+            return await database.Companies.QueryWith(query).ToPartialCollectionAsync();
         }
 
         public async Task Create(Company item)

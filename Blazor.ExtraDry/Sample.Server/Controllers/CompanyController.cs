@@ -19,9 +19,9 @@ namespace Sample.Server.Controllers {
 
         [HttpGet("api/companies")]
         [SwaggerOperation("List all companies", "Provides a complete list of all companies, as this list is not too large, all are returned on every call.")]
-        public async Task<PartialCollection<Company>> List()
+        public async Task<PartialCollection<Company>> List(PartialQuery query)
         {
-            return new PartialCollection<Company>(await companies.List());
+            return await companies.List(query);
         }
 
         [HttpGet("api/companies/{uniqueId}")]

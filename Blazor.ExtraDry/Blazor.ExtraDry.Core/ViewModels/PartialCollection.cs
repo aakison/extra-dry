@@ -17,6 +17,9 @@ namespace Blazor.ExtraDry {
             Items = items;
         }
 
+        /// <summary>
+        /// Create a new collection from an enumerable of items.
+        /// </summary>
         public PartialCollection(IEnumerable<T> items)
         {
             Items = new List<T>(items);
@@ -31,7 +34,7 @@ namespace Blazor.ExtraDry {
         /// <summary>
         /// If the full collection is a subset of all items, this is the query that was used to filter the full collection.
         /// </summary>
-        public string Query { get; set; }
+        public string Filter { get; set; }
 
         /// <summary>
         /// If the collection is sorted, this is the name of the Property the sort is performed on.
