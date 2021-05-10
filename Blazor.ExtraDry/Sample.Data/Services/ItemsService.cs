@@ -8,9 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Sample.Data.Services {
-    public class ItemsService {
+    public class EmployeeService {
 
-        public ItemsService(SampleContext sampleContext, RuleEngine ruleEngine)
+        public EmployeeService(SampleContext sampleContext, RuleEngine ruleEngine)
         {
             database = sampleContext;
             rules = ruleEngine;

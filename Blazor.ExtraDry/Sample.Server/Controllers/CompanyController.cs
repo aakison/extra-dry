@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Swashbuckle.AspNetCore.Annotations;
+using Blazor.ExtraDry;
 
 namespace Sample.Server.Controllers {
 
@@ -17,10 +18,10 @@ namespace Sample.Server.Controllers {
         }
 
         [HttpGet("api/companies")]
-        [SwaggerOperation("List all companies")]
-        public async Task<IEnumerable<Company>> List()
+        [SwaggerOperation("List all companies", "Provides a complete list of all companies, as this list is not too large, all are returned on every call.")]
+        public async Task<PartialCollection<Company>> List()
         {
-            return await companies.List();
+            return new PartialCollection<Company>(await companies.List());
         }
 
         [HttpGet("api/companies/{uniqueId}")]

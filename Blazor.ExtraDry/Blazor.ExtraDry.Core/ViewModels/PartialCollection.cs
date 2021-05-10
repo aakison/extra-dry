@@ -17,6 +17,11 @@ namespace Blazor.ExtraDry {
             Items = items;
         }
 
+        public PartialCollection(IEnumerable<T> items)
+        {
+            Items = new List<T>(items);
+        }
+
         /// <summary>
         /// The UTC date/time that the partial results were created.
         /// The client could use this as part of a caching strategy, but this is not needed by the server.

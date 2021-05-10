@@ -1,4 +1,6 @@
-﻿using Sample.Data.Services;
+﻿#nullable enable
+
+using Sample.Data.Services;
 using Sample.Shared;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -6,28 +8,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Swashbuckle.AspNetCore.Annotations;
+using Blazor.ExtraDry;
 
 namespace Sample.Server.Controllers {
 
     public class EmployeeController : Controller {
-        
+       
         public EmployeeController(EmployeeService employeeService)
         {
             employees = employeeService;
         }
 
         [HttpGet("api/employees")]
-        [SwaggerOperation("List all employees")]
-        public async Task<IEnumerable<Employee>> List()
+        [SwaggerOperation("Paged list of all employees", "As a large number of employees are in the system, this allows for a set of query parameters to determine which subset of the total collection to return.  If too many results are present, the output collection will return a page of them along with a continuation token to use to consistently retrieve additional results.")]
+        public async Task<PartialCollection<Employee>> List([FromQuery] PartialQuery query)
         {
-            return await employees.List();
-        }
-
-        [HttpGet("api/employees/{uniqueId}")]
-        [SwaggerOperation("Retreive a specific employee")]
-        public async Task<Employee> Retrieve(Guid uniqueId)
-        {
-            return await employees.Retrieve(uniqueId);
+            return await employees.List(query);
         }
 
         [HttpPost("api/employees/{uniqueId}")]
@@ -38,6 +34,13 @@ namespace Sample.Server.Controllers {
                 throw new ArgumentException("ID in URI must match body.", nameof(uniqueId));
             }
             await employees.Create(value);
+        }
+
+        [HttpGet("api/employees/{uniqueId}")]
+        [SwaggerOperation("Retreive a specific employee")]
+        public async Task<Employee> Retrieve(Guid uniqueId)
+        {
+            return await employees.Retrieve(uniqueId);
         }
 
         [HttpPut("api/employees/{uniqueId}")]
