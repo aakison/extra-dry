@@ -1,10 +1,9 @@
-﻿using Blazor.ExtraDry;
+﻿#nullable enable
+
+using Blazor.ExtraDry;
 using Sample.Shared;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Sample.Data.Services {
@@ -16,9 +15,9 @@ namespace Sample.Data.Services {
             rules = ruleEngine;
         }
 
-        public async Task<PartialCollection<Employee>> List(PartialQuery query)
+        public async Task<PagedCollection<Employee>> List(PageQuery query)
         {
-            return await database.Employees.QueryWith(query).ToPartialCollectionAsync();
+            return await database.Employees.QueryWith(query).ToPagedCollectionAsync();
         }
 
         public async Task Create(Employee item)

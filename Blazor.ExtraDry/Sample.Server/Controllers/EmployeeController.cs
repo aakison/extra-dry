@@ -1,14 +1,12 @@
 ﻿#nullable enable
 
+using Blazor.ExtraDry;
+using Microsoft.AspNetCore.Mvc;
 using Sample.Data.Services;
 using Sample.Shared;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Swashbuckle.AspNetCore.Annotations;
-using Blazor.ExtraDry;
+using System;
+using System.Threading.Tasks;
 
 namespace Sample.Server.Controllers {
 
@@ -21,7 +19,7 @@ namespace Sample.Server.Controllers {
 
         [HttpGet("api/employees")]
         [SwaggerOperation("Paged list of all employees", "As a large number of employees are in the system, this allows for a set of query parameters to determine which subset of the total collection to return.  If too many results are present, the output collection will return a page of them along with a continuation token to use to consistently retrieve additional results.")]
-        public async Task<PartialCollection<Employee>> List(PartialQuery query)
+        public async Task<PagedCollection<Employee>> List(PageQuery query)
         {
             return await employees.List(query);
         }

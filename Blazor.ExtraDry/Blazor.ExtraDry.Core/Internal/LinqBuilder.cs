@@ -10,12 +10,17 @@ namespace Blazor.ExtraDry {
     /// </summary>
     public static class LinqBuilder {
 
-        public static IPartialQueryable<T> QueryWith<T>(this IQueryable<T> source, PartialQuery partialQuery)
+        public static IPartialQueryable<T> QueryWith<T>(this IQueryable<T> source, PageQuery partialQuery)
         {
             return new PartialQueryable<T>(source, partialQuery);
         }
 
-        public static IQueryable<T> Filter<T>(this IQueryable<T> source, PartialQuery partialQuery)
+        public static IPartialQueryable<T> QueryWith<T>(this IQueryable<T> source, FilterQuery filteredQuery)
+        {
+            return new PartialQueryable<T>(source, filteredQuery);
+        }
+
+        public static IQueryable<T> Filter<T>(this IQueryable<T> source, FilterQuery filterQuery)
         {
             // TODO: Implement filtering based on model meta-data.
             return source;
@@ -27,10 +32,11 @@ namespace Blazor.ExtraDry {
             return source;
         }
 
-        public static IQueryable<T> Sort<T>(this IQueryable<T> source, PartialQuery partialQuery)
+        public static IQueryable<T> Sort<T>(this IQueryable<T> source, FilterQuery query)
         {
             // TODO: Implement stabalizer using model meta-data.
-            return source.Sort(partialQuery.Sort, partialQuery.Ascending, "Id", partialQuery.Token);
+            var token = (query as PageQuery)?.Token; // Only need the token if it's a PageQuery, null if FilterQuery.
+            return source.Sort(query.Sort, query.Ascending, "Id", token);
         }
 
         /// <summary>
@@ -64,7 +70,7 @@ namespace Blazor.ExtraDry {
             return query;
         }
 
-        public static IQueryable<T> Page<T>(this IQueryable<T> source, PartialQuery partialQuery)
+        public static IQueryable<T> Page<T>(this IQueryable<T> source, PageQuery partialQuery)
         {
             // TODO: Implement stabalizer using model meta-data.
             return source.Page(partialQuery.Skip, partialQuery.Take, partialQuery.Token);

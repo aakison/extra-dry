@@ -15,9 +15,9 @@ namespace Sample.Data.Services {
             rules = ruleEngine;
         }
 
-        public async Task<PartialCollection<Company>> List(PartialQuery query)
+        public async Task<FilteredCollection<Company>> List(FilterQuery query)
         {
-            return await database.Companies.QueryWith(query).ToPartialCollectionAsync();
+            return await database.Companies.QueryWith(query).ToFilteredCollectionAsync();
         }
 
         public async Task Create(Company item)

@@ -27,9 +27,9 @@ namespace Blazor.ExtraDry {
                 Unpacker = e => e as ICollection<TItem> ?? new Collection<TItem>();
                 Counter = e => Unpacker(e)?.Count ?? 0;
             }
-            else if(typeof(TCollection).IsAssignableTo(typeof(PartialCollection<TItem>))) {
-                Unpacker = e => (e as PartialCollection<TItem>)?.Items ?? new Collection<TItem>();
-                Counter = e => (e as PartialCollection<TItem>)?.Total ?? 0;
+            else if(typeof(TCollection).IsAssignableTo(typeof(PagedCollection<TItem>))) {
+                Unpacker = e => (e as PagedCollection<TItem>)?.Items ?? new Collection<TItem>();
+                Counter = e => (e as PagedCollection<TItem>)?.Total ?? 0;
             }
             else {
                 Unpacker = e => new Collection<TItem>();

@@ -96,7 +96,7 @@ namespace Blazor.ExtraDry {
                 return take;
             }
             else {
-                return token?.Take ?? PartialQuery.DefaultTake;
+                return token?.Take ?? PageQuery.DefaultTake;
             }
         }
 

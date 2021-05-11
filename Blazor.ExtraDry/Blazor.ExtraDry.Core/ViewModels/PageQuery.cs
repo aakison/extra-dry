@@ -3,23 +3,7 @@
     /// <summary>
     /// Standard payload for list controllers endpoints that return paged results, e.g. using `PartialCollection`.
     /// </summary>
-    public class PartialQuery {
-
-        /// <summary>
-        /// The entity specific text to filter the collection by.
-        /// This will typically match across multiple properties or even access a full text index.
-        /// </summary>
-        public string Filter { get; set; } = string.Empty;
-
-        /// <summary>
-        /// If the request would like sorted results, the name of the property to sort by.
-        /// </summary>
-        public string Sort { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Indicates if the results are requested in ascending order by `Sort`.
-        /// </summary>
-        public bool Ascending { get; set; }
+    public class PageQuery : FilterQuery {
 
         /// <summary>
         /// The number of records to skip before returning results.
