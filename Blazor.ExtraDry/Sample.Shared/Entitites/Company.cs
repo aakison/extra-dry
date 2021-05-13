@@ -15,6 +15,7 @@ namespace Sample.Shared {
         public Guid UniqueId { get; set; } = Guid.NewGuid();
 
         [Display(Name = "Name", ShortName = "Name")]
+        [Filter]
         public string Name { get; set; }
 
         [Display(Name = "Banking Details")]
