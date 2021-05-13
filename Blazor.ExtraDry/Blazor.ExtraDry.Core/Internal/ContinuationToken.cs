@@ -58,7 +58,7 @@ namespace Blazor.ExtraDry {
             return base64;
         }
 
-        public static ContinuationToken? FromString(string token)
+        public static ContinuationToken? FromString(string? token)
         {
             if(string.IsNullOrWhiteSpace(token)) {
                 return default;

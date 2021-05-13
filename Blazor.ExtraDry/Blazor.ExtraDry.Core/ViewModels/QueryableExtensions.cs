@@ -1,7 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
 using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
 
 namespace Blazor.ExtraDry {
 
@@ -35,17 +34,7 @@ namespace Blazor.ExtraDry {
             if(!filterProperties.Any()) {
                 return source;
             }
-            foreach(var filterProperty in filterProperties) {
-                // TODO: Returns first for testing, needs to return OR
-                return filterProperty.Filter.Type switch {
-                    FilterType.Contains => source.WhereContains(filterProperty.Property, filter),
-                    FilterType.StartsWith => source.WhereStartsWith(filterProperty.Property, filter),
-                    FilterType.Equals => source.WhereStringEquals(filterProperty.Property, filter),
-                    _ => source,
-                };
-            }
-            // TODO: Implement filtering based on model meta-data.
-            return source;
+            return source.WhereFilterConditions(filterProperties.ToArray(), filter.Split(' '));
         }
 
         public static IQueryable<T> Sort<T>(this IQueryable<T> source, FilterQuery query)
@@ -65,7 +54,7 @@ namespace Blazor.ExtraDry {
         /// <param name="ascending">Indicates if the order is ascending or not (optional, default true)</param>
         /// <param name="stabalizer">The name of a unique property to ensure paging works, use monotonically increasing value such as `int Identity` or created timestamp (required, case insensitive)</param>
         /// <param name="token">If this is not a new request, the token passed back from the previous request to maintain stability (optional)</param>
-        public static IQueryable<T> Sort<T>(this IQueryable<T> source, string sort, bool? ascending, string stabalizer, string continuationToken)
+        public static IQueryable<T> Sort<T>(this IQueryable<T> source, string sort, bool? ascending, string stabalizer, string? continuationToken)
         {
             var token = ContinuationToken.FromString(continuationToken);
             var actualSort = token?.Sort ?? sort;

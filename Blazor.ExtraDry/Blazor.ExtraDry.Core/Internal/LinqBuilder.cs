@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -79,37 +80,63 @@ namespace Blazor.ExtraDry {
             return (IOrderedQueryable<T>)result;
         }
 
-        public static IQueryable<T> WhereContains<T>(this IQueryable<T> source, PropertyInfo property, string value)
+        /// <summary>
+        /// Given a list of filter properties and a list of match strings, constructs a queryable for an existing queryable.
+        /// </summary>
+        /// <remarks>
+        /// This builds a Conjunctive Normal Form (CNF) linq expression where each string in `matchValues` must exist in 
+        /// at least one of the properties.  The exact comparison function is also determined by the properties' filter attribute.
+        /// </remarks>
+        public static IQueryable<T> WhereFilterConditions<T>(this IQueryable<T> source, FilterProperty[] filterProperties, string[] matchValues)
         {
-            return WhereStringMethod(source, property, ContainsMethod, value);
-        }
-
-        public static IQueryable<T> WhereStartsWith<T>(this IQueryable<T> source, PropertyInfo property, string value)
-        {
-            return WhereStringMethod(source, property, StartsWithMethod, value);
-        }
-
-        public static IQueryable<T> WhereStringEquals<T>(this IQueryable<T> source, PropertyInfo property, string value)
-        {
-            return WhereStringMethod(source, property, StringEqualsMethod, value);
-        }
-
-        private static MethodInfo ContainsMethod => typeof(string).GetMethod(nameof(string.Contains), new[] { typeof(string) });
-
-        private static MethodInfo StringEqualsMethod => typeof(string).GetMethod(nameof(string.Equals), new[] { typeof(string) });
-
-        private static MethodInfo StartsWithMethod => typeof(string).GetMethod(nameof(string.StartsWith), new[] { typeof(string) });
-
-        private static IQueryable<T> WhereStringMethod<T>(IQueryable<T> source, PropertyInfo propertyInfo, MethodInfo method, string value)
-        {
-            var e = Expression.Parameter(typeof(T), "e");
-            var property = Expression.Property(e, propertyInfo);
-            var valueConstant = Expression.Constant(value);
-            var lambda = Expression.Lambda<Func<T, bool>>(
-                Expression.Call(property, method, valueConstant),
-                e
-            );  
+            var param = Expression.Parameter(typeof(T), "e");
+            var terms = new List<Expression>();
+            foreach(var match in matchValues) {
+                var fields = filterProperties.Select(e => StringExpression(param, e.Property, e.Filter.Type, match)).ToArray();
+                terms.Add(AnyOf(fields));
+            }
+            var cnf = AllOf(terms.ToArray());
+            var lambda = Expression.Lambda<Func<T, bool>>(cnf, param);
             return source.Where(lambda);
         }
+
+        private static Expression AnyOf(Expression[] expressions)
+        {
+            var left = expressions.FirstOrDefault();
+            foreach(var right in expressions.Skip(1)) {
+                left = Expression.OrElse(left, right);
+            }
+            return left;
+        }
+
+        private static Expression AllOf(Expression[] expressions)
+        {
+            var left = expressions.FirstOrDefault();
+            foreach(var right in expressions.Skip(1)) {
+                left = Expression.AndAlso(left, right);
+            }
+            return left;
+        }
+
+        private static Expression StringExpression(ParameterExpression parameter, PropertyInfo propertyInfo, FilterType filterType, string value)
+        {
+            var property = Expression.Property(parameter, propertyInfo);
+            var valueConstant = Expression.Constant(value);
+            var caseConstant = Expression.Constant(StringComparison.InvariantCultureIgnoreCase);
+            var method = filterType switch {
+                FilterType.Contains => StringContainsMethod,
+                FilterType.Equals => StringEqualsMethod,
+                FilterType.StartsWith => StringStartsWithMethod,
+                _ => throw new NotImplementedException("Unknown filter type"),
+            };
+            return Expression.Call(property, method, valueConstant, caseConstant);
+        }
+
+        private static MethodInfo StringContainsMethod => typeof(string).GetMethod(nameof(string.Contains), new[] { typeof(string), typeof(StringComparison) });
+
+        private static MethodInfo StringEqualsMethod => typeof(string).GetMethod(nameof(string.Equals), new[] { typeof(string), typeof(StringComparison) });
+
+        private static MethodInfo StringStartsWithMethod => typeof(string).GetMethod(nameof(string.StartsWith), new[] { typeof(string), typeof(StringComparison) });
+
     }
 }
