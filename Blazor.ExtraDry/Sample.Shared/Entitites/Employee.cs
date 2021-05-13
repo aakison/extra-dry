@@ -15,13 +15,13 @@ namespace Sample.Shared
         [Required, MaxLength(50)]
         [Rules(UpdateAction.AllowChanges)]
         [Display(Name = "First Name", ShortName = "First Name")]
-        [Filter(FilterType.Match)]
+        [Filter(FilterType.Equals)]
         public string FirstName { get; set; }
 
         [Required, MaxLength(50)]
         [Rules(UpdateAction.AllowChanges)]
         [Display(Name = "Last Name", ShortName = "Last Name")]
-        [Filter(FilterType.Prefix)]
+        [Filter(FilterType.StartsWith)]
         public string LastName { get; set; }
     }
 }

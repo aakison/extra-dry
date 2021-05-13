@@ -6,9 +6,9 @@ namespace Blazor.ExtraDry {
 
         Contains,
 
-        Prefix,
+        StartsWith,
 
-        Match,
+        Equals,
 
     }
 

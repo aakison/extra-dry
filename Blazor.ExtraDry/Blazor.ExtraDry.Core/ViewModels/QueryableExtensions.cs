@@ -39,8 +39,8 @@ namespace Blazor.ExtraDry {
                 // TODO: Returns first for testing, needs to return OR
                 return filterProperty.Filter.Type switch {
                     FilterType.Contains => source.WhereContains(filterProperty.Property, filter),
-                    FilterType.Prefix => source.WhereStartsWith(filterProperty.Property, filter),
-                    FilterType.Match => source.WhereStringEquals(filterProperty.Property, filter),
+                    FilterType.StartsWith => source.WhereStartsWith(filterProperty.Property, filter),
+                    FilterType.Equals => source.WhereStringEquals(filterProperty.Property, filter),
                     _ => source,
                 };
             }
