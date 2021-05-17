@@ -23,5 +23,11 @@ namespace Blazor.ExtraDry {
         /// </summary>
         public bool Ascending { get; set; }
 
+        /// <summary>
+        /// A property that is used to break sorting ties, should be unique and 
+        /// ideally monotonically increasing.
+        /// </summary>
+        public string Stabalizer { get; set; } = string.Empty;
+
     }
 }

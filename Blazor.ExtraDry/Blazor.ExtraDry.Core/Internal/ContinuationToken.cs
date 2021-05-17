@@ -6,7 +6,7 @@ using System.IO;
 namespace Blazor.ExtraDry {
 
     /// <summary>
-    /// Represents a token that can be used to help keeep pages of results in a stable order when calling APIs.
+    /// Represents a token that can be used to help keep pages of results in a stable order when calling APIs.
     /// </summary>
     /// <remarks>
     /// This class is kept internal as the actual contents shouldn't leak to consumers.
@@ -14,28 +14,34 @@ namespace Blazor.ExtraDry {
     /// </remarks>
     internal class ContinuationToken {
 
-        public ContinuationToken()
+        internal ContinuationToken()
         {
 
         }
 
-        public ContinuationToken(string filter, string sort, bool ascending, string stabalizer, int skip, int take, ContinuationToken? previous)
+        public ContinuationToken(string filter, string sort, bool ascending, string stabalizer, int skip, int take)
         {
-            // Use token, fallback to explicit values...
-            Filter = previous?.Filter ?? filter;
-            Sort = previous?.Sort ?? sort;
-            Ascending = previous?.Ascending ?? ascending;
-            Stabalizer = previous?.Stabalizer ?? stabalizer;
-            // Use explicit values, fallback to token...
-            Take = ActualTake(previous, take);
-            Skip = ActualSkip(previous, skip) + Take;
+            Filter = filter;
+            Sort = sort;
+            Ascending = ascending;
+            Stabalizer = stabalizer;
+            Skip = ActualSkip(null, skip);
+            Take = ActualTake(null, take);
+        }
+
+        public ContinuationToken Next(int skip, int take)
+        {
+            var actualTake = ActualTake(this, take);
+            var actualSkip = ActualSkip(this, skip) + actualTake;
+            var next = new ContinuationToken(Filter, Sort, Ascending, Stabalizer, actualSkip, actualTake);
+            return next;
         }
 
         public string Filter { get; set; } = string.Empty;
 
         public string Sort { get; set; } = string.Empty;
 
-        public bool Ascending { get; set; }
+        public bool Ascending { get; set; } = true;
 
         public string Stabalizer { get; set; } = string.Empty;
 
@@ -67,20 +73,30 @@ namespace Blazor.ExtraDry {
             if(token == lastTokenString) {
                 return lastToken;
             }
-            var bytes = Convert.FromBase64String(token);
-            using var memory = new MemoryStream(bytes); 
-            using var reader = new BinaryReader(memory); 
-            var result = new ContinuationToken {
-                Filter = reader.ReadString(),
-                Sort = reader.ReadString(),
-                Ascending = reader.ReadBoolean(),
-                Stabalizer = reader.ReadString(),
-                Skip = reader.ReadInt32(),
-                Take = reader.ReadInt32(),
-            };
-            lastTokenString = token;
-            lastToken = result;
-            return result;
+            try {
+                var bytes = Convert.FromBase64String(token);
+                using var memory = new MemoryStream(bytes);
+                using var reader = new BinaryReader(memory);
+                var result = new ContinuationToken {
+                    Filter = reader.ReadString(),
+                    Sort = reader.ReadString(),
+                    Ascending = reader.ReadBoolean(),
+                    Stabalizer = reader.ReadString(),
+                    Skip = reader.ReadInt32(),
+                    Take = reader.ReadInt32(),
+                };
+                lastTokenString = token;
+                lastToken = result;
+                return result;
+            }
+            catch(FormatException ex) {
+                throw new DryException($"Invalid continuation token, not Base 64: {ex.Message}",
+                    "Bad data paging request 0x0F062FE3");
+            }
+            catch(EndOfStreamException ex) {
+                throw new DryException($"Invalid token, length too short: {ex.Message}",
+                    "Bad data paging request 0x0FF2B67E");
+            }
         }
 
         private static string lastTokenString = string.Empty;
