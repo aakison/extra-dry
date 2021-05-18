@@ -5,23 +5,10 @@ using System.Collections.Generic;
 
 namespace Blazor.ExtraDry {
 
+    /// <summary>
+    /// Represents a generic payload for returning lists of items from an API.
+    /// </summary>
     public class FilteredCollection<T> {
-
-        /// <summary>
-        /// Create a new collection from a list of items.
-        /// </summary>
-        public FilteredCollection(IList<T> items)
-        {
-            Items = items;
-        }
-
-        /// <summary>
-        /// Create a new collection from an enumerable of items.
-        /// </summary>
-        public FilteredCollection(IEnumerable<T> items)
-        {
-            Items = new List<T>(items);
-        }
 
         /// <summary>
         /// The UTC date/time that the partial results were created.
@@ -40,6 +27,12 @@ namespace Blazor.ExtraDry {
         public string Sort { get; set; } = string.Empty;
 
         /// <summary>
+        /// For sorted collections, the stabalizer resolves ties consistently.
+        /// Choose a unique monotonically increasing value such as Id or CreatedDate, not typically shown to users.
+        /// </summary>
+        public string Stabalizer { get; set; } = string.Empty;
+
+        /// <summary>
         /// The total number of items in the full collection of items.
         /// </summary>
         public int Count => Items.Count;
@@ -47,7 +40,10 @@ namespace Blazor.ExtraDry {
         /// <summary>
         /// The actual collecton of items.  Within the full collection, these are in the position offset by `Start`.
         /// </summary>
-        public IList<T> Items { get; private set; }
+        /// <remarks>
+        /// Urge to make private setter is strong, but breaks System.Text.Json...
+        /// </remarks>
+        public IList<T> Items { get; set; } = new List<T>();
 
     }
 }

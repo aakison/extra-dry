@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,13 +20,22 @@ namespace Blazor.ExtraDry {
         /// <summary>
         /// 
         /// </summary>
-        public RestfulListService(HttpClient client, string entitiesEndpointTemplate)
+        public RestfulListService(HttpClient client, string entitiesEndpointTemplate, JsonSerializerOptions? jsonSerializerOptions = null)
         {
             http = client;
             UriTemplate = entitiesEndpointTemplate;
+            // Make default json to ignore case, most non-.NET "RESTful" services use camelCase...
+            JsonSerializerOptions = jsonSerializerOptions ?? new JsonSerializerOptions {
+                PropertyNameCaseInsensitive = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            };
             if(typeof(TCollection).IsAssignableTo(typeof(ICollection<TItem>))) {
                 Unpacker = e => e as ICollection<TItem> ?? new Collection<TItem>();
                 Counter = e => Unpacker(e)?.Count ?? 0;
+            }
+            else if(typeof(TCollection).IsAssignableTo(typeof(FilteredCollection<TItem>))) {
+                Unpacker = e => (e as FilteredCollection<TItem>)?.Items ?? new Collection<TItem>();
+                Counter = e => (e as FilteredCollection<TItem>)?.Count ?? 0;
             }
             else if(typeof(TCollection).IsAssignableTo(typeof(PagedCollection<TItem>))) {
                 Unpacker = e => (e as PagedCollection<TItem>)?.Items ?? new Collection<TItem>();
@@ -35,15 +45,6 @@ namespace Blazor.ExtraDry {
                 Unpacker = e => new Collection<TItem>();
                 Counter = e => 0;
             }
-        }
-
-        public RestfulListService(HttpClient client, string entitiesEndpointTemplate, 
-            Func<TCollection, ICollection<TItem>> unpacker, Func<TCollection, int> counter)
-        {
-            http = client;
-            UriTemplate = entitiesEndpointTemplate;
-            Unpacker = unpacker;
-            Counter = counter;
         }
 
         public string UriTemplate { get; set; }
@@ -61,6 +62,8 @@ namespace Blazor.ExtraDry {
         private Func<TCollection, int> Counter { get; set; }
 
         public object[] UriArguments { get; set; } = Array.Empty<object>();
+
+        public JsonSerializerOptions JsonSerializerOptions { get; set; }
 
         public string ListEndpoint(string? sort, bool? ascending, int? skip, int? take)
         {
@@ -96,9 +99,13 @@ namespace Blazor.ExtraDry {
             return await GetItemsAsync(null, null, 0, int.MaxValue, token);
         }
 
-        public async ValueTask<ItemsProviderResult<TItem>> GetItemsAsync(string? sort, bool? ascending, int? skip, int? take, CancellationToken token)
+        public async ValueTask<ItemsProviderResult<TItem>> GetItemsAsync(string? sort, bool? ascending, int? skip, int? take, CancellationToken cancellationToken)
         {
-            var result = await http.GetFromJsonAsync<TCollection>(ListEndpoint(sort, ascending, skip, take), token);
+            var endpoint = ListEndpoint(sort, ascending, skip, take);
+            var body = await http.GetStringAsync(endpoint, cancellationToken);
+            Console.WriteLine($"Got {body}");
+            Console.WriteLine($"Deserialize into {typeof(TCollection).Name}");
+            var result = JsonSerializer.Deserialize<TCollection>(body, JsonSerializerOptions);
             if(result == null) {
                 throw new DryException($"Call to endpoint returned nothing or couldn't be converted to a result.");
             }

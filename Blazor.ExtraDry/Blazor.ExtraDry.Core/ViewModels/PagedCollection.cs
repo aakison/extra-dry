@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#nullable enable
+
 using System.Text.Json.Serialization;
 
 namespace Blazor.ExtraDry {
@@ -8,22 +8,6 @@ namespace Blazor.ExtraDry {
     /// Represents a generic payload for returning lists of items from an API that need to be fragmented for performance.
     /// </summary>
     public class PagedCollection<T> : FilteredCollection<T> {
-
-        /// <summary>
-        /// Create a new collection from a list of items.
-        /// </summary>
-        public PagedCollection(IList<T> items) : base(items)
-        {
-            
-        }
-
-        /// <summary>
-        /// Create a new collection from an enumerable of items.
-        /// </summary>
-        public PagedCollection(IEnumerable<T> items) : base(items)
-        {
-
-        }
 
         /// <summary>
         /// The starting index of this partial collection within the full collection.
@@ -40,7 +24,7 @@ namespace Blazor.ExtraDry {
         /// As a best-practice, always send this token back to the server when fetching additional partial results,
         /// don't rely on the `Query` and `Start` indexes alone.
         /// </summary>
-        public string ContinuationToken { get; set; }
+        public string? ContinuationToken { get; set; }
 
         /// <summary>
         /// Indicates if this partial collection is also the full collection.

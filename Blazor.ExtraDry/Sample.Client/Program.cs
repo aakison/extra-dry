@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Sample.Client
@@ -25,7 +26,10 @@ namespace Sample.Client
                 new CrudService<Company>(e.GetService<HttpClient>(), "/api/companies/{0}"));
 
             builder.Services.AddScoped<IListService<Company>>(e =>
-                new RestfulListService<PagedCollection<Company>, Company>(e.GetService<HttpClient>(), "/api/companies"));
+                new RestfulListService<FilteredCollection<Company>, Company>(e.GetService<HttpClient>(), "/api/companies"));
+
+            builder.Services.AddScoped<IListService<Employee>>(e =>
+                new RestfulListService<PagedCollection<Employee>, Employee>(e.GetService<HttpClient>(), "/api/employees"));
 
             await builder.Build().RunAsync();
         }

@@ -74,7 +74,8 @@ namespace Blazor.ExtraDry {
 
         private FilteredCollection<T> CreateFilteredCollection(List<T> items)
         {
-            return new FilteredCollection<T>(items) {
+            return new FilteredCollection<T> {
+                Items = items,
                 Filter = query.Filter,
                 Sort = query.Sort,
             };
@@ -109,7 +110,8 @@ namespace Blazor.ExtraDry {
             var previousTake = ContinuationToken.ActualTake(token, take);
             var previousSkip = ContinuationToken.ActualSkip(token, skip);
             var total = items.Count == previousTake ? filteredQuery.Count() : previousSkip + items.Count;
-            return new PagedCollection<T>(items) {
+            return new PagedCollection<T> {
+                Items = items,
                 Filter = nextToken.Filter,
                 Sort = nextToken.Sort,
                 Start = previousSkip,
