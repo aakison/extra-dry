@@ -3,6 +3,10 @@
 using System.Reflection;
 
 namespace Blazor.ExtraDry {
+
+    /// <summary>
+    /// Encapsulates a property that has the `FilterAttribute` on it.
+    /// </summary>
     internal class FilterProperty {
 
         public FilterProperty(PropertyInfo property, FilterAttribute filter)
