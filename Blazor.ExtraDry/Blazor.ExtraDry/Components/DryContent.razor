@@ -1,0 +1,19 @@
+﻿@namespace Blazor.ExtraDry
+
+<div class="sections">
+  @foreach(var section in Content.Sections) {
+    var theme = section.Layout.ToString().ToLowerInvariant();
+    <section class="theme">
+      <article>
+        @foreach(var container in section.Containers) {
+           var alignment = container.Alignment.ToString().ToLowerInvariant();
+           <div class="editor-root" id="editor-@Id">
+             @((MarkupString)container.Html)
+           </div>
+        }
+      </article>
+    </section>
+  }
+</div>
+
+<button @onclick="StartEdit">Edit</button>

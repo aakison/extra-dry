@@ -1,0 +1,25 @@
+﻿@page "/content-editor"
+
+<h3>ContentEditor</h3>
+
+<DryContent Content="@content" />
+
+@code {
+
+  ContentLayout content = new ContentLayout {
+    Sections = {
+      new ContentSection {
+        Containers = {
+          new ContentContainer {
+            Html = "Hello Razor",
+          },
+          new ContentContainer {
+            Html = "Hello Blazor",
+            Alignment = ContentAlignment.Bottom,
+          },
+        }
+      }
+    }
+  };
+
+}

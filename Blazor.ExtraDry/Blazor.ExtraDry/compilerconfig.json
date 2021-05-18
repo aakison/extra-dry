@@ -6,5 +6,9 @@
   {
     "outputFile": "Components/DryVideoCapture.razor.css",
     "inputFile": "Components/DryVideoCapture.razor.scss"
+  },
+  {
+    "outputFile": "Components/DryContent.razor.css",
+    "inputFile": "Components/DryContent.razor.scss"
   }
 ]

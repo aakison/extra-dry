@@ -1,0 +1,17 @@
+﻿div.sections {
+  background-color: azure; }
+  div.sections > section {
+    margin: 0;
+    width: 100%;
+    padding: 0;
+    background-color: blanchedalmond;
+    display: flex;
+    justify-content: center; }
+    div.sections > section > article {
+      flex: 0 0 500px;
+      display: flex;
+      background-color: darkgray; }
+      div.sections > section > article div {
+        background-color: silver;
+        flex: 1 0 200px;
+        width: 100%; }

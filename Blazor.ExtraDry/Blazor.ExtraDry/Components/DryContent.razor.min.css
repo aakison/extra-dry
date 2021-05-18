@@ -1,0 +1,1 @@
+﻿div.sections{background-color:#f0ffff;}div.sections>section{margin:0;width:100%;padding:0;background-color:#ffebcd;display:flex;justify-content:center;}div.sections>section>article{flex:0 0 500px;display:flex;background-color:#a9a9a9;}div.sections>section>article div{background-color:#c0c0c0;flex:1 0 200px;width:100%;}

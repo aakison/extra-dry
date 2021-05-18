@@ -2,7 +2,7 @@
 
 using System.Collections.ObjectModel;
 
-namespace Blazor.ExtraDry.Content {
+namespace Blazor.ExtraDry {
 
     public class ContentLayout {
 
