@@ -20,13 +20,16 @@ namespace Blazor.ExtraDry {
         [Inject]
         private IJSRuntime? JSRuntime { get; set; }
 
-        public string Id => $"{id++}";
-
-        private int id = 0;
-
         private async Task StartEdit()
         {
-            await JSRuntime!.InvokeVoidAsync("startEditing", "editor-0");
+            if(Content == null) {
+                return;
+            }
+            foreach(var section in Content.Sections) {
+                foreach(var container in section.Containers) {
+                    await JSRuntime!.InvokeVoidAsync("startEditing", container.Id);
+                }
+            }
         }
 
     }

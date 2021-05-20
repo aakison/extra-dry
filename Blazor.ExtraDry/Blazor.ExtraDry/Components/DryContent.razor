@@ -7,7 +7,7 @@
       <article>
         @foreach(var container in section.Containers) {
            var alignment = container.Alignment.ToString().ToLowerInvariant();
-           <div class="editor-root" id="editor-@Id">
+           <div class="editor-root" id="@container.Id">
              @((MarkupString)container.Html)
            </div>
         }

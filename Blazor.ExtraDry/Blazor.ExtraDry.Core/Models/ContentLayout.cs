@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System;
 using System.Collections.ObjectModel;
 
 namespace Blazor.ExtraDry {
@@ -21,6 +22,8 @@ namespace Blazor.ExtraDry {
     }
 
     public class ContentContainer {
+
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         public ContentAlignment Alignment { get; set; } = ContentAlignment.Top;
 
