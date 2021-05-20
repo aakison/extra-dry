@@ -9,6 +9,7 @@
   ContentLayout content = new ContentLayout {
     Sections = {
       new ContentSection {
+        Layout = SectionLayout.Double,
         Containers = {
           new ContentContainer {
             Html = "Hello Razor",
@@ -18,7 +19,15 @@
             Alignment = ContentAlignment.Bottom,
           },
         }
-      }
+      },
+      new ContentSection {
+        Layout = SectionLayout.Single,
+        Containers = {
+          new ContentContainer {
+            Html = "Hello Razor",
+          },
+        }
+      },
     }
   };
 

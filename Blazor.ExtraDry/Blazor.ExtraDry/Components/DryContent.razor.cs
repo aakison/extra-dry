@@ -20,7 +20,8 @@ namespace Blazor.ExtraDry {
         [Inject]
         private IJSRuntime? JSRuntime { get; set; }
 
-        private async Task StartEdit()
+        [Command]
+        public async Task StartEdit()
         {
             if(Content == null) {
                 return;
@@ -30,6 +31,20 @@ namespace Blazor.ExtraDry {
                     await JSRuntime!.InvokeVoidAsync("startEditing", container.Id);
                 }
             }
+        }
+
+        [Command]
+        public void AddSection()
+        {
+            if(Content == null) {
+                return;
+            }
+            Content.Sections.Add(new ContentSection { 
+                Containers = { 
+                    new ContentContainer { Html = "New Section" } 
+                } 
+            });
+            StateHasChanged();
         }
 
     }

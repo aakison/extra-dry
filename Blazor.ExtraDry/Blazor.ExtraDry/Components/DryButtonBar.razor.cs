@@ -25,6 +25,19 @@ namespace Blazor.ExtraDry {
         [Parameter]
         public object? Target { get; set; }
 
+        [Parameter]
+        public object? ViewModel { get; set; }
+
+        private ViewModelDescription? Description { get; set; }
+
+        protected override void OnParametersSet()
+        {
+            if(!Commands.Any() && ViewModel != null && Description == null) {
+                Description = new ViewModelDescription(ViewModel);
+                Commands = Description.Commands;
+            }
+        }
+
         private IEnumerable<CommandInfo> SelectCommands(CommandContext context) => Commands.Where(e => e.Context == context);
 
     }
