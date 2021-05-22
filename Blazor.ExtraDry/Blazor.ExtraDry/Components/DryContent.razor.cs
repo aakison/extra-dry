@@ -47,5 +47,17 @@ namespace Blazor.ExtraDry {
             StateHasChanged();
         }
 
+        [Command]
+        public async Task ToggleBold()
+        {
+            await JSRuntime!.InvokeVoidAsync("roosterToggleBold");
+        }
+
+        [Command]
+        public async Task ToggleItalic()
+        {
+            await JSRuntime!.InvokeVoidAsync("roosterToggleItalic");
+        }
+
     }
 }
