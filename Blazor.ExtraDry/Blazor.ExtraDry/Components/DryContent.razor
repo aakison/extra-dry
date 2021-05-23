@@ -2,12 +2,13 @@
 
 <div class="sections">
   @foreach(var section in Content.Sections) {
-    var theme = section.Layout.ToString().ToLowerInvariant();
-    <section class="theme">
+    var layoutClass = section.Layout.ToString().ToLowerInvariant();
+    var themeClass = section.Theme.ToString().ToLowerInvariant();
+    <section class="@layoutClass @themeClass">
       <article>
         @foreach(var container in section.Containers) {
            var alignment = container.Alignment.ToString().ToLowerInvariant();
-           <div class="editor-root" id="@container.Id">
+           <div class="editor-root" id="@container.Id" @onfocus="@(e => EditorFocus(e, section, container))">
              @((MarkupString)container.Html)
            </div>
         }
@@ -17,3 +18,5 @@
 </div>
 
 <DryButtonBar ViewModel="this" />
+
+<DryInput Model="this" PropertyName="CurrentSectionTheme" @onchange="SectionThemeChanged" />

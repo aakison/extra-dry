@@ -20,13 +20,16 @@ namespace Blazor.ExtraDry {
         [Parameter]
         public string PropertyName { get; set; }
 
+        [Parameter]
+        public EventCallback<ChangeEventArgs> OnChange { get; set; }
+
         [CascadingParameter]
         public EditMode EditMode { get; set; } = EditMode.Create;
 
         protected async override Task OnInitializedAsync()
         {
             Property ??= new PropertyDescription(typeof(T).GetProperty(PropertyName));
-            if(Property.HasTextRepresentation == false) {
+            if(Property?.HasTextRepresentation == false) {
                 await FetchLookupProviderOptions();
             }
         }
@@ -84,7 +87,7 @@ namespace Blazor.ExtraDry {
             ShowDescription = !ShowDescription;
         }
 
-        private void OnChange(ChangeEventArgs args)
+        private async Task HandleChange(ChangeEventArgs args)
         {
             Console.WriteLine("Changed");
             var value = args.Value;
@@ -94,6 +97,7 @@ namespace Blazor.ExtraDry {
             Console.WriteLine($"Model: {Model} to Value: {value}");
             Property.SetValue(Model, value);
             Validate();
+            await OnChange.InvokeAsync(args);
         }
 
         private void Validate()
@@ -108,7 +112,6 @@ namespace Blazor.ExtraDry {
                 valid = false;
             }
         }
-
 
     }
 }

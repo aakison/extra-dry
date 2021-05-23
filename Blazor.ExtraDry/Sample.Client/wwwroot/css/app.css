@@ -79,3 +79,60 @@ nav > ul {
     nav > ul > li > a > i {
       padding: 0 5px;
     }
+
+/*
+    Sample content layout CSS rules.
+    Classes applied to the Section are "banner", "light", "dark", "accent" for the themes,
+    and "single", "double", "doubleweightedleft", "doubleweightedright", "triple" for the layout.
+*/
+
+div.sections {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: azure;
+}
+
+  div.sections > section {
+    flex: 0 0 auto;
+    display: flex;
+    margin: 0;
+    width: 100%;
+    padding: 0;
+    background-color: blanchedalmond;
+    display: flex;
+    justify-content: center;
+  }
+
+    div.sections > section > article {
+      flex: 0 0 900px;
+      display: flex;
+    }
+
+      div.sections > section > article > div {
+        flex: 2 0 200px;
+        width: 100%;
+      }
+
+      div.sections > section.doubleweightedleft > article > div:first-child {
+        flex: 3 0 300px;
+      }
+
+      div.sections > section.doubleweightedright > article > div:last-child {
+        flex: 3 0 300px;
+      }
+  
+/* Classes for content theme Light */
+
+  div.sections > section.light {
+      background-color: white;
+      color: black;
+  }
+
+/* Classes for content theme Dark */
+
+  div.sections > section.dark {
+    background-color: black;
+    color: white;
+  }
+

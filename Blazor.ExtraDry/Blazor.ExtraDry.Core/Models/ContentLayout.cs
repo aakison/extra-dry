@@ -15,6 +15,8 @@ namespace Blazor.ExtraDry {
 
         public SectionLayout Layout { get; set; } = SectionLayout.Single;
 
+        public ContentTheme Theme { get; set; } = ContentTheme.Light;
+
         public ContentPadding Padding { get; set; } = ContentPadding.Single;
 
         public Collection<ContentContainer> Containers { get; set; } = new Collection<ContentContainer>();
@@ -44,6 +46,7 @@ namespace Blazor.ExtraDry {
         Light,
         Dark,
         Accent,
+        Banner,
     }
 
     public enum SectionLayout {

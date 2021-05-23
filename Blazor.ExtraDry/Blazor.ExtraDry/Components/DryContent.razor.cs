@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
@@ -57,6 +58,27 @@ namespace Blazor.ExtraDry {
         public async Task ToggleItalic()
         {
             await JSRuntime!.InvokeVoidAsync("roosterToggleItalic");
+        }
+
+        public ContentSection? CurrentSection { get; set; }
+
+        public ContentContainer? CurrentContainer { get; set; }
+
+        public ContentTheme CurrentSectionTheme { get; set; }
+
+        private void SectionThemeChanged(EventArgs args)
+        {
+            if(CurrentSection != null) {
+                CurrentSection.Theme = CurrentSectionTheme;
+            }
+        }
+
+        private void EditorFocus(FocusEventArgs args, ContentSection section, ContentContainer container)
+        {
+            Console.WriteLine($"Editor Focus: {args.Type}, {container.Id}");
+            CurrentSection = section;
+            CurrentContainer = container;
+            CurrentSectionTheme = section.Theme;
         }
 
     }

@@ -9,7 +9,21 @@
   ContentLayout content = new ContentLayout {
     Sections = {
       new ContentSection {
-        Layout = SectionLayout.Double,
+        Layout = SectionLayout.DoubleWeightedLeft,
+        Theme = ContentTheme.Light,
+        Containers = {
+          new ContentContainer {
+            Html = "Hello Razor",
+          },
+          new ContentContainer {
+            Html = "Hello Blazor",
+            Alignment = ContentAlignment.Bottom,
+          },
+        }
+      },
+      new ContentSection {
+        Layout = SectionLayout.DoubleWeightedRight,
+        Theme = ContentTheme.Dark,
         Containers = {
           new ContentContainer {
             Html = "Hello Razor",

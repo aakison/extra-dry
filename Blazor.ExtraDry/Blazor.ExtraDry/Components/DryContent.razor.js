@@ -37,3 +37,7 @@ function roosterToggleItalic() {
         roosterjs.toggleItalic(editor);
     }
 }
+
+function roosterCurrentEditorId() {
+    return roosterActiveDiv.roosterEditor.dryId;
+}
