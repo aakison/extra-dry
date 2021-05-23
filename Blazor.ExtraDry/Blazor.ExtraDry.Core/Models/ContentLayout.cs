@@ -1,7 +1,9 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Blazor.ExtraDry {
 
@@ -20,6 +22,22 @@ namespace Blazor.ExtraDry {
         public ContentPadding Padding { get; set; } = ContentPadding.Single;
 
         public Collection<ContentContainer> Containers { get; set; } = new Collection<ContentContainer>();
+
+        public IEnumerable<ContentContainer> DisplayContainers {
+            get {
+                while(Containers.Count < ContainerCount) {
+                    Containers.Add(new ContentContainer());
+                }
+                return Containers.Take(ContainerCount);
+            }
+        }
+
+        private int ContainerCount => Layout switch {
+            SectionLayout.Single => 1,
+            SectionLayout.Triple => 3,
+            SectionLayout.Quadruple => 4,
+            _ => 2,
+        };
 
     }
 

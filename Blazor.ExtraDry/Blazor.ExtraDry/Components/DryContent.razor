@@ -1,22 +1,30 @@
 ﻿@namespace Blazor.ExtraDry
 
-<div class="sections">
-  @foreach(var section in Content.Sections) {
-    var layoutClass = section.Layout.ToString().ToLowerInvariant();
-    var themeClass = section.Theme.ToString().ToLowerInvariant();
-    <section class="@layoutClass @themeClass">
-      <article>
-        @foreach(var container in section.Containers) {
-           var alignment = container.Alignment.ToString().ToLowerInvariant();
-           <div class="editor-root" id="@container.Id" @onfocus="@(e => EditorFocus(e, section, container))">
-             @((MarkupString)container.Html)
-           </div>
-        }
-      </article>
-    </section>
-  }
-</div>
-
 <DryButtonBar ViewModel="this" />
 
 <DryInput Model="this" PropertyName="CurrentSectionTheme" @onchange="SectionThemeChanged" />
+<DryInput Model="this" PropertyName="CurrentSectionLayout"  />
+
+<br />
+
+<div class="sections">
+    @foreach (var section in Content.Sections)
+    {
+        var layoutClass = section.Layout.ToString().ToLowerInvariant();
+        var themeClass = section.Theme.ToString().ToLowerInvariant();
+        <section class="@layoutClass @themeClass">
+            <article>
+                @foreach (var container in section.DisplayContainers)
+                {
+                    var alignment = container.Alignment.ToString().ToLowerInvariant();
+                    <div class="editor-root" id="@container.Id"
+                         @onfocus="@(args => EditorFocus(section, container, args))"
+                         @onpaste="@(args => EditorPaste(section, container, args))">
+                        @((MarkupString)container.Html)
+                    </div>
+                }
+            </article>
+        </section>
+    }
+</div>
+
