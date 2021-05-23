@@ -2,9 +2,6 @@
 var roosterActiveDiv = null;
 
 function startEditing(name) {
-    console.log("cheat into JS");
-    console.log(name);
-
     //var roosterjs = require('roosterjs');
     var editorDiv = document.getElementById(name);
     var editor = roosterjs.createEditor(editorDiv);
@@ -36,8 +33,4 @@ function roosterToggleItalic() {
     if (editor) {
         roosterjs.toggleItalic(editor);
     }
-}
-
-function roosterCurrentEditorId() {
-    return roosterActiveDiv.roosterEditor.dryId;
 }
