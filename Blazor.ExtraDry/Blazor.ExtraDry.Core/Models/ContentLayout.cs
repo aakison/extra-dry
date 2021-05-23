@@ -19,8 +19,6 @@ namespace Blazor.ExtraDry {
 
         public ContentTheme Theme { get; set; } = ContentTheme.Light;
 
-        public ContentPadding Padding { get; set; } = ContentPadding.Single;
-
         public Collection<ContentContainer> Containers { get; set; } = new Collection<ContentContainer>();
 
         public IEnumerable<ContentContainer> DisplayContainers {
@@ -45,7 +43,9 @@ namespace Blazor.ExtraDry {
 
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        public ContentAlignment Alignment { get; set; } = ContentAlignment.Top;
+        public ContentAlignment Alignment { get; set; } = ContentAlignment.TopLeft;
+
+        public ContentPadding Padding { get; set; } = ContentPadding.None;
 
         /// <summary>
         /// The HTML for the content element.  This HTML should be kept very clean, most tags and styles are invalid.
@@ -55,9 +55,15 @@ namespace Blazor.ExtraDry {
     }
 
     public enum ContentAlignment {
-        Top,
-        Center,
-        Bottom,
+        TopLeft,
+        TopCenter,
+        TopRight,
+        MiddleLeft,
+        MiddleCenter,
+        MiddleRight,
+        BottomLeft,
+        BottomCenter,
+        BottomRight,
     }
 
     public enum ContentTheme {

@@ -2,8 +2,10 @@
 
 <DryButtonBar ViewModel="this" />
 
-<DryInput Model="this" PropertyName="CurrentSectionTheme" @onchange="SectionThemeChanged" />
-<DryInput Model="this" PropertyName="CurrentSectionLayout"  />
+<DryInput Model="this" PropertyName="CurrentSectionTheme" />
+<DryInput Model="this" PropertyName="CurrentSectionLayout" />
+<DryInput Model="this" PropertyName="CurrentContainerAlignment" />
+<DryInput Model="this" PropertyName="CurrentContainerPadding" />
 
 <br />
 
@@ -16,8 +18,9 @@
             <article>
                 @foreach (var container in section.DisplayContainers)
                 {
-                    var alignment = container.Alignment.ToString().ToLowerInvariant();
-                    <div class="editor-root" id="@container.Id"
+                    var alignment = $"alignment-{container.Alignment.ToString().ToLowerInvariant()}";
+                    var padding = $"padding-{container.Padding.ToString().ToLowerInvariant()}";
+                    <div class="editor-root @alignment @padding" id="@container.Id"
                          @onfocus="@(args => EditorFocus(section, container, args))"
                          @onpaste="@(args => EditorPaste(section, container, args))">
                         @((MarkupString)container.Html)

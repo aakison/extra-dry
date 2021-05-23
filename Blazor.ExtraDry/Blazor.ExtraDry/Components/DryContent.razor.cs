@@ -109,7 +109,15 @@ namespace Blazor.ExtraDry {
 
         public ContentContainer? CurrentContainer { get; set; }
 
-        public ContentTheme CurrentSectionTheme { get; set; }
+        public ContentTheme CurrentSectionTheme {
+            get => CurrentSection?.Theme ?? ContentTheme.Light;
+            set {
+                if(CurrentSection != null) {
+                    CurrentSection.Theme = value;
+                    StateHasChanged();
+                }
+            }
+        }
 
         public SectionLayout CurrentSectionLayout {
             get => CurrentSection?.Layout ?? SectionLayout.Single;
@@ -121,27 +129,39 @@ namespace Blazor.ExtraDry {
             }
         }
 
-        private void SectionThemeChanged(EventArgs args)
-        {
-            if(CurrentSection != null) {
-                CurrentSection.Theme = CurrentSectionTheme;
+        public ContentAlignment CurrentContainerAlignment {
+            get => CurrentContainer?.Alignment ?? ContentAlignment.TopLeft;
+            set {
+                if(CurrentContainer != null) {
+                    CurrentContainer.Alignment = value;
+                    StateHasChanged();
+                }
+            }
+        }
+
+        public ContentPadding CurrentContainerPadding {
+            get => CurrentContainer?.Padding ?? ContentPadding.None;
+            set {
+                if(CurrentContainer != null) {
+                    CurrentContainer.Padding = value;
+                    StateHasChanged();
+                }
             }
         }
 
         private void EditorFocus(ContentSection section, ContentContainer container, FocusEventArgs args)
         {
-            Console.WriteLine($"Editor Focus: {args.Type}, {container.Id}");
             CurrentSection = section;
             CurrentContainer = container;
-            CurrentSectionTheme = section.Theme;
+            StateHasChanged();
         }
 
         private async Task EditorPaste(ContentSection section, ContentContainer container, ClipboardEventArgs args)
         {
-            Console.WriteLine($"Editor paste: {args.Type}, {container.Id}");
-            await Task.Delay(16);
-            var content = await JSRuntime!.InvokeAsync<string>("roosterGetContent", container.Id.ToString());
-            Console.WriteLine(content);
+            //Console.WriteLine($"Editor paste: {args.Type}, {container.Id}");
+            //await Task.Delay(16);
+            //var content = await JSRuntime!.InvokeAsync<string>("roosterGetContent", container.Id.ToString());
+            //Console.WriteLine(content);
         }
 
     }
