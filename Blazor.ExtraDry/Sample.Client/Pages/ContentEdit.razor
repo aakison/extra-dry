@@ -1,0 +1,28 @@
+﻿@page "/contents/{uniqueId:guid}"
+@inject CrudService<Content> Service
+@inject NavigationManager Navigation
+
+<h3>ContentEditor</h3>
+
+<DryContent Content="@content?.Layout" />
+
+@code {
+
+    [Parameter]
+    public Guid UniqueId { get; set; }
+
+    private Content content;
+
+    protected override async Task OnInitializedAsync()
+    {
+        content = await Service.RetrieveAsync(UniqueId);
+    }
+
+    [Command(CommandContext.Primary, Name = "Save & Close")]
+    public async Task SaveAsync(Content content)
+    {
+        await Service.UpdateAsync(UniqueId, content);
+        Navigation.NavigateTo("/contents");
+    }
+
+}

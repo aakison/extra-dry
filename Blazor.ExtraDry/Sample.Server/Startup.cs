@@ -36,6 +36,7 @@ namespace Sample.Server {
 
             services.AddScoped<EmployeeService>();
             services.AddScoped<CompanyService>();
+            services.AddScoped<ContentsService>();
             services.AddScoped<RuleEngine>();
         }
 
@@ -72,6 +73,7 @@ namespace Sample.Server {
             var sampleData = new DummyData();
             sampleData.PopulateCompanies(context, 50);
             sampleData.PopulateEmployees(context, 5000);
+            sampleData.PopulateContents(context);
         }
     }
 }

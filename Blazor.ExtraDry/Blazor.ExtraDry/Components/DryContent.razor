@@ -9,23 +9,30 @@
 
 <br />
 
-<div class="sections">
-    @foreach (var section in Content.Sections) {
-        var layoutClass = section.Layout.ToString().ToLowerInvariant();
-        var themeClass = section.Theme.ToString().ToLowerInvariant();
-        <section class="@layoutClass @themeClass">
-            <article>
-                @foreach (var container in section.DisplayContainers) {
-                    var alignment = $"alignment-{container.Alignment.ToString().ToLowerInvariant()}";
-                    var padding = $"padding-{container.Padding.ToString().ToLowerInvariant()}";
-                    <div class="editor-root @alignment @padding" id="@container.Id"
-                         @onfocus="@(args => EditorFocus(section, container, args))"
-                         @onpaste="@(args => EditorPaste(section, container, args))">
-                        @((MarkupString)container.Html)
-                    </div>
-                }
-            </article>
-        </section>
-    }
-</div>
+@if(Content == null) {
+    <div class="progress">
+        <progress />
+    </div>
+}
+else { 
+    <div class="sections">
+        @foreach (var section in Content.Sections) {
+            var layoutClass = section.Layout.ToString().ToLowerInvariant();
+            var themeClass = section.Theme.ToString().ToLowerInvariant();
+            <section class="@layoutClass @themeClass">
+                <article>
+                    @foreach (var container in section.DisplayContainers) {
+                        var alignment = $"alignment-{container.Alignment.ToString().ToLowerInvariant()}";
+                        var padding = $"padding-{container.Padding.ToString().ToLowerInvariant()}";
+                        <div class="editor-root @alignment @padding" id="@container.Id"
+                             @onfocus="@(args => EditorFocus(section, container, args))"
+                             @onpaste="@(args => EditorPaste(section, container, args))">
+                            @((MarkupString)container.Html)
+                        </div>
+                    }
+                </article>
+            </section>
+        }
+    </div>
+}
 
