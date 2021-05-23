@@ -10,14 +10,12 @@
 <br />
 
 <div class="sections">
-    @foreach (var section in Content.Sections)
-    {
+    @foreach (var section in Content.Sections) {
         var layoutClass = section.Layout.ToString().ToLowerInvariant();
         var themeClass = section.Theme.ToString().ToLowerInvariant();
         <section class="@layoutClass @themeClass">
             <article>
-                @foreach (var container in section.DisplayContainers)
-                {
+                @foreach (var container in section.DisplayContainers) {
                     var alignment = $"alignment-{container.Alignment.ToString().ToLowerInvariant()}";
                     var padding = $"padding-{container.Padding.ToString().ToLowerInvariant()}";
                     <div class="editor-root @alignment @padding" id="@container.Id"

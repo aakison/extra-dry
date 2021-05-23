@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,7 +49,7 @@ namespace Blazor.ExtraDry {
             StateHasChanged();
         }
 
-        [Command]
+        [Command(Icon = "bold", Collapse = CommandCollapse.Always)]
         public async Task ToggleBold()
         {
             await JSRuntime!.InvokeVoidAsync("roosterToggleBold");
@@ -103,7 +104,20 @@ namespace Blazor.ExtraDry {
             //await JSRuntime!.InvokeVoidAsync("roosterSanitize");
         }
 
+        [Command(Icon = "Eraser", Collapse = CommandCollapse.Always)]
+        public async Task ClearFormat()
+        {
+            await JSRuntime!.InvokeVoidAsync("roosterClearFormat");
+        }
 
+        //[Command]
+        //public async Task EditHyperlink()
+        //{
+        //    var hyperlink = new Hyperlink();
+        //    if(await DryDialog.Show(hyperlink)) {
+
+        //    }
+        //}
 
         public ContentSection? CurrentSection { get; set; }
 
@@ -165,4 +179,14 @@ namespace Blazor.ExtraDry {
         }
 
     }
+
+    //[Display(Name = "Add/Edit Hyperlink")]
+    //public class Hyperlink {
+
+    //    [Required]
+    //    public string Caption { get; set; } = string.Empty;
+
+    //    [Url]
+    //    public string Url { get; set; } = string.Empty;
+    //}
 }

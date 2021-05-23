@@ -41,6 +41,13 @@ function roosterToggleHeader(level) {
     }
 }
 
+function roosterClearFormat() {
+    var editor = roosterActiveDiv.roosterEditor;
+    if (editor) {
+        roosterjs.clearFormat(editor);
+    }
+}
+
 function roosterGetContent(id) {
     var div = document.getElementById(id);
     return div.innerHTML;
