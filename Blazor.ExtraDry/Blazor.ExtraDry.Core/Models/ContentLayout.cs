@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace Blazor.ExtraDry {
 
@@ -15,12 +16,15 @@ namespace Blazor.ExtraDry {
 
     public class ContentSection {
 
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public SectionLayout Layout { get; set; } = SectionLayout.Single;
 
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public ContentTheme Theme { get; set; } = ContentTheme.Light;
 
         public Collection<ContentContainer> Containers { get; set; } = new Collection<ContentContainer>();
 
+        [JsonIgnore]
         public IEnumerable<ContentContainer> DisplayContainers {
             get {
                 while(Containers.Count < ContainerCount) {
@@ -43,8 +47,10 @@ namespace Blazor.ExtraDry {
 
         public Guid Id { get; set; } = Guid.NewGuid();
 
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public ContentAlignment Alignment { get; set; } = ContentAlignment.TopLeft;
 
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public ContentPadding Padding { get; set; } = ContentPadding.None;
 
         /// <summary>

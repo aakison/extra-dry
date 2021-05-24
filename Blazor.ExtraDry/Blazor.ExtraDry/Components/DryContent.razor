@@ -25,6 +25,7 @@ else {
                         var alignment = $"alignment-{container.Alignment.ToString().ToLowerInvariant()}";
                         var padding = $"padding-{container.Padding.ToString().ToLowerInvariant()}";
                         <div class="editor-root @alignment @padding" id="@container.Id"
+                             @onfocusout="@(args => EditorFocusOut(section, container, args))"
                              @onfocus="@(args => EditorFocus(section, container, args))"
                              @onpaste="@(args => EditorPaste(section, container, args))">
                             @((MarkupString)container.Html)

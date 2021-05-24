@@ -20,7 +20,7 @@ namespace Blazor.ExtraDry {
         public string? ContentName { get; set; }
 
         [Inject]
-        private IJSRuntime? JSRuntime { get; set; }
+        private IJSRuntime JSRuntime { get; set; } = null!;
 
         [Command]
         public async Task StartEdit()
@@ -52,25 +52,25 @@ namespace Blazor.ExtraDry {
         [Command(Icon = "bold", Collapse = CommandCollapse.Always)]
         public async Task ToggleBold()
         {
-            await JSRuntime!.InvokeVoidAsync("roosterToggleBold");
+            await JSRuntime.InvokeVoidAsync("roosterToggleBold");
         }
 
         [Command]
         public async Task ToggleItalic()
         {
-            await JSRuntime!.InvokeVoidAsync("roosterToggleItalic");
+            await JSRuntime.InvokeVoidAsync("roosterToggleItalic");
         }
 
         [Command(Name = "H1")]
         public async Task ToggleHeader1()
         {
-            await JSRuntime!.InvokeVoidAsync("roosterToggleHeader", 1);
+            await JSRuntime.InvokeVoidAsync("roosterToggleHeader", 1);
         }
 
         [Command(Name = "H2")]
         public async Task ToggleHeader2()
         {
-            await JSRuntime!.InvokeVoidAsync("roosterToggleHeader", 2);
+            await JSRuntime.InvokeVoidAsync("roosterToggleHeader", 2);
         }
 
         [Command(Name = "H3")]
@@ -82,13 +82,13 @@ namespace Blazor.ExtraDry {
         [Command(Name = "H4")]
         public async Task ToggleHeader4()
         {
-            await JSRuntime!.InvokeVoidAsync("roosterToggleHeader", 4);
+            await JSRuntime.InvokeVoidAsync("roosterToggleHeader", 4);
         }
 
         [Command(Name = "H5")]
         public async Task ToggleHeader5()
         {
-            await JSRuntime!.InvokeVoidAsync("roosterToggleHeader", 5);
+            await JSRuntime.InvokeVoidAsync("roosterToggleHeader", 5);
         }
 
         [Command(Name = "H6")]
@@ -100,15 +100,28 @@ namespace Blazor.ExtraDry {
         [Command]
         public async Task Sanitize()
         {
-            await JSRuntime!.InvokeVoidAsync("roosterTestSanitize", 0);
-            //await JSRuntime!.InvokeVoidAsync("roosterSanitize");
+            await JSRuntime.InvokeVoidAsync("roosterTestSanitize", 0);
+            //await JSRuntime.InvokeVoidAsync("roosterSanitize");
         }
 
         [Command(Icon = "Eraser", Collapse = CommandCollapse.Always)]
         public async Task ClearFormat()
         {
-            await JSRuntime!.InvokeVoidAsync("roosterClearFormat");
+            await JSRuntime.InvokeVoidAsync("roosterClearFormat");
         }
+
+        //[Command()]
+        //public async Task Save()
+        //{
+        //    if(Content == null) {
+        //        return;
+        //    }
+        //    foreach(var section in Content.Sections) {
+        //        foreach(var container in section.DisplayContainers) {
+        //            container.Html = await JSRuntime.InvokeAsync<string>("roosterGetContent", container.Id);
+        //        }
+        //    }
+        //}
 
         //[Command]
         //public async Task EditHyperlink()
@@ -168,6 +181,19 @@ namespace Blazor.ExtraDry {
             CurrentSection = section;
             CurrentContainer = container;
             StateHasChanged();
+        }
+
+        private async Task EditorFocusOut(ContentSection section, ContentContainer container, FocusEventArgs args)
+        {
+            var value = await JSRuntime.InvokeAsync<string>("roosterGetContent", container.Id);
+            container.Html = value.Replace("<!--!-->", "").Replace("<div></div>", "");
+            if(value.StartsWith("<div>")) {
+                value = value[5..];
+            }
+            if(value.EndsWith("</div>")) {
+                value = value[..^6];
+            }
+            Console.WriteLine($"HTML from lost focus: {container.Html}");
         }
 
         private async Task EditorPaste(ContentSection section, ContentContainer container, ClipboardEventArgs args)

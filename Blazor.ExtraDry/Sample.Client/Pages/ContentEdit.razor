@@ -6,6 +6,8 @@
 
 <DryContent Content="@content?.Layout" />
 
+<DryButtonBar ViewModel="this" />
+
 @code {
 
     [Parameter]
@@ -19,7 +21,7 @@
     }
 
     [Command(CommandContext.Primary, Name = "Save & Close")]
-    public async Task SaveAsync(Content content)
+    public async Task SaveAsync()
     {
         await Service.UpdateAsync(UniqueId, content);
         Navigation.NavigateTo("/contents");
