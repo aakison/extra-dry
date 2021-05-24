@@ -3,7 +3,7 @@
     "outputFileName": "wwwroot/bundles/blazor-extra-dry.razor.js",
     "inputFiles": [
       "Components/DryVideoCapture.razor.es5.js",
-      "wwwroot/lib/roosterjs/dist/rooster.js",
+      "wwwroot/unpkg/roosterjs/dist/rooster.js",
       "Components/DryContent.razor.js"
     ],
     "minify": {
