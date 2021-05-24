@@ -22,7 +22,7 @@ namespace Blazor.ExtraDry {
             foreach(var property in properties) {
                 var rule = property.GetCustomAttribute<RulesAttribute>();
                 var ignore = property.GetCustomAttribute<JsonIgnoreAttribute>();
-                if(ignore != null) {
+                if(ignore != null && ignore.Condition == JsonIgnoreCondition.Always) {
                     continue;
                 }
                 var action = rule?.UpdateAction ?? UpdateAction.AllowChanges;

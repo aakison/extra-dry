@@ -180,28 +180,29 @@ namespace Blazor.ExtraDry {
         {
             CurrentSection = section;
             CurrentContainer = container;
-            StateHasChanged();
+            //StateHasChanged();
         }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if(Content == null) {
+                return;
+            }
+            foreach(var section in Content.Sections) {
+                foreach(var container in section.Containers) {
+                    if(!roosterIsCanonical.Contains(container.Id)) {
+                        await JSRuntime.InvokeVoidAsync("roosterSetContent", container.Id, container.Html);
+                        roosterIsCanonical.Add(container.Id);
+                    }
+                }
+            }
+        }
+        private List<Guid> roosterIsCanonical = new List<Guid>();
 
         private async Task EditorFocusOut(ContentSection section, ContentContainer container, FocusEventArgs args)
         {
             var value = await JSRuntime.InvokeAsync<string>("roosterGetContent", container.Id);
-            container.Html = value.Replace("<!--!-->", "").Replace("<div></div>", "");
-            if(value.StartsWith("<div>")) {
-                value = value[5..];
-            }
-            if(value.EndsWith("</div>")) {
-                value = value[..^6];
-            }
-            Console.WriteLine($"HTML from lost focus: {container.Html}");
-        }
-
-        private async Task EditorPaste(ContentSection section, ContentContainer container, ClipboardEventArgs args)
-        {
-            //Console.WriteLine($"Editor paste: {args.Type}, {container.Id}");
-            //await Task.Delay(16);
-            //var content = await JSRuntime!.InvokeAsync<string>("roosterGetContent", container.Id.ToString());
-            //Console.WriteLine(content);
+            container.Html = value;
         }
 
     }

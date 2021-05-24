@@ -26,9 +26,8 @@ else {
                         var padding = $"padding-{container.Padding.ToString().ToLowerInvariant()}";
                         <div class="editor-root @alignment @padding" id="@container.Id"
                              @onfocusout="@(args => EditorFocusOut(section, container, args))"
-                             @onfocus="@(args => EditorFocus(section, container, args))"
-                             @onpaste="@(args => EditorPaste(section, container, args))">
-                            @((MarkupString)container.Html)
+                             @onfocus="@(args => EditorFocus(section, container, args))">
+                            <!-- Content injected via JS so Rooster and Blazor don't fight each other... -->
                         </div>
                     }
                 </article>
