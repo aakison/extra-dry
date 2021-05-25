@@ -97,11 +97,10 @@ namespace Blazor.ExtraDry {
             await JSRuntime!.InvokeVoidAsync("roosterToggleHeader", 6);
         }
 
-        [Command]
-        public async Task Sanitize()
+        [Command(Name = "HR")]
+        public async Task HorizontalRule()
         {
-            await JSRuntime.InvokeVoidAsync("roosterTestSanitize", 0);
-            //await JSRuntime.InvokeVoidAsync("roosterSanitize");
+            await JSRuntime.InvokeVoidAsync("roosterHorizontalRule");
         }
 
         [Command(Icon = "Eraser", Collapse = CommandCollapse.Always)]

@@ -96,6 +96,13 @@ function roosterSetContent(id, html) {
     }
 }
 
+function roosterHorizontalRule() {
+    var editor = roosterActiveDiv.roosterEditor;
+    if (editor) {
+        editor.insertContent("<hr />");
+    }
+}
+
 function roosterGetContent(id) {
     var div = document.getElementById(id);
     //var html = div.innerHTML;
