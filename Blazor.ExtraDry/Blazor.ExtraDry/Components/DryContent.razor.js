@@ -103,6 +103,14 @@ function roosterHorizontalRule() {
     }
 }
 
+function roosterInsertHyperlink(className, title, hyperlink) {
+    var editor = roosterActiveDiv.roosterEditor;
+    console.log(title);
+    if (editor) {
+        editor.insertContent(`<a class=''${className}'' href=''${hyperlink}''>${title}</a>`);
+    }
+}
+
 function roosterGetContent(id) {
     var div = document.getElementById(id);
     //var html = div.innerHTML;

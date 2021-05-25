@@ -44,7 +44,7 @@
         }
     }
     else if(Property.HasTextRepresentation) {
-        <input class="@CssClass" type="text" value="@Value" readonly="@ReadOnly" placeholder="@Property.Display?.Prompt" @onchange="OnChange" />
+        <input class="@CssClass" type="text" value="@Value" readonly="@ReadOnly" placeholder="@Property.Display?.Prompt" @onchange="HandleChange" />
     } 
     else if(LookupProviderOptions != null) {
         var selectedValue = Property.GetValue(Model);
@@ -54,7 +54,7 @@
             </select>
         }
         else { 
-            <select class="@CssClass" @onchange="OnChange">
+            <select class="@CssClass" @onchange="HandleChange">
                 @if(selectedValue == null) {
                     <option value="" disabled selected>@Property.Display?.Prompt</option>
                 }

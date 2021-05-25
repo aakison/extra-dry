@@ -109,27 +109,15 @@ namespace Blazor.ExtraDry {
             await JSRuntime.InvokeVoidAsync("roosterClearFormat");
         }
 
-        //[Command()]
-        //public async Task Save()
-        //{
-        //    if(Content == null) {
-        //        return;
-        //    }
-        //    foreach(var section in Content.Sections) {
-        //        foreach(var container in section.DisplayContainers) {
-        //            container.Html = await JSRuntime.InvokeAsync<string>("roosterGetContent", container.Id);
-        //        }
-        //    }
-        //}
-
-        //[Command]
-        //public async Task EditHyperlink()
-        //{
-        //    var hyperlink = new Hyperlink();
-        //    if(await DryDialog.Show(hyperlink)) {
-
-        //    }
-        //}
+        [Command]
+        public async Task AddHyperlink()
+        {
+            var className = HyperlinkClass;
+            var title = HyperlinkTitle;
+            var href = HyperlinkHref;
+            Console.WriteLine($"values: {className}, {title}, {href}");
+            await JSRuntime.InvokeVoidAsync("roosterInsertHyperlink", HyperlinkClass, HyperlinkHref, HyperlinkTitle);
+        }
 
         public ContentSection? CurrentSection { get; set; }
 
@@ -175,11 +163,16 @@ namespace Blazor.ExtraDry {
             }
         }
 
+        public string HyperlinkClass { get; set; } = string.Empty;
+
+        public string HyperlinkTitle { get; set; } = string.Empty;
+
+        public string HyperlinkHref { get; set; } = string.Empty;
+
         private void EditorFocus(ContentSection section, ContentContainer container, FocusEventArgs args)
         {
             CurrentSection = section;
             CurrentContainer = container;
-            //StateHasChanged();
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
