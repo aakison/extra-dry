@@ -6,7 +6,6 @@
       "library": "roosterjs@8.2.6",
       "destination": "wwwroot/unpkg/roosterjs/",
       "files": [
-        "LICENSE",
         "dist/rooster.js"
       ]
     }

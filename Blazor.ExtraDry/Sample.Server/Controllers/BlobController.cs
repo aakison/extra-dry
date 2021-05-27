@@ -66,8 +66,9 @@ namespace Sample.Server.Controllers {
         [SwaggerOperation("Uploads the content of the specified blob.")]
         public async Task Upload(Guid uniqueId)
         {
-            var blob = await blobs.Retrieve(uniqueId);
-            //return Content(blob.ToString());
+            var stream = Request.BodyReader.AsStream();
+            var length = (int)(Request.ContentLength ?? 0);
+            await blobs.UploadAsync(uniqueId, stream, length);
         }
 
         [HttpDelete("api/blobs/{uniqueId}")]
