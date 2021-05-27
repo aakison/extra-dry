@@ -37,6 +37,7 @@ namespace Sample.Server {
             services.AddScoped<EmployeeService>();
             services.AddScoped<CompanyService>();
             services.AddScoped<ContentsService>();
+            services.AddScoped<BlobService>();
             services.AddScoped<RuleEngine>();
         }
 

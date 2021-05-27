@@ -23,19 +23,6 @@ namespace Blazor.ExtraDry {
         private IJSRuntime JSRuntime { get; set; } = null!;
 
         [Command]
-        public async Task StartEdit()
-        {
-            if(Content == null) {
-                return;
-            }
-            foreach(var section in Content.Sections) {
-                foreach(var container in section.Containers) {
-                    await JSRuntime!.InvokeVoidAsync("startEditing", container.Id);
-                }
-            }
-        }
-
-        [Command]
         public void AddSection()
         {
             if(Content == null) {
@@ -181,15 +168,16 @@ namespace Blazor.ExtraDry {
                 return;
             }
             foreach(var section in Content.Sections) {
-                foreach(var container in section.Containers) {
+                foreach(var container in section.DisplayContainers) {
                     if(!roosterIsCanonical.Contains(container.Id)) {
+                        await JSRuntime.InvokeVoidAsync("startEditing", container.Id);
                         await JSRuntime.InvokeVoidAsync("roosterSetContent", container.Id, container.Html);
                         roosterIsCanonical.Add(container.Id);
                     }
                 }
             }
         }
-        private List<Guid> roosterIsCanonical = new List<Guid>();
+        private readonly List<Guid> roosterIsCanonical = new();
 
         private async Task EditorFocusOut(ContentSection section, ContentContainer container, FocusEventArgs args)
         {

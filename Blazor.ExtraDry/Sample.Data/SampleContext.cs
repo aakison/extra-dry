@@ -15,6 +15,8 @@ namespace Sample.Data {
 
         public DbSet<Content> Contents { get; set; }
 
+        public DbSet<BlobInfo> Blobs { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
