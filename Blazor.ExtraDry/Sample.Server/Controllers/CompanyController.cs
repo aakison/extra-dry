@@ -10,7 +10,8 @@ using System.Threading.Tasks;
 
 namespace Sample.Server.Controllers {
 
-    public class CompanyController : Controller {
+    [ApiController]
+    public class CompanyController {
         
         public CompanyController(CompanyService companyService)
         {
@@ -19,7 +20,7 @@ namespace Sample.Server.Controllers {
 
         [HttpGet("api/companies")]
         [SwaggerOperation("List all companies", "Provides a complete list of all companies, as this list is not too large, all are returned on every call.")]
-        public async Task<FilteredCollection<Company>> List(FilterQuery query)
+        public async Task<FilteredCollection<Company>> List([FromQuery] FilterQuery query)
         {
             return await companies.List(query);
         }
@@ -31,19 +32,16 @@ namespace Sample.Server.Controllers {
             return await companies.Retrieve(uniqueId);
         }
 
-        [HttpPost("api/companies/{uniqueId}")]
+        [HttpPost("api/companies")]
         [SwaggerOperation("Create a new company.", "Create a new company at the URI, the uniqueId in the URI must match the Id in the payload.")]
-        public async Task Create(Guid uniqueId, [FromBody] Company value)
+        public async Task Create(Company value)
         {
-            if(uniqueId != value?.UniqueId) {
-                throw new ArgumentException("ID in URI must match body.", nameof(uniqueId));
-            }
             await companies.Create(value);
         }
 
         [HttpPut("api/companies/{uniqueId}")]
         [SwaggerOperation("Update an existing company.", "Update the company at the URI, the uniqueId in the URI must match the Id in the payload.")]
-        public async Task Update(Guid uniqueId, [FromBody] Company value)
+        public async Task Update(Guid uniqueId, Company value)
         {
             if(uniqueId != value?.UniqueId) {
                 throw new ArgumentException("ID in URI must match body.", nameof(uniqueId));

@@ -10,7 +10,8 @@ using System.Threading.Tasks;
 
 namespace Sample.Server.Controllers {
 
-    public class ContentsController : Controller {
+    [ApiController]
+    public class ContentsController {
        
         public ContentsController(ContentsService contentsService)
         {
@@ -19,18 +20,15 @@ namespace Sample.Server.Controllers {
 
         [HttpGet("api/contents")]
         [SwaggerOperation("Filtered list of all contents")]
-        public async Task<FilteredCollection<Content>> List(FilterQuery query)
+        public async Task<FilteredCollection<Content>> List([FromQuery] FilterQuery query)
         {
             return await contents.List(query);
         }
 
-        [HttpPost("api/contents/{uniqueId}")]
+        [HttpPost("api/contents")]
         [SwaggerOperation("Create a new page of content.", "Create a new content entity at the URI, the uniqueId in the URI must match the Id in the payload.")]
-        public async Task Create(Guid uniqueId, [FromBody] Content value)
+        public async Task Create(Content value)
         {
-            if(uniqueId != value?.UniqueId) {
-                throw new ArgumentException("ID in URI must match body.", nameof(uniqueId));
-            }
             await contents.Create(value);
         }
 
@@ -43,7 +41,7 @@ namespace Sample.Server.Controllers {
 
         [HttpPut("api/contents/{uniqueId}")]
         [SwaggerOperation("Update an existing page of content.", "Update the content at the URI, the uniqueId in the URI must match the Id in the payload.")]
-        public async Task Update(Guid uniqueId, [FromBody] Content value)
+        public async Task Update(Guid uniqueId, Content value)
         {
             if(uniqueId != value?.UniqueId) {
                 throw new ArgumentException("ID in URI must match body.", nameof(uniqueId));

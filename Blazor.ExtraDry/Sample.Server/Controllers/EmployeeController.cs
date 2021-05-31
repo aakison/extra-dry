@@ -10,7 +10,8 @@ using System.Threading.Tasks;
 
 namespace Sample.Server.Controllers {
 
-    public class EmployeeController : Controller {
+    [ApiController]
+    public class EmployeeController {
        
         public EmployeeController(EmployeeService employeeService)
         {
@@ -19,18 +20,15 @@ namespace Sample.Server.Controllers {
 
         [HttpGet("api/employees")]
         [SwaggerOperation("Paged list of all employees", "As a large number of employees are in the system, this allows for a set of query parameters to determine which subset of the total collection to return.  If too many results are present, the output collection will return a page of them along with a continuation token to use to consistently retrieve additional results.")]
-        public async Task<PagedCollection<Employee>> List(PageQuery query)
+        public async Task<PagedCollection<Employee>> List([FromQuery] PageQuery query)
         {
             return await employees.List(query);
         }
 
-        [HttpPost("api/employees/{uniqueId}")]
+        [HttpPost("api/employees")]
         [SwaggerOperation("Create a new employee.", "Create a new employee at the URI, the uniqueId in the URI must match the Id in the payload.")]
-        public async Task Create(Guid uniqueId, [FromBody] Employee value)
+        public async Task Create(Employee value)
         {
-            if(uniqueId != value?.UniqueId) {
-                throw new ArgumentException("ID in URI must match body.", nameof(uniqueId));
-            }
             await employees.Create(value);
         }
 
@@ -43,7 +41,7 @@ namespace Sample.Server.Controllers {
 
         [HttpPut("api/employees/{uniqueId}")]
         [SwaggerOperation("Update an existing employee.", "Update the employee at the URI, the uniqueId in the URI must match the Id in the payload.")]
-        public async Task Update(Guid uniqueId, [FromBody] Employee value)
+        public async Task Update(Guid uniqueId, Employee value)
         {
             if(uniqueId != value?.UniqueId) {
                 throw new ArgumentException("ID in URI must match body.", nameof(uniqueId));
