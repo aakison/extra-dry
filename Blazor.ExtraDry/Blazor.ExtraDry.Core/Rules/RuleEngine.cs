@@ -18,6 +18,9 @@ namespace Blazor.ExtraDry {
             if(destination == null) {
                 throw new ArgumentNullException(nameof(destination));
             }
+            var validator = new DataValidator();
+            validator.ValidateObject(source);
+            validator.ThrowIfInvalid();
             var properties = typeof(T).GetProperties();
             foreach(var property in properties) {
                 var rule = property.GetCustomAttribute<RulesAttribute>();
