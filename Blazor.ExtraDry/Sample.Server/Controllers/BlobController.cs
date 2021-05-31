@@ -13,6 +13,8 @@ using System.Threading.Tasks;
 namespace Sample.Server.Controllers {
 
     [ApiController]
+    [Produces("application/json")]
+    [Consumes("application/json")]
     public class BlobController : ControllerBase {
         public BlobController(BlobService companyService)
         {
@@ -27,6 +29,7 @@ namespace Sample.Server.Controllers {
         }
 
         [HttpPost("api/blobs/{scope}/{name}")]
+        [Consumes("binary/octet-stream")]
         public async Task Create(string scope, string name)
         {
             using var bodyStream = Request.BodyReader.AsStream();
@@ -46,6 +49,7 @@ namespace Sample.Server.Controllers {
 
         [HttpGet("api/blobs/{uniqueId}/content")]
         [SwaggerOperation("Download the content of specified blob.")]
+        [Produces("binary/octet-stream")]
         public async Task<ActionResult> Download(Guid uniqueId)
         {
             var blob = await blobs.Retrieve(uniqueId);
@@ -64,6 +68,7 @@ namespace Sample.Server.Controllers {
 
         [HttpPut("api/blobs/{uniqueId}/content")]
         [SwaggerOperation("Uploads the content of the specified blob.")]
+        [Consumes("binary/octet-stream")]
         public async Task Upload(Guid uniqueId)
         {
             var stream = Request.BodyReader.AsStream();

@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 namespace Sample.Server.Controllers {
 
     [ApiController]
+    [Produces("application/json")]
+    [Consumes("application/json")]
     public class ContentsController {
        
         public ContentsController(ContentsService contentsService)
