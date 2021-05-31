@@ -1,13 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#nullable enable
+
+using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Reflection;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Blazor.ExtraDry {
     public class RuleEngine {
+
+
+        /// <summary>
+        /// Given an potentially untrusted and unvalidated exemplar of an object, create a new copy of that object with business rules applied.
+        /// Any validation issues or rule violations will throw an exception.
+        /// </summary>
+        [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Keep as standard service instance style for DI.")]
+        public T Create<T>(T exemplar)
+        {
+            if(exemplar == null) {
+                throw new ArgumentNullException(nameof(exemplar));
+            }
+            var validator = new DataValidator();
+            validator.ValidateObject(exemplar);
+            validator.ThrowIfInvalid();
+            var destination = Activator.CreateInstance<T>();
+            var properties = typeof(T).GetProperties();
+            foreach(var property in properties) {
+                var rule = property.GetCustomAttribute<RulesAttribute>();
+                var ignore = property.GetCustomAttribute<JsonIgnoreAttribute>();
+                if(ignore != null && ignore.Condition == JsonIgnoreCondition.Always) {
+                    continue;
+                }
+                var action = rule?.CreateAction ?? CreateAction.CreateNew;
+                var sourceValue = property.GetValue(exemplar);
+                var destinationValue = property.GetValue(destination);
+                if(sourceValue?.Equals(destinationValue) ?? true) {
+                    continue;
+                }
+                switch(action) {
+                    // TODO: This logic requires more thought...
+                    case CreateAction.CreateNew:
+                    case CreateAction.MakeUnique:
+                        continue;
+                    default:
+                        break;
+                }
+                property.SetValue(destination, sourceValue);
+            }
+            return destination;
+        }
 
         [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Keep as standard service instance style for DI.")]
         public void Update<T>(T source, T destination)
@@ -31,7 +71,7 @@ namespace Blazor.ExtraDry {
                 var action = rule?.UpdateAction ?? UpdateAction.AllowChanges;
                 var sourceValue = property.GetValue(source);
                 var destinationValue = property.GetValue(destination);
-                if((sourceValue == null && destinationValue == null) || sourceValue.Equals(destinationValue)) {
+                if(sourceValue?.Equals(destinationValue) ?? true) {
                     continue;
                 }
                 switch(action) {
@@ -63,7 +103,7 @@ namespace Blazor.ExtraDry {
         /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
         /// <param name="hardDeleteOption">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
         [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Keep as standard service instance style for DI.")]
-        public void Delete<T>(T item, Action hardDeleteOption = null)
+        public void Delete<T>(T item, Action? hardDeleteOption = null)
         {
             if(item == null) {
                 throw new ArgumentNullException(nameof(item));
