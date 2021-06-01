@@ -11,8 +11,6 @@ using System.Threading.Tasks;
 namespace Sample.Server.Controllers {
 
     [ApiController]
-    [Produces("application/json")]
-    [Consumes("application/json")]
     public class ContentsController {
        
         public ContentsController(ContentsService contentsService)
@@ -20,28 +18,28 @@ namespace Sample.Server.Controllers {
             contents = contentsService;
         }
 
-        [HttpGet("api/contents")]
+        [HttpGet("api/contents"), Produces("application/json")]
         [SwaggerOperation("Filtered list of all contents")]
         public async Task<FilteredCollection<Content>> List([FromQuery] FilterQuery query)
         {
             return await contents.List(query);
         }
 
-        [HttpPost("api/contents")]
+        [HttpPost("api/contents"), Consumes("application/json")]
         [SwaggerOperation("Create a new page of content.", "Create a new content entity at the URI, the uniqueId in the URI must match the Id in the payload.")]
         public async Task Create(Content value)
         {
             await contents.Create(value);
         }
 
-        [HttpGet("api/contents/{uniqueId}")]
+        [HttpGet("api/contents/{uniqueId}"), Produces("application/json")]
         [SwaggerOperation("Retreive a specific page of content")]
         public async Task<Content> Retrieve(Guid uniqueId)
         {
             return await contents.Retrieve(uniqueId);
         }
 
-        [HttpPut("api/contents/{uniqueId}")]
+        [HttpPut("api/contents/{uniqueId}"), Consumes("application/json")]
         [SwaggerOperation("Update an existing page of content.", "Update the content at the URI, the uniqueId in the URI must match the Id in the payload.")]
         public async Task Update(Guid uniqueId, Content value)
         {

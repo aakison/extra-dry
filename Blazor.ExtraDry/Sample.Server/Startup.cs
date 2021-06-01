@@ -1,6 +1,7 @@
 using Blazor.ExtraDry;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Sample.Data;
 using Sample.Data.Services;
+using System.Threading.Tasks;
 
 namespace Sample.Server {
     public class Startup {
@@ -68,7 +70,13 @@ namespace Sample.Server {
             app.UseEndpoints(endpoints => {
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
-                endpoints.MapFallbackToFile("index.html");
+
+                // Calls to API endpoints shouldn't fallback to Blazor
+                endpoints.Map("api/{**slug}", context => { 
+                    context.Response.StatusCode = StatusCodes.Status404NotFound;
+                    return Task.CompletedTask;
+                });
+                endpoints.MapFallbackToFile("{**slug}", "index.html");
             });
 
             var sampleData = new DummyData();
@@ -76,5 +84,6 @@ namespace Sample.Server {
             sampleData.PopulateEmployees(context, 5000);
             sampleData.PopulateContents(context);
         }
+
     }
 }

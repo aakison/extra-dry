@@ -208,13 +208,13 @@ namespace Blazor.ExtraDry {
         {
             if(Property.PropertyType == typeof(string)) {
                 var length = MaxLength?.Length ?? 1000;
-                if(length <= 50) {
+                if(length <= 25) {
                     return PropertySize.Small;
                 }
-                else if(length <= 100) {
+                else if(length <= 50) {
                     return PropertySize.Medium;
                 }
-                else if(length <= 200) {
+                else if(length <= 100) {
                     return PropertySize.Large;
                 }
                 else {
