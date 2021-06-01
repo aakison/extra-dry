@@ -44,7 +44,13 @@
         }
     }
     else if(Property.HasTextRepresentation) {
-        <input class="@CssClass" type="text" value="@Value" readonly="@ReadOnly" placeholder="@Property.Display?.Prompt" @onchange="HandleChange" />
+        if(Property.MaxLength?.Length > 256) {
+            var rows = Math.Min(Property.MaxLength?.Length / 100 ?? 1, 10);
+            <textarea class="@CssClass" rows="@rows" readonly="@ReadOnly" placeholder="@Property.Display?.Prompt" @onchange="HandleChange">@Value</textarea>
+        }
+        else { 
+            <input class="@CssClass" type="text" value="@Value" readonly="@ReadOnly" placeholder="@Property.Display?.Prompt" @onchange="HandleChange" />
+        }
     } 
     else if(LookupProviderOptions != null) {
         var selectedValue = Property.GetValue(Model);

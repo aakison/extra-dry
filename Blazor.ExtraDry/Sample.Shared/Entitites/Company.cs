@@ -18,6 +18,10 @@ namespace Sample.Shared {
         [Filter]
         public string Name { get; set; }
 
+        [Display(Name = "Description")]
+        [MaxLength(1000)]
+        public string Description { get; set; }
+
         [Display(Name = "Banking Details")]
         [Rules(UpdateAction.AllowChanges, CreateAction = CreateAction.CreateNew)]
         public BankingDetails BankingDetails { get; set; } = new BankingDetails();
@@ -25,7 +29,6 @@ namespace Sample.Shared {
         [Display(Name = "Videos")]
         [Rules(UpdateAction.AllowChanges, CreateAction = CreateAction.CreateNew)]
         public ICollection<Video> Videos { get; set; } = new Collection<Video>();
-
 
     }
 }

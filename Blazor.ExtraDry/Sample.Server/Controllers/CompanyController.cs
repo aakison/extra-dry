@@ -11,8 +11,6 @@ using System.Threading.Tasks;
 namespace Sample.Server.Controllers {
 
     [ApiController]
-    [Produces("application/json")]
-    [Consumes("application/json")]
     public class CompanyController {
         
         public CompanyController(CompanyService companyService)
@@ -20,28 +18,28 @@ namespace Sample.Server.Controllers {
             companies = companyService;
         }
 
-        [HttpGet("api/companies")]
+        [HttpGet("api/companies"), Produces("application/json")]
         [SwaggerOperation("List all companies", "Provides a complete list of all companies, as this list is not too large, all are returned on every call.")]
         public async Task<FilteredCollection<Company>> List([FromQuery] FilterQuery query)
         {
             return await companies.List(query);
         }
 
-        [HttpGet("api/companies/{uniqueId}")]
+        [HttpGet("api/companies/{uniqueId}"), Produces("application/json")]
         [SwaggerOperation("Retreive a specific company")]
         public async Task<Company> Retrieve(Guid uniqueId)
         {
             return await companies.Retrieve(uniqueId);
         }
 
-        [HttpPost("api/companies")]
+        [HttpPost("api/companies"), Consumes("application/json")]
         [SwaggerOperation("Create a new company.", "Create a new company at the URI, the uniqueId in the URI must match the Id in the payload.")]
         public async Task Create(Company value)
         {
             await companies.Create(value);
         }
 
-        [HttpPut("api/companies/{uniqueId}")]
+        [HttpPut("api/companies/{uniqueId}"), Consumes("application/json")]
         [SwaggerOperation("Update an existing company.", "Update the company at the URI, the uniqueId in the URI must match the Id in the payload.")]
         public async Task Update(Guid uniqueId, Company value)
         {
