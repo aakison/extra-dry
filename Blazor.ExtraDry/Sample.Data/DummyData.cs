@@ -2,14 +2,41 @@
 using Sample.Shared;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Sample.Data {
     public class DummyData {
 
+        public void PopulateServices(SampleContext database)
+        {
+            database.Services.Add(new Service { 
+                State = ServiceState.Active,  
+                Title = "Standard Electrical Services",
+                Description = "Provide licensed electrical works for commercial and residential buildings",
+            });
+            database.Services.Add(new Service {
+                State = ServiceState.Active,
+                Title = "Standard Plumbing Services",
+                Description = "Provide licensed plumbing services for commercial and residential buildings",
+            });
+            database.Services.Add(new Service {
+                State = ServiceState.Active,
+                Title = "Cleaners",
+                Description = "Provide general cleaning services",
+            });
+            database.Services.Add(new Service {
+                State = ServiceState.Inactive,
+                Title = "Fax Machine Repair",
+                Description = "Provides routine maintenance and consulting services on getting the most from the latest in high-tech gear",
+            });
+            database.SaveChanges();
+        }
+
         public void PopulateCompanies(SampleContext database, int count)
         {
             var trademarks = new List<string>();
+            var services = database.Services.ToArray();
             while(trademarks.Count < count) {
                 var first = PickRandom(companyPrefixes);
                 var last = PickRandom(companySuffixes);
@@ -18,7 +45,8 @@ namespace Sample.Data {
                     trademarks.Add(name);
                     var company = new Company {
                         UniqueId = PseudoRandomGuid(),
-                        Name = name
+                        Name = name,
+                        PrimaryService = PickRandom(services),
                     };
                     company.Videos.Add(new Video { Title = "Huzzah 1", Uri = "https://www.example.com/huzzah1" });
                     company.Videos.Add(new Video { Title = "Huzzah 2", Uri = "https://www.example.com/huzzah2" });
@@ -49,7 +77,7 @@ namespace Sample.Data {
             database.SaveChanges();
         }
 
-        private string PickRandom(string[] candidates) => candidates[random.Next(0, candidates.Length)];
+        private T PickRandom<T>(T[] candidates) => candidates[random.Next(0, candidates.Length)];
 
         private Guid PseudoRandomGuid()
         {

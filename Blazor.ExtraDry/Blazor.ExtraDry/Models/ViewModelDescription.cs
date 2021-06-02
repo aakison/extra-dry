@@ -67,7 +67,7 @@ namespace Blazor.ExtraDry {
             foreach(var property in properties) {
                 var display = property.GetCustomAttribute<DisplayAttribute>();
                 var col = new PropertyDescription(property);
-                if(!string.IsNullOrEmpty(display?.Name)) {
+                if(display != null && (display.GetAutoGenerateField() ?? true)) {
                     FormProperties.Add(col);
                 }
                 if(!string.IsNullOrEmpty(display?.ShortName)) {

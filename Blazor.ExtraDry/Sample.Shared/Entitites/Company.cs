@@ -18,15 +18,25 @@ namespace Sample.Shared {
         [Filter]
         public string Name { get; set; }
 
-        [Display(Name = "Description")]
+        [Display]
         [MaxLength(1000)]
         public string Description { get; set; }
 
-        [Display(Name = "Banking Details")]
+        [Display]
+        public Service PrimaryService { get; set; }
+
+        // Attempt to reproduce viewmodel problem.
+        //[Display(Name = "Alternate")]
+        //public string Name2 {
+        //    get => Name;
+        //    set => Name = value;
+        //}
+
+        [Display]
         [Rules(UpdateAction.AllowChanges, CreateAction = CreateAction.CreateNew)]
         public BankingDetails BankingDetails { get; set; } = new BankingDetails();
 
-        [Display(Name = "Videos")]
+        [Display]
         [Rules(UpdateAction.AllowChanges, CreateAction = CreateAction.CreateNew)]
         public ICollection<Video> Videos { get; set; } = new Collection<Video>();
 

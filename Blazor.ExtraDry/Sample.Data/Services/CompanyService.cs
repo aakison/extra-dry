@@ -30,7 +30,9 @@ namespace Sample.Data.Services {
 
         public async Task<Company> Retrieve(Guid uniqueId)
         {
-            return await database.Companies.FirstOrDefaultAsync(e => e.UniqueId == uniqueId);
+            return await database.Companies
+                .Include(e => e.PrimaryService)
+                .FirstOrDefaultAsync(e => e.UniqueId == uniqueId);
         }
 
         public async Task Update(Company item)

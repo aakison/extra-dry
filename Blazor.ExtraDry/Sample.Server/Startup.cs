@@ -80,6 +80,7 @@ namespace Sample.Server {
             });
 
             var sampleData = new DummyData();
+            sampleData.PopulateServices(context);
             sampleData.PopulateCompanies(context, 50);
             sampleData.PopulateEmployees(context, 5000);
             sampleData.PopulateContents(context);
