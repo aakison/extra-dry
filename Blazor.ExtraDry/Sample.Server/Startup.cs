@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Sample.Data;
 using Sample.Data.Services;
+using Sample.Shared;
 using System.Threading.Tasks;
 
 namespace Sample.Server {
@@ -39,8 +40,12 @@ namespace Sample.Server {
             services.AddScoped<EmployeeService>();
             services.AddScoped<CompanyService>();
             services.AddScoped<ContentsService>();
+            services.AddScoped<ServicesService>();
             services.AddScoped<BlobService>();
             services.AddScoped<RuleEngine>();
+            
+            services.AddScoped<IEntityResolver<Service>>(e => e.GetService<ServicesService>());
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

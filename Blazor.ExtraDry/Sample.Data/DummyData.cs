@@ -2,12 +2,14 @@
 using Sample.Shared;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Sample.Data {
     public class DummyData {
 
+        [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Not static to be aligned with other methods.")]
         public void PopulateServices(SampleContext database)
         {
             database.Services.Add(new Service { 

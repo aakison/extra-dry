@@ -1,13 +1,18 @@
-﻿#nullable enable
+﻿//#nullable enable
 
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 namespace Blazor.ExtraDry {
     public class RuleEngine {
 
+        public RuleEngine(IServiceProvider serviceProvider)
+        {
+            scopedServices = serviceProvider;
+        }
 
         /// <summary>
         /// Given an potentially untrusted and unvalidated exemplar of an object, create a new copy of that object with business rules applied.
@@ -49,8 +54,19 @@ namespace Blazor.ExtraDry {
             return destination;
         }
 
-        [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Keep as standard service instance style for DI.")]
-        public void Update<T>(T source, T destination)
+        /// <summary>
+        /// Updates the `destination` with properties from `source`, while applying business logic rules in annotations.
+        /// The source object will be validated using data annotations first, then properties will be copied across, where:
+        ///   `JsonIgnore` properties will be skipped, these are typically empty as the source has likely been deserialized from the network;
+        ///   `Rules(UpdateAction.BlockChanges)` annotations will throw an exception if a change is attempted;
+        ///   `Rules(UpdateAction.IgnoreChanges)` annotations will not be copied;
+        ///   `Rules(UpdateAction.IgnoreDefaults)` annotations will not be copied if the source property is `null` or `default`.
+        /// Additionally, each incoming property will be compared against 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="destination"></param>
+        public async Task UpdateAsync<T>(T source, T destination)
         {
             if(source == null) {
                 throw new ArgumentNullException(nameof(source));
@@ -70,6 +86,7 @@ namespace Blazor.ExtraDry {
                 }
                 var action = rule?.UpdateAction ?? UpdateAction.AllowChanges;
                 var sourceValue = property.GetValue(source);
+                sourceValue = await ResolveEntityValue(property, sourceValue);
                 var destinationValue = property.GetValue(destination);
                 if(sourceValue?.Equals(destinationValue) ?? true) {
                     continue;
@@ -96,6 +113,26 @@ namespace Blazor.ExtraDry {
         }
 
         /// <summary>
+        /// Given an object, especially one that has been deserialized, attempts to resolve a version of that object
+        /// that might be a database entity.  Uses `IEntityResolver` class in DI to find potential replacement.
+        /// </summary>
+        private async Task<object> ResolveEntityValue(PropertyInfo property, object sourceValue)
+        {
+            var untypedEntityResolver = typeof(IEntityResolver<>);
+            var typedEntityResolver = untypedEntityResolver.MakeGenericType(property.PropertyType);
+            var resolver = scopedServices.GetService(typedEntityResolver);
+            if(resolver == null) {
+                return sourceValue;
+            }
+            else {
+                var method = typedEntityResolver.GetMethod("ResolveAsync");
+                dynamic task = method.Invoke(resolver, new object[] { sourceValue });
+                var result = (await task) as object;
+                return result ?? sourceValue;
+            }
+        }
+
+        /// <summary>
         /// Processes a delete of an item setting the appropriate fields.
         /// If any fields are changed, then the item is soft-deleted and the method return true.
         /// Otherwise, it returns false and the object should be hard-deleted.
@@ -103,7 +140,7 @@ namespace Blazor.ExtraDry {
         /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
         /// <param name="hardDeleteOption">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
         [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Keep as standard service instance style for DI.")]
-        public void Delete<T>(T item, Action? hardDeleteOption = null)
+        public void Delete<T>(T item, Action hardDeleteOption = null)
         {
             if(item == null) {
                 throw new ArgumentNullException(nameof(item));
@@ -126,5 +163,8 @@ namespace Blazor.ExtraDry {
                 }
             }
         }
+
+        private readonly IServiceProvider scopedServices;
+
     }
 }

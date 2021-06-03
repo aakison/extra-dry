@@ -1,11 +1,12 @@
-﻿
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Blazor.ExtraDry {
@@ -21,7 +22,10 @@ namespace Blazor.ExtraDry {
         public string PropertyName { get; set; }
 
         [Parameter]
-        public EventCallback<ChangeEventArgs> OnChange { get; set; }
+        public EventCallback<ChangeEventArgs>? OnChange { get; set; }
+
+        [Inject]
+        private ILogger<DryInput<T>> Logger { get; set; } = null!;
 
         [CascadingParameter]
         public EditMode EditMode { get; set; } = EditMode.Create;
@@ -62,10 +66,14 @@ namespace Blazor.ExtraDry {
             var typedOptionProvider = untypedOptionProvider.MakeGenericType(Property.Property.PropertyType);
             var optionProvider = ScopedServices.GetService(typedOptionProvider);
             if(optionProvider != null) {
-                var method = typedOptionProvider.GetMethod("ListAsync");
-                dynamic task = method.Invoke(optionProvider, new object[] { Array.Empty<object>() });
-                var optList = (await task) as ICollection;
+                var method = typedOptionProvider.GetMethod("GetItemsAsync");
+                var token = new CancellationTokenSource().Token;
+                dynamic task = method.Invoke(optionProvider, new object[] { token });
+                var optList = (await task).Items as ICollection;
                 LookupProviderOptions = optList.Cast<object>().ToList();
+            }
+            else {
+                Logger.LogError($"An attempt to display a DryInput for type `{Property?.Property?.PropertyType}`, but no option provider was registered.  To enable select functionality for linked types, please add a scoped referenced to the `IOptionProvider` in `Main`.  E.g. `builder.Services.AddScoped<IOptionProvider<{Property?.Property?.PropertyType}>>(e => new MyOptionProvider());`.  Also note that IListService implements IOptionProvider and can be used to register RESTful APIs.");
             }
         }
 
@@ -97,7 +105,10 @@ namespace Blazor.ExtraDry {
             Console.WriteLine($"Model: {Model} to Value: {value}");
             Property.SetValue(Model, value);
             Validate();
-            await OnChange.InvokeAsync(args);
+            var task = OnChange?.InvokeAsync(args);
+            if(task != null) {
+                await task;
+            }
         }
 
         private void Validate()

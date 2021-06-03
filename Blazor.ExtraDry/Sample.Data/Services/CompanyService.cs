@@ -4,8 +4,6 @@ using Blazor.ExtraDry;
 using Microsoft.EntityFrameworkCore;
 using Sample.Shared;
 using System;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Sample.Data.Services {
@@ -38,7 +36,7 @@ namespace Sample.Data.Services {
         public async Task Update(Company item)
         {
             var existing = await Retrieve(item.UniqueId);
-            rules.Update(item, existing);
+            await rules.UpdateAsync(item, existing);
             await database.SaveChangesAsync();
         }
 
@@ -48,7 +46,7 @@ namespace Sample.Data.Services {
             rules.Delete(existing, () => database.Companies.Remove(existing));
             await database.SaveChangesAsync();
         }
-    
+
         private readonly SampleContext database;
 
         private readonly RuleEngine rules;

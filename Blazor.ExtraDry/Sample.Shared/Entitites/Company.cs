@@ -12,6 +12,7 @@ namespace Sample.Shared {
         [Rules(UpdateAction.BlockChanges)]
         public int Id { get; set; }
 
+        [Rules(UpdateAction.IgnoreChanges)]
         public Guid UniqueId { get; set; } = Guid.NewGuid();
 
         [Display(Name = "Name", ShortName = "Name")]
@@ -20,9 +21,11 @@ namespace Sample.Shared {
 
         [Display]
         [MaxLength(1000)]
+        [Rules(UpdateAction.IgnoreDefaults)]
         public string Description { get; set; }
 
         [Display]
+        [Rules(CreateAction = CreateAction.LinkExisting)]
         public Service PrimaryService { get; set; }
 
         // Attempt to reproduce viewmodel problem.

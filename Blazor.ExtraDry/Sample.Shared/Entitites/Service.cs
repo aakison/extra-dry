@@ -16,6 +16,7 @@ namespace Sample.Shared {
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public int Id { get; set; }
 
+        [Rules(UpdateAction.BlockChanges)]
         public Guid UniqueId { get; set; } = Guid.NewGuid();
 
         [Required]
@@ -23,10 +24,20 @@ namespace Sample.Shared {
         [Display(Name = "Title", ShortName = "Title")]
         public string Title { get; set; }
 
-        [MaxLength(100)]
+        [MaxLength(250)]
         [Display(Name = "Description")]
         public string Description { get; set; }
         
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        [Rules(DeleteValue = ServiceState.Inactive)]
         public ServiceState State { get; set; }
+
+        public override string ToString() => Title;
+
+        public override bool Equals(object obj) => (obj as Service)?.UniqueId == UniqueId;
+
+        public override int GetHashCode() => UniqueId.GetHashCode();
+        
+
     }
 }

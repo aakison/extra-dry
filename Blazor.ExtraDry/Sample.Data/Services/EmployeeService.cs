@@ -34,7 +34,7 @@ namespace Sample.Data.Services {
         public async Task Update(Employee item)
         {
             var existing = await Retrieve(item.UniqueId);
-            rules.Update(item, existing);
+            await rules.UpdateAsync(item, existing);
             await database.SaveChangesAsync();
         }
 

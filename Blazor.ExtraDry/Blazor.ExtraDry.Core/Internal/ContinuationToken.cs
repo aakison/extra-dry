@@ -10,7 +10,7 @@ namespace Blazor.ExtraDry {
     /// </summary>
     /// <remarks>
     /// This class is kept internal as the actual contents shouldn't leak to consumers.
-    /// It's not security critcal, but want to discourage any token hacking so that future versions aren't breaking changes.
+    /// It's not security critical, but want to discourage any token hacking so that future versions aren't breaking changes.
     /// </remarks>
     internal class ContinuationToken {
 

@@ -40,7 +40,7 @@ namespace Sample.Data.Services {
         public async Task Update(BlobInfo item)
         {
             var existing = await Retrieve(item.UniqueId);
-            rules.Update(item, existing);
+            await rules.UpdateAsync(item, existing);
             await database.SaveChangesAsync();
         }
 
@@ -48,7 +48,7 @@ namespace Sample.Data.Services {
         {
             var existing = await Retrieve(uniqueId);
             if(existing == default) {
-                throw new ArgumentOutOfRangeException("UniqueId for blob not found", nameof(uniqueId));
+                throw new ArgumentOutOfRangeException(nameof(uniqueId), "UniqueId for blob not found");
             }
             Upload(existing, stream, length);
         }

@@ -8,33 +8,37 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace Sample.Data.Services {
-    public class ContentsService {
 
-        public ContentsService(SampleContext sampleContext, RuleEngine ruleEngine)
+    public class ServicesService : IEntityResolver<Service> {
+
+        public ServicesService(SampleContext sampleContext, RuleEngine ruleEngine)
         {
             database = sampleContext;
             rules = ruleEngine;
         }
 
-        public async Task<FilteredCollection<Content>> ListAsync(FilterQuery query)
+        public async Task<FilteredCollection<Service>> ListAsync(FilterQuery query)
         {
-            return await database.Contents
-                .Select(e => new Content { UniqueId = e.UniqueId, Title = e.Title })
-                .QueryWith(query).ToFilteredCollectionAsync();
+            return await database.Services.QueryWith(query).ToFilteredCollectionAsync();
         }
 
-        public async Task CreateAsync(Content item)
+        public async Task CreateAsync(Service item)
         {
-            database.Contents.Add(item);
+            database.Services.Add(item);
             await database.SaveChangesAsync();
         }
 
-        public async Task<Content> RetrieveAsync(Guid uniqueId)
+        public async Task<Service> ResolveAsync(Service exemplar)
         {
-            return await database.Contents.FirstOrDefaultAsync(e => e.UniqueId == uniqueId);
+            return await RetrieveAsync(exemplar.UniqueId);
         }
 
-        public async Task UpdateAsync(Content item)
+        public async Task<Service> RetrieveAsync(Guid uniqueId)
+        {
+            return await database.Services.FirstOrDefaultAsync(e => e.UniqueId == uniqueId);
+        }
+
+        public async Task UpdateAsync(Service item)
         {
             var existing = await RetrieveAsync(item.UniqueId);
             await rules.UpdateAsync(item, existing);
@@ -44,7 +48,7 @@ namespace Sample.Data.Services {
         public async Task DeleteAsync(Guid uniqueId)
         {
             var existing = await RetrieveAsync(uniqueId);
-            rules.Delete(existing, () => database.Contents.Remove(existing));
+            rules.Delete(existing, () => database.Services.Remove(existing));
             await database.SaveChangesAsync();
         }
     
