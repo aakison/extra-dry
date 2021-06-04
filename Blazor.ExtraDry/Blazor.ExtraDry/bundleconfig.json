@@ -4,7 +4,8 @@
     "inputFiles": [
       "Components/DryVideoCapture.razor.es5.js",
       "wwwroot/unpkg/roosterjs/dist/rooster.js",
-      "Components/DryContent.razor.js"
+      "Components/DryContent.razor.js",
+      "wwwroot/js/attribution.js"
     ],
     "minify": {
       "enabled": true,
