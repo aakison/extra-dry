@@ -32,9 +32,9 @@ namespace Sample.Client
             builder.Services.AddScoped<IListService<Employee>>(e =>
                 new RestfulListService<PagedCollection<Employee>, Employee>(e.GetService<HttpClient>(), "/api/employees"));
 
-            builder.Services.AddScoped(e => new RestfulListService<FilteredCollection<Service>, Service>(e.GetService<HttpClient>(), "/api/services"));
-            builder.Services.AddScoped<IListService<Service>>(e => e.GetService<RestfulListService<FilteredCollection<Service>, Service>>());
-            builder.Services.AddScoped<IOptionProvider<Service>>(e => e.GetService<RestfulListService<FilteredCollection<Service>, Service>>());
+            builder.Services.AddScoped(e => new RestfulListService<FilteredCollection<Sector>, Sector>(e.GetService<HttpClient>(), "/api/sectors"));
+            builder.Services.AddScoped<IListService<Sector>>(e => e.GetService<RestfulListService<FilteredCollection<Sector>, Sector>>());
+            builder.Services.AddScoped<IOptionProvider<Sector>>(e => e.GetService<RestfulListService<FilteredCollection<Sector>, Sector>>());
 
             builder.Services.AddScoped(e =>
                 new CrudService<Company>(e.GetService<HttpClient>(), "/api/companies/{0}"));

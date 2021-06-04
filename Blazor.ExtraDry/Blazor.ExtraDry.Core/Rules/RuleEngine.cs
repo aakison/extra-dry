@@ -115,9 +115,13 @@ namespace Blazor.ExtraDry {
         /// <summary>
         /// Given an object, especially one that has been deserialized, attempts to resolve a version of that object
         /// that might be a database entity.  Uses `IEntityResolver` class in DI to find potential replacement.
+        /// This only works for objects, value types are always copies, so sourceValue is always returned.
         /// </summary>
         private async Task<object> ResolveEntityValue(PropertyInfo property, object sourceValue)
         {
+            if(property.PropertyType.IsValueType) {
+                return sourceValue;
+            }
             var untypedEntityResolver = typeof(IEntityResolver<>);
             var typedEntityResolver = untypedEntityResolver.MakeGenericType(property.PropertyType);
             var resolver = scopedServices.GetService(typedEntityResolver);

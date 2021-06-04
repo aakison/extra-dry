@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Blazor.ExtraDry {
 
@@ -19,18 +20,21 @@ namespace Blazor.ExtraDry {
         /// <summary>
         /// If the full collection is a subset of all items, this is the query that was used to filter the full collection.
         /// </summary>
-        public string Filter { get; set; } = string.Empty;
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public string? Filter { get; set; }
 
         /// <summary>
         /// If the collection is sorted, this is the name of the Property the sort is performed on.
         /// </summary>
-        public string Sort { get; set; } = string.Empty;
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public string? Sort { get; set; }
 
         /// <summary>
         /// For sorted collections, the stabalizer resolves ties consistently.
         /// Choose a unique monotonically increasing value such as Id or CreatedDate, not typically shown to users.
         /// </summary>
-        public string Stabalizer { get; set; } = string.Empty;
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public string? Stabalizer { get; set; }
 
         /// <summary>
         /// The total number of items in the full collection of items.

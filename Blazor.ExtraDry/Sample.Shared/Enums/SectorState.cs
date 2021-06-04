@@ -1,9 +1,9 @@
 ﻿namespace Sample.Shared {
 
     /// <summary>
-    /// Represents a soft-delete capable state for Services which indicate what services companies can provide.
+    /// Represents a soft-delete capable state for Sectors which indicate what services companies can provide.
     /// </summary>
-    public enum ServiceState {
+    public enum SectorState {
 
         Unknown = 0,
 

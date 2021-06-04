@@ -9,7 +9,7 @@ namespace Sample.Shared {
     public class Company {
 
         [Key]
-        [Rules(UpdateAction.BlockChanges)]
+        [Rules(UpdateAction.IgnoreChanges)]
         public int Id { get; set; }
 
         [Rules(UpdateAction.IgnoreChanges)]
@@ -26,7 +26,7 @@ namespace Sample.Shared {
 
         [Display]
         [Rules(CreateAction = CreateAction.LinkExisting)]
-        public Service PrimaryService { get; set; }
+        public Sector PrimaryService { get; set; }
 
         // Attempt to reproduce viewmodel problem.
         //[Display(Name = "Alternate")]

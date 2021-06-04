@@ -12,23 +12,23 @@ namespace Sample.Data {
         [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Not static to be aligned with other methods.")]
         public void PopulateServices(SampleContext database)
         {
-            database.Services.Add(new Service { 
-                State = ServiceState.Active,  
+            database.Sectors.Add(new Sector { 
+                State = SectorState.Active,  
                 Title = "Standard Electrical Services",
                 Description = "Provide licensed electrical works for commercial and residential buildings",
             });
-            database.Services.Add(new Service {
-                State = ServiceState.Active,
+            database.Sectors.Add(new Sector {
+                State = SectorState.Active,
                 Title = "Standard Plumbing Services",
                 Description = "Provide licensed plumbing services for commercial and residential buildings",
             });
-            database.Services.Add(new Service {
-                State = ServiceState.Active,
+            database.Sectors.Add(new Sector {
+                State = SectorState.Active,
                 Title = "Cleaners",
                 Description = "Provide general cleaning services",
             });
-            database.Services.Add(new Service {
-                State = ServiceState.Inactive,
+            database.Sectors.Add(new Sector {
+                State = SectorState.Inactive,
                 Title = "Fax Machine Repair",
                 Description = "Provides routine maintenance and consulting services on getting the most from the latest in high-tech gear",
             });
@@ -38,7 +38,7 @@ namespace Sample.Data {
         public void PopulateCompanies(SampleContext database, int count)
         {
             var trademarks = new List<string>();
-            var services = database.Services.ToArray();
+            var services = database.Sectors.ToArray();
             while(trademarks.Count < count) {
                 var first = PickRandom(companyPrefixes);
                 var last = PickRandom(companySuffixes);

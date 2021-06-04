@@ -9,7 +9,7 @@ namespace Sample.Data {
 
         public SampleContext(DbContextOptions<SampleContext> options) : base(options) { }
 
-        public DbSet<Service> Services { get; set; }
+        public DbSet<Sector> Sectors { get; set; }
 
         public DbSet<Employee> Employees { get; set; } 
 

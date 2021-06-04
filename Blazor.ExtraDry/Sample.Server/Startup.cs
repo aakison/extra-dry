@@ -40,11 +40,11 @@ namespace Sample.Server {
             services.AddScoped<EmployeeService>();
             services.AddScoped<CompanyService>();
             services.AddScoped<ContentsService>();
-            services.AddScoped<ServicesService>();
+            services.AddScoped<SectorService>();
             services.AddScoped<BlobService>();
             services.AddScoped<RuleEngine>();
             
-            services.AddScoped<IEntityResolver<Service>>(e => e.GetService<ServicesService>());
+            services.AddScoped<IEntityResolver<Sector>>(e => e.GetService<SectorService>());
 
         }
 
