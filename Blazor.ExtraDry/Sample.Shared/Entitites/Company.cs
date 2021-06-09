@@ -26,7 +26,7 @@ namespace Sample.Shared {
 
         [Display]
         [Rules(CreateAction = CreateAction.LinkExisting)]
-        public Sector PrimaryService { get; set; }
+        public Sector PrimarySector { get; set; }
 
         // Attempt to reproduce viewmodel problem.
         //[Display(Name = "Alternate")]

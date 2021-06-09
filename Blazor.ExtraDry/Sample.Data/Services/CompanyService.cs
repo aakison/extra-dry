@@ -29,7 +29,7 @@ namespace Sample.Data.Services {
         public async Task<Company> Retrieve(Guid uniqueId)
         {
             return await database.Companies
-                .Include(e => e.PrimaryService)
+                .Include(e => e.PrimarySector)
                 .FirstOrDefaultAsync(e => e.UniqueId == uniqueId);
         }
 

@@ -48,7 +48,7 @@ namespace Sample.Data {
                     var company = new Company {
                         UniqueId = PseudoRandomGuid(),
                         Name = name,
-                        PrimaryService = PickRandom(services),
+                        PrimarySector = PickRandom(services),
                     };
                     company.Videos.Add(new Video { Title = "Huzzah 1", Uri = "https://www.example.com/huzzah1" });
                     company.Videos.Add(new Video { Title = "Huzzah 2", Uri = "https://www.example.com/huzzah2" });
