@@ -9,22 +9,39 @@ namespace Sample.Shared {
     public class Company {
 
         [Key]
-        [Rules(UpdateAction.BlockChanges)]
+        [Rules(UpdateAction.IgnoreChanges)]
         public int Id { get; set; }
 
+        [Rules(UpdateAction.IgnoreChanges)]
         public Guid UniqueId { get; set; } = Guid.NewGuid();
 
         [Display(Name = "Name", ShortName = "Name")]
+        [Filter]
         public string Name { get; set; }
 
-        [Display(Name = "Banking Details")]
+        [Display]
+        [MaxLength(1000)]
+        [Rules(UpdateAction.IgnoreDefaults)]
+        public string Description { get; set; }
+
+        [Display]
+        [Rules(CreateAction = CreateAction.LinkExisting)]
+        public Sector PrimarySector { get; set; }
+
+        // Attempt to reproduce viewmodel problem.
+        //[Display(Name = "Alternate")]
+        //public string Name2 {
+        //    get => Name;
+        //    set => Name = value;
+        //}
+
+        [Display]
         [Rules(UpdateAction.AllowChanges, CreateAction = CreateAction.CreateNew)]
         public BankingDetails BankingDetails { get; set; } = new BankingDetails();
 
-        [Display(Name = "Videos")]
+        [Display]
         [Rules(UpdateAction.AllowChanges, CreateAction = CreateAction.CreateNew)]
         public ICollection<Video> Videos { get; set; } = new Collection<Video>();
-
 
     }
 }

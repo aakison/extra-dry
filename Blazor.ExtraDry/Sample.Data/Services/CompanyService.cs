@@ -1,10 +1,9 @@
-﻿using Blazor.ExtraDry;
-using Sample.Shared;
+﻿#nullable enable
+
+using Blazor.ExtraDry;
 using Microsoft.EntityFrameworkCore;
+using Sample.Shared;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Sample.Data.Services {
@@ -16,9 +15,9 @@ namespace Sample.Data.Services {
             rules = ruleEngine;
         }
 
-        public async Task<IEnumerable<Company>> List()
+        public async Task<FilteredCollection<Company>> List(FilterQuery query)
         {
-            return await database.Companies.ToListAsync();
+            return await database.Companies.QueryWith(query).ToFilteredCollectionAsync();
         }
 
         public async Task Create(Company item)
@@ -29,13 +28,15 @@ namespace Sample.Data.Services {
 
         public async Task<Company> Retrieve(Guid uniqueId)
         {
-            return await database.Companies.FirstOrDefaultAsync(e => e.UniqueId == uniqueId);
+            return await database.Companies
+                .Include(e => e.PrimarySector)
+                .FirstOrDefaultAsync(e => e.UniqueId == uniqueId);
         }
 
         public async Task Update(Company item)
         {
             var existing = await Retrieve(item.UniqueId);
-            rules.Update(item, existing);
+            await rules.UpdateAsync(item, existing);
             await database.SaveChangesAsync();
         }
 
@@ -45,7 +46,7 @@ namespace Sample.Data.Services {
             rules.Delete(existing, () => database.Companies.Remove(existing));
             await database.SaveChangesAsync();
         }
-    
+
         private readonly SampleContext database;
 
         private readonly RuleEngine rules;

@@ -1,0 +1,13 @@
+{
+  "version": "1.0",
+  "defaultProvider": "unpkg",
+  "libraries": [
+    {
+      "library": "roosterjs@8.2.6",
+      "destination": "wwwroot/unpkg/roosterjs/",
+      "files": [
+        "dist/rooster.js"
+      ]
+    }
+  ]
+}

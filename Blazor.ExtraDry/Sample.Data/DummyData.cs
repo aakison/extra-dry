@@ -1,23 +1,54 @@
-﻿using Sample.Shared;
+﻿using Blazor.ExtraDry;
+using Sample.Shared;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Sample.Data {
     public class DummyData {
 
+        [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Not static to be aligned with other methods.")]
+        public void PopulateServices(SampleContext database)
+        {
+            database.Sectors.Add(new Sector { 
+                State = SectorState.Active,  
+                Title = "Standard Electrical Services",
+                Description = "Provide licensed electrical works for commercial and residential buildings",
+            });
+            database.Sectors.Add(new Sector {
+                State = SectorState.Active,
+                Title = "Standard Plumbing Services",
+                Description = "Provide licensed plumbing services for commercial and residential buildings",
+            });
+            database.Sectors.Add(new Sector {
+                State = SectorState.Active,
+                Title = "Cleaners",
+                Description = "Provide general cleaning services",
+            });
+            database.Sectors.Add(new Sector {
+                State = SectorState.Inactive,
+                Title = "Fax Machine Repair",
+                Description = "Provides routine maintenance and consulting services on getting the most from the latest in high-tech gear",
+            });
+            database.SaveChanges();
+        }
+
         public void PopulateCompanies(SampleContext database, int count)
         {
             var trademarks = new List<string>();
+            var services = database.Sectors.ToArray();
             while(trademarks.Count < count) {
                 var first = PickRandom(companyPrefixes);
                 var last = PickRandom(companySuffixes);
                 var name = $"{first}{last}";
                 if(!trademarks.Contains(name)) {
                     trademarks.Add(name);
-                    var company = new Company { 
+                    var company = new Company {
                         UniqueId = PseudoRandomGuid(),
-                        Name = name 
+                        Name = name,
+                        PrimarySector = PickRandom(services),
                     };
                     company.Videos.Add(new Video { Title = "Huzzah 1", Uri = "https://www.example.com/huzzah1" });
                     company.Videos.Add(new Video { Title = "Huzzah 2", Uri = "https://www.example.com/huzzah2" });
@@ -32,17 +63,23 @@ namespace Sample.Data {
             for(int i = 0; i < count; ++i) {
                 var first = PickRandom(firstNames);
                 var last = PickRandom(lastNames);
-                var employee = new Employee { 
+                var employee = new Employee {
                     UniqueId = PseudoRandomGuid(),
-                    FirstName = first, 
-                    LastName = last 
+                    FirstName = first,
+                    LastName = last
                 };
                 database.Employees.Add(employee);
             }
             database.SaveChanges();
         }
 
-        private string PickRandom(string[] candidates) => candidates[random.Next(0, candidates.Length)];
+        public void PopulateContents(SampleContext database)
+        {
+            database.Contents.Add(Sample);
+            database.SaveChanges();
+        }
+
+        private T PickRandom<T>(T[] candidates) => candidates[random.Next(0, candidates.Length)];
 
         private Guid PseudoRandomGuid()
         {
@@ -85,6 +122,53 @@ namespace Sample.Data {
             "Sanders", "Ross", "Morales", "Powell", "Sullivan", "Russell", "Ortiz", "Jenkins", "Gutierrez",
             "Perry", "Butler", "Barnes", "Fisher" };
 
+        private Content Sample => new() {
+            Title = "Sample",
+            UniqueId = PseudoRandomGuid(),
+            Layout = new ContentLayout {
+                Sections = {
+                    new ContentSection {
+                        Layout = SectionLayout.DoubleWeightedLeft,
+                        Theme = ContentTheme.Light,
+                        Containers = {
+                            new ContentContainer {
+                                Id = PseudoRandomGuid(),
+                                Html = "Hello Razor",
+                            },
+                            new ContentContainer {
+                                Id = PseudoRandomGuid(),
+                                Html = "Hello Blazor",
+                                Alignment = ContentAlignment.MiddleCenter,
+                            },
+                        }
+                    },
+                    new ContentSection {
+                        Layout = SectionLayout.DoubleWeightedRight,
+                        Theme = ContentTheme.Dark,
+                        Containers = {
+                            new ContentContainer {
+                                Id = PseudoRandomGuid(),
+                                Html = "Hello Razor",
+                            },
+                            new ContentContainer {
+                                Id = PseudoRandomGuid(),
+                                Html = "Hello Blazor",
+                                Alignment = ContentAlignment.BottomCenter,
+                            },
+                        }
+                    },
+                    new ContentSection {
+                        Layout = SectionLayout.Single,
+                        Containers = {
+                            new ContentContainer {
+                                Id = PseudoRandomGuid(),
+                                Html = "Hello Razor",
+                            },
+                        }
+                    },
+                }
+            }
+        };
 
     }
 }

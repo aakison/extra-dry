@@ -1,18 +1,16 @@
 using Blazor.ExtraDry;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.InMemory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Sample.Data;
 using Sample.Data.Services;
-using System;
-using System.Linq;
+using Sample.Shared;
+using System.Threading.Tasks;
 
 namespace Sample.Server {
     public class Startup {
@@ -41,7 +39,13 @@ namespace Sample.Server {
 
             services.AddScoped<EmployeeService>();
             services.AddScoped<CompanyService>();
+            services.AddScoped<ContentsService>();
+            services.AddScoped<SectorService>();
+            services.AddScoped<BlobService>();
             services.AddScoped<RuleEngine>();
+            
+            services.AddScoped<IEntityResolver<Sector>>(e => e.GetService<SectorService>());
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,12 +75,21 @@ namespace Sample.Server {
             app.UseEndpoints(endpoints => {
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
-                endpoints.MapFallbackToFile("index.html");
+
+                // Calls to API endpoints shouldn't fallback to Blazor
+                endpoints.Map("api/{**slug}", context => { 
+                    context.Response.StatusCode = StatusCodes.Status404NotFound;
+                    return Task.CompletedTask;
+                });
+                endpoints.MapFallbackToFile("{**slug}", "index.html");
             });
 
             var sampleData = new DummyData();
+            sampleData.PopulateServices(context);
             sampleData.PopulateCompanies(context, 50);
-            sampleData.PopulateEmployees(context, 100);
+            sampleData.PopulateEmployees(context, 5000);
+            sampleData.PopulateContents(context);
         }
+
     }
 }

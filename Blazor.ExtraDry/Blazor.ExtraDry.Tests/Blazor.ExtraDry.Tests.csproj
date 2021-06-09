@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Blazor.ExtraDry.Core\Blazor.ExtraDry.Core.csproj" />
     <ProjectReference Include="..\Blazor.ExtraDry\Blazor.ExtraDry.csproj" />
   </ItemGroup>
 

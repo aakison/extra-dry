@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -8,54 +9,7 @@ namespace Blazor.ExtraDry {
     /// <summary>
     /// A very lightweight dynamic linq builder, just enough to satisfy needs of filtering, sorting and paging API result sets.
     /// </summary>
-    public static class LinqBuilder {
-
-        /// <summary>
-        /// Given a name of a property and an order, dynamically creates a sort query.
-        /// Also merges in the continuation token to supply values for consisted paging.
-        /// On conflict, the token will override the specified sort.
-        /// </summary>
-        /// <param name="source">The queryable source, typically from EF, this is from `DbSet.AsQueryable()`</param>
-        /// <param name="sort">The name of the property to sort by (optional, case insensitive)</param>
-        /// <param name="ascending">Indicates if the order is ascending or not (optional, default true)</param>
-        /// <param name="stabalizer">The name of a unique property to ensure paging works, use monotonically increasing value such as `int Identity` or created timestamp (required, case insensitive)</param>
-        /// <param name="token">If this is not a new request, the token passed back from the previous request to maintain stability (optional)</param>
-        public static IQueryable<T> Sort<T>(this IQueryable<T> source, string sort, bool? ascending, string stabalizer, ContinuationToken token)
-        {
-            var actualSort = token?.Sort ?? sort;
-            var actualStabalizer = token?.Stabalizer ?? stabalizer;
-            var actualAscending = token?.Ascending ?? ascending ?? true;
-            var query = source;
-            if(string.IsNullOrWhiteSpace(stabalizer)) {
-                throw new DryException($"Must supply a stabalizer to ensure paging is consistent", "Internal Server Error - 0x0F850FD9");
-            }
-            if(!string.IsNullOrWhiteSpace(actualSort)) {
-                query = actualAscending ? 
-                    query.OrderBy(actualSort).ThenBy(actualStabalizer) : 
-                    query.OrderByDescending(actualSort).ThenByDescending(actualStabalizer);
-            }
-            else {
-                query = query.OrderBy(stabalizer);
-            }
-            return query;
-        }
-
-        /// <summary>
-        /// Given a starting position and page size, returns a subset of the a collection.
-        /// Use will typically immediately follow a call to `Sort`.
-        /// Also merges in continuation token to supply values for paging if skip and take are missing.
-        /// On conflict, the skip and take values will override the token.
-        /// </summary>
-        /// <param name="source">The queryable source, typically from result of call to `Sort`</param>
-        /// <param name="skip">The number of records to skip, if paging this is the page number times the take size.</param>
-        /// <param name="take">the number of records to take, this is the page size of the fetch.  Use to balance call API latency versus bandwidth</param>
-        /// <param name="token">If this is not a new request, the token passed back from the previous request to maintain stability (optional)</param>
-        public static IQueryable<T> Page<T>(this IQueryable<T> source, int? skip, int? take, ContinuationToken token)
-        {
-            var actualSkip = skip ?? token?.Skip ?? 0;
-            var actualTake = take ?? token?.Take ?? 100;
-            return source.Skip(actualSkip).Take(actualTake);
-        }
+    internal static class LinqBuilder {
 
         /// <summary>
         /// Sorts the elements of the sequence according to a key which is provided by name instead of a lambda.
@@ -125,6 +79,64 @@ namespace Blazor.ExtraDry {
             }
             return (IOrderedQueryable<T>)result;
         }
+
+        /// <summary>
+        /// Given a list of filter properties and a list of match strings, constructs a queryable for an existing queryable.
+        /// </summary>
+        /// <remarks>
+        /// This builds a Conjunctive Normal Form (CNF) linq expression where each string in `matchValues` must exist in 
+        /// at least one of the properties.  The exact comparison function is also determined by the properties' filter attribute.
+        /// </remarks>
+        public static IQueryable<T> WhereFilterConditions<T>(this IQueryable<T> source, FilterProperty[] filterProperties, string[] matchValues)
+        {
+            var param = Expression.Parameter(typeof(T), "e");
+            var terms = new List<Expression>();
+            foreach(var match in matchValues) {
+                var fields = filterProperties.Select(e => StringExpression(param, e.Property, e.Filter.Type, match)).ToArray();
+                terms.Add(AnyOf(fields));
+            }
+            var cnf = AllOf(terms.ToArray());
+            var lambda = Expression.Lambda<Func<T, bool>>(cnf, param);
+            return source.Where(lambda);
+        }
+
+        private static Expression AnyOf(Expression[] expressions)
+        {
+            var left = expressions.FirstOrDefault();
+            foreach(var right in expressions.Skip(1)) {
+                left = Expression.OrElse(left, right);
+            }
+            return left;
+        }
+
+        private static Expression AllOf(Expression[] expressions)
+        {
+            var left = expressions.FirstOrDefault();
+            foreach(var right in expressions.Skip(1)) {
+                left = Expression.AndAlso(left, right);
+            }
+            return left;
+        }
+
+        private static Expression StringExpression(ParameterExpression parameter, PropertyInfo propertyInfo, FilterType filterType, string value)
+        {
+            var property = Expression.Property(parameter, propertyInfo);
+            var valueConstant = Expression.Constant(value);
+            var caseConstant = Expression.Constant(StringComparison.InvariantCultureIgnoreCase);
+            var method = filterType switch {
+                FilterType.Contains => StringContainsMethod,
+                FilterType.Equals => StringEqualsMethod,
+                FilterType.StartsWith => StringStartsWithMethod,
+                _ => throw new NotImplementedException("Unknown filter type"),
+            };
+            return Expression.Call(property, method, valueConstant, caseConstant);
+        }
+
+        private static MethodInfo StringContainsMethod => typeof(string).GetMethod(nameof(string.Contains), new[] { typeof(string), typeof(StringComparison) });
+
+        private static MethodInfo StringEqualsMethod => typeof(string).GetMethod(nameof(string.Equals), new[] { typeof(string), typeof(StringComparison) });
+
+        private static MethodInfo StringStartsWithMethod => typeof(string).GetMethod(nameof(string.StartsWith), new[] { typeof(string), typeof(StringComparison) });
 
     }
 }

@@ -1,22 +1,15 @@
-﻿using Blazor.ExtraDry.Components;
-using Microsoft.AspNetCore.Components;
+﻿#nullable enable
+
+using Blazor.ExtraDry.Components;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Security;
 using System.Text;
 using System.Text.Json;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace Blazor.ExtraDry {
 
@@ -35,7 +28,7 @@ namespace Blazor.ExtraDry {
             // TODO: Map DryException on server to DryException in Blazor for better messaging...
             var json = JsonSerializer.Serialize(item);
             using var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var endpoint = ApiEndpoint(null, args);
+            var endpoint = ApiEndpoint("POST", args);
             try {
                 var response = await http.PostAsync(endpoint, content);
                 await AssertSuccess(response);
@@ -48,7 +41,7 @@ namespace Blazor.ExtraDry {
             }
         }
 
-        public async Task<T> RetrieveAsync(object key, params object[] args)
+        public async Task<T?> RetrieveAsync(object key, params object[] args)
         {
             // TODO: Map DryException on server to DryException in Blazor for better messaging...
             var endpoint = ApiEndpoint("RetrieveAsync", key, args);
@@ -98,8 +91,13 @@ namespace Blazor.ExtraDry {
                     // Map server side validation messages.
                     var str = await response.Content.ReadAsStringAsync();
                     var message = await response.Content.ReadFromJsonAsync<ErrorContent>();
-                    var individualMessages = message.Errors.SelectMany(e => e.Value, (e, f) => f);
-                    userMessage = string.Join("; ", individualMessages);
+                    if(message == null) {
+                        userMessage = await response.Content.ReadAsStringAsync();
+                    }
+                    else {
+                        var individualMessages = message.Errors.SelectMany(e => e.Value, (e, f) => f);
+                        userMessage = string.Join("; ", individualMessages);
+                    }
                 }
                 catch(Exception ex) {
                     // Just eat it.
@@ -118,7 +116,7 @@ namespace Blazor.ExtraDry {
                 return string.Format(ApiTemplate, args).TrimEnd('/');
             }
             catch(FormatException ex) {
-                var argsFormatted = string.Join(',', args?.Select(e => e?.ToString()));
+                var argsFormatted = string.Join(',', args?.Select(e => e?.ToString()) ?? Array.Empty<string>());
                 var message = $"Formatting problem while constructing endpoint for `CrudService.{method}`.  Typically the endpoint provided has additional placeholders that have not been provided. The endpoint template ({ApiTemplate}), could not be satisifed with arguments ({argsFormatted}).  Inner Exception was:  {ex.Message}";
                 Console.Error.WriteLine(message);
                 throw new DryException(message, "Error occurred connecting to server.");

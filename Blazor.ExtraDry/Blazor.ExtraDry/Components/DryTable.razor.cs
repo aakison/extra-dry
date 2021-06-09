@@ -147,7 +147,7 @@ namespace Blazor.ExtraDry {
             //StateHasChanged();
         }
 
-        private async Task SortBy(DryProperty property, bool reverseOrder = true)
+        private async Task SortBy(PropertyDescription property, bool reverseOrder = true)
         {
             var sort = property.Property.Name;
             if(sort == Sort) {

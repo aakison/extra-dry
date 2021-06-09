@@ -1,10 +1,9 @@
-﻿using Blazor.ExtraDry;
+﻿#nullable enable
+
+using Blazor.ExtraDry;
 using Sample.Shared;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Sample.Data.Services {
@@ -16,9 +15,9 @@ namespace Sample.Data.Services {
             rules = ruleEngine;
         }
 
-        public async Task<IEnumerable<Employee>> List()
+        public async Task<PagedCollection<Employee>> List(PageQuery query)
         {
-            return await database.Employees.ToListAsync();
+            return await database.Employees.QueryWith(query).ToPagedCollectionAsync();
         }
 
         public async Task Create(Employee item)
@@ -35,7 +34,7 @@ namespace Sample.Data.Services {
         public async Task Update(Employee item)
         {
             var existing = await Retrieve(item.UniqueId);
-            rules.Update(item, existing);
+            await rules.UpdateAsync(item, existing);
             await database.SaveChangesAsync();
         }
 

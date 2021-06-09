@@ -1,0 +1,42 @@
+﻿@namespace Blazor.ExtraDry
+
+<DryButtonBar ViewModel="this" />
+
+<DryInput Model="this" PropertyName="CurrentSectionTheme" />
+<DryInput Model="this" PropertyName="CurrentSectionLayout" />
+<DryInput Model="this" PropertyName="CurrentContainerAlignment" />
+<DryInput Model="this" PropertyName="CurrentContainerPadding" />
+
+<DryInput Model="this" PropertyName="HyperlinkClass" />
+<DryInput Model="this" PropertyName="HyperlinkTitle" />
+<DryInput Model="this" PropertyName="HyperlinkHref" />
+
+<br />
+
+@if(Content == null) {
+    <div class="progress">
+        <progress />
+    </div>
+}
+else { 
+    <div class="sections">
+        @foreach (var section in Content.Sections) {
+            var layoutClass = section.Layout.ToString().ToLowerInvariant();
+            var themeClass = section.Theme.ToString().ToLowerInvariant();
+            <section class="@layoutClass @themeClass">
+                <article>
+                    @foreach (var container in section.DisplayContainers) {
+                        var alignment = $"alignment-{container.Alignment.ToString().ToLowerInvariant()}";
+                        var padding = $"padding-{container.Padding.ToString().ToLowerInvariant()}";
+                        <div class="editor-root @alignment @padding" id="@container.Id"
+                             @onfocusout="@(args => EditorFocusOut(section, container, args))"
+                             @onfocus="@(args => EditorFocus(section, container, args))">
+                            <!-- Content injected via JS so Rooster and Blazor don't fight each other... -->
+                        </div>
+                    }
+                </article>
+            </section>
+        }
+    </div>
+}
+

@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿//#nullable enable
+
+using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -9,8 +9,64 @@ using System.Threading.Tasks;
 namespace Blazor.ExtraDry {
     public class RuleEngine {
 
+        public RuleEngine(IServiceProvider serviceProvider)
+        {
+            scopedServices = serviceProvider;
+        }
+
+        /// <summary>
+        /// Given an potentially untrusted and unvalidated exemplar of an object, create a new copy of that object with business rules applied.
+        /// Any validation issues or rule violations will throw an exception.
+        /// </summary>
         [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Keep as standard service instance style for DI.")]
-        public void Update<T>(T source, T destination)
+        public T Create<T>(T exemplar)
+        {
+            if(exemplar == null) {
+                throw new ArgumentNullException(nameof(exemplar));
+            }
+            var validator = new DataValidator();
+            validator.ValidateObject(exemplar);
+            validator.ThrowIfInvalid();
+            var destination = Activator.CreateInstance<T>();
+            var properties = typeof(T).GetProperties();
+            foreach(var property in properties) {
+                var rule = property.GetCustomAttribute<RulesAttribute>();
+                var ignore = property.GetCustomAttribute<JsonIgnoreAttribute>();
+                if(ignore != null && ignore.Condition == JsonIgnoreCondition.Always) {
+                    continue;
+                }
+                var action = rule?.CreateAction ?? CreateAction.CreateNew;
+                var sourceValue = property.GetValue(exemplar);
+                var destinationValue = property.GetValue(destination);
+                if(sourceValue?.Equals(destinationValue) ?? true) {
+                    continue;
+                }
+                switch(action) {
+                    // TODO: This logic requires more thought...
+                    case CreateAction.CreateNew:
+                    case CreateAction.MakeUnique:
+                        continue;
+                    default:
+                        break;
+                }
+                property.SetValue(destination, sourceValue);
+            }
+            return destination;
+        }
+
+        /// <summary>
+        /// Updates the `destination` with properties from `source`, while applying business logic rules in annotations.
+        /// The source object will be validated using data annotations first, then properties will be copied across, where:
+        ///   `JsonIgnore` properties will be skipped, these are typically empty as the source has likely been deserialized from the network;
+        ///   `Rules(UpdateAction.BlockChanges)` annotations will throw an exception if a change is attempted;
+        ///   `Rules(UpdateAction.IgnoreChanges)` annotations will not be copied;
+        ///   `Rules(UpdateAction.IgnoreDefaults)` annotations will not be copied if the source property is `null` or `default`.
+        /// Additionally, each incoming property will be compared against 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="destination"></param>
+        public async Task UpdateAsync<T>(T source, T destination)
         {
             if(source == null) {
                 throw new ArgumentNullException(nameof(source));
@@ -18,17 +74,21 @@ namespace Blazor.ExtraDry {
             if(destination == null) {
                 throw new ArgumentNullException(nameof(destination));
             }
+            var validator = new DataValidator();
+            validator.ValidateObject(source);
+            validator.ThrowIfInvalid();
             var properties = typeof(T).GetProperties();
             foreach(var property in properties) {
                 var rule = property.GetCustomAttribute<RulesAttribute>();
                 var ignore = property.GetCustomAttribute<JsonIgnoreAttribute>();
-                if(ignore != null) {
+                if(ignore != null && ignore.Condition == JsonIgnoreCondition.Always) {
                     continue;
                 }
                 var action = rule?.UpdateAction ?? UpdateAction.AllowChanges;
                 var sourceValue = property.GetValue(source);
+                sourceValue = await ResolveEntityValue(property, sourceValue);
                 var destinationValue = property.GetValue(destination);
-                if((sourceValue == null && destinationValue == null) || sourceValue.Equals(destinationValue)) {
+                if(sourceValue?.Equals(destinationValue) ?? true) {
                     continue;
                 }
                 switch(action) {
@@ -49,6 +109,30 @@ namespace Blazor.ExtraDry {
                         break;
                 }
                 property.SetValue(destination, sourceValue);
+            }
+        }
+
+        /// <summary>
+        /// Given an object, especially one that has been deserialized, attempts to resolve a version of that object
+        /// that might be a database entity.  Uses `IEntityResolver` class in DI to find potential replacement.
+        /// This only works for objects, value types are always copies, so sourceValue is always returned.
+        /// </summary>
+        private async Task<object> ResolveEntityValue(PropertyInfo property, object sourceValue)
+        {
+            if(property.PropertyType.IsValueType) {
+                return sourceValue;
+            }
+            var untypedEntityResolver = typeof(IEntityResolver<>);
+            var typedEntityResolver = untypedEntityResolver.MakeGenericType(property.PropertyType);
+            var resolver = scopedServices.GetService(typedEntityResolver);
+            if(resolver == null) {
+                return sourceValue;
+            }
+            else {
+                var method = typedEntityResolver.GetMethod("ResolveAsync");
+                dynamic task = method.Invoke(resolver, new object[] { sourceValue });
+                var result = (await task) as object;
+                return result ?? sourceValue;
             }
         }
 
@@ -83,5 +167,8 @@ namespace Blazor.ExtraDry {
                 }
             }
         }
+
+        private readonly IServiceProvider scopedServices;
+
     }
 }

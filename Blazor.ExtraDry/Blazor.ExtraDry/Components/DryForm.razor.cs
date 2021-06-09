@@ -37,7 +37,7 @@ namespace Blazor.ExtraDry {
             if(Description == null) {
                 Description = new ViewModelDescription(typeof(T), ViewModel);
             }
-            if(Model != null && FormDescription == null) {
+            if(Model != null) {
                 FormDescription = new FormDescription(Description, Model);
             }
         }
@@ -73,6 +73,25 @@ namespace Blazor.ExtraDry {
                 FormDescription = new FormDescription(Description, Model); // re-build description to add/remove UI elements.
             }
             StateHasChanged();
+        }
+
+        private void DeleteItem(object? items, object item)
+        {
+            Console.WriteLine("DeleteItem");
+            if(items == null) {
+                throw new ArgumentNullException(nameof(items));
+            }
+            if(items is IList list) {
+                Console.WriteLine("  A list");
+                list.Remove(item);
+                if(Description != null && Model != null) {
+                    FormDescription = new FormDescription(Description, Model); // re-build description to add/remove UI elements.
+                }
+                StateHasChanged();
+            }
+            else {
+                Console.WriteLine("  Not a list: " + items.GetType().ToString());
+            }
         }
 
     }

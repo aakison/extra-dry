@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Blazor.ExtraDry.Components.Internal {
     internal class ItemComparer<T> : IComparer<ListItemInfo<T>> {
 
-        public ItemComparer(DryProperty property, bool ascending)
+        public ItemComparer(PropertyDescription property, bool ascending)
         {
             Property = property;
             Ascending = ascending;
@@ -17,7 +17,7 @@ namespace Blazor.ExtraDry.Components.Internal {
             propertyIsEnum = property.HasDiscreteValues;
         }
 
-        public DryProperty Property { get; }
+        public PropertyDescription Property { get; }
 
         public bool Ascending { get; }
 

@@ -1,0 +1,51 @@
+﻿@namespace Blazor.ExtraDry
+
+@if(Description == null) {
+    <progress>loading nav</progress>
+}
+else {
+    <nav @attributes="@InputAttributes">
+        <ul>
+            @if(Description.HasNavigationGroups) {
+                @foreach(var group in Description.NavigationGroups) {
+                    <li>
+                        @if(string.IsNullOrWhiteSpace(group)) {
+                            <div>&nbsp;</div>
+                        }
+                        else {
+                            <div>@group</div>
+                        }
+                        <ul>
+                            @foreach(var item in Description.NavigationsInGroup(group)) {
+                                var active = item.UriMatch(Navigation) ? "active" : "inactive";
+                                <li class="@active">
+                                    <a href="@item.Href" @onclick="@item.ExecuteAsync">
+                                        @if(item.HasImage) { 
+                                            <img src="@item.Image" />
+                                        }
+                                        <DryIcon Key="@item.Icon" />
+                                        <span>@item.Caption</span>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </li>
+                }
+            }
+            else { 
+                @foreach(var item in Description.Navigations) {
+                    var active = item.UriMatch(Navigation) ? "active" : "inactive";
+                     <li class="@active">
+                        <a href="@item.Href" @onclick="@item.ExecuteAsync">
+                            @if (item.HasImage) {
+                                <img src="@item.Image" />
+                            }
+                            <DryIcon Key="@item.Icon" />
+                            <span>@item.Caption</span>
+                        </a>
+                    </li>
+                }
+            }
+        </ul>
+    </nav>
+}

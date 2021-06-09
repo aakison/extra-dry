@@ -16,7 +16,7 @@ namespace Blazor.ExtraDry.Internal {
             Model = model;
         }
 
-        public Collection<DryProperty> FormProperties { get; } = new();
+        public Collection<PropertyDescription> FormProperties { get; } = new();
 
         public Collection<FormCommand> Commands { get; } = new();
 

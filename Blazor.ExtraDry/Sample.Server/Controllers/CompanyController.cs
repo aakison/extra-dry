@@ -1,48 +1,47 @@
-﻿using Sample.Data.Services;
-using Sample.Shared;
+﻿#nullable enable
+
+using Blazor.ExtraDry;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Sample.Data.Services;
+using Sample.Shared;
 using Swashbuckle.AspNetCore.Annotations;
+using System;
+using System.Threading.Tasks;
 
 namespace Sample.Server.Controllers {
 
-    public class CompanyController : Controller {
+    [ApiController]
+    public class CompanyController {
         
         public CompanyController(CompanyService companyService)
         {
             companies = companyService;
         }
 
-        [HttpGet("api/companies")]
-        [SwaggerOperation("List all companies")]
-        public async Task<IEnumerable<Company>> List()
+        [HttpGet("api/companies"), Produces("application/json")]
+        [SwaggerOperation("List all companies", "Provides a complete list of all companies, as this list is not too large, all are returned on every call.")]
+        public async Task<FilteredCollection<Company>> List([FromQuery] FilterQuery query)
         {
-            return await companies.List();
+            return await companies.List(query);
         }
 
-        [HttpGet("api/companies/{uniqueId}")]
+        [HttpGet("api/companies/{uniqueId}"), Produces("application/json")]
         [SwaggerOperation("Retreive a specific company")]
         public async Task<Company> Retrieve(Guid uniqueId)
         {
             return await companies.Retrieve(uniqueId);
         }
 
-        [HttpPost("api/companies/{uniqueId}")]
+        [HttpPost("api/companies"), Consumes("application/json")]
         [SwaggerOperation("Create a new company.", "Create a new company at the URI, the uniqueId in the URI must match the Id in the payload.")]
-        public async Task Create(Guid uniqueId, [FromBody] Company value)
+        public async Task Create(Company value)
         {
-            if(uniqueId != value?.UniqueId) {
-                throw new ArgumentException("ID in URI must match body.", nameof(uniqueId));
-            }
             await companies.Create(value);
         }
 
-        [HttpPut("api/companies/{uniqueId}")]
+        [HttpPut("api/companies/{uniqueId}"), Consumes("application/json")]
         [SwaggerOperation("Update an existing company.", "Update the company at the URI, the uniqueId in the URI must match the Id in the payload.")]
-        public async Task Update(Guid uniqueId, [FromBody] Company value)
+        public async Task Update(Guid uniqueId, Company value)
         {
             if(uniqueId != value?.UniqueId) {
                 throw new ArgumentException("ID in URI must match body.", nameof(uniqueId));
