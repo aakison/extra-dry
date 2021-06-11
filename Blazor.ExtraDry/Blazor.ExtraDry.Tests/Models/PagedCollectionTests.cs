@@ -15,9 +15,9 @@ namespace Blazor.ExtraDry.Tests.Models {
             Assert.Equal(0, target.Count);
             Assert.True(DateTime.UtcNow >= target.Created);
             Assert.True(DateTime.UtcNow.AddSeconds(-1) < target.Created);
-            Assert.Empty(target.Filter);
-            Assert.Empty(target.Sort);
-            Assert.Empty(target.Stabalizer);
+            Assert.Null(target.Filter);
+            Assert.Null(target.Sort);
+            Assert.Null(target.Stabalizer);
             Assert.Equal(0, target.Total);
             Assert.Null(target.ContinuationToken);
         }

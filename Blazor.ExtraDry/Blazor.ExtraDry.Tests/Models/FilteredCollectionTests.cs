@@ -15,9 +15,9 @@ namespace Blazor.ExtraDry.Tests.Models {
             Assert.Equal(0, collection.Count);
             Assert.True(DateTime.UtcNow >= collection.Created);
             Assert.True(DateTime.UtcNow.AddSeconds(-1) < collection.Created);
-            Assert.Empty(collection.Filter);
-            Assert.Empty(collection.Sort);
-            Assert.Empty(collection.Stabalizer);
+            Assert.Null(collection.Filter);
+            Assert.Null(collection.Sort);
+            Assert.Null(collection.Stabalizer);
         }
 
         [Theory]
