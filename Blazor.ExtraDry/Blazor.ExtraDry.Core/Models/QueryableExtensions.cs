@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace Blazor.ExtraDry {
@@ -39,9 +40,15 @@ namespace Blazor.ExtraDry {
 
         public static IQueryable<T> Sort<T>(this IQueryable<T> source, FilterQuery query)
         {
-            // TODO: Implement stabalizer using model meta-data.
+            var keyPropertyName = "Id";
+            var propInfo = typeof(T).GetProperties().FirstOrDefault(e => e.GetCustomAttributes(true).Any(e => e is KeyAttribute));
+            if(propInfo != null) {
+                keyPropertyName = propInfo.Name;
+            }
+
+            // TODO: Implement stabalizer using model meta-data for Composite keys.
             var token = (query as PageQuery)?.Token; // Only need the token if it's a PageQuery, null if FilterQuery.
-            return source.Sort(query.Sort, query.Ascending, "Id", token);
+            return source.Sort(query.Sort, query.Ascending, keyPropertyName, token);
         }
 
         /// <summary>

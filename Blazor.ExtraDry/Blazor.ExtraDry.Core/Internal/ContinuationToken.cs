@@ -21,8 +21,8 @@ namespace Blazor.ExtraDry {
 
         public ContinuationToken(string filter, string sort, bool ascending, string stabalizer, int skip, int take)
         {
-            Filter = filter;
-            Sort = sort;
+            Filter = filter ?? string.Empty;
+            Sort = sort ?? string.Empty;
             Ascending = ascending;
             Stabalizer = stabalizer;
             Skip = ActualSkip(null, skip);
