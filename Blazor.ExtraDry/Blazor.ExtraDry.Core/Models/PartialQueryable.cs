@@ -106,6 +106,7 @@ namespace Blazor.ExtraDry {
         {
             var skip = (query as PageQuery)?.Skip ?? 0;
             var take = (query as PageQuery)?.Take ?? PageQuery.DefaultTake;
+            
             var nextToken = (token ?? new ContinuationToken(query.Filter, query.Sort, query.Ascending, query.Stabalizer, take, take)).Next(skip, take);
             var previousTake = ContinuationToken.ActualTake(token, take);
             var previousSkip = ContinuationToken.ActualSkip(token, skip);

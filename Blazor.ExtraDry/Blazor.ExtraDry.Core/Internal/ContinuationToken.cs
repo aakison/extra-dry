@@ -21,10 +21,10 @@ namespace Blazor.ExtraDry {
 
         public ContinuationToken(string filter, string sort, bool ascending, string stabalizer, int skip, int take)
         {
-            Filter = filter;
-            Sort = sort;
+            Filter = filter ?? string.Empty;
+            Sort = sort ?? string.Empty;
             Ascending = ascending;
-            Stabalizer = stabalizer;
+            Stabalizer = stabalizer ?? string.Empty;
             Skip = ActualSkip(null, skip);
             Take = ActualTake(null, take);
         }
