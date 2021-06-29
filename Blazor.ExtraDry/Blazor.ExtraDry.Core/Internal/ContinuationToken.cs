@@ -24,7 +24,7 @@ namespace Blazor.ExtraDry {
             Filter = filter ?? string.Empty;
             Sort = sort ?? string.Empty;
             Ascending = ascending;
-            Stabalizer = stabalizer;
+            Stabalizer = stabalizer ?? string.Empty;
             Skip = ActualSkip(null, skip);
             Take = ActualTake(null, take);
         }
