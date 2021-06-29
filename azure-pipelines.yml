@@ -20,6 +20,7 @@ variables:
   prereleaseVersion: ''
   semanticVersion: '0.1.0'  
   projectsGlob: '**/Blazor.ExtraDry*.csproj' # don't build samples
+  isForDeployment: $[in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/develop', 'refs/heads/release')]
 
 steps:
 - task: UseDotNet@2
@@ -95,6 +96,7 @@ steps:
 
 - task: DotNetCoreCLI@2
   displayName: Pack
+  condition: and(succeeded(), eq(variables.isForDeployment, true))
   inputs:
     command: 'pack'
     packagesToPack: '**/Blazor.ExtraDry*/*.csproj'
@@ -103,10 +105,13 @@ steps:
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact'
+  condition: and(succeeded(), eq(variables.isForDeployment, true))
   inputs:
     PathtoPublish: '$(build.artifactstagingdirectory)'
 
 - task: NuGetCommand@2
+  displayName: 'Push to NuGet.org'
+  condition: and(succeeded(), eq(variables.isForDeployment, true))
   inputs:
     command: 'push'
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
