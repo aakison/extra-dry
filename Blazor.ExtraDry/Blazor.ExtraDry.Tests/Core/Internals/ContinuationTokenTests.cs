@@ -129,5 +129,41 @@ namespace Blazor.ExtraDry.Tests.Internals {
             Assert.Equal(expected, actual);
         }
 
+        [Theory]
+        [InlineData(null, "")]
+        [InlineData("", "")]
+        [InlineData("abc", "abc")]
+        public void FilterValueForToken(string input, string expected)
+        {
+            var token = new ContinuationToken(input, "", false, "", 12, 13);
+            var actual = token.Filter;
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData(null, "")]
+        [InlineData("", "")]
+        [InlineData("abc", "abc")]
+        public void SortValueForToken(string input, string expected)
+        {
+            var token = new ContinuationToken("", input, false, "", 12, 13);
+            var actual = token.Sort;
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData(null, "")]
+        [InlineData("", "")]
+        [InlineData("abc", "abc")]
+        public void StabalizerValueForToken(string input, string expected)
+        {
+            var token = new ContinuationToken("", "", false, input, 12, 13);
+            var actual = token.Stabalizer;
+
+            Assert.Equal(expected, actual);
+        }
+
     }
 }
