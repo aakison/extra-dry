@@ -44,9 +44,16 @@ namespace Blazor.ExtraDry {
             var type = typeof(T);
             var properties = type.GetProperties();
 
-            var propInfo = properties.FirstOrDefault(e => e.GetCustomAttributes(true).Any(e => e is KeyAttribute));
-            if(propInfo != null) {
-                keyPropertyName = propInfo.Name;
+            var keyProperties = properties.Where(e => e.GetCustomAttributes(true).Any(e => e is KeyAttribute));
+            
+            if(!string.IsNullOrWhiteSpace(query.Stabalizer)) {
+                keyPropertyName = query.Stabalizer;
+            }
+            else if(keyProperties.Count() == 1) {
+                keyPropertyName = keyProperties.First().Name;
+            }
+            else if(keyProperties.Count() > 1) {
+                throw new DryException("Sort requires that a single EF key is well defined to stabalize the sort, composite keys are not supported.  Manually specify a Stabalizer in the FilterQuery, or use a single [Key] attribute.", "Unable to Sort (0x0F3F241D)");
             }
             else if(properties.Any(e => e.Name == "Id")) {
                 keyPropertyName = "Id";
@@ -55,10 +62,9 @@ namespace Blazor.ExtraDry {
                 keyPropertyName = $"{type.Name}Id";
             }
             else {
-                throw new ExtraDry.DryException("Sort requires that a EF key is well defined to stabalize the sort, even if another sort property is present.", "Unable to Sort (0x0F3F241C)");
+                throw new DryException("Sort requires that an EF key is uniquely defined to stabalize the sort, even if another sort property is present.  Create a unique key following EF conventions or specify a Stabalizer in the FilterQuery.", "Unable to Sort (0x0F3F241C)");
             }
 
-            // TODO: Implement stabalizer using model meta-data for Composite keys.
             var token = (query as PageQuery)?.Token; // Only need the token if it's a PageQuery, null if FilterQuery.
             return source.Sort(query.Sort, query.Ascending, keyPropertyName, token);
         }
