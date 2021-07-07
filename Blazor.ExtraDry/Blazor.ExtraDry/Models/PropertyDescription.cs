@@ -19,6 +19,7 @@ namespace Blazor.ExtraDry {
             Header = Property.GetCustomAttribute<HeaderAttribute>();
             MaxLength = Property.GetCustomAttribute<MaxLengthAttribute>();
             IsRequired = Property.GetCustomAttribute<RequiredAttribute>() != null;
+            Control = Property.GetCustomAttribute<ControlAttribute>();
             FieldCaption = Display?.Name ?? Property.Name;
             ColumnCaption = Display?.ShortName ?? Property.Name;
             Description = Display?.Description;
@@ -67,6 +68,8 @@ namespace Blazor.ExtraDry {
 
         public MaxLengthAttribute MaxLength { get; }
 
+        public ControlAttribute Control { get; }
+
         public string Description { get; }
 
         public bool IsRequired { get; }
@@ -106,6 +109,8 @@ namespace Blazor.ExtraDry {
                 return 0;
             }
         }
+
+        public ControlType ControlType => Control?.Type ?? ControlType.BestMatch;
 
         public void SetValue(object item, object value) => Property?.SetValue(item, Unformat(value));
 
@@ -151,17 +156,16 @@ namespace Blazor.ExtraDry {
             }
         }
 
-        public IList<KeyValuePair<object, string>> GetDiscreteValues()
+        public IList<ValueDescription> GetDiscreteValues()
         {
-            var pairs = new List<KeyValuePair<object, string>>();
+            var values = new List<ValueDescription>();
             var enumValues = Property.PropertyType.GetEnumValues();
             foreach(var value in enumValues) {
                 var memberInfo = Property.PropertyType.GetMember(value.ToString()).First();
-                var display = memberInfo.GetCustomAttribute<DisplayAttribute>();
-                var name = display?.Name ?? memberInfo.Name;
-                pairs.Add(new KeyValuePair<object, string>(value, name));
+                var valueDescription = new ValueDescription(value, memberInfo);
+                values.Add(valueDescription);
             }
-            return pairs;
+            return values;
         }
 
         private object Unformat(object value)

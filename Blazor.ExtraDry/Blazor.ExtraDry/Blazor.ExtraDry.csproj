@@ -58,6 +58,21 @@
     <Content Update="wwwroot\bundles\blazor-extra-dry.razor.min.js.gz">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="wwwroot\img\layout-doubleweightedleft.png">
+      <CopyToOutputDirectory></CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\img\layout-doubleweightedright.png">
+      <CopyToOutputDirectory></CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\img\layout-double.png">
+      <CopyToOutputDirectory></CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\img\layout-single.png">
+      <CopyToOutputDirectory></CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\img\layout-triple.png">
+      <CopyToOutputDirectory></CopyToOutputDirectory>
+    </Content>
     <Content Update="wwwroot\styles.css">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>

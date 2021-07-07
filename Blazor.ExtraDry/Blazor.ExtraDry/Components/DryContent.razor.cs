@@ -120,6 +120,8 @@ namespace Blazor.ExtraDry {
             }
         }
 
+        [Control(ControlType.RadioButtons)]
+        [Display(Name = "Layout")]
         public SectionLayout CurrentSectionLayout {
             get => CurrentSection?.Layout ?? SectionLayout.Single;
             set {

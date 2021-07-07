@@ -111,6 +111,25 @@ namespace Blazor.ExtraDry {
             }
         }
 
+        private async Task HandleClick(object selectValue)
+        {
+            Console.WriteLine("Changed");
+            var value = selectValue;
+            //if(LookupProviderOptions != null && value is string strValue) {
+            //    value = LookupProviderOptions.FirstOrDefault(e => e.ToString() == strValue);
+            //}
+            Console.WriteLine($"Model: {Model} to Value: {value}");
+            Property.SetValue(Model, value);
+            Validate();
+            // Ignore that it's a physical click and treat like value change for listeners.
+            var changeEventArgs = new ChangeEventArgs { Value = value };
+            var task = OnChange?.InvokeAsync(changeEventArgs);
+            if(task != null) {
+                await task;
+            }
+            StateHasChanged();
+        }
+
         private void Validate()
         {
             var validator = new DataValidator();

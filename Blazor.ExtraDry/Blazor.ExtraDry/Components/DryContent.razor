@@ -1,42 +1,61 @@
 ﻿@namespace Blazor.ExtraDry
 
-<DryButtonBar ViewModel="this" />
+<div class="content-editor">
 
-<DryInput Model="this" PropertyName="CurrentSectionTheme" />
-<DryInput Model="this" PropertyName="CurrentSectionLayout" />
-<DryInput Model="this" PropertyName="CurrentContainerAlignment" />
-<DryInput Model="this" PropertyName="CurrentContainerPadding" />
+    <div class="toolbar">
 
-<DryInput Model="this" PropertyName="HyperlinkClass" />
-<DryInput Model="this" PropertyName="HyperlinkTitle" />
-<DryInput Model="this" PropertyName="HyperlinkHref" />
+        <section>
+            <h5>Section</h5>
+            <DryInput Model="this" PropertyName="CurrentSectionTheme" />
+            <DryInput Model="this" PropertyName="CurrentSectionLayout" />
+        </section>
 
-<br />
+        <section>
+            <h6>Container</h6>
+            <DryInput Model="this" PropertyName="CurrentContainerAlignment" />
+            <DryInput Model="this" PropertyName="CurrentContainerPadding" />
+        </section>
 
-@if(Content == null) {
-    <div class="progress">
-        <progress />
+        <h6>Selection</h6>
+        <DryButtonBar ViewModel="this" />
+
+        <h6>Hyperlink</h6>
+        <DryInput Model="this" PropertyName="HyperlinkClass" />
+        <DryInput Model="this" PropertyName="HyperlinkTitle" />
+        <DryInput Model="this" PropertyName="HyperlinkHref" />
+
     </div>
-}
-else { 
-    <div class="sections">
-        @foreach (var section in Content.Sections) {
-            var layoutClass = section.Layout.ToString().ToLowerInvariant();
-            var themeClass = section.Theme.ToString().ToLowerInvariant();
-            <section class="@layoutClass @themeClass">
-                <article>
-                    @foreach (var container in section.DisplayContainers) {
-                        var alignment = $"alignment-{container.Alignment.ToString().ToLowerInvariant()}";
-                        var padding = $"padding-{container.Padding.ToString().ToLowerInvariant()}";
-                        <div class="editor-root @alignment @padding" id="@container.Id"
-                             @onfocusout="@(args => EditorFocusOut(section, container, args))"
-                             @onfocus="@(args => EditorFocus(section, container, args))">
-                            <!-- Content injected via JS so Rooster and Blazor don't fight each other... -->
-                        </div>
-                    }
-                </article>
-            </section>
+
+    <div class="editor">
+
+        @if(Content == null) {
+            <div class="progress">
+                <progress />
+            </div>
         }
+        else { 
+            <div class="sections">
+                @foreach (var section in Content.Sections) {
+                    var layoutClass = section.Layout.ToString().ToLowerInvariant();
+                    var themeClass = section.Theme.ToString().ToLowerInvariant();
+                    <section class="@layoutClass @themeClass">
+                        <article>
+                            @foreach (var container in section.DisplayContainers) {
+                                var alignment = $"alignment-{container.Alignment.ToString().ToLowerInvariant()}";
+                                var padding = $"padding-{container.Padding.ToString().ToLowerInvariant()}";
+                                <div class="editor-root @alignment @padding" id="@container.Id"
+                                     @onfocusout="@(args => EditorFocusOut(section, container, args))"
+                                     @onfocus="@(args => EditorFocus(section, container, args))">
+                                    <!-- Content injected via JS so Rooster and Blazor don't fight each other... -->
+                                </div>
+                            }
+                        </article>
+                    </section>
+                }
+            </div>
+        }
+
     </div>
-}
+
+</div>
 
