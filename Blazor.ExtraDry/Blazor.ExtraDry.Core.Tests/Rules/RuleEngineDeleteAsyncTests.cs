@@ -1,12 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace Blazor.ExtraDry.Core.Tests.Rules {
     public class RuleEngineDeleteAsyncTests {
+
+        [Fact]
+        public void EntityFrameworkStyleDeleteExecutesSoft()
+        {
+            var rules = new RuleEngine(new ServiceProviderStub());
+            var item = new SoftDeletable();
+            var items = new List<SoftDeletable> { item };
+
+            rules.Delete(item, () => items.Remove(item));
+
+            Assert.NotEmpty(items);
+            Assert.False(item.Active);
+        }
+
+        [Fact]
+        public void EntityFrameworkStyleDeleteExecutesHard()
+        {
+            var rules = new RuleEngine(new ServiceProviderStub());
+            var item = new object();
+            var items = new List<object> { item };
+
+            rules.Delete(item, () => items.Remove(item));
+
+            Assert.Empty(items);
+        }
 
         [Fact]
         public async Task EntityFrameworkStyleDeleteSoftFailover()
@@ -18,6 +41,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             await rules.DeleteSoftAsync(item, () => items.Remove(item), async () => await SaveChangesAsync());
 
             Assert.Equal(SaveState.Done, state);
+            Assert.Empty(items);
         }
 
         [Fact]
@@ -30,6 +54,21 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             await rules.DeleteHardAsync(item, () => items.Remove(item), async () => await SaveChangesAsync());
 
             Assert.Equal(SaveState.Done, state);
+            Assert.Empty(items);
+        }
+
+
+        [Fact]
+        public void EntityFrameworkStyleHardDeleteSync()
+        {
+            var rules = new RuleEngine(new ServiceProviderStub());
+            var item = new object();
+            var items = new List<object> { item };
+
+            rules.DeleteHard(item, () => items.Remove(item), () => SaveChanges());
+
+            Assert.Equal(SaveState.Done, state);
+            Assert.Empty(items);
         }
 
         private void SaveChanges()
