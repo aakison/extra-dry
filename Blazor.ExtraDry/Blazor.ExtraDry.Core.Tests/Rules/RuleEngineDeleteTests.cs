@@ -155,6 +155,20 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             Assert.False(obj.Active);
         }
 
+        [Fact]
+        public void SoftDeleteDoesntChangeOtherValues()
+        {
+            var rules = new RuleEngine(new ServiceProviderStub());
+            var obj = new SoftDeletable();
+            var original = obj.Unchanged;
+            var unruled = obj.UnRuled;
+
+            rules.DeleteSoft(obj, NoOp, NoOp);
+
+            Assert.Equal(original, obj.Unchanged);
+            Assert.Equal(unruled, obj.UnRuled);
+        }
+
         private static void NoOp() { }
 
         private void FakePrepare(ref int stepStamp) => stepStamp = step++;
@@ -173,6 +187,11 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         public class SoftDeletable {
             [Rules(DeleteValue = false)]
             public bool Active { get; set; } = true;
+
+            [Rules]
+            public int Unchanged { get; set; } = 2;
+
+            public int UnRuled { get; set; } = 3;
         }
 
     }

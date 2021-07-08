@@ -311,11 +311,8 @@ namespace Blazor.ExtraDry {
 
         private static void CompleteActionMasquardingAsFuncTask(Task task)
         {
-            if(task.IsFaulted) {
+            if(task.IsCompleted && task.IsFaulted) {
                 throw task.Exception.InnerException;
-            }
-            if(!task.IsCompleted) {
-                task.RunSynchronously();
             }
         }
 

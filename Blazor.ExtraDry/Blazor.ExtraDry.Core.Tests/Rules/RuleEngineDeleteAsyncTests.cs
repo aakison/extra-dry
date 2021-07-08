@@ -57,7 +57,6 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             Assert.Empty(items);
         }
 
-
         [Fact]
         public void EntityFrameworkStyleHardDeleteSync()
         {
@@ -66,6 +65,44 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             var items = new List<object> { item };
 
             rules.DeleteHard(item, () => items.Remove(item), () => SaveChanges());
+
+            Assert.Equal(SaveState.Done, state);
+            Assert.Empty(items);
+        }
+
+        [Fact]
+        public async Task EntityFrameworkStyleHardDeleteAsyncPrepare()
+        {
+            var rules = new RuleEngine(new ServiceProviderStub());
+            var item = new object();
+            var items = new List<object> { item };
+
+            await rules.DeleteHardAsync(item, 
+                async () => {
+                    await Task.Delay(1);
+                    items.Remove(item);
+                }, 
+                () => SaveChanges()
+            );
+
+            Assert.Equal(SaveState.Done, state);
+            Assert.Empty(items);
+        }
+
+        [Fact]
+        public async Task EntityFrameworkStyleDeleteSoftAsyncPrepare()
+        {
+            var rules = new RuleEngine(new ServiceProviderStub());
+            var item = new object();
+            var items = new List<object> { item };
+
+            await rules.DeleteSoftAsync(item,
+                async () => {
+                    await Task.Delay(1);
+                    items.Remove(item);
+                },
+                () => SaveChanges()
+            );
 
             Assert.Equal(SaveState.Done, state);
             Assert.Empty(items);
