@@ -155,7 +155,6 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             Assert.False(obj.Active);
         }
 
-
         private static void NoOp() { }
 
         private void FakePrepare(ref int stepStamp) => stepStamp = step++;

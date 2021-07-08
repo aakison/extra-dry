@@ -113,6 +113,166 @@ namespace Blazor.ExtraDry {
         }
 
         /// <summary>
+        /// Processes a delete of an item setting the appropriate fields.
+        /// If any fields have `DeleteValue` set on their `RuleAttribute`, then the item is soft-deleted and the method return true.
+        /// Otherwise, it executes the indicated `hardDeletePrepare` action (typically remove from collection, without commit).
+        /// </summary>
+        /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
+        /// <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
+        public void Delete<T>(T item, Action hardDeletePrepare = null)
+        {
+            DeleteSoft(item, hardDeletePrepare, null);
+        }
+
+        /// <summary>
+        /// Processes a delete of an item setting the appropriate fields.
+        /// If any fields have `DeleteValue` set on their `RulesAttribute`, then the item is soft-deleted and the method return true.
+        /// Otherwise, it executes the indicated `hardDeletePrepare` action (typically remove from collection);
+        /// followed by the indicated `hardDeleteCommit` action, if provided.
+        /// </summary>
+        /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
+        /// <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
+        /// <param name="hardDeleteCommit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
+        public void DeleteSoft<T>(T item, Action hardDeletePrepare, Action hardDeleteCommit)
+        {
+            var task = DeleteSoftAsync(item, WrapAction(hardDeletePrepare), WrapAction(hardDeleteCommit));
+            CompleteActionMasquardingAsFuncTask(task);
+        }
+
+        /// <summary>
+        /// Processes a delete of an item setting the appropriate fields.
+        /// If any fields have `DeleteValue` set on their `RulesAttribute`, then the item is soft-deleted and the method return true.
+        /// Otherwise, it executes the indicated `hardDeletePrepare` action (typically remove from collection);
+        /// followed by the indicated `hardDeleteCommit` action, if provided.
+        /// </summary>
+        /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
+        /// <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
+        /// <param name="hardDeleteCommit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
+        public async Task DeleteSoftAsync<T>(T item, Action hardDeletePrepare, Func<Task> hardDeleteCommit)
+        {
+            await DeleteSoftAsync(item, WrapAction(hardDeletePrepare), hardDeleteCommit);
+        }
+
+        /// <summary>
+        /// Processes a delete of an item setting the appropriate fields.
+        /// If any fields have `DeleteValue` set on their `RulesAttribute`, then the item is soft-deleted and the method return true.
+        /// Otherwise, it executes the indicated `hardDeletePrepare` action (typically remove from collection);
+        /// followed by the indicated `hardDeleteCommit` action, if provided.
+        /// </summary>
+        /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
+        /// <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
+        /// <param name="hardDeleteCommit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
+        public async Task DeleteSoftAsync<T>(T item, Func<Task> hardDeletePrepare, Action hardDeleteCommit)
+        {
+            await DeleteSoftAsync(item, hardDeletePrepare, WrapAction(hardDeleteCommit));
+        }
+
+        /// <summary>
+        /// Processes a delete of an item setting the appropriate fields.
+        /// If any fields have `DeleteValue` set on their `RulesAttribute`, then the item is soft-deleted and the method return true.
+        /// Otherwise, it executes the indicated `hardDeletePrepare` action (typically remove from collection);
+        /// followed by the indicated `hardDeleteCommit` action, if provided.
+        /// </summary>
+        /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
+        /// <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
+        /// <param name="hardDeleteCommit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
+        [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Keep as standard service instance style for DI.")]
+        public async Task DeleteSoftAsync<T>(T item, Func<Task> hardDeletePrepare, Func<Task> hardDeleteCommit)
+        {
+            if(item == null) {
+                throw new ArgumentNullException(nameof(item));
+            }
+            if(!AttemptSoftDelete(item)) {
+                if(hardDeletePrepare == null) {
+                    throw new InvalidOperationException("Item could not be soft-deleted and no hard delete action was provided.");
+                }
+                else {
+                    await hardDeletePrepare();
+                    if(hardDeleteCommit != null) {
+                        await hardDeleteCommit();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Processes a hard delete of an item if possible, even if a `DeleteValue` is provided in the `RulesAttribute`.
+        /// This allows for the database to notify if a hard-delete is not possible by throwing an exception in the commit.
+        /// If not possible, then the soft-delete is performed instead.
+        /// If neither is possible, an exception is thrown.
+        /// </summary>
+        /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
+        /// <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
+        /// <param name="hardDeleteCommit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
+        public void DeleteHard<T>(T item, Action hardDeletePrepare, Action hardDeleteCommit)
+        {
+            // Bit hinky, map Actions to Func<Task> so that logic flow isn't repeated, then map back to non-async.
+            var task = DeleteHardAsync(item, WrapAction(hardDeletePrepare), WrapAction(hardDeleteCommit));
+            CompleteActionMasquardingAsFuncTask(task);
+        }
+
+        /// <summary>
+        /// Processes a hard delete of an item if possible, even if a `DeleteValue` is provided in the `RulesAttribute`.
+        /// This allows for the database to notify if a hard-delete is not possible by throwing an exception in the commit.
+        /// If not possible, then the soft-delete is performed instead.
+        /// If neither is possible, an exception is thrown.
+        /// </summary>
+        /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
+        /// <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
+        /// <param name="hardDeleteCommit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
+        public async Task DeleteHardAsync<T>(T item, Action hardDeletePrepare, Func<Task> hardDeleteCommit)
+        {
+            await DeleteHardAsync(item, WrapAction(hardDeletePrepare), hardDeleteCommit);
+        }
+
+        /// <summary>
+        /// Processes a hard delete of an item if possible, even if a `DeleteValue` is provided in the `RulesAttribute`.
+        /// This allows for the database to notify if a hard-delete is not possible by throwing an exception in the commit.
+        /// If not possible, then the soft-delete is performed instead.
+        /// If neither is possible, an exception is thrown.
+        /// </summary>
+        /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
+        /// <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
+        /// <param name="hardDeleteCommit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
+        public async Task DeleteHardAsync<T>(T item, Func<Task> hardDeletePrepare, Action hardDeleteCommit)
+        {
+            await DeleteHardAsync(item, hardDeletePrepare, WrapAction(hardDeleteCommit));
+        }
+
+        /// <summary>
+        /// Processes a hard delete of an item if possible, even if a `DeleteValue` is provided in the `RulesAttribute`.
+        /// This allows for the database to notify if a hard-delete is not possible by throwing an exception in the commit.
+        /// If not possible, then the soft-delete is performed instead.
+        /// If neither is possible, an exception is thrown.
+        /// </summary>
+        /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
+        /// <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
+        /// <param name="hardDeleteCommit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
+        [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Keep as standard service instance style for DI.")]
+        public async Task DeleteHardAsync<T>(T item, Func<Task> hardDeletePrepare, Func<Task> hardDeleteCommit)
+        {
+            if(item == null) {
+                throw new ArgumentNullException(nameof(item));
+            }
+            if(hardDeletePrepare == null) {
+                throw new ArgumentNullException(nameof(item), "Must provide an action to prepare hard delete, e.g. remove from collection");
+            }
+            if(hardDeleteCommit == null) {
+                throw new ArgumentNullException(nameof(item), "Must provide an action to commit hard delete, e.g. save to database");
+            }
+            try {
+                await hardDeletePrepare();
+                await hardDeleteCommit();
+            }
+            catch { // Hmmm, can we be specific about exception type here?
+                if(!AttemptSoftDelete(item)) {
+                    throw new InvalidOperationException("Item could not be hard-deleted and no rules for soft-delete provided.");
+                }
+                await hardDeleteCommit();
+            }
+        }
+
+        /// <summary>
         /// Given an object, especially one that has been deserialized, attempts to resolve a version of that object
         /// that might be a database entity.  Uses `IEntityResolver` class in DI to find potential replacement.
         /// This only works for objects, value types are always copies, so sourceValue is always returned.
@@ -136,74 +296,26 @@ namespace Blazor.ExtraDry {
             }
         }
 
-        /// <summary>
-        /// Processes a delete of an item setting the appropriate fields.
-        /// If any fields have `DeleteValue` set on their `RuleAttribute`, then the item is soft-deleted and the method return true.
-        /// Otherwise, it executes the indicated `hardDeletePrepare` action (typically remove from collection, without commit).
-        /// </summary>
-        /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
-        /// <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
-        public void Delete<T>(T item, Action hardDeletePrepare = null)
+        private static Func<Task> WrapAction(Action action)
         {
-            DeleteSoft(item, hardDeletePrepare, null);
-        }
-
-        /// <summary>
-        /// Processes a delete of an item setting the appropriate fields.
-        /// If any fields have `DeleteValue` set on their `RulesAttribute`, then the item is soft-deleted and the method return true.
-        /// Otherwise, it executes the indicated `hardDeletePrepare` action (typically remove from collection);
-        /// followed by the indicated `hardDeleteCommit` action, if provided.
-        /// </summary>
-        /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
-        /// <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
-        /// <param name="hardDeleteCommit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
-        [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Keep as standard service instance style for DI.")]
-        public void DeleteSoft<T>(T item, Action hardDeletePrepare, Action hardDeleteCommit)
-        {
-            if(item == null) {
-                throw new ArgumentNullException(nameof(item));
+            if(action == null) {
+                return null;
             }
-            if(!AttemptSoftDelete(item)) {
-                if(hardDeletePrepare == null) {
-                    throw new InvalidOperationException("Item could not be soft-deleted and no hard delete action was provided.");
-                }
-                else {
-                    hardDeletePrepare();
-                    hardDeleteCommit?.Invoke();
-                }
+            else {
+                return () => {
+                    action();
+                    return Task.CompletedTask;
+                };
             }
         }
 
-        /// <summary>
-        /// Processes a hard delete of an item if possible, even if a `DeleteValue` is provided in the `RulesAttribute`.
-        /// This allows for the database to notify if a hard-delete is not possible by throwing an exception in the commit.
-        /// If not possible, then the soft-delete is performed instead.
-        /// If neither is possible, an exception is thrown.
-        /// </summary>
-        /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
-        /// <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
-        /// <param name="hardDeleteCommit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
-        [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Keep as standard service instance style for DI.")]
-        public void DeleteHard<T>(T item, Action hardDeletePrepare, Action hardDeleteCommit)
+        private static void CompleteActionMasquardingAsFuncTask(Task task)
         {
-            if(item == null) {
-                throw new ArgumentNullException(nameof(item));
+            if(task.IsFaulted) {
+                throw task.Exception.InnerException;
             }
-            if(hardDeletePrepare == null) {
-                throw new ArgumentNullException(nameof(item), "Must provide an action to prepare hard delete, e.g. remove from collection");
-            }
-            if(hardDeleteCommit == null) {
-                throw new ArgumentNullException(nameof(item), "Must provide an action to commit hard delete, e.g. save to database");
-            }
-            try {
-                hardDeletePrepare();
-                hardDeleteCommit();
-            }
-            catch { // Hmmm, can we be specific about exception type here?
-                if(!AttemptSoftDelete(item)) {
-                    throw new InvalidOperationException("Item could not be hard-deleted and no rules for soft-delete provided.");
-                }
-                hardDeleteCommit();
+            if(!task.IsCompleted) {
+                task.RunSynchronously();
             }
         }
 
@@ -220,8 +332,6 @@ namespace Blazor.ExtraDry {
             }
             return deleted;
         }
-
-
 
         private readonly IServiceProvider scopedServices;
 
