@@ -13,10 +13,11 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             var item = new SoftDeletable();
             var items = new List<SoftDeletable> { item };
 
-            rules.Delete(item, () => items.Remove(item));
+            var result = rules.Delete(item, () => items.Remove(item));
 
             Assert.NotEmpty(items);
             Assert.False(item.Active);
+            Assert.Equal(DeleteResult.SoftDeleted, result);
         }
 
         [Fact]
@@ -26,9 +27,10 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             var item = new object();
             var items = new List<object> { item };
 
-            rules.Delete(item, () => items.Remove(item));
+            var result = rules.Delete(item, () => items.Remove(item));
 
             Assert.Empty(items);
+            Assert.Equal(DeleteResult.HardDeleted, result);
         }
 
         [Fact]
@@ -38,10 +40,11 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             var item = new object();
             var items = new List<object> { item };
             
-            await rules.DeleteSoftAsync(item, () => items.Remove(item), async () => await SaveChangesAsync());
+            var result = await rules.DeleteSoftAsync(item, () => items.Remove(item), async () => await SaveChangesAsync());
 
             Assert.Equal(SaveState.Done, state);
             Assert.Empty(items);
+            Assert.Equal(DeleteResult.HardDeleted, result);
         }
 
         [Fact]
@@ -51,10 +54,11 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             var item = new object();
             var items = new List<object> { item };
 
-            await rules.DeleteHardAsync(item, () => items.Remove(item), async () => await SaveChangesAsync());
+            var result = await rules.DeleteHardAsync(item, () => items.Remove(item), async () => await SaveChangesAsync());
 
             Assert.Equal(SaveState.Done, state);
             Assert.Empty(items);
+            Assert.Equal(DeleteResult.HardDeleted, result);
         }
 
         [Fact]
@@ -64,10 +68,11 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             var item = new object();
             var items = new List<object> { item };
 
-            rules.DeleteHard(item, () => items.Remove(item), () => SaveChanges());
+            var result = rules.DeleteHard(item, () => items.Remove(item), () => SaveChanges());
 
             Assert.Equal(SaveState.Done, state);
             Assert.Empty(items);
+            Assert.Equal(DeleteResult.HardDeleted, result);
         }
 
         [Fact]
@@ -77,7 +82,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             var item = new object();
             var items = new List<object> { item };
 
-            await rules.DeleteHardAsync(item, 
+            var result = await rules.DeleteHardAsync(item, 
                 async () => {
                     await Task.Delay(1);
                     items.Remove(item);
@@ -87,6 +92,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
 
             Assert.Equal(SaveState.Done, state);
             Assert.Empty(items);
+            Assert.Equal(DeleteResult.HardDeleted, result);
         }
 
         [Fact]
@@ -96,7 +102,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             var item = new object();
             var items = new List<object> { item };
 
-            await rules.DeleteSoftAsync(item,
+            var result = await rules.DeleteSoftAsync(item,
                 async () => {
                     await Task.Delay(1);
                     items.Remove(item);
@@ -106,6 +112,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
 
             Assert.Equal(SaveState.Done, state);
             Assert.Empty(items);
+            Assert.Equal(DeleteResult.HardDeleted, result);
         }
 
         private void SaveChanges()
@@ -127,13 +134,6 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             Pending = 0,
             Processing = 1,
             Done = 2,
-        }
-
-        public class ServiceProviderStub : IServiceProvider {
-            public object GetService(Type serviceType)
-            {
-                throw new NotImplementedException();
-            }
         }
 
         public class SoftDeletable {

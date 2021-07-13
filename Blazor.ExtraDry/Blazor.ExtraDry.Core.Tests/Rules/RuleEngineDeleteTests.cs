@@ -22,9 +22,10 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             var rules = new RuleEngine(new ServiceProviderStub());
             var obj = new SoftDeletable();
 
-            rules.Delete(obj, null);
+            var result = rules.Delete(obj, null);
 
             Assert.False(obj.Active);
+            Assert.Equal(DeleteResult.SoftDeleted, result);
         }
 
         [Fact]
@@ -34,9 +35,10 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             var obj = new SoftDeletable();
             var deleted = false;
 
-            rules.Delete(new object(), () => deleted = true);
+            var result = rules.Delete(new object(), () => deleted = true);
 
             Assert.True(deleted);
+            Assert.Equal(DeleteResult.HardDeleted, result);
         }
 
         [Fact]
@@ -53,9 +55,10 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             var rules = new RuleEngine(new ServiceProviderStub());
             var obj = new SoftDeletable();
 
-            rules.DeleteSoft(obj, NoOp, NoOp);
+            var result = rules.DeleteSoft(obj, NoOp, NoOp);
 
             Assert.False(obj.Active);
+            Assert.Equal(DeleteResult.SoftDeleted, result);
         }
 
         [Fact]
@@ -74,9 +77,10 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             var rules = new RuleEngine(new ServiceProviderStub());
             var executed = false;
 
-            rules.DeleteSoft(new object(), () => executed = true, null);
+            var result = rules.DeleteSoft(new object(), () => executed = true, null);
 
             Assert.True(executed);
+            Assert.Equal(DeleteResult.HardDeleted, result);
         }
 
         [Fact]
@@ -86,10 +90,11 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             var executed = false;
             var committed = false;
 
-            rules.DeleteSoft(new object(), () => executed = true, () => committed = true);
+            var result = rules.DeleteSoft(new object(), () => executed = true, () => committed = true);
 
             Assert.True(executed);
             Assert.True(committed);
+            Assert.Equal(DeleteResult.HardDeleted, result);
         }
 
 
@@ -126,10 +131,11 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             int prepared = 0;
             int committed = 0;
 
-            rules.DeleteHard(new object(), () => FakePrepare(ref prepared), () => FakeCommit(ref committed));
+            var result = rules.DeleteHard(new object(), () => FakePrepare(ref prepared), () => FakeCommit(ref committed));
 
             Assert.Equal(1, prepared);
             Assert.Equal(2, committed);
+            Assert.Equal(DeleteResult.HardDeleted, result);
         }
 
         [Fact]
@@ -147,12 +153,14 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         {
             var rules = new RuleEngine(new ServiceProviderStub());
             var obj = new SoftDeletable();
+            var callCount = 0;
 
-            rules.DeleteHard(obj, NoOp,
-                () => { if(obj.Active == true) { throw new Exception(); } } // exception on hard delete, not after soft-delete; mimic EF .SaveChanges().
+            var result = rules.DeleteHard(obj, NoOp,
+                () => { if(callCount++ > 0) { throw new Exception(); } } // exception on hard delete (the second call).
             );
 
             Assert.False(obj.Active);
+            Assert.Equal(DeleteResult.SoftDeleted, result);
         }
 
         [Fact]
@@ -163,10 +171,11 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             var original = obj.Unchanged;
             var unruled = obj.UnRuled;
 
-            rules.DeleteSoft(obj, NoOp, NoOp);
+            var result = rules.DeleteSoft(obj, NoOp, NoOp);
 
             Assert.Equal(original, obj.Unchanged);
             Assert.Equal(unruled, obj.UnRuled);
+            Assert.Equal(DeleteResult.SoftDeleted, result);
         }
 
         private static void NoOp() { }
@@ -176,13 +185,6 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         private void FakeCommit(ref int stepStamp) => stepStamp = step++;
 
         private int step = 1;
-
-        public class ServiceProviderStub : IServiceProvider {
-            public object GetService(Type serviceType)
-            {
-                throw new NotImplementedException();
-            }
-        }
 
         public class SoftDeletable {
             [Rules(DeleteValue = false)]
