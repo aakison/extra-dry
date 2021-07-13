@@ -1,1 +1,77 @@
-﻿
+﻿div.content-editor {
+    display: flex;
+    flex-direction: row-reverse;
+    border: solid 1.5px silver;
+
+    .toolbar {
+        flex: 0 0 300px;
+        border-left: solid 1.5px silver;
+
+        h5 {
+            font-weight: bold;
+            font-size: unset;
+            color: gray;
+        }
+
+        ::deep span.caption {
+            font-size: 16px;
+            color: gray;
+        }
+
+        section {
+            border-bottom: solid 1.5px silver;
+            padding: 10px;
+        }
+
+        ::deep .radio-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-column-gap: 10px;
+            grid-row-gap: 10px;
+
+            button {
+                width: 86px;
+                height: 60px;
+                border: solid 1.5px silver;
+                border-radius: 3px;
+                background-color: white;
+
+                &.selected {
+                    background-color: #f2f2f2;
+                }
+
+                img {
+                    width: 64px;
+                    height: 20px;
+                }
+
+                span {
+                    font-size: smaller;
+                    font-weight: bold;
+                    color: gray;
+                }
+            }
+        }
+    }
+
+    .editor {
+        flex: 1 1 auto;
+
+        section {
+            transition: width 0.25s, border 0.25s, outline 0.25s, margin 0.25s;
+
+            &:focus-within {
+                border: solid 2px white;
+                outline: dashed 1.5px #b2c9e4;
+                margin: 5.5px;
+                width: calc(100% - 11px);
+            }
+
+            div.editor-root { /* RoosterJS style */
+                padding-left: 1px;
+                outline: dashed 1.5px #b2c9e4;
+            }
+
+        }
+    }
+}

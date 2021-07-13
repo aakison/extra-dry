@@ -4,6 +4,7 @@
 
 # Report Generator Tool generated website:
 TestCoverage/
+TestResults/
 
 # User-specific files
 *.suo

@@ -71,3 +71,26 @@ Add a Razor page component that edits the item (examples assume T is `Item`)
 
      ```
 
+#### Code Coverage
+
+The coverlet collector has been added to the unit tests for the manual running of code coverage.  To run, install the following prerequisites.  These are global tools for dotnet core.  See https://github.com/danielpalme/ReportGenerator
+
+```
+dotnet tool install -g dotnet-reportgenerator-globaltool
+dotnet tool install dotnet-reportgenerator-globaltool --tool-path tools
+```
+
+Once installed, run code coverage statistics using dotnet as:
+
+```
+dotnet test --collect:"XPlat Code Coverage"
+```
+
+This will store XML coverage files in the 'cobertura' file format.  These can be used by any tools that support that format, in particular the report generator that was installed in the global install steps above.
+
+From the project root directory, run the following to collect the cobertura files and create a static website and browse it:
+
+```
+reportgenerator -reports:./*/TestResults/*/*.xml -targetdir:./TestCoverage
+./TestCoverage/index.htm
+```

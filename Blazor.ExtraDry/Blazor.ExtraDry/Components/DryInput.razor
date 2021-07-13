@@ -29,18 +29,33 @@
     }
     else if(Property.HasDiscreteValues) {
         var selectedValue = Property.GetValue(Model);
-        @if(ReadOnly) {
-            <select class="@CssClass readonly" disabled>
-                <option value="@selectedValue.ToString()" selected>@selectedValue.ToString()</option>
-            </select>
-        } 
-        else { 
-            <select class="@CssClass" @onchange="HandleChange" >
+        @if(Property.ControlType == ControlType.RadioButtons) {
+            <div class="radio-buttons">
                 @foreach (var value in Property.GetDiscreteValues()) {
-                    var selected = value.Key?.ToString() == selectedValue?.ToString(); // force object to enum compare
-                    <option value="@value.Key" selected="@selected">@value.Value</option>
+                    var selected = value.Key.ToString() == selectedValue?.ToString(); // force object to enum compare
+                    var selectedClassName = selected ? "selected" : "";
+                    var valueClassName = value.Key.ToString().ToLower();
+                    <button class="@selectedClassName" @onclick="@(e => HandleClick(value.Key))">
+                        <img class="@valueClassName" src="_content/Blazor.ExtraDry/img/layout-@(valueClassName).png" />
+                        <span>@value.Display</span>
+                    </button>
                 }
-            </select>
+            </div>
+        }
+        else { 
+            @if(ReadOnly) {
+                <select class="@CssClass readonly" disabled>
+                    <option value="@selectedValue.ToString()" selected>@selectedValue.ToString()</option>
+                </select>
+            } 
+            else { 
+                <select class="@CssClass" @onchange="HandleChange" >
+                    @foreach(var value in Property.GetDiscreteValues()) {
+                        var selected = value.Key.ToString() == selectedValue?.ToString(); // force object to enum compare
+                        <option value="@value.Key" selected="@selected">@value.Display</option>
+                    }
+                </select>
+            }
         }
     }
     else if(Property.HasTextRepresentation) {

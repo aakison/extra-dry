@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.Json.Serialization;
 
@@ -80,11 +81,23 @@ namespace Blazor.ExtraDry {
     }
 
     public enum SectionLayout {
+
+        [Display(Name="single")]
         Single,
+
+        [Display(Name = "double")]
         Double,
-        DoubleWeightedLeft,
-        DoubleWeightedRight,
+
+        [Display(Name = "triple")]
         Triple,
+
+        [Display(Name = "double left")]
+        DoubleWeightedLeft,
+
+        [Display(Name = "double right")]
+        DoubleWeightedRight,
+
+        [Display(Name = "quadruple")]
         Quadruple,
     }
 
