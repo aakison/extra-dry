@@ -119,9 +119,9 @@ namespace Blazor.ExtraDry {
         /// </summary>
         /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
         /// <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
-        public void Delete<T>(T item, Action hardDeletePrepare = null)
+        public DeleteResult Delete<T>(T item, Action hardDeletePrepare = null)
         {
-            DeleteSoft(item, hardDeletePrepare, null);
+            return DeleteSoft(item, hardDeletePrepare, null);
         }
 
         /// <summary>
@@ -133,10 +133,11 @@ namespace Blazor.ExtraDry {
         /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
         /// <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
         /// <param name="hardDeleteCommit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
-        public void DeleteSoft<T>(T item, Action hardDeletePrepare, Action hardDeleteCommit)
+        public DeleteResult DeleteSoft<T>(T item, Action hardDeletePrepare, Action hardDeleteCommit)
         {
             var task = DeleteSoftAsync(item, WrapAction(hardDeletePrepare), WrapAction(hardDeleteCommit));
             CompleteActionMasquardingAsFuncTask(task);
+            return task.Result;
         }
 
         /// <summary>
@@ -148,9 +149,9 @@ namespace Blazor.ExtraDry {
         /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
         /// <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
         /// <param name="hardDeleteCommit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
-        public async Task DeleteSoftAsync<T>(T item, Action hardDeletePrepare, Func<Task> hardDeleteCommit)
+        public async Task<DeleteResult> DeleteSoftAsync<T>(T item, Action hardDeletePrepare, Func<Task> hardDeleteCommit)
         {
-            await DeleteSoftAsync(item, WrapAction(hardDeletePrepare), hardDeleteCommit);
+            return await DeleteSoftAsync(item, WrapAction(hardDeletePrepare), hardDeleteCommit);
         }
 
         /// <summary>
@@ -162,9 +163,9 @@ namespace Blazor.ExtraDry {
         /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
         /// <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
         /// <param name="hardDeleteCommit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
-        public async Task DeleteSoftAsync<T>(T item, Func<Task> hardDeletePrepare, Action hardDeleteCommit)
+        public async Task<DeleteResult> DeleteSoftAsync<T>(T item, Func<Task> hardDeletePrepare, Action hardDeleteCommit)
         {
-            await DeleteSoftAsync(item, hardDeletePrepare, WrapAction(hardDeleteCommit));
+            return await DeleteSoftAsync(item, hardDeletePrepare, WrapAction(hardDeleteCommit));
         }
 
         /// <summary>
@@ -177,12 +178,16 @@ namespace Blazor.ExtraDry {
         /// <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
         /// <param name="hardDeleteCommit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
         [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Keep as standard service instance style for DI.")]
-        public async Task DeleteSoftAsync<T>(T item, Func<Task> hardDeletePrepare, Func<Task> hardDeleteCommit)
+        public async Task<DeleteResult> DeleteSoftAsync<T>(T item, Func<Task> hardDeletePrepare, Func<Task> hardDeleteCommit)
         {
             if(item == null) {
                 throw new ArgumentNullException(nameof(item));
             }
-            if(!AttemptSoftDelete(item)) {
+            var result = DeleteResult.NotDeleted;
+            if(AttemptSoftDelete(item)) {
+                result = DeleteResult.SoftDeleted;
+            }
+            if(result == DeleteResult.NotDeleted) {
                 if(hardDeletePrepare == null) {
                     throw new InvalidOperationException("Item could not be soft-deleted and no hard delete action was provided.");
                 }
@@ -191,8 +196,10 @@ namespace Blazor.ExtraDry {
                     if(hardDeleteCommit != null) {
                         await hardDeleteCommit();
                     }
+                    result = DeleteResult.HardDeleted;
                 }
             }
+            return result;
         }
 
         /// <summary>
@@ -204,11 +211,12 @@ namespace Blazor.ExtraDry {
         /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
         /// <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
         /// <param name="hardDeleteCommit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
-        public void DeleteHard<T>(T item, Action hardDeletePrepare, Action hardDeleteCommit)
+        public DeleteResult DeleteHard<T>(T item, Action hardDeletePrepare, Action hardDeleteCommit)
         {
             // Bit hinky, map Actions to Func<Task> so that logic flow isn't repeated, then map back to non-async.
             var task = DeleteHardAsync(item, WrapAction(hardDeletePrepare), WrapAction(hardDeleteCommit));
             CompleteActionMasquardingAsFuncTask(task);
+            return task.Result;
         }
 
         /// <summary>
@@ -220,9 +228,9 @@ namespace Blazor.ExtraDry {
         /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
         /// <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
         /// <param name="hardDeleteCommit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
-        public async Task DeleteHardAsync<T>(T item, Action hardDeletePrepare, Func<Task> hardDeleteCommit)
+        public async Task<DeleteResult> DeleteHardAsync<T>(T item, Action hardDeletePrepare, Func<Task> hardDeleteCommit)
         {
-            await DeleteHardAsync(item, WrapAction(hardDeletePrepare), hardDeleteCommit);
+            return await DeleteHardAsync(item, WrapAction(hardDeletePrepare), hardDeleteCommit);
         }
 
         /// <summary>
@@ -234,9 +242,9 @@ namespace Blazor.ExtraDry {
         /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
         /// <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
         /// <param name="hardDeleteCommit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
-        public async Task DeleteHardAsync<T>(T item, Func<Task> hardDeletePrepare, Action hardDeleteCommit)
+        public async Task<DeleteResult> DeleteHardAsync<T>(T item, Func<Task> hardDeletePrepare, Action hardDeleteCommit)
         {
-            await DeleteHardAsync(item, hardDeletePrepare, WrapAction(hardDeleteCommit));
+            return await DeleteHardAsync(item, hardDeletePrepare, WrapAction(hardDeleteCommit));
         }
 
         /// <summary>
@@ -246,30 +254,37 @@ namespace Blazor.ExtraDry {
         /// If neither is possible, an exception is thrown.
         /// </summary>
         /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
-        /// <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
-        /// <param name="hardDeleteCommit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
+        /// <param name="remove">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
+        /// <param name="commit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
         [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Keep as standard service instance style for DI.")]
-        public async Task DeleteHardAsync<T>(T item, Func<Task> hardDeletePrepare, Func<Task> hardDeleteCommit)
+        public async Task<DeleteResult> DeleteHardAsync<T>(T item, Func<Task> remove, Func<Task> commit)
         {
             if(item == null) {
                 throw new ArgumentNullException(nameof(item));
             }
-            if(hardDeletePrepare == null) {
+            if(remove == null) {
                 throw new ArgumentNullException(nameof(item), "Must provide an action to prepare hard delete, e.g. remove from collection");
             }
-            if(hardDeleteCommit == null) {
+            if(commit == null) {
                 throw new ArgumentNullException(nameof(item), "Must provide an action to commit hard delete, e.g. save to database");
             }
+            var result = DeleteResult.NotDeleted;
+            if(AttemptSoftDelete(item)) {
+                await commit();
+                result = DeleteResult.SoftDeleted;
+            }
             try {
-                await hardDeletePrepare();
-                await hardDeleteCommit();
+                await remove();
+                await commit();
+                result = DeleteResult.HardDeleted;
             }
             catch { // Hmmm, can we be specific about exception type here?
-                if(!AttemptSoftDelete(item)) {
+                if(result == DeleteResult.NotDeleted) {
                     throw new InvalidOperationException("Item could not be hard-deleted and no rules for soft-delete provided.");
                 }
-                await hardDeleteCommit();
+                // else was soft-deleted and that's OK...
             }
+            return result;
         }
 
         /// <summary>
