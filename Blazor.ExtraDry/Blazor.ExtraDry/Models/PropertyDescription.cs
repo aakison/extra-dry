@@ -112,6 +112,10 @@ namespace Blazor.ExtraDry {
 
         public ControlType ControlType => Control?.Type ?? ControlType.BestMatch;
 
+        public string IconTemplate => Control?.IconTemplate ?? "";
+
+        public string CaptionTemplate => Control?.CaptionTemplate ?? "";
+
         public void SetValue(object item, object value) => Property?.SetValue(item, Unformat(value));
 
         public string DisplayClass {

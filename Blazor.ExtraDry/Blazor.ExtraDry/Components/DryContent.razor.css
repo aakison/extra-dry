@@ -12,9 +12,11 @@
     div.content-editor .toolbar ::deep span.caption {
       font-size: 16px;
       color: gray; }
-    div.content-editor .toolbar section {
+    div.content-editor .toolbar ::deep section {
       border-bottom: solid 1.5px silver;
       padding: 10px; }
+      div.content-editor .toolbar ::deep section > div {
+        margin-top: 10px; }
     div.content-editor .toolbar ::deep .radio-buttons {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
@@ -31,10 +33,14 @@
         div.content-editor .toolbar ::deep .radio-buttons button img {
           width: 64px;
           height: 20px; }
+          div.content-editor .toolbar ::deep .radio-buttons button img + span {
+            color: gray; }
         div.content-editor .toolbar ::deep .radio-buttons button span {
           font-size: smaller;
-          font-weight: bold;
-          color: gray; }
+          font-weight: bold; }
+      div.content-editor .toolbar ::deep .radio-buttons.currentsectiontheme span {
+        border: solid 1px black;
+        padding: 5px 15px; }
   div.content-editor .editor {
     flex: 1 1 auto; }
     div.content-editor .editor section {

@@ -30,14 +30,20 @@
     else if(Property.HasDiscreteValues) {
         var selectedValue = Property.GetValue(Model);
         @if(Property.ControlType == ControlType.RadioButtons) {
-            <div class="radio-buttons">
+            <div class="radio-buttons @Property.DisplayClass">
                 @foreach (var value in Property.GetDiscreteValues()) {
                     var selected = value.Key.ToString() == selectedValue?.ToString(); // force object to enum compare
-                    var selectedClassName = selected ? "selected" : "";
                     var valueClassName = value.Key.ToString().ToLower();
+                    var selectedClassName = selected ? $"selected {valueClassName}" : $"{valueClassName}";
                     <button class="@selectedClassName" @onclick="@(e => HandleClick(value.Key))">
-                        <img class="@valueClassName" src="_content/Blazor.ExtraDry/img/layout-@(valueClassName).png" />
-                        <span>@value.Display</span>
+                        @if(!string.IsNullOrWhiteSpace(Property.IconTemplate)) {
+                            var source = string.Format(Property.IconTemplate, valueClassName);
+                            <img class="@valueClassName" src="@source" />
+                        }
+                        @if(!string.IsNullOrWhiteSpace(Property.CaptionTemplate)) {
+                            var content = string.Format(Property.CaptionTemplate, value.Display);
+                            <span class="@valueClassName">@content</span>
+                        }
                     </button>
                 }
             </div>

@@ -16,6 +16,10 @@ namespace Blazor.ExtraDry {
 
         public ControlType Type { get; set; }
 
+        public string IconTemplate { get; set; } = string.Empty;
+
+        public string CaptionTemplate { get; set; } = "{0}";
+
     }
 
     public enum ControlType {

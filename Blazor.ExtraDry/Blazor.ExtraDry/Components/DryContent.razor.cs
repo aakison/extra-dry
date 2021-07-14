@@ -110,6 +110,8 @@ namespace Blazor.ExtraDry {
 
         public ContentContainer? CurrentContainer { get; set; }
 
+        [Control(ControlType.RadioButtons)]
+        [Display(Name = "Theme")]
         public ContentTheme CurrentSectionTheme {
             get => CurrentSection?.Theme ?? ContentTheme.Light;
             set {
@@ -120,7 +122,7 @@ namespace Blazor.ExtraDry {
             }
         }
 
-        [Control(ControlType.RadioButtons)]
+        [Control(ControlType.RadioButtons, IconTemplate = "_content/Blazor.ExtraDry/img/layout-{0}.png")]
         [Display(Name = "Layout")]
         public SectionLayout CurrentSectionLayout {
             get => CurrentSection?.Layout ?? SectionLayout.Single;

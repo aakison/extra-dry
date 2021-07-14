@@ -18,9 +18,13 @@
             color: gray;
         }
 
-        section {
+        ::deep section {
             border-bottom: solid 1.5px silver;
             padding: 10px;
+
+            > div {
+                margin-top: 10px;
+            }
         }
 
         ::deep .radio-buttons {
@@ -43,13 +47,21 @@
                 img {
                     width: 64px;
                     height: 20px;
+
+                    & + span {
+                        color: gray;
+                    }
                 }
 
                 span {
                     font-size: smaller;
                     font-weight: bold;
-                    color: gray;
                 }
+            }
+
+            &.currentsectiontheme span {
+                border: solid 1px black;
+                padding: 5px 15px;
             }
         }
     }
@@ -71,7 +83,6 @@
                 padding-left: 1px;
                 outline: dashed 1.5px #b2c9e4;
             }
-
         }
     }
 }
