@@ -50,7 +50,7 @@
         outline: dashed 1.5px #b2c9e4;
         margin: 5.5px;
         width: calc(100% - 11px); }
-      div.content-editor .editor section div.editor-root {
-        /* RoosterJS style */
-        padding-left: 1px;
-        outline: dashed 1.5px #b2c9e4; }
+        div.content-editor .editor section:focus-within div.editor-root {
+          /* RoosterJS style */
+          padding-left: 1px;
+          outline: dashed 1.5px #b2c9e4; }
