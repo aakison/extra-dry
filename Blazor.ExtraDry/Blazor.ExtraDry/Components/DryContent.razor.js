@@ -16,47 +16,57 @@ function startEditing(name) {
 
 function roosterEditorFocus(focusArgs) {
     var editorDiv = focusArgs.target;
+    if(roosterActiveDiv) {
+        roosterActiveDiv.classList.remove("rooster-selected");
+        roosterActiveDiv.parentNode.classList.remove("rooster-selected");
+        roosterActiveDiv.parentNode.parentNode.classList.remove("rooster-selected");
+    }
     roosterActiveDiv = editorDiv;
+    if(roosterActiveDiv) {
+        roosterActiveDiv.classList.add("rooster-selected");
+        roosterActiveDiv.parentNode.classList.add("rooster-selected");
+        roosterActiveDiv.parentNode.parentNode.classList.add("rooster-selected");
+    }
 }
 
 function roosterToggleBold() {
     var editor = roosterActiveDiv.roosterEditor;
-    if (editor) {
+    if(editor) {
         roosterjs.toggleBold(editor);
     }
 }
 
 function roosterToggleItalic() {
     var editor = roosterActiveDiv.roosterEditor;
-    if (editor) {
+    if(editor) {
         roosterjs.toggleItalic(editor);
     }
 }
 
 function roosterToggleHeader(level) {
     var editor = roosterActiveDiv.roosterEditor;
-    if (editor) {
+    if(editor) {
         roosterjs.toggleHeader(editor, level);
     }
 }
 
 function roosterClearFormat() {
     var editor = roosterActiveDiv.roosterEditor;
-    if (editor) {
+    if(editor) {
         roosterjs.clearFormat(editor);
     }
 }
 
 function roosterSetContent(id, html) {
     var div = document.getElementById(id);
-    if (div) {
+    if(div) {
         div.innerHTML = html;
     }
 }
 
 function roosterHorizontalRule() {
     var editor = roosterActiveDiv.roosterEditor;
-    if (editor) {
+    if(editor) {
         editor.insertContent("<hr />");
     }
 }
@@ -64,7 +74,7 @@ function roosterHorizontalRule() {
 function roosterInsertHyperlink(className, title, hyperlink) {
     var editor = roosterActiveDiv.roosterEditor;
     console.log(title);
-    if (editor) {
+    if(editor) {
         editor.insertContent(`<a class=''${className}'' href=''${hyperlink}''>${title}</a>`);
     }
 }

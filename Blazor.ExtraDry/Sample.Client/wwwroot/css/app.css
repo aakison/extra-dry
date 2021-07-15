@@ -96,7 +96,7 @@ div.sections {
 }
 
   div.sections > section {
-    flex: 0 0 auto;
+    flex: 0 1 auto;
     display: flex;
     margin: 0;
     width: 100%;
@@ -107,7 +107,7 @@ div.sections {
   }
 
     div.sections > section > article {
-      flex: 0 0 900px;
+      flex: 0 1 900px;
       display: flex;
     }
 

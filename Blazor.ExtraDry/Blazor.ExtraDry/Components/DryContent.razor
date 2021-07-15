@@ -44,7 +44,8 @@
                 @foreach (var section in Content.Sections) {
                     var layoutClass = section.Layout.ToString().ToLowerInvariant();
                     var themeClass = section.Theme.ToString().ToLowerInvariant();
-                    <section class="@layoutClass @themeClass">
+                    var selectedClass = section == CurrentSection ? "rooster-selected" : "";
+                    <section class="@layoutClass @themeClass @selectedClass">
                         <article>
                             @foreach (var container in section.DisplayContainers) {
                                 var alignment = $"alignment-{container.Alignment.ToString().ToLowerInvariant()}";

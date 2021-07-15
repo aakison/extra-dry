@@ -69,12 +69,12 @@
     flex: 1 1 auto; }
     div.content-editor .editor section {
       transition: width 0.25s, border 0.25s, outline 0.25s, margin 0.25s; }
-      div.content-editor .editor section:focus-within {
+      div.content-editor .editor section.rooster-selected {
         border: solid 2px white;
         outline: dashed 1.5px #b2c9e4;
-        margin: 5.5px;
-        width: calc(100% - 11px); }
-        div.content-editor .editor section:focus-within div.editor-root {
+        margin: 3.5px;
+        width: calc(100% - 7px); }
+        div.content-editor .editor section.rooster-selected div.editor-root {
           /* RoosterJS style */
           padding-left: 1px;
           outline: dashed 1.5px #b2c9e4; }
