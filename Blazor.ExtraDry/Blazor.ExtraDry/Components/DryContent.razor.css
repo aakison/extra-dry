@@ -41,6 +41,17 @@
       div.content-editor .toolbar ::deep .radio-buttons.currentsectiontheme span {
         border: solid 1px black;
         padding: 5px 15px; }
+      div.content-editor .toolbar ::deep .radio-buttons.currentcontaineralignment {
+        grid-template-columns: 32px 32px 32px;
+        grid-column-gap: 5px;
+        grid-row-gap: 5px; }
+        div.content-editor .toolbar ::deep .radio-buttons.currentcontaineralignment button {
+          width: 32px;
+          height: 32px;
+          padding: 3px 4px 4px 3px; }
+          div.content-editor .toolbar ::deep .radio-buttons.currentcontaineralignment button img {
+            width: 24px;
+            height: 24px; }
   div.content-editor .editor {
     flex: 1 1 auto; }
     div.content-editor .editor section {

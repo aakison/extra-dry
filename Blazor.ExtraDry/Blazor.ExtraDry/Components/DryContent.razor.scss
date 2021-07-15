@@ -63,6 +63,23 @@
                 border: solid 1px black;
                 padding: 5px 15px;
             }
+
+            &.currentcontaineralignment {
+                grid-template-columns: 32px 32px 32px;
+                grid-column-gap: 5px;
+                grid-row-gap: 5px;
+
+                button {
+                    width: 32px;
+                    height: 32px;
+                    padding: 3px 4px 4px 3px;
+
+                    img {
+                        width: 24px;
+                        height: 24px;
+                    }
+                }
+            }
         }
     }
 

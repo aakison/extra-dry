@@ -134,6 +134,8 @@ namespace Blazor.ExtraDry {
             }
         }
 
+        [Control(ControlType.RadioButtons, CaptionTemplate = "", IconTemplate = "_content/Blazor.ExtraDry/img/alignment-{0}.png")]
+        [Display(Name = "Alignment")]
         public ContentAlignment CurrentContainerAlignment {
             get => CurrentContainer?.Alignment ?? ContentAlignment.TopLeft;
             set {
