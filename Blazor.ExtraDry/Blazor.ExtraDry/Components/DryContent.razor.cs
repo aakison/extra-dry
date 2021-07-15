@@ -146,6 +146,8 @@ namespace Blazor.ExtraDry {
             }
         }
 
+        [Control(ControlType.RadioButtons, IconTemplate = "_content/Blazor.ExtraDry/img/padding-{0}.png")]
+        [Display(Name = "Padding")]
         public ContentPadding CurrentContainerPadding {
             get => CurrentContainer?.Padding ?? ContentPadding.None;
             set {

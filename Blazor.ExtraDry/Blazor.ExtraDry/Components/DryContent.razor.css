@@ -52,6 +52,8 @@
           div.content-editor .toolbar ::deep .radio-buttons.currentcontaineralignment button img {
             width: 24px;
             height: 24px; }
+      div.content-editor .toolbar ::deep .radio-buttons.currentcontainerpadding button img {
+        height: 32px; }
   div.content-editor .editor {
     flex: 1 1 auto; }
     div.content-editor .editor section {
