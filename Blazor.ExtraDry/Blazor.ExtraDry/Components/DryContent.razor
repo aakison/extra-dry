@@ -8,6 +8,8 @@
             <h5>Section</h5>
             <DryInput Model="this" PropertyName="CurrentSectionTheme" />
             <DryInput Model="this" PropertyName="CurrentSectionLayout" />
+            <hr />
+            <DryButtonBar ViewModel="this" Category="Section" />
         </section>
 
         <section>
@@ -16,13 +18,17 @@
             <DryInput Model="this" PropertyName="CurrentContainerPadding" />
         </section>
 
-        <h6>Selection</h6>
-        <DryButtonBar ViewModel="this" />
+        <section>
+            <h5>Selection</h5>
+            <DryButtonBar ViewModel="this" Category="Selection" />
+        </section>
 
-        <h6>Hyperlink</h6>
-        <DryInput Model="this" PropertyName="HyperlinkClass" />
-        <DryInput Model="this" PropertyName="HyperlinkTitle" />
-        <DryInput Model="this" PropertyName="HyperlinkHref" />
+        <section>
+            <h5>Hyperlink</h5>
+            <DryInput Model="this" PropertyName="HyperlinkClass" />
+            <DryInput Model="this" PropertyName="HyperlinkTitle" />
+            <DryInput Model="this" PropertyName="HyperlinkHref" />
+        </section>
 
     </div>
 

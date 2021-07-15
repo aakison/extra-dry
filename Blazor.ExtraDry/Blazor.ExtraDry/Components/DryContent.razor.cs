@@ -22,7 +22,7 @@ namespace Blazor.ExtraDry {
         [Inject]
         private IJSRuntime JSRuntime { get; set; } = null!;
 
-        [Command]
+        [Command(Category = "Section", Name = "Add New")]
         public void AddSection()
         {
             if(Content == null) {
@@ -30,31 +30,40 @@ namespace Blazor.ExtraDry {
             }
             Content.Sections.Add(new ContentSection { 
                 Containers = { 
-                    new ContentContainer { Html = "New Section" } 
+                    new ContentContainer { Html = "<div>New Section</div>" } 
                 } 
             });
             StateHasChanged();
         }
 
-        [Command(Icon = "bold", Collapse = CommandCollapse.Always)]
+        [Command(Category = "Section", Name = "Remove Current")]
+        public void RemoveSection()
+        {
+            if(Content == null) {
+                return;
+            }
+            throw new NotImplementedException();
+        }
+
+        [Command(Category = "Selection", Icon = "bold", Collapse = CommandCollapse.Always)]
         public async Task ToggleBold()
         {
             await JSRuntime.InvokeVoidAsync("roosterToggleBold");
         }
 
-        [Command]
+        [Command(Category = "Selection")]
         public async Task ToggleItalic()
         {
             await JSRuntime.InvokeVoidAsync("roosterToggleItalic");
         }
 
-        [Command(Name = "H1")]
+        [Command(Category = "Selection", Name = "H1")]
         public async Task ToggleHeader1()
         {
             await JSRuntime.InvokeVoidAsync("roosterToggleHeader", 1);
         }
 
-        [Command(Name = "H2")]
+        [Command(Category = "Selection", Name = "H2")]
         public async Task ToggleHeader2()
         {
             await JSRuntime.InvokeVoidAsync("roosterToggleHeader", 2);

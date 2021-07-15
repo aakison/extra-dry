@@ -133,11 +133,11 @@ namespace Sample.Data {
                         Containers = {
                             new ContentContainer {
                                 Id = PseudoRandomGuid(),
-                                Html = "Hello Razor",
+                                Html = "<div>Hello Blazor</div>",
                             },
                             new ContentContainer {
                                 Id = PseudoRandomGuid(),
-                                Html = "Hello Blazor",
+                                Html = "<div>Hello Blazor</div>",
                                 Alignment = ContentAlignment.MiddleCenter,
                             },
                         }
@@ -148,11 +148,11 @@ namespace Sample.Data {
                         Containers = {
                             new ContentContainer {
                                 Id = PseudoRandomGuid(),
-                                Html = "Hello Razor",
+                                Html = "<div>Hello Blazor</div>",
                             },
                             new ContentContainer {
                                 Id = PseudoRandomGuid(),
-                                Html = "Hello Blazor",
+                                Html = "<div>Hello Blazor</div>",
                                 Alignment = ContentAlignment.BottomCenter,
                             },
                         }
@@ -162,7 +162,7 @@ namespace Sample.Data {
                         Containers = {
                             new ContentContainer {
                                 Id = PseudoRandomGuid(),
-                                Html = "Hello Razor",
+                                Html = "<div>Hello Blazor</div>",
                             },
                         }
                     },

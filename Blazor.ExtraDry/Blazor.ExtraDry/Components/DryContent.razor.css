@@ -9,8 +9,26 @@
       font-weight: bold;
       font-size: unset;
       color: gray; }
+    div.content-editor .toolbar ::deep button {
+      border: solid 1.5px silver;
+      border-radius: 3px;
+      background-color: white; }
+      div.content-editor .toolbar ::deep button.selected {
+        background-color: #f2f2f2; }
+      div.content-editor .toolbar ::deep button:hover {
+        background-color: #f9f9f9; }
+      div.content-editor .toolbar ::deep button:focus {
+        border: solid 1.5px silver; }
+      div.content-editor .toolbar ::deep button:active {
+        border: solid 1.5px gray;
+        background-color: #eaeaea; }
+      div.content-editor .toolbar ::deep button.alternate span, div.content-editor .toolbar ::deep button.primary span {
+        color: gray; }
+      div.content-editor .toolbar ::deep button span {
+        font-size: 12px;
+        font-weight: bold; }
     div.content-editor .toolbar ::deep span.caption {
-      font-size: 16px;
+      font-size: 14px;
       color: gray; }
     div.content-editor .toolbar ::deep section {
       border-bottom: solid 1.5px silver;
@@ -24,20 +42,12 @@
       grid-row-gap: 10px; }
       div.content-editor .toolbar ::deep .radio-buttons button {
         width: 86px;
-        height: 60px;
-        border: solid 1.5px silver;
-        border-radius: 3px;
-        background-color: white; }
-        div.content-editor .toolbar ::deep .radio-buttons button.selected {
-          background-color: #f2f2f2; }
+        height: 60px; }
         div.content-editor .toolbar ::deep .radio-buttons button img {
           width: 64px;
           height: 20px; }
           div.content-editor .toolbar ::deep .radio-buttons button img + span {
             color: gray; }
-        div.content-editor .toolbar ::deep .radio-buttons button span {
-          font-size: smaller;
-          font-weight: bold; }
       div.content-editor .toolbar ::deep .radio-buttons.currentsectiontheme span {
         border: solid 1px black;
         padding: 5px 15px; }
@@ -53,7 +63,8 @@
             width: 24px;
             height: 24px; }
       div.content-editor .toolbar ::deep .radio-buttons.currentcontainerpadding button img {
-        height: 32px; }
+        height: 32px;
+        margin-top: 4px; }
   div.content-editor .editor {
     flex: 1 1 auto; }
     div.content-editor .editor section {

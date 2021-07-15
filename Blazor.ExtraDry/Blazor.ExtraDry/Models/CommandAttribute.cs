@@ -42,6 +42,11 @@ namespace Blazor.ExtraDry {
         public string Icon { get; set; }
 
         /// <summary>
+        /// An optional category used to create filtered subsets of commands.
+        /// </summary>
+        public string Category { get; set; }
+
+        /// <summary>
         /// The relative order of this button amongst others.
         /// This order is evaluated after groupings based on `Context` and `Collapse` settings.
         /// </summary>
