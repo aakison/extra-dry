@@ -30,7 +30,10 @@ namespace Blazor.ExtraDry {
             }
             Content.Sections.Add(new ContentSection { 
                 Containers = { 
-                    new ContentContainer { Html = "<div>New Section</div>" } 
+                    new ContentContainer { 
+                        Html = "<div>New Section</div>",
+                        Padding = ContentPadding.Single,
+                    }
                 } 
             });
             StateHasChanged();

@@ -6,8 +6,6 @@ using Sample.Data.Services;
 using Sample.Shared;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Sample.Server.Controllers {

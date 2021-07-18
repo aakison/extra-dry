@@ -118,17 +118,14 @@
         flex: 1 1 auto;
 
         section {
-            transition: width 0.25s, border 0.25s, outline 0.25s, margin 0.25s;
+            transition: outline 0.25s;
 
             &.rooster-selected {
-                border: solid 2px white;
-                outline: dashed 1.5px #b2c9e4;
-                margin: 3.5px;
-                width: calc(100% - 7px);
+                outline: solid 1.5px #427bbd;
+                z-index: 1000;
 
                 div.editor-root { /* RoosterJS style */
-                    padding-left: 1px;
-                    outline: dashed 1.5px #b2c9e4;
+                    outline: solid 1.5px #427bbd;
                 }
             }
         }

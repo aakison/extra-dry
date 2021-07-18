@@ -1,10 +1,77 @@
 ﻿var roosterEditors = [];
 var roosterActiveDiv = null;
 
+var SamplePlugin = (function () {
+
+    function SamplePlugin() {
+    }
+
+    //function
+    SamplePlugin.prototype.getName = function () {
+        return 'SamplePlugin';
+    };
+
+    SamplePlugin.prototype.initialize = function (editor) {
+        this.editor = editor;
+    };
+
+    SamplePlugin.prototype.dispose = function () {
+        this.editor = null;
+    };
+
+    SamplePlugin.prototype.onPluginEvent = function (event) {
+        // Check if the event is BeforePasteEvent
+        if (event.eventType == 10 /*PluginEventType.BeforePaste*/) {
+            let beforePasteEvent = /*BeforePasteEvent*/ event;
+            // Check if pasting image
+            if (beforePasteEvent.clipboardData.image != null) {
+                let image = beforePasteEvent.clipboardData.image;
+                let placeholder = this.createPlaceholder(image);
+
+                console.log(beforePasteEvent);
+                // Modify the pasting content and option
+                let originalImage = beforePasteEvent.fragment.children[0];
+                let container = document.createElement("div");
+                container.appendChild(originalImage);
+                beforePasteEvent.fragment.appendChild(container);
+                container.appendChild(placeholder);
+                beforePasteEvent.clipboardData.html = placeholder.outerHTML;
+                //beforePasteEvent.clipboardData.image = null;
+                beforePasteEvent.pasteOption = 0 /*PasteOption.PasteHtml*/;
+
+                // Start upload image and handle async result
+                this.uploadImage(image).then((url) => {
+                    // Check editor availability in async callback
+                    if(this.editor) {
+                        originalImage.src = url;
+                        placeholder.remove();
+                    }
+                });
+            }
+        }
+    }
+
+    SamplePlugin.prototype.createPlaceholder = function(img) {
+        var paragraph = document.createElement("P");
+        paragraph.style = "color: white;";
+        paragraph.innerHTML = "Uploading...";
+        return paragraph;
+    }
+
+    SamplePlugin.prototype.uploadImage = function(img) {
+        let promise = new Promise(function (resolve, reject) {
+            setTimeout(() => resolve("https://www.akison.com/2019/03/arduino-argb-computer-case-controller/title.jpg"), 1000);
+        });
+        return promise;
+    }
+
+    return SamplePlugin;
+}());
+
 function startEditing(name) {
     //var roosterjs = require('roosterjs');
     var editorDiv = document.getElementById(name);
-    var editor = roosterjs.createEditor(editorDiv);
+    var editor = roosterjs.createEditor(editorDiv, new SamplePlugin());
 
     editor.dryId = name;
 
