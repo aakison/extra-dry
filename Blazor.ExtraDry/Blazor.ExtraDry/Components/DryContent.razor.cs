@@ -1,8 +1,8 @@
 ﻿#nullable enable
 
-using Blazor.ExtraDry.ViewModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
@@ -22,6 +22,21 @@ namespace Blazor.ExtraDry {
 
         [Inject]
         private IJSRuntime JSRuntime { get; set; } = null!;
+
+        [Inject]
+        private IServiceProvider ServiceProvider { get; set; } = null!;
+        private static IServiceProvider StaticServiceProvider { get; set; } = null!;
+
+        [Inject]
+        private ILogger<DryContent> Logger { get; set; } = null!;
+
+        private static ILogger<DryContent> StaticLogger { get; set; } = null!;
+
+        protected override void OnInitialized()
+        {
+            StaticServiceProvider = ServiceProvider;
+            StaticLogger = Logger;
+        }
 
         [Command(Category = "Section", Name = "Add New")]
         public void AddSection()
@@ -172,8 +187,9 @@ namespace Blazor.ExtraDry {
         }
 
         [JSInvokable("UploadImage")]
-        public static async Task<IBlob> UploadImage(string imageDataUrl)
+        public static async Task<IBlobInfo> UploadImage(string imageDataUrl)
         {
+            Console.WriteLine($"Received {imageDataUrl.Length} bytes");
             Console.WriteLine(imageDataUrl[..50]);
             if(!imageDataUrl.StartsWith("data:")) {
                 throw new DryException("When posting back an image, send through the imageDataUri from the clipboard.  This URL must begin with 'data:' scheme.", "Unable to upload image. 0x0F4B39DA");
@@ -188,11 +204,21 @@ namespace Blazor.ExtraDry {
             }
             var mimeType = imageDataUrl[6..semicolon];
             var base64 = imageDataUrl[(base64Delimiter+7)..];
+            Console.WriteLine($"After trimming header, {base64.Length} bytes");
             var bytes = Convert.FromBase64String(base64);
-            await Task.Delay(1000);
-            return new Blob() {
-                Uri = "https://www.akison.com/2019/03/arduino-argb-computer-case-controller/title.jpg",
-            };
+            Console.WriteLine($"After converting back to byte[], {bytes.Length} bytes");
+            if(StaticServiceProvider.GetService(typeof(IBlobService)) is not IBlobService blobService) {
+                Console.WriteLine("no service");
+                StaticLogger.LogWarning("No IBlobService was registered with the service locator, the pasted image will encoded inside the content of the page.  This becomes problematic for large or multiple images and images should be stored in blob storage.  Create an implementation of IBlobService and register with the IServiceCollection.");
+                return new BlobInfo() {
+                    UniqueId = Guid.Empty,
+                    Url = imageDataUrl,
+                };
+            }
+            Console.WriteLine("got service");
+            var blob = await blobService.CreateAsync(bytes);
+            Console.WriteLine($"blob URI: {blob.Url}");
+            return blob;
         }
 
         public string HyperlinkClass { get; set; } = string.Empty;
@@ -201,7 +227,7 @@ namespace Blazor.ExtraDry {
 
         public string HyperlinkHref { get; set; } = string.Empty;
 
-        private void EditorFocus(ContentSection section, ContentContainer container, FocusEventArgs args)
+        private void EditorFocus(ContentSection section, ContentContainer container)
         {
             CurrentSection = section;
             CurrentContainer = container;
@@ -224,7 +250,7 @@ namespace Blazor.ExtraDry {
         }
         private readonly List<Guid> roosterIsCanonical = new();
 
-        private async Task EditorFocusOut(ContentSection section, ContentContainer container, FocusEventArgs args)
+        private async Task EditorFocusOut(ContentContainer container)
         {
             var value = await JSRuntime.InvokeAsync<string>("roosterGetContent", container.Id);
             container.Html = value;
@@ -232,19 +258,4 @@ namespace Blazor.ExtraDry {
 
     }
 
-    public class Blob : IBlob {
-        public Guid UniqueId { get; set; }
-        public string Filename { get; set; } = string.Empty;
-        public string Uri { get; set; } = string.Empty;
-    }
-
-    //[Display(Name = "Add/Edit Hyperlink")]
-    //public class Hyperlink {
-
-    //    [Required]
-    //    public string Caption { get; set; } = string.Empty;
-
-    //    [Url]
-    //    public string Url { get; set; } = string.Empty;
-    //}
 }

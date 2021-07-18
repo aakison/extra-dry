@@ -42,6 +42,12 @@ namespace Sample.Client
             builder.Services.AddScoped(e =>
                 new CrudService<Content>(e.GetService<HttpClient>(), "/api/contents/{0}"));
 
+            builder.Services.AddScoped<IBlobService>(e => 
+                new DryBlobService(e.GetService<HttpClient>(), "/api/blobs/{0}/{1}") {
+                    Scope = BlobScope.Public,
+                }
+            );
+
             await builder.Build().RunAsync();
         }
     }

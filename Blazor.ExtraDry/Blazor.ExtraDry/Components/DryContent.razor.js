@@ -44,7 +44,7 @@ var SamplePlugin = (function () {
                     console.log(blob);
                     // Check editor availability in async callback
                     if(this.editor) {
-                        originalImage.src = blob.uri;
+                        originalImage.src = blob.url;
                         placeholder.remove();
                     }
                 });
