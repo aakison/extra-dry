@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using Blazor.ExtraDry.ViewModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
@@ -170,6 +171,30 @@ namespace Blazor.ExtraDry {
             }
         }
 
+        [JSInvokable("UploadImage")]
+        public static async Task<IBlob> UploadImage(string imageDataUrl)
+        {
+            Console.WriteLine(imageDataUrl[..50]);
+            if(!imageDataUrl.StartsWith("data:")) {
+                throw new DryException("When posting back an image, send through the imageDataUri from the clipboard.  This URL must begin with 'data:' scheme.", "Unable to upload image. 0x0F4B39DA");
+            }
+            var semicolon = imageDataUrl.IndexOf(';');
+            if(semicolon > 64 || semicolon < 7) {
+                throw new DryException("When posting back an image, send through the imageDataUri from the clipboard.  This must include the mime type between the first ':' and the first ';'", "Unable to upload image. 0x0F8A8B8C");
+            }
+            var base64Delimiter = imageDataUrl.IndexOf("base64,");
+            if(base64Delimiter < 0) {
+                throw new DryException("When posting back an image, send through the imageDataUri from the clipboard.  This must include the content of the image properly base64 encoded.", "Unable to upload image. 0x0F3CEE65");
+            }
+            var mimeType = imageDataUrl[6..semicolon];
+            var base64 = imageDataUrl[(base64Delimiter+7)..];
+            var bytes = Convert.FromBase64String(base64);
+            await Task.Delay(1000);
+            return new Blob() {
+                Uri = "https://www.akison.com/2019/03/arduino-argb-computer-case-controller/title.jpg",
+            };
+        }
+
         public string HyperlinkClass { get; set; } = string.Empty;
 
         public string HyperlinkTitle { get; set; } = string.Empty;
@@ -205,6 +230,12 @@ namespace Blazor.ExtraDry {
             container.Html = value;
         }
 
+    }
+
+    public class Blob : IBlob {
+        public Guid UniqueId { get; set; }
+        public string Filename { get; set; } = string.Empty;
+        public string Uri { get; set; } = string.Empty;
     }
 
     //[Display(Name = "Add/Edit Hyperlink")]

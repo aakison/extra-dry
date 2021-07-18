@@ -8,7 +8,12 @@ using System.Threading.Tasks;
 namespace Blazor.ExtraDry.ViewModels {
 
     public interface IBlob {
+
+        public Guid UniqueId { get; set; }
+
         public string Filename { get; set; }
+
+        public string Uri { get; set; }
     }
 
     public interface IBlobStorageService<T> where T : IBlob {

@@ -40,10 +40,11 @@ var SamplePlugin = (function () {
                 beforePasteEvent.pasteOption = 0 /*PasteOption.PasteHtml*/;
 
                 // Start upload image and handle async result
-                this.uploadImage(image).then((url) => {
+                DotNet.invokeMethodAsync("Blazor.ExtraDry", "UploadImage", beforePasteEvent.clipboardData.imageDataUri).then((blob) => {
+                    console.log(blob);
                     // Check editor availability in async callback
                     if(this.editor) {
-                        originalImage.src = url;
+                        originalImage.src = blob.uri;
                         placeholder.remove();
                     }
                 });
@@ -56,13 +57,6 @@ var SamplePlugin = (function () {
         paragraph.style = "color: white;";
         paragraph.innerHTML = "Uploading...";
         return paragraph;
-    }
-
-    SamplePlugin.prototype.uploadImage = function(img) {
-        let promise = new Promise(function (resolve, reject) {
-            setTimeout(() => resolve("https://www.akison.com/2019/03/arduino-argb-computer-case-controller/title.jpg"), 1000);
-        });
-        return promise;
     }
 
     return SamplePlugin;
