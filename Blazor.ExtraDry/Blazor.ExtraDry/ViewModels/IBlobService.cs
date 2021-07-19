@@ -38,12 +38,9 @@ namespace Blazor.ExtraDry {
         public async Task<IBlobInfo> CreateAsync(byte[] content, string filename = "not-specified", Dictionary<string, object?>? metaData = null)
         {
             // TODO: Map DryException on server to DryException in Blazor for better messaging...
-            Console.WriteLine($"After passing to Client-Service byte[], {content.Length} bytes");
-
             using var contentToUpload = new ByteArrayContent(content);
             contentToUpload.Headers.Add("content-type", "application/octet-stream");
             var endpoint = ApiEndpoint("POST", Scope.ToString().ToLowerInvariant(), filename ?? string.Empty);
-            Console.WriteLine(endpoint);
             try {
                 var response = await http.PostAsync(endpoint, contentToUpload);
                 await response.AssertSuccess();

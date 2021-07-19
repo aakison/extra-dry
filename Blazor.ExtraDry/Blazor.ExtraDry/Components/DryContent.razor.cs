@@ -130,7 +130,6 @@ namespace Blazor.ExtraDry {
             var className = HyperlinkClass;
             var title = HyperlinkTitle;
             var href = HyperlinkHref;
-            Console.WriteLine($"values: {className}, {title}, {href}");
             await JSRuntime.InvokeVoidAsync("roosterInsertHyperlink", HyperlinkClass, HyperlinkHref, HyperlinkTitle);
         }
 
@@ -189,8 +188,6 @@ namespace Blazor.ExtraDry {
         [JSInvokable("UploadImage")]
         public static async Task<IBlobInfo> UploadImage(string imageDataUrl)
         {
-            Console.WriteLine($"Received {imageDataUrl.Length} bytes");
-            Console.WriteLine(imageDataUrl[..50]);
             if(!imageDataUrl.StartsWith("data:")) {
                 throw new DryException("When posting back an image, send through the imageDataUri from the clipboard.  This URL must begin with 'data:' scheme.", "Unable to upload image. 0x0F4B39DA");
             }
@@ -204,20 +201,15 @@ namespace Blazor.ExtraDry {
             }
             var mimeType = imageDataUrl[6..semicolon];
             var base64 = imageDataUrl[(base64Delimiter+7)..];
-            Console.WriteLine($"After trimming header, {base64.Length} bytes");
             var bytes = Convert.FromBase64String(base64);
-            Console.WriteLine($"After converting back to byte[], {bytes.Length} bytes");
             if(StaticServiceProvider.GetService(typeof(IBlobService)) is not IBlobService blobService) {
-                Console.WriteLine("no service");
                 StaticLogger.LogWarning("No IBlobService was registered with the service locator, the pasted image will encoded inside the content of the page.  This becomes problematic for large or multiple images and images should be stored in blob storage.  Create an implementation of IBlobService and register with the IServiceCollection.");
                 return new BlobInfo() {
                     UniqueId = Guid.Empty,
                     Url = imageDataUrl,
                 };
             }
-            Console.WriteLine("got service");
             var blob = await blobService.CreateAsync(bytes);
-            Console.WriteLine($"blob URI: {blob.Url}");
             return blob;
         }
 

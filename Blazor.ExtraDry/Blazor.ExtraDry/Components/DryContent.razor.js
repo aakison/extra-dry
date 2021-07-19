@@ -28,7 +28,6 @@ var SamplePlugin = (function () {
                 let image = beforePasteEvent.clipboardData.image;
                 let placeholder = this.createPlaceholder(image);
 
-                console.log(beforePasteEvent);
                 // Modify the pasting content and option
                 let originalImage = beforePasteEvent.fragment.children[0];
                 let container = document.createElement("div");
@@ -41,7 +40,6 @@ var SamplePlugin = (function () {
 
                 // Start upload image and handle async result
                 DotNet.invokeMethodAsync("Blazor.ExtraDry", "UploadImage", beforePasteEvent.clipboardData.imageDataUri).then((blob) => {
-                    console.log(blob);
                     // Check editor availability in async callback
                     if(this.editor) {
                         originalImage.src = blob.url;
@@ -134,7 +132,6 @@ function roosterHorizontalRule() {
 
 function roosterInsertHyperlink(className, title, hyperlink) {
     var editor = roosterActiveDiv.roosterEditor;
-    console.log(title);
     if(editor) {
         editor.insertContent(`<a class=''${className}'' href=''${hyperlink}''>${title}</a>`);
     }

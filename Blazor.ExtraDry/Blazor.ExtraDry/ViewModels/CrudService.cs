@@ -98,7 +98,6 @@ namespace Blazor.ExtraDry {
 
         internal static async Task AssertSuccess(this HttpResponseMessage response)
         {
-            Console.WriteLine("Asserting success.");
             try {
                 await response.EnsureSuccessStatusCodeAsync();
                 // Handle success

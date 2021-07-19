@@ -149,7 +149,7 @@ namespace Blazor.ExtraDry {
         public bool HasTextRepresentation {
             get {
                 var types = new List<Type> { typeof(decimal), typeof(decimal?), typeof(string), typeof(Uri) };
-                return types.Contains(Property.PropertyType);
+                return types.Contains(Property.PropertyType) || Property.PropertyType.IsEnum;
             }
         }
 
