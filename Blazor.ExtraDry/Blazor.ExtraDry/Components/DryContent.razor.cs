@@ -127,9 +127,6 @@ namespace Blazor.ExtraDry {
         [Command]
         public async Task AddHyperlink()
         {
-            var className = HyperlinkClass;
-            var title = HyperlinkTitle;
-            var href = HyperlinkHref;
             await JSRuntime.InvokeVoidAsync("roosterInsertHyperlink", HyperlinkClass, HyperlinkHref, HyperlinkTitle);
         }
 
