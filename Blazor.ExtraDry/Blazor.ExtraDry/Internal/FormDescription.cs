@@ -70,7 +70,6 @@ namespace Blazor.ExtraDry.Internal {
         private void ExtendProperties(Collection<PropertyDescription> properties, ColumnType columnType, string fieldsetName, FormGroupType formGroup, object model, object? parentModel = null)
         {
             foreach(var property in properties) {
-                Console.WriteLine($"property: {property.Property.Name}, header: {property.Header?.Title}");
                 if(property.Header != null) {
                     fieldsetName = property.Header.Title;
                     columnType = property.Header.Column;
@@ -113,7 +112,6 @@ namespace Blazor.ExtraDry.Internal {
                         ParentTarget = parentModel,
                     });
                 }
-                Console.WriteLine($"exit property: {property.Property.Name}, header: {property.Header?.Title}");
             }
         }
 
