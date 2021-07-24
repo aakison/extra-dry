@@ -113,6 +113,7 @@ namespace Blazor.ExtraDry.Internal {
                         ParentTarget = parentModel,
                     });
                 }
+                Console.WriteLine($"exit property: {property.Property.Name}, header: {property.Header?.Title}");
             }
         }
 
