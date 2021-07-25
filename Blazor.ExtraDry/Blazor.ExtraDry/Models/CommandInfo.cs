@@ -54,6 +54,11 @@ namespace Blazor.ExtraDry.Models {
         public CommandContext Context { get; set; }
 
         /// <summary>
+        /// The category for this command which is used for filters.
+        /// </summary>
+        public string? Category { get; set; }
+
+        /// <summary>
         /// The reflected method for the command.
         /// </summary>
         public MethodInfo Method { get; set; }
@@ -113,6 +118,7 @@ namespace Blazor.ExtraDry.Models {
             if(attribute != null) {
                 Icon = attribute.Icon;
                 Context = attribute.Context;
+                Category = attribute.Category;
             }
         }
 

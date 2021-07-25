@@ -96,7 +96,7 @@ div.sections {
 }
 
   div.sections > section {
-    flex: 0 0 auto;
+    flex: 0 1 auto;
     display: flex;
     margin: 0;
     width: 100%;
@@ -107,7 +107,7 @@ div.sections {
   }
 
     div.sections > section > article {
-      flex: 0 0 900px;
+      flex: 0 1 900px;
       display: flex;
     }
 
@@ -126,18 +126,31 @@ div.sections {
   
 /* Classes for content theme Light */
 
-  div.sections > section.light {
+  div.sections > section.light, .radio-buttons.currentsectiontheme button span.light  {
       background-color: white;
       color: black;
   }
 
 /* Classes for content theme Dark */
 
-  div.sections > section.dark {
+  div.sections > section.dark, .radio-buttons.currentsectiontheme button span.dark {
     background-color: black;
     color: white;
   }
 
+/* Classes for content theme Accent */
+
+  div.sections > section.accent, .radio-buttons.currentsectiontheme button span.accent {
+    background-color: antiquewhite;
+    color: black;
+  }
+
+/* Classes for content theme Accent */
+
+  div.sections > section.banner, .radio-buttons.currentsectiontheme button span.banner {
+    background-color: navy;
+    color: white;
+  }
 
 /*
     Classes for alignment of content

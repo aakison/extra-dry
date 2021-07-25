@@ -6,6 +6,8 @@ using Sample.Shared;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace Sample.Data.Services {
@@ -22,58 +24,72 @@ namespace Sample.Data.Services {
             return await database.Blobs.QueryWith(query).ToPagedCollectionAsync();
         }
 
-        public async Task Create(BlobInfo item, Stream contentStream, int length)
+        public async Task<BlobInfo> UploadAsync(BlobInfo item, byte[] content)
         {
-            if(await database.Blobs.AnyAsync(e => e.Name == item.Name && e.Scope == item.Scope)) {
-                throw new ArgumentException("Blob already exists", nameof(item));
+            using var sha256Hash = SHA256.Create();
+            var hash = sha256Hash.ComputeHash(content);
+            var hashString = string.Join("", hash.Select(e => e.ToString("X2")));
+
+            var existing = await database.Blobs.FirstOrDefaultAsync(e => e.ShaHash == hashString && e.Scope == BlobScope.Public);
+            if(existing != null) {
+                return existing;
             }
+
+            if(content.Length > 4 && content[1] == 'P' && content[2] == 'N' && content[3] == 'G') {
+                item.MimeType = "image/png";
+            }
+            if(content.Length > 4 && content[1] == 'P' && content[2] == 'D' && content[3] == 'F') {
+                item.MimeType = "application/pdf";
+            }
+            if(content.Length > 2 && content[0] == 0xFF && content[1] == 0xD8) {
+                // TODO: Is it necessary to check content for "JFIF" or "Exif" as well?
+                item.MimeType = "image/jpeg";
+            }
+            item.ShaHash = hashString;
+            item.UniqueId = Guid.NewGuid();
+            item.Url = $"/api/blobs/{item.UniqueId}/content";
+
             database.Blobs.Add(item);
             await database.SaveChangesAsync();
-            Upload(item, contentStream, length);
+            fakeBlobStorage.Add(item.UniqueId, content);
+            return item;
         }
 
-        public async Task<BlobInfo> Retrieve(Guid uniqueId)
+        public async Task<byte[]> DownloadAsync(BlobInfo item)
+        {
+            if(fakeBlobStorage.TryGetValue(item.UniqueId, out var content)) {
+                return content;
+            }
+            else {
+                await Task.Delay(1);
+                throw new ArgumentException("Can't find content for item");
+            }
+        }
+
+        public async Task<BlobInfo> RetrieveAsync(Guid uniqueId)
         {
             return await database.Blobs.FirstOrDefaultAsync(e => e.UniqueId == uniqueId);
         }
 
-        public async Task Update(BlobInfo item)
+        public async Task UpdateAsync(BlobInfo item)
         {
-            var existing = await Retrieve(item.UniqueId);
+            var existing = await RetrieveAsync(item.UniqueId);
             await rules.UpdateAsync(item, existing);
             await database.SaveChangesAsync();
         }
 
-        public async Task UploadAsync(Guid uniqueId, Stream stream, int length)
+        public async Task DeleteAsync(Guid uniqueId)
         {
-            var existing = await Retrieve(uniqueId);
-            if(existing == default) {
-                throw new ArgumentOutOfRangeException(nameof(uniqueId), "UniqueId for blob not found");
-            }
-            Upload(existing, stream, length);
-        }
-
-        public void Upload(BlobInfo item, Stream stream, int length)
-        {
-            using var reader = new BinaryReader(stream);
-            var bytes = reader.ReadBytes(length);
-            fakeBlobStorage.Add(FakeKey(item), bytes);
-        }
-
-        public async Task Delete(Guid uniqueId)
-        {
-            var existing = await Retrieve(uniqueId);
+            var existing = await RetrieveAsync(uniqueId);
             rules.Delete(existing, () => database.Blobs.Remove(existing));
             await database.SaveChangesAsync();
         }
-
-        private static string FakeKey(BlobInfo info) => $"{info.Scope}/{info.Name}";
 
         private readonly SampleContext database;
 
         private readonly RuleEngine rules;
 
-        private readonly Dictionary<string, byte[]> fakeBlobStorage = new();
+        private static readonly Dictionary<Guid, byte[]> fakeBlobStorage = new();
 
     }
 }

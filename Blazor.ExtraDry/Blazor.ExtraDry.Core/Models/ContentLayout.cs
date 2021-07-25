@@ -102,8 +102,14 @@ namespace Blazor.ExtraDry {
     }
 
     public enum ContentPadding {
-        Single,
-        Double,
+
+        [Display(Name = "none")]
         None,
+
+        [Display(Name = "single")]
+        Single,
+
+        [Display(Name = "double")]
+        Double,
     }
 }

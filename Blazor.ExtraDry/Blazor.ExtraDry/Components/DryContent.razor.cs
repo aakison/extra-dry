@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,22 @@ namespace Blazor.ExtraDry {
         [Inject]
         private IJSRuntime JSRuntime { get; set; } = null!;
 
-        [Command]
+        [Inject]
+        private IServiceProvider ServiceProvider { get; set; } = null!;
+        private static IServiceProvider StaticServiceProvider { get; set; } = null!;
+
+        [Inject]
+        private ILogger<DryContent> Logger { get; set; } = null!;
+
+        private static ILogger<DryContent> StaticLogger { get; set; } = null!;
+
+        protected override void OnInitialized()
+        {
+            StaticServiceProvider = ServiceProvider;
+            StaticLogger = Logger;
+        }
+
+        [Command(Category = "Section", Name = "Add New")]
         public void AddSection()
         {
             if(Content == null) {
@@ -30,31 +46,43 @@ namespace Blazor.ExtraDry {
             }
             Content.Sections.Add(new ContentSection { 
                 Containers = { 
-                    new ContentContainer { Html = "New Section" } 
+                    new ContentContainer { 
+                        Html = "<div>New Section</div>",
+                        Padding = ContentPadding.Single,
+                    }
                 } 
             });
             StateHasChanged();
         }
 
-        [Command(Icon = "bold", Collapse = CommandCollapse.Always)]
+        [Command(Category = "Section", Name = "Remove Current")]
+        public void RemoveSection()
+        {
+            if(Content == null) {
+                return;
+            }
+            throw new NotImplementedException();
+        }
+
+        [Command(Category = "Selection", Icon = "bold", Collapse = CommandCollapse.Always)]
         public async Task ToggleBold()
         {
             await JSRuntime.InvokeVoidAsync("roosterToggleBold");
         }
 
-        [Command]
+        [Command(Category = "Selection")]
         public async Task ToggleItalic()
         {
             await JSRuntime.InvokeVoidAsync("roosterToggleItalic");
         }
 
-        [Command(Name = "H1")]
+        [Command(Category = "Selection", Name = "H1")]
         public async Task ToggleHeader1()
         {
             await JSRuntime.InvokeVoidAsync("roosterToggleHeader", 1);
         }
 
-        [Command(Name = "H2")]
+        [Command(Category = "Selection", Name = "H2")]
         public async Task ToggleHeader2()
         {
             await JSRuntime.InvokeVoidAsync("roosterToggleHeader", 2);
@@ -99,10 +127,6 @@ namespace Blazor.ExtraDry {
         [Command]
         public async Task AddHyperlink()
         {
-            var className = HyperlinkClass;
-            var title = HyperlinkTitle;
-            var href = HyperlinkHref;
-            Console.WriteLine($"values: {className}, {title}, {href}");
             await JSRuntime.InvokeVoidAsync("roosterInsertHyperlink", HyperlinkClass, HyperlinkHref, HyperlinkTitle);
         }
 
@@ -110,6 +134,8 @@ namespace Blazor.ExtraDry {
 
         public ContentContainer? CurrentContainer { get; set; }
 
+        [Control(ControlType.RadioButtons)]
+        [Display(Name = "Theme")]
         public ContentTheme CurrentSectionTheme {
             get => CurrentSection?.Theme ?? ContentTheme.Light;
             set {
@@ -120,7 +146,7 @@ namespace Blazor.ExtraDry {
             }
         }
 
-        [Control(ControlType.RadioButtons)]
+        [Control(ControlType.RadioButtons, IconTemplate = "_content/Blazor.ExtraDry/img/layout-{0}.png")]
         [Display(Name = "Layout")]
         public SectionLayout CurrentSectionLayout {
             get => CurrentSection?.Layout ?? SectionLayout.Single;
@@ -132,6 +158,8 @@ namespace Blazor.ExtraDry {
             }
         }
 
+        [Control(ControlType.RadioButtons, CaptionTemplate = "", IconTemplate = "_content/Blazor.ExtraDry/img/alignment-{0}.png")]
+        [Display(Name = "Alignment")]
         public ContentAlignment CurrentContainerAlignment {
             get => CurrentContainer?.Alignment ?? ContentAlignment.TopLeft;
             set {
@@ -142,6 +170,8 @@ namespace Blazor.ExtraDry {
             }
         }
 
+        [Control(ControlType.RadioButtons, IconTemplate = "_content/Blazor.ExtraDry/img/padding-{0}.png")]
+        [Display(Name = "Padding")]
         public ContentPadding CurrentContainerPadding {
             get => CurrentContainer?.Padding ?? ContentPadding.None;
             set {
@@ -152,13 +182,41 @@ namespace Blazor.ExtraDry {
             }
         }
 
+        [JSInvokable("UploadImage")]
+        public static async Task<IBlobInfo> UploadImage(string imageDataUrl)
+        {
+            if(!imageDataUrl.StartsWith("data:")) {
+                throw new DryException("When posting back an image, send through the imageDataUri from the clipboard.  This URL must begin with 'data:' scheme.", "Unable to upload image. 0x0F4B39DA");
+            }
+            var semicolon = imageDataUrl.IndexOf(';');
+            if(semicolon > 64 || semicolon < 7) {
+                throw new DryException("When posting back an image, send through the imageDataUri from the clipboard.  This must include the mime type between the first ':' and the first ';'", "Unable to upload image. 0x0F8A8B8C");
+            }
+            var base64Delimiter = imageDataUrl.IndexOf("base64,");
+            if(base64Delimiter < 0) {
+                throw new DryException("When posting back an image, send through the imageDataUri from the clipboard.  This must include the content of the image properly base64 encoded.", "Unable to upload image. 0x0F3CEE65");
+            }
+            var mimeType = imageDataUrl[6..semicolon];
+            var base64 = imageDataUrl[(base64Delimiter+7)..];
+            var bytes = Convert.FromBase64String(base64);
+            if(StaticServiceProvider.GetService(typeof(IBlobService)) is not IBlobService blobService) {
+                StaticLogger.LogWarning("No IBlobService was registered with the service locator, the pasted image will encoded inside the content of the page.  This becomes problematic for large or multiple images and images should be stored in blob storage.  Create an implementation of IBlobService and register with the IServiceCollection.");
+                return new BlobInfo() {
+                    UniqueId = Guid.Empty,
+                    Url = imageDataUrl,
+                };
+            }
+            var blob = await blobService.CreateAsync(bytes);
+            return blob;
+        }
+
         public string HyperlinkClass { get; set; } = string.Empty;
 
         public string HyperlinkTitle { get; set; } = string.Empty;
 
         public string HyperlinkHref { get; set; } = string.Empty;
 
-        private void EditorFocus(ContentSection section, ContentContainer container, FocusEventArgs args)
+        private void EditorFocus(ContentSection section, ContentContainer container)
         {
             CurrentSection = section;
             CurrentContainer = container;
@@ -181,7 +239,7 @@ namespace Blazor.ExtraDry {
         }
         private readonly List<Guid> roosterIsCanonical = new();
 
-        private async Task EditorFocusOut(ContentSection section, ContentContainer container, FocusEventArgs args)
+        private async Task EditorFocusOut(ContentContainer container)
         {
             var value = await JSRuntime.InvokeAsync<string>("roosterGetContent", container.Id);
             container.Html = value;
@@ -189,13 +247,4 @@ namespace Blazor.ExtraDry {
 
     }
 
-    //[Display(Name = "Add/Edit Hyperlink")]
-    //public class Hyperlink {
-
-    //    [Required]
-    //    public string Caption { get; set; } = string.Empty;
-
-    //    [Url]
-    //    public string Url { get; set; } = string.Empty;
-    //}
 }

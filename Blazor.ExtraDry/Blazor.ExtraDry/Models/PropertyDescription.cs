@@ -112,6 +112,10 @@ namespace Blazor.ExtraDry {
 
         public ControlType ControlType => Control?.Type ?? ControlType.BestMatch;
 
+        public string IconTemplate => Control?.IconTemplate ?? "";
+
+        public string CaptionTemplate => Control?.CaptionTemplate ?? "";
+
         public void SetValue(object item, object value) => Property?.SetValue(item, Unformat(value));
 
         public string DisplayClass {
@@ -145,7 +149,7 @@ namespace Blazor.ExtraDry {
         public bool HasTextRepresentation {
             get {
                 var types = new List<Type> { typeof(decimal), typeof(decimal?), typeof(string), typeof(Uri) };
-                return types.Contains(Property.PropertyType);
+                return types.Contains(Property.PropertyType) || Property.PropertyType.IsEnum;
             }
         }
 

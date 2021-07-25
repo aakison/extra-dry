@@ -43,7 +43,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         }
 
 
-        private async Task MockSaveChangesAsync(TestContext database)
+        private static async Task MockSaveChangesAsync(TestContext database)
         {
             var removing = database.ChangeTracker.Entries()
                 .Where(e => e.Entity is Address && e.State == EntityState.Deleted)
@@ -57,7 +57,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         }
 
 
-        private TestContext GetDatabase()
+        private static TestContext GetDatabase()
         {
             var options = new DbContextOptionsBuilder<TestContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
@@ -65,7 +65,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             return new TestContext(options);
         }
 
-        private void PopulateSampleData(TestContext database)
+        private static void PopulateSampleData(TestContext database)
         {
             database.Users.Add(new User { Name = "Homeless" });
             var vacant = new Address { Line = "Vacant" };
@@ -77,7 +77,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             database.SaveChangesAsync();
         }
 
-        private TestContext GetPopulatedDatabase()
+        private static TestContext GetPopulatedDatabase()
         {
             var database = GetDatabase();
             PopulateSampleData(database);

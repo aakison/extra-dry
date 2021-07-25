@@ -133,12 +133,14 @@ namespace Sample.Data {
                         Containers = {
                             new ContentContainer {
                                 Id = PseudoRandomGuid(),
-                                Html = "Hello Razor",
+                                Html = "<div>Hello Blazor</div>",
+                                Padding = ContentPadding.Single,
                             },
                             new ContentContainer {
                                 Id = PseudoRandomGuid(),
-                                Html = "Hello Blazor",
+                                Html = "<div>Hello Blazor</div>",
                                 Alignment = ContentAlignment.MiddleCenter,
+                                Padding = ContentPadding.Single,
                             },
                         }
                     },
@@ -148,12 +150,14 @@ namespace Sample.Data {
                         Containers = {
                             new ContentContainer {
                                 Id = PseudoRandomGuid(),
-                                Html = "Hello Razor",
+                                Html = "<div>Hello Blazor</div>",
+                                Padding = ContentPadding.Single,
                             },
                             new ContentContainer {
                                 Id = PseudoRandomGuid(),
-                                Html = "Hello Blazor",
+                                Html = "<div>Hello Blazor</div>",
                                 Alignment = ContentAlignment.BottomCenter,
+                                Padding = ContentPadding.Single,
                             },
                         }
                     },
@@ -162,7 +166,8 @@ namespace Sample.Data {
                         Containers = {
                             new ContentContainer {
                                 Id = PseudoRandomGuid(),
-                                Html = "Hello Razor",
+                                Html = "<div>Hello Blazor</div>",
+                                Padding = ContentPadding.Single,
                             },
                         }
                     },

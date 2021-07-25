@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿#nullable enable
+
+using System;
 
 namespace Blazor.ExtraDry {
 
@@ -15,15 +14,15 @@ namespace Blazor.ExtraDry {
 
         public string Group { get; set; } = string.Empty;
 
-        public string Icon { get; set; }
+        public string? Icon { get; set; }
 
-        public string Image { get; set; }
+        public string? Image { get; set; }
 
         public string Caption { get; set; }
 
         public int Order { get; set; }
 
-        public string ActiveMatch { get; set; }
+        public string? ActiveMatch { get; set; }
 
     }
 }

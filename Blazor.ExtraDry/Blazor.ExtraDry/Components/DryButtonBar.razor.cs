@@ -28,6 +28,12 @@ namespace Blazor.ExtraDry {
         [Parameter]
         public object? ViewModel { get; set; }
 
+        /// <summary>
+        /// Filter the view model's commands by this category.
+        /// </summary>
+        [Parameter]
+        public string? Category { get; set; }
+
         private ViewModelDescription? Description { get; set; }
 
         protected override void OnParametersSet()
@@ -38,7 +44,9 @@ namespace Blazor.ExtraDry {
             }
         }
 
-        private IEnumerable<CommandInfo> SelectCommands(CommandContext context) => Commands.Where(e => e.Context == context);
+        private IEnumerable<CommandInfo> SelectCommands(CommandContext context) => Commands
+            .Where(e => e.Context == context)
+            .Where(e => Category == null || Category == e.Category);
 
     }
 }

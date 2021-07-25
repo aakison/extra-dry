@@ -13,14 +13,52 @@
             color: gray;
         }
 
+        ::deep button {
+            border: solid 1.5px silver;
+            border-radius: 3px;
+            background-color: white;
+
+            &.selected {
+                background-color: #f2f2f2;
+            }
+
+            &:hover {
+                background-color: #f9f9f9;
+            }
+
+            &:focus {
+                border: solid 1.5px silver;
+            }
+
+            &:active {
+                border: solid 1.5px gray;
+                background-color: #eaeaea;
+            }
+
+            &.alternate, &.primary {
+                span {
+                    color: gray;
+                }
+            }
+
+            span {
+                font-size: 12px;
+                font-weight: bold;
+            }
+        }
+
         ::deep span.caption {
-            font-size: 16px;
+            font-size: 14px;
             color: gray;
         }
 
-        section {
+        ::deep section {
             border-bottom: solid 1.5px silver;
             padding: 10px;
+
+            > div {
+                margin-top: 10px;
+            }
         }
 
         ::deep .radio-buttons {
@@ -32,23 +70,45 @@
             button {
                 width: 86px;
                 height: 60px;
-                border: solid 1.5px silver;
-                border-radius: 3px;
-                background-color: white;
-
-                &.selected {
-                    background-color: #f2f2f2;
-                }
 
                 img {
                     width: 64px;
                     height: 20px;
-                }
 
-                span {
-                    font-size: smaller;
-                    font-weight: bold;
-                    color: gray;
+                    & + span {
+                        color: gray;
+                    }
+                }
+            }
+
+            &.currentsectiontheme span {
+                border: solid 1px black;
+                padding: 5px 15px;
+            }
+
+            &.currentcontaineralignment {
+                grid-template-columns: 32px 32px 32px;
+                grid-column-gap: 5px;
+                grid-row-gap: 5px;
+
+                button {
+                    width: 32px;
+                    height: 32px;
+                    padding: 3px 4px 4px 3px;
+
+                    img {
+                        width: 24px;
+                        height: 24px;
+                    }
+                }
+            }
+
+            &.currentcontainerpadding {
+                button {
+                    img {
+                        height: 32px;
+                        margin-top: 4px;
+                    }
                 }
             }
         }
@@ -58,20 +118,16 @@
         flex: 1 1 auto;
 
         section {
-            transition: width 0.25s, border 0.25s, outline 0.25s, margin 0.25s;
+            transition: outline 0.25s;
 
-            &:focus-within {
-                border: solid 2px white;
-                outline: dashed 1.5px #b2c9e4;
-                margin: 5.5px;
-                width: calc(100% - 11px);
+            &.rooster-selected {
+                outline: solid 1.5px #427bbd;
+                z-index: 1000;
+
+                div.editor-root { /* RoosterJS style */
+                    outline: solid 1.5px #427bbd;
+                }
             }
-
-            div.editor-root { /* RoosterJS style */
-                padding-left: 1px;
-                outline: dashed 1.5px #b2c9e4;
-            }
-
         }
     }
 }
