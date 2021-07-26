@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit;
+﻿using Xunit;
 
 namespace Blazor.ExtraDry.Tests.Internals {
     public class ContinuationTokenTests {
@@ -163,6 +158,26 @@ namespace Blazor.ExtraDry.Tests.Internals {
             var actual = token.Stabalizer;
 
             Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData(-1, -1, 20, 10)]
+        [InlineData(10, 10, 20, 10)]
+        [InlineData(-1, 20, 30, 20)]
+        [InlineData(20, -1, 30, 10)]
+        [InlineData(20, 20, 40, 20)]
+        public void NextToken(int skip, int take, int expectedSkip, int expectedTake)
+        {
+            var token = new ContinuationToken("filter", "sort", true, "stabalizer", 10, 10);
+
+            var next = token.Next(skip, take);
+
+            Assert.Equal("filter", next.Filter);
+            Assert.Equal("sort", next.Sort);
+            Assert.True(next.Ascending);
+            Assert.Equal("stabalizer", next.Stabalizer);
+            Assert.Equal(expectedSkip, next.Skip);
+            Assert.Equal(expectedTake, next.Take);
         }
 
     }
