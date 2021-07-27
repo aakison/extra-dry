@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿#nullable enable
+
+using System;
 using System.Text.Json;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Blazor.ExtraDry.Core.Tests.Rules.SupportClasses {
@@ -34,8 +32,8 @@ namespace Blazor.ExtraDry.Core.Tests.Rules.SupportClasses {
             var blob = ValidBlob;
             var property = blob.GetType().GetProperty(propertyName);
 
-            property.SetValue(blob, propertyValue);
-            var result = property.GetValue(blob);
+            property?.SetValue(blob, propertyValue);
+            var result = property?.GetValue(blob);
 
             Assert.Equal(propertyValue, result);
         }
@@ -90,7 +88,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules.SupportClasses {
             Assert.False(valid);
         }
 
-        private BlobInfo ValidBlob => new BlobInfo();
+        private static BlobInfo ValidBlob => new();
 
     }
 }
