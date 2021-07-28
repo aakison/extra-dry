@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
@@ -36,6 +39,7 @@ namespace Blazor.ExtraDry {
 
         /// <summary>
         /// Validates the specified properties (by name) of the indicated object.
+        /// Ability provided to force checking for `[Required]` on string fields even if not attributed.
         /// </summary>
         /// <returns>True if validation successful.</returns>
         /// <example>
@@ -47,11 +51,16 @@ namespace Blazor.ExtraDry {
             int previousCount = Errors.Count;
             foreach(var propertyName in propertyNames) {
                 validationContext.MemberName = propertyName;
-                var value = target?.GetType()?.GetProperty(propertyName)?.GetValue(target);
-                Validator.TryValidateProperty(value, validationContext, Errors);
-                var missing = string.IsNullOrWhiteSpace(value as string);
-                if(missing && forceRequired) {
-                    Errors.Add(new ValidationResult($"{propertyName} is required."));
+                try {
+                    var value = target?.GetType()?.GetProperty(propertyName)?.GetValue(target);
+                    Validator.TryValidateProperty(value, validationContext, Errors);
+                    var missing = string.IsNullOrWhiteSpace(value as string);
+                    if(missing && forceRequired) {
+                        Errors.Add(new ValidationResult($"{propertyName} is required."));
+                    }
+                }
+                catch(ArgumentException) {
+                    Errors.Add(new ValidationResult($"{propertyName} not on object."));
                 }
             }
             int currentCount = Errors.Count;
@@ -69,6 +78,6 @@ namespace Blazor.ExtraDry {
         /// <summary>
         /// A list of all errors found by this data validator for all validation calls.
         /// </summary>
-        public IList<ValidationResult> Errors { get; private set; } = new List<ValidationResult>();
+        public IList<ValidationResult> Errors { get; } = new List<ValidationResult>();
     }
 }
