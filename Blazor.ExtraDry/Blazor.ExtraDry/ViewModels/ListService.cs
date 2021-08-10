@@ -7,20 +7,15 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Json;
-using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Blazor.ExtraDry {
 
-    public class RestfulListService<TCollection, TItem> : IListService<TItem> {
+    public class ListService<TCollection, TItem> : IListService<TItem> {
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public RestfulListService(HttpClient client, string entitiesEndpointTemplate, JsonSerializerOptions? jsonSerializerOptions = null)
+        public ListService(HttpClient client, string entitiesEndpointTemplate, JsonSerializerOptions? jsonSerializerOptions = null)
         {
             http = client;
             UriTemplate = entitiesEndpointTemplate;

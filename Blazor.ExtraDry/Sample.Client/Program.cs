@@ -24,17 +24,17 @@ namespace Sample.Client
 
 
             builder.Services.AddScoped<IListService<Company>>(e =>
-                new RestfulListService<FilteredCollection<Company>, Company>(e.GetService<HttpClient>(), "/api/companies"));
+                new ListService<FilteredCollection<Company>, Company>(e.GetService<HttpClient>(), "/api/companies"));
 
             builder.Services.AddScoped<IListService<Content>>(e =>
-                new RestfulListService<FilteredCollection<Content>, Content>(e.GetService<HttpClient>(), "/api/contents"));
+                new ListService<FilteredCollection<Content>, Content>(e.GetService<HttpClient>(), "/api/contents"));
 
             builder.Services.AddScoped<IListService<Employee>>(e =>
-                new RestfulListService<PagedCollection<Employee>, Employee>(e.GetService<HttpClient>(), "/api/employees"));
+                new ListService<PagedCollection<Employee>, Employee>(e.GetService<HttpClient>(), "/api/employees"));
 
-            builder.Services.AddScoped(e => new RestfulListService<FilteredCollection<Sector>, Sector>(e.GetService<HttpClient>(), "/api/sectors"));
-            builder.Services.AddScoped<IListService<Sector>>(e => e.GetService<RestfulListService<FilteredCollection<Sector>, Sector>>());
-            builder.Services.AddScoped<IOptionProvider<Sector>>(e => e.GetService<RestfulListService<FilteredCollection<Sector>, Sector>>());
+            builder.Services.AddScoped(e => new ListService<FilteredCollection<Sector>, Sector>(e.GetService<HttpClient>(), "/api/sectors"));
+            builder.Services.AddScoped<IListService<Sector>>(e => e.GetService<ListService<FilteredCollection<Sector>, Sector>>());
+            builder.Services.AddScoped<IOptionProvider<Sector>>(e => e.GetService<ListService<FilteredCollection<Sector>, Sector>>());
 
             builder.Services.AddScoped(e =>
                 new CrudService<Company>(e.GetService<HttpClient>(), "/api/companies/{0}"));
