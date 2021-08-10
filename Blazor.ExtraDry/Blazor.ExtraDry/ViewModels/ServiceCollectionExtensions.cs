@@ -12,9 +12,12 @@ namespace Blazor.ExtraDry {
         /// </summary>
         public static IServiceCollection AddCrudService<T>(this IServiceCollection services, string endpointTemplate)
         {
-            var client = services.BuildServiceProvider().GetService<HttpClient>();
-            var service = new CrudService<T>(client!, endpointTemplate);
-            return services.AddScoped(e => service);
+            services.AddScoped(e => {
+                var client = e.GetService<HttpClient>();
+                var service = new CrudService<T>(client!, endpointTemplate);
+                return service;
+            });
+            return services;
         }
 
         /// <summary>
@@ -23,11 +26,19 @@ namespace Blazor.ExtraDry {
         /// </summary>
         public static IServiceCollection AddFilteredListService<T>(this IServiceCollection services, string endpointTemplate)
         {
-            var client = services.BuildServiceProvider().GetService<HttpClient>();
-            var service = new ListService<FilteredCollection<T>, T>(client!, endpointTemplate);
-            services.AddScoped(e => service);
-            services.AddScoped(e => (IListService<T>)service);
-            services.AddScoped(e => (IOptionProvider<T>)service);
+            services.AddScoped(e => {
+                var client = e.GetService<HttpClient>();
+                var service = new ListService<FilteredCollection<T>, T>(client!, endpointTemplate);
+                return service;
+            });
+            services.AddScoped(e => {
+                IListService<T> upcasted = e.GetService<ListService<FilteredCollection<T>, T>>()!;
+                return upcasted;
+            });
+            services.AddScoped(e => {
+                IOptionProvider<T> upcasted = e.GetService<ListService<FilteredCollection<T>, T>>()!;
+                return upcasted;
+            });
             return services;
         }
 
@@ -37,11 +48,19 @@ namespace Blazor.ExtraDry {
         /// </summary>
         public static IServiceCollection AddPagedListService<T>(this IServiceCollection services, string endpointTemplate)
         {
-            var client = services.BuildServiceProvider().GetService<HttpClient>();
-            var service = new ListService<PagedCollection<T>, T>(client!, endpointTemplate);
-            services.AddScoped(e => service);
-            services.AddScoped(e => (IListService<T>)service);
-            services.AddScoped(e => (IOptionProvider<T>)service);
+            services.AddScoped(e => {
+                var client = e.GetService<HttpClient>();
+                var service = new ListService<PagedCollection<T>, T>(client!, endpointTemplate);
+                return service;
+            });
+            services.AddScoped(e => {
+                IListService<T> upcasted = e.GetService<ListService<PagedCollection<T>, T>>()!;
+                return upcasted;
+            });
+            services.AddScoped(e => {
+                IOptionProvider<T> upcasted = e.GetService<ListService<PagedCollection<T>, T>>()!;
+                return upcasted;
+            });
             return services;
         }
     }
