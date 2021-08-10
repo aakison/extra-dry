@@ -26,6 +26,6 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             Assert.Equal(propertyValue, result);
         }
 
-        private static FilterAttribute ValidFilter = new();
+        private static readonly FilterAttribute ValidFilter = new();
     }
 }

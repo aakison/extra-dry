@@ -50,9 +50,9 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         [Fact]
         public void UserMessageChangable()
         {
-            var exception = new DryException("message", "user");
-
-            exception.UserMessage = "new-message";
+            var exception = new DryException("message", "user") {
+                UserMessage = "new-message"
+            };
 
             Assert.Equal("new-message", exception.UserMessage);
         }
