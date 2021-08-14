@@ -21,7 +21,7 @@ namespace Blazor.ExtraDry {
 
         public int Size { get; set; }
 
-        [MaxLength(64)]
+        [MaxLength(64), RegularExpression("[A-F0-9]{64}")]
         public string ShaHash { get; set; } = string.Empty;
 
         /// <summary>

@@ -29,10 +29,15 @@ namespace Blazor.ExtraDry {
             Take = ActualTake(null, take);
         }
 
-        public ContinuationToken Next(int skip, int take)
+        /// <summary>
+        /// Returns the next token for the page that follows this token.
+        /// The token's skip and take are used unless overridden, in which case the skipOverride and the takeOverride
+        /// are considered as part of the current token, not the next token.
+        /// </summary>
+        public ContinuationToken Next(int skipOverride = -1, int takeOverride = -1)
         {
-            var actualTake = ActualTake(this, take);
-            var actualSkip = ActualSkip(this, skip) + actualTake;
+            var actualTake = ActualTake(this, takeOverride);
+            var actualSkip = ActualSkip(this, skipOverride) + actualTake;
             var next = new ContinuationToken(Filter, Sort, Ascending, Stabalizer, actualSkip, actualTake);
             return next;
         }

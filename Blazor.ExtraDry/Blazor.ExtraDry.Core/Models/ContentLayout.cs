@@ -17,10 +17,8 @@ namespace Blazor.ExtraDry {
 
     public class ContentSection {
 
-        [JsonConverter(typeof(JsonStringEnumConverter))]
         public SectionLayout Layout { get; set; } = SectionLayout.Single;
 
-        [JsonConverter(typeof(JsonStringEnumConverter))]
         public ContentTheme Theme { get; set; } = ContentTheme.Light;
 
         public Collection<ContentContainer> Containers { get; set; } = new Collection<ContentContainer>();
@@ -48,10 +46,8 @@ namespace Blazor.ExtraDry {
 
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        [JsonConverter(typeof(JsonStringEnumConverter))]
         public ContentAlignment Alignment { get; set; } = ContentAlignment.TopLeft;
 
-        [JsonConverter(typeof(JsonStringEnumConverter))]
         public ContentPadding Padding { get; set; } = ContentPadding.None;
 
         /// <summary>
@@ -61,6 +57,7 @@ namespace Blazor.ExtraDry {
 
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum ContentAlignment {
         TopLeft,
         TopCenter,
@@ -73,6 +70,7 @@ namespace Blazor.ExtraDry {
         BottomRight,
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum ContentTheme {
         Light,
         Dark,
@@ -80,6 +78,7 @@ namespace Blazor.ExtraDry {
         Banner,
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum SectionLayout {
 
         [Display(Name="single")]
@@ -101,6 +100,7 @@ namespace Blazor.ExtraDry {
         Quadruple,
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum ContentPadding {
 
         [Display(Name = "none")]

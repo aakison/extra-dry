@@ -1,7 +1,6 @@
 ﻿#nullable enable
 
 using Microsoft.AspNetCore.Components.Web.Virtualization;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
