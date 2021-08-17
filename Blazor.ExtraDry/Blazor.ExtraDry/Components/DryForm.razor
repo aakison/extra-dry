@@ -12,7 +12,9 @@ else {
                     <div class="column @column.ClassName">
                         @foreach(var fieldset in column.Fieldsets) {
                             <fieldset>
-                                <legend>@fieldset.Legend</legend>
+                                @if(!string.IsNullOrWhiteSpace(fieldset.Legend)) { 
+                                    <legend>@fieldset.Legend</legend>
+                                }
                                 @foreach(var group in fieldset.Groups) {
                                     var redundant = "";// line.FormProperties.Count == 1 && line.FormProperties.First().FieldCaption == fieldset.Legend ? "redundant" : "";
                                     <div class="group @group.ClassName">
