@@ -6,9 +6,6 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Blazor.ExtraDry {
@@ -22,6 +19,9 @@ namespace Blazor.ExtraDry {
 
         [Parameter]
         public EditMode EditMode { get; set; } = EditMode.Update;
+
+        [Parameter]
+        public RenderFragment? ChildContent { get; set; }
 
         [Inject]
         private ILogger<DryForm<T>>? Logger { get; set; }
