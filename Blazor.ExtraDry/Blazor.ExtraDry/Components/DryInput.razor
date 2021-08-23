@@ -86,8 +86,8 @@
                     <option value="" disabled selected>@Property.Display?.Prompt</option>
                 }
                 @foreach(var option in LookupProviderOptions) {
-                    var selected = option.Equals(selectedValue);
-                    <option value="@option" selected="@selected">@option.ToString()</option>
+                    var selected = option.Value.Equals(selectedValue);
+                    <option value="@option.Key" selected="@selected">@option.Value.ToString()</option>
                 }
             </select>
         }

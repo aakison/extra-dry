@@ -38,7 +38,7 @@ namespace Blazor.ExtraDry {
             }
         }
 
-        private List<object> LookupProviderOptions { get; set; }
+        private Dictionary<string, object> LookupProviderOptions { get; set; }
 
         private bool RulesAllowUpdate => (Property.Rules?.UpdateAction ?? UpdateAction.AllowChanges) == UpdateAction.AllowChanges;
 
@@ -70,13 +70,14 @@ namespace Blazor.ExtraDry {
                 var token = new CancellationTokenSource().Token;
                 dynamic task = method.Invoke(optionProvider, new object[] { token });
                 var optList = (await task).Items as ICollection;
-                LookupProviderOptions = optList.Cast<object>().ToList();
+                var options = optList.Cast<object>().ToList();
+                LookupProviderOptions = options.Select((e, i) => new { Key = i, Item = e }).ToDictionary(e => e.Key.ToString(), e => e.Item);
             }
             else {
                 Logger.LogError($"An attempt to display a DryInput for type `{Property?.Property?.PropertyType}`, but no option provider was registered.  To enable select functionality for linked types, please add a scoped referenced to the `IOptionProvider` in `Main`.  E.g. `builder.Services.AddScoped<IOptionProvider<{Property?.Property?.PropertyType}>>(e => new MyOptionProvider());`.  Also note that IListService implements IOptionProvider and can be used to register RESTful APIs.");
             }
         }
-
+         
         private string TextDescription {
             get {
                 if(Editable) {
@@ -100,7 +101,7 @@ namespace Blazor.ExtraDry {
             Console.WriteLine("Changed");
             var value = args.Value;
             if(LookupProviderOptions != null && value is string strValue) {
-                value = LookupProviderOptions.FirstOrDefault(e => e.ToString() == strValue);
+                value = LookupProviderOptions[strValue];
             }
             Console.WriteLine($"Model: {Model} to Value: {value}");
             Property.SetValue(Model, value);
@@ -116,7 +117,7 @@ namespace Blazor.ExtraDry {
             Console.WriteLine("Changed");
             var value = selectValue;
             //if(LookupProviderOptions != null && value is string strValue) {
-            //    value = LookupProviderOptions.FirstOrDefault(e => e.ToString() == strValue);
+            //    value = LookupProviderOptions[strValue];
             //}
             Console.WriteLine($"Model: {Model} to Value: {value}");
             Property.SetValue(Model, value);
