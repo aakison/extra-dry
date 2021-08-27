@@ -73,7 +73,7 @@ namespace Blazor.ExtraDry {
             if(methodInfo == null) {
                 throw new DryException($"Could not find method `{methodName}`, must be one of `OrderBy`, `Thenby`, `OrderByDescending`, or `ThenByDescending`", "Internal Server Error - 0x0F72F021");
             }
-            var result = methodInfo?.MakeGenericMethod(typeof(T), type)?.Invoke(null, new object[] { source, lambda });
+            var result = methodInfo.MakeGenericMethod(typeof(T), type)?.Invoke(null, new object[] { source, lambda });
             if(result == null) {
                 throw new DryException($"Failed to execute order method `{methodName}`", "Internal Server Error - 0x0F0427A0");
             }
