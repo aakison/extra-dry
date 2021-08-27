@@ -77,6 +77,9 @@ The coverlet collector has been added to the unit tests for the manual running o
 
 ```
 dotnet tool install -g dotnet-reportgenerator-globaltool
+```
+or, just locally using:
+```
 dotnet tool install dotnet-reportgenerator-globaltool --tool-path tools
 ```
 
