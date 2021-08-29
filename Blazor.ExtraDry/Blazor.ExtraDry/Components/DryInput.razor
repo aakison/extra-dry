@@ -76,23 +76,10 @@
     else if(LookupProviderOptions != null) {
         var selectedValue = Property.GetValue(Model);
         @if(Property.HasArrayValues) {
-            <DryMultipleSelect Model="@Model" Property="@Property" Values="@LookupValues" />
-        }
-        else if(ReadOnly) {
-            <select class="@CssClass readonly" disabled>
-                <option value="@selectedValue.ToString()" selected>@selectedValue.ToString()</option>
-            </select>
+            <DryMultipleSelect CssClass="@CssClass" Model="@Model" Property="@Property" Values="@LookupValues" />
         }
         else { 
-            <select class="@CssClass" @onchange="HandleChange">
-                @if(selectedValue == null) {
-                    <option value="" disabled selected>@Property.Display?.Prompt</option>
-                }
-                @foreach(var option in LookupProviderOptions) {
-                    var selected = option.Value.Equals(selectedValue);
-                    <option value="@option.Key" selected="@selected">@option.Value.ToString()</option>
-                }
-            </select>
+            <DrySingleSelect CssClass="@CssClass" Model="@Model" Property="@Property" Values="@LookupValues" />
         }
     }
     else { 

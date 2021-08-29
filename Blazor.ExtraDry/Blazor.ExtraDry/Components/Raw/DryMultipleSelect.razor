@@ -1,7 +1,7 @@
 ﻿@namespace Blazor.ExtraDry.Components.Raw
 @typeparam T
 
-<div>
+<div class="@CssClass">
   @foreach(var option in SelectedOptions) { 
     <div>
       @if(EditMode != EditMode.ReadOnly) { 
@@ -10,7 +10,7 @@
       @option.Display
     </div>
   }
-  @if(EditMode != EditMode.ReadOnly) { 
+  @if(!ReadOnly) { 
     <select @onchange="SelectOption">
       <option selected="@BlankSelected"></option>
       @foreach (var option in AvailableOptions) {

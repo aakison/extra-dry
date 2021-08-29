@@ -25,6 +25,9 @@ namespace Blazor.ExtraDry.Components.Raw {
         [Parameter]
         public EventCallback<ChangeEventArgs>? OnChange { get; set; }
 
+        [Parameter]
+        public string? CssClass { get; set; }
+
         [Inject]
         private ILogger<DryInput<T>> Logger { get; set; } = null!;
 
@@ -124,6 +127,8 @@ namespace Blazor.ExtraDry.Components.Raw {
         private IEnumerable<OptionInfo> SelectedOptions => AllOptions.Values.Where(e => e.Selected == true);
 
         private IEnumerable<OptionInfo> AvailableOptions => AllOptions.Values.Where(e => e.Selected == false);
+
+        private bool ReadOnly => EditMode == EditMode.ReadOnly;
     }
 
 }
