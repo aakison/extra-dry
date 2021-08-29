@@ -40,6 +40,8 @@ namespace Blazor.ExtraDry {
 
         private Dictionary<string, object> LookupProviderOptions { get; set; }
 
+        private List<object> LookupValues => LookupProviderOptions.Values.ToList();
+
         private bool RulesAllowUpdate => (Property.Rules?.UpdateAction ?? UpdateAction.AllowChanges) == UpdateAction.AllowChanges;
 
         private bool Editable => EditMode == EditMode.Create || EditMode == EditMode.Update && RulesAllowUpdate;
@@ -63,7 +65,11 @@ namespace Blazor.ExtraDry {
         private async Task FetchLookupProviderOptions()
         {
             var untypedOptionProvider = typeof(IOptionProvider<>);
-            var typedOptionProvider = untypedOptionProvider.MakeGenericType(Property.Property.PropertyType);
+            var propertyType = Property.Property.PropertyType;
+            if(propertyType.IsAssignableTo(typeof(IList))) {
+                propertyType = propertyType.GetGenericArguments().FirstOrDefault();
+            }
+            var typedOptionProvider = untypedOptionProvider.MakeGenericType(propertyType);
             var optionProvider = ScopedServices.GetService(typedOptionProvider);
             if(optionProvider != null) {
                 var method = typedOptionProvider.GetMethod("GetItemsAsync");
@@ -98,7 +104,8 @@ namespace Blazor.ExtraDry {
 
         private async Task HandleChange(ChangeEventArgs args)
         {
-            Console.WriteLine("Changed");
+            Console.WriteLine("HandleChange");
+            Console.WriteLine($"Changed to: {args} / {args.Value}");
             var value = args.Value;
             if(LookupProviderOptions != null && value is string strValue) {
                 value = LookupProviderOptions[strValue];

@@ -28,7 +28,10 @@ namespace Sample.Shared {
         [Rules(CreateAction = CreateAction.LinkExisting)]
         public Sector PrimarySector { get; set; }
 
-        // Attempt to reproduce viewmodel problem.
+        [Display]
+        [Rules(CreateAction = CreateAction.LinkExisting)]
+        public List<Sector> AdditionalSectors { get; set; }
+
         //[Display(Name = "Alternate")]
         //public string Name2 {
         //    get => Name;

@@ -116,7 +116,42 @@ namespace Blazor.ExtraDry {
 
         public string CaptionTemplate => Control?.CaptionTemplate ?? "";
 
-        public void SetValue(object item, object value) => Property?.SetValue(item, Unformat(value));
+        public void SetValue(object item, object value)
+        {
+            if(HasArrayValues) {
+                throw new InvalidOperationException("Can only set values to properties that are not collections, use AddValue instead.");
+            }
+            Property?.SetValue(item, Unformat(value));
+        }
+
+        public void AddValue(object item, object value)
+        {
+            var propertyList = GetAsCollection(item);
+            propertyList?.Add(value);
+        }
+
+        public void RemoveValue(object item, object value)
+        {
+            var propertyList = GetAsCollection(item);
+            propertyList?.Remove(value);
+        }
+
+        private IList GetAsCollection(object item)
+        {
+            if(!HasArrayValues) {
+                throw new InvalidOperationException("Can only access values on property that are collections.");
+            }
+            var propertyObject = GetValue(item);
+            if(propertyObject == null) {
+                propertyObject = Activator.CreateInstance(Property.PropertyType);
+                Property?.SetValue(item, propertyObject);
+            }
+            var propertyList = propertyObject as IList;
+            if(propertyList == null) {
+                Console.WriteLine("Not castable to IList");
+            }
+            return propertyList;
+        }
 
         public string DisplayClass {
             get {
