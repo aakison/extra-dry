@@ -1,12 +1,11 @@
 ﻿#nullable enable
 
 using System;
-using System.Runtime.Serialization;
 
 namespace Blazor.ExtraDry {
 
     [Serializable]
-    public class DryException : Exception {
+    public sealed class DryException : Exception {
         
         public DryException() { }
         
@@ -19,8 +18,6 @@ namespace Blazor.ExtraDry {
             UserMessage = userMessage;
         }
         
-        protected DryException(SerializationInfo info, StreamingContext context) : base(info, context) { }
-
         /// <summary>
         /// If available, an exception message that is suitable to show to users.
         /// E.g. certain validation exceptions can be shown, but null reference cannot.
