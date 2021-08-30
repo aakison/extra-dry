@@ -85,8 +85,10 @@ namespace Blazor.ExtraDry {
                 }
                 var action = rule?.UpdateAction ?? UpdateAction.AllowChanges;
                 var sourceValue = property.GetValue(source);
-                if(sourceValue is ICollection<object> sourceCollection) {
-                    await ProcessCollectionUpdates(action, property, destination, sourceCollection);
+                var destinationValue = property.GetValue(destination);
+                if(sourceValue is IList || destinationValue is IList) {
+                    var sourceList = sourceValue as IList;
+                    await ProcessCollectionUpdates(action, property, destination, sourceList);
                 }
                 else {
                     await ProcessIndividualUpdate(action, property, destination, sourceValue);
@@ -113,36 +115,39 @@ namespace Blazor.ExtraDry {
             property.SetValue(destination, value);
         }
 
-        private async Task ProcessCollectionUpdates<T>(UpdateAction action, PropertyInfo property, T destination, ICollection<object> source)
+        private async Task ProcessCollectionUpdates<T>(UpdateAction action, PropertyInfo property, T destination, IList sourceList)
         {
             var destinationValue = property.GetValue(destination);
-            var destinationCollection = destinationValue as ICollection<object>;
-            if(destinationCollection == null && source != null) {
-                destinationCollection = Activator.CreateInstance(property.PropertyType) as ICollection<object>;
-                property.SetValue(destination, destinationCollection);
+            var destinationList = destinationValue as IList;
+            if(destinationList == null && sourceList != null) {
+                destinationList = Activator.CreateInstance(property.PropertyType) as IList;
+                property.SetValue(destination, destinationList);
             }
             if(action == UpdateAction.Ignore) {
                 // Do nothing, doesn't matter what's in source, destination won't change.
                 return;
             }
-            if(action == UpdateAction.IgnoreDefaults && source == null) {
+            if(action == UpdateAction.IgnoreDefaults && sourceList == null) {
                 // Don't modify destination as source is in default state of null (note that an empty collection will change destination)
                 return;
             }
             var sourceEntities = new List<object>();
-            foreach(var item in source) {
-                sourceEntities.Add(await ResolveEntityValue(property, item));
+            if(sourceList != null) {
+                foreach(var item in sourceList) {
+                    sourceEntities.Add(await ResolveEntityValue(property, item));
+                }
             }
-            var toRemove = destinationCollection.Except(sourceEntities);
-            var toAdd = sourceEntities.Except(destinationCollection);
+            var destObjects = destinationList.Cast<object>();
+            var toRemove = destObjects.Except(sourceEntities).ToList();
+            var toAdd = sourceEntities.Except(destObjects).ToList();
             if(action == UpdateAction.BlockChanges && (toRemove.Any() || toAdd.Any())) {
                 throw new DryException($"Invalid attempt to change collection property {property.Name}", $"Attempt to change read-only collection property '{property.Name}'");
             }
             foreach(var item in toRemove) {
-                destinationCollection.Remove(item);
+                destinationList.Remove(item);
             }
             foreach(var item in toAdd) {
-                destinationCollection.Add(item);
+                destinationList.Add(item);
             }
         }
 

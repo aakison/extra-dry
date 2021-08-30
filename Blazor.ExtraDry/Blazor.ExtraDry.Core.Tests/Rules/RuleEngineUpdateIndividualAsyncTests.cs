@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Xunit;
 
 namespace Blazor.ExtraDry.Core.Tests.Rules {
-    public class RuleEngineUpdateAsyncTests {
+    public class RuleEngineUpdateIndividualAsyncTests {
 
         [Fact]
         public async Task IdentityUnchanged()
