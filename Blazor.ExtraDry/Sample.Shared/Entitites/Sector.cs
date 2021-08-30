@@ -28,7 +28,6 @@ namespace Sample.Shared {
         [Display(Name = "Description")]
         public string Description { get; set; }
         
-        [JsonConverter(typeof(JsonStringEnumConverter))]
         [Rules(DeleteValue = SectorState.Inactive)]
         public SectorState State { get; set; }
 

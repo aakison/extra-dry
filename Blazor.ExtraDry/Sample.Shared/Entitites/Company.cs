@@ -1,9 +1,11 @@
 ﻿using Blazor.ExtraDry;
+using Sample.Shared.Converters;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace Sample.Shared {
     public class Company {
@@ -26,6 +28,7 @@ namespace Sample.Shared {
 
         [Display]
         [Rules(CreateAction = CreateAction.LinkExisting)]
+        [JsonConverter(typeof(SectorInfoJsonConverter))]
         public Sector PrimarySector { get; set; }
 
         [Display]

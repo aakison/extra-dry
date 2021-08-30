@@ -1,8 +1,11 @@
-﻿namespace Sample.Shared {
+﻿using System.Text.Json.Serialization;
+
+namespace Sample.Shared {
 
     /// <summary>
     /// Represents a soft-delete capable state for Sectors which indicate what services companies can provide.
     /// </summary>
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum SectorState {
 
         Unknown = 0,
