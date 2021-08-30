@@ -32,12 +32,15 @@ namespace Blazor.ExtraDry {
             var destination = Activator.CreateInstance<T>();
             var properties = typeof(T).GetProperties();
             foreach(var property in properties) {
-                var rule = property.GetCustomAttribute<RulesAttribute>();
                 var ignore = property.GetCustomAttribute<JsonIgnoreAttribute>();
                 if(ignore != null && ignore.Condition == JsonIgnoreCondition.Always) {
                     continue;
                 }
+                var rule = property.GetCustomAttribute<RulesAttribute>();
                 var action = rule?.CreateAction ?? CreateAction.Default;
+                if(action == CreateAction.Ignore) {
+                    continue;
+                }
                 if (action == CreateAction.Default) {
                     action = IsValidReferenceType(property) ? CreateAction.Create : CreateAction.LinkExisting;
                 }
@@ -54,7 +57,7 @@ namespace Blazor.ExtraDry {
                             break;
                         }
                         else {
-                            throw new Exception();
+                            throw new InvalidOperationException($"Attempt to create none reference type '{property.PropertyType.Name}'");
                         }
                     case CreateAction.CreateDescendants:
                         continue;
