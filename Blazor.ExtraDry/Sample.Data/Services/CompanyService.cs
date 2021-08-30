@@ -30,6 +30,7 @@ namespace Sample.Data.Services {
         {
             return await database.Companies
                 .Include(e => e.PrimarySector)
+                .Include(e => e.AdditionalSectors)
                 .FirstOrDefaultAsync(e => e.Uuid == uniqueId);
         }
 

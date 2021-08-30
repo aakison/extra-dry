@@ -106,7 +106,7 @@ namespace Blazor.ExtraDry {
                 // Don't modify destination as source is in default state
                 return;
             }
-            value = await ResolveEntityValue(property, value);
+            value = await ResolveEntityValue(property.PropertyType, value);
             var destinationValue = property.GetValue(destination);
             var same = (value == null && destinationValue == null) || (value?.Equals(destinationValue) ?? false);
             if(action == UpdateAction.BlockChanges && !same) {
@@ -133,8 +133,9 @@ namespace Blazor.ExtraDry {
             }
             var sourceEntities = new List<object>();
             if(sourceList != null) {
+                var listItemType = property.PropertyType.GetGenericArguments()[0];
                 foreach(var item in sourceList) {
-                    sourceEntities.Add(await ResolveEntityValue(property, item));
+                    sourceEntities.Add(await ResolveEntityValue(listItemType, item));
                 }
             }
             var destObjects = destinationList.Cast<object>();
@@ -331,13 +332,13 @@ namespace Blazor.ExtraDry {
         /// that might be a database entity.  Uses `IEntityResolver` class in DI to find potential replacement.
         /// This only works for objects, value types are always copies, so sourceValue is always returned.
         /// </summary>
-        private async Task<object> ResolveEntityValue(PropertyInfo property, object sourceValue)
+        private async Task<object> ResolveEntityValue(Type type, object sourceValue)
         {
-            if(property.PropertyType.IsValueType || property.PropertyType == typeof(string)) {
+            if(type.IsValueType || type == typeof(string)) {
                 return sourceValue;
             }
             var untypedEntityResolver = typeof(IEntityResolver<>);
-            var typedEntityResolver = untypedEntityResolver.MakeGenericType(property.PropertyType);
+            var typedEntityResolver = untypedEntityResolver.MakeGenericType(type);
             var resolver = scopedServices.GetService(typedEntityResolver);
             if(resolver == null) {
                 return sourceValue;
