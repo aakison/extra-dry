@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Xunit;
 
 namespace Blazor.ExtraDry.Core.Tests.Rules {
-    public class RuleEngineUpdateAsyncTests {
+    public class RuleEngineUpdateCollectionAsyncTests {
 
         [Fact]
         public async Task IdentityUnchanged()
@@ -244,6 +244,224 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             Assert.Empty(destination.Children);
         }
 
+        [Fact]
+        public async Task IgnoreChildrenDoesNothing()
+        {
+            var services = new LocalServiceProviderStub();
+            var rules = new RuleEngine(services);
+            var source = new Parent {
+                IgnoredChildren = new List<Child> {
+                    new Child { Uuid = Guid.NewGuid(), Name = "Child1" },
+                    new Child { Uuid = Guid.NewGuid(), Name = "Child2" },
+                }
+            };
+            var destination = new Parent {
+                IgnoredChildren = new List<Child> {
+                    new Child { Uuid = Guid.NewGuid(), Name = "Child3" },
+                    new Child { Uuid = Guid.NewGuid(), Name = "Child4" },
+                }
+            };
+
+            await rules.UpdateAsync(source, destination);
+
+            Assert.NotNull(destination.IgnoredChildren);
+            Assert.Equal(2, destination.IgnoredChildren.Count);
+            Assert.Equal("Child3", destination.IgnoredChildren[0].Name);
+            Assert.Equal("Child4", destination.IgnoredChildren[1].Name);
+        }
+
+        [Fact]
+        public async Task IgnoreDefaultsChildrenReplaces()
+        {
+            var services = new LocalServiceProviderStub();
+            var rules = new RuleEngine(services);
+            var source = new Parent {
+                IgnoredDefaultsChildren = new List<Child> {
+                    new Child { Uuid = Guid.NewGuid(), Name = "Child1" },
+                    new Child { Uuid = Guid.NewGuid(), Name = "Child2" },
+                }
+            };
+            var destination = new Parent {
+                IgnoredDefaultsChildren = new List<Child> {
+                    new Child { Uuid = Guid.NewGuid(), Name = "Child3" },
+                    new Child { Uuid = Guid.NewGuid(), Name = "Child4" },
+                }
+            };
+
+            await rules.UpdateAsync(source, destination);
+
+            Assert.NotNull(destination.IgnoredDefaultsChildren);
+            Assert.Equal(2, destination.IgnoredDefaultsChildren.Count);
+            Assert.Equal("Child1", destination.IgnoredDefaultsChildren[0].Name);
+            Assert.Equal("Child2", destination.IgnoredDefaultsChildren[1].Name);
+        }
+
+
+        [Fact]
+        public async Task IgnoreDefaultsChildrenIgnoresNull()
+        {
+            var services = new LocalServiceProviderStub();
+            var rules = new RuleEngine(services);
+            var source = new Parent {
+                IgnoredDefaultsChildren = null
+            };
+            var destination = new Parent {
+                IgnoredDefaultsChildren = new List<Child> {
+                    new Child { Uuid = Guid.NewGuid(), Name = "Child3" },
+                    new Child { Uuid = Guid.NewGuid(), Name = "Child4" },
+                }
+            };
+
+            await rules.UpdateAsync(source, destination);
+
+            Assert.NotNull(destination.IgnoredDefaultsChildren);
+            Assert.Equal(2, destination.IgnoredDefaultsChildren.Count);
+            Assert.Equal("Child3", destination.IgnoredDefaultsChildren[0].Name);
+            Assert.Equal("Child4", destination.IgnoredDefaultsChildren[1].Name);
+        }
+
+        [Fact]
+        public async Task IgnoreDefaultsChildrenEmptysWhenCollectionEmpty()
+        {
+            var services = new LocalServiceProviderStub();
+            var rules = new RuleEngine(services);
+            var source = new Parent {
+                IgnoredDefaultsChildren = new List<Child>(),
+            };
+            var destination = new Parent {
+                IgnoredDefaultsChildren = new List<Child> {
+                    new Child { Uuid = Guid.NewGuid(), Name = "Child3" },
+                    new Child { Uuid = Guid.NewGuid(), Name = "Child4" },
+                }
+            };
+
+            await rules.UpdateAsync(source, destination);
+
+            Assert.NotNull(destination.IgnoredDefaultsChildren);
+            Assert.Empty(destination.IgnoredDefaultsChildren);
+        }
+
+        [Fact]
+        public async Task BlockChangesCollectionsBothEmptyOk()
+        {
+            var services = new LocalServiceProviderStub();
+            var rules = new RuleEngine(services);
+            var source = new Parent {
+                BlockedChildren = new List<Child>(),
+            };
+            var destination = new Parent {
+                BlockedChildren = new List<Child>(),
+            };
+
+            await rules.UpdateAsync(source, destination);
+
+            Assert.NotNull(destination.BlockedChildren);
+            Assert.Empty(destination.BlockedChildren);
+        }
+
+        [Fact]
+        public async Task BlockChangesCollectionsBothNullOk()
+        {
+            var services = new LocalServiceProviderStub();
+            var rules = new RuleEngine(services);
+            var source = new Parent {
+                BlockedChildren = null,
+            };
+            var destination = new Parent {
+                BlockedChildren = null,
+            };
+
+            await rules.UpdateAsync(source, destination);
+
+            Assert.Null(destination.BlockedChildren);
+        }
+
+        [Fact]
+        public async Task BlockChangesCollectionsBothSameOk()
+        {
+            var services = new LocalServiceProviderStub();
+            var rules = new RuleEngine(services);
+            var guid1 = Guid.NewGuid();
+            var guid2 = Guid.NewGuid();
+            var source = new Parent {
+                BlockedChildren = new List<Child> {
+                    new Child { Uuid = guid1, Name = "Child3" },
+                    new Child { Uuid = guid2, Name = "Child4" },
+                }
+            };
+            var destination = new Parent {
+                BlockedChildren = new List<Child> {
+                    new Child { Uuid = guid1, Name = "Child3" },
+                    new Child { Uuid = guid2, Name = "Child4" },
+                }
+            };
+
+            await rules.UpdateAsync(source, destination);
+
+            Assert.NotNull(destination.BlockedChildren);
+            Assert.Equal(2, destination.BlockedChildren.Count);
+            Assert.Equal("Child3", destination.BlockedChildren[0].Name);
+            Assert.Equal("Child4", destination.BlockedChildren[1].Name);
+        }
+
+
+        [Fact]
+        public async Task BlockChangesEmptyOverwriteThrows()
+        {
+            var services = new LocalServiceProviderStub();
+            var rules = new RuleEngine(services);
+            var source = new Parent {
+                BlockedChildren = new List<Child>()
+            };
+            var destination = new Parent {
+                BlockedChildren = new List<Child> {
+                    new Child { Uuid = Guid.NewGuid(), Name = "Child3" },
+                    new Child { Uuid = Guid.NewGuid(), Name = "Child4" },
+                }
+            };
+
+            await Assert.ThrowsAsync<DryException>(async () => await rules.UpdateAsync(source, destination));
+        }
+
+        [Fact]
+        public async Task BlockChangesNullOverwriteThrows()
+        {
+            var services = new LocalServiceProviderStub();
+            var rules = new RuleEngine(services);
+            var source = new Parent {
+                BlockedChildren = null
+            };
+            var destination = new Parent {
+                BlockedChildren = new List<Child> {
+                    new Child { Uuid = Guid.NewGuid(), Name = "Child3" },
+                    new Child { Uuid = Guid.NewGuid(), Name = "Child4" },
+                }
+            };
+
+            await Assert.ThrowsAsync<DryException>(async () => await rules.UpdateAsync(source, destination));
+        }
+
+        [Fact]
+        public async Task BlockChangesDifferentSetOverwriteThrows()
+        {
+            var services = new LocalServiceProviderStub();
+            var rules = new RuleEngine(services);
+            var source = new Parent {
+                BlockedChildren = new List<Child> {
+                    new Child { Uuid = Guid.NewGuid(), Name = "Child1" },
+                    new Child { Uuid = Guid.NewGuid(), Name = "Child2" },
+                }
+            };
+            var destination = new Parent {
+                BlockedChildren = new List<Child> {
+                    new Child { Uuid = Guid.NewGuid(), Name = "Child3" },
+                    new Child { Uuid = Guid.NewGuid(), Name = "Child4" },
+                }
+            };
+
+            await Assert.ThrowsAsync<DryException>(async () => await rules.UpdateAsync(source, destination));
+        }
+
         public class Child {
 
             public Guid Uuid { get; set; } = Guid.NewGuid();
@@ -264,6 +482,15 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             public Child Child { get; set; }
 
             public List<Child> Children { get; set; }
+
+            [Rules(UpdateAction.Ignore)]
+            public List<Child> IgnoredChildren { get; set; }
+
+            [Rules(UpdateAction.IgnoreDefaults)]
+            public List<Child> IgnoredDefaultsChildren { get; set; }
+
+            [Rules(UpdateAction.BlockChanges)]
+            public List<Child> BlockedChildren { get; set; }
 
         }
 
