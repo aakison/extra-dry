@@ -32,28 +32,28 @@ namespace Sample.Server.Controllers {
             await sectors.CreateAsync(value);
         }
 
-        [HttpGet("api/sectors/{uniqueId}"), Produces("application/json")]
+        [HttpGet("api/sectors/{sectorId}"), Produces("application/json")]
         [SwaggerOperation("Retreive a specific company service.")]
-        public async Task<Sector> Retrieve(Guid uniqueId)
+        public async Task<Sector> Retrieve(Guid sectorId)
         {
-            return await sectors.RetrieveAsync(uniqueId);
+            return await sectors.RetrieveAsync(sectorId);
         }
 
-        [HttpPut("api/sectors/{uniqueId}"), Consumes("application/json")]
+        [HttpPut("api/sectors/{sectorId}"), Consumes("application/json")]
         [SwaggerOperation("Update an existing company service.")]
-        public async Task Update(Guid uniqueId, Sector value)
+        public async Task Update(Guid sectorId, Sector value)
         {
-            if(uniqueId != value?.UniqueId) {
-                throw new ArgumentException("ID in URI must match body.", nameof(uniqueId));
+            if(sectorId != value?.Uuid) {
+                throw new ArgumentException("ID in URI must match body.", nameof(sectorId));
             }
             await sectors.UpdateAsync(value);
         }
 
-        [HttpDelete("api/sectors/{uniqueId}")]
+        [HttpDelete("api/sectors/{sectorId}")]
         [SwaggerOperation("Delete an existing company service.")]
-        public async Task Delete(Guid uniqueId)
+        public async Task Delete(Guid sectorId)
         {
-            await sectors.DeleteAsync(uniqueId);
+            await sectors.DeleteAsync(sectorId);
         }
 
         private readonly SectorService sectors;

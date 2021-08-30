@@ -30,12 +30,12 @@ namespace Sample.Data.Services {
         {
             return await database.Companies
                 .Include(e => e.PrimarySector)
-                .FirstOrDefaultAsync(e => e.UniqueId == uniqueId);
+                .FirstOrDefaultAsync(e => e.Uuid == uniqueId);
         }
 
         public async Task Update(Company item)
         {
-            var existing = await Retrieve(item.UniqueId);
+            var existing = await Retrieve(item.Uuid);
             await rules.UpdateAsync(item, existing);
             await database.SaveChangesAsync();
         }

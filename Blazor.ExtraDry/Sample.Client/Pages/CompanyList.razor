@@ -13,7 +13,7 @@
     [Command(CommandContext.Alternate, Icon = "edit")]
     public void Edit(Company company)
     {
-        Navigation.NavigateTo($"/companies/{company.UniqueId}");
+        Navigation.NavigateTo($"/companies/{company.Uuid}");
     }
 
 }

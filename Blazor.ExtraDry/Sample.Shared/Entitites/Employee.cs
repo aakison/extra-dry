@@ -12,7 +12,7 @@ namespace Sample.Shared
         [Rules(UpdateAction.BlockChanges)]
         public int Id { get; set; }
 
-        public Guid UniqueId { get; set; } = Guid.NewGuid();
+        public Guid Uuid { get; set; } = Guid.NewGuid();
 
         [Required, MaxLength(50)]
         [Rules(UpdateAction.AllowChanges)]

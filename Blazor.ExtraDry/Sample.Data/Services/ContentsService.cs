@@ -19,7 +19,7 @@ namespace Sample.Data.Services {
         public async Task<FilteredCollection<Content>> ListAsync(FilterQuery query)
         {
             return await database.Contents
-                .Select(e => new Content { UniqueId = e.UniqueId, Title = e.Title })
+                .Select(e => new Content { Uuid = e.Uuid, Title = e.Title })
                 .QueryWith(query).ToFilteredCollectionAsync();
         }
 
@@ -31,12 +31,12 @@ namespace Sample.Data.Services {
 
         public async Task<Content> RetrieveAsync(Guid uniqueId)
         {
-            return await database.Contents.FirstOrDefaultAsync(e => e.UniqueId == uniqueId);
+            return await database.Contents.FirstOrDefaultAsync(e => e.Uuid == uniqueId);
         }
 
         public async Task UpdateAsync(Content item)
         {
-            var existing = await RetrieveAsync(item.UniqueId);
+            var existing = await RetrieveAsync(item.Uuid);
             await rules.UpdateAsync(item, existing);
             await database.SaveChangesAsync();
         }

@@ -23,8 +23,8 @@ namespace Sample.Shared.Converters {
                     reader.Read();
                     if(reader.TokenType == JsonTokenType.String) {
                         var value = reader.GetString();
-                        if(nameof(Sector.UniqueId).Equals(property, comparison)) {
-                            sector.UniqueId = Guid.Parse(value);
+                        if(nameof(Sector.Uuid).Equals(property, comparison)) {
+                            sector.Uuid = Guid.Parse(value);
                         }
                         else if(nameof(Sector.Title).Equals(property, comparison)) {
                             sector.Title = value;
@@ -44,7 +44,7 @@ namespace Sample.Shared.Converters {
         public override void Write(Utf8JsonWriter writer, Sector sector, JsonSerializerOptions options)
         {
             writer.WriteStartObject();
-            writer.WriteString(Renamer(nameof(sector.UniqueId)), sector.UniqueId);
+            writer.WriteString(Renamer(nameof(sector.Uuid)), sector.Uuid);
             writer.WriteString(Renamer(nameof(sector.Title)), sector.Title);
             writer.WriteEndObject();
 

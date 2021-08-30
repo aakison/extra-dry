@@ -46,7 +46,7 @@ namespace Sample.Data {
                 if(!trademarks.Contains(name)) {
                     trademarks.Add(name);
                     var company = new Company {
-                        UniqueId = PseudoRandomGuid(),
+                        Uuid = PseudoRandomGuid(),
                         Name = name,
                         PrimarySector = PickRandom(services),
                     };
@@ -64,7 +64,7 @@ namespace Sample.Data {
                 var first = PickRandom(firstNames);
                 var last = PickRandom(lastNames);
                 var employee = new Employee {
-                    UniqueId = PseudoRandomGuid(),
+                    Uuid = PseudoRandomGuid(),
                     FirstName = first,
                     LastName = last
                 };
@@ -124,7 +124,7 @@ namespace Sample.Data {
 
         private Content Sample => new() {
             Title = "Sample",
-            UniqueId = PseudoRandomGuid(),
+            Uuid = PseudoRandomGuid(),
             Layout = new ContentLayout {
                 Sections = {
                     new ContentSection {

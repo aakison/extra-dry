@@ -11,11 +11,12 @@ namespace Sample.Shared {
     public class Company {
 
         [Key]
-        [Rules(UpdateAction.IgnoreChanges)]
+        [JsonIgnore]
+        [Rules(UpdateAction.Ignore)]
         public int Id { get; set; }
 
-        [Rules(UpdateAction.IgnoreChanges)]
-        public Guid UniqueId { get; set; } = Guid.NewGuid();
+        [Rules(UpdateAction.Ignore)]
+        public Guid Uuid { get; set; } = Guid.NewGuid();
 
         [Display(Name = "Name", ShortName = "Name")]
         [Filter]

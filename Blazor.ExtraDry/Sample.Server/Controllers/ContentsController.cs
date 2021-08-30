@@ -32,28 +32,28 @@ namespace Sample.Server.Controllers {
             await contents.CreateAsync(value);
         }
 
-        [HttpGet("api/contents/{uniqueId}"), Produces("application/json")]
+        [HttpGet("api/contents/{contentId}"), Produces("application/json")]
         [SwaggerOperation("Retreive a specific page of content")]
-        public async Task<Content> Retrieve(Guid uniqueId)
+        public async Task<Content> Retrieve(Guid contentId)
         {
-            return await contents.RetrieveAsync(uniqueId);
+            return await contents.RetrieveAsync(contentId);
         }
 
-        [HttpPut("api/contents/{uniqueId}"), Consumes("application/json")]
+        [HttpPut("api/contents/{contentId}"), Consumes("application/json")]
         [SwaggerOperation("Update an existing page of content.", "Update the content at the URI, the uniqueId in the URI must match the Id in the payload.")]
-        public async Task Update(Guid uniqueId, Content value)
+        public async Task Update(Guid contentId, Content value)
         {
-            if(uniqueId != value?.UniqueId) {
-                throw new ArgumentException("ID in URI must match body.", nameof(uniqueId));
+            if(contentId != value?.Uuid) {
+                throw new ArgumentException("ID in URI must match body.", nameof(contentId));
             }
             await contents.UpdateAsync(value);
         }
 
-        [HttpDelete("api/contents/{uniqueId}")]
+        [HttpDelete("api/contents/{contentId}")]
         [SwaggerOperation("Delete an existing page of content.")]
-        public async Task Delete(Guid uniqueId)
+        public async Task Delete(Guid contentId)
         {
-            await contents.DeleteAsync(uniqueId);
+            await contents.DeleteAsync(contentId);
         }
 
         private readonly ContentsService contents;

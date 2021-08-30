@@ -30,17 +30,17 @@ namespace Sample.Data.Services {
 
         public async Task<Sector> ResolveAsync(Sector exemplar)
         {
-            return await RetrieveAsync(exemplar.UniqueId);
+            return await RetrieveAsync(exemplar.Uuid);
         }
 
         public async Task<Sector> RetrieveAsync(Guid uniqueId)
         {
-            return await database.Sectors.FirstOrDefaultAsync(e => e.UniqueId == uniqueId);
+            return await database.Sectors.FirstOrDefaultAsync(e => e.Uuid == uniqueId);
         }
 
         public async Task UpdateAsync(Sector item)
         {
-            var existing = await RetrieveAsync(item.UniqueId);
+            var existing = await RetrieveAsync(item.Uuid);
             await rules.UpdateAsync(item, existing);
             await database.SaveChangesAsync();
         }

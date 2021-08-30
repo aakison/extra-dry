@@ -32,28 +32,28 @@ namespace Sample.Server.Controllers {
             await employees.Create(value);
         }
 
-        [HttpGet("api/employees/{uniqueId}"), Produces("application/json")]
+        [HttpGet("api/employees/{employeeId}"), Produces("application/json")]
         [SwaggerOperation("Retreive a specific employee")]
-        public async Task<Employee> Retrieve(Guid uniqueId)
+        public async Task<Employee> Retrieve(Guid employeeId)
         {
-            return await employees.Retrieve(uniqueId);
+            return await employees.Retrieve(employeeId);
         }
 
-        [HttpPut("api/employees/{uniqueId}"), Consumes("application/json")]
+        [HttpPut("api/employees/{employeeId}"), Consumes("application/json")]
         [SwaggerOperation("Update an existing employee.", "Update the employee at the URI, the uniqueId in the URI must match the Id in the payload.")]
-        public async Task Update(Guid uniqueId, Employee value)
+        public async Task Update(Guid employeeId, Employee value)
         {
-            if(uniqueId != value?.UniqueId) {
-                throw new ArgumentException("ID in URI must match body.", nameof(uniqueId));
+            if(employeeId != value?.Uuid) {
+                throw new ArgumentException("ID in URI must match body.", nameof(employeeId));
             }
             await employees.Update(value);
         }
 
-        [HttpDelete("api/employees/{uniqueId}")]
+        [HttpDelete("api/employees/{employeeId}")]
         [SwaggerOperation("Delete an existing employee.")]
-        public async Task Delete(Guid uniqueId)
+        public async Task Delete(Guid employeeId)
         {
-            await employees.Delete(uniqueId);
+            await employees.Delete(employeeId);
         } 
 
         private readonly EmployeeService employees;

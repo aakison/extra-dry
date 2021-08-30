@@ -28,12 +28,12 @@ namespace Sample.Data.Services {
 
         public async Task<Employee> Retrieve(Guid uniqueId)
         {
-            return await database.Employees.FirstOrDefaultAsync(e => e.UniqueId == uniqueId);
+            return await database.Employees.FirstOrDefaultAsync(e => e.Uuid == uniqueId);
         }
 
         public async Task Update(Employee item)
         {
-            var existing = await Retrieve(item.UniqueId);
+            var existing = await Retrieve(item.Uuid);
             await rules.UpdateAsync(item, existing);
             await database.SaveChangesAsync();
         }

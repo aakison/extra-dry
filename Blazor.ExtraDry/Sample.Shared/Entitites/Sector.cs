@@ -12,12 +12,12 @@ namespace Sample.Shared {
     public class Sector {
 
         [Key]
-        [Rules(UpdateAction.IgnoreChanges)]
+        [Rules(UpdateAction.Ignore)]
         [JsonIgnore]
         public int Id { get; set; }
 
-        [Rules(UpdateAction.IgnoreChanges)]
-        public Guid UniqueId { get; set; } = Guid.NewGuid();
+        [Rules(UpdateAction.Ignore)]
+        public Guid Uuid { get; set; } = Guid.NewGuid();
 
         [Required]
         [MaxLength(50)]
@@ -33,9 +33,9 @@ namespace Sample.Shared {
 
         public override string ToString() => Title;
 
-        public override bool Equals(object obj) => (obj as Sector)?.UniqueId == UniqueId;
+        public override bool Equals(object obj) => (obj as Sector)?.Uuid == Uuid;
 
-        public override int GetHashCode() => UniqueId.GetHashCode();
+        public override int GetHashCode() => Uuid.GetHashCode();
         
 
     }

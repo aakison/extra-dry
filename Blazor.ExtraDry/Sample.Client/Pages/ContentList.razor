@@ -13,8 +13,8 @@
     [Command(CommandContext.Alternate, Icon = "edit")]
     public void Edit(Content content)
     {
-        Console.WriteLine($"Edit {content.UniqueId}");
-        Navigation.NavigateTo($"/contents/{content.UniqueId}");
+        Console.WriteLine($"Edit {content.Uuid}");
+        Navigation.NavigateTo($"/contents/{content.Uuid}");
     }
 
 }

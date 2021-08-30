@@ -25,11 +25,11 @@ namespace Sample.Server.Controllers {
             return await companies.List(query);
         }
 
-        [HttpGet("api/companies/{uniqueId}"), Produces("application/json")]
+        [HttpGet("api/companies/{companyId}"), Produces("application/json")]
         [SwaggerOperation("Retreive a specific company")]
-        public async Task<Company> Retrieve(Guid uniqueId)
+        public async Task<Company> Retrieve(Guid companyId)
         {
-            return await companies.Retrieve(uniqueId);
+            return await companies.Retrieve(companyId);
         }
 
         [HttpPost("api/companies"), Consumes("application/json")]
@@ -39,21 +39,21 @@ namespace Sample.Server.Controllers {
             await companies.Create(value);
         }
 
-        [HttpPut("api/companies/{uniqueId}"), Consumes("application/json")]
+        [HttpPut("api/companies/{companyId}"), Consumes("application/json")]
         [SwaggerOperation("Update an existing company.", "Update the company at the URI, the uniqueId in the URI must match the Id in the payload.")]
-        public async Task Update(Guid uniqueId, Company value)
+        public async Task Update(Guid companyId, Company value)
         {
-            if(uniqueId != value?.UniqueId) {
-                throw new ArgumentException("ID in URI must match body.", nameof(uniqueId));
+            if(companyId != value?.Uuid) {
+                throw new ArgumentException("ID in URI must match body.", nameof(companyId));
             }
             await companies.Update(value);
         }
 
-        [HttpDelete("api/companies/{uniqueId}")]
+        [HttpDelete("api/companies/{companyId}")]
         [SwaggerOperation("Delete an existing company.")]
-        public async Task Delete(Guid uniqueId)
+        public async Task Delete(Guid companyId)
         {
-            await companies.Delete(uniqueId);
+            await companies.Delete(companyId);
         }
 
         private readonly CompanyService companies;
