@@ -21,7 +21,6 @@ namespace Blazor.ExtraDry {
         /// Given an potentially untrusted and unvalidated exemplar of an object, create a new copy of that object with business rules applied.
         /// Any validation issues or rule violations will throw an exception.
         /// </summary>
-        [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Keep as standard service instance style for DI.")]
         public T Create<T>(T exemplar)
         {
             if(exemplar == null) {
@@ -38,16 +37,26 @@ namespace Blazor.ExtraDry {
                 if(ignore != null && ignore.Condition == JsonIgnoreCondition.Always) {
                     continue;
                 }
-                var action = rule?.CreateAction ?? CreateAction.CreateNew;
+                var action = rule?.CreateAction ?? CreateAction.Default;
+                if (action == CreateAction.Default) {
+                    action = IsValidReferenceType(property) ? CreateAction.Create : CreateAction.LinkExisting;
+                }
                 var sourceValue = property.GetValue(exemplar);
                 var destinationValue = property.GetValue(destination);
                 if(sourceValue?.Equals(destinationValue) ?? true) {
                     continue;
                 }
                 switch(action) {
-                    // TODO: This logic requires more thought...
-                    case CreateAction.CreateNew:
-                    case CreateAction.MakeUnique:
+                    case CreateAction.Create:
+                        if(IsValidReferenceType(property)) {
+                            // Use dynamic to allow late binding.
+                            sourceValue = Create((dynamic)sourceValue);
+                            break;
+                        }
+                        else {
+                            throw new Exception();
+                        }
+                    case CreateAction.CreateDescendants:
                         continue;
                     default:
                         break;
@@ -386,6 +395,15 @@ namespace Blazor.ExtraDry {
         }
 
         private readonly IServiceProvider scopedServices;
+
+        private static bool IsValidReferenceType(PropertyInfo property)
+        {
+            var isReferenceType = property.PropertyType.IsClass && property.PropertyType != typeof(string);
+            if(isReferenceType && !property.PropertyType.IsPublic) {
+                throw new InvalidOperationException($"Attempt to create private or nested type '{property.PropertyType.Name}'");
+            }
+            return isReferenceType;
+        }
 
     }
 }

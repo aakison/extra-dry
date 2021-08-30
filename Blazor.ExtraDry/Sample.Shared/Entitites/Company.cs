@@ -36,11 +36,11 @@ namespace Sample.Shared {
         public List<Sector> AdditionalSectors { get; set; }
 
         [Display]
-        [Rules(UpdateAction.AllowChanges, CreateAction = CreateAction.CreateNew)]
+        [Rules(UpdateAction.AllowChanges, CreateAction = CreateAction.Default)]
         public BankingDetails BankingDetails { get; set; } = new BankingDetails();
 
         [Display]
-        [Rules(UpdateAction.AllowChanges, CreateAction = CreateAction.CreateNew)]
+        [Rules(UpdateAction.AllowChanges, CreateAction = CreateAction.Default)]
         public ICollection<Video> Videos { get; set; } = new Collection<Video>();
 
     }
