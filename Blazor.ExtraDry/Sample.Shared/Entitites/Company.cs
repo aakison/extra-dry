@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 using System.Text.Json.Serialization;
 
 namespace Sample.Shared {
@@ -35,12 +34,6 @@ namespace Sample.Shared {
         [Display]
         [Rules(CreateAction = CreateAction.LinkExisting)]
         public List<Sector> AdditionalSectors { get; set; }
-
-        //[Display(Name = "Alternate")]
-        //public string Name2 {
-        //    get => Name;
-        //    set => Name = value;
-        //}
 
         [Display]
         [Rules(UpdateAction.AllowChanges, CreateAction = CreateAction.CreateNew)]

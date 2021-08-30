@@ -102,6 +102,9 @@ namespace Blazor.ExtraDry.Core.Tests.Internals {
         [InlineData("1Name:Value1")]
         [InlineData("Name:~unquoted~")]
         [InlineData("Name:[]")]
+        [InlineData("~~~totally invalid~~~")]
+        [InlineData("NameThatGoesNowhere")]
+        [InlineData("Name:  extra")]
         public void InvalidIdentifierRule(string filter)
         {
             Assert.Throws<DryException>(() => FilterParser.Parse(filter));

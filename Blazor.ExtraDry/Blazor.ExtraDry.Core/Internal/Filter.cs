@@ -19,7 +19,7 @@ namespace Blazor.ExtraDry.Core.Internal {
             }
         }
 
-        public List<FilterRule> Rules { get; private set; } = new List<FilterRule>();
+        public List<FilterRule> Rules { get; } = new List<FilterRule>();
 
     }
 

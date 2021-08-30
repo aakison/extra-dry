@@ -15,9 +15,6 @@ namespace Blazor.ExtraDry.Core.Internal {
             if(!parsed.Success) {
                 throw new DryException($"Invalid Filter: {parsed.Error}");
             }
-            else if(parsed.Value.Rules.Count == 0 && !string.IsNullOrWhiteSpace(filter)) {
-                throw new DryException($"Invalid Filter: position 0, line 0");
-            }
             return parsed.Value;
         }
 
