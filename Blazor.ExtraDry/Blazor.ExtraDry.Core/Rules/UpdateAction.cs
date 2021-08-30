@@ -12,7 +12,7 @@ namespace Blazor.ExtraDry {
         /// <summary>
         /// Once created, no changes are procesed by `RuleEngine`.
         /// </summary>
-        IgnoreChanges,
+        Ignore,
 
         /// <summary>
         /// Once created, default source values will not change existing value procesed by `RuleEngine`.

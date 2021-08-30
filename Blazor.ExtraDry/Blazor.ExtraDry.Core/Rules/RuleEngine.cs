@@ -1,10 +1,13 @@
 ﻿//#nullable enable
 
 using System;
+using System.Linq;
+using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Blazor.ExtraDry {
     public class RuleEngine {
@@ -59,13 +62,9 @@ namespace Blazor.ExtraDry {
         /// The source object will be validated using data annotations first, then properties will be copied across, where:
         ///   `JsonIgnore` properties will be skipped, these are typically empty as the source has likely been deserialized from the network;
         ///   `Rules(UpdateAction.BlockChanges)` annotations will throw an exception if a change is attempted;
-        ///   `Rules(UpdateAction.IgnoreChanges)` annotations will not be copied;
+        ///   `Rules(UpdateAction.Ignore)` annotations will not be copied;
         ///   `Rules(UpdateAction.IgnoreDefaults)` annotations will not be copied if the source property is `null` or `default`.
-        /// Additionally, each incoming property will be compared against 
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="source"></param>
-        /// <param name="destination"></param>
         public async Task UpdateAsync<T>(T source, T destination)
         {
             if(source == null) {
@@ -86,29 +85,64 @@ namespace Blazor.ExtraDry {
                 }
                 var action = rule?.UpdateAction ?? UpdateAction.AllowChanges;
                 var sourceValue = property.GetValue(source);
-                sourceValue = await ResolveEntityValue(property, sourceValue);
-                var destinationValue = property.GetValue(destination);
-                if(sourceValue?.Equals(destinationValue) ?? true) {
-                    continue;
+                if(sourceValue is ICollection<object> sourceCollection) {
+                    await ProcessCollectionUpdates(action, property, destination, sourceCollection);
                 }
-                switch(action) {
-                    case UpdateAction.IgnoreChanges:
-                        continue;
-                    case UpdateAction.BlockChanges:
-                        if(!sourceValue.Equals(property.GetValue(destination))) {
-                            throw new DryException($"Invalid attempt to change property {property.Name}", $"Attempt to change read-only property '{property.Name}'");
-                        }
-                        continue;
-                    case UpdateAction.IgnoreDefaults:
-                        if(sourceValue == default) {
-                            continue;
-                        }
-                        break;
-                    case UpdateAction.AllowChanges:
-                    default:
-                        break;
+                else {
+                    await ProcessIndividualUpdate(action, property, destination, sourceValue);
                 }
-                property.SetValue(destination, sourceValue);
+            }
+        }
+
+        private async Task ProcessIndividualUpdate<T>(UpdateAction action, PropertyInfo property, T destination, object value)
+        {
+            if(action == UpdateAction.Ignore) {
+                // Do nothing, doesn't matter what's in source, destination won't change.
+                return;
+            }
+            if(action == UpdateAction.IgnoreDefaults && value == default) {
+                // Don't modify destination as source is in default state
+                return;
+            }
+            value = await ResolveEntityValue(property, value);
+            var destinationValue = property.GetValue(destination);
+            var same = (value == null && destinationValue == null) || (value?.Equals(destinationValue) ?? false);
+            if(action == UpdateAction.BlockChanges && !same) {
+                throw new DryException($"Invalid attempt to change property {property.Name}", $"Attempt to change read-only property '{property.Name}'");
+            }
+            property.SetValue(destination, value);
+        }
+
+        private async Task ProcessCollectionUpdates<T>(UpdateAction action, PropertyInfo property, T destination, ICollection<object> source)
+        {
+            var destinationValue = property.GetValue(destination);
+            var destinationCollection = destinationValue as ICollection<object>;
+            if(destinationCollection == null && source != null) {
+                destinationCollection = Activator.CreateInstance(property.PropertyType) as ICollection<object>;
+                property.SetValue(destination, destinationCollection);
+            }
+            if(action == UpdateAction.Ignore) {
+                // Do nothing, doesn't matter what's in source, destination won't change.
+                return;
+            }
+            if(action == UpdateAction.IgnoreDefaults && source == null) {
+                // Don't modify destination as source is in default state of null (note that an empty collection will change destination)
+                return;
+            }
+            var sourceEntities = new List<object>();
+            foreach(var item in source) {
+                sourceEntities.Add(await ResolveEntityValue(property, item));
+            }
+            var toRemove = destinationCollection.Except(sourceEntities);
+            var toAdd = sourceEntities.Except(destinationCollection);
+            if(action == UpdateAction.BlockChanges && (toRemove.Any() || toAdd.Any())) {
+                throw new DryException($"Invalid attempt to change collection property {property.Name}", $"Attempt to change read-only collection property '{property.Name}'");
+            }
+            foreach(var item in toRemove) {
+                destinationCollection.Remove(item);
+            }
+            foreach(var item in toAdd) {
+                destinationCollection.Add(item);
             }
         }
 
@@ -294,7 +328,7 @@ namespace Blazor.ExtraDry {
         /// </summary>
         private async Task<object> ResolveEntityValue(PropertyInfo property, object sourceValue)
         {
-            if(property.PropertyType.IsValueType) {
+            if(property.PropertyType.IsValueType || property.PropertyType == typeof(string)) {
                 return sourceValue;
             }
             var untypedEntityResolver = typeof(IEntityResolver<>);
