@@ -10,7 +10,7 @@
         /// </summary>
         Ignore = 1,
         /// <summary>
-        /// 
+        /// Default values will be ignored by the 'RuleEngine'.
         /// </summary>
         IgnoreDefault = 2,
         /// <summary>

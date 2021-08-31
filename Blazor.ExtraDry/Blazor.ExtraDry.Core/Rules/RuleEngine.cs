@@ -1,13 +1,14 @@
-﻿//#nullable enable
+//#nullable enable
 
+using Blazor.ExtraDry.Core.Tests.ExtensionMethods;
 using System;
-using System.Linq;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 
 namespace Blazor.ExtraDry {
     public class RuleEngine {
@@ -46,7 +47,7 @@ namespace Blazor.ExtraDry {
                 if(action == CreateAction.Ignore) {
                     continue;
                 }
-                if (action == CreateAction.Default) {
+                if(action == CreateAction.Default) {
                     action = IsValidReferenceType(property) ? CreateAction.Create : CreateAction.LinkExisting;
                 }
                 var sourceValue = property.GetValue(exemplar);
@@ -57,7 +58,7 @@ namespace Blazor.ExtraDry {
                 switch(action) {
                     case CreateAction.Create:
                     case CreateAction.CreateDescendants:
-                        if (!canCreateDescendants) {
+                        if(!canCreateDescendants) {
                             continue;
                         }
                         if(IsValidReferenceType(property)) {
@@ -68,6 +69,11 @@ namespace Blazor.ExtraDry {
                         else {
                             throw new InvalidOperationException($"Attempt to create none reference type '{property.PropertyType.Name}'");
                         }
+                    case CreateAction.IgnoreDefault:
+                        if(sourceValue.Equals(property.PropertyType.GetDefaultValue())) {
+                            continue;
+                        }
+                        break;
                     default:
                         break;
                 }

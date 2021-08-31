@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 using Xunit;
 
 namespace Blazor.ExtraDry.Core.Tests.Rules {
@@ -159,9 +160,72 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
 
             Assert.Throws<InvalidOperationException>(() => rules.Create(exemplar));
         }
+
+        [Fact]
+        public void CreateWithIgnore()
+        {
+            var rules = new RuleEngine(new ServiceProviderStub());
+            var exemplar = new Entity {
+                IgnoredProp = 123,
+                IgnoredChild = new()
+            };
+
+            var valueTypes = rules.Create(exemplar);
+
+            Assert.NotNull(valueTypes);
+            Assert.Equal(default, valueTypes.IgnoredProp);
+            Assert.Equal(default, valueTypes.IgnoredChild);
+        }
+
+        [Fact]
+        public void CreateWithIgnoreDefault()
+        {
+            var rules = new RuleEngine(new ServiceProviderStub());
+            var exemplar = new Entity {
+                IgnoredDefaultProp = Guid.Empty,
+                IgnoredDefaultGuidPropWithInit = Guid.Empty,
+                IgnoredDefaultStringPropWithInit = null,
+                IgnoredDefaultIntPropWithInit = 0,
+                IgnoredDefaultEnumPropWithInit = State.Unknowm,
+                IgnoredDefaultChild = null,
+                IgnoredDefaultChildWithInit = null,
+                IgnoredDefaultChild1WithInit = null
+            };
+
+            var valueTypes = rules.Create(exemplar);
+
+            Assert.NotNull(valueTypes);
+            Assert.Equal(default, valueTypes.IgnoredDefaultProp);
+            Assert.NotEqual(default, valueTypes.IgnoredDefaultGuidPropWithInit);
+            Assert.NotEqual(default, valueTypes.IgnoredDefaultStringPropWithInit);
+            Assert.Equal("Hello World", valueTypes.IgnoredDefaultStringPropWithInit);
+            Assert.NotEqual(default, valueTypes.IgnoredDefaultIntPropWithInit);
+            Assert.Equal(123, valueTypes.IgnoredDefaultIntPropWithInit);
+            Assert.NotEqual(default, valueTypes.IgnoredDefaultEnumPropWithInit);
+            Assert.Equal(State.Active, valueTypes.IgnoredDefaultEnumPropWithInit);
+            Assert.Equal(default, valueTypes.IgnoredDefaultChild);
+            Assert.NotEqual(default, valueTypes.IgnoredDefaultChildWithInit);
+            Assert.NotEqual(default, valueTypes.IgnoredDefaultChild1WithInit);
+        }
+
+        [Fact]
+        public void CreateWithJsonIgnore()
+        {
+            var rules = new RuleEngine(new ServiceProviderStub());
+            var exemplar = new Entity {
+                JsonIgnoredProp = 123,
+                JsonIgnoredChild = new()
+            };
+
+            var valueTypes = rules.Create(exemplar);
+
+            Assert.NotNull(valueTypes);
+            Assert.Equal(default, valueTypes.JsonIgnoredProp);
+            Assert.Equal(default, valueTypes.JsonIgnoredChild);
+        }
     }
 
-    class Entity {
+    public class Entity {
         public int DefaultInteger { get; set; }
         public string DefaultString { get; set; }
         public Guid DefaultGuid { get; set; }
@@ -185,9 +249,48 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
 
         [Rules(CreateAction = CreateAction.Create)]
         public int CreateInteger { get; set; }
+        
+        [Rules(CreateAction = CreateAction.Ignore)]
+        public int IgnoredProp { get; set; }
+        [Rules(CreateAction = CreateAction.Ignore)]
+        public ChildEntity IgnoredChild { get; set; }
+
+        [Rules(CreateAction = CreateAction.IgnoreDefault)]
+        public Guid IgnoredDefaultProp { get; set; }
+        [Rules(CreateAction = CreateAction.IgnoreDefault)]
+        public Guid IgnoredDefaultGuidPropWithInit { get; set; } = Guid.NewGuid();
+        [Rules(CreateAction = CreateAction.IgnoreDefault)]
+        public string IgnoredDefaultStringPropWithInit { get; set; } = "Hello World";
+        [Rules(CreateAction = CreateAction.IgnoreDefault)]
+        public int IgnoredDefaultIntPropWithInit { get; set; } = 123;
+        [Rules(CreateAction = CreateAction.IgnoreDefault)]
+        public State IgnoredDefaultEnumPropWithInit { get; set; } = State.Active;
+        [Rules(CreateAction = CreateAction.IgnoreDefault)]
+        public ChildEntity IgnoredDefaultChild { get; set; }
+        [Rules(CreateAction = CreateAction.IgnoreDefault)]
+        public ChildEntity IgnoredDefaultChildWithInit { get; set; } = new();
+        [Rules(CreateAction = CreateAction.IgnoreDefault)]
+        public ChildEntityNoDefaultContructor IgnoredDefaultChild1WithInit { get; set; } = new("One");
+
+
+        [JsonIgnore]
+        public int JsonIgnoredProp { get; set; }
+        [JsonIgnore]
+        public ChildEntity JsonIgnoredChild { get; set; }
     }
         
     public class ChildEntity {
+        public string PropertyOne { get; set; }
+        public string PropertyTwo { get; set; }
+        public string PropertyThree { get; set; }
+        public ChildEntity TestObject { get; set; }
+    }
+
+    public class ChildEntityNoDefaultContructor {
+        public ChildEntityNoDefaultContructor(string prop1)
+        {
+            PropertyOne = prop1;
+        }
         public string PropertyOne { get; set; }
         public string PropertyTwo { get; set; }
         public string PropertyThree { get; set; }
@@ -200,7 +303,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
 
     class InvalidTestObject { }
 
-    enum State {
+    public enum State {
         Unknowm = 0,
         Active = 1,
     }
