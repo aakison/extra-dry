@@ -10,7 +10,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         [Fact]
         public async Task IdentityUnchanged()
         {
-            var services = new LocalServiceProviderStub();
+            var services = new ServiceProviderStub();
             var rules = new RuleEngine(services);
             var guid = Guid.NewGuid();
             var source = new Parent { Child = new Child { Uuid = guid } };
@@ -25,7 +25,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         [Fact]
         public async Task ChildAddedWhenNotPresent()
         {
-            var services = new LocalServiceProviderStub();
+            var services = new ServiceProviderStub();
             var rules = new RuleEngine(services);
             var guid = Guid.NewGuid();
             var source = new Parent { Child = new Child { Uuid = guid } };
@@ -41,7 +41,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         [Fact]
         public async Task ChildReplacesWhenPresent()
         {
-            var services = new LocalServiceProviderStub();
+            var services = new ServiceProviderStub();
             var rules = new RuleEngine(services);
             var guid = Guid.NewGuid();
             var source = new Parent { Child = new Child { Uuid = guid } };
@@ -57,7 +57,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         [Fact]
         public async Task ChildMatchesFromDatabase()
         {
-            var services = new LocalServiceProviderStub();
+            var services = new ServiceProviderStubWithChildResolver();
             var rules = new RuleEngine(services);
             var guid = Guid.NewGuid();
             var databaseMatch = new Child { Uuid = guid, Name = "InDatabase" };
@@ -76,11 +76,8 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         [Fact]
         public async Task ChildrenCopyToNull()
         {
-            var services = new LocalServiceProviderStub();
+            var services = new ServiceProviderStub();
             var rules = new RuleEngine(services);
-            var guid = Guid.NewGuid();
-            var databaseMatch = new Child { Uuid = guid, Name = "InDatabase" };
-            services.ChildResolver.AddChild(databaseMatch);
             var source = new Parent { Children = new List<Child> {
                 new Child { Uuid = Guid.NewGuid(), Name = "Child1" },
                 new Child { Uuid = Guid.NewGuid(), Name = "Child2" },
@@ -100,11 +97,9 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         [Fact]
         public async Task ChildrenCopyToEmpty()
         {
-            var services = new LocalServiceProviderStub();
+            var services = new ServiceProviderStub();
             var rules = new RuleEngine(services);
             var guid = Guid.NewGuid();
-            var databaseMatch = new Child { Uuid = guid, Name = "InDatabase" };
-            services.ChildResolver.AddChild(databaseMatch);
             var source = new Parent {
                 Children = new List<Child> {
                 new Child { Uuid = Guid.NewGuid(), Name = "Child1" },
@@ -126,7 +121,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         [Fact]
         public async Task ChildrenCopyOverwritesExisting()
         {
-            var services = new LocalServiceProviderStub();
+            var services = new ServiceProviderStub();
             var rules = new RuleEngine(services);
             var source = new Parent {
                 Children = new List<Child> {
@@ -154,7 +149,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         [Fact]
         public async Task ChildrenCopyRemovesExtras()
         {
-            var services = new LocalServiceProviderStub();
+            var services = new ServiceProviderStub();
             var rules = new RuleEngine(services);
             var guid = Guid.NewGuid();
             var source = new Parent {
@@ -181,7 +176,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         [Fact]
         public async Task ChildrenCopyAddsExtra()
         {
-            var services = new LocalServiceProviderStub();
+            var services = new ServiceProviderStub();
             var rules = new RuleEngine(services);
             var guid = Guid.NewGuid();
             var source = new Parent {
@@ -209,7 +204,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         [Fact]
         public async Task ChildrenCopyNullClearsCollection()
         {
-            var services = new LocalServiceProviderStub();
+            var services = new ServiceProviderStubWithChildResolver();
             var rules = new RuleEngine(services);
             var source = new Parent { };
             var destination = new Parent {
@@ -228,7 +223,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         [Fact]
         public async Task ChildrenCopyEmptyClearsCollection()
         {
-            var services = new LocalServiceProviderStub();
+            var services = new ServiceProviderStubWithChildResolver();
             var rules = new RuleEngine(services);
             var source = new Parent { Children = new List<Child>() };
             var destination = new Parent {
@@ -247,7 +242,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         [Fact]
         public async Task IgnoreChildrenDoesNothing()
         {
-            var services = new LocalServiceProviderStub();
+            var services = new ServiceProviderStubWithChildResolver();
             var rules = new RuleEngine(services);
             var source = new Parent {
                 IgnoredChildren = new List<Child> {
@@ -273,7 +268,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         [Fact]
         public async Task IgnoreDefaultsChildrenReplaces()
         {
-            var services = new LocalServiceProviderStub();
+            var services = new ServiceProviderStub();
             var rules = new RuleEngine(services);
             var source = new Parent {
                 IgnoredDefaultsChildren = new List<Child> {
@@ -300,7 +295,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         [Fact]
         public async Task IgnoreDefaultsChildrenIgnoresNull()
         {
-            var services = new LocalServiceProviderStub();
+            var services = new ServiceProviderStubWithChildResolver();
             var rules = new RuleEngine(services);
             var source = new Parent {
                 IgnoredDefaultsChildren = null
@@ -323,7 +318,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         [Fact]
         public async Task IgnoreDefaultsChildrenEmptysWhenCollectionEmpty()
         {
-            var services = new LocalServiceProviderStub();
+            var services = new ServiceProviderStubWithChildResolver();
             var rules = new RuleEngine(services);
             var source = new Parent {
                 IgnoredDefaultsChildren = new List<Child>(),
@@ -344,7 +339,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         [Fact]
         public async Task BlockChangesCollectionsBothEmptyOk()
         {
-            var services = new LocalServiceProviderStub();
+            var services = new ServiceProviderStubWithChildResolver();
             var rules = new RuleEngine(services);
             var source = new Parent {
                 BlockedChildren = new List<Child>(),
@@ -362,7 +357,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         [Fact]
         public async Task BlockChangesCollectionsBothNullOk()
         {
-            var services = new LocalServiceProviderStub();
+            var services = new ServiceProviderStubWithChildResolver();
             var rules = new RuleEngine(services);
             var source = new Parent {
                 BlockedChildren = null,
@@ -379,7 +374,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         [Fact]
         public async Task BlockChangesCollectionsBothSameOk()
         {
-            var services = new LocalServiceProviderStub();
+            var services = new ServiceProviderStub();
             var rules = new RuleEngine(services);
             var guid1 = Guid.NewGuid();
             var guid2 = Guid.NewGuid();
@@ -408,7 +403,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         [Fact]
         public async Task BlockChangesEmptyOverwriteThrows()
         {
-            var services = new LocalServiceProviderStub();
+            var services = new ServiceProviderStubWithChildResolver();
             var rules = new RuleEngine(services);
             var source = new Parent {
                 BlockedChildren = new List<Child>()
@@ -426,7 +421,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         [Fact]
         public async Task BlockChangesNullOverwriteThrows()
         {
-            var services = new LocalServiceProviderStub();
+            var services = new ServiceProviderStubWithChildResolver();
             var rules = new RuleEngine(services);
             var source = new Parent {
                 BlockedChildren = null
@@ -444,7 +439,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         [Fact]
         public async Task BlockChangesDifferentSetOverwriteThrows()
         {
-            var services = new LocalServiceProviderStub();
+            var services = new ServiceProviderStubWithChildResolver();
             var rules = new RuleEngine(services);
             var source = new Parent {
                 BlockedChildren = new List<Child> {
@@ -522,7 +517,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
 
         }
 
-        public class LocalServiceProviderStub : IServiceProvider {
+        public class ServiceProviderStubWithChildResolver : IServiceProvider {
             public object GetService(Type serviceType)
             {
                 if(serviceType.IsAssignableTo(typeof(IEntityResolver<Child>))) {
@@ -537,6 +532,10 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
 
         }
 
+        public class ServiceProviderStub : IServiceProvider {
+            public object GetService(Type serviceType) => null;
+
+        }
 
     }
 }

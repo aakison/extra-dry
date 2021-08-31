@@ -76,6 +76,13 @@ namespace Blazor.ExtraDry {
             var validator = new DataValidator();
             validator.ValidateObject(source);
             validator.ThrowIfInvalid();
+            await UpdateProperties(source, destination/*, MaxRecursionDepth*/);
+        }
+
+        //public int MaxRecursionDepth
+
+        private async Task UpdateProperties<T>(T source, T destination/*, int depth*/)
+        {
             var properties = typeof(T).GetProperties();
             foreach(var property in properties) {
                 var rule = property.GetCustomAttribute<RulesAttribute>();
@@ -106,13 +113,13 @@ namespace Blazor.ExtraDry {
                 // Don't modify destination as source is in default state
                 return;
             }
-            value = await ResolveEntityValue(property.PropertyType, value);
+            (var resolved, var result) = await ResolveEntityValue(property.PropertyType, value);
             var destinationValue = property.GetValue(destination);
-            var same = (value == null && destinationValue == null) || (value?.Equals(destinationValue) ?? false);
+            var same = (result == null && destinationValue == null) || (result?.Equals(destinationValue) ?? false);
             if(action == UpdateAction.BlockChanges && !same) {
                 throw new DryException($"Invalid attempt to change property {property.Name}", $"Attempt to change read-only property '{property.Name}'");
             }
-            property.SetValue(destination, value);
+            property.SetValue(destination, result);
         }
 
         private async Task ProcessCollectionUpdates<T>(UpdateAction action, PropertyInfo property, T destination, IList sourceList)
@@ -135,7 +142,8 @@ namespace Blazor.ExtraDry {
             if(sourceList != null) {
                 var listItemType = property.PropertyType.GetGenericArguments()[0];
                 foreach(var item in sourceList) {
-                    sourceEntities.Add(await ResolveEntityValue(listItemType, item));
+                    (var resolved, var value) = await ResolveEntityValue(listItemType, item);
+                    sourceEntities.Add(value);
                 }
             }
             var destObjects = destinationList.Cast<object>();
@@ -332,22 +340,22 @@ namespace Blazor.ExtraDry {
         /// that might be a database entity.  Uses `IEntityResolver` class in DI to find potential replacement.
         /// This only works for objects, value types are always copies, so sourceValue is always returned.
         /// </summary>
-        private async Task<object> ResolveEntityValue(Type type, object sourceValue)
+        private async Task<(bool, object)> ResolveEntityValue(Type type, object sourceValue)
         {
             if(type.IsValueType || type == typeof(string)) {
-                return sourceValue;
+                return (false, sourceValue);
             }
             var untypedEntityResolver = typeof(IEntityResolver<>);
             var typedEntityResolver = untypedEntityResolver.MakeGenericType(type);
             var resolver = scopedServices.GetService(typedEntityResolver);
             if(resolver == null) {
-                return sourceValue;
+                return (false, sourceValue);
             }
             else {
                 var method = typedEntityResolver.GetMethod("ResolveAsync");
                 dynamic task = method.Invoke(resolver, new object[] { sourceValue });
                 var result = (await task) as object;
-                return result ?? sourceValue;
+                return (true, result);
             }
         }
 
