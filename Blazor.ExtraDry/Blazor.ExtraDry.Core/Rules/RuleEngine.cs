@@ -23,6 +23,11 @@ namespace Blazor.ExtraDry {
         /// </summary>
         public T Create<T>(T exemplar)
         {
+            return Create(exemplar, true);
+        }
+
+        private T Create<T>(T exemplar, bool canCreateDescendants)
+        {
             if(exemplar == null) {
                 throw new ArgumentNullException(nameof(exemplar));
             }
@@ -51,22 +56,33 @@ namespace Blazor.ExtraDry {
                 }
                 switch(action) {
                     case CreateAction.Create:
+                    case CreateAction.CreateDescendants:
+                        if (!canCreateDescendants) {
+                            continue;
+                        }
                         if(IsValidReferenceType(property)) {
                             // Use dynamic to allow late binding.
-                            sourceValue = Create((dynamic)sourceValue);
+                            sourceValue = Create((dynamic)sourceValue, action == CreateAction.CreateDescendants);
                             break;
                         }
                         else {
                             throw new InvalidOperationException($"Attempt to create none reference type '{property.PropertyType.Name}'");
                         }
-                    case CreateAction.CreateDescendants:
-                        continue;
                     default:
                         break;
                 }
                 property.SetValue(destination, sourceValue);
             }
             return destination;
+        }
+
+        private static bool IsValidReferenceType(PropertyInfo property)
+        {
+            var isReferenceType = property.PropertyType.IsClass && property.PropertyType != typeof(string);
+            if(isReferenceType && !property.PropertyType.IsPublic) {
+                throw new InvalidOperationException($"Attempt to create private or nested type '{property.PropertyType.Name}'");
+            }
+            return isReferenceType;
         }
 
         /// <summary>
@@ -398,15 +414,6 @@ namespace Blazor.ExtraDry {
         }
 
         private readonly IServiceProvider scopedServices;
-
-        private static bool IsValidReferenceType(PropertyInfo property)
-        {
-            var isReferenceType = property.PropertyType.IsClass && property.PropertyType != typeof(string);
-            if(isReferenceType && !property.PropertyType.IsPublic) {
-                throw new InvalidOperationException($"Attempt to create private or nested type '{property.PropertyType.Name}'");
-            }
-            return isReferenceType;
-        }
 
     }
 }

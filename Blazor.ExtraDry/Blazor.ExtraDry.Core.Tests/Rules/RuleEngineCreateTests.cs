@@ -1,5 +1,4 @@
 using System;
-using System.Text.Json.Serialization;
 using Xunit;
 
 namespace Blazor.ExtraDry.Core.Tests.Rules {
@@ -93,7 +92,8 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
                 TestObject = new() {
                     PropertyOne = "John Doe",
                     PropertyTwo = "Jane Doe",
-                    PropertyThree = "Hello World"
+                    PropertyThree = "Hello World",
+                    TestObject = new()
                 }
             };
 
@@ -105,6 +105,26 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             Assert.Equal(exemplar.TestObject.PropertyOne, entity.TestObject.PropertyOne);
             Assert.Equal(exemplar.TestObject.PropertyTwo, entity.TestObject.PropertyTwo);
             Assert.Equal(exemplar.TestObject.PropertyThree, entity.TestObject.PropertyThree);
+            Assert.Null(entity.TestObject.TestObject);
+        }
+
+        [Fact]
+        public void CreateWithReferenceTypeByCreateDescendants()
+        {
+            var rules = new RuleEngine(new ServiceProviderStub());
+            var exemplar = new Entity {
+                DesendantsTestObject = new() {
+                    TestObject = new()
+                }
+            };
+
+            var entity = rules.Create(exemplar);
+
+            Assert.NotNull(entity);
+            Assert.NotNull(entity.DesendantsTestObject);
+            Assert.NotEqual(exemplar.DesendantsTestObject, entity.DesendantsTestObject);
+            Assert.NotNull(entity.DesendantsTestObject.TestObject);
+            Assert.NotEqual(exemplar.DesendantsTestObject.TestObject, entity.DesendantsTestObject.TestObject);
         }
 
         [Fact]
@@ -160,6 +180,8 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         public ChildEntity TestObject { get; set; }
         [Rules(CreateAction = CreateAction.LinkExisting)]
         public ChildEntity ExistingTestObject { get; set; }
+        [Rules(CreateAction = CreateAction.CreateDescendants)]
+        public ChildEntity DesendantsTestObject { get; set; }
 
         [Rules(CreateAction = CreateAction.Create)]
         public int CreateInteger { get; set; }
@@ -169,6 +191,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         public string PropertyOne { get; set; }
         public string PropertyTwo { get; set; }
         public string PropertyThree { get; set; }
+        public ChildEntity TestObject { get; set; }
     }
 
     class InvalidReferenceTypes {
