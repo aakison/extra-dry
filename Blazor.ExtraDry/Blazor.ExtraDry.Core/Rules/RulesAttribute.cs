@@ -20,10 +20,10 @@ namespace Blazor.ExtraDry {
         public RulesAttribute(RuleAction defaultRule = RuleAction.Allow)
         {
             UpdateAction = defaultRule;
-            // CreateAction = defaultRule; // when CreateAction consumes RuleType
+            CreateAction = defaultRule;
         }
 
-        public CreateAction CreateAction { get; set; } = CreateAction.CreateNew;
+        public RuleAction CreateAction { get; set; } = RuleAction.Allow;
 
         public RuleAction UpdateAction { get; set; } = RuleAction.Allow;
 

@@ -24,11 +24,6 @@ namespace Blazor.ExtraDry {
         /// </summary>
         public T Create<T>(T exemplar)
         {
-            return Create(exemplar, true);
-        }
-
-        private T Create<T>(T exemplar, bool canCreateDescendants)
-        {
             if(exemplar == null) {
                 throw new ArgumentNullException(nameof(exemplar));
             }
@@ -43,39 +38,24 @@ namespace Blazor.ExtraDry {
                     continue;
                 }
                 var rule = property.GetCustomAttribute<RulesAttribute>();
-                var action = rule?.CreateAction ?? CreateAction.Default;
-                if(action == CreateAction.Ignore) {
+                var action = EffectiveRule(rule, ignore, e => e.CreateAction, RuleAction.Allow);
+                if(action == RuleAction.Ignore) {
                     continue;
-                }
-                if(action == CreateAction.Default) {
-                    action = IsValidReferenceType(property) ? CreateAction.Create : CreateAction.LinkExisting;
                 }
                 var sourceValue = property.GetValue(exemplar);
                 var destinationValue = property.GetValue(destination);
                 if(sourceValue?.Equals(destinationValue) ?? true) {
                     continue;
                 }
-                switch(action) {
-                    case CreateAction.Create:
-                    case CreateAction.CreateDescendants:
-                        if(!canCreateDescendants) {
-                            continue;
-                        }
-                        if(IsValidReferenceType(property)) {
-                            // Use dynamic to allow late binding.
-                            sourceValue = Create((dynamic)sourceValue, action == CreateAction.CreateDescendants);
-                            break;
-                        }
-                        else {
-                            throw new InvalidOperationException($"Attempt to create none reference type '{property.PropertyType.Name}'");
-                        }
-                    case CreateAction.IgnoreDefault:
-                        if(sourceValue.Equals(property.PropertyType.GetDefaultValue())) {
-                            continue;
-                        }
-                        break;
-                    default:
-                        break;
+                if(action == RuleAction.IgnoreDefaults) {
+                    // "sourceValue == default" and "sourceValue.Equals(default)" won't work with struct types i.e. Guid
+                    if(sourceValue.Equals(property.PropertyType.GetDefaultValue())) {
+                        continue;
+                    }
+                }
+                else if(IsValidReferenceType(property)) {
+                    // Use dynamic to allow late binding.
+                    sourceValue = Create((dynamic)sourceValue);
                 }
                 property.SetValue(destination, sourceValue);
             }

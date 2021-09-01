@@ -53,17 +53,6 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         }
 
         [Fact]
-        public void CreateWithValueTypesByInvalidAction()
-        {
-            var rules = new RuleEngine(new ServiceProviderStub());
-            var exemplar = new Entity {
-                CreateInteger = 123
-            };
-
-            Assert.Throws<InvalidOperationException>(() => rules.Create(exemplar));
-        }
-
-        [Fact]
         public void CreateWithReferenceTypeByDefault()
         {
             var rules = new RuleEngine(new ServiceProviderStub());
@@ -93,8 +82,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
                 TestObject = new() {
                     PropertyOne = "John Doe",
                     PropertyTwo = "Jane Doe",
-                    PropertyThree = "Hello World",
-                    TestObject = new()
+                    PropertyThree = "Hello World"
                 }
             };
 
@@ -106,7 +94,6 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             Assert.Equal(exemplar.TestObject.PropertyOne, entity.TestObject.PropertyOne);
             Assert.Equal(exemplar.TestObject.PropertyTwo, entity.TestObject.PropertyTwo);
             Assert.Equal(exemplar.TestObject.PropertyThree, entity.TestObject.PropertyThree);
-            Assert.Null(entity.TestObject.TestObject);
         }
 
         [Fact]
@@ -127,29 +114,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             Assert.NotNull(entity.DesendantsTestObject.TestObject);
             Assert.NotEqual(exemplar.DesendantsTestObject.TestObject, entity.DesendantsTestObject.TestObject);
         }
-
-        [Fact]
-        public void CreateWithReferenceTypeByLinkExisting()
-        {
-            var rules = new RuleEngine(new ServiceProviderStub());
-            var exemplar = new Entity {
-                ExistingTestObject = new() {
-                    PropertyOne = "John Doe",
-                    PropertyTwo = "Jane Doe",
-                    PropertyThree = "Hello World"
-                }
-            };
-
-            var entity = rules.Create(exemplar);
-
-            Assert.NotNull(entity);
-            Assert.NotNull(entity.ExistingTestObject);
-            Assert.Equal(exemplar.ExistingTestObject, entity.ExistingTestObject);
-            Assert.Equal(exemplar.ExistingTestObject.PropertyOne, entity.ExistingTestObject.PropertyOne);
-            Assert.Equal(exemplar.ExistingTestObject.PropertyTwo, entity.ExistingTestObject.PropertyTwo);
-            Assert.Equal(exemplar.ExistingTestObject.PropertyThree, entity.ExistingTestObject.PropertyThree);
-        }
-
+        
         [Fact]
         public void CreateWithInvalidReferenceType()
         {
@@ -183,7 +148,9 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             var rules = new RuleEngine(new ServiceProviderStub());
             var exemplar = new Entity {
                 IgnoredDefaultProp = Guid.Empty,
+                IgnoredDefaultNullableProp = null,
                 IgnoredDefaultGuidPropWithInit = Guid.Empty,
+                IgnoredDefaultGuidNullablePropWithInit = Guid.Empty,
                 IgnoredDefaultStringPropWithInit = null,
                 IgnoredDefaultIntPropWithInit = 0,
                 IgnoredDefaultEnumPropWithInit = State.Unknowm,
@@ -196,7 +163,9 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
 
             Assert.NotNull(valueTypes);
             Assert.Equal(default, valueTypes.IgnoredDefaultProp);
+            Assert.Equal(default, valueTypes.IgnoredDefaultNullableProp);
             Assert.NotEqual(default, valueTypes.IgnoredDefaultGuidPropWithInit);
+            Assert.NotEqual(default, valueTypes.IgnoredDefaultGuidNullablePropWithInit);
             Assert.NotEqual(default, valueTypes.IgnoredDefaultStringPropWithInit);
             Assert.Equal("Hello World", valueTypes.IgnoredDefaultStringPropWithInit);
             Assert.NotEqual(default, valueTypes.IgnoredDefaultIntPropWithInit);
@@ -232,44 +201,45 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         public State DefaultState { get; set; }
         public ChildEntity DefaultTestObject { get; set; }
 
-        [Rules(CreateAction = CreateAction.LinkExisting)]
+        [Rules(CreateAction = RuleAction.Allow)]
         public int Integer { get; set; }
-        [Rules(CreateAction = CreateAction.LinkExisting)]
+        [Rules(CreateAction = RuleAction.Allow)]
         public string String { get; set; }
-        [Rules(CreateAction = CreateAction.LinkExisting)]
+        [Rules(CreateAction = RuleAction.Allow)]
         public Guid Guid { get; set; }
-        [Rules(CreateAction = CreateAction.LinkExisting)]
+        [Rules(CreateAction = RuleAction.Allow)]
         public State State { get; set; }
-        [Rules(CreateAction = CreateAction.Create)]
+        [Rules(CreateAction = RuleAction.Allow)]
         public ChildEntity TestObject { get; set; }
-        [Rules(CreateAction = CreateAction.LinkExisting)]
+        [Rules(CreateAction = RuleAction.Allow)]
         public ChildEntity ExistingTestObject { get; set; }
-        [Rules(CreateAction = CreateAction.CreateDescendants)]
+        [Rules(CreateAction = RuleAction.Allow)]
         public ChildEntity DesendantsTestObject { get; set; }
-
-        [Rules(CreateAction = CreateAction.Create)]
-        public int CreateInteger { get; set; }
         
-        [Rules(CreateAction = CreateAction.Ignore)]
+        [Rules(CreateAction = RuleAction.Ignore)]
         public int IgnoredProp { get; set; }
-        [Rules(CreateAction = CreateAction.Ignore)]
+        [Rules(CreateAction = RuleAction.Ignore)]
         public ChildEntity IgnoredChild { get; set; }
 
-        [Rules(CreateAction = CreateAction.IgnoreDefault)]
+        [Rules(CreateAction = RuleAction.IgnoreDefaults)]
         public Guid IgnoredDefaultProp { get; set; }
-        [Rules(CreateAction = CreateAction.IgnoreDefault)]
+        [Rules(CreateAction = RuleAction.IgnoreDefaults)]
+        public Guid? IgnoredDefaultNullableProp { get; set; }
+        [Rules(CreateAction = RuleAction.IgnoreDefaults)]
         public Guid IgnoredDefaultGuidPropWithInit { get; set; } = Guid.NewGuid();
-        [Rules(CreateAction = CreateAction.IgnoreDefault)]
+        [Rules(CreateAction = RuleAction.IgnoreDefaults)]
+        public Guid IgnoredDefaultGuidNullablePropWithInit { get; set; } = Guid.NewGuid();
+        [Rules(CreateAction = RuleAction.IgnoreDefaults)]
         public string IgnoredDefaultStringPropWithInit { get; set; } = "Hello World";
-        [Rules(CreateAction = CreateAction.IgnoreDefault)]
+        [Rules(CreateAction = RuleAction.IgnoreDefaults)]
         public int IgnoredDefaultIntPropWithInit { get; set; } = 123;
-        [Rules(CreateAction = CreateAction.IgnoreDefault)]
+        [Rules(CreateAction = RuleAction.IgnoreDefaults)]
         public State IgnoredDefaultEnumPropWithInit { get; set; } = State.Active;
-        [Rules(CreateAction = CreateAction.IgnoreDefault)]
+        [Rules(CreateAction = RuleAction.IgnoreDefaults)]
         public ChildEntity IgnoredDefaultChild { get; set; }
-        [Rules(CreateAction = CreateAction.IgnoreDefault)]
+        [Rules(CreateAction = RuleAction.IgnoreDefaults)]
         public ChildEntity IgnoredDefaultChildWithInit { get; set; } = new();
-        [Rules(CreateAction = CreateAction.IgnoreDefault)]
+        [Rules(CreateAction = RuleAction.IgnoreDefaults)]
         public ChildEntityNoDefaultContructor IgnoredDefaultChild1WithInit { get; set; } = new("One");
 
 
