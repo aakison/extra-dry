@@ -123,7 +123,10 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
                 TestObject = new()
             };
 
-            Assert.Throws<InvalidOperationException>(() => rules.Create(exemplar));
+            var exception = Assert.Throws<InvalidOperationException>(() => rules.Create(exemplar));
+
+            Assert.NotNull(exception);
+            Assert.Equal("Attempt to create private or nested type 'InvalidTestObject'", exception.Message);
         }
 
         [Fact]

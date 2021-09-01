@@ -1,6 +1,6 @@
 //#nullable enable
 
-using Blazor.ExtraDry.Core.Tests.ExtensionMethods;
+using Blazor.ExtraDry.Core.ExtensionMethods;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -53,22 +53,17 @@ namespace Blazor.ExtraDry {
                         continue;
                     }
                 }
-                else if(IsValidReferenceType(property)) {
+                else if(property.IsValueOrImmutable()) {
+                    // Type needs to be public for late binding to work.
+                    if(!property.PropertyType.IsPublic) {
+                        throw new InvalidOperationException($"Attempt to create private or nested type '{property.PropertyType.Name}'");
+                    }
                     // Use dynamic to allow late binding.
                     sourceValue = Create((dynamic)sourceValue);
                 }
                 property.SetValue(destination, sourceValue);
             }
             return destination;
-        }
-
-        private static bool IsValidReferenceType(PropertyInfo property)
-        {
-            var isReferenceType = property.PropertyType.IsClass && property.PropertyType != typeof(string);
-            if(isReferenceType && !property.PropertyType.IsPublic) {
-                throw new InvalidOperationException($"Attempt to create private or nested type '{property.PropertyType.Name}'");
-            }
-            return isReferenceType;
         }
 
         /// <summary>

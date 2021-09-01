@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Blazor.ExtraDry.Core.Tests.ExtensionMethods {
+namespace Blazor.ExtraDry.Core.ExtensionMethods {
     public static class TypeExtensions {
         public static object GetDefaultValue(this Type type)
         {
