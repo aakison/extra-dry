@@ -12,11 +12,11 @@ namespace Sample.Shared {
     public class Sector {
 
         [Key]
-        [Rules(UpdateAction.Ignore)]
+        [Rules(RuleAction.Ignore)]
         [JsonIgnore]
         public int Id { get; set; }
 
-        [Rules(UpdateAction.Ignore)]
+        [Rules(RuleAction.Ignore)]
         public Guid Uuid { get; set; } = Guid.NewGuid();
 
         [Required]

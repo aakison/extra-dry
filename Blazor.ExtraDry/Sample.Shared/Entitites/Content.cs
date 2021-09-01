@@ -8,7 +8,7 @@ using System.Text.Json.Serialization;
 namespace Sample.Shared {
     public class Content {
         [Key]
-        [Rules(UpdateAction.BlockChanges)]
+        [Rules(RuleAction.Block)]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public int Id { get; set; }
 

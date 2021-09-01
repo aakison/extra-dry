@@ -216,21 +216,22 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
 
         public class Entity {
 
-            [Rules(UpdateAction.BlockChanges)]
+            [JsonIgnore]
+            [Rules(RuleAction.Block)]
             public int Id { get; set; } = 1;
 
             public string UndecoratedName { get; set; } = "Bob";
 
-            [Rules(UpdateAction.Ignore)]
+            [Rules(RuleAction.Ignore)]
             public decimal IgnoreChangesAmount { get; set; } = 123;
 
-            [Rules(UpdateAction.IgnoreDefaults)]
+            [Rules(RuleAction.IgnoreDefaults)]
             public double DefaultIgnoredReal { get; set; } = 1.23;
 
-            [Rules(UpdateAction.AllowChanges)]
+            [Rules(RuleAction.Allow)]
             public Guid ChangeableUuid { get; set; } = new Guid("372844B3-4963-4129-A4DE-AF457FED1A55");
 
-            [Rules(UpdateAction.IgnoreDefaults)]
+            [Rules(RuleAction.IgnoreDefaults)]
             public string DefaultIgnoredString { get; set; } = "Something";
 
             [JsonIgnore]
@@ -239,8 +240,9 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
             public string JsonIgnoredFakeOut { get; set; } = "json";
 
-            [Rules(UpdateAction.BlockChanges)]
+            [Rules(RuleAction.Block)]
             public string BlockChangesString { get; set; }
+
         }
 
         private Entity SampleEntity() => new Entity();

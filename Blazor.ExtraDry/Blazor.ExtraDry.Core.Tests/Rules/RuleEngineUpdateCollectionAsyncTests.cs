@@ -471,20 +471,20 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
 
         public class Parent {
 
-            [Rules(UpdateAction.BlockChanges)]
+            [Rules(RuleAction.Block)]
             public int Id { get; set; } = 1;
 
             public Child Child { get; set; }
 
             public List<Child> Children { get; set; }
 
-            [Rules(UpdateAction.Ignore)]
+            [Rules(RuleAction.Ignore)]
             public List<Child> IgnoredChildren { get; set; }
 
-            [Rules(UpdateAction.IgnoreDefaults)]
+            [Rules(RuleAction.IgnoreDefaults)]
             public List<Child> IgnoredDefaultsChildren { get; set; }
 
-            [Rules(UpdateAction.BlockChanges)]
+            [Rules(RuleAction.Block)]
             public List<Child> BlockedChildren { get; set; }
 
         }

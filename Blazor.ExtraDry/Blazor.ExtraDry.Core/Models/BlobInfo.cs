@@ -8,11 +8,11 @@ namespace Blazor.ExtraDry {
     public class BlobInfo : IBlobInfo {
 
         [Key]
-        [Rules(UpdateAction.BlockChanges)]
+        [Rules(RuleAction.Block)]
         [JsonIgnore]
         public int Id { get; set; }
 
-        [Rules(UpdateAction.BlockChanges)]
+        [Rules(RuleAction.Block)]
         public Guid UniqueId { get; set; } = Guid.NewGuid();
 
         [Display]

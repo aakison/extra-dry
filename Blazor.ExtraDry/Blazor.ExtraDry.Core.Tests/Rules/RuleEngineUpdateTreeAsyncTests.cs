@@ -74,7 +74,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
 
             public Grandchild Grandchild { get; set; }
 
-            [Rules(UpdateAction.Ignore)]
+            [Rules(RuleAction.Ignore)]
             public string DontTouchThis { get; set; }
 
             public override bool Equals(object obj) => (obj as Child)?.Uuid == Uuid;
@@ -99,12 +99,12 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
                 };
             }
 
-            [Rules(UpdateAction.BlockChanges)]
+            [Rules(RuleAction.Block)]
             public int Id { get; set; } = 1;
 
             public Child Child { get; set; }
 
-            [Rules(UpdateAction.AllowChanges)]
+            [Rules(RuleAction.Allow)]
             public Child AllowChild { get; set; }
 
             //[Rules(UpdateAction.Ignore)]
