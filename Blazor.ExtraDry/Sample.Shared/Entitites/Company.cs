@@ -11,10 +11,10 @@ namespace Sample.Shared {
 
         [Key]
         [JsonIgnore]
-        [Rules(UpdateAction.Ignore)]
+        [Rules(RuleAction.Ignore)]
         public int Id { get; set; }
 
-        [Rules(UpdateAction.Ignore)]
+        [Rules(RuleAction.Ignore)]
         public Guid Uuid { get; set; } = Guid.NewGuid();
 
         [Display(Name = "Name", ShortName = "Name")]
@@ -23,7 +23,7 @@ namespace Sample.Shared {
 
         [Display]
         [MaxLength(1000)]
-        [Rules(UpdateAction.IgnoreDefaults)]
+        [Rules(RuleAction.IgnoreDefaults)]
         public string Description { get; set; }
 
         [Display]

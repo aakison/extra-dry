@@ -42,7 +42,7 @@ namespace Blazor.ExtraDry {
 
         private List<object> LookupValues => LookupProviderOptions.Values.ToList();
 
-        private bool RulesAllowUpdate => (Property.Rules?.UpdateAction ?? UpdateAction.AllowChanges) == UpdateAction.AllowChanges;
+        private bool RulesAllowUpdate => (Property.Rules?.UpdateAction ?? RuleAction.Allow) == RuleAction.Allow;
 
         private bool Editable => EditMode == EditMode.Create || EditMode == EditMode.Update && RulesAllowUpdate;
 

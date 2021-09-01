@@ -110,14 +110,21 @@ namespace Blazor.ExtraDry {
             var validator = new DataValidator();
             validator.ValidateObject(source);
             validator.ThrowIfInvalid();
+            await UpdateProperties(source, destination/*, MaxRecursionDepth*/);
+        }
+
+        //public int MaxRecursionDepth
+
+        private async Task UpdateProperties<T>(T source, T destination/*, int depth*/)
+        {
             var properties = typeof(T).GetProperties();
             foreach(var property in properties) {
                 var rule = property.GetCustomAttribute<RulesAttribute>();
                 var ignore = property.GetCustomAttribute<JsonIgnoreAttribute>();
-                if(ignore != null && ignore.Condition == JsonIgnoreCondition.Always) {
+                var action = EffectiveRule(rule, ignore, e => e.UpdateAction, RuleAction.Allow);
+                if(action == RuleAction.Ignore) {
                     continue;
                 }
-                var action = rule?.UpdateAction ?? UpdateAction.AllowChanges;
                 var sourceValue = property.GetValue(source);
                 var destinationValue = property.GetValue(destination);
                 if(sourceValue is IList || destinationValue is IList) {
@@ -130,26 +137,39 @@ namespace Blazor.ExtraDry {
             }
         }
 
-        private async Task ProcessIndividualUpdate<T>(UpdateAction action, PropertyInfo property, T destination, object value)
+        private RuleAction EffectiveRule(RulesAttribute rules, JsonIgnoreAttribute ignore, Func<RulesAttribute, RuleAction> selector, RuleAction defaultType)
         {
-            if(action == UpdateAction.Ignore) {
+            if(rules != null) {
+                return selector(rules);
+            }
+            else if(ignore != null && ignore.Condition == JsonIgnoreCondition.Always) {
+                return RuleAction.Ignore;
+            }
+            else {
+                return defaultType;
+            }
+        }
+
+        private async Task ProcessIndividualUpdate<T>(RuleAction action, PropertyInfo property, T destination, object value)
+        {
+            if(action == RuleAction.Ignore) {
                 // Do nothing, doesn't matter what's in source, destination won't change.
                 return;
             }
-            if(action == UpdateAction.IgnoreDefaults && value == default) {
+            if(action == RuleAction.IgnoreDefaults && value == default) {
                 // Don't modify destination as source is in default state
                 return;
             }
-            value = await ResolveEntityValue(property.PropertyType, value);
+            (var resolved, var result) = await ResolveEntityValue(property.PropertyType, value);
             var destinationValue = property.GetValue(destination);
-            var same = (value == null && destinationValue == null) || (value?.Equals(destinationValue) ?? false);
-            if(action == UpdateAction.BlockChanges && !same) {
+            var same = (result == null && destinationValue == null) || (result?.Equals(destinationValue) ?? false);
+            if(action == RuleAction.Block && !same) {
                 throw new DryException($"Invalid attempt to change property {property.Name}", $"Attempt to change read-only property '{property.Name}'");
             }
-            property.SetValue(destination, value);
+            property.SetValue(destination, result);
         }
 
-        private async Task ProcessCollectionUpdates<T>(UpdateAction action, PropertyInfo property, T destination, IList sourceList)
+        private async Task ProcessCollectionUpdates<T>(RuleAction action, PropertyInfo property, T destination, IList sourceList)
         {
             var destinationValue = property.GetValue(destination);
             var destinationList = destinationValue as IList;
@@ -157,11 +177,11 @@ namespace Blazor.ExtraDry {
                 destinationList = Activator.CreateInstance(property.PropertyType) as IList;
                 property.SetValue(destination, destinationList);
             }
-            if(action == UpdateAction.Ignore) {
+            if(action == RuleAction.Ignore) {
                 // Do nothing, doesn't matter what's in source, destination won't change.
                 return;
             }
-            if(action == UpdateAction.IgnoreDefaults && sourceList == null) {
+            if(action == RuleAction.IgnoreDefaults && sourceList == null) {
                 // Don't modify destination as source is in default state of null (note that an empty collection will change destination)
                 return;
             }
@@ -169,13 +189,14 @@ namespace Blazor.ExtraDry {
             if(sourceList != null) {
                 var listItemType = property.PropertyType.GetGenericArguments()[0];
                 foreach(var item in sourceList) {
-                    sourceEntities.Add(await ResolveEntityValue(listItemType, item));
+                    (var resolved, var value) = await ResolveEntityValue(listItemType, item);
+                    sourceEntities.Add(value);
                 }
             }
             var destObjects = destinationList.Cast<object>();
             var toRemove = destObjects.Except(sourceEntities).ToList();
             var toAdd = sourceEntities.Except(destObjects).ToList();
-            if(action == UpdateAction.BlockChanges && (toRemove.Any() || toAdd.Any())) {
+            if(action == RuleAction.Block && (toRemove.Any() || toAdd.Any())) {
                 throw new DryException($"Invalid attempt to change collection property {property.Name}", $"Attempt to change read-only collection property '{property.Name}'");
             }
             foreach(var item in toRemove) {
@@ -366,22 +387,22 @@ namespace Blazor.ExtraDry {
         /// that might be a database entity.  Uses `IEntityResolver` class in DI to find potential replacement.
         /// This only works for objects, value types are always copies, so sourceValue is always returned.
         /// </summary>
-        private async Task<object> ResolveEntityValue(Type type, object sourceValue)
+        private async Task<(bool, object)> ResolveEntityValue(Type type, object sourceValue)
         {
             if(type.IsValueType || type == typeof(string)) {
-                return sourceValue;
+                return (false, sourceValue);
             }
             var untypedEntityResolver = typeof(IEntityResolver<>);
             var typedEntityResolver = untypedEntityResolver.MakeGenericType(type);
             var resolver = scopedServices.GetService(typedEntityResolver);
             if(resolver == null) {
-                return sourceValue;
+                return (false, sourceValue);
             }
             else {
                 var method = typedEntityResolver.GetMethod("ResolveAsync");
                 dynamic task = method.Invoke(resolver, new object[] { sourceValue });
                 var result = (await task) as object;
-                return result ?? sourceValue;
+                return (true, result);
             }
         }
 
