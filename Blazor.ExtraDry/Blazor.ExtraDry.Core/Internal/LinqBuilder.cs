@@ -73,10 +73,8 @@ namespace Blazor.ExtraDry {
                             && method.IsGenericMethodDefinition
                             && method.GetGenericArguments().Length == 2
                             && method.GetParameters().Length == 2);
-            var result = methodInfo.MakeGenericMethod(typeof(T), type)?.Invoke(null, new object[] { source, lambda });
-            if(result == null) {
-                throw new DryException($"Failed to execute order method `{methodType}`", "Internal Server Error. 0x0F0427A0");
-            }
+            // Feels weird to explicitly state these methods exist and return values, but enforced by rigorous lookup above.
+            var result = methodInfo.MakeGenericMethod(typeof(T), type)!.Invoke(null, new object[] { source, lambda });
             return (IOrderedQueryable<T>)result;
         }
 
@@ -180,9 +178,8 @@ namespace Blazor.ExtraDry {
             var caseConstant = Expression.Constant(StringComparison.InvariantCultureIgnoreCase);
             var method = filterType switch {
                 FilterType.Contains => StringContainsMethod,
-                FilterType.Equals => StringEqualsMethod,
                 FilterType.StartsWith => StringStartsWithMethod,
-                _ => throw new NotImplementedException("Unknown filter type"),
+                _ => StringEqualsMethod,
             };
             return Expression.Call(property, method, valueConstant, caseConstant);
         }
