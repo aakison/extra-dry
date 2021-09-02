@@ -134,10 +134,6 @@ namespace Blazor.ExtraDry {
 
         private async Task ProcessIndividualUpdate<T>(RuleAction action, PropertyInfo property, T destination, object value, int depth)
         {
-            if(action == RuleAction.Ignore) {
-                // Do nothing, doesn't matter what's in source, destination won't change.
-                return;
-            }
             if(action == RuleAction.IgnoreDefaults && value == default) {
                 // Don't modify destination as source is in default state
                 return;
@@ -168,10 +164,6 @@ namespace Blazor.ExtraDry {
             if(destinationList == null && sourceList != null) {
                 destinationList = Activator.CreateInstance(property.PropertyType) as IList;
                 property.SetValue(destination, destinationList);
-            }
-            if(action == RuleAction.Ignore) {
-                // Do nothing, doesn't matter what's in source, destination won't change.
-                return;
             }
             if(action == RuleAction.IgnoreDefaults && sourceList == null) {
                 // Don't modify destination as source is in default state of null (note that an empty collection will change destination)
