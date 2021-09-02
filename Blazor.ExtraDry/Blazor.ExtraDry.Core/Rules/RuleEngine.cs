@@ -1,13 +1,14 @@
-﻿//#nullable enable
+//#nullable enable
 
+using Blazor.ExtraDry.Core.ExtensionMethods;
 using System;
-using System.Linq;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 
 namespace Blazor.ExtraDry {
     public class RuleEngine {
@@ -21,7 +22,6 @@ namespace Blazor.ExtraDry {
         /// Given an potentially untrusted and unvalidated exemplar of an object, create a new copy of that object with business rules applied.
         /// Any validation issues or rule violations will throw an exception.
         /// </summary>
-        [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Keep as standard service instance style for DI.")]
         public T Create<T>(T exemplar)
         {
             if(exemplar == null) {
@@ -33,24 +33,33 @@ namespace Blazor.ExtraDry {
             var destination = Activator.CreateInstance<T>();
             var properties = typeof(T).GetProperties();
             foreach(var property in properties) {
-                var rule = property.GetCustomAttribute<RulesAttribute>();
                 var ignore = property.GetCustomAttribute<JsonIgnoreAttribute>();
                 if(ignore != null && ignore.Condition == JsonIgnoreCondition.Always) {
                     continue;
                 }
-                var action = rule?.CreateAction ?? CreateAction.CreateNew;
+                var rule = property.GetCustomAttribute<RulesAttribute>();
+                var action = EffectiveRule(rule, ignore, e => e.CreateAction, RuleAction.Allow);
+                if(action == RuleAction.Ignore) {
+                    continue;
+                }
                 var sourceValue = property.GetValue(exemplar);
                 var destinationValue = property.GetValue(destination);
                 if(sourceValue?.Equals(destinationValue) ?? true) {
                     continue;
                 }
-                switch(action) {
-                    // TODO: This logic requires more thought...
-                    case CreateAction.CreateNew:
-                    case CreateAction.MakeUnique:
+                if(action == RuleAction.IgnoreDefaults) {
+                    // "sourceValue == default" and "sourceValue.Equals(default)" won't work with struct types i.e. Guid
+                    if(sourceValue.Equals(property.PropertyType.GetDefaultValue())) {
                         continue;
-                    default:
-                        break;
+                    }
+                }
+                else if(property.IsValueOrImmutable()) {
+                    // Type needs to be public for late binding to work.
+                    if(!property.PropertyType.IsPublic) {
+                        throw new InvalidOperationException($"Attempt to create private or nested type '{property.PropertyType.Name}'");
+                    }
+                    // Use dynamic to allow late binding.
+                    sourceValue = Create((dynamic)sourceValue);
                 }
                 property.SetValue(destination, sourceValue);
             }

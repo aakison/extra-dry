@@ -27,20 +27,20 @@ namespace Sample.Shared {
         public string Description { get; set; }
 
         [Display]
-        [Rules(CreateAction = CreateAction.LinkExisting)]
+        [Rules(CreateAction = RuleAction.Allow)]
         [JsonConverter(typeof(SectorInfoJsonConverter))]
         public Sector PrimarySector { get; set; }
 
         [Display]
-        [Rules(CreateAction = CreateAction.LinkExisting)]
+        [Rules(CreateAction = RuleAction.Allow)]
         public List<Sector> AdditionalSectors { get; set; }
 
         [Display]
-        [Rules(RuleAction.Allow, CreateAction = CreateAction.CreateNew)]
+        [Rules(RuleAction.Allow)]
         public BankingDetails BankingDetails { get; set; } = new BankingDetails();
 
         [Display]
-        [Rules(RuleAction.Allow, CreateAction = CreateAction.CreateNew)]
+        [Rules(RuleAction.Allow)]
         public ICollection<Video> Videos { get; set; } = new Collection<Video>();
 
     }
