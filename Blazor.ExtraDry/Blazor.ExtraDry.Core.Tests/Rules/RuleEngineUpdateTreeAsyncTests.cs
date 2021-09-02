@@ -58,6 +58,22 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             Assert.Equal("remains", destination.Child.DontTouchThis);
         }
 
+        [Fact]
+        public async Task ChildCopyExceptionOnBlock()
+        {
+            var services = new ServiceProviderStub();
+            var rules = new RuleEngine(services);
+            var guid = Guid.NewGuid();
+            var gcguid = Guid.NewGuid();
+            var source = new Parent(guid, "Child", gcguid, "Grandchild");
+            var destination = new Parent(guid, "Child", gcguid, "Grandchild");
+            source.Child.CantTouchThis = "dont-copy";
+            destination.Child.CantTouchThis = "remains";
+
+            await Assert.ThrowsAsync<DryException>(async () => await rules.UpdateAsync(source, destination));
+        }
+
+
         public class Grandchild {
 
             public Guid Uuid { get; set; } = Guid.NewGuid();
@@ -76,6 +92,9 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
 
             [Rules(RuleAction.Ignore)]
             public string DontTouchThis { get; set; }
+
+            [Rules(RuleAction.Block)]
+            public string CantTouchThis { get; set; }
 
             public override bool Equals(object obj) => (obj as Child)?.Uuid == Uuid;
 

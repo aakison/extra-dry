@@ -85,12 +85,12 @@ namespace Blazor.ExtraDry {
             var validator = new DataValidator();
             validator.ValidateObject(source);
             validator.ThrowIfInvalid();
-            await UpdateProperties(source, destination, MaxRecursionDepth);
+            await UpdatePropertiesAsync(source, destination, MaxRecursionDepth);
         }
 
         public int MaxRecursionDepth = 20;
 
-        private async Task UpdateProperties<T>(T source, T destination, int depth)
+        private async Task UpdatePropertiesAsync<T>(T source, T destination, int depth)
         {
             if(depth == 0) {
                 throw new DryException("Recursion limit on update reached");
@@ -150,7 +150,7 @@ namespace Blazor.ExtraDry {
                     destinationValue = Activator.CreateInstance(value.GetType());
                     property.SetValue(destination, destinationValue);
                 }
-                UpdateProperties((dynamic)value, (dynamic)destinationValue, --depth);
+                await UpdatePropertiesAsync((dynamic)value, (dynamic)destinationValue, --depth);
             }
             else {
                 var same = (result == null && destinationValue == null) || (result?.Equals(destinationValue) ?? false);
