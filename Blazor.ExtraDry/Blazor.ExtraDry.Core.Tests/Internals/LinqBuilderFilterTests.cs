@@ -60,6 +60,70 @@ namespace Blazor.ExtraDry.Core.Tests.Internals {
             Assert.Equal(linqWhere, linqBuilderWhere);
         }
 
+        [Fact]
+        public void FilterOnNumberField()
+        {
+            var linqWhere = SampleData.Where(e => e.Number == 222).ToList();
+
+            var filterProperty = GetFilterProperty("Number");
+            var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "number:222").ToList();
+
+            Assert.Equal(linqWhere, linqBuilderWhere);
+        }
+
+        [Fact]
+        public void FilterOnMultipleNumberField()
+        {
+            var linqWhere = SampleData.Where(e => e.Number == 222 || e.Number == 111).ToList();
+
+            var filterProperty = GetFilterProperty("Number");
+            var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "number:222|111").ToList();
+
+            Assert.Equal(linqWhere, linqBuilderWhere);
+        }
+
+        [Fact]
+        public void SimpleRangeQuery()
+        {
+            var linqWhere = SampleDataWithDuplicateNames.Where(e => e.Number >= 100 && e.Number < 200).ToList();
+
+            var firstName = GetFilterProperty("FirstName");
+            var lastName = GetFilterProperty("LastName");
+            var number = GetFilterProperty("Number");
+            var linqBuilderWhere = SampleDataWithDuplicateNames.AsQueryable().WhereFilterConditions(new FilterProperty[] { firstName, lastName, number }, "number:[100,200)").ToList();
+
+            Assert.Equal(linqWhere, linqBuilderWhere);
+        }
+
+        [Theory]
+        [InlineData("number:[100,200)")]
+        [InlineData("number:[123,223)")]
+        [InlineData("number:[123,222]")]
+        [InlineData("number:(122,223)")]
+        [InlineData("number:(122,222]")]
+        [InlineData("firstname:bob")]
+        [InlineData("FIRSTNAME:BOB")]
+        [InlineData("lastname:co")] // startswith condition on Filter on property
+        public void QueriesThatPickTwo(string filter)
+        {
+            var firstName = GetFilterProperty("FirstName");
+            var lastName = GetFilterProperty("LastName");
+            var number = GetFilterProperty("Number");
+            var linqBuilderWhere = SampleDataWithDuplicateNames.AsQueryable().WhereFilterConditions(new FilterProperty[] { firstName, lastName, number }, filter).ToList();
+
+            Assert.Equal(2, linqBuilderWhere.Count);
+        }
+
+        [Fact]
+        public void StringRangeNotSupported()
+        {
+            var firstName = GetFilterProperty("FirstName");
+            var lastName = GetFilterProperty("LastName");
+            var number = GetFilterProperty("Number");
+
+            Assert.Throws<DryException>(() => SampleDataWithDuplicateNames.AsQueryable().WhereFilterConditions(new FilterProperty[] { firstName, lastName, number }, "lastname:[coa,coo]").ToList());
+        }
+
         private static FilterProperty GetFilterProperty(string propertyName)
         {
             var property = typeof(Datum).GetProperty(propertyName);
@@ -77,6 +141,7 @@ namespace Blazor.ExtraDry.Core.Tests.Internals {
             [Filter(FilterType.Contains)]
             public string Keywords { get; set; }
 
+            [Filter]
             public int Number { get; set; }
         }
 

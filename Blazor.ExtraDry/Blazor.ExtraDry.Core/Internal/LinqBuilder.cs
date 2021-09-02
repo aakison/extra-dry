@@ -95,10 +95,21 @@ namespace Blazor.ExtraDry {
             foreach(var rule in filter.Rules) {
                 var property = filterProperties.FirstOrDefault(e => string.Equals(e.Property.Name, rule.PropertyName, StringComparison.OrdinalIgnoreCase));
                 if(property == null) {
-                    throw new DryException($"Could not find property '{rule.PropertyName}' requested in filter query.  No property had with that name ha a [Filter] attribute applied to it.", "Unable to apply filter. 0x0F4F4931");
+                    throw new DryException($"Could not find property '{rule.PropertyName}' requested in filter query.  No property had with that name has a [Filter] attribute applied to it.", "Unable to apply filter. 0x0F4F4931");
                 }
-                var fields = rule.Values.Select(e => StringExpression(param, property.Property, property.Filter.Type, e)).ToArray();
-                terms.Add(AnyOf(fields));
+                if(rule.LowerBound != BoundRule.None && rule.UpperBound != BoundRule.None && rule.Values.Count == 2) {
+                    // range of values
+                    var fields = RangeExpression(param, property.Property, rule);
+                    terms.Add(AllOf(fields));
+                }
+                else if(property.Property.PropertyType == typeof(string)) {
+                    var fields = rule.Values.Select(e => StringExpression(param, property.Property, property.Filter.Type, e)).ToArray();
+                    terms.Add(AnyOf(fields));
+                }
+                else {
+                    var fields = rule.Values.Select(e => ComparisonExpression(param, property.Property, e)).ToArray();
+                    terms.Add(AnyOf(fields));
+                }
             }
 
             //foreach(var match in matchValues) {
@@ -126,6 +137,40 @@ namespace Blazor.ExtraDry {
                 left = Expression.AndAlso(left, right);
             }
             return left;
+        }
+
+        private static Expression ComparisonExpression(ParameterExpression parameter, PropertyInfo propertyInfo, string value)
+        {
+            var property = Expression.Property(parameter, propertyInfo);
+            var valueConstant = Expression.Constant(ParseToType(propertyInfo.PropertyType, value));
+            var equality = Expression.Equal(property, valueConstant);
+            return equality;
+        }
+
+        private static Expression[] RangeExpression(ParameterExpression parameter, PropertyInfo propertyInfo, FilterRule rule)
+        {
+            if(!propertyInfo.PropertyType.IsValueType) {
+                throw new DryException("Filters that specify a range expression may only be used with value types that have comparisons defined.", "Unable to apply filter. 0x0F4DC1B1");
+            }
+            var lowerValue = Expression.Constant(ParseToType(propertyInfo.PropertyType, rule.Values[0]));
+            var upperValue = Expression.Constant(ParseToType(propertyInfo.PropertyType, rule.Values[1]));
+            var property = Expression.Property(parameter, propertyInfo);
+            var lowerBound = rule.LowerBound switch {
+                BoundRule.Exclusive => Expression.GreaterThan(property, lowerValue),
+                _ => Expression.GreaterThanOrEqual(property, lowerValue),
+            };
+            var upperBound = rule.UpperBound switch {
+                BoundRule.Inclusive => Expression.LessThanOrEqual(property, upperValue),
+                _ => Expression.LessThan(property, upperValue),
+            };
+            return new Expression[] { lowerBound, upperBound };
+        }
+
+        private static object ParseToType(Type type, string value)
+        {
+            var methodInfo = type.GetMethod("Parse", new Type[] { typeof(string) });
+            var result = methodInfo.Invoke(null, new object[] { value });
+            return result;
         }
 
         private static Expression StringExpression(ParameterExpression parameter, PropertyInfo propertyInfo, FilterType filterType, string value)
