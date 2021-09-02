@@ -7,7 +7,6 @@ namespace Blazor.ExtraDry.Core.Tests.Internals {
 
     public class LinqBuilderFilterTests {
 
-
         [Fact]
         public void SingleEqualsWhereFilterCompatible()
         {
@@ -15,6 +14,37 @@ namespace Blazor.ExtraDry.Core.Tests.Internals {
 
             var filterProperty = GetFilterProperty("FirstName");
             var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "firstname:bob").ToList();
+
+            Assert.Equal(linqWhere, linqBuilderWhere);
+        }
+
+        [Fact]
+        public void MissingFilterAttributeOnProperty()
+        {
+            var linqWhere = SampleData.Where(e => e.FirstName == "Bob").ToList();
+
+            var filterProperty = GetFilterProperty("FirstName");
+            Assert.Throws<DryException>(() => SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "number:bob"));
+        }
+
+        [Fact]
+        public void MultipleNamesOnSingleField()
+        {
+            var linqWhere = SampleData.Where(e => e.FirstName == "Bob" || e.FirstName == "Alice").ToList();
+
+            var filterProperty = GetFilterProperty("FirstName");
+            var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "firstname:bob|alice").ToList();
+
+            Assert.Equal(linqWhere, linqBuilderWhere);
+        }
+
+        [Fact]
+        public void MultipleNamesOnSingleFieldAlternateSyntax()
+        {
+            var linqWhere = SampleData.Where(e => e.FirstName == "Bob" || e.FirstName == "Alice").ToList();
+
+            var filterProperty = GetFilterProperty("FirstName");
+            var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "firstname:bob firstname:alice").ToList();
 
             Assert.Equal(linqWhere, linqBuilderWhere);
         }
