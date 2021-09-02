@@ -73,6 +73,51 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             await Assert.ThrowsAsync<DryException>(async () => await rules.UpdateAsync(source, destination));
         }
 
+        [Fact]
+        public async Task GrandchildCopyRecursion()
+        {
+            var services = new ServiceProviderStub();
+            var rules = new RuleEngine(services);
+            var guid = Guid.NewGuid();
+            var gcguid = Guid.NewGuid();
+            var source = new Parent(guid, "Child", gcguid, "Grandchild");
+            var destination = new Parent(guid, "Child", gcguid, "Grandchild");
+            source.Child.Grandchild.Name = "source";
+            destination.Child.Grandchild.Name = "destination";
+
+            await rules.UpdateAsync(source, destination);
+
+            Assert.Equal("source", destination.Child.Grandchild.Name);
+            Assert.NotEqual(source.Child.Grandchild, destination.Child.Grandchild);
+        }
+
+        [Fact]
+        public async Task ProtectionFromTreeCycles()
+        {
+            var services = new ServiceProviderStub();
+            var rules = new RuleEngine(services);
+            var malformed = new Malformed();
+            malformed.Child = malformed;
+            var destination = new Malformed();
+
+            await Assert.ThrowsAsync<DryException>(async () => await rules.UpdateAsync(malformed, destination));
+        }
+
+        [Fact]
+        public async Task ExceptionOnTooDeepATree()
+        {
+            var services = new ServiceProviderStub();
+            var rules = new RuleEngine(services);
+            var guid = Guid.NewGuid();
+            var gcguid = Guid.NewGuid();
+            var source = new Parent(guid, "Child", gcguid, "Grandchild");
+            var destination = new Parent(guid, "Child", gcguid, "Grandchild");
+            source.Child.Grandchild.Name = "source";
+            destination.Child.Grandchild.Name = "destination";
+
+            rules.MaxRecursionDepth = 1;
+            await Assert.ThrowsAsync<DryException>(async () => await rules.UpdateAsync(source, destination));
+        }
 
         public class Grandchild {
 
@@ -171,6 +216,10 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
 
         }
 
+        public class Malformed {
+            public string Name { get; set; } = "Name";
+            public Malformed Child { get; set; }
+        }
 
     }
 }
