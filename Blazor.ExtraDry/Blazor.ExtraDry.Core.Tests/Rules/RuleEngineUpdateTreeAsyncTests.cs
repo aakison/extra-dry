@@ -38,25 +38,25 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             Assert.Equal(guid, destination.Child.Uuid);
         }
 
-        //[Fact]
-        //public async Task ChildCopyDoesntCopyIgnore()
-        //{
-        //    var services = new ServiceProviderStub();
-        //    var rules = new RuleEngine(services);
-        //    var guid = Guid.NewGuid();
-        //    var gcguid = Guid.NewGuid();
-        //    var source = new Parent(guid, "Child", gcguid, "Grandchild");
-        //    var destination = new Parent(guid, "Child", gcguid, "Grandchild");
-        //    source.Child.DontTouchThis = "dont-copy";
-        //    destination.Child.DontTouchThis = "remains";
+        [Fact]
+        public async Task ChildCopyDoesntCopyIgnore()
+        {
+            var services = new ServiceProviderStub();
+            var rules = new RuleEngine(services);
+            var guid = Guid.NewGuid();
+            var gcguid = Guid.NewGuid();
+            var source = new Parent(guid, "Child", gcguid, "Grandchild");
+            var destination = new Parent(guid, "Child", gcguid, "Grandchild");
+            source.Child.DontTouchThis = "dont-copy";
+            destination.Child.DontTouchThis = "remains";
 
-        //    await rules.UpdateAsync(source, destination);
+            await rules.UpdateAsync(source, destination);
 
-        //    Assert.NotNull(destination.Child);
-        //    Assert.Equal(guid, destination.Child.Uuid);
-        //    Assert.Equal(gcguid, destination.Child.Grandchild.Uuid);
-        //    Assert.Equal("remains", destination.Child.DontTouchThis);
-        //}
+            Assert.NotNull(destination.Child);
+            Assert.Equal(guid, destination.Child.Uuid);
+            Assert.Equal(gcguid, destination.Child.Grandchild.Uuid);
+            Assert.Equal("remains", destination.Child.DontTouchThis);
+        }
 
         public class Grandchild {
 

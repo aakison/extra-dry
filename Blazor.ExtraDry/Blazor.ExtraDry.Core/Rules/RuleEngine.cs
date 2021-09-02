@@ -76,13 +76,16 @@ namespace Blazor.ExtraDry {
             var validator = new DataValidator();
             validator.ValidateObject(source);
             validator.ThrowIfInvalid();
-            await UpdateProperties(source, destination/*, MaxRecursionDepth*/);
+            await UpdateProperties(source, destination, MaxRecursionDepth);
         }
 
-        //public int MaxRecursionDepth
+        public int MaxRecursionDepth = 20;
 
-        private async Task UpdateProperties<T>(T source, T destination/*, int depth*/)
+        private async Task UpdateProperties<T>(T source, T destination, int depth)
         {
+            if(depth == 0) {
+                throw new DryException("Recursion limit on update reached");
+            }
             var properties = typeof(T).GetProperties();
             foreach(var property in properties) {
                 var rule = property.GetCustomAttribute<RulesAttribute>();
@@ -93,12 +96,16 @@ namespace Blazor.ExtraDry {
                 }
                 var sourceValue = property.GetValue(source);
                 var destinationValue = property.GetValue(destination);
-                if(sourceValue is IList || destinationValue is IList) {
+                if(sourceValue == null && destinationValue == null) {
+                    // Common occurrence which we can short circuit all future logic for performance.
+                    // Also allows processing below to ignore this case.
+                }
+                else if(typeof(IList).IsAssignableFrom(property.PropertyType)) {
                     var sourceList = sourceValue as IList;
                     await ProcessCollectionUpdates(action, property, destination, sourceList);
                 }
                 else {
-                    await ProcessIndividualUpdate(action, property, destination, sourceValue);
+                    await ProcessIndividualUpdate(action, property, destination, sourceValue, depth);
                 }
             }
         }
@@ -116,7 +123,7 @@ namespace Blazor.ExtraDry {
             }
         }
 
-        private async Task ProcessIndividualUpdate<T>(RuleAction action, PropertyInfo property, T destination, object value)
+        private async Task ProcessIndividualUpdate<T>(RuleAction action, PropertyInfo property, T destination, object value, int depth)
         {
             if(action == RuleAction.Ignore) {
                 // Do nothing, doesn't matter what's in source, destination won't change.
@@ -128,11 +135,21 @@ namespace Blazor.ExtraDry {
             }
             (var resolved, var result) = await ResolveEntityValue(property.PropertyType, value);
             var destinationValue = property.GetValue(destination);
-            var same = (result == null && destinationValue == null) || (result?.Equals(destinationValue) ?? false);
-            if(action == RuleAction.Block && !same) {
-                throw new DryException($"Invalid attempt to change property {property.Name}", $"Attempt to change read-only property '{property.Name}'");
+            if(!resolved && !property.PropertyType.IsValueType && property.PropertyType != typeof(string)) {
+                // Recurse through child to copy values
+                if(value != null && destinationValue == null) {
+                    destinationValue = Activator.CreateInstance(value.GetType());
+                    property.SetValue(destination, destinationValue);
+                }
+                UpdateProperties((dynamic)value, (dynamic)destinationValue, --depth);
             }
-            property.SetValue(destination, result);
+            else {
+                var same = (result == null && destinationValue == null) || (result?.Equals(destinationValue) ?? false);
+                if(action == RuleAction.Block && !same) {
+                    throw new DryException($"Invalid attempt to change property {property.Name}", $"Attempt to change read-only property '{property.Name}'");
+                }
+                property.SetValue(destination, result);
+            }
         }
 
         private async Task ProcessCollectionUpdates<T>(RuleAction action, PropertyInfo property, T destination, IList sourceList)
