@@ -1,4 +1,6 @@
-﻿using Blazor.ExtraDry.Core.Internal;
+﻿#nullable enable
+
+using Blazor.ExtraDry.Core.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +19,7 @@ namespace Blazor.ExtraDry {
         /// </summary>
         public static IOrderedQueryable<T> OrderBy<T>(this IQueryable<T> source, string property)
         {
-            return ApplyOrder(source, property, "OrderBy");
+            return ApplyOrder(source, property, OrderType.OrderBy);
         }
 
         /// <summary>
@@ -25,7 +27,7 @@ namespace Blazor.ExtraDry {
         /// </summary>
         public static IOrderedQueryable<T> OrderByDescending<T>(this IQueryable<T> source, string property)
         {
-            return ApplyOrder(source, property, "OrderByDescending");
+            return ApplyOrder(source, property, OrderType.OrderByDescending);
         }
 
         /// <summary>
@@ -33,7 +35,7 @@ namespace Blazor.ExtraDry {
         /// </summary>
         public static IOrderedQueryable<T> ThenBy<T>(this IOrderedQueryable<T> source, string property)
         {
-            return ApplyOrder(source, property, "ThenBy");
+            return ApplyOrder(source, property, OrderType.ThenBy);
         }
 
         /// <summary>
@@ -41,14 +43,14 @@ namespace Blazor.ExtraDry {
         /// </summary>
         public static IOrderedQueryable<T> ThenByDescending<T>(this IOrderedQueryable<T> source, string property)
         {
-            return ApplyOrder(source, property, "ThenByDescending");
+            return ApplyOrder(source, property, OrderType.ThenByDescending);
         }
 
         /// <summary>
         /// Applies LINQ method by property name and method name instead of using Method and Lambda.
         /// </summary>
         /// <remarks>see https://stackoverflow.com/questions/41244/dynamic-linq-orderby-on-ienumerablet-iqueryablet</remarks>
-        private static IOrderedQueryable<T> ApplyOrder<T>(IQueryable<T> source, string property, string methodName)
+        private static IOrderedQueryable<T> ApplyOrder<T>(IQueryable<T> source, string property, OrderType methodType)
         {
             string[] props = property.Split('.');
             var type = typeof(T);
@@ -67,16 +69,13 @@ namespace Blazor.ExtraDry {
             var lambda = Expression.Lambda(delegateType, expr, arg);
 
             var methodInfo = typeof(Queryable).GetMethods().Single(
-                    method => method.Name == methodName
+                    method => method.Name == methodType.ToString()
                             && method.IsGenericMethodDefinition
                             && method.GetGenericArguments().Length == 2
                             && method.GetParameters().Length == 2);
-            if(methodInfo == null) {
-                throw new DryException($"Could not find method `{methodName}`, must be one of `OrderBy`, `Thenby`, `OrderByDescending`, or `ThenByDescending`", "Internal Server Error - 0x0F72F021");
-            }
             var result = methodInfo.MakeGenericMethod(typeof(T), type)?.Invoke(null, new object[] { source, lambda });
             if(result == null) {
-                throw new DryException($"Failed to execute order method `{methodName}`", "Internal Server Error - 0x0F0427A0");
+                throw new DryException($"Failed to execute order method `{methodType}`", "Internal Server Error. 0x0F0427A0");
             }
             return (IOrderedQueryable<T>)result;
         }
@@ -148,6 +147,13 @@ namespace Blazor.ExtraDry {
         private static MethodInfo StringEqualsMethod => typeof(string).GetMethod(nameof(string.Equals), new[] { typeof(string), typeof(StringComparison) });
 
         private static MethodInfo StringStartsWithMethod => typeof(string).GetMethod(nameof(string.StartsWith), new[] { typeof(string), typeof(StringComparison) });
+
+        private enum OrderType {
+            OrderBy, 
+            ThenBy, 
+            OrderByDescending, 
+            ThenByDescending,
+        }
 
     }
 }

@@ -49,6 +49,17 @@ namespace Blazor.ExtraDry.Core.Tests.Internals {
             Assert.Equal(linqWhere, linqBuilderWhere);
         }
 
+        [Fact]
+        public void ContainsFilterAttribute()
+        {
+            var linqWhere = SampleData.Where(e => e.Keywords.Contains("beta")).ToList();
+
+            var filterProperty = GetFilterProperty("Keywords");
+            var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "keywords:beta").ToList();
+
+            Assert.Equal(linqWhere, linqBuilderWhere);
+        }
+
         private static FilterProperty GetFilterProperty(string propertyName)
         {
             var property = typeof(Datum).GetProperty(propertyName);
@@ -70,9 +81,9 @@ namespace Blazor.ExtraDry.Core.Tests.Internals {
         }
 
         private List<Datum> SampleData = new List<Datum>() {
-            new Datum { FirstName = "Charlie", LastName = "Coase", Number = 111},
-            new Datum { FirstName = "Alice", LastName = "Cooper", Number = 333 },
-            new Datum { FirstName = "Bob", LastName = "Barker", Number = 222 },
+            new Datum { FirstName = "Charlie", LastName = "Coase", Number = 111, Keywords = "alpha beta gamma"},
+            new Datum { FirstName = "Alice", LastName = "Cooper", Number = 333, Keywords = "beta gamma delta" },
+            new Datum { FirstName = "Bob", LastName = "Barker", Number = 222, Keywords = "gamma delta epsilon" },
         };
 
         private List<Datum> SampleDataWithDuplicateNames = new List<Datum>() {

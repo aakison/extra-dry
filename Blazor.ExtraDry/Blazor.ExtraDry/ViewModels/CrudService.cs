@@ -125,7 +125,7 @@ namespace Blazor.ExtraDry {
                     // Just eat it.
                     var x = ex;
                 }
-                throw new DryException(response?.ReasonPhrase, userMessage);
+                throw new DryException(response?.ReasonPhrase ?? "Response failed.", userMessage);
             }
         }
 
