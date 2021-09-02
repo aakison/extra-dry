@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Blazor.ExtraDry.Core.Internal;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -87,14 +88,24 @@ namespace Blazor.ExtraDry {
         /// This builds a Conjunctive Normal Form (CNF) linq expression where each string in `matchValues` must exist in 
         /// at least one of the properties.  The exact comparison function is also determined by the properties' filter attribute.
         /// </remarks>
-        public static IQueryable<T> WhereFilterConditions<T>(this IQueryable<T> source, FilterProperty[] filterProperties, string[] matchValues)
+        public static IQueryable<T> WhereFilterConditions<T>(this IQueryable<T> source, FilterProperty[] filterProperties, string filterQuery)
         {
             var param = Expression.Parameter(typeof(T), "e");
             var terms = new List<Expression>();
-            foreach(var match in matchValues) {
-                var fields = filterProperties.Select(e => StringExpression(param, e.Property, e.Filter.Type, match)).ToArray();
+            var filter = FilterParser.Parse(filterQuery);
+            foreach(var rule in filter.Rules) {
+                var property = filterProperties.FirstOrDefault(e => string.Equals(e.Property.Name, rule.PropertyName, StringComparison.OrdinalIgnoreCase));
+                if(property == null) {
+                    throw new DryException($"Could not find property '{rule.PropertyName}' requested in filter query.  No property had with that name ha a [Filter] attribute applied to it.", "Unable to apply filter. 0x0F4F4931");
+                }
+                var fields = rule.Values.Select(e => StringExpression(param, property.Property, property.Filter.Type, e)).ToArray();
                 terms.Add(AnyOf(fields));
             }
+
+            //foreach(var match in matchValues) {
+            //    var fields = filterProperties.Select(e => StringExpression(param, e.Property, e.Filter.Type, match)).ToArray();
+            //    terms.Add(AnyOf(fields));
+            //}
             var cnf = AllOf(terms.ToArray());
             var lambda = Expression.Lambda<Func<T, bool>>(cnf, param);
             return source.Where(lambda);

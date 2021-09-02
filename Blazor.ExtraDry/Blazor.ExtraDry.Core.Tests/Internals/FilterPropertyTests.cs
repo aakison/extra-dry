@@ -2,7 +2,7 @@
 
 using Xunit;
 
-namespace Blazor.ExtraDry.Core.Tests.Rules {
+namespace Blazor.ExtraDry.Core.Tests.Internals {
     public class FilterPropertyTests {
 
         [Fact]

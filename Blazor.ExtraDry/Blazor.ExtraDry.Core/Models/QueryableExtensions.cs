@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using Blazor.ExtraDry.Core.Internal;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
@@ -35,7 +36,7 @@ namespace Blazor.ExtraDry {
             if(!filterProperties.Any()) {
                 return source;
             }
-            return source.WhereFilterConditions(filterProperties.ToArray(), filter.Split(' '));
+            return source.WhereFilterConditions(filterProperties.ToArray(), filter);
         }
 
         public static IQueryable<T> Sort<T>(this IQueryable<T> source, FilterQuery query)

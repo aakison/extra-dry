@@ -1,12 +1,9 @@
-﻿using System;
+﻿using Blazor.ExtraDry;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
-using Blazor.ExtraDry;
 
-namespace Blazor.ExtraDry.Core.Tests.Rules.SupportClasses {
+namespace Blazor.ExtraDry.Core.Tests.Internals {
     public class LinqBuilderTests {
 
         [Fact]
@@ -83,7 +80,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules.SupportClasses {
             var linqWhere = SampleData.Where(e => e.FirstName == "Bob").ToList();
 
             var filterProperty = GetFilterProperty("FirstName");
-            var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, new string[] { "Bob" }).ToList();
+            var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "firstname:bob").ToList();
 
             Assert.Equal(linqWhere, linqBuilderWhere);
         }
@@ -94,7 +91,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules.SupportClasses {
             var linqWhere = SampleData.Where(e => e.LastName.StartsWith("Bark")).ToList();
 
             var filterProperty = GetFilterProperty("LastName");
-            var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, new string[] { "Bark" }).ToList();
+            var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "LastName:Bark").ToList();
 
             Assert.Equal(linqWhere, linqBuilderWhere);
         }
@@ -106,7 +103,7 @@ namespace Blazor.ExtraDry.Core.Tests.Rules.SupportClasses {
 
             var firstName = GetFilterProperty("FirstName");
             var lastName = GetFilterProperty("LastName");
-            var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { firstName, lastName }, new string[] { "Bob", "Bark" }).ToList();
+            var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { firstName, lastName }, "firstname:bob lastname:bark").ToList();
 
             Assert.Equal(linqWhere, linqBuilderWhere);
         }
