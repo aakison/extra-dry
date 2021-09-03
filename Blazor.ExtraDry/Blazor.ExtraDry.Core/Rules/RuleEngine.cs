@@ -33,8 +33,8 @@ namespace Blazor.ExtraDry {
             var destination = Activator.CreateInstance<T>();
             var properties = typeof(T).GetProperties();
             foreach(var property in properties) {
-                var ignore = property.GetCustomAttribute<JsonIgnoreAttribute>();
-                if(ignore != null && ignore.Condition == JsonIgnoreCondition.Always) {
+                var ignore = property.IsJsonIgnored();
+                if(ignore) { 
                     continue;
                 }
                 var rule = property.GetCustomAttribute<RulesAttribute>();
@@ -98,7 +98,7 @@ namespace Blazor.ExtraDry {
             var properties = typeof(T).GetProperties();
             foreach(var property in properties) {
                 var rule = property.GetCustomAttribute<RulesAttribute>();
-                var ignore = property.GetCustomAttribute<JsonIgnoreAttribute>();
+                var ignore = property.IsJsonIgnored();
                 var action = EffectiveRule(rule, ignore, e => e.UpdateAction, RuleAction.Allow);
                 if(action == RuleAction.Ignore) {
                     continue;
@@ -114,17 +114,17 @@ namespace Blazor.ExtraDry {
                     await ProcessCollectionUpdates(action, property, destination, sourceList);
                 }
                 else {
-                    await ProcessIndividualUpdate(action, property, destination, sourceValue, depth);
+                    await ProcessIndividualUpdate(action, property, destination, sourceValue, depth, ignore);
                 }
             }
         }
 
-        private RuleAction EffectiveRule(RulesAttribute rules, JsonIgnoreAttribute ignore, Func<RulesAttribute, RuleAction> selector, RuleAction defaultType)
+        private RuleAction EffectiveRule(RulesAttribute rules, bool ignore, Func<RulesAttribute, RuleAction> selector, RuleAction defaultType)
         {
             if(rules != null) {
                 return selector(rules);
             }
-            else if(ignore != null && ignore.Condition == JsonIgnoreCondition.Always) {
+            else if(ignore) {
                 return RuleAction.Ignore;
             }
             else {
@@ -132,7 +132,7 @@ namespace Blazor.ExtraDry {
             }
         }
 
-        private async Task ProcessIndividualUpdate<T>(RuleAction action, PropertyInfo property, T destination, object value, int depth)
+        private async Task ProcessIndividualUpdate<T>(RuleAction action, PropertyInfo property, T destination, object value, int depth, bool ignore)
         {
             if(action == RuleAction.IgnoreDefaults && value == default) {
                 // Don't modify destination as source is in default state
@@ -151,6 +151,9 @@ namespace Blazor.ExtraDry {
             else {
                 var same = (result == null && destinationValue == null) || (result?.Equals(destinationValue) ?? false);
                 if(action == RuleAction.Block && !same) {
+                    if(ignore) {
+                        return;
+                    }
                     throw new DryException($"Invalid attempt to change property {property.Name}", $"Attempt to change read-only property '{property.Name}'");
                 }
                 property.SetValue(destination, result);
