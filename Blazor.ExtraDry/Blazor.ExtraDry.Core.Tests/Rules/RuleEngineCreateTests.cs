@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using Xunit;
 
@@ -195,6 +196,26 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
             Assert.Equal(default, valueTypes.JsonIgnoredProp);
             Assert.Equal(default, valueTypes.JsonIgnoredChild);
         }
+
+        public static IEnumerable<object[]> CreateWithBlockData()
+        {
+            yield return new object[] { new Entity { BlockInteger = 123 }, "BlockInteger" };
+            yield return new object[] { new Entity { BlockString = "Hello World" }, "BlockString" };
+            yield return new object[] { new Entity { BlockGuid = Guid.NewGuid() }, "BlockGuid" };
+            yield return new object[] { new Entity { BlockState = State.Active }, "BlockState" };
+            yield return new object[] { new Entity { BlockTestObject = new() }, "BlockTestObject" };
+        }
+
+        [Theory]
+        [MemberData(nameof(CreateWithBlockData))]
+        public void CreateWithBlock(Entity exemplar, string propertyName)
+        {
+            var rules = new RuleEngine(new ServiceProviderStub());
+
+            var exception = Assert.Throws<DryException>(() => rules.Create(exemplar));
+
+            Assert.Equal($"Invalid attempt to change property '{propertyName}'", exception.Message);
+        }
     }
 
     public class Entity {
@@ -214,8 +235,6 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         public State State { get; set; }
         [Rules(CreateAction = RuleAction.Allow)]
         public ChildEntity TestObject { get; set; }
-        [Rules(CreateAction = RuleAction.Allow)]
-        public ChildEntity ExistingTestObject { get; set; }
         [Rules(CreateAction = RuleAction.Allow)]
         public ChildEntity DesendantsTestObject { get; set; }
         
@@ -250,6 +269,18 @@ namespace Blazor.ExtraDry.Core.Tests.Rules {
         public int JsonIgnoredProp { get; set; }
         [JsonIgnore]
         public ChildEntity JsonIgnoredChild { get; set; }
+
+
+        [Rules(CreateAction = RuleAction.Block)]
+        public int BlockInteger { get; set; }
+        [Rules(CreateAction = RuleAction.Block)]
+        public string BlockString { get; set; }
+        [Rules(CreateAction = RuleAction.Block)]
+        public Guid BlockGuid { get; set; }
+        [Rules(CreateAction = RuleAction.Block)]
+        public State BlockState { get; set; }
+        [Rules(CreateAction = RuleAction.Block)]
+        public ChildEntity BlockTestObject { get; set; }
     }
         
     public class ChildEntity {
