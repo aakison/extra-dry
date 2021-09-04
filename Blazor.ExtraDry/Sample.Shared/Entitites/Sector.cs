@@ -22,14 +22,19 @@ namespace Sample.Shared {
         [Required]
         [MaxLength(50)]
         [Display(Name = "Title", ShortName = "Title")]
+        [Filter(FilterType.Contains)]
         public string Title { get; set; }
+
+        [Filter(FilterType.StartsWith)]
+        public string LastName { get; set; }
 
         [MaxLength(250)]
         [Display(Name = "Description")]
         public string Description { get; set; }
         
         [Rules(DeleteValue = SectorState.Inactive)]
-        public SectorState State { get; set; }
+        [Filter(FilterType.Equals)]
+        public SectorState State { get; set;  }
 
         public override string ToString() => Title;
 

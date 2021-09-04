@@ -19,7 +19,9 @@ namespace Sample.Data.Services {
 
         public async Task<FilteredCollection<Sector>> ListAsync(FilterQuery query)
         {
-            return await database.Sectors.QueryWith(query).ToFilteredCollectionAsync();
+            return await database.Sectors
+                .QueryWith(query, e => e.State == SectorState.Active)
+                .ToFilteredCollectionAsync();
         }
 
         public async Task CreateAsync(Sector item)

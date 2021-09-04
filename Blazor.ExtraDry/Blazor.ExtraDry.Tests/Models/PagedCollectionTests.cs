@@ -17,7 +17,7 @@ namespace Blazor.ExtraDry.Tests.Models {
             Assert.True(DateTime.UtcNow.AddSeconds(-1) < target.Created);
             Assert.Null(target.Filter);
             Assert.Null(target.Sort);
-            Assert.Null(target.Stabalizer);
+            Assert.Null(target.Stabilizer);
             Assert.Equal(0, target.Total);
             Assert.Null(target.ContinuationToken);
         }
@@ -25,7 +25,7 @@ namespace Blazor.ExtraDry.Tests.Models {
         [Theory]
         [InlineData("Filter", "Any")]
         [InlineData("Sort", "Any")]
-        [InlineData("Stabalizer", "Any")]
+        [InlineData("Stabilizer", "Any")]
         [InlineData("Total", 123)]
         [InlineData("ContinuationToken", "Any")] // token is retained, but not validated.
         public void RoundtripProperties(string propertyName, object propertyValue)
@@ -45,7 +45,7 @@ namespace Blazor.ExtraDry.Tests.Models {
             var target = new PagedCollection<Payload>() {
                 Filter = "filter",
                 Sort = "sort",
-                Stabalizer = "stabalizer",
+                Stabilizer = "stabilizer",
                 Start = 0,
                 Total = 1,
             };
@@ -61,7 +61,7 @@ namespace Blazor.ExtraDry.Tests.Models {
             Assert.Equal("load", result.Items.First().Load);
             Assert.Equal("filter", result.Filter);
             Assert.Equal("sort", result.Sort);
-            Assert.Equal("stabalizer", result.Stabalizer);
+            Assert.Equal("stabilizer", result.Stabilizer);
             Assert.Equal(0, result.Start);
             Assert.Equal(1, result.Total);
         }

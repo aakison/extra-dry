@@ -30,11 +30,11 @@ namespace Blazor.ExtraDry {
         public string? Sort { get; set; }
 
         /// <summary>
-        /// For sorted collections, the stabalizer resolves ties consistently.
+        /// For sorted collections, the stabilizer resolves ties consistently.
         /// Choose a unique monotonically increasing value such as Id or CreatedDate, not typically shown to users.
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-        public string? Stabalizer { get; set; }
+        public string? Stabilizer { get; set; }
 
         /// <summary>
         /// The total number of items in the full collection of items.

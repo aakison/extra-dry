@@ -14,7 +14,7 @@ namespace Blazor.ExtraDry.Core.Tests.Internals {
             Assert.False(filterQuery.Ascending);
             Assert.Null(filterQuery.Filter);
             Assert.Null(filterQuery.Sort);
-            Assert.Null(filterQuery.Stabalizer);
+            Assert.Null(filterQuery.Stabilizer);
         }
 
         [Theory]
@@ -24,8 +24,8 @@ namespace Blazor.ExtraDry.Core.Tests.Internals {
         [InlineData("Filter", "not")]
         [InlineData("Sort", null)]
         [InlineData("Sort", "not")]
-        [InlineData("Stabalizer", null)]
-        [InlineData("Stabalizer", "not")]
+        [InlineData("Stabilizer", null)]
+        [InlineData("Stabilizer", "not")]
         public void RoundtripProperties(string propertyName, object propertyValue)
         {
             var filter = ValidFilterQuery;

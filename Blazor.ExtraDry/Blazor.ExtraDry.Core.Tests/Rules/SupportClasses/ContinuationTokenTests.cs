@@ -11,7 +11,7 @@ namespace Blazor.ExtraDry.Tests.Internals {
             Assert.True(token.Ascending);
             Assert.Equal(string.Empty, token.Filter);
             Assert.Equal(string.Empty, token.Sort);
-            Assert.Equal(string.Empty, token.Stabalizer);
+            Assert.Equal(string.Empty, token.Stabilizer);
             Assert.Equal(0, token.Skip);
             Assert.Equal(0, token.Take);
         }
@@ -19,12 +19,12 @@ namespace Blazor.ExtraDry.Tests.Internals {
         [Fact]
         public void InitializerWithValues()
         {
-            var token = new ContinuationToken("filter", "sort", false, "stabalizer", 10, 20);
+            var token = new ContinuationToken("filter", "sort", false, "stabilizer", 10, 20);
 
             Assert.False(token.Ascending);
             Assert.Equal("filter", token.Filter);
             Assert.Equal("sort", token.Sort);
-            Assert.Equal("stabalizer", token.Stabalizer);
+            Assert.Equal("stabilizer", token.Stabilizer);
             Assert.Equal(10, token.Skip);
             Assert.Equal(20, token.Take);
         }
@@ -32,7 +32,7 @@ namespace Blazor.ExtraDry.Tests.Internals {
         [Fact]
         public void RoundtripToken()
         {
-            var token = new ContinuationToken("filter", "sort", false, "stabalizer", 10, 20);
+            var token = new ContinuationToken("filter", "sort", false, "stabilizer", 10, 20);
 
             var serial = token.ToString();
             var result = ContinuationToken.FromString(serial);
@@ -40,7 +40,7 @@ namespace Blazor.ExtraDry.Tests.Internals {
             Assert.Equal(token.Ascending, result.Ascending);
             Assert.Equal(token.Filter, result.Filter);
             Assert.Equal(token.Sort, result.Sort);
-            Assert.Equal(token.Stabalizer, result.Stabalizer);
+            Assert.Equal(token.Stabilizer, result.Stabilizer);
             Assert.Equal(token.Skip, result.Skip);
             Assert.Equal(token.Take, result.Take);
         }
@@ -152,10 +152,10 @@ namespace Blazor.ExtraDry.Tests.Internals {
         [InlineData(null, "")]
         [InlineData("", "")]
         [InlineData("abc", "abc")]
-        public void StabalizerValueForToken(string input, string expected)
+        public void StabilizerValueForToken(string input, string expected)
         {
             var token = new ContinuationToken("", "", false, input, 12, 13);
-            var actual = token.Stabalizer;
+            var actual = token.Stabilizer;
 
             Assert.Equal(expected, actual);
         }
@@ -168,14 +168,14 @@ namespace Blazor.ExtraDry.Tests.Internals {
         [InlineData(20, 20, 40, 20)]
         public void NextToken(int skip, int take, int expectedSkip, int expectedTake)
         {
-            var token = new ContinuationToken("filter", "sort", true, "stabalizer", 10, 10);
+            var token = new ContinuationToken("filter", "sort", true, "stabilizer", 10, 10);
 
             var next = token.Next(skip, take);
 
             Assert.Equal("filter", next.Filter);
             Assert.Equal("sort", next.Sort);
             Assert.True(next.Ascending);
-            Assert.Equal("stabalizer", next.Stabalizer);
+            Assert.Equal("stabilizer", next.Stabilizer);
             Assert.Equal(expectedSkip, next.Skip);
             Assert.Equal(expectedTake, next.Take);
         }

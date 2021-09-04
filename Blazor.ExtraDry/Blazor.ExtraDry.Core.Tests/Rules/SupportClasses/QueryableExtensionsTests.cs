@@ -9,7 +9,7 @@ namespace Blazor.ExtraDry.Tests.Core.Models {
     public class QueryableExtensionsTests {
 
         [Fact]
-        public void NoSortSpecifiedUseIdStabalizer()
+        public void NoSortSpecifiedUseIdStabilizer()
         {
             var list = new List<IdConventionKey> {
                 new IdConventionKey { Id = 1 },
@@ -26,7 +26,7 @@ namespace Blazor.ExtraDry.Tests.Core.Models {
         }
 
         [Fact]
-        public void NoSortSpecifiedUseClassNameStabalizer()
+        public void NoSortSpecifiedUseClassNameStabilizer()
         {
             var list = new List<ClassNameConventionKey> {
                 new ClassNameConventionKey { ClassNameConventionKeyId = 1 },
@@ -43,7 +43,7 @@ namespace Blazor.ExtraDry.Tests.Core.Models {
         }
 
         [Fact]
-        public void NoSortSpecifiedUseKeyAttributeStabalizer()
+        public void NoSortSpecifiedUseKeyAttributeStabilizer()
         {
             var list = new List<KeyAttributeEntity> {
                 new KeyAttributeEntity { PrimaryKey = 1 },
@@ -60,12 +60,12 @@ namespace Blazor.ExtraDry.Tests.Core.Models {
         }
 
         [Fact]
-        public void NoSortSpecifiedNoStabalizerException()
+        public void NoSortSpecifiedNoStabilizerException()
         {
-            var list = new List<NoImplicitStabalizer> {
-                new NoImplicitStabalizer { PrimaryKey = 1 },
-                new NoImplicitStabalizer { PrimaryKey = 3 },
-                new NoImplicitStabalizer { PrimaryKey = 2 },
+            var list = new List<NoImplicitStabilizer> {
+                new NoImplicitStabilizer { PrimaryKey = 1 },
+                new NoImplicitStabilizer { PrimaryKey = 3 },
+                new NoImplicitStabilizer { PrimaryKey = 2 },
             };
             var query = new FilterQuery();
 
@@ -73,12 +73,12 @@ namespace Blazor.ExtraDry.Tests.Core.Models {
         }
 
         [Fact]
-        public void NoSortSpecifiedCompositeKeyStabalizerException()
+        public void NoSortSpecifiedCompositeKeyStabilizerException()
         {
-            var list = new List<CompositeKeyStabalizer> {
-                new CompositeKeyStabalizer { FirstPartKey = 1 },
-                new CompositeKeyStabalizer { FirstPartKey = 3 },
-                new CompositeKeyStabalizer { FirstPartKey = 2 },
+            var list = new List<CompositeKeyStabilizer> {
+                new CompositeKeyStabilizer { FirstPartKey = 1 },
+                new CompositeKeyStabilizer { FirstPartKey = 3 },
+                new CompositeKeyStabilizer { FirstPartKey = 2 },
             };
             var query = new FilterQuery();
 
@@ -86,14 +86,14 @@ namespace Blazor.ExtraDry.Tests.Core.Models {
         }
 
         [Fact]
-        public void NoSortSpecifiedUseSpecifiedStabalizer()
+        public void NoSortSpecifiedUseSpecifiedStabilizer()
         {
-            var list = new List<CompositeKeyStabalizer> {
-                new CompositeKeyStabalizer { FirstPartKey = 1 },
-                new CompositeKeyStabalizer { FirstPartKey = 3 },
-                new CompositeKeyStabalizer { FirstPartKey = 2 },
+            var list = new List<CompositeKeyStabilizer> {
+                new CompositeKeyStabilizer { FirstPartKey = 1 },
+                new CompositeKeyStabilizer { FirstPartKey = 3 },
+                new CompositeKeyStabilizer { FirstPartKey = 2 },
             };
-            var query = new FilterQuery { Stabalizer = nameof(CompositeKeyStabalizer.FirstPartKey) };
+            var query = new FilterQuery { Stabilizer = nameof(CompositeKeyStabilizer.FirstPartKey) };
 
             var sorted = list.AsQueryable().Sort(query).ToList();
 
@@ -124,14 +124,14 @@ namespace Blazor.ExtraDry.Tests.Core.Models {
 
         }
 
-        public class NoImplicitStabalizer {
+        public class NoImplicitStabilizer {
             public int PrimaryKey { get; set; }
 
             public string Payload { get; set; } = string.Empty;
         }
 
 
-        public class CompositeKeyStabalizer {
+        public class CompositeKeyStabilizer {
             [Key]
             public int FirstPartKey { get; set; }
 

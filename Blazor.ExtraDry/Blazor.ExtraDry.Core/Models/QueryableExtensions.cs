@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using Blazor.ExtraDry.Core.Internal;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
@@ -11,14 +12,14 @@ namespace Blazor.ExtraDry {
     /// </summary>
     public static class QueryableExtensions {
 
-        public static IPartialQueryable<T> QueryWith<T>(this IQueryable<T> source, PageQuery partialQuery)
+        public static IPartialQueryable<T> QueryWith<T>(this IQueryable<T> source, PageQuery partialQuery, Func<T, bool>? defaultFilter = null)
         {
-            return new PartialQueryable<T>(source, partialQuery);
+            return new PartialQueryable<T>(source, partialQuery, defaultFilter);
         }
 
-        public static IPartialQueryable<T> QueryWith<T>(this IQueryable<T> source, FilterQuery filteredQuery)
+        public static IPartialQueryable<T> QueryWith<T>(this IQueryable<T> source, FilterQuery filteredQuery, Func<T, bool>? defaultFilter = null)
         {
-            return new PartialQueryable<T>(source, filteredQuery);
+            return new PartialQueryable<T>(source, filteredQuery, defaultFilter);
         }
 
         public static IQueryable<T> Filter<T>(this IQueryable<T> source, FilterQuery filterQuery)
@@ -47,14 +48,14 @@ namespace Blazor.ExtraDry {
 
             var keyProperties = properties.Where(e => e.GetCustomAttributes(true).Any(e => e is KeyAttribute));
             
-            if(!string.IsNullOrWhiteSpace(query.Stabalizer)) {
-                keyPropertyName = query.Stabalizer;
+            if(!string.IsNullOrWhiteSpace(query.Stabilizer)) {
+                keyPropertyName = query.Stabilizer;
             }
             else if(keyProperties.Count() == 1) {
                 keyPropertyName = keyProperties.First().Name;
             }
             else if(keyProperties.Count() > 1) {
-                throw new DryException("Sort requires that a single EF key is well defined to stabalize the sort, composite keys are not supported.  Manually specify a Stabalizer in the FilterQuery, or use a single [Key] attribute.", "Unable to Sort (0x0F3F241D)");
+                throw new DryException("Sort requires that a single EF key is well defined to stabalize the sort, composite keys are not supported.  Manually specify a Stabilizer in the FilterQuery, or use a single [Key] attribute.", "Unable to Sort (0x0F3F241D)");
             }
             else if(properties.Any(e => e.Name == "Id")) {
                 keyPropertyName = "Id";
@@ -63,7 +64,7 @@ namespace Blazor.ExtraDry {
                 keyPropertyName = $"{type.Name}Id";
             }
             else {
-                throw new DryException("Sort requires that an EF key is uniquely defined to stabalize the sort, even if another sort property is present.  Create a unique key following EF conventions or specify a Stabalizer in the FilterQuery.", "Unable to Sort (0x0F3F241C)");
+                throw new DryException("Sort requires that an EF key is uniquely defined to stabalize the sort, even if another sort property is present.  Create a unique key following EF conventions or specify a Stabilizer in the FilterQuery.", "Unable to Sort (0x0F3F241C)");
             }
 
             var token = (query as PageQuery)?.Token; // Only need the token if it's a PageQuery, null if FilterQuery.
@@ -78,32 +79,32 @@ namespace Blazor.ExtraDry {
         /// <param name="source">The queryable source, typically from EF, this is from `DbSet.AsQueryable()`</param>
         /// <param name="sort">The name of the property to sort by (optional, case insensitive)</param>
         /// <param name="ascending">Indicates if the order is ascending or not (optional, default true)</param>
-        /// <param name="stabalizer">The name of a unique property to ensure paging works, use monotonically increasing value such as `int Identity` or created timestamp (required, case insensitive)</param>
+        /// <param name="stabilizer">The name of a unique property to ensure paging works, use monotonically increasing value such as `int Identity` or created timestamp (required, case insensitive)</param>
         /// <param name="token">If this is not a new request, the token passed back from the previous request to maintain stability (optional)</param>
-        public static IQueryable<T> Sort<T>(this IQueryable<T> source, string? sort, bool? ascending, string stabalizer, string? continuationToken)
+        public static IQueryable<T> Sort<T>(this IQueryable<T> source, string? sort, bool? ascending, string stabilizer, string? continuationToken)
         {
             var token = ContinuationToken.FromString(continuationToken);
             var actualSort = token?.Sort ?? sort;
-            var actualStabalizer = token?.Stabalizer ?? stabalizer;
+            var actualStabilizer = token?.Stabilizer ?? stabilizer;
             var actualAscending = token?.Ascending ?? ascending ?? true;
             var query = source;
-            if(string.IsNullOrWhiteSpace(stabalizer)) {
-                throw new DryException($"Must supply a stabalizer to ensure paging is consistent", "Internal Server Error - 0x0F850FD9");
+            if(string.IsNullOrWhiteSpace(stabilizer)) {
+                throw new DryException($"Must supply a stabilizer to ensure paging is consistent", "Internal Server Error - 0x0F850FD9");
             }
             if(!string.IsNullOrWhiteSpace(actualSort)) {
                 query = actualAscending ? 
-                    query.OrderBy(actualSort).ThenBy(actualStabalizer) : 
-                    query.OrderByDescending(actualSort).ThenByDescending(actualStabalizer);
+                    query.OrderBy(actualSort).ThenBy(actualStabilizer) : 
+                    query.OrderByDescending(actualSort).ThenByDescending(actualStabilizer);
             }
             else {
-                query = query.OrderBy(stabalizer);
+                query = query.OrderBy(stabilizer);
             }
             return query;
         }
 
         public static IQueryable<T> Page<T>(this IQueryable<T> source, PageQuery partialQuery)
         {
-            // TODO: Implement stabalizer using model meta-data.
+            // TODO: Implement stabilizer using model meta-data.
             return source.Page(partialQuery.Skip, partialQuery.Take, partialQuery.Token);
         }
 
@@ -117,7 +118,7 @@ namespace Blazor.ExtraDry {
         /// <param name="skip">The number of records to skip, if paging this is the page number times the take size.</param>
         /// <param name="take">the number of records to take, this is the page size of the fetch.  Use to balance call API latency versus bandwidth</param>
         /// <param name="token">If this is not a new request, the token passed back from the previous request to maintain stability (optional)</param>
-        public static IQueryable<T> Page<T>(this IQueryable<T> source, int skip, int take, string continuationToken)
+        public static IQueryable<T> Page<T>(this IQueryable<T> source, int skip, int take, string? continuationToken)
         {
             var token = ContinuationToken.FromString(continuationToken);
             var actualSkip = ContinuationToken.ActualSkip(token, skip);

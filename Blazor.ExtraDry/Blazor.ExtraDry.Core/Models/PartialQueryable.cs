@@ -1,9 +1,10 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,19 +24,29 @@ namespace Blazor.ExtraDry {
 
     public class PartialQueryable<T> : IPartialQueryable<T> {
 
-        public PartialQueryable(IQueryable<T> queryable, FilterQuery filterQuery)
+        public PartialQueryable(IQueryable<T> queryable, FilterQuery filterQuery, Func<T, bool>? defaultFilter)
         {
             query = filterQuery;
-            filteredQuery = queryable.Filter(filterQuery);
+            if(filterQuery.Filter == null && defaultFilter != null) {
+                filteredQuery = queryable.Where(defaultFilter).AsQueryable();
+            }
+            else {
+                filteredQuery = queryable.Filter(filterQuery);
+            }
             sortedQuery = filteredQuery.Sort(filterQuery);
             pagedQuery = sortedQuery.Page(0, PageQuery.DefaultTake, null);
         }
 
-        public PartialQueryable(IQueryable<T> queryable, PageQuery pageQuery)
+        public PartialQueryable(IQueryable<T> queryable, PageQuery pageQuery, Func<T, bool>? defaultFilter)
         {
             query = pageQuery;
             token = ContinuationToken.FromString(pageQuery.Token);
-            filteredQuery = queryable.Filter(pageQuery);
+            if(pageQuery.Filter == null && defaultFilter != null) {
+                filteredQuery = queryable.Where(defaultFilter).AsQueryable();
+            }
+            else {
+                filteredQuery = queryable.Filter(pageQuery);
+            }
             sortedQuery = filteredQuery.Sort(pageQuery);
             pagedQuery = sortedQuery.Page(pageQuery);
         }
@@ -65,6 +76,9 @@ namespace Blazor.ExtraDry {
                 await foreach(var element in sortedAsyncQuery.WithCancellation(cancellationToken)) {
                     items.Add(element);
                 }
+            }
+            else if(sortedQuery is IEnumerable<T> sortedSyncQuery) {
+                items.AddRange(sortedSyncQuery);
             }
             else {
                 throw new InvalidOperationException("");
@@ -107,7 +121,7 @@ namespace Blazor.ExtraDry {
             var skip = (query as PageQuery)?.Skip ?? 0;
             var take = (query as PageQuery)?.Take ?? PageQuery.DefaultTake;
             
-            var nextToken = (token ?? new ContinuationToken(query.Filter, query.Sort, query.Ascending, query.Stabalizer, take, take)).Next(skip, take);
+            var nextToken = (token ?? new ContinuationToken(query.Filter, query.Sort, query.Ascending, query.Stabilizer, take, take)).Next(skip, take);
             var previousTake = ContinuationToken.ActualTake(token, take);
             var previousSkip = ContinuationToken.ActualSkip(token, skip);
             var total = items.Count == previousTake ? filteredQuery.Count() : previousSkip + items.Count;
@@ -123,7 +137,7 @@ namespace Blazor.ExtraDry {
 
         private readonly FilterQuery query;
 
-        private readonly ContinuationToken token;
+        private readonly ContinuationToken? token;
 
         private readonly IQueryable<T> filteredQuery;
 

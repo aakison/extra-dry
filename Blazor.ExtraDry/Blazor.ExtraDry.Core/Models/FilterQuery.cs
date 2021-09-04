@@ -22,7 +22,7 @@ namespace Blazor.ExtraDry {
         /// A property that is used to break sorting ties, should be unique and 
         /// ideally monotonically increasing.
         /// </summary>
-        public string? Stabalizer { get; set; }
+        public string? Stabilizer { get; set; }
 
         /// <summary>
         /// Indicates if the results are requested in ascending order by `Sort`.

@@ -19,12 +19,12 @@ namespace Blazor.ExtraDry {
 
         }
 
-        public ContinuationToken(string filter, string sort, bool ascending, string stabalizer, int skip, int take)
+        public ContinuationToken(string? filter, string? sort, bool ascending, string? stabilizer, int skip, int take)
         {
             Filter = filter ?? string.Empty;
             Sort = sort ?? string.Empty;
             Ascending = ascending;
-            Stabalizer = stabalizer ?? string.Empty;
+            Stabilizer = stabilizer ?? string.Empty;
             Skip = ActualSkip(null, skip);
             Take = ActualTake(null, take);
         }
@@ -38,7 +38,7 @@ namespace Blazor.ExtraDry {
         {
             var actualTake = ActualTake(this, takeOverride);
             var actualSkip = ActualSkip(this, skipOverride) + actualTake;
-            var next = new ContinuationToken(Filter, Sort, Ascending, Stabalizer, actualSkip, actualTake);
+            var next = new ContinuationToken(Filter, Sort, Ascending, Stabilizer, actualSkip, actualTake);
             return next;
         }
 
@@ -48,7 +48,7 @@ namespace Blazor.ExtraDry {
 
         public bool Ascending { get; set; } = true;
 
-        public string Stabalizer { get; set; } = string.Empty;
+        public string Stabilizer { get; set; } = string.Empty;
 
         public int Skip { get; set; }
 
@@ -61,7 +61,7 @@ namespace Blazor.ExtraDry {
             writer.Write(Filter);
             writer.Write(Sort);
             writer.Write(Ascending);
-            writer.Write(Stabalizer);
+            writer.Write(Stabilizer);
             writer.Write(Skip);
             writer.Write(Take);
             var bytes = memory.ToArray();
@@ -86,7 +86,7 @@ namespace Blazor.ExtraDry {
                     Filter = reader.ReadString(),
                     Sort = reader.ReadString(),
                     Ascending = reader.ReadBoolean(),
-                    Stabalizer = reader.ReadString(),
+                    Stabilizer = reader.ReadString(),
                     Skip = reader.ReadInt32(),
                     Take = reader.ReadInt32(),
                 };

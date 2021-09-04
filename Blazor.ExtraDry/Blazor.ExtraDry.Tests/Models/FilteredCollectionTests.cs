@@ -17,13 +17,13 @@ namespace Blazor.ExtraDry.Tests.Models {
             Assert.True(DateTime.UtcNow.AddSeconds(-1) < collection.Created);
             Assert.Null(collection.Filter);
             Assert.Null(collection.Sort);
-            Assert.Null(collection.Stabalizer);
+            Assert.Null(collection.Stabilizer);
         }
 
         [Theory]
         [InlineData("Filter", "Any")]
         [InlineData("Sort", "Any")]
-        [InlineData("Stabalizer", "Any")]
+        [InlineData("Stabilizer", "Any")]
         public void RoundtripProperties(string propertyName, object propertyValue)
         {
             var target = new FilteredCollection<object>();
@@ -41,7 +41,7 @@ namespace Blazor.ExtraDry.Tests.Models {
             var target = new FilteredCollection<Payload>() {
                 Filter = "filter",
                 Sort = "sort",
-                Stabalizer = "stabalizer",
+                Stabilizer = "stabilizer",
             };
             var item = new Payload { Pay = "pay", Load = "load" };
             target.Items.Add(item);
@@ -55,7 +55,7 @@ namespace Blazor.ExtraDry.Tests.Models {
             Assert.Equal("load", result.Items.First().Load);
             Assert.Equal("filter", result.Filter);
             Assert.Equal("sort", result.Sort);
-            Assert.Equal("stabalizer", result.Stabalizer);
+            Assert.Equal("stabilizer", result.Stabilizer);
         }
 
         private class Payload {
