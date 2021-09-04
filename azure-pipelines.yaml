@@ -1,0 +1,119 @@
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+- main
+- release
+- develop
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  buildConfiguration: 'Release'
+  # Version details for `dotnet pack`, values to be overwritten by `GitSemVer`.
+  majorVersion: 0
+  minorVersion: 1
+  patchVersion: 0
+  prereleaseVersion: ''
+  semanticVersion: '0.1.0'  
+  projectsGlob: '**/ExtraDry*.csproj' # don't build samples
+  isForDeployment: $[in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/develop', 'refs/heads/release')]
+
+steps:
+- task: UseDotNet@2
+  displayName: 'Install .NET 5.0 SDK'
+  inputs:
+    version: '5.0.x'
+
+- task: DotNetCoreCLI@2
+  displayName: Restore
+  inputs:
+    command: restore
+    projects: $(projectsGlob)
+
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    projects: $(projectsGlob)
+    arguments: '--configuration $(BuildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: Test
+  inputs:
+    command: test
+    projects: '**/*Tests/*.csproj'
+    arguments: '--configuration $(BuildConfiguration)' # TODO: --collect "Code coverage"???
+
+- task: PowerShell@2
+  name: GitSemVer
+  displayName: 'Evaluate Git Semantic Version'
+  inputs:
+    targetType: 'inline'
+    script: |
+      Write-Host "Trigger Branch is $Env:BUILD_SOURCEBRANCHNAME"
+      function HeadIsBranch($branch) {
+        if($Env:BUILD_SOURCEBRANCHNAME -eq $null) {
+          $headHash = git rev-parse HEAD
+          $branchHash = git rev-parse $branch
+          $headHash -eq $branchHash
+        }
+        else {
+          $Env:BUILD_SOURCEBRANCHNAME -eq $branch
+        }
+      }
+      function PublishVariable($name, $value) {
+        Write-Host "Setting Variable $name to: $value"
+        Write-Host "##vso[task.setvariable variable=$name]$value"
+      }
+      function Coallesce($value1, $value2) {
+        if($value1 -eq $null) { $value2 } else { $value1 }
+      }
+      $describe = git describe --tags
+      Write-Host "Git Version is $describe"
+      $bits = $describe.TrimStart("v").Split(".-")
+      $majorVersion = Coallesce $bits[0] 1
+      $minorVersion = Coallesce $bits[1] 0
+      $patchVersion = Coallesce $bits[2] 0
+      $prereleaseVersion = "head" # no semantic meaning
+      if(HeadIsBranch("develop")) {
+          $prereleaseVersion = "alpha"
+      }
+      if(HeadIsBranch("release")) {
+          $prereleaseVersion = "beta"
+      }
+      if(HeadIsBranch("main") -OR HeadIsBranch("master")) {
+          $prereleaseVersion = ""
+      }
+      $semanticVersion = "$majorVersion.$minorVersion.$patchVersion-$prereleaseVersion".TrimEnd("-")
+      PublishVariable "majorVersion" $majorVersion
+      PublishVariable "minorVersion" $minorVersion
+      PublishVariable "patchVersion" $patchVersion
+      PublishVariable "prereleaseVersion" $prereleaseVersion
+      PublishVariable "semanticVersion" $semanticVersion
+
+- task: DotNetCoreCLI@2
+  displayName: Pack
+  condition: and(succeeded(), eq(variables.isForDeployment, true))
+  inputs:
+    command: 'pack'
+    packagesToPack: '**/ExtraDry*/*.csproj'
+    versioningScheme: 'byEnvVar'
+    versionEnvVar: 'semanticVersion'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact'
+  condition: and(succeeded(), eq(variables.isForDeployment, true))
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'
+
+#- task: NuGetCommand@2
+#  displayName: 'Push to NuGet.org'
+#  condition: and(succeeded(), eq(variables.isForDeployment, true))
+#  inputs:
+#    command: 'push'
+#    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+#    nuGetFeedType: 'external'
+#    publishFeedCredentials: 'Nuget.org for ExtraDry'
