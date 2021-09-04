@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
 
 namespace ExtraDry.Server {
     public static class TypeExtensions {

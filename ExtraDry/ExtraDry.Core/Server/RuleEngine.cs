@@ -1,5 +1,3 @@
-//#nullable enable
-
 using ExtraDry.Core;
 using System;
 using System.Collections;
@@ -119,7 +117,7 @@ namespace ExtraDry.Server {
             }
         }
 
-        private RuleAction EffectiveRule(RulesAttribute rules, JsonIgnoreAttribute ignore, Func<RulesAttribute, RuleAction> selector, RuleAction defaultType)
+        private static RuleAction EffectiveRule(RulesAttribute? rules, JsonIgnoreAttribute? ignore, Func<RulesAttribute, RuleAction> selector, RuleAction defaultType)
         {
             if(rules != null) {
                 return selector(rules);
@@ -132,7 +130,7 @@ namespace ExtraDry.Server {
             }
         }
 
-        private async Task ProcessIndividualUpdate<T>(RuleAction action, PropertyInfo property, T destination, object value, int depth)
+        private async Task ProcessIndividualUpdate<T>(RuleAction action, PropertyInfo property, T destination, object? value, int depth)
         {
             if(action == RuleAction.IgnoreDefaults && value == default) {
                 // Don't modify destination as source is in default state
@@ -146,7 +144,7 @@ namespace ExtraDry.Server {
                     destinationValue = Activator.CreateInstance(value.GetType());
                     property.SetValue(destination, destinationValue);
                 }
-                await UpdatePropertiesAsync((dynamic)value, (dynamic)destinationValue, --depth);
+                await UpdatePropertiesAsync((dynamic?)value, (dynamic)destinationValue, --depth);
             }
             else {
                 var same = (result == null && destinationValue == null) || (result?.Equals(destinationValue) ?? false);
@@ -157,7 +155,7 @@ namespace ExtraDry.Server {
             }
         }
 
-        private async Task ProcessCollectionUpdates<T>(RuleAction action, PropertyInfo property, T destination, IList sourceList)
+        private async Task ProcessCollectionUpdates<T>(RuleAction action, PropertyInfo property, T destination, IList? sourceList)
         {
             var destinationValue = property.GetValue(destination);
             var destinationList = destinationValue as IList;
@@ -169,11 +167,11 @@ namespace ExtraDry.Server {
                 // Don't modify destination as source is in default state of null (note that an empty collection will change destination)
                 return;
             }
-            var sourceEntities = new List<object>();
+            var sourceEntities = new List<object?>();
             if(sourceList != null) {
                 var listItemType = property.PropertyType.GetGenericArguments()[0];
                 foreach(var item in sourceList) {
-                    (var resolved, var value) = await ResolveEntityValue(listItemType, item);
+                    (var _, var value) = await ResolveEntityValue(listItemType, item);
                     sourceEntities.Add(value);
                 }
             }
@@ -184,10 +182,10 @@ namespace ExtraDry.Server {
                 throw new DryException($"Invalid attempt to change collection property {property.Name}", $"Attempt to change read-only collection property '{property.Name}'");
             }
             foreach(var item in toRemove) {
-                destinationList.Remove(item);
+                destinationList!.Remove(item); // Only null if null-to-null copy which is handled.
             }
             foreach(var item in toAdd) {
-                destinationList.Add(item);
+                destinationList!.Add(item);
             }
         }
 
@@ -198,7 +196,7 @@ namespace ExtraDry.Server {
         /// </summary>
         /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
         /// <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
-        public DeleteResult Delete<T>(T item, Action hardDeletePrepare = null)
+        public DeleteResult Delete<T>(T item, Action? hardDeletePrepare = null)
         {
             return DeleteSoft(item, hardDeletePrepare, null);
         }
@@ -212,7 +210,7 @@ namespace ExtraDry.Server {
         /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
         /// <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
         /// <param name="hardDeleteCommit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
-        public DeleteResult DeleteSoft<T>(T item, Action hardDeletePrepare, Action hardDeleteCommit)
+        public DeleteResult DeleteSoft<T>(T item, Action? hardDeletePrepare, Action? hardDeleteCommit)
         {
             var task = DeleteSoftAsync(item, WrapAction(hardDeletePrepare), WrapAction(hardDeleteCommit));
             CompleteActionMasquardingAsFuncTask(task);
@@ -257,7 +255,7 @@ namespace ExtraDry.Server {
         /// <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
         /// <param name="hardDeleteCommit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
         [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Keep as standard service instance style for DI.")]
-        public async Task<DeleteResult> DeleteSoftAsync<T>(T item, Func<Task> hardDeletePrepare, Func<Task> hardDeleteCommit)
+        public async Task<DeleteResult> DeleteSoftAsync<T>(T item, Func<Task>? hardDeletePrepare, Func<Task>? hardDeleteCommit)
         {
             if(item == null) {
                 throw new ArgumentNullException(nameof(item));
@@ -336,7 +334,7 @@ namespace ExtraDry.Server {
         /// <param name="remove">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
         /// <param name="commit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
         [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Keep as standard service instance style for DI.")]
-        public async Task<DeleteResult> DeleteHardAsync<T>(T item, Func<Task> remove, Func<Task> commit)
+        public async Task<DeleteResult> DeleteHardAsync<T>(T item, Func<Task>? remove, Func<Task>? commit)
         {
             if(item == null) {
                 throw new ArgumentNullException(nameof(item));
@@ -371,7 +369,7 @@ namespace ExtraDry.Server {
         /// that might be a database entity.  Uses `IEntityResolver` class in DI to find potential replacement.
         /// This only works for objects, value types are always copies, so sourceValue is always returned.
         /// </summary>
-        private async Task<(bool, object)> ResolveEntityValue(Type type, object sourceValue)
+        private async Task<(bool, object?)> ResolveEntityValue(Type type, object? sourceValue)
         {
             if(type.IsValueType || type == typeof(string)) {
                 return (false, sourceValue);
@@ -384,13 +382,13 @@ namespace ExtraDry.Server {
             }
             else {
                 var method = typedEntityResolver.GetMethod("ResolveAsync");
-                dynamic task = method.Invoke(resolver, new object[] { sourceValue });
+                dynamic task = method.Invoke(resolver, new object?[] { sourceValue });
                 var result = (await task) as object;
                 return (true, result);
             }
         }
 
-        private static Func<Task> WrapAction(Action action)
+        private static Func<Task>? WrapAction(Action? action)
         {
             if(action == null) {
                 return null;

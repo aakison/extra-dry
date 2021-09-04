@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using ExtraDry.Core;
+﻿using ExtraDry.Core;
 using ExtraDry.Server.Internal;
 using System;
 using System.ComponentModel.DataAnnotations;

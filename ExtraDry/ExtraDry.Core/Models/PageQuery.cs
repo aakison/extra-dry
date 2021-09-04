@@ -20,7 +20,7 @@
         /// The continuation token from the previous response.
         /// When provided, this will override other options such as `Sort` and `Filter`, but not `Skip` and `Take`.
         /// </summary>
-        public string Token { get; set; }
+        public string? Token { get; set; }
 
         /// <summary>
         /// The default number of items to take if none provided.

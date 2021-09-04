@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace ExtraDry.Core {
+﻿namespace ExtraDry.Core {
 
     /// <summary>
     /// Actions that are used by rules to determine how creates and updates should be processed.

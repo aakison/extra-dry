@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace ExtraDry.Server {
     public static class PropertyInfoExtensions {
