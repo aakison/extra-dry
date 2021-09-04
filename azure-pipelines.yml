@@ -19,7 +19,7 @@ variables:
   patchVersion: 0
   prereleaseVersion: ''
   semanticVersion: '0.1.0'  
-  projectsGlob: '**/Blazor.ExtraDry*.csproj' # don't build samples
+  projectsGlob: '**/ExtraDry*.csproj' # don't build samples
   isForDeployment: $[in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/develop', 'refs/heads/release')]
 
 steps:
@@ -99,7 +99,7 @@ steps:
   condition: and(succeeded(), eq(variables.isForDeployment, true))
   inputs:
     command: 'pack'
-    packagesToPack: '**/Blazor.ExtraDry*/*.csproj'
+    packagesToPack: '**/ExtraDry*/*.csproj'
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'semanticVersion'
 
@@ -116,4 +116,4 @@ steps:
     command: 'push'
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
     nuGetFeedType: 'external'
-    publishFeedCredentials: 'Nuget.org for Blazor.ExtraDry'
+    publishFeedCredentials: 'Nuget.org for ExtraDry'
