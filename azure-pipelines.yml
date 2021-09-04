@@ -109,11 +109,11 @@ steps:
   inputs:
     PathtoPublish: '$(build.artifactstagingdirectory)'
 
-- task: NuGetCommand@2
-  displayName: 'Push to NuGet.org'
-  condition: and(succeeded(), eq(variables.isForDeployment, true))
-  inputs:
-    command: 'push'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
-    nuGetFeedType: 'external'
-    publishFeedCredentials: 'Nuget.org for ExtraDry'
+#- task: NuGetCommand@2
+#  displayName: 'Push to NuGet.org'
+#  condition: and(succeeded(), eq(variables.isForDeployment, true))
+#  inputs:
+#    command: 'push'
+#    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+#    nuGetFeedType: 'external'
+#    publishFeedCredentials: 'Nuget.org for ExtraDry'
