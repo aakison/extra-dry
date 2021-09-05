@@ -1,5 +1,4 @@
-﻿using ExtraDry.Core;
-using ExtraDry.Server;
+﻿using ExtraDry.Server;
 using System;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -13,6 +12,7 @@ namespace ExtraDry.Core.Tests.Rules {
         {
             var rules = new RuleEngine(new ServiceProviderStub());
             var source = SampleEntity();
+            source.Id = 0;
             var destination = SampleEntity();
 
             await rules.UpdateAsync(source, destination);
@@ -32,7 +32,7 @@ namespace ExtraDry.Core.Tests.Rules {
             var rules = new RuleEngine(new ServiceProviderStub());
             var source = SampleEntity();
             var destination = SampleEntity();
-            source.Id = 2;
+            source.HoursWorked = 2;
 
             await Assert.ThrowsAsync<DryException>(async () => await rules.UpdateAsync(source, destination));
         }
@@ -245,6 +245,8 @@ namespace ExtraDry.Core.Tests.Rules {
             [Rules(RuleAction.Block)]
             public string BlockChangesString { get; set; }
 
+            [Rules(RuleAction.Block)]
+            public int HoursWorked { get; set; }
         }
 
         private Entity SampleEntity() => new Entity();
