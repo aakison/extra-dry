@@ -45,6 +45,9 @@ namespace ExtraDry.Server {
                 if(sourceValue?.Equals(destinationValue) ?? true) {
                     continue;
                 }
+                if(Blocked(sourceValue, destinationValue, action, ignore, property)) {
+                    continue;
+                }
                 if(action == RuleAction.IgnoreDefaults) {
                     // "sourceValue == default" and "sourceValue.Equals(default)" won't work with struct types i.e. Guid
                     if(sourceValue.Equals(property.PropertyType.GetDefaultValue())) {
@@ -147,12 +150,8 @@ namespace ExtraDry.Server {
                 await UpdatePropertiesAsync((dynamic?)value, (dynamic)destinationValue, --depth);
             }
             else {
-                var same = (result == null && destinationValue == null) || (result?.Equals(destinationValue) ?? false);
-                if(action == RuleAction.Block && !same) {
-                    if(ignore) {
-                        return;
-                    }
-                    throw new DryException($"Invalid attempt to change property {property.Name}", $"Attempt to change read-only property '{property.Name}'");
+                if(Blocked(result, destinationValue, action, ignore, property)) {
+                    return;
                 }
                 property.SetValue(destination, result);
             }
@@ -423,6 +422,18 @@ namespace ExtraDry.Server {
                 }
             }
             return deleted;
+        }
+
+        private static bool Blocked(object? sourceValue, object destinationValue, RuleAction action, bool ignore, PropertyInfo property)
+        {
+            var same = (sourceValue == null && destinationValue == null) || (sourceValue?.Equals(destinationValue) ?? false);
+            if(action == RuleAction.Block && !same) {
+                if(ignore) {
+                    return true;
+                }
+                throw new DryException($"Invalid attempt to change property '{property.Name}'", $"Attempt to change read-only property '{property.Name}'");
+            }
+            return false;
         }
 
         private readonly IServiceProvider scopedServices;
