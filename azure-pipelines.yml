@@ -34,6 +34,30 @@ steps:
     command: restore
     projects: $(projectsGlob)
 
+- task: PowerShell@2
+  name: CheckVulnerability
+  displayName: 'Check NuGet Packages for Vulnerabilities'
+  inputs:
+    targetType: 'inline'
+    script: |
+      $global:failedLines = 0;
+      Function Scan-Line-For-Vulnerability {
+        [CmdletBinding()]
+        Param([Parameter(ValueFromPipeline)] $line)
+        process {
+          Write-Host $line
+          if($line.Contains("Moderate") -OR $line.Contains("High")) {
+            $global:failedLines = $global:failedLines + 1
+          }
+        }
+      }
+      dotnet list package --vulnerable --include-transitive | Scan-Line-For-Vulnerability
+      if($global:failedLines) {
+        Write-Host
+        Write-Host "Vulnerabilities in dependant package have been found, please upgrade or replace." -ForegroundColor Red
+        exit 1
+      }
+
 - task: DotNetCoreCLI@2
   displayName: Build
   inputs:
