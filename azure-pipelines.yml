@@ -52,7 +52,7 @@ steps:
           }
         }
       }
-      dotnet list package --vulnerable --include-transitive | Scan-Line-For-Vulnerability
+      dotnet list .\ExtraDry package --vulnerable --include-transitive | Scan-Line-For-Vulnerability
       if($global:failedLines) {
         Write-Host
         Write-Host "Vulnerabilities in dependant package have been found, please upgrade or replace." -ForegroundColor Red
