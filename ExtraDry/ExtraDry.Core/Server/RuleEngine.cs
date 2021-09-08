@@ -45,8 +45,8 @@ namespace ExtraDry.Server {
                 if(sourceValue?.Equals(destinationValue) ?? true) {
                     continue;
                 }
-                if(CanSkipProperty(sourceValue, destinationValue, action, ignore, property)) {
-                    continue;
+                else if(action == RuleAction.Block) {
+                    throw new DryException($"Invalid attempt to change property '{property.Name}'", $"Attempt to change read-only property '{property.Name}'");
                 }
                 if(action == RuleAction.IgnoreDefaults) {
                     // "sourceValue == default" and "sourceValue.Equals(default)" won't work with struct types i.e. Guid
@@ -150,8 +150,12 @@ namespace ExtraDry.Server {
                 await UpdatePropertiesAsync((dynamic?)value, (dynamic)destinationValue, --depth);
             }
             else {
-                if(CanSkipProperty(result, destinationValue, action, ignore, property)) {
-                    return;
+                var same = (result == null && destinationValue == null) || (result?.Equals(destinationValue) ?? false);
+                if(action == RuleAction.Block && !same) {
+                    if(ignore?.Condition == JsonIgnoreCondition.Always) {
+                        return;
+                    }
+                    throw new DryException($"Invalid attempt to change property '{property.Name}'", $"Attempt to change read-only property '{property.Name}'");
                 }
                 property.SetValue(destination, result);
             }
@@ -422,18 +426,6 @@ namespace ExtraDry.Server {
                 }
             }
             return deleted;
-        }
-
-        private static bool CanSkipProperty(object? sourceValue, object destinationValue, RuleAction action, JsonIgnoreAttribute? ignore, PropertyInfo property)
-        {
-            var same = (sourceValue == null && destinationValue == null) || (sourceValue?.Equals(destinationValue) ?? false);
-            if(action == RuleAction.Block && !same) {
-                if(ignore?.Condition == JsonIgnoreCondition.Always) {
-                    return true;
-                }
-                throw new DryException($"Invalid attempt to change property '{property.Name}'", $"Attempt to change read-only property '{property.Name}'");
-            }
-            return false;
         }
 
         private readonly IServiceProvider scopedServices;
