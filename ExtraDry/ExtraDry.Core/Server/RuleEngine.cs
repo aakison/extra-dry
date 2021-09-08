@@ -31,8 +31,8 @@ namespace ExtraDry.Server {
             var destination = Activator.CreateInstance<T>();
             var properties = typeof(T).GetProperties();
             foreach(var property in properties) {
-                var ignore = property.IsJsonIgnored();
-                if(ignore) {
+                var ignore = property.GetCustomAttribute<JsonIgnoreAttribute>();
+                if(ignore?.Condition == JsonIgnoreCondition.Always) {
                     continue;
                 }
                 var rule = property.GetCustomAttribute<RulesAttribute>();
@@ -45,7 +45,7 @@ namespace ExtraDry.Server {
                 if(sourceValue?.Equals(destinationValue) ?? true) {
                     continue;
                 }
-                if(Blocked(sourceValue, destinationValue, action, ignore, property)) {
+                if(CanSkipProperty(sourceValue, destinationValue, action, ignore, property)) {
                     continue;
                 }
                 if(action == RuleAction.IgnoreDefaults) {
@@ -99,7 +99,7 @@ namespace ExtraDry.Server {
             var properties = typeof(T).GetProperties();
             foreach(var property in properties) {
                 var rule = property.GetCustomAttribute<RulesAttribute>();
-                var ignore = property.IsJsonIgnored();
+                var ignore = property.GetCustomAttribute<JsonIgnoreAttribute>();
                 var action = EffectiveRule(rule, ignore, e => e.UpdateAction, RuleAction.Allow);
                 if(action == RuleAction.Ignore) {
                     continue;
@@ -120,12 +120,12 @@ namespace ExtraDry.Server {
             }
         }
 
-        private static RuleAction EffectiveRule(RulesAttribute? rules, bool ignore, Func<RulesAttribute, RuleAction> selector, RuleAction defaultType)
+        private static RuleAction EffectiveRule(RulesAttribute? rules, JsonIgnoreAttribute? ignore, Func<RulesAttribute, RuleAction> selector, RuleAction defaultType)
         {
             if(rules != null) {
                 return selector(rules);
             }
-            else if(ignore) {
+            else if(ignore?.Condition == JsonIgnoreCondition.Always) {
                 return RuleAction.Ignore;
             }
             else {
@@ -133,7 +133,7 @@ namespace ExtraDry.Server {
             }
         }
 
-        private async Task ProcessIndividualUpdate<T>(RuleAction action, PropertyInfo property, T destination, object? value, int depth, bool ignore)
+        private async Task ProcessIndividualUpdate<T>(RuleAction action, PropertyInfo property, T destination, object? value, int depth, JsonIgnoreAttribute ignore)
         {
             if(action == RuleAction.IgnoreDefaults && value == default) {
                 // Don't modify destination as source is in default state
@@ -150,7 +150,7 @@ namespace ExtraDry.Server {
                 await UpdatePropertiesAsync((dynamic?)value, (dynamic)destinationValue, --depth);
             }
             else {
-                if(Blocked(result, destinationValue, action, ignore, property)) {
+                if(CanSkipProperty(result, destinationValue, action, ignore, property)) {
                     return;
                 }
                 property.SetValue(destination, result);
@@ -424,11 +424,11 @@ namespace ExtraDry.Server {
             return deleted;
         }
 
-        private static bool Blocked(object? sourceValue, object destinationValue, RuleAction action, bool ignore, PropertyInfo property)
+        private static bool CanSkipProperty(object? sourceValue, object destinationValue, RuleAction action, JsonIgnoreAttribute? ignore, PropertyInfo property)
         {
             var same = (sourceValue == null && destinationValue == null) || (sourceValue?.Equals(destinationValue) ?? false);
             if(action == RuleAction.Block && !same) {
-                if(ignore) {
+                if(ignore?.Condition == JsonIgnoreCondition.Always) {
                     return true;
                 }
                 throw new DryException($"Invalid attempt to change property '{property.Name}'", $"Attempt to change read-only property '{property.Name}'");
