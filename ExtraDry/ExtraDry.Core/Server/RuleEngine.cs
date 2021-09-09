@@ -32,7 +32,7 @@ namespace ExtraDry.Server {
             var properties = typeof(T).GetProperties();
             foreach(var property in properties) {
                 var ignore = property.GetCustomAttribute<JsonIgnoreAttribute>();
-                if(ignore != null && ignore.Condition == JsonIgnoreCondition.Always) {
+                if(ignore?.Condition == JsonIgnoreCondition.Always) {
                     continue;
                 }
                 var rule = property.GetCustomAttribute<RulesAttribute>();
@@ -44,6 +44,9 @@ namespace ExtraDry.Server {
                 var destinationValue = property.GetValue(destination);
                 if(sourceValue?.Equals(destinationValue) ?? true) {
                     continue;
+                }
+                else if(action == RuleAction.Block) {
+                    throw new DryException($"Invalid attempt to change property '{property.Name}'", $"Attempt to change read-only property '{property.Name}'");
                 }
                 if(action == RuleAction.IgnoreDefaults) {
                     // "sourceValue == default" and "sourceValue.Equals(default)" won't work with struct types i.e. Guid
@@ -112,7 +115,7 @@ namespace ExtraDry.Server {
                     await ProcessCollectionUpdates(action, property, destination, sourceList);
                 }
                 else {
-                    await ProcessIndividualUpdate(action, property, destination, sourceValue, depth);
+                    await ProcessIndividualUpdate(action, property, destination, sourceValue, depth, ignore);
                 }
             }
         }
@@ -122,7 +125,7 @@ namespace ExtraDry.Server {
             if(rules != null) {
                 return selector(rules);
             }
-            else if(ignore != null && ignore.Condition == JsonIgnoreCondition.Always) {
+            else if(ignore?.Condition == JsonIgnoreCondition.Always) {
                 return RuleAction.Ignore;
             }
             else {
@@ -130,7 +133,7 @@ namespace ExtraDry.Server {
             }
         }
 
-        private async Task ProcessIndividualUpdate<T>(RuleAction action, PropertyInfo property, T destination, object? value, int depth)
+        private async Task ProcessIndividualUpdate<T>(RuleAction action, PropertyInfo property, T destination, object? value, int depth, JsonIgnoreAttribute ignore)
         {
             if(action == RuleAction.IgnoreDefaults && value == default) {
                 // Don't modify destination as source is in default state
@@ -149,7 +152,10 @@ namespace ExtraDry.Server {
             else {
                 var same = (result == null && destinationValue == null) || (result?.Equals(destinationValue) ?? false);
                 if(action == RuleAction.Block && !same) {
-                    throw new DryException($"Invalid attempt to change property {property.Name}", $"Attempt to change read-only property '{property.Name}'");
+                    if(ignore?.Condition == JsonIgnoreCondition.Always) {
+                        return;
+                    }
+                    throw new DryException($"Invalid attempt to change property '{property.Name}'", $"Attempt to change read-only property '{property.Name}'");
                 }
                 property.SetValue(destination, result);
             }
