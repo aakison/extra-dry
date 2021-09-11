@@ -1,15 +1,27 @@
-﻿using ExtraDry.Core;
-using ExtraDry.Server;
+﻿using ExtraDry.Server;
 using ExtraDry.Server.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace ExtraDry.Core.Tests.Server.Models {
     public class PartialQueryableTests {
+
+        [Fact]
+        public void QueryableInterfacePublished()
+        {
+            var filter = new FilterQuery();
+
+            var partialQueryable = Models.AsQueryable().QueryWith(filter);
+
+            Assert.NotNull(partialQueryable.ElementType);
+            Assert.NotNull(partialQueryable.Expression);
+            Assert.NotNull(partialQueryable.Provider);
+            Assert.NotNull(partialQueryable.GetEnumerator());
+            Assert.NotNull(((System.Collections.IEnumerable)partialQueryable).GetEnumerator());
+        }
 
         [Theory]
         [InlineData(null)]
@@ -236,7 +248,19 @@ namespace ExtraDry.Core.Tests.Server.Models {
 
             Assert.Equal(expected, actual.Items);
         }
-        
+
+        [Fact]
+        public void UnfilteredMethodReturnsAll()
+        {
+            var filter = new FilterQuery { Filter = "type:greek" };
+            var expected = Models.Where(e => e.Type == ModelType.Greek).ToList();
+
+            var actual = Models.AsQueryable().QueryWith(filter, e => e.Type == ModelType.Phonetic).ToFilteredCollection();
+
+            Assert.Equal(expected, actual.Items);
+        }
+
+
         private readonly List<Model> Models = new() {
             new Model { Id = 1, Name = "Alpha", Soundex = "A410", Type = ModelType.Greek, Notes = "Common with phonetic" },
             new Model { Id = 2, Name = "Beta", Soundex = "B300", Type = ModelType.Greek },
