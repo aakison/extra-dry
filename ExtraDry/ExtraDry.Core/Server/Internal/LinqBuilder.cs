@@ -90,31 +90,55 @@ namespace ExtraDry.Server.Internal {
             var filter = FilterParser.Parse(filterQuery);
             foreach(var rule in filter.Rules) {
                 var property = filterProperties.FirstOrDefault(e => string.Equals(e.Property.Name, rule.PropertyName, StringComparison.OrdinalIgnoreCase));
-                if(property == null) {
-                    throw new DryException($"Could not find property '{rule.PropertyName}' requested in filter query.  No property had with that name has a [Filter] attribute applied to it.", "Unable to apply filter. 0x0F4F4931");
+                if(rule.PropertyName == "*") {
+                    var keywords = new List<Expression>();
+                    foreach(var filterProperty in filterProperties) {
+                        try {
+                            AddTerms(param, keywords, rule, filterProperty);
+                        }
+                        catch {
+                            int x = 0;
+                            // E.g. when "abc" is passed to an Int32, ignore when part of keyword/wildcard search.
+                        }
+                    }
+                    if(keywords.Any()) {
+                        if(keywords.Count == 1) {
+                            terms.Add(keywords.First());
+                        }
+                        else {
+                            terms.Add(AnyOf(keywords.ToArray()));
+                        }
+                    }
                 }
-                if(rule.LowerBound != BoundRule.None && rule.UpperBound != BoundRule.None && rule.Values.Count == 2) {
-                    // range of values
-                    var fields = RangeExpression(param, property.Property, rule);
-                    terms.Add(AllOf(fields));
-                }
-                else if(property.Property.PropertyType == typeof(string)) {
-                    var fields = rule.Values.Select(e => StringExpression(param, property.Property, property.Filter.Type, e)).ToArray();
-                    terms.Add(AnyOf(fields));
+                else if(property != null) {
+                    if(rule.LowerBound != BoundRule.None && rule.UpperBound != BoundRule.None && rule.Values.Count == 2) {
+                        // range of values
+                        var fields = RangeExpression(param, property.Property, rule);
+                        terms.Add(AllOf(fields));
+                    }
+                    else {
+                        AddTerms(param, terms, rule, property);
+                    }
                 }
                 else {
-                    var fields = rule.Values.Select(e => ComparisonExpression(param, property.Property, e)).ToArray();
-                    terms.Add(AnyOf(fields));
+                    throw new DryException($"Could not find property '{rule.PropertyName}' requested in filter query.  No property had with that name has a [Filter] attribute applied to it.", "Unable to apply filter. 0x0F4F4931");
                 }
             }
-
-            //foreach(var match in matchValues) {
-            //    var fields = filterProperties.Select(e => StringExpression(param, e.Property, e.Filter.Type, match)).ToArray();
-            //    terms.Add(AnyOf(fields));
-            //}
             var cnf = AllOf(terms.ToArray());
             var lambda = Expression.Lambda<Func<T, bool>>(cnf, param);
             return source.Where(lambda);
+        }
+
+        private static void AddTerms(ParameterExpression param, List<Expression> terms, FilterRule rule, FilterProperty property)
+        {
+            if(property.Property.PropertyType == typeof(string)) {
+                var fields = rule.Values.Select(e => StringExpression(param, property.Property, property.Filter.Type, e)).ToArray();
+                terms.Add(AnyOf(fields));
+            }
+            else {
+                var fields = rule.Values.Select(e => ComparisonExpression(param, property.Property, e)).ToArray();
+                terms.Add(AnyOf(fields));
+            }
         }
 
         private static Expression AnyOf(Expression[] expressions)
@@ -164,9 +188,19 @@ namespace ExtraDry.Server.Internal {
 
         private static object ParseToType(Type type, string value)
         {
-            var methodInfo = type.GetMethod("Parse", new Type[] { typeof(string) });
-            var result = methodInfo.Invoke(null, new object[] { value });
-            return result;
+            try {
+                if(type.IsEnum) {
+                    return Enum.Parse(type, value, ignoreCase: true);
+                }
+                else {
+                    var methodInfo = type.GetMethod("Parse", new Type[] { typeof(string) });
+                    var result = methodInfo.Invoke(null, new object[] { value });
+                    return result;
+                }
+            }
+            catch {
+                throw new DryException($"Filter expression {value} was not of the correct type.");
+            }
         }
 
         private static Expression StringExpression(ParameterExpression parameter, PropertyInfo propertyInfo, FilterType filterType, string value)

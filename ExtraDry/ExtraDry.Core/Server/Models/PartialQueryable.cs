@@ -24,7 +24,7 @@ namespace ExtraDry.Server {
 
     public class PartialQueryable<T> : IPartialQueryable<T> {
 
-        public PartialQueryable(IQueryable<T> queryable, FilterQuery filterQuery, Func<T, bool>? defaultFilter)
+        public PartialQueryable(IQueryable<T> queryable, FilterQuery filterQuery, Expression<Func<T, bool>>? defaultFilter)
         {
             query = filterQuery;
             if(filterQuery.Filter == null && defaultFilter != null) {
@@ -37,7 +37,7 @@ namespace ExtraDry.Server {
             pagedQuery = sortedQuery.Page(0, PageQuery.DefaultTake, null);
         }
 
-        public PartialQueryable(IQueryable<T> queryable, PageQuery pageQuery, Func<T, bool>? defaultFilter)
+        public PartialQueryable(IQueryable<T> queryable, PageQuery pageQuery, Expression<Func<T, bool>>? defaultFilter)
         {
             query = pageQuery;
             token = ContinuationToken.FromString(pageQuery.Token);
@@ -51,6 +51,8 @@ namespace ExtraDry.Server {
             pagedQuery = sortedQuery.Page(pageQuery);
         }
 
+        #region IQueryable interface support
+
         public Type ElementType => pagedQuery.ElementType;
 
         public Expression Expression => pagedQuery.Expression;
@@ -61,6 +63,7 @@ namespace ExtraDry.Server {
 
         IEnumerator<T> IEnumerable<T>.GetEnumerator() => pagedQuery.GetEnumerator();
 
+        #endregion
 
         public FilteredCollection<T> ToFilteredCollection()
         {

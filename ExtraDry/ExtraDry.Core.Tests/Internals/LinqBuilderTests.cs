@@ -128,19 +128,19 @@ namespace ExtraDry.Core.Tests.Internals {
             public int Number { get; set; }
         }
 
-        private List<Datum> SampleData = new List<Datum>() {
+        private readonly List<Datum> SampleData = new() {
             new Datum { FirstName = "Charlie", LastName = "Coase", Number = 111},
             new Datum { FirstName = "Alice", LastName = "Cooper", Number = 333 },
             new Datum { FirstName = "Bob", LastName = "Barker", Number = 222 },
         };
 
-        private List<Datum> SampleDataWithDuplicateNames = new List<Datum>() {
-            new Datum { FirstName = "Charlie", LastName = "Coase", Number = 111},
-            new Datum { FirstName = "Alice", LastName = "Cooper", Number = 333 },
-            new Datum { FirstName = "Bob", LastName = "Barker", Number = 222 },
-            new Datum { FirstName = "Alice", LastName = "Barker", Number = 123 },
-            new Datum { FirstName = "Bob", LastName = "Ross", Number = 321 },
-        };
+        //private readonly List<Datum> SampleDataWithDuplicateNames = new() {
+        //    new Datum { FirstName = "Charlie", LastName = "Coase", Number = 111},
+        //    new Datum { FirstName = "Alice", LastName = "Cooper", Number = 333 },
+        //    new Datum { FirstName = "Bob", LastName = "Barker", Number = 222 },
+        //    new Datum { FirstName = "Alice", LastName = "Barker", Number = 123 },
+        //    new Datum { FirstName = "Bob", LastName = "Ross", Number = 321 },
+        //};
 
     }
 }

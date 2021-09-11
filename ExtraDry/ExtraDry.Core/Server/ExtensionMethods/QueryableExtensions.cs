@@ -3,6 +3,7 @@ using ExtraDry.Server.Internal;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace ExtraDry.Server {
 
@@ -11,12 +12,12 @@ namespace ExtraDry.Server {
     /// </summary>
     public static class QueryableExtensions {
 
-        public static IPartialQueryable<T> QueryWith<T>(this IQueryable<T> source, PageQuery partialQuery, Func<T, bool>? defaultFilter = null)
+        public static IPartialQueryable<T> QueryWith<T>(this IQueryable<T> source, PageQuery partialQuery, Expression<Func<T, bool>>? defaultFilter = null)
         {
             return new PartialQueryable<T>(source, partialQuery, defaultFilter);
         }
 
-        public static IPartialQueryable<T> QueryWith<T>(this IQueryable<T> source, FilterQuery filteredQuery, Func<T, bool>? defaultFilter = null)
+        public static IPartialQueryable<T> QueryWith<T>(this IQueryable<T> source, FilterQuery filteredQuery, Expression<Func<T, bool>>? defaultFilter = null)
         {
             return new PartialQueryable<T>(source, filteredQuery, defaultFilter);
         }

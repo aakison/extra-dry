@@ -2,11 +2,11 @@
 
     public enum FilterType {
 
-        Contains = 0,
+        Equals = 0,
 
         StartsWith,
 
-        Equals,
+        Contains,
 
     }
 
