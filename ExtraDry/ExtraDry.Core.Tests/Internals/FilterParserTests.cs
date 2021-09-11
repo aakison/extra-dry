@@ -104,8 +104,8 @@ namespace ExtraDry.Core.Tests.Internals {
         [InlineData("Name:~unquoted~")]
         [InlineData("Name:[]")]
         [InlineData("~~~totally invalid~~~")]
-        [InlineData("NameThatGoesNowhere")]
-        [InlineData("Name:  extra")]
+        //[InlineData("NameThatGoesNowhere")]
+        //[InlineData("Name:  extra")]
         public void InvalidIdentifierRule(string filter)
         {
             Assert.Throws<DryException>(() => FilterParser.Parse(filter));
@@ -191,6 +191,45 @@ namespace ExtraDry.Core.Tests.Internals {
             Assert.Equal("Number", tree.Rules.First().PropertyName);
             Assert.Equal(from.Trim('"'), tree.Rules.First().Values.First());
             Assert.Equal(to.Trim('"'), tree.Rules.First().Values.Last());
+        }
+
+        [Theory]
+        [InlineData("bob")]
+        [InlineData("alice")]
+        [InlineData(@"""asdf~ asdf""")]
+        public void SingleValue(string filter)
+        {
+            var tree = FilterParser.Parse(filter);
+
+            Assert.Single(tree.Rules);
+            Assert.Equal("*", tree.Rules.First().PropertyName);
+            Assert.Equal(filter.Trim('"'), tree.Rules.First().Values.First());
+        }
+
+        [Theory]
+        [InlineData("bob alice")]
+        [InlineData(@"""asdf~ asdf"" alice")]
+        [InlineData(@"asdf ""bob alice""")]
+        [InlineData(@"""ivan"" ""bob alice""")]
+        public void DoubleValue(string filter)
+        {
+            var tree = FilterParser.Parse(filter);
+
+            Assert.Single(tree.Rules);
+            Assert.Equal("*", tree.Rules.First().PropertyName);
+            Assert.Equal("bob", tree.Rules.First().Values.First());
+        }
+
+        [Theory]
+        [InlineData("bob number:123")]
+        [InlineData(@"""asdf"" number:123")]
+        public void SingleValueThenNamedValue(string filter)
+        {
+            var tree = FilterParser.Parse(filter);
+
+            Assert.Single(tree.Rules);
+            Assert.Equal("*", tree.Rules.First().PropertyName);
+            Assert.Equal("bob", tree.Rules.First().Values.First());
         }
 
     }

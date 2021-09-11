@@ -71,9 +71,21 @@ namespace ExtraDry.Server.Internal {
             Identifier, Colon, ValueExpression
         );
 
+        private static readonly Parser<char, FilterRule> ImplicitFilterRule = Map(
+            (v) => new FilterRule("*", v),
+            MatchExpression
+        );
+
         private static readonly Parser<char, IEnumerable<FilterRule>> CompositeFilterRule = FilterRule.Separated(Whitespace);
 
-        private static readonly Parser<char, Filter> Filters = CompositeFilterRule.Select(e => new Filter(e)).Before(End);
+        private static readonly Parser<char, IEnumerable<FilterRule>> CompositeImplicitRule = ImplicitFilterRule.Separated(Whitespace);
+
+        private static readonly Parser<char, IEnumerable<FilterRule>> ChainedFilterRule = Map(
+            (i, _, e) => i.Union(e),
+            CompositeImplicitRule, Whitespace, CompositeFilterRule
+        );
+
+        private static readonly Parser<char, Filter> Filters = Try(CompositeFilterRule).Or(CompositeImplicitRule).Select(e => new Filter(e)).Before(End);
 
     }
 
