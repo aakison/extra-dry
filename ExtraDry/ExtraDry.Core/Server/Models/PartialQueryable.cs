@@ -29,7 +29,7 @@ namespace ExtraDry.Server {
             pagedQuery = sortedQuery.Page(pageQuery);
         }
 
-        private IQueryable<T> InitializeMergedFilter(IQueryable<T> queryable, FilterQuery filterQuery, Expression<Func<T, bool>>? defaultFilter)
+        private static IQueryable<T> InitializeMergedFilter(IQueryable<T> queryable, FilterQuery filterQuery, Expression<Func<T, bool>>? defaultFilter)
         {
             if(string.IsNullOrWhiteSpace(filterQuery.Filter)) {
                 if(defaultFilter == null) {

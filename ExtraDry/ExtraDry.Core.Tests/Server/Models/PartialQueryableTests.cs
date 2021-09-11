@@ -260,6 +260,17 @@ namespace ExtraDry.Core.Tests.Server.Models {
             Assert.Equal(expected, actual.Items);
         }
 
+        [Fact]
+        public void DefaultFilterLambdaWithMultipleProperties()
+        {
+            var filter = new FilterQuery();
+            var expected = Models.Where(e => e.Type == ModelType.Greek && e.Notes != null).ToList();
+
+            var actual = Models.AsQueryable().QueryWith(filter, e => e.Type == ModelType.Greek && e.Notes != null).ToFilteredCollection();
+
+            Assert.Equal(expected, actual.Items);
+        }
+
 
         private readonly List<Model> Models = new() {
             new Model { Id = 1, Name = "Alpha", Soundex = "A410", Type = ModelType.Greek, Notes = "Common with phonetic" },

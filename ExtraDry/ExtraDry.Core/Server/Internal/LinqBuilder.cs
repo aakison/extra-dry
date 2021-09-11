@@ -97,7 +97,6 @@ namespace ExtraDry.Server.Internal {
                             AddTerms(param, keywords, rule, filterProperty);
                         }
                         catch {
-                            int x = 0;
                             // E.g. when "abc" is passed to an Int32, ignore when part of keyword/wildcard search.
                         }
                     }
@@ -209,7 +208,7 @@ namespace ExtraDry.Server.Internal {
             var valueConstant = Expression.Constant(value);
             var caseConstant = Expression.Constant(StringComparison.InvariantCultureIgnoreCase);
             var method = filterType switch {
-                FilterType.Contains => StringContainsMethod,
+                //FilterType.Contains => StringContainsMethod,
                 FilterType.StartsWith => StringStartsWithMethod,
                 _ => StringEqualsMethod,
             };

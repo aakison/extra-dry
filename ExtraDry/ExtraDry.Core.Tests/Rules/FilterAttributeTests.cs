@@ -10,7 +10,7 @@ namespace ExtraDry.Core.Tests.Rules {
         {
             var filter = ValidFilter;
 
-            Assert.Equal(FilterType.Contains, filter.Type);
+            Assert.Equal(FilterType.Equals, filter.Type);
         }
 
         [Theory]

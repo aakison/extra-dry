@@ -122,7 +122,7 @@ namespace ExtraDry.Core.Tests.Internals {
             [Filter(FilterType.StartsWith)]
             public string LastName { get; set; }
 
-            [Filter(FilterType.Contains)]
+            [Filter] //(FilterType.Contains)] TODO: Implement contains with full text index.
             public string Keywords { get; set; }
 
             public int Number { get; set; }

@@ -49,16 +49,17 @@ namespace ExtraDry.Core.Tests.Internals {
             Assert.Equal(linqWhere, linqBuilderWhere);
         }
 
-        [Fact]
-        public void ContainsFilterAttribute()
-        {
-            var linqWhere = SampleData.Where(e => e.Keywords.Contains("beta")).ToList();
+        // TODO: Revisit when Contains means full text search.
+        //[Fact]
+        //public void ContainsFilterAttribute()
+        //{
+        //    var linqWhere = SampleData.Where(e => e.Keywords.Contains("beta")).ToList();
 
-            var filterProperty = GetFilterProperty("Keywords");
-            var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "keywords:beta").ToList();
+        //    var filterProperty = GetFilterProperty("Keywords");
+        //    var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "keywords:beta").ToList();
 
-            Assert.Equal(linqWhere, linqBuilderWhere);
-        }
+        //    Assert.Equal(linqWhere, linqBuilderWhere);
+        //}
 
         [Fact]
         public void FilterOnNumberField()
@@ -138,20 +139,20 @@ namespace ExtraDry.Core.Tests.Internals {
             [Filter(FilterType.StartsWith)]
             public string LastName { get; set; }
 
-            [Filter(FilterType.Contains)]
+            [Filter] // TODO: Should test for Contains when full text index...
             public string Keywords { get; set; }
 
             [Filter]
             public int Number { get; set; }
         }
 
-        private List<Datum> SampleData = new List<Datum>() {
+        private readonly List<Datum> SampleData = new() {
             new Datum { FirstName = "Charlie", LastName = "Coase", Number = 111, Keywords = "alpha beta gamma"},
             new Datum { FirstName = "Alice", LastName = "Cooper", Number = 333, Keywords = "beta gamma delta" },
             new Datum { FirstName = "Bob", LastName = "Barker", Number = 222, Keywords = "gamma delta epsilon" },
         };
 
-        private List<Datum> SampleDataWithDuplicateNames = new List<Datum>() {
+        private readonly List<Datum> SampleDataWithDuplicateNames = new() {
             new Datum { FirstName = "Charlie", LastName = "Coase", Number = 111},
             new Datum { FirstName = "Alice", LastName = "Cooper", Number = 333 },
             new Datum { FirstName = "Bob", LastName = "Barker", Number = 222 },

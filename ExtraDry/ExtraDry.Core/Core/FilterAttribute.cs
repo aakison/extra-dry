@@ -9,7 +9,7 @@ namespace ExtraDry.Core {
     [AttributeUsage(AttributeTargets.Property)]
     public class FilterAttribute : Attribute {
 
-        public FilterAttribute(FilterType type = FilterType.Contains)
+        public FilterAttribute(FilterType type = FilterType.Equals)
         {
             Type = type;
         }

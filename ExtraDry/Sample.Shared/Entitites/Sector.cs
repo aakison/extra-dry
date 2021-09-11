@@ -22,7 +22,7 @@ namespace Sample.Shared {
         [Required]
         [MaxLength(50)]
         [Display(Name = "Title", ShortName = "Title")]
-        [Filter(FilterType.Contains)]
+        // [Filter(FilterType.Contains)] // TODO: Implement with link to Full Text Search
         public string Title { get; set; }
 
         [Filter(FilterType.StartsWith)]
