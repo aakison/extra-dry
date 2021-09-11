@@ -1,8 +1,6 @@
 ﻿using ExtraDry.Core;
 using Pidgin;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using static Pidgin.Parser;
 using static Pidgin.Parser<char>;
 
@@ -31,6 +29,8 @@ namespace ExtraDry.Server.Internal {
 
         private static readonly Parser<char, char> ExtendedValueCharacter = Token(c => char.IsLetterOrDigit(c) || c == '-' || c == '.' || c == ':');
 
+        private static readonly Parser<char, char> IdentifierStartChar = Token(c => char.IsLetter(c) || c == '_');
+
         private static readonly Parser<char, BoundRule> LeftBracket = Char('[').Select(e => BoundRule.Inclusive);
 
         private static readonly Parser<char, BoundRule> RightBracket = Char(']').Select(e => BoundRule.Inclusive);
@@ -38,8 +38,6 @@ namespace ExtraDry.Server.Internal {
         private static readonly Parser<char, BoundRule> LeftParen = Char('(').Select(e => BoundRule.Exclusive);
 
         private static readonly Parser<char, BoundRule> RightParen = Char(')').Select(e => BoundRule.Exclusive);
-
-        private static readonly Parser<char, char> IdentifierStartChar = Token(c => char.IsLetter(c) || c == '_');
 
         private static readonly Parser<char, string> Identifier = Map(
             (first, rest) => $"{first}{rest}",
@@ -49,8 +47,6 @@ namespace ExtraDry.Server.Internal {
         private static readonly Parser<char, string> QuotedValue = Token(c => c != '"').ManyString().Between(Quote);
 
         private static readonly Parser<char, string> MandatoryValue = QuotedValue.Or(ValueCharacter.AtLeastOnceString());
-
-        private static readonly Parser<char, string> MandatoryExtendedValue = QuotedValue.Or(ExtendedValueCharacter.AtLeastOnceString());
 
         private static readonly Parser<char, string> OptionalExtendedValue = QuotedValue.Or(ExtendedValueCharacter.ManyString());
 
@@ -69,29 +65,21 @@ namespace ExtraDry.Server.Internal {
 
         private static readonly Parser<char, FilterRule> ValueExpression = BetweenExpression.Or(MatchExpression);
 
-        private static readonly Parser<char, FilterRule> FilterRule = Map(
+        private static readonly Parser<char, FilterRule> NamedFilterRule = Map(
             (n, _, v) => new FilterRule(n, v),
             Identifier, Colon, ValueExpression
         );
 
-        private static readonly Parser<char, FilterRule> ImplicitFilterRule = Map(
+        private static readonly Parser<char, FilterRule> UnnamedFilterRule = Map(
             (v) => new FilterRule("*", v),
             MandatoryValue
         );
 
+        private static readonly Parser<char, FilterRule> FilterRule = Try(NamedFilterRule).Or(UnnamedFilterRule);
+
         private static readonly Parser<char, IEnumerable<FilterRule>> CompositeFilterRule = FilterRule.Separated(Whitespace);
 
-        private static readonly Parser<char, IEnumerable<FilterRule>> CompositeImplicitRule = ImplicitFilterRule.Separated(Whitespace);
-
-        private static readonly Parser<char, IEnumerable<FilterRule>> ChainedFilterRule = Map(
-            (i, _, e) => e.HasValue ? i.Union(e.Value) : i,
-            CompositeImplicitRule, Whitespace.Optional(), CompositeFilterRule.Optional()
-        );
-
-        private static readonly Parser<char, Filter> Filters = 
-            Try(CompositeFilterRule.Before(End))
-            .Or(CompositeImplicitRule.Before(End))
-            .Select(e => new Filter(e));
+        private static readonly Parser<char, Filter> Filters = CompositeFilterRule.Before(End).Select(e => new Filter(e));
 
     }
 

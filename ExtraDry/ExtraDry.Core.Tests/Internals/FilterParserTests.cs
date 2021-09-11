@@ -226,14 +226,17 @@ namespace ExtraDry.Core.Tests.Internals {
 
         [Theory]
         [InlineData("bob number:123")]
-        [InlineData(@"""asdf"" number:123")]
+        [InlineData(@"""bob"" number:123")]
+        [InlineData(@"""bob"" number:""123""")]
         public void SingleValueThenNamedValue(string filter)
         {
             var tree = FilterParser.Parse(filter);
 
-            Assert.Single(tree.Rules);
+            Assert.Equal(2, tree.Rules.Count);
             Assert.Equal("*", tree.Rules.First().PropertyName);
             Assert.Equal("bob", tree.Rules.First().Values.First());
+            Assert.Equal("number", tree.Rules.Last().PropertyName);
+            Assert.Equal("123", tree.Rules.Last().Values.First());
         }
 
     }
