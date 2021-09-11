@@ -27,6 +27,12 @@ namespace ExtraDry.Server.Internal {
             Values = new List<string>(values);
         }
 
+        public FilterRule(string propertyName, string value)
+        {
+            PropertyName = propertyName;
+            Values = new List<string> { value };
+        }
+
         public BoundRule LowerBound { get; } = BoundRule.None;
 
         public BoundRule UpperBound { get; } = BoundRule.None;
