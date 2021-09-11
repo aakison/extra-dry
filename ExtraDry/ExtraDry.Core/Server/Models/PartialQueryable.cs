@@ -15,12 +15,7 @@ namespace ExtraDry.Server {
         public PartialQueryable(IQueryable<T> queryable, FilterQuery filterQuery, Expression<Func<T, bool>>? defaultFilter)
         {
             query = filterQuery;
-            if(filterQuery.Filter == null && defaultFilter != null) {
-                filteredQuery = queryable.Where(defaultFilter).AsQueryable();
-            }
-            else {
-                filteredQuery = queryable.Filter(filterQuery);
-            }
+            filteredQuery = InitializeMergedFilter(queryable, filterQuery, defaultFilter);
             sortedQuery = filteredQuery.Sort(filterQuery);
             pagedQuery = sortedQuery.Page(0, PageQuery.DefaultTake, null);
         }
@@ -29,14 +24,65 @@ namespace ExtraDry.Server {
         {
             query = pageQuery;
             token = ContinuationToken.FromString(pageQuery.Token);
-            if(pageQuery.Filter == null && defaultFilter != null) {
-                filteredQuery = queryable.Where(defaultFilter).AsQueryable();
-            }
-            else {
-                filteredQuery = queryable.Filter(pageQuery);
-            }
+            filteredQuery = InitializeMergedFilter(queryable, pageQuery, defaultFilter);
             sortedQuery = filteredQuery.Sort(pageQuery);
             pagedQuery = sortedQuery.Page(pageQuery);
+        }
+
+        private IQueryable<T> InitializeMergedFilter(IQueryable<T> queryable, FilterQuery filterQuery, Expression<Func<T, bool>>? defaultFilter)
+        {
+            if(string.IsNullOrWhiteSpace(filterQuery.Filter)) {
+                if(defaultFilter == null) {
+                    return queryable;
+                }
+                else {
+                    return queryable.Where(defaultFilter).AsQueryable();
+                }
+            }
+            else {
+                if(defaultFilter == null) {
+                    return queryable.Filter(filterQuery);
+                }
+                else {
+                    var filter = FilterParser.Parse(filterQuery.Filter);
+                    var visitor = new MemberAccessVisitor(typeof(T));
+                    visitor.Visit(defaultFilter);
+                    var hasAnyPropertyInCommon = filter.Rules
+                        .Any(r => visitor.PropertyNames
+                            .Any(p => p.Equals(r.PropertyName, StringComparison.InvariantCultureIgnoreCase)));
+                    if(hasAnyPropertyInCommon) {
+                        return queryable.Filter(filterQuery);
+                    }
+                    else {
+                        return queryable.Where(defaultFilter).Filter(filterQuery);
+                    }
+                }
+            }
+        }
+
+        // https://stackoverflow.com/questions/31515898/traverse-an-expression-tree-and-extract-parameters
+        public class MemberAccessVisitor : ExpressionVisitor {
+
+            public MemberAccessVisitor(Type forType)
+            {
+                declaringType = forType;
+            }
+
+            public IList<string> PropertyNames { get; } = new List<string>();
+
+            public override Expression Visit(Expression expr)
+            {
+                if(expr.NodeType == ExpressionType.MemberAccess) {
+                    var memberExpr = (MemberExpression)expr;
+                    if(memberExpr.Member.DeclaringType == declaringType) {
+                        PropertyNames.Add(memberExpr.Member.Name);
+                    }
+                }
+
+                return base.Visit(expr);
+            }
+
+            private readonly Type declaringType;
         }
 
         #region IQueryable interface support

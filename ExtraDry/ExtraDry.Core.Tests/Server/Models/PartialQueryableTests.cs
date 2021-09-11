@@ -11,6 +11,21 @@ using Xunit;
 namespace ExtraDry.Core.Tests.Server.Models {
     public class PartialQueryableTests {
 
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
+        public async Task EmptyQueriesReturnEverything(string value)
+        {
+            var filter = new FilterQuery { Filter = value };
+            var expected = Models.ToList();
+
+            var actual = await Models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync();
+
+            Assert.Equal(expected, actual.Items);
+        }
+
+
         [Fact]
         public async Task StringEqualsMatchNone()
         {
@@ -164,6 +179,64 @@ namespace ExtraDry.Core.Tests.Server.Models {
             Assert.Equal(expected, actual.Items);
         }
 
+        [Fact]
+        public async Task NonMatchingFilterWithDefaultLambdaReturnsNone()
+        {
+            var filter = new FilterQuery { Filter = "nothing" };
+            var expected = Models.Where(e => e.Name == "nothing" && e.Type == ModelType.Phonetic).ToList();
+
+            var actual = await Models.AsQueryable().QueryWith(filter, e => e.Type == ModelType.Phonetic).ToFilteredCollectionAsync();
+
+            Assert.Equal(expected, actual.Items);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
+        public async Task NoFilterWithDefaultLambdaReturnsSet(string value)
+        {
+            var filter = new FilterQuery { Filter = value };
+            var expected = Models.Where(e => e.Type == ModelType.Phonetic).ToList();
+
+            var actual = await Models.AsQueryable().QueryWith(filter, e => e.Type == ModelType.Phonetic).ToFilteredCollectionAsync();
+
+            Assert.Equal(expected, actual.Items);
+        }
+
+        [Fact]
+        public async Task MatchingFilterWithDefaultLambdaReturnsSingle()
+        {
+            var filter = new FilterQuery { Filter = "Alpha" };
+            var expected = Models.Where(e => e.Name == "Alpha" && e.Type == ModelType.Phonetic).ToList();
+
+            var actual = await Models.AsQueryable().QueryWith(filter, e => e.Type == ModelType.Phonetic).ToFilteredCollectionAsync();
+
+            Assert.Equal(expected, actual.Items);
+        }
+
+        [Fact]
+        public async Task MatchingFilterWithDefaultLambdaReturnsMultiple()
+        {
+            var filter = new FilterQuery { Filter = "id:[5,8]" };
+            var expected = Models.Where(e => e.Id >= 5 && e.Id <= 8 && e.Type == ModelType.Phonetic).ToList();
+
+            var actual = await Models.AsQueryable().QueryWith(filter, e => e.Type == ModelType.Phonetic).ToFilteredCollectionAsync();
+
+            Assert.Equal(expected, actual.Items);
+        }
+
+        [Fact]
+        public async Task FilterOverridesLambdaReturnsMultiple()
+        {
+            var filter = new FilterQuery { Filter = "type:greek" };
+            var expected = Models.Where(e => e.Type == ModelType.Greek).ToList();
+
+            var actual = await Models.AsQueryable().QueryWith(filter, e => e.Type == ModelType.Phonetic).ToFilteredCollectionAsync();
+
+            Assert.Equal(expected, actual.Items);
+        }
+        
         private readonly List<Model> Models = new() {
             new Model { Id = 1, Name = "Alpha", Soundex = "A410", Type = ModelType.Greek, Notes = "Common with phonetic" },
             new Model { Id = 2, Name = "Beta", Soundex = "B300", Type = ModelType.Greek },
