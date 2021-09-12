@@ -41,8 +41,8 @@ namespace ExtraDry.Core.Tests.Server.Models {
         [Fact]
         public async Task StringEqualsMatchNone()
         {
-            var filter = new FilterQuery { Filter = "name:bob" };
-            var expected = Models.Where(e => e.Name.Equals("bob", StringComparison.InvariantCultureIgnoreCase)).ToList();
+            var filter = new FilterQuery { Filter = "name:Bob" };
+            var expected = Models.Where(e => e.Name.Equals("Bob")).ToList();
 
             var actual = await Models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync();
 
@@ -52,8 +52,8 @@ namespace ExtraDry.Core.Tests.Server.Models {
         [Fact]
         public async Task StringEqualsMatchSingle()
         {
-            var filter = new FilterQuery { Filter = "name:bravo" };
-            var expected = Models.Where(e => e.Name.Equals("bravo", StringComparison.InvariantCultureIgnoreCase)).ToList();
+            var filter = new FilterQuery { Filter = "name:Bravo" };
+            var expected = Models.Where(e => e.Name.Equals("Bravo")).ToList();
 
             var actual = await Models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync();
 
@@ -63,8 +63,8 @@ namespace ExtraDry.Core.Tests.Server.Models {
         [Fact]
         public async Task StringEqualsMatchMultiple()
         {
-            var filter = new FilterQuery { Filter = "name:alpha" };
-            var expected = Models.Where(e => e.Name.Equals("alpha", StringComparison.InvariantCultureIgnoreCase)).ToList();
+            var filter = new FilterQuery { Filter = "name:Alpha" };
+            var expected = Models.Where(e => e.Name.Equals("Alpha")).ToList();
 
             var actual = await Models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync();
 
@@ -168,8 +168,8 @@ namespace ExtraDry.Core.Tests.Server.Models {
         }
 
         [Theory]
-        [InlineData("alpha")]
-        [InlineData("a41")]
+        [InlineData("Alpha")]
+        [InlineData("A41")]
         public async Task UnnammedFilterMatchesSingleKeyword(string keyword)
         {
             var filter = new FilterQuery { Filter = keyword };

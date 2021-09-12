@@ -80,7 +80,7 @@ namespace ExtraDry.Core.Tests.Internals {
             var linqWhere = SampleData.Where(e => e.FirstName == "Bob").ToList();
 
             var filterProperty = GetFilterProperty("FirstName");
-            var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "firstname:bob").ToList();
+            var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "firstname:Bob").ToList();
 
             Assert.Equal(linqWhere, linqBuilderWhere);
         }
@@ -103,7 +103,7 @@ namespace ExtraDry.Core.Tests.Internals {
 
             var firstName = GetFilterProperty("FirstName");
             var lastName = GetFilterProperty("LastName");
-            var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { firstName, lastName }, "firstname:bob lastname:bark").ToList();
+            var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { firstName, lastName }, "firstname:Bob lastname:Bark").ToList();
 
             Assert.Equal(linqWhere, linqBuilderWhere);
         }

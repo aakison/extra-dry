@@ -13,7 +13,7 @@ namespace ExtraDry.Core.Tests.Internals {
             var linqWhere = SampleData.Where(e => e.FirstName == "Bob").ToList();
 
             var filterProperty = GetFilterProperty("FirstName");
-            var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "firstname:bob").ToList();
+            var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "firstname:Bob").ToList();
 
             Assert.Equal(linqWhere, linqBuilderWhere);
         }
@@ -33,7 +33,7 @@ namespace ExtraDry.Core.Tests.Internals {
             var linqWhere = SampleData.Where(e => e.FirstName == "Bob" || e.FirstName == "Alice").ToList();
 
             var filterProperty = GetFilterProperty("FirstName");
-            var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "firstname:bob|alice").ToList();
+            var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "firstname:Bob|Alice").ToList();
 
             Assert.Equal(linqWhere, linqBuilderWhere);
         }
@@ -44,22 +44,21 @@ namespace ExtraDry.Core.Tests.Internals {
             var linqWhere = SampleData.Where(e => e.FirstName == "Bob" || e.FirstName == "Alice").ToList();
 
             var filterProperty = GetFilterProperty("FirstName");
-            var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "firstname:bob firstname:alice").ToList();
+            var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "firstname:Bob firstname:Alice").ToList();
 
             Assert.Equal(linqWhere, linqBuilderWhere);
         }
 
-        // TODO: Revisit when Contains means full text search.
-        //[Fact]
-        //public void ContainsFilterAttribute()
-        //{
-        //    var linqWhere = SampleData.Where(e => e.Keywords.Contains("beta")).ToList();
+        [Fact]
+        public void ContainsFilterAttribute()
+        {
+            var linqWhere = SampleData.Where(e => e.Keywords.Contains("beta")).ToList();
 
-        //    var filterProperty = GetFilterProperty("Keywords");
-        //    var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "keywords:beta").ToList();
+            var filterProperty = GetFilterProperty("Keywords");
+            var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "keywords:beta").ToList();
 
-        //    Assert.Equal(linqWhere, linqBuilderWhere);
-        //}
+            Assert.Equal(linqWhere, linqBuilderWhere);
+        }
 
         [Fact]
         public void FilterOnNumberField()
@@ -102,9 +101,9 @@ namespace ExtraDry.Core.Tests.Internals {
         [InlineData("number:[123,222]")]
         [InlineData("number:(122,223)")]
         [InlineData("number:(122,222]")]
-        [InlineData("firstname:bob")]
-        [InlineData("FIRSTNAME:BOB")]
-        [InlineData("lastname:co")] // startswith condition on Filter on property
+        [InlineData("firstname:Bob")] // Ignores case on property (test values, however, are case sensitive...)
+        [InlineData("FIRSTNAME:Bob")]
+        [InlineData("lastname:Co")] // startswith condition on Filter on property
         public void QueriesThatPickTwo(string filter)
         {
             var firstName = GetFilterProperty("FirstName");
@@ -139,7 +138,7 @@ namespace ExtraDry.Core.Tests.Internals {
             [Filter(FilterType.StartsWith)]
             public string LastName { get; set; }
 
-            [Filter] // TODO: Should test for Contains when full text index...
+            [Filter(FilterType.Contains)]
             public string Keywords { get; set; }
 
             [Filter]

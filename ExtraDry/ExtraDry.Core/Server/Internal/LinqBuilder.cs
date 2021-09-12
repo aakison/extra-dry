@@ -198,7 +198,7 @@ namespace ExtraDry.Server.Internal {
                 }
             }
             catch {
-                throw new DryException($"Filter expression {value} was not of the correct type.");
+                throw new DryException($"Filter expression '{value}' was not of the correct type.");
             }
         }
 
@@ -206,20 +206,19 @@ namespace ExtraDry.Server.Internal {
         {
             var property = Expression.Property(parameter, propertyInfo);
             var valueConstant = Expression.Constant(value);
-            var caseConstant = Expression.Constant(StringComparison.InvariantCultureIgnoreCase);
             var method = filterType switch {
-                //FilterType.Contains => StringContainsMethod,
+                FilterType.Contains => StringContainsMethod,
                 FilterType.StartsWith => StringStartsWithMethod,
                 _ => StringEqualsMethod,
             };
-            return Expression.Call(property, method, valueConstant, caseConstant);
+            return Expression.Call(property, method, valueConstant);
         }
 
-        private static MethodInfo StringContainsMethod => typeof(string).GetMethod(nameof(string.Contains), new[] { typeof(string), typeof(StringComparison) });
+        private static MethodInfo StringContainsMethod => typeof(string).GetMethod(nameof(string.Contains), new[] { typeof(string) });
 
-        private static MethodInfo StringEqualsMethod => typeof(string).GetMethod(nameof(string.Equals), new[] { typeof(string), typeof(StringComparison) });
+        private static MethodInfo StringEqualsMethod => typeof(string).GetMethod(nameof(string.Equals), new[] { typeof(string) });
 
-        private static MethodInfo StringStartsWithMethod => typeof(string).GetMethod(nameof(string.StartsWith), new[] { typeof(string), typeof(StringComparison) });
+        private static MethodInfo StringStartsWithMethod => typeof(string).GetMethod(nameof(string.StartsWith), new[] { typeof(string) });
 
         private enum OrderType {
             OrderBy, 
