@@ -35,18 +35,17 @@ namespace ExtraDry.Blazor.Components.Raw {
 
         protected override void OnParametersSet()
         {
-            base.OnParametersSet();
-            InitializeOptions();
-        }
-
-        private void InitializeOptions()
-        {
             if(Values == null) {
                 AllOptions.Clear();
                 return;
             }
+            if(ValuesEqualOptions()) {
+                Console.WriteLine("Values unchanged, don't rebuild options");
+                return;
+            }
             int index = 100;
             var selectedObject = Property?.GetValue(Model);
+            AllOptions.Clear();
             foreach(var value in Values) {
                 var key = index++.ToString();
                 var selected = selectedObject?.Equals(value) ?? false;
@@ -60,6 +59,21 @@ namespace ExtraDry.Blazor.Components.Raw {
                 }
             }
             Logger.LogDebug($"DrySingleSelect initialized with {Values?.Count} values");
+        }
+
+        private bool ValuesEqualOptions()
+        {
+            if(Values?.Count != AllOptions.Count) {
+                return false;
+            }
+            var lhs = Values.GetEnumerator();
+            var rhs = AllOptions.Values.GetEnumerator();
+            while(lhs.MoveNext() && rhs.MoveNext()) {
+                if(!lhs.Current.Equals(rhs.Current.Value)) {
+                    return false;
+                }
+            }
+            return true;
         }
 
         private async Task SelectOption(ChangeEventArgs args)
