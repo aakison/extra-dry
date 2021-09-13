@@ -26,9 +26,5 @@
         /// </summary>
         Block,
 
-        /// <summary>
-        /// The object is composite and should be recursively displayed.
-        /// </summary>
-        Recurse,
     }
 }

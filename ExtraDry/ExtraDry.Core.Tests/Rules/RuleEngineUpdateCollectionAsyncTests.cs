@@ -101,7 +101,6 @@ namespace ExtraDry.Core.Tests.Rules {
         {
             var services = new ServiceProviderStub();
             var rules = new RuleEngine(services);
-            var guid = Guid.NewGuid();
             var source = new Parent {
                 Children = new List<Child> {
                 new Child { Uuid = Guid.NewGuid(), Name = "Child1" },
@@ -491,14 +490,6 @@ namespace ExtraDry.Core.Tests.Rules {
 
         }
 
-        private Parent SampleParent() => new Parent {
-            Child = new Child(),
-            Children = {
-                new Child(),
-                new Child(),
-            }
-        };
-
         public class ChildEntityResolver : IEntityResolver<Child> {
             public Task<Child> ResolveAsync(Child exemplar)
             {
@@ -515,7 +506,7 @@ namespace ExtraDry.Core.Tests.Rules {
                 database.Add(item.Uuid, item);
             }
 
-            public Dictionary<Guid, Child> database = new Dictionary<Guid, Child>();
+            public Dictionary<Guid, Child> database = new();
 
         }
 

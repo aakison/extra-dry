@@ -173,8 +173,8 @@ namespace ExtraDry.Core.Tests.Rules {
             [Rules(RuleAction.Allow)]
             public Child AllowChild { get; set; }
 
-            //[Rules(UpdateAction.Ignore)]
-            //public Child IgnoreChild { get; set; }
+            [Rules(RuleAction.Ignore)]
+            public Child IgnoreChild { get; set; }
 
         }
 
@@ -194,7 +194,7 @@ namespace ExtraDry.Core.Tests.Rules {
                 database.Add(item.Uuid, item);
             }
 
-            public Dictionary<Guid, Child> database = new Dictionary<Guid, Child>();
+            public Dictionary<Guid, Child> database = new();
 
         }
 

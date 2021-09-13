@@ -27,9 +27,9 @@ namespace Sample.Data {
                 e => JsonSerializer.Serialize(e, null),
                 e => JsonSerializer.Deserialize<BankingDetails>(e, null));
 
-            modelBuilder.Entity<Company>().Property(e => e.Videos).HasConversion(
-                e => JsonSerializer.Serialize(e, null),
-                e => JsonSerializer.Deserialize<Collection<Video>>(e, null));
+            //modelBuilder.Entity<Company>().Property(e => e.Videos).HasConversion(
+            //    e => JsonSerializer.Serialize(e, null),
+            //    e => JsonSerializer.Deserialize<Collection<Video>>(e, null));
 
             modelBuilder.Entity<Content>().Property(e => e.Layout).HasConversion(
                 e => JsonSerializer.Serialize(e, null),

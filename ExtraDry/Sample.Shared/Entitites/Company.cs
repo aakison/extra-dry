@@ -36,12 +36,12 @@ namespace Sample.Shared {
         public List<Sector> AdditionalSectors { get; set; }
 
         [Display]
-        [Rules(RuleAction.Recurse)]
+        [Rules(RuleAction.Allow)]
         public BankingDetails BankingDetails { get; set; } = new BankingDetails();
 
-        [Display]
-        [Rules(RuleAction.Recurse)]
-        public ICollection<Video> Videos { get; set; } = new Collection<Video>();
+        //[Display]
+        //[Rules(RuleAction.Recurse)]
+        //public ICollection<Video> Videos { get; set; } = new Collection<Video>();
 
     }
 }
