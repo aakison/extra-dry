@@ -124,6 +124,22 @@ namespace ExtraDry.Core.Tests.Internals {
             Assert.Throws<DryException>(() => SampleDataWithDuplicateNames.AsQueryable().WhereFilterConditions(new FilterProperty[] { firstName, lastName, number }, "lastname:[coa,coo]").ToList());
         }
 
+        [Fact]
+        public void WildcardSearchWhenOnlySingleFilterField()
+        {
+            var SampleData = new List<SimpleDatum>() {
+                new SimpleDatum { Name = "Charlie" },
+                new SimpleDatum { Name = "Alice" },
+            };
+            var name = GetSimpleFilterProperty("Name");
+            var filter = "Alice";
+
+            var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { name }, filter).ToList();
+
+            Assert.Single(linqBuilderWhere);
+            Assert.Equal("Alice", linqBuilderWhere.First().Name);
+        }
+
         private static FilterProperty GetFilterProperty(string propertyName)
         {
             var property = typeof(Datum).GetProperty(propertyName);
@@ -158,6 +174,18 @@ namespace ExtraDry.Core.Tests.Internals {
             new Datum { FirstName = "Alice", LastName = "Barker", Number = 123 },
             new Datum { FirstName = "Bob", LastName = "Ross", Number = 321 },
         };
+
+        private static FilterProperty GetSimpleFilterProperty(string propertyName)
+        {
+            var property = typeof(SimpleDatum).GetProperty(propertyName);
+            var filter = property.GetCustomAttributes(false).First() as FilterAttribute;
+            return new FilterProperty(property, filter);
+        }
+
+        public class SimpleDatum {
+            [Filter(FilterType.Equals)]
+            public string Name { get; set; }
+        }
 
     }
 }
