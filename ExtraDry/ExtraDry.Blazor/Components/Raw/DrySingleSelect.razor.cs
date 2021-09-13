@@ -3,7 +3,6 @@
 using ExtraDry.Blazor.Components.Internal;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Reflection.Metadata;
 using System.Threading.Tasks;
@@ -40,7 +39,7 @@ namespace ExtraDry.Blazor.Components.Raw {
                 return;
             }
             if(ValuesEqualOptions()) {
-                Console.WriteLine("Values unchanged, don't rebuild options");
+                // Performance: Values unchanged, don't rebuild options
                 return;
             }
             int index = 100;
@@ -52,7 +51,6 @@ namespace ExtraDry.Blazor.Components.Raw {
                 var option = new OptionInfo(key, value?.ToString() ?? "-empty-", value) {
                     Selected = selected,
                 };
-                Console.WriteLine($"  Adding {key} - {value}");
                 AllOptions.Add(key, option);
                 if(selected) {
                     SelectedOption = option;
