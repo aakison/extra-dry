@@ -34,60 +34,18 @@ namespace ExtraDry.Blazor.Components.Raw {
 
         protected override void OnParametersSet()
         {
-            if(Values == null) {
-                AllOptions.Clear();
-                return;
-            }
-            if(ValuesEqualOptions()) {
-                // Performance: Values unchanged, don't rebuild options
-                return;
-            }
-            int index = 100;
-            var selectedObject = Property?.GetValue(Model);
-            AllOptions.Clear();
-            foreach(var value in Values) {
-                var key = index++.ToString();
-                var selected = selectedObject?.Equals(value) ?? false;
-                var option = new OptionInfo(key, value?.ToString() ?? "-empty-", value) {
-                    Selected = selected,
-                };
-                AllOptions.Add(key, option);
-                if(selected) {
-                    SelectedOption = option;
-                }
-            }
+            SelectedValue = Property?.GetValue(Model);
             Logger.LogDebug($"DrySingleSelect initialized with {Values?.Count} values");
-        }
-
-        private bool ValuesEqualOptions()
-        {
-            if(Values?.Count != AllOptions.Count) {
-                return false;
-            }
-            var lhs = Values.GetEnumerator();
-            var rhs = AllOptions.Values.GetEnumerator();
-            while(lhs.MoveNext() && rhs.MoveNext()) {
-                if(!lhs.Current.Equals(rhs.Current.Value)) {
-                    return false;
-                }
-            }
-            return true;
         }
 
         private async Task SelectOption(ChangeEventArgs args)
         {
             Logger.LogDebug($"DrySingleSelect Set Option by Key '{args.Value}'");
-            var key = args.Value as string;
-            if(string.IsNullOrWhiteSpace(key)) {
+            if(Values == null || !int.TryParse(args.Value as string, out var index)) {
                 return; // selected blank line
             }
-            if(SelectedOption != null) {
-                SelectedOption.Selected = false;
-            }
-            var option = AllOptions[key];
-            option.Selected = true;
-            SelectedOption = option;
-            Property?.SetValue(Model, option.Value);
+            SelectedValue = Values[index];
+            Property?.SetValue(Model, SelectedValue);
             await InvokeOnChange(args);
         }
 
@@ -101,9 +59,7 @@ namespace ExtraDry.Blazor.Components.Raw {
 
         private bool ReadOnly => EditMode == EditMode.ReadOnly;
 
-        private Dictionary<string, OptionInfo> AllOptions { get; } = new Dictionary<string, OptionInfo>();
-
-        private OptionInfo? SelectedOption { get; set; }
+        private object? SelectedValue { get; set; }
 
     }
 
