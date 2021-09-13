@@ -17,12 +17,13 @@ namespace Sample.Client {
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
+            builder.Services.AddFilteredListService<Sector>("/api/sectors");
             builder.Services.AddFilteredListService<Company>("/api/companies");
             builder.Services.AddFilteredListService<Content>("/api/contents");
-            builder.Services.AddFilteredListService<Sector>("/api/sectors");
 
             builder.Services.AddPagedListService<Employee>("/api/employees");
 
+            builder.Services.AddCrudService<Sector>("/api/sectors/{0}");
             builder.Services.AddCrudService<Company>("/api/companies/{0}");
             builder.Services.AddCrudService<Content>("/api/contents/{0}");
 

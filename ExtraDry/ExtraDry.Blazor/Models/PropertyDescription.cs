@@ -35,7 +35,7 @@ namespace ExtraDry.Blazor {
                 }
             }
             ++recursionDepth;
-            if(recursionDepth < 10 && Rules?.CreateAction == RuleAction.Allow) { // Create new signals to recurse
+            if(recursionDepth < 10 && (Rules?.CreateAction == RuleAction.Recurse || Rules?.UpdateAction == RuleAction.Recurse)) {
                 if(HasArrayValues) {
                     var elementProperty = Property.PropertyType.SingleGenericType();
                     ChildModel = new ViewModelDescription(elementProperty, this);

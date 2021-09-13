@@ -27,7 +27,7 @@ namespace Sample.Shared {
         public string Description { get; set; }
 
         [Display]
-        [Rules(CreateAction = RuleAction.Allow)]
+        [Rules]
         [JsonConverter(typeof(SectorInfoJsonConverter))]
         public Sector PrimarySector { get; set; }
 
@@ -36,11 +36,11 @@ namespace Sample.Shared {
         public List<Sector> AdditionalSectors { get; set; }
 
         [Display]
-        [Rules(RuleAction.Allow)]
+        [Rules(RuleAction.Recurse)]
         public BankingDetails BankingDetails { get; set; } = new BankingDetails();
 
         [Display]
-        [Rules(RuleAction.Allow)]
+        [Rules(RuleAction.Recurse)]
         public ICollection<Video> Videos { get; set; } = new Collection<Video>();
 
     }

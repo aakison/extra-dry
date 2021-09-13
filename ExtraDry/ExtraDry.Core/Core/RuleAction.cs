@@ -27,9 +27,8 @@
         Block,
 
         /// <summary>
-        /// In the future we may have a need to block the Allow from recursing through a tree of children.
-        /// Can't find a reason yet, but when we do this is how it will be implemented.
+        /// The object is composite and should be recursively displayed.
         /// </summary>
-        // AllowOneLevel,
+        Recurse,
     }
 }

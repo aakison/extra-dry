@@ -1,0 +1,19 @@
+﻿@page "/sectors"
+@inject IListService<Sector> SectorService;
+@inject NavigationManager Navigation;
+
+<h2>Sectors</h2>
+
+<CommandBar ViewModel="@this" />
+
+<DryTable T="Sector" ViewModel="@this" ItemsService="@SectorService" />
+
+@code {
+
+    [Command(CommandContext.Alternate, Icon = "edit")]
+    public void Edit(Sector sector)
+    {
+        Navigation.NavigateTo($"/sectors/{sector.Uuid}");
+    }
+
+}

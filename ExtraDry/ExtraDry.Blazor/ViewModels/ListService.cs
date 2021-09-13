@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using ExtraDry.Blazor.Components.Internal;
 using ExtraDry.Core;
 using Microsoft.AspNetCore.Components.Web.Virtualization;
 using System;
@@ -51,7 +52,7 @@ namespace ExtraDry.Blazor {
 
         public string TakeQueryParam { get; set; } = "take";
 
-        public string SearchQueryParam { get; set; } = "search";
+        public string FilterQueryParam { get; set; } = "filter";
 
         private Func<TCollection, ICollection<TItem>> Unpacker { get; set; }
 
@@ -72,11 +73,11 @@ namespace ExtraDry.Blazor {
                         keys.Add("ascending", ascending.Value.ToString());
                     }
                 }
-                if(skip.HasValue) {
-                    keys.Add("skip", skip.Value.ToString());
+                if(skip.HasValue && skip.Value > 0) {
+                    keys.Add(SkipQueryParam, skip.Value.ToString());
                 }
-                if(take.HasValue) {
-                    keys.Add("take", take.Value.ToString());
+                if(take.HasValue && take.Value > 0 && take != int.MaxValue) {
+                    keys.Add(TakeQueryParam, take.Value.ToString());
                 }
                 if(keys.Any()) {
                     var queries = keys.Select(e => $"{e.Key}={Uri.EscapeDataString(e.Value)}");
@@ -101,12 +102,12 @@ namespace ExtraDry.Blazor {
             var body = await http.GetStringAsync(endpoint, cancellationToken);
             Console.WriteLine($"Got {body}");
             Console.WriteLine($"Deserialize into {typeof(TCollection).Name}");
-            var result = JsonSerializer.Deserialize<TCollection>(body, JsonSerializerOptions);
-            if(result == null) {
+            var packedResult = JsonSerializer.Deserialize<TCollection>(body, JsonSerializerOptions);
+            if(packedResult == null) {
                 throw new DryException($"Call to endpoint returned nothing or couldn't be converted to a result.");
             }
-            var items = Unpacker(result);
-            var total = Counter(result);
+            var items = Unpacker(packedResult);
+            var total = Counter(packedResult);
             return new ItemsProviderResult<TItem>(items, total);
         }
 

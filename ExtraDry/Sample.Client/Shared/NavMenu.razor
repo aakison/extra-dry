@@ -30,6 +30,9 @@
     [Navigation(Icon = "home")]
     public string Home => $"/";
 
+    [Navigation(Icon = "briefcase")]
+    public string Sectors => $"sectors";
+
     // Slightly more complicated, property name not suitable so override name in `Navigation` attribute.
     [Navigation("Companies", Icon = "building")]
     public string CompanyList => $"companies";
