@@ -2,7 +2,6 @@
 using Sample.Shared.Converters;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -27,12 +26,12 @@ namespace Sample.Shared {
         public string Description { get; set; }
 
         [Display]
-        [Rules]
+        [Rules(RuleAction.Link)]
         [JsonConverter(typeof(SectorInfoJsonConverter))]
         public Sector PrimarySector { get; set; }
 
         [Display]
-        [Rules(CreateAction = RuleAction.Allow)]
+        [Rules(RuleAction.Link)]
         public List<Sector> AdditionalSectors { get; set; }
 
         [Display]

@@ -11,20 +11,25 @@
         Allow,
 
         /// <summary>
-        /// Once created, no changes are processed by `RuleEngine`.
+        /// Changes to values will always be ignored by `RuleEngine`.
         /// </summary>
         Ignore,
 
         /// <summary>
-        /// Once created, default source values will not change existing value processed by `RuleEngine`.
+        /// Values of `default` or `null` will be ignored, others will be allowed by `RuleEngine`.
         /// </summary>
         IgnoreDefaults,
 
         /// <summary>
-        /// Once created, attempts to change will cause an exception in the `RuleEngine`.
-        /// This should be set on any property that a malicious actor would target to attack your system.
+        /// Any attempt to change a value will raise an exception by the `RuleEngine`.
+        /// Values of `default` or `null` do not trigger the exception.
         /// </summary>
         Block,
 
+        /// <summary>
+        /// Incoming values are not copied, instead the matching `IEntityResolver` is
+        /// used to lookup the existing entity to link to.
+        /// </summary>
+        Link,
     }
 }
