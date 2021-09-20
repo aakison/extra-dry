@@ -1,0 +1,557 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ExtraDry.Core</name>
+    </assembly>
+    <members>
+        <member name="T:ExtraDry.Core.ControlAttribute">
+            <summary>
+            Expands the displays options for a property when it is displayed as a control.
+            Not typically required, but use to get enhanced controls, such as a Radio Button list instead of a select dropdown.
+            WARNING: May cause problems with Blazor debugging, see: https://github.com/dotnet/aspnetcore/issues/25380
+            </summary>
+        </member>
+        <member name="T:ExtraDry.Core.DataValidator">
+            <summary>
+            Designed to facility the validation of properties of objects, especially when not all of the object is validated.
+            </summary>
+        </member>
+        <member name="M:ExtraDry.Core.DataValidator.ValidateObject(System.Object)">
+            <summary>
+            Validates all properties of the indicated object.
+            </summary>
+            <returns>True if validation successful.</returns>
+        </member>
+        <member name="M:ExtraDry.Core.DataValidator.ValidateProperties(System.Object,System.String[])">
+            <summary>
+            Validates the specified properties (by name) of the indicated object.
+            </summary>
+            <returns>True if validation successful.</returns>
+            <example>
+            `validator.ValidateProperties(obj, nameof(obj.Property1), nameof(obj.Property2));`
+            </example>
+        </member>
+        <member name="M:ExtraDry.Core.DataValidator.ValidateProperties(System.Object,System.Boolean,System.String[])">
+            <summary>
+            Validates the specified properties (by name) of the indicated object.
+            Ability provided to force checking for `[Required]` on string fields even if not attributed.
+            </summary>
+            <returns>True if validation successful.</returns>
+            <example>
+            `validator.ValidateProperties(obj, nameof(obj.Property1), nameof(obj.Property2));`
+            </example>
+        </member>
+        <member name="P:ExtraDry.Core.DataValidator.Errors">
+            <summary>
+            A list of all errors found by this data validator for all validation calls.
+            </summary>
+        </member>
+        <member name="P:ExtraDry.Core.DryException.UserMessage">
+            <summary>
+            If available, an exception message that is suitable to show to users.
+            E.g. certain validation exceptions can be shown, but null reference cannot.
+            </summary>
+        </member>
+        <member name="T:ExtraDry.Core.FilterAttribute">
+            <summary>
+            Defines a property that can be used with `FilterQuery` and the `PartialQueryable` extensions to `IQueryable`.
+            WARNING: May cause problems with Blazor debugging, see: https://github.com/dotnet/aspnetcore/issues/25380
+            </summary>
+        </member>
+        <member name="T:ExtraDry.Core.FilterType">
+            <summary>
+            The processing rule to be applied to a property when a `FilterQuery` or `PageQuery` has a `Filter` provided.
+            </summary>
+        </member>
+        <member name="F:ExtraDry.Core.FilterType.Equals">
+            <summary>
+            Performs an exact match of the value, the default behavior.
+            </summary>
+        </member>
+        <member name="F:ExtraDry.Core.FilterType.StartsWith">
+            <summary>
+            If the property is a `string`, then the filter matches when the text matches the start of the property.
+            </summary>
+        </member>
+        <member name="F:ExtraDry.Core.FilterType.Contains">
+            <summary>
+            If the property is a `string`, then the filter matches when the text occurs anywhere within the property.
+            </summary>
+        </member>
+        <member name="T:ExtraDry.Core.HeaderAttribute">
+            <summary>
+            Place with the first property in a group to provide logical separation between groups of properties.
+            In the UI, this will create forms that have headers between properties.
+            Additionally, use the `Column` attribute to suggest which column the properties should be placed in on wide screens.
+            WARNING: May cause problems with Blazor debugging, see: https://github.com/dotnet/aspnetcore/issues/25380
+            </summary>
+        </member>
+        <member name="M:ExtraDry.Core.HeaderAttribute.#ctor(System.String)">
+            <summary>
+            Create a new header with the specified title.
+            </summary>
+        </member>
+        <member name="P:ExtraDry.Core.HeaderAttribute.Title">
+            <summary>
+            The title that is displayed, typically in an HTML fieldset legend.
+            </summary>
+        </member>
+        <member name="P:ExtraDry.Core.HeaderAttribute.Column">
+            <summary>
+            The preferred column for the group of properties.
+            May be ignored by layout depending on screen width.
+            </summary>
+        </member>
+        <member name="P:ExtraDry.Core.HeaderAttribute.Description">
+            <summary>
+            The optional description that is placed on the header in the form.
+            </summary>
+        </member>
+        <member name="T:ExtraDry.Core.IEntityResolver`1">
+            <summary>
+            Resolves an entity on the server from a sample of that entity, typically sent over the network.
+            Service classes will typically implement this so that child objects of a resource can be resolved to the appropriate server-side entity.
+            E.g. When a controller recieves a `Company` with a child `Sector` it will have received a deserialized copy of sector, 
+            this sector is not linked back to the data store and the system might need to have the 'right' instance of sector resolved.
+            </summary>
+        </member>
+        <member name="M:ExtraDry.Core.IEntityResolver`1.ResolveAsync(`0)">
+            <summary>
+            Returns the correct object for the given examplar.  This could be an existing one looked up by a Unique ID, 
+            or the examplar could be returned after being attached to the database, etc.
+            </summary>
+        </member>
+        <member name="T:ExtraDry.Core.NotEmptyAttribute">
+            <summary>
+            Ensures that a Guid or Decimal is not the empty or default value.  
+            Distinct from null in that it exists but does not have a value.  
+            </summary>
+        </member>
+        <member name="T:ExtraDry.Core.RuleAction">
+            <summary>
+            Actions that are used by rules to determine how creates and updates should be processed.
+            </summary>
+        </member>
+        <member name="F:ExtraDry.Core.RuleAction.Allow">
+            <summary>
+            Changes to values will always be allowed by `RuleEngine`.
+            </summary>
+        </member>
+        <member name="F:ExtraDry.Core.RuleAction.Ignore">
+            <summary>
+            Changes to values will always be ignored by `RuleEngine`.
+            </summary>
+        </member>
+        <member name="F:ExtraDry.Core.RuleAction.IgnoreDefaults">
+            <summary>
+            Values of `default` or `null` will be ignored, others will be allowed by `RuleEngine`.
+            </summary>
+        </member>
+        <member name="F:ExtraDry.Core.RuleAction.Block">
+            <summary>
+            Any attempt to change a value will raise an exception by the `RuleEngine`.
+            Values of `default` or `null` do not trigger the exception.
+            </summary>
+        </member>
+        <member name="F:ExtraDry.Core.RuleAction.Link">
+            <summary>
+            Incoming values are not copied, instead the matching `IEntityResolver` is
+            used to lookup the existing entity to link to.
+            </summary>
+        </member>
+        <member name="T:ExtraDry.Core.RulesAttribute">
+            <summary>
+            Declare for a property to instruce the `RuleEngine` how to address the creating, updating and deleting of the property.
+            WARNING: May cause problems with Blazor debugging, see: https://github.com/dotnet/aspnetcore/issues/25380
+            NOTE: Issue reported fixed in .NET 6 (due Nov 2021)
+            </summary>
+        </member>
+        <member name="P:ExtraDry.Core.RulesAttribute.DeleteValue">
+            <summary>
+            If set, provides a value that is applied to this property during a deletion.
+            The `RuleEngine.Delete` method will return `true` if any properties have a DeleteValue.
+            This should be interpreted as a soft-delete.
+            </summary>
+        </member>
+        <member name="P:ExtraDry.Core.BlobInfo.Url">
+            <summary>
+            The Url for the blob that allows direct access without using this API.
+            </summary>
+        </member>
+        <member name="P:ExtraDry.Core.BlobInfo.MimeType">
+            <summary>
+            The mime type of the blob which is delivered along with the blob when requested.
+            Defaults to `application/octet-string` which is the most generic option.
+            </summary>
+        </member>
+        <member name="P:ExtraDry.Core.ContentContainer.Html">
+            <summary>
+            The HTML for the content element.  This HTML should be kept very clean, most tags and styles are invalid.
+            </summary>
+        </member>
+        <member name="T:ExtraDry.Core.FilteredCollection`1">
+            <summary>
+            Represents a generic payload for returning lists of items from an API.
+            </summary>
+        </member>
+        <member name="P:ExtraDry.Core.FilteredCollection`1.Created">
+            <summary>
+            The UTC date/time that the partial results were created.
+            The client could use this as part of a caching strategy, but this is not needed by the server.
+            </summary>
+        </member>
+        <member name="P:ExtraDry.Core.FilteredCollection`1.Filter">
+            <summary>
+            If the full collection is a subset of all items, this is the query that was used to filter the full collection.
+            </summary>
+        </member>
+        <member name="P:ExtraDry.Core.FilteredCollection`1.Sort">
+            <summary>
+            If the collection is sorted, this is the name of the Property the sort is performed on.
+            </summary>
+        </member>
+        <member name="P:ExtraDry.Core.FilteredCollection`1.Stabilizer">
+            <summary>
+            For sorted collections, the stabilizer resolves ties consistently.
+            Choose a unique monotonically increasing value such as Id or CreatedDate, not typically shown to users.
+            </summary>
+        </member>
+        <member name="P:ExtraDry.Core.FilteredCollection`1.Count">
+            <summary>
+            The total number of items in the full collection of items.
+            </summary>
+        </member>
+        <member name="P:ExtraDry.Core.FilteredCollection`1.Items">
+            <summary>
+            The actual collecton of items.  Within the full collection, these are in the position offset by `Start`.
+            </summary>
+            <remarks>
+            Urge to make private setter is strong, but breaks System.Text.Json...
+            </remarks>
+        </member>
+        <member name="T:ExtraDry.Core.FilterQuery">
+            <summary>
+            Represents a basic query to filter against a list of items.
+            </summary>
+        </member>
+        <member name="P:ExtraDry.Core.FilterQuery.Filter">
+            <summary>
+            The entity specific text to filter the collection by.
+            This will typically match across multiple properties or even access a full text index.
+            </summary>
+        </member>
+        <member name="P:ExtraDry.Core.FilterQuery.Sort">
+            <summary>
+            If the request would like sorted results, the name of the property to sort by.
+            </summary>
+        </member>
+        <member name="P:ExtraDry.Core.FilterQuery.Stabilizer">
+            <summary>
+            A property that is used to break sorting ties, should be unique and 
+            ideally monotonically increasing.
+            </summary>
+        </member>
+        <member name="P:ExtraDry.Core.FilterQuery.Ascending">
+            <summary>
+            Indicates if the results are requested in ascending order by `Sort`.
+            </summary>
+        </member>
+        <member name="T:ExtraDry.Core.PagedCollection`1">
+            <summary>
+            Represents a generic payload for returning lists of items from an API that need to be fragmented for performance.
+            </summary>
+        </member>
+        <member name="P:ExtraDry.Core.PagedCollection`1.Start">
+            <summary>
+            The starting index of this partial collection within the full collection.
+            </summary>
+        </member>
+        <member name="P:ExtraDry.Core.PagedCollection`1.Total">
+            <summary>
+            The total number of items in the full collection of items.
+            </summary>
+        </member>
+        <member name="P:ExtraDry.Core.PagedCollection`1.ContinuationToken">
+            <summary>
+            An arbitrary token sent by the server used to managed consistency of results.
+            As a best-practice, always send this token back to the server when fetching additional partial results,
+            don't rely on the `Query` and `Start` indexes alone.
+            </summary>
+        </member>
+        <member name="P:ExtraDry.Core.PagedCollection`1.IsFullCollection">
+            <summary>
+            Indicates if this partial collection is also the full collection.
+            Typical when the collection on the server is small.
+            </summary>
+        </member>
+        <member name="T:ExtraDry.Core.PageQuery">
+            <summary>
+            Standard payload for list controllers endpoints that return paged results, e.g. using `PartialCollection`.
+            </summary>
+        </member>
+        <member name="P:ExtraDry.Core.PageQuery.Skip">
+            <summary>
+            The number of records to skip before returning results.
+            </summary>
+        </member>
+        <member name="P:ExtraDry.Core.PageQuery.Take">
+            <summary>
+            The requested number of records to take.  
+            Actual result might be less based on available records or endpoint limitations.
+            </summary>
+        </member>
+        <member name="P:ExtraDry.Core.PageQuery.Token">
+            <summary>
+            The continuation token from the previous response.
+            When provided, this will override other options such as `Sort` and `Filter`, but not `Skip` and `Take`.
+            </summary>
+        </member>
+        <member name="F:ExtraDry.Core.PageQuery.DefaultTake">
+            <summary>
+            The default number of items to take if none provided.
+            </summary>
+        </member>
+        <member name="T:ExtraDry.Server.QueryableExtensions">
+            <summary>
+            A very lightweight dynamic linq builder, just enough to satisfy needs of filtering, sorting and paging API result sets.
+            </summary>
+        </member>
+        <member name="M:ExtraDry.Server.QueryableExtensions.Sort``1(System.Linq.IQueryable{``0},System.String,System.Nullable{System.Boolean},System.String,System.String)">
+            <summary>
+            Given a name of a property and an order, dynamically creates a sort query.
+            Also merges in the continuation token to supply values for consisted paging.
+            On conflict, the token will override the specified sort.
+            </summary>
+            <param name="source">The queryable source, typically from EF, this is from `DbSet.AsQueryable()`</param>
+            <param name="sort">The name of the property to sort by (optional, case insensitive)</param>
+            <param name="ascending">Indicates if the order is ascending or not (optional, default true)</param>
+            <param name="stabilizer">The name of a unique property to ensure paging works, use monotonically increasing value such as `int Identity` or created timestamp (required, case insensitive)</param>
+            <param name="token">If this is not a new request, the token passed back from the previous request to maintain stability (optional)</param>
+        </member>
+        <member name="M:ExtraDry.Server.QueryableExtensions.Page``1(System.Linq.IQueryable{``0},System.Int32,System.Int32,System.String)">
+            <summary>
+            Given a starting position and page size, returns a subset of the a collection.
+            Use will typically immediately follow a call to `Sort`.
+            Also merges in continuation token to supply values for paging if skip and take are missing.
+            On conflict, the skip and take values will override the token.
+            </summary>
+            <param name="source">The queryable source, typically from result of call to `Sort`</param>
+            <param name="skip">The number of records to skip, if paging this is the page number times the take size.</param>
+            <param name="take">the number of records to take, this is the page size of the fetch.  Use to balance call API latency versus bandwidth</param>
+            <param name="token">If this is not a new request, the token passed back from the previous request to maintain stability (optional)</param>
+        </member>
+        <member name="T:ExtraDry.Server.Internal.ContinuationToken">
+            <summary>
+            Represents a token that can be used to help keep pages of results in a stable order when calling APIs.
+            </summary>
+            <remarks>
+            This class is kept internal as the actual contents shouldn't leak to consumers.
+            It's not security critical, but want to discourage any token hacking so that future versions aren't breaking changes.
+            </remarks>
+        </member>
+        <member name="M:ExtraDry.Server.Internal.ContinuationToken.Next(System.Int32,System.Int32)">
+            <summary>
+            Returns the next token for the page that follows this token.
+            The token's skip and take are used unless overridden, in which case the skipOverride and the takeOverride
+            are considered as part of the current token, not the next token.
+            </summary>
+        </member>
+        <member name="M:ExtraDry.Server.Internal.ContinuationToken.ActualTake(ExtraDry.Server.Internal.ContinuationToken,System.Int32)">
+            <summary>
+            Returns the winning `take` amount where API call can override token, but not make it 0.
+            </summary>
+        </member>
+        <member name="M:ExtraDry.Server.Internal.ContinuationToken.ActualSkip(ExtraDry.Server.Internal.ContinuationToken,System.Int32)">
+            <summary>
+            Returns the winning `skip` amount where API call can override token (but both must agree to make it zero).
+            </summary>
+        </member>
+        <member name="T:ExtraDry.Server.Internal.FilterProperty">
+            <summary>
+            Encapsulates a property that has the `FilterAttribute` on it.
+            </summary>
+        </member>
+        <member name="T:ExtraDry.Server.Internal.LinqBuilder">
+            <summary>
+            A very lightweight dynamic linq builder, just enough to satisfy needs of filtering, sorting and paging API result sets.
+            </summary>
+        </member>
+        <member name="M:ExtraDry.Server.Internal.LinqBuilder.OrderBy``1(System.Linq.IQueryable{``0},System.String)">
+            <summary>
+            Sorts the elements of the sequence according to a key which is provided by name instead of a lambda.
+            </summary>
+        </member>
+        <member name="M:ExtraDry.Server.Internal.LinqBuilder.OrderByDescending``1(System.Linq.IQueryable{``0},System.String)">
+            <summary>
+            Sorts the elements of the sequence, in descending order, according to a key which is provided by name instead of a lambda.
+            </summary>
+        </member>
+        <member name="M:ExtraDry.Server.Internal.LinqBuilder.ThenBy``1(System.Linq.IOrderedQueryable{``0},System.String)">
+            <summary>
+            Performs a subsequent ordering of a sequence according to a key which is provided by name instead of a lambda.
+            </summary>
+        </member>
+        <member name="M:ExtraDry.Server.Internal.LinqBuilder.ThenByDescending``1(System.Linq.IOrderedQueryable{``0},System.String)">
+            <summary>
+            Performs a subsequent ordering of a sequence, in descending order, according to a key which is provided by name instead of a lambda.
+            </summary>
+        </member>
+        <member name="M:ExtraDry.Server.Internal.LinqBuilder.ApplyOrder``1(System.Linq.IQueryable{``0},System.String,ExtraDry.Server.Internal.LinqBuilder.OrderType)">
+            <summary>
+            Applies LINQ method by property name and method name instead of using Method and Lambda.
+            </summary>
+            <remarks>see https://stackoverflow.com/questions/41244/dynamic-linq-orderby-on-ienumerablet-iqueryablet</remarks>
+        </member>
+        <member name="M:ExtraDry.Server.Internal.LinqBuilder.WhereFilterConditions``1(System.Linq.IQueryable{``0},ExtraDry.Server.Internal.FilterProperty[],System.String)">
+            <summary>
+            Given a list of filter properties and a list of match strings, constructs a queryable for an existing queryable.
+            </summary>
+            <remarks>
+            This builds a Conjunctive Normal Form (CNF) linq expression where each string in `matchValues` must exist in 
+            at least one of the properties.  The exact comparison function is also determined by the properties' filter attribute.
+            </remarks>
+        </member>
+        <member name="T:ExtraDry.Server.RuleEngine">
+            <summary>
+            Provides business rule logic for Creating, Updating and Deleting objects from untrusted sources.
+            The untrusted source is usually an object deserialized from JSON from an API or MVC call. 
+            The rules for overwriting, ignoring, or blocking changes are defined by applying the `RuleAttribute` to each property.
+            The `RuleEngine` should then be dependency injected into services where its methods will consistently apply business rules.
+            </summary>
+        </member>
+        <member name="M:ExtraDry.Server.RuleEngine.#ctor(System.IServiceProvider)">
+            <summary>
+            Creates a new RuleEngine, typically only called from the DI service.
+            The IServiceProvider is used to further discover IEntityResolver objects for cases where the rule engine
+            is attempting to link to an existing object.
+            </summary>
+        </member>
+        <member name="M:ExtraDry.Server.RuleEngine.Create``1(``0)">
+            <summary>
+            Given an potentially untrusted and unvalidated exemplar of an object, create a new copy of that object with business rules applied.
+            Any validation issues or rule violations will throw an exception.
+            </summary>
+        </member>
+        <member name="M:ExtraDry.Server.RuleEngine.UpdateAsync``1(``0,``0)">
+            <summary>
+            Updates the `destination` with properties from `source`, while applying business logic rules in annotations.
+            The source object will be validated using data annotations first, then properties will be copied across, where:
+              `JsonIgnore` properties will be skipped, these are typically empty as the source has likely been deserialized from the network;
+              `Rules(UpdateAction.BlockChanges)` annotations will throw an exception if a change is attempted;
+              `Rules(UpdateAction.Ignore)` annotations will not be copied;
+              `Rules(UpdateAction.IgnoreDefaults)` annotations will not be copied if the source property is `null` or `default`.
+            </summary>
+        </member>
+        <member name="P:ExtraDry.Server.RuleEngine.MaxRecursionDepth">
+            <summary>
+            When copying an object (during create or update) that allows for nested objects, the number
+            of nesting that the system will stop at.  This will prevent recursion issues when two objects reference
+            each other.  This can be increased if necessary for large trees of data.
+            </summary>
+        </member>
+        <member name="M:ExtraDry.Server.RuleEngine.Delete``1(``0,System.Action)">
+            <summary>
+            Processes a delete of an item setting the appropriate fields.
+            If any fields have `DeleteValue` set on their `RuleAttribute`, then the item is soft-deleted and the method return true.
+            Otherwise, it executes the indicated `hardDeletePrepare` action (typically remove from collection, without commit).
+            </summary>
+            <param name="item">The item to delete, a soft-delete is attempted first.</param>
+            <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
+        </member>
+        <member name="M:ExtraDry.Server.RuleEngine.DeleteSoft``1(``0,System.Action,System.Action)">
+            <summary>
+            Processes a delete of an item setting the appropriate fields.
+            If any fields have `DeleteValue` set on their `RulesAttribute`, then the item is soft-deleted and the method return true.
+            Otherwise, it executes the indicated `hardDeletePrepare` action (typically remove from collection);
+            followed by the indicated `hardDeleteCommit` action, if provided.
+            </summary>
+            <param name="item">The item to delete, a soft-delete is attempted first.</param>
+            <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
+            <param name="hardDeleteCommit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
+        </member>
+        <member name="M:ExtraDry.Server.RuleEngine.DeleteSoftAsync``1(``0,System.Action,System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Processes a delete of an item setting the appropriate fields.
+            If any fields have `DeleteValue` set on their `RulesAttribute`, then the item is soft-deleted and the method return true.
+            Otherwise, it executes the indicated `hardDeletePrepare` action (typically remove from collection);
+            followed by the indicated `hardDeleteCommit` action, if provided.
+            </summary>
+            <param name="item">The item to delete, a soft-delete is attempted first.</param>
+            <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
+            <param name="hardDeleteCommit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
+        </member>
+        <member name="M:ExtraDry.Server.RuleEngine.DeleteSoftAsync``1(``0,System.Func{System.Threading.Tasks.Task},System.Action)">
+            <summary>
+            Processes a delete of an item setting the appropriate fields.
+            If any fields have `DeleteValue` set on their `RulesAttribute`, then the item is soft-deleted and the method return true.
+            Otherwise, it executes the indicated `hardDeletePrepare` action (typically remove from collection);
+            followed by the indicated `hardDeleteCommit` action, if provided.
+            </summary>
+            <param name="item">The item to delete, a soft-delete is attempted first.</param>
+            <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
+            <param name="hardDeleteCommit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
+        </member>
+        <member name="M:ExtraDry.Server.RuleEngine.DeleteSoftAsync``1(``0,System.Func{System.Threading.Tasks.Task},System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Processes a delete of an item setting the appropriate fields.
+            If any fields have `DeleteValue` set on their `RulesAttribute`, then the item is soft-deleted and the method return true.
+            Otherwise, it executes the indicated `hardDeletePrepare` action (typically remove from collection);
+            followed by the indicated `hardDeleteCommit` action, if provided.
+            </summary>
+            <param name="item">The item to delete, a soft-delete is attempted first.</param>
+            <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
+            <param name="hardDeleteCommit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
+        </member>
+        <member name="M:ExtraDry.Server.RuleEngine.DeleteHard``1(``0,System.Action,System.Action)">
+            <summary>
+            Processes a hard delete of an item if possible, even if a `DeleteValue` is provided in the `RulesAttribute`.
+            This allows for the database to notify if a hard-delete is not possible by throwing an exception in the commit.
+            If not possible, then the soft-delete is performed instead.
+            If neither is possible, an exception is thrown.
+            </summary>
+            <param name="item">The item to delete, a soft-delete is attempted first.</param>
+            <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
+            <param name="hardDeleteCommit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
+        </member>
+        <member name="M:ExtraDry.Server.RuleEngine.DeleteHardAsync``1(``0,System.Action,System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Processes a hard delete of an item if possible, even if a `DeleteValue` is provided in the `RulesAttribute`.
+            This allows for the database to notify if a hard-delete is not possible by throwing an exception in the commit.
+            If not possible, then the soft-delete is performed instead.
+            If neither is possible, an exception is thrown.
+            </summary>
+            <param name="item">The item to delete, a soft-delete is attempted first.</param>
+            <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
+            <param name="hardDeleteCommit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
+        </member>
+        <member name="M:ExtraDry.Server.RuleEngine.DeleteHardAsync``1(``0,System.Func{System.Threading.Tasks.Task},System.Action)">
+            <summary>
+            Processes a hard delete of an item if possible, even if a `DeleteValue` is provided in the `RulesAttribute`.
+            This allows for the database to notify if a hard-delete is not possible by throwing an exception in the commit.
+            If not possible, then the soft-delete is performed instead.
+            If neither is possible, an exception is thrown.
+            </summary>
+            <param name="item">The item to delete, a soft-delete is attempted first.</param>
+            <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
+            <param name="hardDeleteCommit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
+        </member>
+        <member name="M:ExtraDry.Server.RuleEngine.DeleteHardAsync``1(``0,System.Func{System.Threading.Tasks.Task},System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Processes a hard delete of an item if possible, even if a `DeleteValue` is provided in the `RulesAttribute`.
+            This allows for the database to notify if a hard-delete is not possible by throwing an exception in the commit.
+            If not possible, then the soft-delete is performed instead.
+            If neither is possible, an exception is thrown.
+            </summary>
+            <param name="item">The item to delete, a soft-delete is attempted first.</param>
+            <param name="remove">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
+            <param name="commit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
+        </member>
+        <member name="M:ExtraDry.Server.RuleEngine.ResolveEntityValue(System.Type,System.Object)">
+            <summary>
+            Given an object, especially one that has been deserialized, attempts to resolve a version of that object
+            that might be a database entity.  Uses `IEntityResolver` class in DI to find potential replacement.
+            This only works for objects, value types are always copies, so sourceValue is always returned.
+            </summary>
+        </member>
+    </members>
+</doc>

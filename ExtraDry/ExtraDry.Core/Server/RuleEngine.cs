@@ -9,8 +9,20 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ExtraDry.Server {
+
+    /// <summary>
+    /// Provides business rule logic for Creating, Updating and Deleting objects from untrusted sources.
+    /// The untrusted source is usually an object deserialized from JSON from an API or MVC call. 
+    /// The rules for overwriting, ignoring, or blocking changes are defined by applying the `RuleAttribute` to each property.
+    /// The `RuleEngine` should then be dependency injected into services where its methods will consistently apply business rules.
+    /// </summary>
     public class RuleEngine {
 
+        /// <summary>
+        /// Creates a new RuleEngine, typically only called from the DI service.
+        /// The IServiceProvider is used to further discover IEntityResolver objects for cases where the rule engine
+        /// is attempting to link to an existing object.
+        /// </summary>
         public RuleEngine(IServiceProvider serviceProvider)
         {
             scopedServices = serviceProvider;
@@ -89,7 +101,12 @@ namespace ExtraDry.Server {
             await UpdatePropertiesAsync(source, destination, MaxRecursionDepth);
         }
 
-        public int MaxRecursionDepth = 20;
+        /// <summary>
+        /// When copying an object (during create or update) that allows for nested objects, the number
+        /// of nesting that the system will stop at.  This will prevent recursion issues when two objects reference
+        /// each other.  This can be increased if necessary for large trees of data.
+        /// </summary>
+        public int MaxRecursionDepth { get; set; } = 20;
 
         private async Task UpdatePropertiesAsync<T>(T source, T destination, int depth)
         {
