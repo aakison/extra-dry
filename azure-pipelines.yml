@@ -118,7 +118,7 @@ steps:
   inputs:
     command: publish
     publishWebProjects: false
-    projects: '**/*.csproj'
+    projects: '**/ExtraDry*/*.csproj'
     arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory) --no-build'
     zipAfterPublish: false
     modifyOutputPath: false
