@@ -118,7 +118,7 @@ steps:
   inputs:
     command: publish
     publishWebProjects: false
-    projects: '**/ExtraDry*/*.csproj'
+    projects: $(projectsGlob)
     arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory) --no-build'
     zipAfterPublish: false
     modifyOutputPath: false
@@ -136,7 +136,7 @@ steps:
   condition: and(succeeded(), eq(variables.isForDeployment, true))
   inputs:
     command: 'pack'
-    packagesToPack: '**/ExtraDry*/*.csproj'
+    packagesToPack: $(projectsGlob)
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'semanticVersion'
     arguments: '/p:Version=$(semanticVersion) --no-build'
