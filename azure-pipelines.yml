@@ -59,19 +59,6 @@ steps:
         exit 1
       }
 
-- task: DotNetCoreCLI@2
-  displayName: Build
-  inputs:
-    projects: $(projectsGlob)
-    arguments: '--configuration $(BuildConfiguration)'
-
-- task: DotNetCoreCLI@2
-  displayName: Test
-  inputs:
-    command: test
-    projects: '**/*Tests/*.csproj'
-    arguments: '--configuration $(BuildConfiguration)' # TODO: --collect "Code coverage"???
-
 - task: PowerShell@2
   name: GitSemVer
   displayName: 'Evaluate Git Semantic Version'
@@ -118,6 +105,19 @@ steps:
       PublishVariable "patchVersion" $patchVersion
       PublishVariable "prereleaseVersion" $prereleaseVersion
       PublishVariable "semanticVersion" $semanticVersion
+
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    projects: $(projectsGlob)
+    arguments: '--configuration $(BuildConfiguration) /p:Version=$(semanticVersion) /p:InformationalVersion=$(semanticVersion)'
+
+- task: DotNetCoreCLI@2
+  displayName: Test
+  inputs:
+    command: test
+    projects: '**/*Tests/*.csproj'
+    arguments: '--configuration $(BuildConfiguration)' # TODO: --collect "Code coverage"???
 
 - task: DotNetCoreCLI@2
   displayName: Pack
