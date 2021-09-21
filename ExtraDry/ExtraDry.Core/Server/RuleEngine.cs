@@ -214,8 +214,9 @@ namespace ExtraDry.Server {
 
         /// <summary>
         /// Processes a delete of an item setting the appropriate fields.
-        /// If any fields have `DeleteValue` set on their `RuleAttribute`, then the item is soft-deleted and the method return true.
-        /// Otherwise, it executes the indicated `hardDeletePrepare` action (typically remove from collection, without commit).
+        /// If any fields have `DeleteValue` set on their `RuleAttribute`, then the item is soft-deleted and the method return `SoftDeleted`.
+        /// Otherwise, it executes the indicated `hardDeletePrepare` action (typically remove from collection, without commit) and
+        /// the method returns `HardDeleted`.
         /// </summary>
         /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
         /// <param name="hardDeletePrepare">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
