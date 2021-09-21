@@ -112,6 +112,18 @@ steps:
     projects: $(projectsGlob)
     arguments: '--configuration $(BuildConfiguration) /p:Version=$(semanticVersion) /p:InformationalVersion=$(semanticVersion)'
 
+# Temporary to check dll before it gets packed.
+- task: DotNetCoreCLI@2
+  displayName: 'Publish Raw Files'
+  inputs:
+    command: publish
+    publishWebProjects: false
+    projects: '**/*.csproj'
+    arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
+    zipAfterPublish: false
+    modifyOutputPath: false
+# end temp
+
 - task: DotNetCoreCLI@2
   displayName: Test
   inputs:
