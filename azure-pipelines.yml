@@ -129,7 +129,7 @@ steps:
   inputs:
     command: test
     projects: '**/*Tests/*.csproj'
-    arguments: '--configuration $(BuildConfiguration) --no-build' # TODO: --collect "Code coverage"???
+    arguments: '--configuration $(BuildConfiguration) --collect "Code coverage" --no-build'
 
 - task: DotNetCoreCLI@2
   displayName: Pack

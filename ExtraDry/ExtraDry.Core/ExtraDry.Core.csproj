@@ -4,7 +4,6 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
     <PackageId>ExtraDry.Core</PackageId>
-    <Version>0.1</Version>
     <Authors>adrian.akison</Authors>
     <Company>FMI Works</Company>
     <Description>Extensions to Blazor and DRY libraries to create Blazor client/server applications with a lower-code footprint.  Use this Core library for server side and shared library common elements.</Description>
