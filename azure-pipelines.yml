@@ -110,7 +110,7 @@ steps:
   displayName: Build
   inputs:
     projects: $(projectsGlob)
-    arguments: '--configuration $(BuildConfiguration) /p:Version=$(semanticVersion) /p:InformationalVersion=$(semanticVersion)'
+    arguments: '--configuration $(BuildConfiguration) /p:Version=$(semanticVersion) /p:InformationalVersion=$(semanticVersion) --no-restore'
 
 # Temporary to check dll before it gets packed.
 - task: DotNetCoreCLI@2
@@ -119,7 +119,7 @@ steps:
     command: publish
     publishWebProjects: false
     projects: '**/*.csproj'
-    arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory) /p:Version=$(semanticVersion) /p:InformationalVersion=$(semanticVersion)'
+    arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory) --no-build'
     zipAfterPublish: false
     modifyOutputPath: false
 # end temp
@@ -129,7 +129,7 @@ steps:
   inputs:
     command: test
     projects: '**/*Tests/*.csproj'
-    arguments: '--configuration $(BuildConfiguration) /p:Version=$(semanticVersion) /p:InformationalVersion=$(semanticVersion)' # TODO: --collect "Code coverage"???
+    arguments: '--configuration $(BuildConfiguration) --no-build' # TODO: --collect "Code coverage"???
 
 - task: DotNetCoreCLI@2
   displayName: Pack
@@ -139,7 +139,7 @@ steps:
     packagesToPack: '**/ExtraDry*/*.csproj'
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'semanticVersion'
-    arguments: '/p:Version=$(semanticVersion) /p:InformationalVersion=$(semanticVersion)'
+    arguments: '/p:Version=$(semanticVersion) --no-build'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact'
