@@ -127,6 +127,7 @@ steps:
     packagesToPack: '**/ExtraDry*/*.csproj'
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'semanticVersion'
+    arguments: '/p:Version=$(semanticVersion) /p:InformationalVersion=$(semanticVersion)'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact'
