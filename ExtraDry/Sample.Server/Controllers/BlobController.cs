@@ -3,7 +3,6 @@
 using ExtraDry.Core;
 using Microsoft.AspNetCore.Mvc;
 using Sample.Data.Services;
-using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -18,8 +17,15 @@ namespace Sample.Server.Controllers {
             blobs = blobService;
         }
 
+        /// <summary>
+        /// Paginated list of all blobs
+        /// </summary>
+        /// <remarks>
+        /// Provides a paged list of all blobs.
+        /// </remarks>
+        /// <param name="query"></param>
+        /// <returns></returns>
         [HttpGet("api/blobs")]
-        [SwaggerOperation("List all blobs", "Provides a paged list of all blobs.")]
         [Produces("application/json")]
         public async Task<PagedCollection<BlobInfo>> List([FromQuery] PageQuery query)
         {
@@ -55,16 +61,28 @@ namespace Sample.Server.Controllers {
             return File(content, blob.MimeType);
         }
 
-        [HttpGet("api/blobs/{uniqueId}")]
-        [SwaggerOperation("Retrieve a specific blob's information.")]
+        /// <summary>
+        /// "Retrieve a specific blob's information."
+        /// </summary>
+        /// <param name="uuid"></param>
+        /// <returns></returns>
+        [HttpGet("api/blobs/{uuid}")]
         [Produces("application/json")]
-        public async Task<BlobInfo> Retrieve(Guid uniqueId)
+        public async Task<BlobInfo> Retrieve(Guid uuid)
         {
-            return await blobs.RetrieveAsync(uniqueId);
+            return await blobs.RetrieveAsync(uuid);
         }
 
+        /// <summary>
+        /// Update an existing blob description.
+        /// </summary>
+        /// <remarks>
+        /// Updates information about the indicated blob, to change the blob content use the `/upload` endpoint.
+        /// </remarks>
+        /// <param name="uniqueId"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         [HttpPut("api/blobs/{uniqueId}")]
-        [SwaggerOperation("Update an existing blob description.", "Updates information about the indicated blob, to change the blob content use the `/upload` endpoint.")]
         [Consumes("application/octet-stream")]
         public async Task Update(Guid uniqueId, [FromBody] BlobInfo value)
         {
@@ -74,8 +92,12 @@ namespace Sample.Server.Controllers {
             await blobs.UpdateAsync(value);
         }
 
+        /// <summary>
+        /// Delete an existing blob.
+        /// </summary>
+        /// <param name="uniqueId"></param>
+        /// <returns></returns>
         [HttpDelete("api/blobs/{uniqueId}")]
-        [SwaggerOperation("Delete an existing blob.")]
         public async Task Delete(Guid uniqueId)
         {
             await blobs.DeleteAsync(uniqueId);

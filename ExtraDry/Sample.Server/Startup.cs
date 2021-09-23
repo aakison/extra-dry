@@ -11,10 +11,13 @@ using Microsoft.OpenApi.Models;
 using Sample.Data;
 using Sample.Data.Services;
 using Sample.Shared;
+using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Sample.Server {
     public class Startup {
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -29,13 +32,17 @@ namespace Sample.Server {
             services.AddDbContext<SampleContext>(opt => opt.UseInMemoryDatabase("sample"));
             services.AddControllersWithViews();
             services.AddRazorPages();
-            services.AddSwaggerGen(c => {
-                c.SwaggerDoc("v1", new OpenApiInfo {
+            services.AddSwaggerGen(openapi => {
+                openapi.SwaggerDoc("v1", new OpenApiInfo {
                     Version = "v1",
                     Title = "Sample API",
                     Description = "A sample API for Blazor.ExtraDry",
                 });
-                c.EnableAnnotations();
+                foreach(var docfile in new string[] { "Sample.Shared.xml", "Sample.Server.xml" }) {
+                    var webAppXml = Path.Combine(AppContext.BaseDirectory, docfile);
+                    openapi.IncludeXmlComments(webAppXml, includeControllerXmlComments: true);
+                }
+                //c.EnableAnnotations();
             });
 
             services.AddScoped<EmployeeService>();
@@ -66,6 +73,7 @@ namespace Sample.Server {
             app.UseSwagger();
             app.UseSwaggerUI(c => {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                c.InjectStylesheet("/css/swagger-ui-extensions.css");
                 c.DocumentTitle = "Sample Blazor.ExtraDry APIs";
             });
             app.UseBlazorFrameworkFiles();

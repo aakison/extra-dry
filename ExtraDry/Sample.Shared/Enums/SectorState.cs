@@ -8,13 +8,15 @@ namespace Sample.Shared {
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum SectorState {
 
-        Unknown = 0,
+        /// <summary>
+        /// The sector is currently active and can be assigned to new companies.
+        /// </summary>
+        Active = 0,
 
-        Pending = 1,
-
-        Active = 2,
-
-        Inactive = 3,
+        /// <summary>
+        /// The sector is inactive and no longer in use, but still might be attached to historical companies.
+        /// </summary>
+        Inactive = 1,
 
     }
 }

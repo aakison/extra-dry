@@ -4,7 +4,6 @@ using ExtraDry.Core;
 using Microsoft.AspNetCore.Mvc;
 using Sample.Data.Services;
 using Sample.Shared;
-using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Threading.Tasks;
 
@@ -18,29 +17,52 @@ namespace Sample.Server.Controllers {
             contents = contentsService;
         }
 
+        /// <summary>
+        /// Filtered list of all contents
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
         [HttpGet("api/contents"), Produces("application/json")]
-        [SwaggerOperation("Filtered list of all contents")]
         public async Task<FilteredCollection<Content>> List([FromQuery] FilterQuery query)
         {
             return await contents.ListAsync(query);
         }
 
+        /// <summary>
+        /// Create a new page of content
+        /// </summary>
+        /// <remarks>
+        /// Create a new content entity at the URI, the uniqueId in the URI must match the Id in the payload.
+        /// </remarks>
+        /// <param name="value"></param>
+        /// <returns></returns>
         [HttpPost("api/contents"), Consumes("application/json")]
-        [SwaggerOperation("Create a new page of content.", "Create a new content entity at the URI, the uniqueId in the URI must match the Id in the payload.")]
         public async Task Create(Content value)
         {
             await contents.CreateAsync(value);
         }
 
+        /// <summary>
+        /// Retreive a specific page of content
+        /// </summary>
+        /// <param name="contentId"></param>
+        /// <returns></returns>
         [HttpGet("api/contents/{contentId}"), Produces("application/json")]
-        [SwaggerOperation("Retreive a specific page of content")]
         public async Task<Content> Retrieve(Guid contentId)
         {
             return await contents.RetrieveAsync(contentId);
         }
 
+        /// <summary>
+        /// Update an existing page of content
+        /// </summary>
+        /// <remarks>
+        /// Update the content at the URI, the uniqueId in the URI must match the Id in the payload.
+        /// </remarks>
+        /// <param name="contentId"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         [HttpPut("api/contents/{contentId}"), Consumes("application/json")]
-        [SwaggerOperation("Update an existing page of content.", "Update the content at the URI, the uniqueId in the URI must match the Id in the payload.")]
         public async Task Update(Guid contentId, Content value)
         {
             if(contentId != value?.Uuid) {
@@ -49,8 +71,12 @@ namespace Sample.Server.Controllers {
             await contents.UpdateAsync(value);
         }
 
+        /// <summary>
+        /// Delete an existing page of content
+        /// </summary>
+        /// <param name="contentId"></param>
+        /// <returns></returns>
         [HttpDelete("api/contents/{contentId}")]
-        [SwaggerOperation("Delete an existing page of content.")]
         public async Task Delete(Guid contentId)
         {
             await contents.DeleteAsync(contentId);

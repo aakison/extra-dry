@@ -1,0 +1,103 @@
+﻿/* Styles for Improving the Swagger-UI API */
+
+:root {
+  --light: #eeeeee;
+  --post-accent: #1e90ff;
+  --get-accent: #0db58b;
+  --put-accent: #ac34c8;
+  --delete-accent: #d90846;
+  --white: #ffffff;
+}
+
+/* Brand UI with our logo */
+.swagger-ui img {
+  content: url(/img/extradry-logo.svg);
+  height: 30px;
+  margin: 10px 0;
+}
+
+/* Make buttons wide enough that 'Delete' option isn't different size */
+.swagger-ui .opblock .opblock-summary-method {
+  min-width: 90px;
+}
+
+/* Colors for GET methods, bold button, neutral background */
+.swagger-ui .opblock.opblock-get {
+  border-color: var(--get-accent);
+  background: var(--light);
+}
+
+  .swagger-ui .opblock.opblock-get .opblock-summary-method {
+    background: var(--get-accent);
+  }
+
+  .swagger-ui .opblock.opblock-get .opblock-summary {
+    border-color: var(--get-accent);
+  }
+
+/* Colors for DELETE methods, bold button, neutral background */
+.swagger-ui .opblock.opblock-delete {
+  border-color: var(--delete-accent);
+  background: var(--light);
+}
+
+  .swagger-ui .opblock.opblock-delete .opblock-summary-method {
+    background: var(--delete-accent);
+  }
+
+  .swagger-ui .opblock.opblock-delete .opblock-summary {
+    border-color: var(--delete-accent);
+  }
+
+/* Colors for POST methods, bold button, neutral background */
+.swagger-ui .opblock.opblock-post {
+  border-color: var(--post-accent);
+  background: var(--light);
+}
+
+  .swagger-ui .opblock.opblock-post .opblock-summary-method {
+    background: var(--post-accent);
+  }
+
+  .swagger-ui .opblock.opblock-post .opblock-summary {
+    border-color: var(--post-accent);
+  }
+
+/* Colors for PUT methods, bold button, neutral background */
+.swagger-ui .opblock.opblock-put {
+  border-color: var(--put-accent);
+  background: var(--light);
+}
+
+  .swagger-ui .opblock.opblock-put .opblock-summary-method {
+    background: var(--put-accent);
+  }
+
+  .swagger-ui .opblock.opblock-put .opblock-summary {
+    border-color: var(--put-accent);
+  }
+
+/* The text of the code and the description don't align, remove unnecessary margin in Swashbuckle stylesheet. */
+.swagger-ui .renderedMarkdown p {
+  margin: 0;
+}
+
+/* Add some extra space between responses to visually deliniate them. */
+.swagger-ui .model-example {
+  margin-bottom: 1em;
+}
+
+/* All responses are application/json, don't shown rendering. */
+.swagger-ui section.response-controls {
+  display: none;
+}
+
+/* When using "Try it Out", hide the samples which are just clutter. */
+.swagger-ui .responses-inner h4, .swagger-ui .responses-inner div + table {
+  display: none;
+}
+
+/* When constructing a request, the only option is "application/json", don't show single select dropdown. */
+.swagger-ui .opblock-section-header label {
+  display: none !important;
+}
