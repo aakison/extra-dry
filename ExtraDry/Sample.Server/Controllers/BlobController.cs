@@ -41,8 +41,12 @@ namespace Sample.Server.Controllers {
             return await blobs.UploadAsync(item, bytes);
         }
 
+        /// <summary>
+        /// Download the content of specified blob.
+        /// </summary>
+        /// <param name="uniqueId"></param>
+        /// <returns></returns>
         [HttpGet("api/blobs/{uniqueId}/content")]
-        [SwaggerOperation("Download the content of specified blob.")]
         [Produces("application/octet-stream")]
         public async Task<FileContentResult> DownloadAsync(Guid uniqueId)
         {
