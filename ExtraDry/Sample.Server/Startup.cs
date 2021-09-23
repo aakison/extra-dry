@@ -42,7 +42,6 @@ namespace Sample.Server {
                     var webAppXml = Path.Combine(AppContext.BaseDirectory, docfile);
                     openapi.IncludeXmlComments(webAppXml, includeControllerXmlComments: true);
                 }
-                //c.EnableAnnotations();
             });
 
             services.AddScoped<EmployeeService>();
@@ -75,6 +74,7 @@ namespace Sample.Server {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
                 c.InjectStylesheet("/css/swagger-ui-extensions.css");
                 c.DocumentTitle = "Sample Blazor.ExtraDry APIs";
+                c.EnableTryItOutByDefault();
             });
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
