@@ -129,7 +129,7 @@ steps:
     packagesToPack: $(projectsGlob)
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'semanticVersion'
-    arguments: '--configuration $(BuildConfiguration) --no-build'
+    nobuild: true
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact'
