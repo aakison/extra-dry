@@ -10,11 +10,13 @@ namespace ExtraDry.Core {
         /// <summary>
         /// The starting index of this partial collection within the full collection.
         /// </summary>
+        /// <example>300</example>
         public int Start { get; set; }
 
         /// <summary>
         /// The total number of items in the full collection of items.
         /// </summary>
+        /// <example>1204</example>
         public int Total { get; set; }
 
         /// <summary>
@@ -22,6 +24,7 @@ namespace ExtraDry.Core {
         /// As a best-practice, always send this token back to the server when fetching additional partial results,
         /// don't rely on the `Query` and `Start` indexes alone.
         /// </summary>
+        /// <example>AAAAZAAAAGQAAAA=</example>
         public string? ContinuationToken { get; set; }
 
         /// <summary>

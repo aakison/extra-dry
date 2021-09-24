@@ -18,7 +18,6 @@ namespace ExtraDry.Blazor.Tests.Models {
             Assert.True(DateTime.UtcNow.AddSeconds(-1) < collection.Created);
             Assert.Null(collection.Filter);
             Assert.Null(collection.Sort);
-            Assert.Null(collection.Stabilizer);
         }
 
         [Theory]
@@ -42,7 +41,6 @@ namespace ExtraDry.Blazor.Tests.Models {
             var target = new FilteredCollection<Payload>() {
                 Filter = "filter",
                 Sort = "sort",
-                Stabilizer = "stabilizer",
             };
             var item = new Payload { Pay = "pay", Load = "load" };
             target.Items.Add(item);
@@ -56,7 +54,6 @@ namespace ExtraDry.Blazor.Tests.Models {
             Assert.Equal("load", result.Items.First().Load);
             Assert.Equal("filter", result.Filter);
             Assert.Equal("sort", result.Sort);
-            Assert.Equal("stabilizer", result.Stabilizer);
         }
 
         private class Payload {

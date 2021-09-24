@@ -18,25 +18,21 @@ namespace ExtraDry.Core {
         /// <summary>
         /// If the full collection is a subset of all items, this is the query that was used to filter the full collection.
         /// </summary>
+        /// <example>term property:value</example>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public string? Filter { get; set; }
 
         /// <summary>
         /// If the collection is sorted, this is the name of the Property the sort is performed on.
         /// </summary>
+        /// <example>property</example>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public string? Sort { get; set; }
 
         /// <summary>
-        /// For sorted collections, the stabilizer resolves ties consistently.
-        /// Choose a unique monotonically increasing value such as Id or CreatedDate, not typically shown to users.
-        /// </summary>
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-        public string? Stabilizer { get; set; }
-
-        /// <summary>
         /// The total number of items in the full collection of items.
         /// </summary>
+        /// <example>1204</example>
         public int Count => Items.Count;
 
         /// <summary>

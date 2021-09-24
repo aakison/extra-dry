@@ -19,7 +19,6 @@ namespace ExtraDry.Blazor.Tests.Models {
             Assert.True(DateTime.UtcNow.AddSeconds(-1) < target.Created);
             Assert.Null(target.Filter);
             Assert.Null(target.Sort);
-            Assert.Null(target.Stabilizer);
             Assert.Equal(0, target.Total);
             Assert.Null(target.ContinuationToken);
         }
@@ -47,7 +46,6 @@ namespace ExtraDry.Blazor.Tests.Models {
             var target = new PagedCollection<Payload>() {
                 Filter = "filter",
                 Sort = "sort",
-                Stabilizer = "stabilizer",
                 Start = 0,
                 Total = 1,
             };
@@ -63,7 +61,6 @@ namespace ExtraDry.Blazor.Tests.Models {
             Assert.Equal("load", result.Items.First().Load);
             Assert.Equal("filter", result.Filter);
             Assert.Equal("sort", result.Sort);
-            Assert.Equal("stabilizer", result.Stabilizer);
             Assert.Equal(0, result.Start);
             Assert.Equal(1, result.Total);
         }

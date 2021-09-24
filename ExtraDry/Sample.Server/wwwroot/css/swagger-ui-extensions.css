@@ -126,9 +126,11 @@
 
 
 /* 
-    When using "Try it Out", hide the samples which are just clutter. 
+    After using "Try it Out", hide the samples which are just clutter. 
+    Multiple H4s, just want to remove the one that shows the sample responses.
 */
-.swagger-ui .responses-inner h4, .swagger-ui .responses-inner div + table {
+.swagger-ui .responses-inner > div > h4,
+.swagger-ui .responses-inner div + table {
   display: none;
 }
 
@@ -191,4 +193,12 @@
   display: flex;
   flex-direction: column-reverse;
   padding: 0;
+}
+
+
+/*
+    Remove the hard outline around buttons and operations during expanding
+*/
+.swagger-ui .opblock-summary-control:focus {
+  outline: none;
 }

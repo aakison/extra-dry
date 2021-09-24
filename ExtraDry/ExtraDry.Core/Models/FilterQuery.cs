@@ -9,13 +9,11 @@
         /// The entity specific text to filter the collection by.
         /// This will typically match across multiple properties or even access a full text index.
         /// </summary>
-        /// <example>{global-term} {property-name}:{property-term}</example>
         public string? Filter { get; set; } 
 
         /// <summary>
         /// If the request would like sorted results, the name of the property to sort by.
         /// </summary>
-        /// <example>{property-name}</example>
         public string? Sort { get; set; }
 
         /// <summary>

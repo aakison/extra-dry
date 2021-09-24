@@ -38,7 +38,7 @@ namespace Sample.Server {
                     Title = "Sample API",
                     Description = "A sample API for Blazor.ExtraDry",
                 });
-                foreach(var docfile in new string[] { "Sample.Shared.xml", "Sample.Server.xml" }) {
+                foreach(var docfile in new string[] { "Sample.Shared.xml", "Sample.Server.xml", "ExtraDry.Core.Xml" }) {
                     var webAppXml = Path.Combine(AppContext.BaseDirectory, docfile);
                     openapi.IncludeXmlComments(webAppXml, includeControllerXmlComments: true);
                 }
