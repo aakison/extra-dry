@@ -89,23 +89,6 @@ namespace ExtraDry.Blazor.Tests.Core.Models {
             Assert.Throws<DryException>(() => list.AsQueryable().Sort(query));
         }
 
-        [Fact]
-        public void NoSortSpecifiedUseSpecifiedStabilizer()
-        {
-            var list = new List<CompositeKeyStabilizer> {
-                new CompositeKeyStabilizer { FirstPartKey = 1 },
-                new CompositeKeyStabilizer { FirstPartKey = 3 },
-                new CompositeKeyStabilizer { FirstPartKey = 2 },
-            };
-            var query = new FilterQuery { Stabilizer = nameof(CompositeKeyStabilizer.FirstPartKey) };
-
-            var sorted = list.AsQueryable().Sort(query).ToList();
-
-            Assert.Equal(3, sorted.Count);
-            Assert.Equal(1, sorted.First().FirstPartKey);
-            Assert.Equal(3, sorted.Last().FirstPartKey);
-        }
-
 
         public class IdConventionKey {
             public int Id { get; set; }

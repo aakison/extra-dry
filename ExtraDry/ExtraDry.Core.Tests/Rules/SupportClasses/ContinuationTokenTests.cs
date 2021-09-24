@@ -13,7 +13,6 @@ namespace ExtraDry.Blazor.Tests.Internals {
             Assert.True(token.Ascending);
             Assert.Equal(string.Empty, token.Filter);
             Assert.Equal(string.Empty, token.Sort);
-            Assert.Equal(string.Empty, token.Stabilizer);
             Assert.Equal(0, token.Skip);
             Assert.Equal(0, token.Take);
         }
@@ -21,12 +20,11 @@ namespace ExtraDry.Blazor.Tests.Internals {
         [Fact]
         public void InitializerWithValues()
         {
-            var token = new ContinuationToken("filter", "sort", false, "stabilizer", 10, 20);
+            var token = new ContinuationToken("filter", "sort", false, 10, 20);
 
             Assert.False(token.Ascending);
             Assert.Equal("filter", token.Filter);
             Assert.Equal("sort", token.Sort);
-            Assert.Equal("stabilizer", token.Stabilizer);
             Assert.Equal(10, token.Skip);
             Assert.Equal(20, token.Take);
         }
@@ -34,7 +32,7 @@ namespace ExtraDry.Blazor.Tests.Internals {
         [Fact]
         public void RoundtripToken()
         {
-            var token = new ContinuationToken("filter", "sort", false, "stabilizer", 10, 20);
+            var token = new ContinuationToken("filter", "sort", false, 10, 20);
 
             var serial = token.ToString();
             var result = ContinuationToken.FromString(serial);
@@ -42,7 +40,6 @@ namespace ExtraDry.Blazor.Tests.Internals {
             Assert.Equal(token.Ascending, result.Ascending);
             Assert.Equal(token.Filter, result.Filter);
             Assert.Equal(token.Sort, result.Sort);
-            Assert.Equal(token.Stabilizer, result.Stabilizer);
             Assert.Equal(token.Skip, result.Skip);
             Assert.Equal(token.Take, result.Take);
         }
@@ -95,7 +92,7 @@ namespace ExtraDry.Blazor.Tests.Internals {
         [InlineData(1000, 1000)]
         public void TakeSizeForToken(int take, int expected)
         {
-            var token = new ContinuationToken("", "", false, "", 12, 13);
+            var token = new ContinuationToken("", "", false, 12, 13);
             var actual = ContinuationToken.ActualTake(token, take);
 
             Assert.Equal(expected, actual);
@@ -120,7 +117,7 @@ namespace ExtraDry.Blazor.Tests.Internals {
         [InlineData(1000, 1000)]
         public void SkipSizeForToken(int skip, int expected)
         {
-            var token = new ContinuationToken("", "", false, "", 12, 13);
+            var token = new ContinuationToken("", "", false, 12, 13);
             var actual = ContinuationToken.ActualSkip(token, skip);
 
             Assert.Equal(expected, actual);
@@ -132,7 +129,7 @@ namespace ExtraDry.Blazor.Tests.Internals {
         [InlineData("abc", "abc")]
         public void FilterValueForToken(string input, string expected)
         {
-            var token = new ContinuationToken(input, "", false, "", 12, 13);
+            var token = new ContinuationToken(input, "", false, 12, 13);
             var actual = token.Filter;
 
             Assert.Equal(expected, actual);
@@ -144,20 +141,8 @@ namespace ExtraDry.Blazor.Tests.Internals {
         [InlineData("abc", "abc")]
         public void SortValueForToken(string input, string expected)
         {
-            var token = new ContinuationToken("", input, false, "", 12, 13);
+            var token = new ContinuationToken("", input, false, 12, 13);
             var actual = token.Sort;
-
-            Assert.Equal(expected, actual);
-        }
-
-        [Theory]
-        [InlineData(null, "")]
-        [InlineData("", "")]
-        [InlineData("abc", "abc")]
-        public void StabilizerValueForToken(string input, string expected)
-        {
-            var token = new ContinuationToken("", "", false, input, 12, 13);
-            var actual = token.Stabilizer;
 
             Assert.Equal(expected, actual);
         }
@@ -170,14 +155,13 @@ namespace ExtraDry.Blazor.Tests.Internals {
         [InlineData(20, 20, 40, 20)]
         public void NextToken(int skip, int take, int expectedSkip, int expectedTake)
         {
-            var token = new ContinuationToken("filter", "sort", true, "stabilizer", 10, 10);
+            var token = new ContinuationToken("filter", "sort", true, 10, 10);
 
             var next = token.Next(skip, take);
 
             Assert.Equal("filter", next.Filter);
             Assert.Equal("sort", next.Sort);
             Assert.True(next.Ascending);
-            Assert.Equal("stabilizer", next.Stabilizer);
             Assert.Equal(expectedSkip, next.Skip);
             Assert.Equal(expectedTake, next.Take);
         }

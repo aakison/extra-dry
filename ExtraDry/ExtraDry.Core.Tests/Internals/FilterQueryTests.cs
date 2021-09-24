@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-using ExtraDry.Core;
 using Xunit;
 
 namespace ExtraDry.Core.Tests.Internals {
@@ -15,7 +14,6 @@ namespace ExtraDry.Core.Tests.Internals {
             Assert.False(filterQuery.Ascending);
             Assert.Null(filterQuery.Filter);
             Assert.Null(filterQuery.Sort);
-            Assert.Null(filterQuery.Stabilizer);
         }
 
         [Theory]
@@ -25,8 +23,6 @@ namespace ExtraDry.Core.Tests.Internals {
         [InlineData("Filter", "not")]
         [InlineData("Sort", null)]
         [InlineData("Sort", "not")]
-        [InlineData("Stabilizer", null)]
-        [InlineData("Stabilizer", "not")]
         public void RoundtripProperties(string propertyName, object propertyValue)
         {
             var filter = ValidFilterQuery;
@@ -38,7 +34,7 @@ namespace ExtraDry.Core.Tests.Internals {
             Assert.Equal(propertyValue, result);
         }
 
-        private FilterQuery ValidFilterQuery => new FilterQuery();
+        private static FilterQuery ValidFilterQuery => new();
 
     }
 }

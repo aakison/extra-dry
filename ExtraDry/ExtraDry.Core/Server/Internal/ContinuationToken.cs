@@ -18,12 +18,11 @@ namespace ExtraDry.Server.Internal {
 
         }
 
-        public ContinuationToken(string? filter, string? sort, bool ascending, string? stabilizer, int skip, int take)
+        public ContinuationToken(string? filter, string? sort, bool ascending, int skip, int take)
         {
             Filter = filter ?? string.Empty;
             Sort = sort ?? string.Empty;
             Ascending = ascending;
-            Stabilizer = stabilizer ?? string.Empty;
             Skip = ActualSkip(null, skip);
             Take = ActualTake(null, take);
         }
@@ -37,7 +36,7 @@ namespace ExtraDry.Server.Internal {
         {
             var actualTake = ActualTake(this, takeOverride);
             var actualSkip = ActualSkip(this, skipOverride) + actualTake;
-            var next = new ContinuationToken(Filter, Sort, Ascending, Stabilizer, actualSkip, actualTake);
+            var next = new ContinuationToken(Filter, Sort, Ascending, actualSkip, actualTake);
             return next;
         }
 
@@ -46,8 +45,6 @@ namespace ExtraDry.Server.Internal {
         public string Sort { get; set; } = string.Empty;
 
         public bool Ascending { get; set; } = true;
-
-        public string Stabilizer { get; set; } = string.Empty;
 
         public int Skip { get; set; }
 
@@ -60,7 +57,6 @@ namespace ExtraDry.Server.Internal {
             writer.Write(Filter);
             writer.Write(Sort);
             writer.Write(Ascending);
-            writer.Write(Stabilizer);
             writer.Write(Skip);
             writer.Write(Take);
             var bytes = memory.ToArray();
@@ -85,7 +81,6 @@ namespace ExtraDry.Server.Internal {
                     Filter = reader.ReadString(),
                     Sort = reader.ReadString(),
                     Ascending = reader.ReadBoolean(),
-                    Stabilizer = reader.ReadString(),
                     Skip = reader.ReadInt32(),
                     Take = reader.ReadInt32(),
                 };

@@ -158,7 +158,7 @@ namespace ExtraDry.Server {
             var skip = (query as PageQuery)?.Skip ?? 0;
             var take = (query as PageQuery)?.Take ?? PageQuery.DefaultTake;
             
-            var nextToken = (token ?? new ContinuationToken(query.Filter, query.Sort, query.Ascending, query.Stabilizer, take, take)).Next(skip, take);
+            var nextToken = (token ?? new ContinuationToken(query.Filter, query.Sort, query.Ascending, take, take)).Next(skip, take);
             var previousTake = ContinuationToken.ActualTake(token, take);
             var previousSkip = ContinuationToken.ActualSkip(token, skip);
             var total = items.Count == previousTake ? filteredQuery.Count() : previousSkip + items.Count;
