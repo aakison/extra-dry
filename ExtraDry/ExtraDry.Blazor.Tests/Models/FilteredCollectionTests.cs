@@ -23,7 +23,6 @@ namespace ExtraDry.Blazor.Tests.Models {
         [Theory]
         [InlineData("Filter", "Any")]
         [InlineData("Sort", "Any")]
-        [InlineData("Stabilizer", "Any")]
         public void RoundtripProperties(string propertyName, object propertyValue)
         {
             var target = new FilteredCollection<object>();

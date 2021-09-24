@@ -20,7 +20,8 @@ variables:
   patchVersion: 0
   prereleaseVersion: ''
   semanticVersion: '0.1.0'  
-  projectsGlob: '**/ExtraDry*.csproj' # don't build samples
+  projectsGlob: '**/ExtraDry.(Core|Blazor).csproj' # don't build samples
+  testsGlob: '**/ExtraDry.*.Tests.csproj'
   isForDeployment: $[in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/develop', 'refs/heads/release')]
 
 steps:
@@ -109,6 +110,7 @@ steps:
 - task: DotNetCoreCLI@2
   displayName: Build
   inputs:
+    command: build
     projects: $(projectsGlob)
     arguments: '--configuration $(BuildConfiguration) /p:Version=$(semanticVersion) /p:InformationalVersion=$(semanticVersion) --no-restore'
 
@@ -116,7 +118,7 @@ steps:
   displayName: Test
   inputs:
     command: test
-    projects: '**/*Tests/*.csproj'
+    projects: $(testsGlob)
     arguments: '--configuration $(BuildConfiguration) --collect "Code coverage" --no-build'
 
 - task: DotNetCoreCLI@2
@@ -127,7 +129,7 @@ steps:
     packagesToPack: $(projectsGlob)
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'semanticVersion'
-    arguments: '/p:Version=$(semanticVersion) --no-build'
+    arguments: '--configuration $(BuildConfiguration) --no-build'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact'

@@ -26,7 +26,6 @@ namespace ExtraDry.Blazor.Tests.Models {
         [Theory]
         [InlineData("Filter", "Any")]
         [InlineData("Sort", "Any")]
-        [InlineData("Stabilizer", "Any")]
         [InlineData("Total", 123)]
         [InlineData("ContinuationToken", "Any")] // token is retained, but not validated.
         public void RoundtripProperties(string propertyName, object propertyValue)
