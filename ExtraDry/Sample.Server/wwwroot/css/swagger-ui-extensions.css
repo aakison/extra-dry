@@ -6,6 +6,7 @@
   --get-accent: #0db58b;
   --put-accent: #ac34c8;
   --delete-accent: #d90846;
+  --patch-accent: #4873a1;
   --white: #ffffff;
   --gray: #7f7f7f;
 }
@@ -70,7 +71,9 @@
   }
 
 
-/* Colors for PUT methods, bold button, neutral background */
+/* 
+    Colors for PUT methods, bold button, neutral background 
+*/
 .swagger-ui .opblock.opblock-put {
   border-color: var(--gray);
   background: var(--light);
@@ -84,8 +87,25 @@
     border-color: var(--gray);
   }
 
+/* 
+    Colors for PUT methods, bold button, neutral background 
+*/
+.swagger-ui .opblock.opblock-patch {
+  border-color: var(--gray);
+  background: var(--light);
+}
 
-/* The text of the code and the description don't align, remove unnecessary margin in Swashbuckle stylesheet. */
+  .swagger-ui .opblock.opblock-patch .opblock-summary-method {
+    background: var(--patch-accent);
+  }
+
+  .swagger-ui .opblock.opblock-patch .opblock-summary {
+    border-color: var(--gray);
+  }
+
+/* 
+    The text of the code and the description don't align, remove unnecessary margin in Swashbuckle stylesheet. 
+*/
 .swagger-ui .renderedMarkdown p {
   margin: 0;
 }
@@ -97,28 +117,33 @@
 }
 
 
-/* All responses are application/json, don't shown rendering. */
+/* 
+    All responses are application/json, don't shown rendering. 
+*/
 .swagger-ui section.response-controls {
   display: none;
 }
 
 
-/* When using "Try it Out", hide the samples which are just clutter. 
+/* 
+    When using "Try it Out", hide the samples which are just clutter. 
 */
 .swagger-ui .responses-inner h4, .swagger-ui .responses-inner div + table {
   display: none;
 }
 
 
-/* When constructing a request, the only option is "application/json", don't show single select dropdown. 
+/* 
+    When constructing a request, the only option is "application/json", don't show single select dropdown. 
 */
 .swagger-ui .opblock-section-header label {
   display: none !important;
 }
 
 
-/* The options section header is redundant when `c.EnableTryItOutByDefault();`, 
-   remove Try It button, h4 underline, and close in the spacing. 
+/* 
+    The options section header is redundant when `c.EnableTryItOutByDefault();`, 
+    remove Try It button, h4 underline, and close in the spacing. 
 */
 .swagger-ui .opblock .opblock-section-header {
     min-height: initial;
@@ -137,9 +162,10 @@
 }
 
 
-/* Execute button is a massive banner, make it an actual button.  
-   Align padding and make the "clear" button appear without changing execute button.
-   Class on container changes from .execute-wrapper to .btn-group after click, so style there as well.
+/* 
+    Execute button is a massive banner, make it an actual button.  
+    Align padding and make the "clear" button appear without changing execute button.
+    Class on container changes from .execute-wrapper to .btn-group after click, so style there as well.
 */
 .swagger-ui .btn-group,
 .swagger-ui .execute-wrapper {
@@ -157,3 +183,12 @@
     margin-right: 10px;
   }
 
+/*
+    The response from Try It Out lists headers last, breaks mental model, reverse that.
+    Note: thead uses same class names so _must_ specify tbody.
+*/
+.swagger-ui .live-responses-table tbody .response-col_description {
+  display: flex;
+  flex-direction: column-reverse;
+  padding: 0;
+}
