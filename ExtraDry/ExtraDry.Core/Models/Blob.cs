@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace ExtraDry.Core {
@@ -15,8 +17,4 @@ namespace ExtraDry.Core {
         public string MimeType { get; set; }
     }
 
-    public enum BlobScope {
-        Private,
-        Public,
-    }
 }

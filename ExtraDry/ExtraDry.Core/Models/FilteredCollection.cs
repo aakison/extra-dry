@@ -32,7 +32,7 @@ namespace ExtraDry.Core {
         /// <summary>
         /// The total number of items in the full collection of items.
         /// </summary>
-        /// <example>1204</example>
+        /// <example>1</example>
         public int Count => Items.Count;
 
         /// <summary>

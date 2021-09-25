@@ -10,13 +10,13 @@ namespace ExtraDry.Core {
         /// <summary>
         /// The starting index of this partial collection within the full collection.
         /// </summary>
-        /// <example>300</example>
+        /// <example>0</example>
         public int Start { get; set; }
 
         /// <summary>
         /// The total number of items in the full collection of items.
         /// </summary>
-        /// <example>1204</example>
+        /// <example>1</example>
         public int Total { get; set; }
 
         /// <summary>

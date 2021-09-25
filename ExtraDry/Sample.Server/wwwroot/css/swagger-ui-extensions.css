@@ -1,12 +1,13 @@
 ﻿/* Styles for Improving the Swagger-UI API */
 
 :root {
+  --get-accent: #46aa85;    /* Green for safety, immutable data. */
+  --post-accent: #208fc9;   /* Blue, creates data but never destroys data. */
+  --delete-accent: #c11e29; /* Red for danger, destroys data. */
+  --put-accent: #715779;    /* Purple for update, creates data but also destroys data. */
+  --patch-accent: #4873a1;  /* Blue-Purple, like update but likely to destroy less data. */
+
   --light: #eeeeee;
-  --post-accent: #1e90ff;
-  --get-accent: #0db58b;
-  --put-accent: #ac34c8;
-  --delete-accent: #d90846;
-  --patch-accent: #4873a1;
   --white: #ffffff;
   --gray: #7f7f7f;
 }
@@ -201,4 +202,13 @@
 */
 .swagger-ui .opblock-summary-control:focus {
   outline: none;
+}
+
+
+/*
+    Links were introduced in OAS3.0 and are not supported by Swashbuckle but are by Swagger-UI.
+    Removing the links column from the UI as it will always be "none".  
+*/
+.swagger-ui .response-col_links {
+  display: none;
 }
