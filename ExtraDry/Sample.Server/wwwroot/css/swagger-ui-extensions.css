@@ -137,18 +137,41 @@
 
 
 /* 
-    When constructing a request, the only option is "application/json", don't show single select dropdown. 
+    When constructing a request, the only option is "application/json", don't show single select dropdown, show value more discretely.
 */
-.swagger-ui .opblock-section-header label {
-  display: none !important;
+.swagger-ui .opblock .opblock-section-header h4 {
+    flex: 0 0 auto;
+    font-weight: bold;
 }
+
+.swagger-ui .opblock .opblock-section-header > label {
+  margin: initial;
+}
+
+  .swagger-ui .opblock-section-header > label select {
+    border: solid 0px transparent;
+    box-shadow: none;
+    font-size: 12px;
+    min-width: initial;
+    background: none;
+    padding: 2px 0 0 0;
+  }
+
+  .swagger-ui .opblock-section-header > label::before {
+    content: "(";
+    margin-left: 10px;
+  }
+
+  .swagger-ui .opblock-section-header > label::after {
+    content: ")";
+  }
 
 
 /* 
     The options section header is redundant when `c.EnableTryItOutByDefault();`, 
     remove Try It button, h4 underline, and close in the spacing. 
 */
-.swagger-ui .opblock .opblock-section-header {
+    .swagger-ui .opblock .opblock-section-header {
     min-height: initial;
 }
 
@@ -212,3 +235,35 @@
 .swagger-ui .response-col_links {
   display: none;
 }
+
+
+/*
+    The schema model box doesn't match the width of the json example, align these so there
+    is less 'jump' in the visual presentation when switching between them.
+*/
+.swagger-ui .model-box {
+  width: 100%;
+}
+
+/*
+    The schemas section at the bottom is redundant and a distraction, remove it.
+    But, while doing so make sure there is some room at the bottom.
+*/
+.swagger-ui {
+  margin-bottom: 40px;
+}
+.swagger-ui section.models {
+    display: none;  
+}
+
+/*
+    The redundant display of examples for 4xx codes distracts more than helps.
+    Hide them in the UI, but ensure they're in the OpenAPI for AutoRest or other tools.
+*/
+.swagger-ui tr[data-code="400"] .model-example,
+.swagger-ui tr[data-code="401"] .model-example,
+.swagger-ui tr[data-code="403"] .model-example,
+.swagger-ui tr[data-code="404"] .model-example
+  {
+    display: none;
+  }

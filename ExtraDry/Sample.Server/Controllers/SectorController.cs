@@ -42,7 +42,7 @@ namespace Sample.Server.Controllers {
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        [HttpPost("api/sectors"), Consumes("text/json")]
+        [HttpPost("api/sectors"), Consumes("application/json")]
         [Authorize("SamplePolicy")]
         public async Task Create(Sector value)
         {
@@ -55,7 +55,7 @@ namespace Sample.Server.Controllers {
         /// <param name="uuid"></param>
         /// <returns></returns>
         [HttpGet("api/sectors/{uuid}"), Produces("application/json")]
-        [Authorize(SamplePolicies.SamplePolicy)]
+        [AllowAnonymous]
         public async Task<Sector> Retrieve(Guid uuid)
         {
             return await sectors.RetrieveAsync(uuid);

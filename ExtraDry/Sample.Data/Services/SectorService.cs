@@ -35,9 +35,10 @@ namespace Sample.Data.Services {
             return await RetrieveAsync(exemplar.Uuid);
         }
 
-        public async Task<Sector> RetrieveAsync(Guid uniqueId)
+        public async Task<Sector> RetrieveAsync(Guid uuid)
         {
-            return await database.Sectors.FirstOrDefaultAsync(e => e.Uuid == uniqueId);
+            return await database.Sectors.FirstOrDefaultAsync(e => e.Uuid == uuid) ??
+                throw new ArgumentOutOfRangeException(nameof(uuid), "No sector exists with given uuid.");
         }
 
         public async Task UpdateAsync(Sector item)
@@ -47,9 +48,9 @@ namespace Sample.Data.Services {
             await database.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(Guid uniqueId)
+        public async Task DeleteAsync(Guid uuid)
         {
-            var existing = await RetrieveAsync(uniqueId);
+            var existing = await RetrieveAsync(uuid);
             rules.Delete(existing, () => database.Sectors.Remove(existing));
             await database.SaveChangesAsync();
         }

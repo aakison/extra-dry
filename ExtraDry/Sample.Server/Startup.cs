@@ -82,6 +82,7 @@ namespace Sample.Server {
                         new List<string>()
                     }
                 });
+                openapi.OperationFilter<SignatureImpliesStatusCodes>();
             });
 
             services.AddAuthentication("WorthlessAuthentication")
