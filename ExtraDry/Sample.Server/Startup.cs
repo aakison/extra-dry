@@ -1,5 +1,9 @@
+#nullable enable
+
 using ExtraDry.Core;
 using ExtraDry.Server;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -10,23 +14,38 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Sample.Data;
 using Sample.Data.Services;
+using Sample.Server.Security;
 using Sample.Shared;
+using Sample.Shared.Security;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
 namespace Sample.Server {
+
+    /// <summary>
+    /// Generated startup object.
+    /// </summary>
     public class Startup {
 
+        /// <summary>
+        /// Standard startup constructor.
+        /// </summary>
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
+        /// <summary>
+        /// Configuration for startup object.
+        /// </summary>
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to add services to the container. 
+        /// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+        /// </summary>
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<SampleContext>(opt => opt.UseInMemoryDatabase("sample"));
@@ -42,7 +61,33 @@ namespace Sample.Server {
                     var webAppXml = Path.Combine(AppContext.BaseDirectory, docfile);
                     openapi.IncludeXmlComments(webAppXml, includeControllerXmlComments: true);
                 }
+                openapi.AddSecurityDefinition("http", new OpenApiSecurityScheme {
+                    Description = "Basic",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "basic",
+                });
+                openapi.AddSecurityRequirement(new OpenApiSecurityRequirement {
+                    {
+                        new OpenApiSecurityScheme {
+                            Reference = new OpenApiReference {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "http",
+                            },
+                            Scheme = "basic",
+                            Name = "basic",
+                            In = ParameterLocation.Header,
+                        },
+                        new List<string>()
+                    }
+                });
             });
+
+            services.AddAuthentication("WorthlessAuthentication")
+                .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("WorthlessAuthentication", null);
+            services.AddAuthorizationCore(options => SamplePolicies.AddAuthorizationOptions(options));
+            services.AddSingleton<IAuthorizationHandler, SampleAccessHandler>();
 
             services.AddScoped<EmployeeService>();
             services.AddScoped<CompanyService>();
@@ -51,11 +96,13 @@ namespace Sample.Server {
             services.AddScoped<BlobService>();
             services.AddScoped<RuleEngine>();
             
-            services.AddScoped<IEntityResolver<Sector>>(e => e.GetService<SectorService>());
+            services.AddScoped<IEntityResolver<Sector>>(e => e.GetService<SectorService>()!);
 
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// </summary>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, SampleContext context)
         {
             if(env.IsDevelopment()) {
@@ -80,7 +127,8 @@ namespace Sample.Server {
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints => {
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();

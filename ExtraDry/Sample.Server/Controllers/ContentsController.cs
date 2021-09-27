@@ -1,17 +1,26 @@
 ﻿#nullable enable
 
 using ExtraDry.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sample.Data.Services;
 using Sample.Shared;
+using Sample.Shared.Security;
 using System;
 using System.Threading.Tasks;
 
 namespace Sample.Server.Controllers {
 
+    /// <summary>
+    /// Manages the collection of contents.
+    /// </summary>
     [ApiController]
     public class ContentsController {
        
+        /// <summary>
+        /// Standard DI Constructor.
+        /// </summary>
+        /// <param name="contentsService"></param>
         public ContentsController(ContentsService contentsService)
         {
             contents = contentsService;
@@ -23,6 +32,7 @@ namespace Sample.Server.Controllers {
         /// <param name="query"></param>
         /// <returns></returns>
         [HttpGet("api/contents"), Produces("application/json")]
+        [AllowAnonymous]
         public async Task<FilteredCollection<Content>> List([FromQuery] FilterQuery query)
         {
             return await contents.ListAsync(query);
@@ -37,6 +47,7 @@ namespace Sample.Server.Controllers {
         /// <param name="value"></param>
         /// <returns></returns>
         [HttpPost("api/contents"), Consumes("application/json")]
+        [Authorize(SamplePolicies.SamplePolicy)]
         public async Task Create(Content value)
         {
             await contents.CreateAsync(value);
@@ -48,6 +59,7 @@ namespace Sample.Server.Controllers {
         /// <param name="contentId"></param>
         /// <returns></returns>
         [HttpGet("api/contents/{contentId}"), Produces("application/json")]
+        [AllowAnonymous]
         public async Task<Content> Retrieve(Guid contentId)
         {
             return await contents.RetrieveAsync(contentId);
@@ -63,6 +75,7 @@ namespace Sample.Server.Controllers {
         /// <param name="value"></param>
         /// <returns></returns>
         [HttpPut("api/contents/{contentId}"), Consumes("application/json")]
+        [Authorize(SamplePolicies.SamplePolicy)]
         public async Task Update(Guid contentId, Content value)
         {
             if(contentId != value?.Uuid) {
@@ -77,6 +90,7 @@ namespace Sample.Server.Controllers {
         /// <param name="contentId"></param>
         /// <returns></returns>
         [HttpDelete("api/contents/{contentId}")]
+        [Authorize(SamplePolicies.SamplePolicy)]
         public async Task Delete(Guid contentId)
         {
             await contents.DeleteAsync(contentId);

@@ -1,17 +1,25 @@
 ﻿#nullable enable
 
 using ExtraDry.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sample.Data.Services;
 using Sample.Shared;
+using Sample.Shared.Security;
 using System;
 using System.Threading.Tasks;
 
 namespace Sample.Server.Controllers {
 
+    /// <summary>
+    /// Manages collections of sectors for companies.
+    /// </summary>
     [ApiController]
     public class SectorController {
        
+        /// <summary>
+        /// Stanard DI Constructor
+        /// </summary>
         public SectorController(SectorService sectorService)
         {
             sectors = sectorService;
@@ -23,6 +31,7 @@ namespace Sample.Server.Controllers {
         /// <param name="query"></param>
         /// <returns></returns>
         [HttpGet("api/sectors"), Produces("application/json")]
+        [AllowAnonymous]
         public async Task<FilteredCollection<Sector>> List([FromQuery] FilterQuery query)
         {
             return await sectors.ListAsync(query);
@@ -33,7 +42,8 @@ namespace Sample.Server.Controllers {
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        [HttpPost("api/sectors"), Consumes("application/json")]
+        [HttpPost("api/sectors"), Consumes("text/json")]
+        [Authorize("SamplePolicy")]
         public async Task Create(Sector value)
         {
             await sectors.CreateAsync(value);
@@ -45,6 +55,7 @@ namespace Sample.Server.Controllers {
         /// <param name="uuid"></param>
         /// <returns></returns>
         [HttpGet("api/sectors/{uuid}"), Produces("application/json")]
+        [Authorize(SamplePolicies.SamplePolicy)]
         public async Task<Sector> Retrieve(Guid uuid)
         {
             return await sectors.RetrieveAsync(uuid);
@@ -57,6 +68,7 @@ namespace Sample.Server.Controllers {
         /// <param name="value"></param>
         /// <returns></returns>
         [HttpPut("api/sectors/{sectorId}"), Consumes("application/json")]
+        [Authorize(SamplePolicies.SamplePolicy)]
         public async Task Update(Guid sectorId, Sector value)
         {
             if(sectorId != value?.Uuid) {
@@ -71,6 +83,7 @@ namespace Sample.Server.Controllers {
         /// <param name="sectorId"></param>
         /// <returns></returns>
         [HttpDelete("api/sectors/{sectorId}")]
+        [Authorize(SamplePolicies.SamplePolicy)]
         public async Task Delete(Guid sectorId)
         {
             await sectors.DeleteAsync(sectorId);

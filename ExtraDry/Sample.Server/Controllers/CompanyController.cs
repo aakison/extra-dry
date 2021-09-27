@@ -1,17 +1,25 @@
 ﻿#nullable enable
 
 using ExtraDry.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sample.Data.Services;
 using Sample.Shared;
+using Sample.Shared.Security;
 using System;
 using System.Threading.Tasks;
 
 namespace Sample.Server.Controllers {
 
+    /// <summary>
+    /// Manages the collection of companies.
+    /// </summary>
     [ApiController]
     public class CompanyController {
         
+        /// <summary>
+        /// Standard DI Constructor
+        /// </summary>
         public CompanyController(CompanyService companyService)
         {
             companies = companyService;
@@ -26,6 +34,7 @@ namespace Sample.Server.Controllers {
         /// <param name="query"></param>
         /// <returns></returns>
         [HttpGet("api/companies"), Produces("application/json")]
+        [AllowAnonymous]
         public async Task<FilteredCollection<Company>> List([FromQuery] FilterQuery query)
         {
             return await companies.List(query);
@@ -37,6 +46,7 @@ namespace Sample.Server.Controllers {
         /// <param name="companyId"></param>
         /// <returns></returns>
         [HttpGet("api/companies/{companyId}"), Produces("application/json")]
+        [AllowAnonymous]
         public async Task<Company> Retrieve(Guid companyId)
         {
             return await companies.Retrieve(companyId);
@@ -51,6 +61,7 @@ namespace Sample.Server.Controllers {
         /// <param name="value"></param>
         /// <returns></returns>
         [HttpPost("api/companies"), Consumes("application/json")]
+        [Authorize(SamplePolicies.SamplePolicy)]
         public async Task Create(Company value)
         {
             await companies.Create(value);
@@ -66,6 +77,7 @@ namespace Sample.Server.Controllers {
         /// <param name="value"></param>
         /// <returns></returns>
         [HttpPut("api/companies/{companyId}"), Consumes("application/json")]
+        [Authorize(SamplePolicies.SamplePolicy)]
         public async Task Update(Guid companyId, Company value)
         {
             if(companyId != value?.Uuid) {
@@ -80,6 +92,7 @@ namespace Sample.Server.Controllers {
         /// <param name="companyId"></param>
         /// <returns></returns>
         [HttpDelete("api/companies/{companyId}")]
+        [Authorize(SamplePolicies.SamplePolicy)]
         public async Task Delete(Guid companyId)
         {
             await companies.Delete(companyId);

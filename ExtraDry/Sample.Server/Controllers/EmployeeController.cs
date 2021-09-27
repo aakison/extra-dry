@@ -1,17 +1,26 @@
 ﻿#nullable enable
 
 using ExtraDry.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sample.Data.Services;
 using Sample.Shared;
+using Sample.Shared.Security;
 using System;
 using System.Threading.Tasks;
 
 namespace Sample.Server.Controllers {
 
+    /// <summary>
+    /// Manages colleciton of employees.
+    /// </summary>
     [ApiController]
     public class EmployeeController {
        
+        /// <summary>
+        /// Standard DI Constructor
+        /// </summary>
+        /// <param name="employeeService"></param>
         public EmployeeController(EmployeeService employeeService)
         {
             employees = employeeService;
@@ -28,6 +37,7 @@ namespace Sample.Server.Controllers {
         /// <param name="query"></param>
         /// <returns></returns>
         [HttpGet("api/employees"), Produces("application/json")]
+        [AllowAnonymous]
         public async Task<PagedCollection<Employee>> List([FromQuery] PageQuery query)
         {
             return await employees.List(query);
@@ -42,6 +52,7 @@ namespace Sample.Server.Controllers {
         /// <param name="value"></param>
         /// <returns></returns>
         [HttpPost("api/employees"), Consumes("application/json")]
+        [Authorize(SamplePolicies.SamplePolicy)]
         public async Task Create(Employee value)
         {
             await employees.Create(value);
@@ -53,6 +64,7 @@ namespace Sample.Server.Controllers {
         /// <param name="employeeId"></param>
         /// <returns></returns>
         [HttpGet("api/employees/{employeeId}"), Produces("application/json")]
+        [AllowAnonymous]
         public async Task<Employee> Retrieve(Guid employeeId)
         {
             return await employees.Retrieve(employeeId);
@@ -68,6 +80,7 @@ namespace Sample.Server.Controllers {
         /// <param name="value"></param>
         /// <returns></returns>
         [HttpPut("api/employees/{employeeId}"), Consumes("application/json")]
+        [Authorize(SamplePolicies.SamplePolicy)]
         public async Task Update(Guid employeeId, Employee value)
         {
             if(employeeId != value?.Uuid) {
@@ -82,6 +95,7 @@ namespace Sample.Server.Controllers {
         /// <param name="employeeId"></param>
         /// <returns></returns>
         [HttpDelete("api/employees/{employeeId}")]
+        [Authorize(SamplePolicies.SamplePolicy)]
         public async Task Delete(Guid employeeId)
         {
             await employees.Delete(employeeId);
