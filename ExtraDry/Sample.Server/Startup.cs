@@ -68,21 +68,8 @@ namespace Sample.Server {
                     Type = SecuritySchemeType.Http,
                     Scheme = "basic",
                 });
-                openapi.AddSecurityRequirement(new OpenApiSecurityRequirement {
-                    {
-                        new OpenApiSecurityScheme {
-                            Reference = new OpenApiReference {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "http",
-                            },
-                            Scheme = "basic",
-                            Name = "basic",
-                            In = ParameterLocation.Header,
-                        },
-                        new List<string>()
-                    }
-                });
                 openapi.OperationFilter<SignatureImpliesStatusCodes>();
+                openapi.OperationFilter<BasicAuthOperationFilter>();
             });
 
             services.AddAuthentication("WorthlessAuthentication")

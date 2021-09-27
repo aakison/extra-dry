@@ -263,7 +263,6 @@
 .swagger-ui tr[data-code="400"] .model-example,
 .swagger-ui tr[data-code="401"] .model-example,
 .swagger-ui tr[data-code="403"] .model-example,
-.swagger-ui tr[data-code="404"] .model-example
-  {
-    display: none;
-  }
+.swagger-ui tr[data-code="404"] .model-example {
+  display: none;
+}
