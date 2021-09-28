@@ -11,6 +11,7 @@
   --light: #eeeeee;
   --white: #ffffff;
   --gray: #7f7f7f;
+  --dark-gray: #484848;
 }
 
 
@@ -291,3 +292,61 @@
   .swagger-ui tr[data-code="404"].show-model .model-example {
     display: block;
   }
+
+
+/*
+    The layout of the schema isn't great, introduce new fonts and spacing to make it look better.
+    Requires a dozen related changes.
+*/
+/* Class name to monospace */
+.swagger-ui .model .model-title {
+  font-family: monospace;
+}
+
+/* Hide the expand/collapse button (extra specific to only get first one that collapses entire schema ) */
+.swagger-ui .model-box > .model > span > button > .model-toggle:after {
+  display: none;
+}
+
+/* Put some space between fields to logically group them. */
+.swagger-ui table.model tr.property-row td {
+  padding-bottom: 10px;
+}
+
+  /* Remove 'description' caption that looks like a json field */
+  .swagger-ui table.model tr.property-row td:first-child {
+    font-size: 13px;
+  }
+
+  .swagger-ui table.model tr.property-row .star {
+    color: var(--delete-accent);
+  }
+
+/* Remove 'description' caption that looks like a json field */
+.swagger-ui table.model tr.description td {
+  padding-bottom: 10px;
+  padding-top: 10px;
+  font-family: sans-serif;
+  color: var(--dark-gray);
+}
+
+  /* Remove 'description' caption that looks like a json field */
+  .swagger-ui table.model tr.description td:first-child {
+    visibility: hidden;
+  }
+
+/* Inside the list of description and constraints, adjust the description to the top, remove extra breaks, remove monospace */
+.swagger-ui table.model span.prop {
+  display: grid;
+}
+  .swagger-ui table.model span.prop > span br {
+    display: none;
+  }
+  .swagger-ui table.model span.prop > div {
+    font-family: sans-serif;
+    grid-row-start: 1;
+  }
+
+.swagger-ui button.model-box-control:focus {
+    outline: none;
+}
