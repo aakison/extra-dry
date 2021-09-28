@@ -108,6 +108,7 @@ namespace Sample.Server {
             app.UseSwaggerUI(c => {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
                 c.InjectStylesheet("/css/swagger-ui-extensions.css");
+                c.InjectJavascript("/js/swagger-ui-extensions.js");
                 c.DocumentTitle = "Sample Blazor.ExtraDry APIs";
                 c.EnableTryItOutByDefault();
             });

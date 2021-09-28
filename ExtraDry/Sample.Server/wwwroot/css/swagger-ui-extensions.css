@@ -7,6 +7,7 @@
   --put-accent: #715779;    /* Purple for update, creates data but also destroys data. */
   --patch-accent: #4873a1;  /* Blue-Purple, like update but likely to destroy less data. */
 
+  --hyperlink: #096ea2;
   --light: #eeeeee;
   --white: #ffffff;
   --gray: #7f7f7f;
@@ -259,10 +260,34 @@
 /*
     The redundant display of examples for 4xx codes distracts more than helps.
     Hide them in the UI, but ensure they're in the OpenAPI for AutoRest or other tools.
+    Then override to display if the caption is clicked (partner JavaScript will toggle 'show-model').
+    Also style the caption differently to make it look a bit like a link...
 */
+.swagger-ui tr[data-code="400"] .response-col_description .response-col_description__inner p,
+.swagger-ui tr[data-code="401"] .response-col_description .response-col_description__inner p,
+.swagger-ui tr[data-code="403"] .response-col_description .response-col_description__inner p,
+.swagger-ui tr[data-code="404"] .response-col_description .response-col_description__inner p {
+  cursor: pointer;
+  color: var(--hyperlink);
+}
+
+  .swagger-ui tr[data-code="400"] .response-col_description .response-col_description__inner p:hover,
+  .swagger-ui tr[data-code="401"] .response-col_description .response-col_description__inner p:hover,
+  .swagger-ui tr[data-code="403"] .response-col_description .response-col_description__inner p:hover,
+  .swagger-ui tr[data-code="404"] .response-col_description .response-col_description__inner p:hover {
+    text-decoration:underline;
+  }
+
 .swagger-ui tr[data-code="400"] .model-example,
 .swagger-ui tr[data-code="401"] .model-example,
 .swagger-ui tr[data-code="403"] .model-example,
 .swagger-ui tr[data-code="404"] .model-example {
   display: none;
 }
+
+  .swagger-ui tr[data-code="400"].show-model .model-example,
+  .swagger-ui tr[data-code="401"].show-model .model-example,
+  .swagger-ui tr[data-code="403"].show-model .model-example,
+  .swagger-ui tr[data-code="404"].show-model .model-example {
+    display: block;
+  }
