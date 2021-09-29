@@ -1,42 +1,217 @@
-﻿/* Styles for Improving the Swagger-UI API */
+/* Styles for Improving the Swagger-UI API */
 
 :root {
-  --get-accent: #46aa85;    /* Green for safety, immutable data. */
-  --post-accent: #208fc9;   /* Blue, creates data but never destroys data. */
-  --delete-accent: #c11e29; /* Red for danger, destroys data. */
-  --put-accent: #715779;    /* Purple for update, creates data but also destroys data. */
-  --patch-accent: #4873a1;  /* Blue-Purple, like update but likely to destroy less data. */
 
-  --hyperlink: #096ea2;
-  --light: #eeeeee;
-  --white: #ffffff;
-  --gray: #7f7f7f;
-  --dark-gray: #484848;
+  --get-accent: #669C30; 
+  --get-accent-light: #F2F9EC;
+  --post-accent: #009BCC;   
+  --post-accent-light: #E6F9FF;
+  --delete-accent: #B92113;
+  --delete-accent-light: #FDEAE8;
+  --put-accent:  #CC7D00;
+  --put-accent-light: #FFF5E6;
+  --patch-accent: #CC7D00;
+  --patch-accent-light: #FFF5E6; 
+
+  --topbar: #253146;
+  --hyperlink: #C25100;
+  --hyperlink-hover: #8F3C00;
+  --button-primary: #FF6B00;
+  --button-primary-hover: #C25100;
+  --button-secondary: #333333;
+  --white: #FFFFFF;
+  --gray: #D7DADF;
+  --light: #F8F9FA;
+  --dark: #EEEFF1;
+  --darker: #777777;
+
+}
+
+/* Brand UI */
+body {
+  background: var(--white);
 }
 
 
-/* Brand UI with our logo */
+/* Topbar */
+.swagger-ui .topbar {
+  padding: 0;
+  background: var(--topbar);
+}
+
+
+/* Logo */
 .swagger-ui img {
-  content: url(/img/extradry-logo.svg);
-  height: 30px;
-  margin: 10px 0;
+  content: url(/img/fmi-logo.svg);
+  margin: 0;
+  height: 48px;
 }
+
+
+/* Links */
+.swagger-ui .info a {
+  color: var(--hyperlink);
+}
+
+  .swagger-ui .info a:hover {
+    color: var(--hyperlink-hover);
+  }
+
+
+/* Buttons */
+.swagger-ui .btn {
+    box-shadow: none;
+}
+
+  .swagger-ui .btn:hover {
+    box-shadow: none;
+  }
+
+
+/* Primary button */
+.swagger-ui .btn.execute {
+  background: var(--button-primary);
+  border: 0;
+}
+
+  .swagger-ui .btn.execute:hover {
+    background: var(--button-primary-hover);
+  }
+
+
+/* Secondary button */
+.swagger-ui .btn.authorize {
+  color: var(--button-secondary);
+  border-color: var(--button-secondary);
+}
+
+  .swagger-ui .btn.authorize svg {
+    fill: var(--button-secondary);
+  }
+
+
+/* Definition  */
+.swagger-ui .topbar .download-url-wrapper .select-label {
+  max-width: 400px;
+}
+  
+  .swagger-ui .topbar .download-url-wrapper .select-label select {
+    border: 0;
+  }
+
+  .swagger-ui .topbar .download-url-wrapper .select-label span {
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  
+    
+/* 
+  Move the 'Authorized' button to the top right 
+*/
+.swagger-ui {
+    position: relative;
+}
+  
+  .swagger-ui .scheme-container {
+    margin: -160px auto 50px;
+    max-width: 1460px;
+    width: 100%;
+    background: none;
+    box-shadow: none;
+  }
+
+  .swagger-ui .auth-wrapper .authorize {
+    margin: 0;
+  }
+
+
+/* 
+    Swap authorized lock and accordian arrow icon positions 
+*/
+.swagger-ui .opblock {
+  position: relative;
+  box-shadow: 0 0 2px rgb(0 0 0 / 10%), 0 2px 6px rgb(0 0 0 / 13%);
+  border: 0;
+  border-radius: 0;
+}
+  
+  .swagger-ui .opblock .opblock-summary-control > .arrow {
+    margin-right: 5px;
+  }
+
+  .swagger-ui .authorization__btn.unlocked {
+    position: absolute;
+    right: 30px
+  }
+
+
+/* 
+  Change block tag spacing
+*/
+.swagger-ui .opblock-tag {
+  border: 0;
+  margin: 20px 0 0;
+  padding: 10px 10px 10px 0;
+}
+
+  .swagger-ui .opblock-tag:hover {
+    background: none;
+  }
+
+
+/* 
+  Provide some definition and make this look like forms
+*/
+
+.parameters-container, .execute-wrapper, .responses-inner {
+  background: var(--light);
+}
+
+.swagger-ui table tbody tr td:first-of-type {
+  padding: 10px 10px 0 0;
+}
+
+.swagger-ui .opblock .opblock-section-header {
+  background: var(--dark);
+}
+
+  .swagger-ui .opblock .opblock-section-header h4 {
+      color: var(--darker);
+      text-transform: uppercase;
+  }
 
 
 /* Make buttons wide enough that 'Delete' option isn't different size */
 .swagger-ui .opblock .opblock-summary-method {
   min-width: 90px;
+  text-shadow: none;
+  border: 1px solid var(--button-secondary);
 }
+
+/* Adjust padding */
+.swagger-ui .opblock .opblock-summary {
+  padding: 0;
+}
+
+  .swagger-ui .opblock-summary-control {
+    padding: 10px;
+  }
+
+  .swagger-ui .opblock-description-wrapper {
+    padding: 20px;
+  }
 
 
 /* Colors for GET methods, bold button, neutral background */
 .swagger-ui .opblock.opblock-get {
   border-color: var(--gray);
-  background: var(--light);
+  background: var(--white);
 }
 
   .swagger-ui .opblock.opblock-get .opblock-summary-method {
-    background: var(--get-accent);
+    color: var(--get-accent);
+    background: var(--get-accent-light);
+    border-color: var(--get-accent);
   }
 
   .swagger-ui .opblock.opblock-get .opblock-summary {
@@ -47,11 +222,13 @@
 /* Colors for DELETE methods, bold button, neutral background */
 .swagger-ui .opblock.opblock-delete {
   border-color: var(--gray);
-  background: var(--light);
+  background: var(--white);
 }
 
   .swagger-ui .opblock.opblock-delete .opblock-summary-method {
-    background: var(--delete-accent);
+    color: var(--delete-accent);
+    background: var(--delete-accent-light);
+    border-color: var(--delete-accent);
   }
 
   .swagger-ui .opblock.opblock-delete .opblock-summary {
@@ -62,11 +239,13 @@
 /* Colors for POST methods, bold button, neutral background */
 .swagger-ui .opblock.opblock-post {
   border-color: var(--gray);
-  background: var(--light);
+  background: var(--white);
 }
 
   .swagger-ui .opblock.opblock-post .opblock-summary-method {
-    background: var(--post-accent);
+    color: var(--post-accent);
+    background: var(--post-accent-light);
+    border-color: var(--post-accent);
   }
 
   .swagger-ui .opblock.opblock-post .opblock-summary {
@@ -79,11 +258,13 @@
 */
 .swagger-ui .opblock.opblock-put {
   border-color: var(--gray);
-  background: var(--light);
+  background: var(--white);
 }
 
   .swagger-ui .opblock.opblock-put .opblock-summary-method {
-    background: var(--put-accent);
+    color: var(--put-accent);
+    background: var(--put-accent-light);
+    border-color: var(--put-accent);
   }
 
   .swagger-ui .opblock.opblock-put .opblock-summary {
@@ -95,11 +276,13 @@
 */
 .swagger-ui .opblock.opblock-patch {
   border-color: var(--gray);
-  background: var(--light);
+  background: var(--white);
 }
 
   .swagger-ui .opblock.opblock-patch .opblock-summary-method {
-    background: var(--patch-accent);
+    color: var(--patch-accent);
+    background: var(--patch-accent-light);
+    border-color: var(--patch-accent);
   }
 
   .swagger-ui .opblock.opblock-patch .opblock-summary {
@@ -190,7 +373,7 @@
     The options section header is redundant when `c.EnableTryItOutByDefault();`, 
     remove Try It button, h4 underline, and close in the spacing. 
 */
-    .swagger-ui .opblock .opblock-section-header {
+.swagger-ui .opblock .opblock-section-header {
     min-height: initial;
 }
 
@@ -198,13 +381,13 @@
     display:  none;
   }
 
-.swagger-ui .opblock.opblock-get .tab-header .tab-item.active h4 span:after,
-.swagger-ui .opblock.opblock-post .tab-header .tab-item.active h4 span:after,
-.swagger-ui .opblock.opblock-put .tab-header .tab-item.active h4 span:after, 
-.swagger-ui .opblock.opblock-patch .tab-header .tab-item.active h4 span:after,
-.swagger-ui .opblock.opblock-delete .tab-header .tab-item.active h4 span:after {
-  background-color: transparent;
-}
+  .swagger-ui .opblock.opblock-get .tab-header .tab-item.active h4 span:after,
+  .swagger-ui .opblock.opblock-post .tab-header .tab-item.active h4 span:after,
+  .swagger-ui .opblock.opblock-put .tab-header .tab-item.active h4 span:after, 
+  .swagger-ui .opblock.opblock-patch .tab-header .tab-item.active h4 span:after,
+  .swagger-ui .opblock.opblock-delete .tab-header .tab-item.active h4 span:after {
+    background-color: transparent;
+  }
 
 
 /* 
@@ -227,6 +410,7 @@
     padding: 8px 24px;
     margin-right: 10px;
   }
+
 
 /*
     The response from Try It Out lists headers last, breaks mental model, reverse that.
@@ -264,6 +448,7 @@
   width: 100%;
 }
 
+
 /*
     The schemas section at the bottom is redundant and a distraction, remove it.
     But, while doing so make sure there is some room at the bottom.
@@ -271,9 +456,11 @@
 .swagger-ui {
   margin-bottom: 40px;
 }
-.swagger-ui section.models {
-    display: none;  
-}
+
+  .swagger-ui section.models {
+      display: none;  
+  }
+
 
 /*
     The redundant display of examples for 4xx codes distracts more than helps.
@@ -356,6 +543,7 @@
 .swagger-ui table.model span.prop {
   display: grid;
 }
+
   .swagger-ui table.model span.prop > span br {
     display: none;
   }
@@ -367,7 +555,3 @@
 .swagger-ui button.model-box-control:focus {
     outline: none;
 }
-
-/*
-
-*/
