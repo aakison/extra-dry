@@ -108,15 +108,32 @@
 
 /* 
     The text of the code and the description don't align, remove unnecessary margin in Swashbuckle stylesheet. 
+    But include spacing between P tags, except at the end...
 */
 .swagger-ui .renderedMarkdown p {
-  margin: 0;
+  margin: 0 0 15px 0;
 }
 
+  .swagger-ui .renderedMarkdown:last-child {
+    margin-bottom: 0;
+  }
 
 /* Add some extra space between responses to visually deliniate them. */
 .swagger-ui .model-example {
   margin-bottom: 1em;
+}
+
+.swagger-ui .renderedMarkdown li {
+  line-height: 1.75em;
+}
+
+/*
+    Change the look of inline code blocks in rendered markdown.
+*/
+.swagger-ui .markdown code, .swagger-ui .renderedMarkdown code {
+  border-radius: 3px;
+  color: #61366e;
+  padding: 1px 3px;
 }
 
 
@@ -350,3 +367,7 @@
 .swagger-ui button.model-box-control:focus {
     outline: none;
 }
+
+/*
+
+*/

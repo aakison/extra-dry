@@ -1,11 +1,11 @@
 ﻿#nullable enable
 
-namespace Sample.Server.Security {
+namespace ExtraDry.Core {
 
     /// <summary>
-    /// Wrapper for additional information about client errors (4xx status codes).
+    /// Wrapper for additional information about errors (4xx and some 5xx status codes).
     /// </summary>
-    public class ClientErrorResponse {
+    public class ErrorResponse {
 
         /// <summary>
         /// The status code for the response.

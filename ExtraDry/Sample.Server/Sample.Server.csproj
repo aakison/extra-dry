@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ExtraDry.Core\ExtraDry.Core.csproj" />
+    <ProjectReference Include="..\ExtraDry.Swashbuckle\ExtraDry.Swashbuckle.csproj" />
     <ProjectReference Include="..\Sample.Client\Sample.Client.csproj" />
     <ProjectReference Include="..\Sample.Data\Sample.Data.csproj" />
     <ProjectReference Include="..\Sample.Shared\Sample.Shared.csproj" />

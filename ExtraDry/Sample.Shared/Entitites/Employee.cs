@@ -3,6 +3,7 @@
 using ExtraDry.Core;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Sample.Shared
 {
@@ -10,6 +11,7 @@ namespace Sample.Shared
     {
         [Key]
         [Rules(RuleAction.Block)]
+        [JsonIgnore]
         public int Id { get; set; }
 
         public Guid Uuid { get; set; } = Guid.NewGuid();

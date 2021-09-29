@@ -2,6 +2,7 @@
 
 using ExtraDry.Core;
 using ExtraDry.Server;
+using ExtraDry.Swashbuckle;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -70,6 +71,7 @@ namespace Sample.Server {
                 });
                 openapi.OperationFilter<SignatureImpliesStatusCodes>();
                 openapi.OperationFilter<BasicAuthOperationFilter>();
+                openapi.OperationFilter<QueryDocumentationOperationFilter>();
             });
 
             services.AddAuthentication("WorthlessAuthentication")

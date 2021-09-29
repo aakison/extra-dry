@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using ExtraDry.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -8,7 +9,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Linq;
 
-namespace Sample.Server.Security {
+namespace ExtraDry.Swashbuckle {
 
     /// <summary>
     /// During construction of the SwaggerGen, use the Attributes to intuit the likely HTTP response error codes.
@@ -20,7 +21,7 @@ namespace Sample.Server.Security {
         /// </summary>
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            var schema = context.SchemaGenerator.GenerateSchema(typeof(ClientErrorResponse), context.SchemaRepository);
+            var schema = context.SchemaGenerator.GenerateSchema(typeof(ErrorResponse), context.SchemaRepository);
 
             var attributes = context.MethodInfo.GetCustomAttributes(true) ?? Array.Empty<object>();
 

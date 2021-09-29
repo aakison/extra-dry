@@ -6,8 +6,7 @@
     public class FilterQuery {
 
         /// <summary>
-        /// The entity specific text to filter the collection by.
-        /// This will typically match across multiple properties or even access a full text index.
+        /// The entity specific text filter for the collection.
         /// </summary>
         public string? Filter { get; set; } 
 
