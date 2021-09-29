@@ -1,7 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <Authors>adrian.akison</Authors>
+    <Company>FMI Works</Company>
+    <Description>Extensions to Blazor and DRY libraries to create Blazor client/server applications with a lower-code footprint.  Use this Swashbuckle library to efficiently extend the documentation capabilities of Swashbuckle for building OpenAPI interfaces.</Description>
+    <PackageTags>blazor spa microsoft dry don't repeat yourself low-code swashbuckle openapi</PackageTags>
+    <PackageProjectUrl>https://github.com/fmi-works/extra-dry</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/fmi-works/extra-dry.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>

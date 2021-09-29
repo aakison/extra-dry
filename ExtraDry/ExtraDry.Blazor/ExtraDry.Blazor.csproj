@@ -7,8 +7,8 @@
     <Company>FMI Works</Company>
     <Description>Extensions to Blazor and DRY libraries to create Blazor client applications with a lower-code footprint.  Use this library in the Blazor project, it will include the Core library.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/fmi-works/blazor-extra-dry</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/fmi-works/blazor-extra-dry.git</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/fmi-works/extra-dry</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/fmi-works/extra-dry.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>blazor spa microsoft dry don't repeat yourself low-code</PackageTags>
   </PropertyGroup>
