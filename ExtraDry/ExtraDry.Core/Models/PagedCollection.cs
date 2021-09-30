@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace ExtraDry.Core {
 
@@ -33,6 +34,19 @@ namespace ExtraDry.Core {
         /// </summary>
         [JsonIgnore]
         public bool IsFullCollection => Count == Total;
+
+        /// <summary>
+        /// Create a new PagedCollection with the items cast to a base class or interface.
+        /// </summary>
+        public PagedCollection<TCast> Cast<TCast>() => new PagedCollection<TCast> {
+                Filter = Filter,
+                ContinuationToken = ContinuationToken,
+                Created = Created,
+                Items = Items.Cast<TCast>().ToList(),
+                Sort = Sort,
+                Start = Start,
+                Total = Total,
+            };
 
     }
 }

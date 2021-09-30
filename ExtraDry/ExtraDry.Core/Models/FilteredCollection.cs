@@ -39,9 +39,6 @@ namespace ExtraDry.Core {
         /// <summary>
         /// The actual collecton of items.  Within the full collection, these are in the position offset by `Start`.
         /// </summary>
-        /// <remarks>
-        /// Urge to make private setter is strong, but breaks System.Text.Json...
-        /// </remarks>
         public IList<T> Items { get; set; } = new List<T>();
 
         /// <summary>
