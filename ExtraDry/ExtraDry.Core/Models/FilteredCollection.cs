@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json.Serialization;
 
 namespace ExtraDry.Core {
@@ -42,6 +43,17 @@ namespace ExtraDry.Core {
         /// Urge to make private setter is strong, but breaks System.Text.Json...
         /// </remarks>
         public IList<T> Items { get; set; } = new List<T>();
+
+        /// <summary>
+        /// Create a new FilteredCollection with the items cast to a base class or interface.
+        /// </summary>
+        public FilteredCollection<TCast> Cast<TCast>() => 
+            new FilteredCollection<TCast> {
+                Filter = Filter,
+                Created = Created,
+                Sort = Sort,
+                Items = Items.Cast<TCast>().ToList(),
+            };
 
     }
 }
