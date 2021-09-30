@@ -71,14 +71,15 @@ namespace ExtraDry.Swashbuckle {
         private static string SortDescription(PropertyInfo[] props)
         {
             var sortablePropertyNames = props.Where(e => IsSortable(e)).Select(e => e.Name);
-            var sortableQuotedNames = sortablePropertyNames.Select(e => $"`{e}`");
-            var sortable = string.Join(", ", sortableQuotedNames);
+            var sortableQuotedNames = sortablePropertyNames.Select(e => $"  * `{e}`\r\n");
+            var sortable = string.Join("", sortableQuotedNames);
             var description = $@"
 ## Sorting
 The `sort` and `ascending` parameters allow for the sorting of the results before being returned.
 
-The sort parameter, if provided, is only valid for specific sortable fields, this is one of [{sortable}].
-
+### Sortable Fields (endpoint specific)
+The sort parameter, if provided, is only valid for specific sortable fields, this is one of:
+{sortable}
 
 The ascending parameter may take the value `ascending` or `descending` to control order, if not provided then `ascending` is the default.
 ";
@@ -112,7 +113,7 @@ It is also possible to specify specific fields for filter terms.  Provide the fi
 Advanced filters can also specify a list of alternate values.  This can be done by either listing the field multiple times or by separating the terms using a pipe '|' character.  For example, all of the following are equivelent and will return all matches of 'Corolla' in the 'model' field union with all matches of 'Prado' in the 'model' field.
 
   * `model:Corolla model:Prado`
-  * `model:""Corolla"" model: ""Prado""`
+  * `model:""Corolla"" model:""Prado""`
   * `model:Corolla|Prado`
   * `model:""Corolla""|""Prado""`
 
@@ -124,7 +125,7 @@ Number and DateTime filterable fields also support ranges.  To specify a range, 
   * `date:[2020-01-01T00:00:00,2021-01-01T00:00:00)` - Any time in calendar year 2020.
   * `age:(,18)` - Any age below 18.
 
-### Filterable Fields (Endpoint Specific)
+### Filterable Fields (endpoint specific)
 For performance reasons, not all fields are filterable, and string filters might be applied differently.  Strings will match either the whole string, the start of the string, or anywhere in the string.  The filterable fields for this endpoint are:
 
 ";
@@ -147,7 +148,7 @@ For performance reasons, not all fields are filterable, and string filters might
                 else if(prop.PropertyType.IsEnum) {
                     var enumValues = Enum.GetNames(prop.PropertyType).Select(e => $"`{e}`");
                     var values = string.Join(", ", enumValues);
-                    description += $"enum field matches on specific values [{values}]";
+                    description += $"enum field matches on specific values [{values}]\r\n";
                 }
                 else {
                     description += "numeric field matches value or range\r\n";

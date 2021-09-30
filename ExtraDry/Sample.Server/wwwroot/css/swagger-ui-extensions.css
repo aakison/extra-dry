@@ -555,3 +555,38 @@ body {
 .swagger-ui button.model-box-control:focus {
     outline: none;
 }
+
+
+/*
+    Markdown in operation block can become excessively long, especially with auto-generated comments.
+    Start with a summarized version, which shows h2 headers and their first paragraph, hiding the rest.
+    Provide a "link" to click to expand the content, this works with the associated JavaScript.
+*/
+.opblock-description .renderedMarkdown:after {
+    content: "expand details";
+    color: var(--hyperlink);
+    cursor: pointer;
+}
+
+.opblock-description .renderedMarkdown.detailed:after {
+    content: initial;
+}
+
+.opblock-description .renderedMarkdown h3 + p,
+.opblock-description .renderedMarkdown P + ul,
+.opblock-description .renderedMarkdown p + h3,
+.opblock-description .renderedMarkdown ul + p,
+.opblock-description .renderedMarkdown ul + h3,
+.opblock-description .renderedMarkdown p + p {
+  display: none;
+}
+
+.opblock-description .renderedMarkdown.detailed h3 + p,
+.opblock-description .renderedMarkdown.detailed P + ul,
+.opblock-description .renderedMarkdown.detailed p + h3,
+.opblock-description .renderedMarkdown.detailed ul + p,
+.opblock-description .renderedMarkdown.detailed ul + h3,
+.opblock-description .renderedMarkdown.detailed p + p {
+  display: block;
+}
+

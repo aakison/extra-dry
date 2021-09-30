@@ -16,4 +16,12 @@ document.addEventListener("click", function (event) {
     if (responseNode != null && responseNode.dataset.code >= 400) {
         responseNode.classList.toggle("show-model");
     }
+
+    console.log(event.target);
+    console.log(event.target.innerText);
+    console.log(event.target.innerHtml);
+    if (event.target.classList?.contains("renderedMarkdown") && !event.target.classList?.contains("detailed")) {
+        event.target.classList.add("detailed");
+    }
 });
+
