@@ -20,7 +20,7 @@ variables:
   patchVersion: 0
   prereleaseVersion: ''
   semanticVersion: '0.1.0'  
-  projectsGlob: '**/ExtraDry.+(Core|Blazor).csproj' # don't build samples
+  projectsGlob: '**/ExtraDry.+(Core|Blazor|Swashbuckle).csproj' # don't build samples
   testsGlob: '**/ExtraDry.+(Core|Blazor).Tests.csproj'
   isForDeployment: $[in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/develop', 'refs/heads/release')]
 
