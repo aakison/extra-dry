@@ -27,7 +27,7 @@ namespace ExtraDry.Core.Models {
         public string WebId { get; }
 
         // Only allow safe characters, following RFC3986
-        private static Regex validWebId = new Regex(WebIdAttribute.WebIdRegex, RegexOptions.Compiled);
+        private static readonly Regex validWebId = new Regex(WebIdAttribute.WebIdRegex, RegexOptions.Compiled);
 
     }
 

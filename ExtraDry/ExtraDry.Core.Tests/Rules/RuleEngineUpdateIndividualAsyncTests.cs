@@ -247,9 +247,13 @@ namespace ExtraDry.Core.Tests.Rules {
 
             [Rules(RuleAction.Block)]
             public int HoursWorked { get; set; }
+
+            public int ReadOnly {
+                get => HoursWorked;
+            }
         }
 
-        private Entity SampleEntity() => new Entity();
+        private static Entity SampleEntity() => new();
 
     }
 }

@@ -47,8 +47,7 @@ namespace ExtraDry.Server {
                 if(ignore?.Condition == JsonIgnoreCondition.Always) {
                     continue;
                 }
-                var rule = property.GetCustomAttribute<RulesAttribute>();
-                var action = EffectiveRule(rule, ignore, e => e.CreateAction, RuleAction.Allow);
+                var action = EffectiveRule(property, ignore, e => e.CreateAction, RuleAction.Allow);
                 if(action == RuleAction.Ignore) {
                     continue;
                 }
@@ -115,9 +114,8 @@ namespace ExtraDry.Server {
             }
             var properties = typeof(T).GetProperties();
             foreach(var property in properties) {
-                var rule = property.GetCustomAttribute<RulesAttribute>();
                 var ignore = property.GetCustomAttribute<JsonIgnoreAttribute>();
-                var action = EffectiveRule(rule, ignore, e => e.UpdateAction, RuleAction.Allow);
+                var action = EffectiveRule(property, ignore, e => e.UpdateAction, RuleAction.Allow);
                 if(action == RuleAction.Ignore) {
                     continue;
                 }
@@ -137,8 +135,12 @@ namespace ExtraDry.Server {
             }
         }
 
-        private static RuleAction EffectiveRule(RulesAttribute? rules, JsonIgnoreAttribute? ignore, Func<RulesAttribute, RuleAction> selector, RuleAction defaultType)
+        private static RuleAction EffectiveRule(PropertyInfo property, JsonIgnoreAttribute? ignore, Func<RulesAttribute, RuleAction> selector, RuleAction defaultType)
         {
+            var rules = property.GetCustomAttribute<RulesAttribute>();
+            if(property.SetMethod == null) {
+                return RuleAction.Ignore;
+            }
             if(rules != null) {
                 return selector(rules);
             }
