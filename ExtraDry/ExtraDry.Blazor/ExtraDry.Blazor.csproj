@@ -11,6 +11,8 @@
     <RepositoryUrl>https://github.com/fmi-works/extra-dry.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>blazor spa microsoft dry don't repeat yourself low-code</PackageTags>
+    <PackageIcon>extradry-logo.png</PackageIcon>
+    <PackageIconUrl />
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,6 +25,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\extradry-logo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
     <None Include="bundleconfig.json" />
     <None Include="compilerconfig.json" />
   </ItemGroup>

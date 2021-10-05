@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\azure-pipelines.yml = ..\azure-pipelines.yml
 		code-cover.ps1 = code-cover.ps1
 		..\.github\workflows\develop_extradrysamplewebdev.yml = ..\.github\workflows\develop_extradrysamplewebdev.yml
+		extradry-logo.png = extradry-logo.png
 		..\LICENSE = ..\LICENSE
 		nuget.config = nuget.config
 		publish-local.ps1 = publish-local.ps1
@@ -32,7 +33,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtraDry.Blazor", "ExtraDry
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtraDry.Blazor.Tests", "ExtraDry.Blazor.Tests\ExtraDry.Blazor.Tests.csproj", "{FD70787D-C9B9-49B2-80A9-4E6C83DC9027}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtraDry.Swashbuckle", "ExtraDry.Swashbuckle\ExtraDry.Swashbuckle.csproj", "{B67BB00A-EB80-4639-810A-50A19FE7250A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtraDry.Swashbuckle", "ExtraDry.Swashbuckle\ExtraDry.Swashbuckle.csproj", "{B67BB00A-EB80-4639-810A-50A19FE7250A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
