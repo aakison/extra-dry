@@ -32,7 +32,7 @@ namespace ExtraDry.Server {
         /// Given an potentially untrusted and unvalidated exemplar of an object, create a new copy of that object with business rules applied.
         /// Any validation issues or rule violations will throw an exception.
         /// </summary>
-        public T Create<T>(T exemplar)
+        public async Task<T> CreateAsync<T>(T exemplar)
         {
             if(exemplar == null) {
                 throw new ArgumentNullException(nameof(exemplar));
@@ -41,40 +41,7 @@ namespace ExtraDry.Server {
             validator.ValidateObject(exemplar);
             validator.ThrowIfInvalid();
             var destination = Activator.CreateInstance<T>();
-            var properties = typeof(T).GetProperties();
-            foreach(var property in properties) {
-                var ignore = property.GetCustomAttribute<JsonIgnoreAttribute>();
-                if(ignore?.Condition == JsonIgnoreCondition.Always) {
-                    continue;
-                }
-                var action = EffectiveRule(property, ignore, e => e.CreateAction, RuleAction.Allow);
-                if(action == RuleAction.Ignore) {
-                    continue;
-                }
-                var sourceValue = property.GetValue(exemplar);
-                var destinationValue = property.GetValue(destination);
-                if(sourceValue?.Equals(destinationValue) ?? true) {
-                    continue;
-                }
-                else if(action == RuleAction.Block) {
-                    throw new DryException($"Invalid attempt to change property '{property.Name}'", $"Attempt to change read-only property '{property.Name}'");
-                }
-                if(action == RuleAction.IgnoreDefaults) {
-                    // "sourceValue == default" and "sourceValue.Equals(default)" won't work with struct types i.e. Guid
-                    if(sourceValue.Equals(property.PropertyType.GetDefaultValue())) {
-                        continue;
-                    }
-                }
-                else if(property.IsValueOrImmutable()) {
-                    // Type needs to be public for late binding to work.
-                    if(!property.PropertyType.IsPublic) {
-                        throw new InvalidOperationException($"Attempt to create private or nested type '{property.PropertyType.Name}'");
-                    }
-                    // Use dynamic to allow late binding.
-                    sourceValue = Create((dynamic)sourceValue);
-                }
-                property.SetValue(destination, sourceValue);
-            }
+            await UpdatePropertiesAsync(exemplar, destination, MaxRecursionDepth, e => e.CreateAction);
             return destination;
         }
 
@@ -97,7 +64,7 @@ namespace ExtraDry.Server {
             var validator = new DataValidator();
             validator.ValidateObject(source);
             validator.ThrowIfInvalid();
-            await UpdatePropertiesAsync(source, destination, MaxRecursionDepth);
+            await UpdatePropertiesAsync(source, destination, MaxRecursionDepth, e => e.UpdateAction);
         }
 
         /// <summary>
@@ -107,7 +74,7 @@ namespace ExtraDry.Server {
         /// </summary>
         public int MaxRecursionDepth { get; set; } = 20;
 
-        private async Task UpdatePropertiesAsync<T>(T source, T destination, int depth)
+        private async Task UpdatePropertiesAsync<T>(T source, T destination, int depth, Func<RulesAttribute, RuleAction> selector)
         {
             if(depth == 0) {
                 throw new DryException("Recursion limit on update reached");
@@ -115,7 +82,7 @@ namespace ExtraDry.Server {
             var properties = typeof(T).GetProperties();
             foreach(var property in properties) {
                 var ignore = property.GetCustomAttribute<JsonIgnoreAttribute>();
-                var action = EffectiveRule(property, ignore, e => e.UpdateAction, RuleAction.Allow);
+                var action = EffectiveRule(property, ignore, selector, RuleAction.Allow);
                 if(action == RuleAction.Ignore) {
                     continue;
                 }
@@ -130,7 +97,7 @@ namespace ExtraDry.Server {
                     await ProcessCollectionUpdates(action, property, destination, sourceList);
                 }
                 else {
-                    await ProcessIndividualUpdate(action, property, destination, sourceValue, depth, ignore);
+                    await ProcessIndividualUpdate(action, property, destination, sourceValue, depth, ignore, selector);
                 }
             }
         }
@@ -152,10 +119,10 @@ namespace ExtraDry.Server {
             }
         }
 
-        private async Task ProcessIndividualUpdate<T>(RuleAction action, PropertyInfo property, T destination, object? value, int depth, JsonIgnoreAttribute ignore)
+        private async Task ProcessIndividualUpdate<T>(RuleAction action, PropertyInfo property, T destination, object? value, int depth, JsonIgnoreAttribute ignore, Func<RulesAttribute, RuleAction> selector)
         {
-            if(action == RuleAction.IgnoreDefaults && value == default) {
-                // Don't modify destination as source is in default state
+            // Check against null for object types and GetDefaultValue for boxed value types.
+            if(action == RuleAction.IgnoreDefaults && (value == null || value.Equals(property.PropertyType.GetDefaultValue()))) {
                 return;
             }
             (var resolved, var result) = await ResolveEntityValue(property.PropertyType, value);
@@ -166,7 +133,7 @@ namespace ExtraDry.Server {
                     destinationValue = Activator.CreateInstance(value.GetType());
                     property.SetValue(destination, destinationValue);
                 }
-                await UpdatePropertiesAsync((dynamic?)value, (dynamic)destinationValue, --depth);
+                await UpdatePropertiesAsync((dynamic?)value, (dynamic)destinationValue, --depth, selector);
             }
             else {
                 var same = (result == null && destinationValue == null) || (result?.Equals(destinationValue) ?? false);

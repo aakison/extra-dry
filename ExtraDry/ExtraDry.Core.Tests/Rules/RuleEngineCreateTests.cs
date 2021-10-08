@@ -2,20 +2,21 @@ using ExtraDry.Server;
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace ExtraDry.Core.Tests.Rules {
     public class RuleEngineCreateTests {
         [Fact]
-        public void CreateRequiresItem()
+        public async Task CreateRequiresItem()
         {
             var rules = new RuleEngine(new ServiceProviderStub());
 
-            Assert.Throws<ArgumentNullException>(() => rules.Create((object)null));
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await rules.CreateAsync((object)null));
         }
 
         [Fact]
-        public void CreateWithValueTypesByDefault()
+        public async Task CreateWithValueTypesByDefault()
         {
             var rules = new RuleEngine(new ServiceProviderStub());
             var exemplar = new Entity {
@@ -25,7 +26,7 @@ namespace ExtraDry.Core.Tests.Rules {
                 DefaultState = State.Active
             };
 
-            var entity = rules.Create(exemplar);
+            var entity = await rules.CreateAsync(exemplar);
 
             Assert.NotNull(entity);
             Assert.Equal(exemplar.DefaultInteger, entity.DefaultInteger);
@@ -35,7 +36,7 @@ namespace ExtraDry.Core.Tests.Rules {
         }
 
         [Fact]
-        public void CreateWithValueTypes()
+        public async Task CreateWithValueTypes()
         {
             var rules = new RuleEngine(new ServiceProviderStub());
             var exemplar = new Entity {
@@ -45,7 +46,7 @@ namespace ExtraDry.Core.Tests.Rules {
                 State = State.Active
             };
 
-            var entity = rules.Create(exemplar);
+            var entity = await rules.CreateAsync(exemplar);
 
             Assert.NotNull(entity);
             Assert.Equal(exemplar.Integer, entity.Integer);
@@ -55,7 +56,7 @@ namespace ExtraDry.Core.Tests.Rules {
         }
 
         [Fact]
-        public void CreateWithReferenceTypeByDefault()
+        public async Task CreateWithReferenceTypeByDefault()
         {
             var rules = new RuleEngine(new ServiceProviderStub());
             var exemplar = new Entity {
@@ -66,7 +67,7 @@ namespace ExtraDry.Core.Tests.Rules {
                 }
             };
 
-            var entity = rules.Create(exemplar);
+            var entity = await rules.CreateAsync(exemplar);
 
             Assert.NotNull(entity);
             Assert.NotNull(entity.DefaultTestObject);
@@ -77,7 +78,7 @@ namespace ExtraDry.Core.Tests.Rules {
         }
 
         [Fact]
-        public void CreateWithReferenceType()
+        public async Task CreateWithReferenceType()
         {
             var rules = new RuleEngine(new ServiceProviderStub());
             var exemplar = new Entity {
@@ -88,7 +89,7 @@ namespace ExtraDry.Core.Tests.Rules {
                 }
             };
 
-            var entity = rules.Create(exemplar);
+            var entity = await rules.CreateAsync(exemplar);
 
             Assert.NotNull(entity);
             Assert.NotNull(entity.TestObject);
@@ -99,7 +100,7 @@ namespace ExtraDry.Core.Tests.Rules {
         }
 
         [Fact]
-        public void CreateWithReferenceTypeByCreateDescendants()
+        public async Task CreateWithReferenceTypeByCreateDescendants()
         {
             var rules = new RuleEngine(new ServiceProviderStub());
             var exemplar = new Entity {
@@ -108,7 +109,7 @@ namespace ExtraDry.Core.Tests.Rules {
                 }
             };
 
-            var entity = rules.Create(exemplar);
+            var entity = await rules.CreateAsync(exemplar);
 
             Assert.NotNull(entity);
             Assert.NotNull(entity.DesendantsTestObject);
@@ -117,22 +118,23 @@ namespace ExtraDry.Core.Tests.Rules {
             Assert.NotEqual(exemplar.DesendantsTestObject.TestObject, entity.DesendantsTestObject.TestObject);
         }
 
+        // TODO: what is this testing?
+        //[Fact]
+        // public async Task CreateWithInvalidReferenceType()
+        //{
+        //    var rules = new RuleEngine(new ServiceProviderStub());
+        //    var exemplar = new InvalidReferenceTypes {
+        //        TestObject = new()
+        //    };
+
+        //    var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () => await rules.CreateAsync(exemplar));
+
+        //    Assert.NotNull(exception);
+        //    Assert.Equal("Attempt to create private or nested type 'InvalidTestObject'", exception.Message);
+        //}
+
         [Fact]
-        public void CreateWithInvalidReferenceType()
-        {
-            var rules = new RuleEngine(new ServiceProviderStub());
-            var exemplar = new InvalidReferenceTypes {
-                TestObject = new()
-            };
-
-            var exception = Assert.Throws<InvalidOperationException>(() => rules.Create(exemplar));
-
-            Assert.NotNull(exception);
-            Assert.Equal("Attempt to create private or nested type 'InvalidTestObject'", exception.Message);
-        }
-
-        [Fact]
-        public void CreateWithIgnore()
+        public async Task CreateWithIgnore()
         {
             var rules = new RuleEngine(new ServiceProviderStub());
             var exemplar = new Entity {
@@ -140,7 +142,7 @@ namespace ExtraDry.Core.Tests.Rules {
                 IgnoredChild = new()
             };
 
-            var valueTypes = rules.Create(exemplar);
+            var valueTypes = await rules.CreateAsync(exemplar);
 
             Assert.NotNull(valueTypes);
             Assert.Equal(default, valueTypes.IgnoredProp);
@@ -148,7 +150,7 @@ namespace ExtraDry.Core.Tests.Rules {
         }
 
         [Fact]
-        public void CreateWithIgnoreDefault()
+        public async Task CreateWithIgnoreDefault()
         {
             var rules = new RuleEngine(new ServiceProviderStub());
             var exemplar = new Entity {
@@ -164,7 +166,7 @@ namespace ExtraDry.Core.Tests.Rules {
                 IgnoredDefaultChild1WithInit = null
             };
 
-            var valueTypes = rules.Create(exemplar);
+            var valueTypes = await rules.CreateAsync(exemplar);
 
             Assert.NotNull(valueTypes);
             Assert.Equal(default, valueTypes.IgnoredDefaultProp);
@@ -183,7 +185,7 @@ namespace ExtraDry.Core.Tests.Rules {
         }
 
         [Fact]
-        public void CreateWithJsonIgnore()
+        public async Task CreateWithJsonIgnore()
         {
             var rules = new RuleEngine(new ServiceProviderStub());
             var exemplar = new Entity {
@@ -191,32 +193,43 @@ namespace ExtraDry.Core.Tests.Rules {
                 JsonIgnoredChild = new()
             };
 
-            var valueTypes = rules.Create(exemplar);
+            var valueTypes = await rules.CreateAsync(exemplar);
 
             Assert.NotNull(valueTypes);
             Assert.Equal(default, valueTypes.JsonIgnoredProp);
             Assert.Equal(default, valueTypes.JsonIgnoredChild);
         }
 
-        public static IEnumerable<object[]> CreateWithBlockData()
-        {
-            yield return new object[] { new Entity { BlockInteger = 123 }, "BlockInteger" };
-            yield return new object[] { new Entity { BlockString = "Hello World" }, "BlockString" };
-            yield return new object[] { new Entity { BlockGuid = Guid.NewGuid() }, "BlockGuid" };
-            yield return new object[] { new Entity { BlockState = State.Active }, "BlockState" };
-            yield return new object[] { new Entity { BlockTestObject = new() }, "BlockTestObject" };
-        }
-
-        [Theory]
-        [MemberData(nameof(CreateWithBlockData))]
-        public void CreateWithBlock(Entity exemplar, string propertyName)
+        [Fact]
+        public async Task CreateFailsOnExplicitValueTypePropertyBlock()
         {
             var rules = new RuleEngine(new ServiceProviderStub());
+            var exemplar = new BlockedPropertiesEntity { CreateBlockString = "abc" };
 
-            var exception = Assert.Throws<DryException>(() => rules.Create(exemplar));
-
-            Assert.Equal($"Invalid attempt to change property '{propertyName}'", exception.Message);
+            await Assert.ThrowsAsync<DryException>(async () => await rules.CreateAsync(exemplar));
         }
+
+        [Fact]
+        public async Task CreateFailsOnImplicitValueTypePropertyBlock()
+        {
+            var rules = new RuleEngine(new ServiceProviderStub());
+            var exemplar = new BlockedPropertiesEntity { DefaultBlockString = "abc" };
+
+            await Assert.ThrowsAsync<DryException>(async () => await rules.CreateAsync(exemplar));
+        }
+
+        // TODO: What does it mean to block an object?  
+        // Do we recursively check all fields that are 'allow' and turn them to blocked?
+        // Is it just at the object level?
+        //[Fact]
+        //public async Task CreateFailsOnExplicitObjectPropertyBlock()
+        //{
+        //    var rules = new RuleEngine(new ServiceProviderStub());
+        //    var exemplar = new BlockedPropertiesEntity { BlockTestObject = new ChildEntity() };
+
+        //    await Assert.ThrowsAsync<DryException>(async () => await rules.CreateAsync(exemplar));
+        //}
+
     }
 
     public class Entity {
@@ -270,18 +283,20 @@ namespace ExtraDry.Core.Tests.Rules {
         public int JsonIgnoredProp { get; set; }
         [JsonIgnore]
         public ChildEntity JsonIgnoredChild { get; set; }
+    }
 
 
+    public class BlockedPropertiesEntity {
+
+        [Rules(RuleAction.Block)]
+        public string DefaultBlockString { get; set; }
+        
         [Rules(CreateAction = RuleAction.Block)]
-        public int BlockInteger { get; set; }
-        [Rules(CreateAction = RuleAction.Block)]
-        public string BlockString { get; set; }
-        [Rules(CreateAction = RuleAction.Block)]
-        public Guid BlockGuid { get; set; }
-        [Rules(CreateAction = RuleAction.Block)]
-        public State BlockState { get; set; }
+        public string CreateBlockString { get; set; }
+        
         [Rules(CreateAction = RuleAction.Block)]
         public ChildEntity BlockTestObject { get; set; }
+
     }
 
     public class ChildEntity {
