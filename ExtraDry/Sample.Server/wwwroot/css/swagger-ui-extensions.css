@@ -180,39 +180,32 @@ body {
     margin: 0 5px;
   }
 
-
-/* Make the '.opblock-summary-control' mobile responsive */
-@media only screen and (max-width: 768px)  {
-
-  .swagger-ui .opblock .opblock-summary-control {
-    display: grid;
-    grid-template-columns: 90px 1fr 20px;
-    grid-template-rows: 1fr 1fr;
-    gap: 0px 0px;
-    grid-template-areas: "start center-top end" "start center-bottom end";
-  }
-
-  .swagger-ui .opblock .opblock-summary-control .opblock-summary-method {
-    grid-area: start;
-  }
-
-  .swagger-ui .opblock .opblock-summary-control .opblock-summary-path {
-    grid-area: center-top;
-    padding: 1px 30px 1px 10px;
-    max-width: 100%;
-  }
-
-  .swagger-ui .opblock .opblock-summary-control .opblock-summary-description {
-    grid-area: center-bottom;
-    padding: 1px 30px 1px 10px;
-    font-size: 12px;
-  }
-
-  .swagger-ui .opblock .opblock-summary-control .arrow {
-    grid-area: end;
-  }
-  
+/* Re-align the operation summary header to be two lines */
+.swagger-ui .opblock .opblock-summary-control {
+  display: grid;
+  grid-template-columns: 60px auto 26px;
+  gap: 0px 0px;
+  grid-template-areas: "pill        route       chevron" 
+                       "description description chevron";
 }
+
+.swagger-ui .opblock .opblock-summary-control .opblock-summary-method {
+  grid-area: pill;
+}
+
+.swagger-ui .opblock .opblock-summary-control .opblock-summary-path {
+  grid-area: route;
+}
+
+.swagger-ui .opblock .opblock-summary-control .opblock-summary-description {
+  grid-area: description;
+  margin: 10px 1px 1px 1px;
+}
+
+.swagger-ui .opblock .opblock-summary-control .arrow {
+  grid-area: chevron;
+}
+  
 
 
 /* Swap authorized lock and accordian arrow icon positions */
@@ -283,11 +276,16 @@ body {
   }
 
 
-/* Make buttons wide enough that 'Delete' option isn't different size */
+/* Make buttons look like pills */
 .swagger-ui .opblock .opblock-summary-method {
-  min-width: 90px;
+  min-width: 60px;
   text-shadow: none;
   border: 1px solid var(--button-secondary);
+  height: 18px;
+  border-radius: 14px;
+  padding: 2px;
+  width: 60px;
+  font-size: 12px;
 }
 
 
@@ -313,8 +311,8 @@ body {
 }
 
   .swagger-ui .opblock.opblock-get .opblock-summary-method {
-    color: var(--get-accent);
-    background: var(--get-accent-light);
+    color: var(--get-accent-light);
+    background: var(--get-accent);
     border-color: var(--get-accent);
   }
 
@@ -330,8 +328,8 @@ body {
 }
 
   .swagger-ui .opblock.opblock-delete .opblock-summary-method {
-    color: var(--delete-accent);
-    background: var(--delete-accent-light);
+    color: var(--delete-accent-light);
+    background: var(--delete-accent);
     border-color: var(--delete-accent);
   }
 
@@ -347,8 +345,8 @@ body {
 }
 
   .swagger-ui .opblock.opblock-post .opblock-summary-method {
-    color: var(--post-accent);
-    background: var(--post-accent-light);
+    color: var(--post-accent-light);
+    background: var(--post-accent);
     border-color: var(--post-accent);
   }
 
@@ -366,8 +364,8 @@ body {
 }
 
   .swagger-ui .opblock.opblock-put .opblock-summary-method {
-    color: var(--put-accent);
-    background: var(--put-accent-light);
+    color: var(--put-accent-light);
+    background: var(--put-accent);
     border-color: var(--put-accent);
   }
 
@@ -384,8 +382,8 @@ body {
 }
 
   .swagger-ui .opblock.opblock-patch .opblock-summary-method {
-    color: var(--patch-accent);
-    background: var(--patch-accent-light);
+    color: var(--patch-accent-light);
+    background: var(--patch-accent);
     border-color: var(--patch-accent);
   }
 
