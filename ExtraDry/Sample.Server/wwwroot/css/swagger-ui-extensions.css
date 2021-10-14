@@ -14,8 +14,10 @@
   --patch-accent-light: #FFF5E6; 
 
   --topbar: #253146;
-  --hyperlink: #C25100;
-  --hyperlink-hover: #8F3C00;
+  --hyperlink-primary: #C25100;
+  --hyperlink-primary-hover: #8F3C00;
+  --hyperlink-secondary: #4990e2;
+  --hyperlink-secondary-hover: #1f69c0;
   --button-primary: #FF6B00;
   --button-primary-hover: #C25100;
   --button-secondary: #333333;
@@ -29,7 +31,7 @@
 
 /* Brand UI */
 body {
-  background: var(--white);
+  background: var(--light);
 }
 
 
@@ -50,11 +52,11 @@ body {
 
 /* Links */
 .swagger-ui .info a {
-  color: var(--hyperlink);
+  color: var(--hyperlink-primary);
 }
 
   .swagger-ui .info a:hover {
-    color: var(--hyperlink-hover);
+    color: var(--hyperlink-primary-hover);
   }
 
 
@@ -90,7 +92,7 @@ body {
   }
 
 
-/* Definition  */
+/* Definition */
 .swagger-ui .topbar .download-url-wrapper .select-label {
   max-width: 400px;
 }
@@ -105,32 +107,118 @@ body {
   }
   
     
-/* 
-  Move the 'Authorized' button to the top right 
-*/
-.swagger-ui {
-    position: relative;
+/* Move the 'Authorized' button to the top right */
+.swagger-container > .swagger-ui {
+  margin: 0 auto;
+  max-width: 1460px;
+  width: 100%;
 }
-  
-  .swagger-ui .scheme-container {
-    margin: -160px auto 50px;
-    max-width: 1460px;
+
+.swagger-container > .swagger-ui > div {
+  display: grid;
+  grid-template-columns: 1fr 180px;
+  grid-template-rows: min-content 1fr;
+  grid-template-areas: "information authorize" "wrapper wrapper";
+}
+
+.swagger-container > .swagger-ui > div > div {
+  display: none;
+}
+
+  .swagger-container > .swagger-ui > div > .information-container {
+    display: block;
     width: 100%;
+    grid-area: information;
+  }
+
+  .swagger-container > .swagger-ui > div > .scheme-container {
+    display: block;
+    padding: 40px 0;
+    grid-area: authorize;
     background: none;
     box-shadow: none;
   }
 
-  .swagger-ui .auth-wrapper .authorize {
-    margin: 0;
+  .swagger-container > .swagger-ui > div > .wrapper:nth-child(2n) {
+    display: block;
+    width: 100%;
+    grid-area: wrapper;
+  }
+
+  .swagger-ui .btn.authorize {
+    margin-right: 0;
+    white-space: nowrap;
+  }
+
+  .swagger-ui .btn.authorize span {
+    padding-right: 10px;
+  }
+
+  @media only screen and (max-width: 768px)  {
+
+    .swagger-container > .swagger-ui > div {
+      display: block;
+    }
+
+    .swagger-container > .swagger-ui > div > .scheme-container  {
+      padding: 0;
+    }
+
+    .swagger-ui .auth-wrapper {
+      justify-content: flex-start;
+    }
+
   }
 
 
-/* 
-    Swap authorized lock and accordian arrow icon positions 
-*/
+/* Tidy up auth modal buttons */
+.swagger-ui .auth-btn-wrapper {
+  margin-top: 20px;
+}
+
+  .swagger-ui .auth-btn-wrapper .btn {
+    margin: 0 5px;
+  }
+
+
+/* Make the '.opblock-summary-control' mobile responsive */
+@media only screen and (max-width: 768px)  {
+
+  .swagger-ui .opblock .opblock-summary-control {
+    display: grid;
+    grid-template-columns: 90px 1fr 20px;
+    grid-template-rows: 1fr 1fr;
+    gap: 0px 0px;
+    grid-template-areas: "start center-top end" "start center-bottom end";
+  }
+
+  .swagger-ui .opblock .opblock-summary-control .opblock-summary-method {
+    grid-area: start;
+  }
+
+  .swagger-ui .opblock .opblock-summary-control .opblock-summary-path {
+    grid-area: center-top;
+    padding: 1px 30px 1px 10px;
+    max-width: 100%;
+  }
+
+  .swagger-ui .opblock .opblock-summary-control .opblock-summary-description {
+    grid-area: center-bottom;
+    padding: 1px 30px 1px 10px;
+    font-size: 12px;
+  }
+
+  .swagger-ui .opblock .opblock-summary-control .arrow {
+    grid-area: end;
+  }
+  
+}
+
+
+/* Swap authorized lock and accordian arrow icon positions */
 .swagger-ui .opblock {
   position: relative;
-  box-shadow: 0 0 2px rgb(0 0 0 / 10%), 0 2px 6px rgb(0 0 0 / 13%);
+  box-shadow: rgba(0, 0, 0, 0.133) 0px 3.2px 7.2px 0px, rgba(0, 0, 0, 0.11) 0px 0.6px 1.8px 0px;
   border: 0;
   border-radius: 0;
 }
@@ -139,19 +227,17 @@ body {
     margin-right: 5px;
   }
 
-  .swagger-ui .authorization__btn.unlocked {
+  .swagger-ui .authorization__btn {
     position: absolute;
     right: 30px
   }
 
 
-/* 
-  Change block tag spacing
-*/
+/* Change block tag spacing */
 .swagger-ui .opblock-tag {
   border: 0;
   margin: 20px 0 0;
-  padding: 10px 10px 10px 0;
+  padding: 10px 10px 10px;
 }
 
   .swagger-ui .opblock-tag:hover {
@@ -159,12 +245,27 @@ body {
   }
 
 
-/* 
-  Provide some definition and make this look like forms
-*/
+/* Make this look like form by adding a bit more definition */
+.opblock-body {
+  padding-bottom: 2px;
+}
 
-.parameters-container, .execute-wrapper, .responses-inner {
+.opblock-section, .execute-wrapper, .responses-wrapper {
+  margin-left: 20px;
+  margin-right: 20px;
   background: var(--light);
+  border-left: 1px solid var(--gray);
+  border-right: 1px solid var(--gray);
+}
+
+.opblock-section {
+  margin-top: 20px;
+  border-top: 1px solid var(--gray);
+}
+
+.responses-wrapper {
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--gray);
 }
 
 .swagger-ui table tbody tr td:first-of-type {
@@ -173,6 +274,7 @@ body {
 
 .swagger-ui .opblock .opblock-section-header {
   background: var(--dark);
+  box-shadow: none;
 }
 
   .swagger-ui .opblock .opblock-section-header h4 {
@@ -188,6 +290,7 @@ body {
   border: 1px solid var(--button-secondary);
 }
 
+
 /* Adjust padding */
 .swagger-ui .opblock .opblock-summary {
   padding: 0;
@@ -198,7 +301,8 @@ body {
   }
 
   .swagger-ui .opblock-description-wrapper {
-    padding: 20px;
+    margin: 0;
+    padding: 24px 24px 0;
   }
 
 
@@ -473,7 +577,7 @@ body {
 .swagger-ui tr[data-code="403"] .response-col_description .response-col_description__inner p,
 .swagger-ui tr[data-code="404"] .response-col_description .response-col_description__inner p {
   cursor: pointer;
-  color: var(--hyperlink);
+  color: var(--hyperlink-secondary);
 }
 
   .swagger-ui tr[data-code="400"] .response-col_description .response-col_description__inner p:hover,
@@ -564,7 +668,7 @@ body {
 */
 .opblock-description .renderedMarkdown:after {
     content: "expand details";
-    color: var(--hyperlink);
+    color: var(--hyperlink-secondary);
     cursor: pointer;
 }
 
@@ -589,4 +693,3 @@ body {
 .opblock-description .renderedMarkdown.detailed p + p {
   display: block;
 }
-
