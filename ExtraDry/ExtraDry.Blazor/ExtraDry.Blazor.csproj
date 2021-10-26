@@ -21,10 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <_ContentIncludedByDefault Remove="wwwroot\bundles\blazor-extra-dry.razor.js" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="..\extradry-logo.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
