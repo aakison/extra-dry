@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.Json;
 using Xunit;
 
-namespace ExtraDry.Blazor.Tests.Models {
+namespace ExtraDry.Core.Tests.Models {
     public class FilteredCollectionTests {
 
         [Fact]
@@ -55,7 +55,29 @@ namespace ExtraDry.Blazor.Tests.Models {
             Assert.Equal("sort", result.Sort);
         }
 
-        private class Payload {
+        [Fact]
+        public void FilteredCollectionCasting()
+        {
+            var target = new FilteredCollection<Payload>() {
+                Filter = "filter",
+                Sort = "sort",
+            };
+            var item = new Payload { Pay = "pay", Load = "load" };
+            target.Items.Add(item);
+
+            var iPayloadItems = target.Cast<IPayload>();
+
+            Assert.Equal(1, iPayloadItems.Count);
+            Assert.Equal(target.Items.First(), iPayloadItems.Items.First());
+            Assert.Equal(target.Filter, iPayloadItems.Filter);
+            Assert.Equal(target.Sort, iPayloadItems.Sort);
+        }
+
+        private interface IPayload {
+            string Pay { get; set; }
+        }
+
+        private class Payload : IPayload {
             public string Pay { get; set; }
 
             public string Load { get; set; }

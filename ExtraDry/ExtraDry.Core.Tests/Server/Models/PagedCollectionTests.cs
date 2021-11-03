@@ -1,10 +1,9 @@
-﻿using ExtraDry.Core;
-using System;
+﻿using System;
 using System.Linq;
 using System.Text.Json;
 using Xunit;
 
-namespace ExtraDry.Blazor.Tests.Models {
+namespace ExtraDry.Core.Tests.Models {
 
     public class PagedCollectionTests {
 
