@@ -27,49 +27,58 @@ namespace ExtraDry.Swashbuckle {
 
             var consumesAttributes = attributes.OfType<ConsumesAttribute>();
             if(operation.Parameters.Any() || consumesAttributes.Any()) {
-                operation.Responses.Add("400", new OpenApiResponse {
-                    Description = "Bad Request",
-                    Content = {
-                        ["application/json"] = new OpenApiMediaType {
-                            Schema = schema,
-                            Example = OpenApiAnyFactory.CreateFromJson(json400),
+                if(!operation.Responses.ContainsKey("400")) {
+                    operation.Responses.Add("400", new OpenApiResponse {
+                        Description = "Bad Request",
+                        Content = {
+                            ["application/json"] = new OpenApiMediaType {
+                                Schema = schema,
+                                Example = OpenApiAnyFactory.CreateFromJson(json400),
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
 
             var authAttributes = attributes.OfType<AuthorizeAttribute>();
             if(authAttributes.Any()) {
-                operation.Responses.Add("401", new OpenApiResponse { Description = "Unauthorized",
-                    Content = {
-                        ["application/json"] = new OpenApiMediaType {
-                            Schema = schema,
-                            Example = OpenApiAnyFactory.CreateFromJson(json401),
+                if(!operation.Responses.ContainsKey("401")) {
+                    operation.Responses.Add("401", new OpenApiResponse {
+                        Description = "Unauthorized",
+                        Content = {
+                            ["application/json"] = new OpenApiMediaType {
+                                Schema = schema,
+                                Example = OpenApiAnyFactory.CreateFromJson(json401),
+                            }
                         }
-                    }
-                });
-                operation.Responses.Add("403", new OpenApiResponse {
-                    Description = "Forbidden",
-                    Content = {
-                        ["application/json"] = new OpenApiMediaType {
-                            Schema = schema,
-                            Example = OpenApiAnyFactory.CreateFromJson(json403),
+                    });
+                }
+                if(!operation.Responses.ContainsKey("403")) {
+                    operation.Responses.Add("403", new OpenApiResponse {
+                        Description = "Forbidden",
+                        Content = {
+                            ["application/json"] = new OpenApiMediaType {
+                                Schema = schema,
+                                Example = OpenApiAnyFactory.CreateFromJson(json403),
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
 
             var methodAttributes = attributes.OfType<HttpMethodAttribute>();
             if(methodAttributes.Any(e => e.Template.Contains("{"))) {
-                operation.Responses.Add("404", new OpenApiResponse {
-                    Description = "Not Found",
-                    Content = {
-                        ["application/json"] = new OpenApiMediaType {
-                            Schema = schema,
-                            Example = OpenApiAnyFactory.CreateFromJson(json404),
+                if(!operation.Responses.ContainsKey("404")) {
+                    operation.Responses.Add("404", new OpenApiResponse {
+                        Description = "Not Found",
+                        Content = {
+                            ["application/json"] = new OpenApiMediaType {
+                                Schema = schema,
+                                Example = OpenApiAnyFactory.CreateFromJson(json404),
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
 
         }

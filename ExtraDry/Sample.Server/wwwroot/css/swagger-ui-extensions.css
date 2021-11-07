@@ -121,6 +121,7 @@ body {
   grid-template-areas: "information authorize" "wrapper wrapper";
 }
 
+/* TODO: David: This is incorrect when there is no authorization, the button doesn't show and this blanks the whole page. */
 .swagger-container > .swagger-ui > div > div {
   display: none;
 }
