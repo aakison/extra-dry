@@ -2,7 +2,7 @@
 
 using System;
 
-namespace ExtraDry.Core.Models {
+namespace ExtraDry.Core {
 
     /// <summary>
     /// A simple container for holding a URI Identifier, such as returned from a Create method.

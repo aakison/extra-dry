@@ -3,7 +3,7 @@
 using System;
 using System.Text.RegularExpressions;
 
-namespace ExtraDry.Core.Models {
+namespace ExtraDry.Core {
 
     /// <summary>
     /// A simple container for holding a Web Identifier (WebID) that is safe for use URI paths, such as returned from a Create method.
