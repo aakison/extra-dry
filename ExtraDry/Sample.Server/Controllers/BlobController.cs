@@ -22,6 +22,7 @@ namespace Sample.Server.Controllers {
     /// Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
     /// </remarks>
     [ApiController]
+    [SkipStatusCodePages]
     [SuppressMessage("Usage", "DRY1002:ApiController shouldn't inherit from ControllerBase", Justification = "Controller makes use of ControllerBase functionality for emitting file content.")]
     public class BlobController : ControllerBase {
 
@@ -56,7 +57,7 @@ namespace Sample.Server.Controllers {
         /// <param name="filename"></param>
         /// <returns></returns>
         [HttpPost("api/blobs/{scope}/{filename}")]
-        [Consumes("application/octet-stream"), Produces("application/json")]
+        [Consumes("multipart/form-data"), Produces("application/json")]
         [Authorize(SamplePolicies.SamplePolicy)]
         public async Task<BlobInfo> CreateBlobAsync(BlobScope scope, string filename)
         {
@@ -109,7 +110,7 @@ namespace Sample.Server.Controllers {
         /// <param name="value"></param>
         /// <returns></returns>
         [HttpPut("api/blobs/{uniqueId}")]
-        [Consumes("application/octet-stream")]
+        [Consumes("multipart/form-data")]
         [Authorize(SamplePolicies.SamplePolicy)]
         public async Task Update(Guid uniqueId, [FromBody] BlobInfo value)
         {

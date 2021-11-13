@@ -35,6 +35,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtraDry.Blazor.Tests", "Ex
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtraDry.Swashbuckle", "ExtraDry.Swashbuckle\ExtraDry.Swashbuckle.csproj", "{B67BB00A-EB80-4639-810A-50A19FE7250A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtraDry.Server", "ExtraDry.Server\ExtraDry.Server.csproj", "{3D9D55DC-77BE-473A-A0F7-4CE4856DF94E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +79,10 @@ Global
 		{B67BB00A-EB80-4639-810A-50A19FE7250A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B67BB00A-EB80-4639-810A-50A19FE7250A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B67BB00A-EB80-4639-810A-50A19FE7250A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D9D55DC-77BE-473A-A0F7-4CE4856DF94E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D9D55DC-77BE-473A-A0F7-4CE4856DF94E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D9D55DC-77BE-473A-A0F7-4CE4856DF94E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D9D55DC-77BE-473A-A0F7-4CE4856DF94E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

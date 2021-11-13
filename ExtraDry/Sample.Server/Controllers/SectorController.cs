@@ -15,6 +15,7 @@ namespace Sample.Server.Controllers {
     /// Manages collections of sectors for companies.
     /// </summary>
     [ApiController]
+    [SkipStatusCodePages]
     public class SectorController {
        
         /// <summary>

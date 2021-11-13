@@ -15,6 +15,7 @@ namespace Sample.Server.Controllers {
     /// Manages colleciton of employees.
     /// </summary>
     [ApiController]
+    [SkipStatusCodePages]
     public class EmployeeController {
        
         /// <summary>

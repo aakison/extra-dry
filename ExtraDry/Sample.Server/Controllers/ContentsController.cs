@@ -15,6 +15,7 @@ namespace Sample.Server.Controllers {
     /// Manages the collection of contents.
     /// </summary>
     [ApiController]
+    [SkipStatusCodePages]
     public class ContentsController {
        
         /// <summary>
