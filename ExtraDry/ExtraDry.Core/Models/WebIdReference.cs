@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace ExtraDry.Core {
@@ -24,6 +25,7 @@ namespace ExtraDry.Core {
         /// <summary>
         /// The universally unique identifier.
         /// </summary>
+        [JsonPropertyName("id")]
         public string WebId { get; }
 
         // Only allow safe characters, following RFC3986
