@@ -26,5 +26,6 @@ namespace ExtraDry.Core {
         /// A code for display to users in a last-chance exception handler to help identify specific traces during debugging.
         /// </summary>
         public string DisplayCode { get; set; } = string.Empty;
+
     }
 }
