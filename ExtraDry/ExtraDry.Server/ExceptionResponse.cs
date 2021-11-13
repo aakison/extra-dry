@@ -8,7 +8,7 @@ namespace ExtraDry.Server {
     /// <summary>
     /// Simple payload for all APIs that need to return information about a non 2xx status code.
     /// </summary>
-    internal static class ExceptionResponse {
+    public static class ExceptionResponse {
 
         public static void RewriteResponse(HttpResponse response, HttpStatusCode code, string display, string description)
         {
