@@ -27,21 +27,30 @@ namespace Sample.Data.Services {
             await database.SaveChangesAsync();
         }
 
-        public async Task<Employee> Retrieve(Guid uniqueId)
+        public async Task<Employee> RetrieveAsync(Guid uniqueId)
+        {
+            var result = await TryRetrieveAsync(uniqueId);
+            if(result == null) {
+                throw new ArgumentOutOfRangeException(nameof(uniqueId));
+            }
+            return result;
+        }
+
+        public async Task<Employee?> TryRetrieveAsync(Guid uniqueId)
         {
             return await database.Employees.FirstOrDefaultAsync(e => e.Uuid == uniqueId);
         }
 
         public async Task Update(Employee item)
         {
-            var existing = await Retrieve(item.Uuid);
+            var existing = await RetrieveAsync(item.Uuid);
             await rules.UpdateAsync(item, existing);
             await database.SaveChangesAsync();
         }
 
         public async Task Delete(Guid uniqueId)
         {
-            var existing = await Retrieve(uniqueId);
+            var existing = await RetrieveAsync(uniqueId);
             rules.Delete(existing, () => database.Employees.Remove(existing));
             await database.SaveChangesAsync();
         }

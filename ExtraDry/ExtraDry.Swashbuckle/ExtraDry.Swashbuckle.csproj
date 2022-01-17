@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Authors>adrian.akison</Authors>
     <Company>FMI Works</Company>
     <Description>Extensions to Blazor and DRY libraries to create Blazor client/server applications with a lower-code footprint.  Use this Swashbuckle library to efficiently extend the documentation capabilities of Swashbuckle for building OpenAPI interfaces.</Description>

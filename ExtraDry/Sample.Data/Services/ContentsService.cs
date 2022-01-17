@@ -32,6 +32,15 @@ namespace Sample.Data.Services {
 
         public async Task<Content> RetrieveAsync(Guid uniqueId)
         {
+            var result = await TryRetrieveAsync(uniqueId);
+            if(result == null) {
+                throw new ArgumentOutOfRangeException(nameof(uniqueId));
+            }
+            return result;
+        }
+
+        public async Task<Content?> TryRetrieveAsync(Guid uniqueId)
+        {
             return await database.Contents.FirstOrDefaultAsync(e => e.Uuid == uniqueId);
         }
 

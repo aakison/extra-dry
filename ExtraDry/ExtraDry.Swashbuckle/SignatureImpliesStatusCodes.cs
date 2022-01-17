@@ -67,7 +67,7 @@ namespace ExtraDry.Swashbuckle {
             }
 
             var methodAttributes = attributes.OfType<HttpMethodAttribute>();
-            if(methodAttributes.Any(e => e.Template.Contains("{"))) {
+            if(methodAttributes.Any(e => e?.Template?.Contains("{") ?? false)) {
                 if(!operation.Responses.ContainsKey("404")) {
                     operation.Responses.Add("404", new OpenApiResponse {
                         Description = "Not Found",

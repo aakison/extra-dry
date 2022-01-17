@@ -69,6 +69,15 @@ namespace Sample.Data.Services {
 
         public async Task<BlobInfo> RetrieveAsync(Guid uniqueId)
         {
+            var result = await TryRetrieveAsync(uniqueId);
+            if(result == null) {
+                throw new ArgumentOutOfRangeException(nameof(uniqueId));
+            }
+            return result;
+        }
+
+        public async Task<BlobInfo?> TryRetrieveAsync(Guid uniqueId)
+        {
             return await database.Blobs.FirstOrDefaultAsync(e => e.UniqueId == uniqueId);
         }
 

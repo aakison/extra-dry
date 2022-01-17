@@ -22,7 +22,7 @@ namespace ExtraDry.Blazor.Tests.Components {
 
             Assert.Equal(nameof(CommandContext.Alternate).ToLowerInvariant(), button.ClassName);
             Assert.Null(button.Attributes["disabled"]);
-            Assert.Equal("Parameterless Method", span.TextContent); // Note spacing introduced.
+            Assert.Equal("Parameterless Method", span?.TextContent); // Note spacing introduced.
         }
 
         [Fact]

@@ -24,16 +24,16 @@ namespace Sample.Data {
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Company>().Property(e => e.BankingDetails).HasConversion(
-                e => JsonSerializer.Serialize(e, null),
-                e => JsonSerializer.Deserialize<BankingDetails>(e, null));
+                e => JsonSerializer.Serialize(e, (JsonSerializerOptions)null),
+                e => JsonSerializer.Deserialize<BankingDetails>(e, (JsonSerializerOptions)null));
 
             //modelBuilder.Entity<Company>().Property(e => e.Videos).HasConversion(
             //    e => JsonSerializer.Serialize(e, null),
             //    e => JsonSerializer.Deserialize<Collection<Video>>(e, null));
 
             modelBuilder.Entity<Content>().Property(e => e.Layout).HasConversion(
-                e => JsonSerializer.Serialize(e, null),
-                e => JsonSerializer.Deserialize<ContentLayout>(e, null));
+                e => JsonSerializer.Serialize(e, (JsonSerializerOptions)null),
+                e => JsonSerializer.Deserialize<ContentLayout>(e, (JsonSerializerOptions)null));
         }
     }
 }

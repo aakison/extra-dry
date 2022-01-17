@@ -68,7 +68,7 @@ namespace Sample.Server.Controllers {
         [AllowAnonymous]
         public async Task<Employee> Retrieve(Guid employeeId)
         {
-            return await employees.Retrieve(employeeId);
+            return await employees.RetrieveAsync(employeeId);
         }
 
         /// <summary>

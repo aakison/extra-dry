@@ -50,7 +50,7 @@ namespace Sample.Server.Controllers {
         [AllowAnonymous]
         public async Task<Company> Retrieve(Guid companyId)
         {
-            return await companies.Retrieve(companyId);
+            return await companies.RetrieveAsync(companyId);
         }
 
         /// <summary>

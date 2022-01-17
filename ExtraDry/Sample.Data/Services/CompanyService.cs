@@ -27,7 +27,16 @@ namespace Sample.Data.Services {
             await database.SaveChangesAsync();
         }
 
-        public async Task<Company> Retrieve(Guid uniqueId)
+        public async Task<Company> RetrieveAsync(Guid uniqueId)
+        {
+            var result = await TryRetrieveAsync(uniqueId);
+            if(result == null) {
+                throw new ArgumentOutOfRangeException(nameof(uniqueId));
+            }
+            return result;
+        }
+
+        public async Task<Company?> TryRetrieveAsync(Guid uniqueId)
         {
             return await database.Companies
                 .Include(e => e.PrimarySector)
@@ -37,14 +46,14 @@ namespace Sample.Data.Services {
 
         public async Task Update(Company item)
         {
-            var existing = await Retrieve(item.Uuid);
+            var existing = await RetrieveAsync(item.Uuid);
             await rules.UpdateAsync(item, existing);
             await database.SaveChangesAsync();
         }
 
         public async Task Delete(Guid uniqueId)
         {
-            var existing = await Retrieve(uniqueId);
+            var existing = await RetrieveAsync(uniqueId);
             rules.Delete(existing, () => database.Companies.Remove(existing));
             await database.SaveChangesAsync();
         }

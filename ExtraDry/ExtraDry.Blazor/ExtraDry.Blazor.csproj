@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <PackageId>ExtraDry.Blazor</PackageId>
     <Authors>adrian.akison</Authors>
     <Company>FMI Works</Company>
@@ -34,11 +34,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="BuildBundlerMinifier" Version="3.2.449">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.3" />
+    <PackageReference Include="BundlerMinifier.Core" Version="3.2.449" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -50,13 +47,7 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <Content Update="wwwroot\bundles\blazor-extra-dry.razor.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Update="wwwroot\bundles\blazor-extra-dry.razor.min.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Update="wwwroot\bundles\blazor-extra-dry.razor.min.js.gz">
+    <Content Update="wwwroot\bundles\blazor-extra-dry.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="wwwroot\img\layout-doubleweightedleft.png">
@@ -84,6 +75,10 @@
     <Content Update="_Imports.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\bundles\" />
   </ItemGroup>
 
 </Project>
