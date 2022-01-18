@@ -1,0 +1,13 @@
+﻿[
+  {
+    "inputFile": "Shared/Header.razor.scss",
+    "outputFile": "Shared/Header.razor.css",
+    "minify": {
+      "enabled": false
+    }
+  },
+  {
+    "inputFile": "wwwroot/css/site-bundle.scss",
+    "outputFile": "wwwroot/css/site-bundle.css"
+  }
+]

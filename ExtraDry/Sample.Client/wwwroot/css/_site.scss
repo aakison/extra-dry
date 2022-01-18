@@ -1,0 +1,10 @@
+﻿// Global styles that are applied across the entire site.
+@import "_constants.scss";
+
+// Gravatars are by default everywhere 40x40 with full circle rounding.
+img.gravatar {
+    width: $icon-size;
+    height: $icon-size;
+    border-radius: $icon-size/2;
+}
+

@@ -29,6 +29,9 @@ bld/
 [Bb]undle/
 [Bb]undles/
 
+*bundle.css
+*bundle.min.css
+
 # Performance Logs
 PerfLogs/
 *.sap

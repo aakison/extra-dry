@@ -1,0 +1,24 @@
+﻿@import "../wwwroot/css/_constants.scss";
+
+header {
+    display: flex;
+    justify-content: center;
+    background-color: $var-primary;
+    height: $icon-size+2*$margin;
+    margin: 0;
+    padding: $margin;
+
+    article {
+        flex: 0 1 $max-article-width+2*$margin;
+        display: flex;
+        align-items: center;
+
+        div.logo {
+            flex: 1 1 auto;
+        }
+
+        div.account {
+            flex: 0 1 auto;
+        }
+    }
+}
