@@ -136,3 +136,4 @@ steps:
   condition: and(succeeded(), eq(variables.isForDeployment, true))
   inputs:
     PathtoPublish: '$(build.artifactstagingdirectory)'
+
