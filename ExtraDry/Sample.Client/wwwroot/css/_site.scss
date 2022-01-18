@@ -1,6 +1,39 @@
 ﻿// Global styles that are applied across the entire site.
 @import "_constants.scss";
 
+@font-face {
+    font-family: 'OpenSans';
+    font-style: normal;
+    font-weight: 400;
+    src: local("OpenSans"), local("OpenSans-Regular"), url(/fonts/open-sans/OpenSans-Regular.ttf);
+}
+
+@font-face {
+    font-family: 'OpenSans';
+    font-style: normal;
+    font-weight: 500;
+    src: local("OpenSans Medium"), local("OpenSans-Medium"), url(/fonts/open-sans/OpenSans-Medium.ttf);
+}
+
+@font-face {
+    font-family: 'OpenSans';
+    font-style: normal;
+    font-weight: 600;
+    src: local("OpenSans SemiBold"), local("OpenSans-SemiBold"), url(/fonts/open-sans/OpenSans-SemiBold.ttf);
+}
+
+@font-face {
+    font-family: 'OpenSans';
+    font-style: normal;
+    font-weight: 700;
+    src: local("OpenSans Bold"), local("OpenSans-Bold"), url(/fonts/open-sans/OpenSans-Bold.ttf);
+}
+
+html, body {
+    font-family: 'OpenSans', Helvetica, Arial, sans-serif;
+}
+
+
 // Gravatars are by default everywhere 40x40 with full circle rounding.
 img.gravatar {
     width: $icon-size;

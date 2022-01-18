@@ -29,4 +29,9 @@
     <ProjectReference Include="..\Sample.Shared\Sample.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\fonts\" />
+    <Folder Include="wwwroot\img\" />
+  </ItemGroup>
+
 </Project>
