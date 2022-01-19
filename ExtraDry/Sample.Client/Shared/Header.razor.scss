@@ -6,7 +6,7 @@ header {
     display: flex;
     justify-content: center;
     background-color: $var-primary;
-    height: $icon-size+2*$margin;
+    height: $logo-size+2*$margin;
     margin: 0;
     padding: $margin;
 
@@ -28,8 +28,8 @@ header {
             }
 
             img {
-                width: $icon-size;
-                height: $icon-size;
+                width: $logo-size;
+                height: $logo-size;
             }
 
             div.title {

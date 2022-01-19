@@ -1,5 +1,12 @@
 ﻿[
   {
+    "inputFile": "Shared/SubModules.razor.scss",
+    "outputFile": "Shared/SubModules.razor.css",
+    "minify": {
+      "enabled": false
+    }
+  },
+  {
     "inputFile": "Shared/Header.razor.scss",
     "outputFile": "Shared/Header.razor.css",
     "minify": {
