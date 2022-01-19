@@ -35,9 +35,19 @@ html, body {
 
 
 // Gravatars are by default everywhere 40x40 with full circle rounding.
-img.gravatar {
-    width: $icon-size;
-    height: $icon-size;
-    border-radius: $icon-size/2;
+div.gravatar {
+    display: inline-block;
+
+    img.gravatar {
+        width: $icon-size;
+        height: $icon-size;
+        border-radius: $icon-size/2;
+    }
 }
 
+// Glyphs should have consistent size and alignment
+i.glyph {
+    font-size: $glyph-size;
+    line-height: $glyph-size;
+    transform: translateY(0.1*$glyph-size);
+}

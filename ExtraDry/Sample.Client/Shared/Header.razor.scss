@@ -1,5 +1,7 @@
 ﻿@import "../wwwroot/css/_constants.scss";
 
+$title-size: 26px;
+
 header {
     display: flex;
     justify-content: center;
@@ -15,17 +17,40 @@ header {
 
         div.logo {
             flex: 1 1 auto;
-            font-weight: 600;
-            font-size: 24px;
+
+            div.waffle {
+                display: inline-block;
+                margin-right: $padding;
+
+                ::deep i {
+                    color: $var-secondary;
+                }
+            }
 
             img {
                 width: $icon-size;
                 height: $icon-size;
             }
+
+            div.title {
+                display: inline-block;
+                font-weight: 600;
+                font-size: $title-size;
+                line-height: $title-size;
+                color: $var-secondary;
+                margin-left: $padding;
+                // Transform down as to center on text ignoring descenders.
+                transform: translateY(0.2*$title-size);
+            }
         }
 
         div.account {
             flex: 0 1 auto;
+
+            ::deep i {
+                color: $var-secondary;
+                margin-right: $padding;
+            }
         }
     }
 }
