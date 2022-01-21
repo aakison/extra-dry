@@ -23,7 +23,7 @@ jobs:
           include-prerelease: false
 
       - name: Restore with dotnet
-        run: dotnet restore ./ExtraDry/ExtraDry.sln --configuraton Release
+        run: dotnet restore ./ExtraDry/ExtraDry.sln
 
       - name: Build with dotnet
         run: dotnet build ./ExtraDry/ExtraDry.sln --configuration Release --no-restore
