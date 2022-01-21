@@ -1,5 +1,12 @@
 ﻿[
   {
+    "inputFile": "Shared/Statlets.razor.scss",
+    "outputFile": "Shared/Statlets.razor.css",
+    "minify": {
+      "enabled": false
+    }
+  },
+  {
     "inputFile": "Shared/SubModules.razor.scss",
     "outputFile": "Shared/SubModules.razor.css",
     "minify": {
