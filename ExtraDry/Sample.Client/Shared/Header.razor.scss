@@ -11,7 +11,7 @@ header {
     padding: $margin;
 
     article {
-        flex: 0 1 $max-article-width+2*$margin;
+        flex: 0 1 $max-article-width;
         display: flex;
         align-items: center;
 

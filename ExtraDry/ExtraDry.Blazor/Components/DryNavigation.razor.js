@@ -1,26 +1,38 @@
-function ScrollNav() {
+function lerp(value, from, to) {
+    return value * (to - from) + from;
+}
 
-    var activeNavItem = document.querySelector("nav.top li.active");
-    if (activeNavItem == null) {
+function ilerp(value, from, to) {
+    if (value < from) {
+        return from;
+    }
+    if (value > to) {
+        return to;
+    }
+    return (value - from) / (to - from);
+}
+
+function DryHorizontalScrollNav() {
+
+    console.log("Scrolling the Nav...")
+
+    var li = document.querySelector("nav li.active");
+    if (li == null) {
         // Nothing is active, typically when first loaded and script is called before navigation rendered.
         return;
     }
-    var parentItem = activeNavItem.parentElement.parentElement;
-    var container = parentItem.parentElement;
-    var firstNavItem = container.firstElementChild.children[1].firstElementChild;
-    var lastNavItem = container.lastElementChild.lastElementChild.lastElementChild;
+    var ul = li.parentElement;
+    var nav = ul.parentElement;
+    var firstLi = ul.firstElementChild;
+    var lastLi = ul.lastElementChild;
 
-    var firstScreenPosition = container.offsetLeft + 20;
-    var lastScreenPosition = container.clientWidth - activeNavItem.clientWidth - 20;
+    var firstScreenPosition = nav.offsetLeft + 20;
+    var lastScreenPosition = nav.clientWidth - li.clientWidth - 20;
 
-    var percent = ilerp(activeNavItem.offsetLeft, firstNavItem.offsetLeft, lastNavItem.offsetLeft)
+    var percent = ilerp(li.offsetLeft, firstLi.offsetLeft, lastLi.offsetLeft)
     var position = lerp(percent, firstScreenPosition, lastScreenPosition);
 
-    var offset = position - activeNavItem.offsetLeft;
+    var offset = position - li.offsetLeft;
 
-    container.style.transform = `translateX(${offset}px)`;
-
-    var group = parentItem.firstElementChild;
-    var headerLeft = activeNavItem.offsetLeft - group.offsetLeft;
-    group.style.transform = `translateX(${headerLeft}px)`
+    nav.style.transform = `translateX(${offset}px)`;
 }

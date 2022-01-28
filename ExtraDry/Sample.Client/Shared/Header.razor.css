@@ -34,7 +34,7 @@ header {
   margin: 0;
   padding: 10px; }
   header article {
-    flex: 0 1 1220px;
+    flex: 0 1 1240px;
     display: flex;
     align-items: center; }
     header article div.logo {

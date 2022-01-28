@@ -1,13 +1,10 @@
 ﻿@import "../wwwroot/css/_constants.scss";
 
-//
-// Styling for DryNavigation when shown on the top of the page on a mobile device.
-// This is a horizontal two layer menu style.
-//
-// Note: This styles into the DryNavigation so CSS Isolation is _not_ used.
-//
 section {
     border-bottom: solid 1px $gray;
+    display: flex;
+    justify-content: center;
+    padding: 0 $margin; 
 
     article {
         display: flex;
@@ -15,17 +12,18 @@ section {
         margin: 0;
         padding: 0;
         align-items: flex-end;
-        justify-content: center;
+        justify-content: flex-start;
+        width: 100%;
+        max-width: $max-article-width;
 
         ::deep nav {
             margin-bottom: 0;
-            overflow: hidden;
             background-color: $white;
-            flex: 0 1 $max-article-width+2*$margin;
+            flex: 0 0 auto;
 
             ul {
                 display: flex;
-                padding: 0 $padding;
+                padding: 0;
                 flex-direction: row;
                 flex-wrap: nowrap;
                 transition: all 0.5s;

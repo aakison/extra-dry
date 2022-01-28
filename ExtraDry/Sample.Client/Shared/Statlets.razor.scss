@@ -10,13 +10,18 @@ $four-statlet-break: 4*$statlet-width + 5*$margin;
 $five-statlet-break: 5*$statlet-width + 6*$margin;
 
 section {
+    display: flex;
+    justify-content: center;
+    padding: 0 $margin;
+
     article {
+        flex: 0 1 $max-article-width;
         display: flex;
         justify-content: center;
         background-color: $var-white;
         height: 2*$icon-size+2*$margin;
         margin: 0;
-        padding: 0 $margin $margin $margin;
+        padding: 0 0 $margin 0;
         align-items: center;
         gap: $margin;
 

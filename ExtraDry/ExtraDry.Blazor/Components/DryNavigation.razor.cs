@@ -39,7 +39,7 @@ namespace ExtraDry.Blazor {
 
         private async Task ScrollNavigation()
         {
-            await Javascript.InvokeVoidAsync("ScrollNav");
+            //await Javascript.InvokeVoidAsync("DryHorizontalScrollNav");
         }
 
         protected override void OnInitialized()

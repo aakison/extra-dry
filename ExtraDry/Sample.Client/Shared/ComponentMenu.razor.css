@@ -29,6 +29,9 @@
 
 section {
   border-bottom: solid 1px #999999;
+  display: flex;
+  justify-content: center;
+  padding: 0 10px;
 }
 section article {
   display: flex;
@@ -36,17 +39,18 @@ section article {
   margin: 0;
   padding: 0;
   align-items: flex-end;
-  justify-content: center;
+  justify-content: flex-start;
+  width: 100%;
+  max-width: 1240px;
 }
 section article ::deep nav {
   margin-bottom: 0;
-  overflow: hidden;
   background-color: #FFFFFF;
-  flex: 0 1 1220px;
+  flex: 0 0 auto;
 }
 section article ::deep nav ul {
   display: flex;
-  padding: 0 5px;
+  padding: 0;
   flex-direction: row;
   flex-wrap: nowrap;
   transition: all 0.5s;
