@@ -1,27 +1,34 @@
 ﻿[
   {
-    "inputFile": "Shared/Statlets.razor.scss",
     "outputFile": "Shared/Statlets.razor.css",
+    "inputFile": "Shared/Statlets.razor.scss",
     "minify": {
       "enabled": false
     }
   },
   {
-    "inputFile": "Shared/SubModules.razor.scss",
     "outputFile": "Shared/SubModules.razor.css",
+    "inputFile": "Shared/SubModules.razor.scss",
     "minify": {
       "enabled": false
     }
   },
   {
-    "inputFile": "Shared/Header.razor.scss",
     "outputFile": "Shared/Header.razor.css",
+    "inputFile": "Shared/Header.razor.scss",
     "minify": {
       "enabled": false
     }
   },
   {
-    "inputFile": "wwwroot/css/site-bundle.scss",
-    "outputFile": "wwwroot/css/site-bundle.css"
+    "outputFile": "wwwroot/css/site-bundle.css",
+    "inputFile": "wwwroot/css/site-bundle.scss"
+  },
+  {
+    "outputFile": "Shared/ComponentMenu.razor.css",
+    "inputFile": "Shared/ComponentMenu.razor.scss",
+    "minify": {
+      "enabled": false
+    }
   }
 ]

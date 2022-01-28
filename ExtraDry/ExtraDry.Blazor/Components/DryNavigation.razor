@@ -4,7 +4,7 @@
     <progress>loading nav</progress>
 }
 else {
-    <nav @attributes="@InputAttributes">
+    <nav @attributes="@InputAttributes" @ontouchstart="HandleTouchStart" @ontouchend="HandleTouchEnd">
         <ul>
             @if(Description.HasNavigationGroups) {
                 @foreach(var group in Description.NavigationGroups) {

@@ -26,11 +26,6 @@ bld/
 [Oo]bj/
 [Ll]ib/
 [Tt]emp/
-[Bb]undle/
-[Bb]undles/
-
-*bundle.css
-*bundle.min.css
 
 # Performance Logs
 PerfLogs/
