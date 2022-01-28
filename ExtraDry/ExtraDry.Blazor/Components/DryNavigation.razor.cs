@@ -26,25 +26,30 @@ namespace ExtraDry.Blazor {
         [Inject]
         private NavigationManager Navigation { get; set; } = null!;
 
+        [Inject]
+        private IJSRuntime Javascript { get; set; } = null!;
+
+        protected override void OnInitialized()
+        {
+            Navigation.LocationChanged += Navigated;
+        }
+
+        private void Navigated(object? sender, LocationChangedEventArgs args)
+        {
+            Console.WriteLine($"Scroll Navigated to {args.Location}");
+            StateHasChanged();
+        }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            await ScrollNavigation();
-        }
-
-        private async void Navigated(object? sender, LocationChangedEventArgs args)
-        {
+            Console.WriteLine($"Scroll OnAfterRenderAsync (location is {Navigation.Uri})");
             await ScrollNavigation();
         }
 
         private async Task ScrollNavigation()
         {
-            //await Javascript.InvokeVoidAsync("DryHorizontalScrollNav");
-        }
-
-        protected override void OnInitialized()
-        {
-            Navigation.LocationChanged += Navigated;
+            Console.WriteLine("Scroll Navigation");
+            await Javascript.InvokeVoidAsync("DryHorizontalScrollNav");
         }
 
         public void Dispose()
@@ -74,13 +79,11 @@ namespace ExtraDry.Blazor {
                 }
             }
             await Task.Delay(16); // KLUDGE: Wait a frame for the navigation elements to update before calling to JS to animate.
+            Console.WriteLine("Scroll TouchEnd");
             await ScrollNavigation();
         }
 
         private const int minimumSwipe = 50;
-
-        [Inject]
-        private IJSRuntime Javascript { get; set; } = null!;
 
         public void NavigateToNext()
         {
