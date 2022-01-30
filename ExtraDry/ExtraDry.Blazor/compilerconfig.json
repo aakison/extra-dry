@@ -10,5 +10,9 @@
   {
     "outputFile": "Components/DryContent.razor.css",
     "inputFile": "Components/DryContent.razor.scss"
+  },
+  {
+    "outputFile": "Components/DryNavigation.razor.css",
+    "inputFile": "Components/DryNavigation.razor.scss"
   }
 ]

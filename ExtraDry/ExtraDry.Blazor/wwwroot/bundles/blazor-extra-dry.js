@@ -17547,6 +17547,7 @@ function roosterGetContent(id) {
 //}
 
 console.log(`Blazor Extra Dry by @aakison - https://github.com/fmi-works/blazor-extra-dry License - https://github.com/fmi-works/blazor-extra-dry/blob/main/LICENSE (MIT License)`);
+window.addEventListener('resize', DryHorizontalScrollNav);
 
 function lerp(value, from, to) {
     return value * (to - from) + from;
@@ -17573,8 +17574,8 @@ function DryHorizontalScrollNav() {
     var ul = li.parentElement;
     var nav = ul.parentElement;
 
-    if (nav.offsetWidth == ul.offsetWidth) {
-        nav.style.transform = "translateX(0px)";
+    if (nav.offsetWidth >= ul.offsetWidth) {
+        ul.style.transform = "translateX(0px)";
     }
     else {
         var firstLi = ul.firstElementChild;

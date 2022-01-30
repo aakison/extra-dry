@@ -1,0 +1,19 @@
+﻿nav {
+  flex: 0 1 auto;
+  display: flex;
+  overflow: hidden;
+}
+nav ul {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  transition: all 0.5s;
+}
+nav ul li {
+  flex: 0 0 auto;
+  list-style-type: none;
+}
+nav ul li a {
+  text-decoration: none;
+}

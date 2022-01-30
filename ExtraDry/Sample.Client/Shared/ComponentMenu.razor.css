@@ -46,20 +46,12 @@ section article {
 section article ::deep nav {
   margin-bottom: 0;
   background-color: #FFFFFF;
-  flex: 0 1 auto;
-  display: flex;
 }
 section article ::deep nav ul {
-  display: flex;
   padding: 0;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  transition: all 0.5s;
   margin-bottom: 0;
-  flex: 0 0 auto;
 }
 section article ::deep nav ul li {
-  flex: 0 0 auto;
   list-style-type: none;
   padding: 5px;
 }

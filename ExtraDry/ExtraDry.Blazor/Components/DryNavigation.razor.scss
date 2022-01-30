@@ -1,2 +1,24 @@
 ﻿nav {
+    flex: 0 1 auto;
+    display: flex;
+    overflow: hidden;
+
+    ul {
+        // Force UL to full width of children, JS will change translateX to put within nav window.
+        flex: 0 0 auto;
+
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        transition: all 0.5s;
+
+        li {
+            flex: 0 0 auto;
+            list-style-type: none;
+
+            a {
+                text-decoration: none;
+            }
+        }
+    }
 }

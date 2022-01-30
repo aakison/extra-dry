@@ -23,8 +23,8 @@ function DryHorizontalScrollNav() {
     var ul = li.parentElement;
     var nav = ul.parentElement;
 
-    if (nav.offsetWidth == ul.offsetWidth) {
-        nav.style.transform = "translateX(0px)";
+    if (nav.offsetWidth >= ul.offsetWidth) {
+        ul.style.transform = "translateX(0px)";
     }
     else {
         var firstLi = ul.firstElementChild;
