@@ -19,7 +19,8 @@ section {
         ::deep nav {
             margin-bottom: 0;
             background-color: $white;
-            flex: 0 0 auto;
+            flex: 0 1 auto;
+            display: flex;
 
             ul {
                 display: flex;
@@ -28,6 +29,8 @@ section {
                 flex-wrap: nowrap;
                 transition: all 0.5s;
                 margin-bottom: 0;
+                // Force UL to full width of children, JS will change translateX to put within nav window.
+                flex: 0 0 auto;
 
                 li {
                     flex: 0 0 auto;

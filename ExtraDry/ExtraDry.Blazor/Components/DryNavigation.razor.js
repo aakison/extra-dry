@@ -13,7 +13,6 @@ function ilerp(value, from, to) {
 }
 
 function DryHorizontalScrollNav() {
-
     console.log("Scrolling the Nav...")
 
     var li = document.querySelector("nav li.active");
@@ -23,16 +22,22 @@ function DryHorizontalScrollNav() {
     }
     var ul = li.parentElement;
     var nav = ul.parentElement;
-    var firstLi = ul.firstElementChild;
-    var lastLi = ul.lastElementChild;
 
-    var firstScreenPosition = nav.offsetLeft + 20;
-    var lastScreenPosition = nav.clientWidth - li.clientWidth - 20;
+    if (nav.offsetWidth == ul.offsetWidth) {
+        nav.style.transform = "translateX(0px)";
+    }
+    else {
+        var firstLi = ul.firstElementChild;
+        var lastLi = ul.lastElementChild;
 
-    var percent = ilerp(li.offsetLeft, firstLi.offsetLeft, lastLi.offsetLeft)
-    var position = lerp(percent, firstScreenPosition, lastScreenPosition);
+        var firstScreenPosition = firstLi.offsetLeft;
+        var lastScreenPosition = nav.clientWidth - lastLi.clientWidth;
 
-    var offset = position - li.offsetLeft;
+        var percent = ilerp(li.offsetLeft, firstLi.offsetLeft, lastLi.offsetLeft);
+        var position = lerp(percent, firstScreenPosition, lastScreenPosition);
 
-    nav.style.transform = `translateX(${offset}px)`;
+        var offset = position - li.offsetLeft;
+
+        ul.style.transform = `translateX(${offset}px)`;
+    }
 }
