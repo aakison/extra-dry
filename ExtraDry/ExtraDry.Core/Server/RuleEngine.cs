@@ -119,7 +119,7 @@ namespace ExtraDry.Server {
             }
         }
 
-        private async Task ProcessIndividualUpdate<T>(RuleAction action, PropertyInfo property, T destination, object? value, int depth, JsonIgnoreAttribute ignore, Func<RulesAttribute, RuleAction> selector)
+        private async Task ProcessIndividualUpdate<T>(RuleAction action, PropertyInfo property, T destination, object? value, int depth, JsonIgnoreAttribute? ignore, Func<RulesAttribute, RuleAction> selector)
         {
             // Check against null for object types and GetDefaultValue for boxed value types.
             if(action == RuleAction.IgnoreDefaults && (value == null || value.Equals(property.PropertyType.GetDefaultValue()))) {
@@ -133,7 +133,9 @@ namespace ExtraDry.Server {
                     destinationValue = Activator.CreateInstance(value.GetType());
                     property.SetValue(destination, destinationValue);
                 }
-                await UpdatePropertiesAsync((dynamic?)value, (dynamic)destinationValue, --depth, selector);
+                if(destinationValue != null) {
+                    await UpdatePropertiesAsync((dynamic?)value, (dynamic)destinationValue, --depth, selector);
+                }
             }
             else {
                 var same = (result == null && destinationValue == null) || (result?.Equals(destinationValue) ?? false);
@@ -167,17 +169,19 @@ namespace ExtraDry.Server {
                     sourceEntities.Add(value);
                 }
             }
-            var destObjects = destinationList.Cast<object>();
-            var toRemove = destObjects.Except(sourceEntities).ToList();
-            var toAdd = sourceEntities.Except(destObjects).ToList();
-            if(action == RuleAction.Block && (toRemove.Any() || toAdd.Any())) {
-                throw new DryException($"Invalid attempt to change collection property {property.Name}", $"Attempt to change read-only collection property '{property.Name}'");
-            }
-            foreach(var item in toRemove) {
-                destinationList!.Remove(item); // Only null if null-to-null copy which is handled.
-            }
-            foreach(var item in toAdd) {
-                destinationList!.Add(item);
+            if(destinationList != null) {
+                var destObjects = destinationList.Cast<object>();
+                var toRemove = destObjects.Except(sourceEntities).ToList();
+                var toAdd = sourceEntities.Except(destObjects).ToList();
+                if(action == RuleAction.Block && (toRemove.Any() || toAdd.Any())) {
+                    throw new DryException($"Invalid attempt to change collection property {property.Name}", $"Attempt to change read-only collection property '{property.Name}'");
+                }
+                foreach(var item in toRemove) {
+                    destinationList.Remove(item); // Only null if null-to-null copy which is handled.
+                }
+                foreach(var item in toAdd) {
+                    destinationList.Add(item);
+                }
             }
         }
 
@@ -375,7 +379,11 @@ namespace ExtraDry.Server {
             }
             else {
                 var method = typedEntityResolver.GetMethod("ResolveAsync");
-                dynamic task = method.Invoke(resolver, new object?[] { sourceValue });
+                if(method == null) {
+                    throw new DryException($"Resolver '{type.Name}' object missing method ResolveAsync");
+                }
+                // Force not-null return as ResolveAsync above is not-null return.
+                dynamic task = method.Invoke(resolver, new object?[] { sourceValue })!;
                 var result = (await task) as object;
                 return (true, result);
             }
@@ -397,7 +405,7 @@ namespace ExtraDry.Server {
         private static void CompleteActionMasquardingAsFuncTask(Task task)
         {
             if(task.IsCompleted && task.IsFaulted) {
-                throw task.Exception.InnerException;
+                throw task.Exception?.InnerException ?? task.Exception ?? new Exception("Aggregate exception occurred but was missing details.");
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using ExtraDry.Core;
+using ExtrayDry.Core;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
@@ -27,5 +28,12 @@ namespace Sample.Shared
         [Display(Name = "Last Name", ShortName = "Last Name")]
         [Filter(FilterType.StartsWith)]
         public string? LastName { get; set; }
+
+        /// <summary>
+        /// The version info which informs the audit log.
+        /// </summary>
+        [JsonIgnore]
+        public VersionInfo Version { get; set; } = new VersionInfo();
+
     }
 }

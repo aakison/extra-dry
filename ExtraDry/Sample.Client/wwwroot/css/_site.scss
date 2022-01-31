@@ -33,6 +33,11 @@ html, body {
     font-family: 'OpenSans', Helvetica, Arial, sans-serif;
 }
 
+// Some pages need scroll and other don't, always show scrollbar so pages don't jitter back and forth.
+body {
+    overflow-y: scroll;
+}
+
 
 // Gravatars are by default everywhere 40x40 with full circle rounding.
 div.gravatar {

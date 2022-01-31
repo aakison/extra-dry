@@ -70,17 +70,26 @@ namespace ExtraDry.Server {
 
             public IList<string> PropertyNames { get; } = new List<string>();
 
-            public override Expression Visit(Expression expr)
+            protected override Expression VisitMember(MemberExpression node)
             {
-                if(expr.NodeType == ExpressionType.MemberAccess) {
-                    var memberExpr = (MemberExpression)expr;
-                    if(memberExpr.Member.DeclaringType == declaringType) {
-                        PropertyNames.Add(memberExpr.Member.Name);
-                    }
+                if(node.Member.DeclaringType == declaringType) {
+                    PropertyNames.Add(node.Member.Name);
                 }
-
-                return base.Visit(expr);
+                return base.VisitMember(node);
             }
+
+            // .NET 5 to .NET 6 changed to VisitMember...
+            //public override Expression Visit(Expression expr)
+            //{
+            //    if(expr.NodeType == ExpressionType.MemberAccess) {
+            //        var memberExpr = (MemberExpression)expr;
+            //        if(memberExpr.Member.DeclaringType == declaringType) {
+            //            PropertyNames.Add(memberExpr.Member.Name);
+            //        }
+            //    }
+
+            //    return base.Visit(expr);
+            //}
 
             private readonly Type declaringType;
         }

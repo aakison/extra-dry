@@ -7903,6 +7903,9 @@ textarea.form-control-lg {
 html, body {
   font-family: 'OpenSans', Helvetica, Arial, sans-serif; }
 
+body {
+  overflow-y: scroll; }
+
 div.gravatar {
   display: inline-block; }
   div.gravatar img.gravatar {

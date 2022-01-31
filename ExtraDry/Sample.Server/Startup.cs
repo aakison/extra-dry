@@ -2,6 +2,7 @@
 
 using ExtraDry.Core;
 using ExtraDry.Server;
+using ExtraDry.Server.EF;
 using ExtraDry.Swashbuckle;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -49,7 +50,6 @@ namespace Sample.Server {
         /// </summary>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<SampleContext>(opt => opt.UseInMemoryDatabase("sample"));
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddSwaggerGen(openapi => {
@@ -84,6 +84,23 @@ deserunt mollit anim id est laborum.",
             services.AddAuthorizationCore(options => SamplePolicies.AddAuthorizationOptions(options));
             services.AddSingleton<IAuthorizationHandler, SampleAccessHandler>();
 
+            services.AddHttpContextAccessor();
+
+            //services.AddDbContext<SampleContext>(opt => opt.UseInMemoryDatabase("sample"));
+            services.AddScoped(services => {
+                var connectionString = @"Server=(localdb)\mssqllocaldb;Database=ExtraDrySample;Trusted_Connection=True;";
+                //var connectionString = Configuration.GetConnectionString("Sample");
+                var dbOptionsBuilder = new DbContextOptionsBuilder<SampleContext>().UseSqlServer(connectionString);
+                var context = new SampleContext(dbOptionsBuilder.Options);
+                var accessor = services.GetService<IHttpContextAccessor>();
+                if(accessor == null) {
+                    throw new Exception("Need HTTP Accessor for VersionInfoAspect");
+                }
+                _ = new VersionInfoAspect(context, accessor);
+                //_ = new SearchIndexAspect(context, services.GetService<SearchService>());
+                return context;
+            });
+
             services.AddScoped<EmployeeService>();
             services.AddScoped<CompanyService>();
             services.AddScoped<ContentsService>();
@@ -92,13 +109,12 @@ deserunt mollit anim id est laborum.",
             services.AddScoped<RuleEngine>();
             
             services.AddScoped<IEntityResolver<Sector>>(e => e.GetService<SectorService>()!);
-
         }
 
         /// <summary>
         /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         /// </summary>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, SampleContext context)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if(env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
@@ -137,11 +153,6 @@ deserunt mollit anim id est laborum.",
                 endpoints.MapFallbackToFile("{**slug}", "index.html");
             });
 
-            var sampleData = new DummyData();
-            sampleData.PopulateServices(context);
-            sampleData.PopulateCompanies(context, 50);
-            sampleData.PopulateEmployees(context, 5000);
-            sampleData.PopulateContents(context);
         }
 
     }

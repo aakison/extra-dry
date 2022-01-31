@@ -1,4 +1,5 @@
 ﻿using ExtraDry.Core;
+using ExtrayDry.Core;
 using Sample.Shared.Converters;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace Sample.Shared {
+
     public class Company {
 
         [Key]
@@ -41,6 +43,12 @@ namespace Sample.Shared {
         //[Display]
         //[Rules(RuleAction.Recurse)]
         //public ICollection<Video> Videos { get; set; } = new Collection<Video>();
+
+        /// <summary>
+        /// The version info which informs the audit log.
+        /// </summary>
+        [JsonIgnore]
+        public VersionInfo Version { get; set; } = new VersionInfo();
 
     }
 }

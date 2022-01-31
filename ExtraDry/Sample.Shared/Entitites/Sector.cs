@@ -1,4 +1,5 @@
 ﻿using ExtraDry.Core;
+using ExtrayDry.Core;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
@@ -50,6 +51,12 @@ namespace Sample.Shared {
         [Rules(DeleteValue = SectorState.Inactive)]
         [Filter(FilterType.Equals)]
         public SectorState State { get; set;  }
+
+        /// <summary>
+        /// The version info which informs the audit log.
+        /// </summary>
+        [JsonIgnore]
+        public VersionInfo Version { get; set; } = new VersionInfo();
 
         /// <summary>
         /// Display title for the sector.

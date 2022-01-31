@@ -1,4 +1,5 @@
 ﻿using ExtraDry.Core;
+using ExtrayDry.Core;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -21,5 +22,12 @@ namespace Sample.Shared {
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public ContentLayout Layout { get; set; }
+
+        /// <summary>
+        /// The version info which informs the audit log.
+        /// </summary>
+        [JsonIgnore]
+        public VersionInfo Version { get; set; } = new VersionInfo();
+
     }
 }

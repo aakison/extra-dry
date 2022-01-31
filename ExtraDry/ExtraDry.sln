@@ -20,6 +20,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Shared", "Sample.Shared\Sample.Shared.csproj", "{CEE533E6-CCB0-4D4D-8F05-45E8F3FF20D5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Data", "Sample.Data\Sample.Data.csproj", "{F098333B-F93D-4570-85EA-803440A897A2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3D9D55DC-77BE-473A-A0F7-4CE4856DF94E} = {3D9D55DC-77BE-473A-A0F7-4CE4856DF94E}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Server", "Sample.Server\Sample.Server.csproj", "{9F948B97-1BA0-4B3C-A526-FBC6AEEE679F}"
 EndProject

@@ -72,7 +72,7 @@ namespace ExtraDry.Server.Internal {
                             && method.GetGenericArguments().Length == 2
                             && method.GetParameters().Length == 2);
             // Feels weird to explicitly state these methods exist and return values, but enforced by rigorous lookup above.
-            var result = methodInfo.MakeGenericMethod(typeof(T), type)!.Invoke(null, new object[] { source, lambda });
+            var result = methodInfo.MakeGenericMethod(typeof(T), type)!.Invoke(null, new object[] { source, lambda })!;
             return (IOrderedQueryable<T>)result;
         }
 
@@ -142,7 +142,7 @@ namespace ExtraDry.Server.Internal {
 
         private static Expression AnyOf(Expression[] expressions)
         {
-            var left = expressions.FirstOrDefault();
+            var left = expressions.First();
             foreach(var right in expressions.Skip(1)) {
                 left = Expression.OrElse(left, right);
             }
@@ -151,7 +151,7 @@ namespace ExtraDry.Server.Internal {
 
         private static Expression AllOf(Expression[] expressions)
         {
-            var left = expressions.FirstOrDefault();
+            var left = expressions.First();
             foreach(var right in expressions.Skip(1)) {
                 left = Expression.AndAlso(left, right);
             }
@@ -193,7 +193,11 @@ namespace ExtraDry.Server.Internal {
                 }
                 else {
                     var methodInfo = type.GetMethod("Parse", new Type[] { typeof(string) });
-                    var result = methodInfo.Invoke(null, new object[] { value });
+                    if(methodInfo == null) {
+                        throw new DryException($"Can only filter on types that contain a Parse method, type '{type.Name}'.");
+                    }
+                    // Parse contract will have a result and not nullable
+                    var result = methodInfo.Invoke(null, new object[] { value })!;
                     return result;
                 }
             }
@@ -214,11 +218,11 @@ namespace ExtraDry.Server.Internal {
             return Expression.Call(property, method, valueConstant);
         }
 
-        private static MethodInfo StringContainsMethod => typeof(string).GetMethod(nameof(string.Contains), new[] { typeof(string) });
+        private static MethodInfo StringContainsMethod => typeof(string).GetMethod(nameof(string.Contains), new[] { typeof(string) })!;
 
-        private static MethodInfo StringEqualsMethod => typeof(string).GetMethod(nameof(string.Equals), new[] { typeof(string) });
+        private static MethodInfo StringEqualsMethod => typeof(string).GetMethod(nameof(string.Equals), new[] { typeof(string) })!;
 
-        private static MethodInfo StringStartsWithMethod => typeof(string).GetMethod(nameof(string.StartsWith), new[] { typeof(string) });
+        private static MethodInfo StringStartsWithMethod => typeof(string).GetMethod(nameof(string.StartsWith), new[] { typeof(string) })!;
 
         private enum OrderType {
             OrderBy, 

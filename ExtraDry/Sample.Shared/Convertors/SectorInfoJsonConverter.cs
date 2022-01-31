@@ -23,7 +23,10 @@ namespace Sample.Shared.Converters {
                     reader.Read();
                     if(reader.TokenType == JsonTokenType.String) {
                         var value = reader.GetString();
-                        if(nameof(Sector.Uuid).Equals(property, comparison)) {
+                        if(value == null) {
+                            sector.Title = "null";
+                        }
+                        else if(nameof(Sector.Uuid).Equals(property, comparison)) {
                             sector.Uuid = Guid.Parse(value);
                         }
                         else if(nameof(Sector.Title).Equals(property, comparison)) {

@@ -17,13 +17,13 @@ namespace Sample.Client.Shared {
         public string Register => $"/dummy/a";
 
         [Navigation(Icon = "briefcase")]
-        public string Locations => $"/dummy/0";
+        public string Contents => $"/contents";
 
         [Navigation(Icon = "briefcase")]
-        public string Dummy1 => $"/dummy/1";
+        public string Companies => $"/companies";
 
         [Navigation(Icon = "briefcase")]
-        public string Dummy2 => $"/dummy/2";
+        public string Sectors => $"/sectors";
 
         [Navigation(Icon = "briefcase")]
         public string Dummy3 => $"/dummy/3";
