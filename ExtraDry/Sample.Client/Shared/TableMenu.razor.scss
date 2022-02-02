@@ -1,0 +1,47 @@
+﻿@import "../wwwroot/css/_constants.scss";
+
+$button-size: 32px;
+$button-margin: 4px;
+$bar-height: $button-size + 2*$button-margin;
+
+div.tablemenu {
+    background-color: $var-off-white;
+    height: $bar-height;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+
+    div.viewselect {
+        flex: 1 0 auto;
+    }        
+
+    div.buttons {
+        flex: 0 0 auto;
+    }
+
+    ::deep button {
+        border: none;
+        background-color: $var-off-white;
+        width: $button-size;
+        height: $button-size;
+        margin: $button-margin 0;
+        border-radius: $border-radius;
+
+        &:hover {
+            background-color: $var-light;
+        }
+
+        &:active {
+            background-color: $var-off-white;
+            border: solid 2px $var-light;
+        }
+
+        i {
+            color: $var-gray;
+        }
+
+        span {
+            display: none;
+        }
+    }
+}

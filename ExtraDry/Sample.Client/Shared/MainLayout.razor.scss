@@ -1,0 +1,16 @@
+﻿@import "../wwwroot/css/_constants.scss";
+
+section {
+    display: flex;
+    justify-content: center;
+    padding: 0 $margin;
+    background-color: $var-off-white;
+
+    article {
+        background-color: $var-white;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        max-width: $max-article-width;
+    }
+}

@@ -27,16 +27,37 @@
   --black: #0d0d0d;
 }
 
-section {
-  display: flex;
-  justify-content: center;
-  padding: 0 10px;
+div.tablemenu {
   background-color: var(--off-white);
-}
-section article {
-  background-color: var(--white);
-  margin: 0;
-  padding: 0;
+  height: 40px;
+  display: flex;
+  flex-direction: row;
   width: 100%;
-  max-width: 1240px;
+}
+div.tablemenu div.viewselect {
+  flex: 1 0 auto;
+}
+div.tablemenu div.buttons {
+  flex: 0 0 auto;
+}
+div.tablemenu ::deep button {
+  border: none;
+  background-color: var(--off-white);
+  width: 32px;
+  height: 32px;
+  margin: 4px 0;
+  border-radius: 3px;
+}
+div.tablemenu ::deep button:hover {
+  background-color: var(--light);
+}
+div.tablemenu ::deep button:active {
+  background-color: var(--off-white);
+  border: solid 2px var(--light);
+}
+div.tablemenu ::deep button i {
+  color: var(--gray);
+}
+div.tablemenu ::deep button span {
+  display: none;
 }

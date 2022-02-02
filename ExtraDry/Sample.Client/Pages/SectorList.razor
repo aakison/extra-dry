@@ -2,9 +2,7 @@
 @inject IListService<Sector> SectorService;
 @inject NavigationManager Navigation;
 
-<h2>Sectors</h2>
-
-<CommandBar ViewModel="@this" />
+<TableMenu />
 
 <DryTable T="Sector" ViewModel="@this" ItemsService="@SectorService" />
 

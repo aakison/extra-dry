@@ -1,12 +1,10 @@
 ﻿@page "/companies"
-@inject IListService<Company> ListService;
+@inject IListService<Company> CompanyService;
 @inject NavigationManager Navigation;
 
-<h2>Companies</h2>
+<TableMenu />
 
-<CommandBar ViewModel="@this" />
-
-<DryTable T="Company" ViewModel="@this" ItemsService="@ListService" />
+<DryTable T="Company" ViewModel="@this" ItemsService="@CompanyService" />
 
 @code {
 

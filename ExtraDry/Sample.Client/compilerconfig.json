@@ -30,5 +30,19 @@
     "minify": {
       "enabled": false
     }
+  },
+  {
+    "outputFile": "Shared/MainLayout.razor.css",
+    "inputFile": "Shared/MainLayout.razor.scss",
+    "minify": {
+      "enabled": false
+    }
+  },
+  {
+    "outputFile": "Shared/TableMenu.razor.css",
+    "inputFile": "Shared/TableMenu.razor.scss",
+    "minify": {
+      "enabled": false
+    }
   }
 ]
