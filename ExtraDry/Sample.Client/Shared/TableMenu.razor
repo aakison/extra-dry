@@ -1,6 +1,10 @@
 ﻿<div class="tablemenu">
     <div class="viewselect">select</div>
     <div class="buttons">
-        <CommandBar ViewModel="this" />
+        @*<CommandBar ViewModel="this" />*@
+        <DryButton Command="@AddCommand" />
+        <DryButton Command="@FilterCommand" />
+        <DryButton Command="@ExpandCommand" />
+        <DryButton Command="@CompressCommand" />
     </div>
 </div>

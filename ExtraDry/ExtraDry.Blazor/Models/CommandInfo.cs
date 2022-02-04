@@ -92,6 +92,8 @@ namespace ExtraDry.Blazor.Models {
         /// </summary>
         public string DisplayClass => Context.ToString().ToLowerInvariant();
 
+        public Func<bool> IsVisible { get; set; } = () => true;
+
         /// <summary>
         /// Executes the underlying method with the provided arguments, ensuring that the proper number of arguments are provided.
         /// </summary>
@@ -152,7 +154,7 @@ namespace ExtraDry.Blazor.Models {
 
         private IList GetStrongTypedSubset(object? arg)
         {
-            if(!(arg is IEnumerable)) {
+            if(arg is not IEnumerable) {
                 throw new ArgumentException("Parameter, while an object, must be of assignedable to type IEnumerable", nameof(arg));
             }
 

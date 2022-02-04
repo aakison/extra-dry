@@ -1,15 +1,39 @@
 ﻿@inherits LayoutComponentBase
 
 <Theme IconPrefix="glyph fas fa-">
-    <main>
-        <Header />
-        <SubModules />
-        <Statlets />
-        <ComponentMenu />
-        <section>
-          <article>
-            @Body
-          </article>
-        </section>
-    </main>
+    <CascadingValue Value="@this">
+        <main>
+            <Header />
+            @if(!ViewExpanded) {
+                <SubModules />
+                <Statlets />
+                <ComponentMenu />
+            }
+            <section class="@ArticleClass">
+              <article>
+                @Body
+              </article>
+            </section>
+        </main>
+    </CascadingValue>
 </Theme>
+
+@code {
+
+    public void Expand()
+    {
+        ViewExpanded = true;
+        StateHasChanged();
+    }
+
+    public void Compress()
+    {
+        ViewExpanded = false;
+        StateHasChanged();
+    }
+
+    public bool ViewExpanded { get; set; }
+
+    public string ArticleClass => ViewExpanded ? "expanded" : "compressed";
+
+}

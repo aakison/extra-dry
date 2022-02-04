@@ -48,6 +48,14 @@ div.tablemenu ::deep button {
   margin: 4px 0;
   border-radius: 3px;
 }
+div.tablemenu ::deep button[name=Expand], div.tablemenu ::deep button[name=Compress] {
+  display: none;
+}
+@media only screen and (min-width: 1200px) {
+  div.tablemenu ::deep button[name=Expand], div.tablemenu ::deep button[name=Compress] {
+    display: inline-block;
+  }
+}
 div.tablemenu ::deep button:hover {
   background-color: var(--light);
 }

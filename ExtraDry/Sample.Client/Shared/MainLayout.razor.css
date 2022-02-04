@@ -40,3 +40,9 @@ section article {
   width: 100%;
   max-width: 1240px;
 }
+section.expanded {
+  padding: 0;
+}
+section.expanded article {
+  max-width: initial;
+}
