@@ -11300,3 +11300,41 @@ span.enum.status.inactive::before {
 span.enum.status.deleted::before {
   color: var(--danger);
 }
+
+table tbody button {
+  border: none;
+  color: var(--silver);
+  background-color: transparent;
+}
+table tbody button i.glyph {
+  font-size: 18px;
+}
+table tbody button:hover, table tbody tr.selected button {
+  color: var(--gray);
+}
+
+table col.radio {
+  width: 40px;
+}
+table tbody td.radio {
+  padding: 7.5px 0 2.5px 0;
+  text-align: center;
+}
+table tbody td.radio input {
+  width: 16px;
+  height: 16px;
+}
+
+table col.commands {
+  width: 10px;
+}
+table tbody td.commands {
+  padding-right: 10px;
+}
+
+table tbody tr:hover {
+  background-color: var(--off-white);
+}
+table tbody tr.selected {
+  background-color: var(--primary-light);
+}

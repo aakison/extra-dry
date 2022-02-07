@@ -44,3 +44,71 @@ span.enum.status {
         color: $var-danger;
     }
 }
+
+//
+// Style buttons when they appear inside a table more subtely.
+// Make button pop a bit when hover OR when row selected.
+//
+table tbody {
+    button {
+        border: none;
+        color: $var-silver;
+        background-color: transparent;
+
+        i.glyph {
+            font-size: 18px;
+        }
+    }
+
+    button:hover, tr.selected button {
+        color: $var-gray;
+    }
+}
+
+//
+// Style radio buttons to select a row a bit bigger and centered.
+//
+table {
+    col.radio {
+        width: 40px;
+    }
+
+    tbody td.radio {
+        padding: 1.5*$padding 0 0.5*$padding 0; // could be translateY?
+        text-align: center;
+
+        input {
+            width: 16px;
+            height: 16px;
+        }
+    }
+}
+
+//
+// Style command buttons to not take up too much room.
+//
+table {
+    col.commands {
+        width: 10px; // overly small as we want the minimum
+    }
+
+    tbody td.commands {
+        padding-right: $margin;
+    }
+}
+
+//
+// List rows should have a hover effect as the mouse moves
+// It should also be sticky on a click/tap to work with mobile.
+//
+table {
+    tbody tr {
+        &:hover {
+            background-color: $var-off-white;
+        }
+
+        &.selected { // Work with Extra Dry supplied classes...
+            background-color: $var-primary-light;
+        }
+    }
+}
