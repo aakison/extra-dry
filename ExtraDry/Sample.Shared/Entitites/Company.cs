@@ -40,6 +40,10 @@ namespace Sample.Shared {
         [Rules(RuleAction.Allow)]
         public BankingDetails BankingDetails { get; set; } = new BankingDetails();
 
+        [Display(Name = "Status", ShortName = "Status")]
+        [Rules(RuleAction.Allow)]
+        public CompanyStatus Status { get; set; }
+
         //[Display]
         //[Rules(RuleAction.Recurse)]
         //public ICollection<Video> Videos { get; set; } = new Collection<Video>();

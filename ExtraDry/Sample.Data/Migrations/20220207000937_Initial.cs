@@ -77,6 +77,7 @@ namespace Sample.Data.Migrations
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     PrimarySectorId = table.Column<int>(type: "int", nullable: true),
                     BankingDetails = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     Version_DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Version_UserCreated = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: true),
                     Version_DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),

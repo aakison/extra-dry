@@ -82,6 +82,9 @@ namespace Sample.Data.Migrations
                     b.Property<int?>("PrimarySectorId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<Guid>("Uuid")
                         .HasColumnType("uniqueidentifier");
 

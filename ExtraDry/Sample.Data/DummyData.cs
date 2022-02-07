@@ -48,6 +48,7 @@ namespace Sample.Data {
                         Uuid = PseudoRandomGuid(),
                         Name = name,
                         PrimarySector = PickRandom(services),
+                        Status = PickRandom(companyStatuses),
                     };
                     //company.Videos.Add(new Video { Title = "Huzzah 1", Uri = "https://www.example.com/huzzah1" });
                     //company.Videos.Add(new Video { Title = "Huzzah 2", Uri = "https://www.example.com/huzzah2" });
@@ -89,6 +90,8 @@ namespace Sample.Data {
         }
 
         private readonly Random random = new(123);
+
+        private readonly CompanyStatus[] companyStatuses = { CompanyStatus.Inactive, CompanyStatus.Deleted, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active };
 
         private readonly string[] companyPrefixes = { "High Tide", "Tempest", "Jupiter", "Cyclor", "Ant", "Jungle",
             "Grotto", "Ace", "Wood", "Ceas", "Jet" };

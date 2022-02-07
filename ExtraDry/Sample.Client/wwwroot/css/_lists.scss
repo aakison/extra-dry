@@ -1,0 +1,27 @@
+﻿@import "_constants.scss";
+
+span.enum.status {
+    font-weight: 600;
+    font-size: 15px;
+
+    &::before {
+        font-weight: 700; // solid
+        content: "\f111"; // circle
+        color: $var-silver;
+        font-family: 'Font Awesome 5 Free';
+        font-size: 13px;
+        margin-right: $padding;
+    }
+
+    &.active::before {
+        color: $var-success;
+    }
+
+    &.inactive::before {
+        color: $var-warning;
+    }
+
+    &.deleted::before {
+        color: $var-danger;
+    }
+}

@@ -35,7 +35,7 @@ namespace ExtraDry.Blazor {
                 }
             }
             ++recursionDepth;
-            if(recursionDepth < 10 &&  Rules?.CreateAction != RuleAction.Link && (Rules?.CreateAction == RuleAction.Allow || Rules?.UpdateAction == RuleAction.Allow || Rules?.CreateAction == RuleAction.IgnoreDefaults || Rules?.CreateAction == RuleAction.IgnoreDefaults)) {
+            if(recursionDepth < 10 && Rules?.CreateAction != RuleAction.Link && (Rules?.CreateAction == RuleAction.Allow || Rules?.UpdateAction == RuleAction.Allow || Rules?.CreateAction == RuleAction.IgnoreDefaults || Rules?.CreateAction == RuleAction.IgnoreDefaults)) {
                 if(HasArrayValues) {
                     var elementProperty = Property.PropertyType.SingleGenericType();
                     ChildModel = new ViewModelDescription(elementProperty, this);
@@ -86,12 +86,17 @@ namespace ExtraDry.Blazor {
             if(item == null) {
                 return string.Empty;
             }
-            var value = Property?.GetValue(item);
-            if(HasDiscreteValues && discreteDisplayAttributes.ContainsKey((int)value)) {
-                value = discreteDisplayAttributes[(int)value].GetName() ?? value;
+            try { 
+                var value = Property?.GetValue(item);
+                if(HasDiscreteValues && discreteDisplayAttributes.ContainsKey((int)value)) {
+                    value = discreteDisplayAttributes[(int)value]?.GetName() ?? value;
+                }
+                var format = Format?.DataFormatString ?? "{0}";
+                return string.Format(CultureInfo.InvariantCulture, format, value);
             }
-            var format = Format?.DataFormatString ?? "{0}";
-            return string.Format(CultureInfo.InvariantCulture, format, value);
+            catch(Exception ex) {
+                return ex.Message;
+            }
         }
 
         public object GetValue(object item) => item == null ? null : Property?.GetValue(item);

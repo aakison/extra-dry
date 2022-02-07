@@ -23,7 +23,7 @@ namespace Sample.Server.Controllers {
             context = sampleContext;
         }
 
-        private SampleContext context;
+        private readonly SampleContext context;
 
         /// <summary>
         /// Load the set of sample data, idempotent so allowed to be anonymous.
