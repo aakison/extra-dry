@@ -11258,6 +11258,15 @@ i.glyph {
   --black: #0d0d0d;
 }
 
+section article table {
+  width: 100%;
+}
+
+section article table thead {
+  height: 40px;
+  border-bottom: solid 1px var(--silver);
+}
+
 span.enum.status {
   font-weight: 600;
   font-size: 15px;
