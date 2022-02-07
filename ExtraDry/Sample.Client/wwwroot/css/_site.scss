@@ -33,13 +33,16 @@ html, body {
     font-family: 'OpenSans', Helvetica, Arial, sans-serif;
 }
 
+//
 // Some pages need scroll and other don't, always show scrollbar so pages don't jitter back and forth.
+//
 body {
     overflow-y: scroll;
 }
 
-
+//
 // Gravatars are by default everywhere 40x40 with full circle rounding.
+//
 div.gravatar {
     display: inline-block;
 
@@ -50,9 +53,28 @@ div.gravatar {
     }
 }
 
+//
 // Glyphs should have consistent size and alignment
+//
 i.glyph {
     font-size: $glyph-size;
     line-height: $glyph-size;
     transform: translateY(0.1*$glyph-size);
+}
+
+//
+// Fill screen with primary body, such as list view, which is the last section.
+//
+main {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+    section {
+        flex: 0 0 auto;
+
+        &:last-child {
+            flex: 1 0 auto;
+        }
+    }
 }

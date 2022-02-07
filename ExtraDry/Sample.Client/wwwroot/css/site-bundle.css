@@ -11229,6 +11229,18 @@ i.glyph {
   transform: translateY(2px);
 }
 
+main {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+main section {
+  flex: 0 0 auto;
+}
+main section:last-child {
+  flex: 1 0 auto;
+}
+
 :root {
   --primary: #FED434;
   --secondary: #5E1508;
