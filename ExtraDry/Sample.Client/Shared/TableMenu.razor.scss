@@ -4,7 +4,19 @@ $button-size: 32px;
 $button-margin: 4px;
 $bar-height: $button-size + 2*$button-margin;
 
-div.tablemenu {
+div.expandable {
+    transition: height 0.5s;
+    
+    &.showing, &.hiding, &.none {
+        height: 0;
+    }
+
+    &.visible {
+        height: auto;
+    }
+}
+
+div.tablemenu, div.filtermenu {
     background-color: $var-off-white;
     height: $bar-height;
     display: flex;

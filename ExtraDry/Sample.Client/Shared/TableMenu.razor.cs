@@ -4,6 +4,7 @@ using ExtraDry.Blazor;
 using ExtraDry.Blazor.Models;
 using Microsoft.AspNetCore.Components;
 using System;
+using System.Threading.Tasks;
 
 namespace Sample.Client.Shared {
 
@@ -12,16 +13,19 @@ namespace Sample.Client.Shared {
         [CascadingParameter]
         public MainLayout? Layout { get; set; }
 
-        [Inject]
-        private NavigationManager Navigation { get; set; } = null!;
+        //[Inject]
+        //private NavigationManager Navigation { get; set; } = null!;
 
+        [Parameter]
+        public Expandable Expandable { get; set; } = null!;
 
         [Command(Icon = "plus")]
         public void AddItem() { }
 
         [Command(Icon = "filter")]
-        public void Filter() { }
-
+        public async Task Filter() {
+            await Expandable.Toggle();
+        }
 
         [Command(Icon = "expand-alt")]
         public void Expand() 
@@ -38,14 +42,15 @@ namespace Sample.Client.Shared {
         }
 
 
-        public CommandInfo AddCommand => new CommandInfo(this, AddItem);
-        public CommandInfo FilterCommand => new CommandInfo(this, Filter);
-        public CommandInfo ExpandCommand => new CommandInfo(this, Expand) {
+        public CommandInfo AddCommand => new(this, AddItem);
+        public CommandInfo FilterCommand => new(this, Filter);
+        public CommandInfo ExpandCommand => new(this, Expand) {
             IsVisible = () => !Layout?.ViewExpanded ?? false,
         };
-        public CommandInfo CompressCommand => new CommandInfo(this, Compress) {
+        public CommandInfo CompressCommand => new(this, Compress) {
             IsVisible = () => Layout?.ViewExpanded ?? false,
         };
 
     }
+
 }

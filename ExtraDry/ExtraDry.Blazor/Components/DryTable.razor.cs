@@ -189,7 +189,7 @@ namespace ExtraDry.Blazor {
 
         private async ValueTask<ItemsProviderResult<ListItemInfo<T>>> GetItemsAsync(ItemsProviderRequest request)
         {
-            Logger.LogInformation(@"DryTable: Getting page of results, from index {0}, fetching {1}", request.StartIndex, request.Count);
+            Logger.LogInformation(@"DryTable: Getting page of results, from index {StartIndex}, fetching {Count}", request.StartIndex, request.Count);
             await serviceLock.WaitAsync();
             try {
                 request.CancellationToken.ThrowIfCancellationRequested();
@@ -202,7 +202,7 @@ namespace ExtraDry.Blazor {
                     var total = items.TotalItemCount;
                     InternalItems.AddRange(items.Items.Select(e => new ListItemInfo<T> { Item = e, IsLoaded = true }));
                     InternalItems.AddRange(Enumerable.Range(0, total - count).Select(e => new ListItemInfo<T>()));
-                    Logger.LogInformation($"--Loaded items #0 to #{count} of {total}.");
+                    Logger.LogInformation(@"DryTable: --Loaded items #0 to #{count} of {total}.", count, total);
                 }
                 if(AllItemsCached(request.StartIndex, request.Count)) {
                     Logger.LogInformation("--Returning cached results");
@@ -226,7 +226,8 @@ namespace ExtraDry.Blazor {
                                 info.Item = item;
                                 info.IsLoaded = true;
                             }
-                            Logger.LogInformation($"--Loaded items #{firstIndex} to #{firstIndex + ItemsService.FetchSize} of {total}.");
+                            var lastIndex = firstIndex + ItemsService.FetchSize;
+                            Logger.LogInformation(@"--Loaded items #{firstIndex} to #{lastIndex} of {total}.", firstIndex, lastIndex, total);
                         }
                     }
                 }

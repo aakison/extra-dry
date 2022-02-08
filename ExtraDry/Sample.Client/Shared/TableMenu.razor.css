@@ -27,20 +27,30 @@
   --black: #0d0d0d;
 }
 
-div.tablemenu {
+div.expandable {
+  transition: height 0.5s;
+}
+div.expandable.showing, div.expandable.hiding, div.expandable.none {
+  height: 0;
+}
+div.expandable.visible {
+  height: auto;
+}
+
+div.tablemenu, div.filtermenu {
   background-color: var(--off-white);
   height: 40px;
   display: flex;
   flex-direction: row;
   width: 100%;
 }
-div.tablemenu div.viewselect {
+div.tablemenu div.viewselect, div.filtermenu div.viewselect {
   flex: 1 0 auto;
 }
-div.tablemenu div.buttons {
+div.tablemenu div.buttons, div.filtermenu div.buttons {
   flex: 0 0 auto;
 }
-div.tablemenu ::deep button {
+div.tablemenu ::deep button, div.filtermenu ::deep button {
   border: none;
   background-color: var(--off-white);
   width: 32px;
@@ -48,24 +58,24 @@ div.tablemenu ::deep button {
   margin: 4px 0;
   border-radius: 3px;
 }
-div.tablemenu ::deep button[name=Expand], div.tablemenu ::deep button[name=Compress] {
+div.tablemenu ::deep button[name=Expand], div.tablemenu ::deep button[name=Compress], div.filtermenu ::deep button[name=Expand], div.filtermenu ::deep button[name=Compress] {
   display: none;
 }
 @media only screen and (min-width: 1200px) {
-  div.tablemenu ::deep button[name=Expand], div.tablemenu ::deep button[name=Compress] {
+  div.tablemenu ::deep button[name=Expand], div.tablemenu ::deep button[name=Compress], div.filtermenu ::deep button[name=Expand], div.filtermenu ::deep button[name=Compress] {
     display: inline-block;
   }
 }
-div.tablemenu ::deep button:hover {
+div.tablemenu ::deep button:hover, div.filtermenu ::deep button:hover {
   background-color: var(--light);
 }
-div.tablemenu ::deep button:active {
+div.tablemenu ::deep button:active, div.filtermenu ::deep button:active {
   background-color: var(--off-white);
   border: solid 2px var(--light);
 }
-div.tablemenu ::deep button i {
+div.tablemenu ::deep button i, div.filtermenu ::deep button i {
   color: var(--gray);
 }
-div.tablemenu ::deep button span {
+div.tablemenu ::deep button span, div.filtermenu ::deep button span {
   display: none;
 }

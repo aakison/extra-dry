@@ -44,5 +44,12 @@
     "minify": {
       "enabled": false
     }
+  },
+  {
+    "outputFile": "Shared/Expandable.razor.css",
+    "inputFile": "Shared/Expandable.razor.scss",
+    "minify": {
+      "enabled": false
+    }
   }
 ]
