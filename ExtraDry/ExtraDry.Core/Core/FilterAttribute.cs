@@ -1,21 +1,24 @@
-﻿using System;
+﻿#nullable enable
 
-namespace ExtraDry.Core {
+using System;
+
+namespace ExtraDry.Core;
+
+/// <summary>
+/// Defines a property that can be used with `FilterQuery` and the `PartialQueryable` extensions to `IQueryable`.
+/// </summary>
+[AttributeUsage(AttributeTargets.Property)]
+public class FilterAttribute : Attribute {
+
+    public FilterAttribute(FilterType type = FilterType.Equals)
+    {
+        Type = type;
+    }
 
     /// <summary>
-    /// Defines a property that can be used with `FilterQuery` and the `PartialQueryable` extensions to `IQueryable`.
-    /// WARNING: May cause problems with Blazor debugging, see: https://github.com/dotnet/aspnetcore/issues/25380
+    /// Indicates the type of the filter when searching for items.
+    /// Only applies to string properties.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property)]
-    public class FilterAttribute : Attribute {
-
-        public FilterAttribute(FilterType type = FilterType.Equals)
-        {
-            Type = type;
-        }
-
-        public FilterType Type { get; set; }
-
-    }
+    public FilterType Type { get; set; }
 
 }

@@ -46,6 +46,13 @@ span.enum.status {
 }
 
 //
+// The header of tables should be consistent, and blend in...
+//
+table thead {
+    background-color: $var-off-white;
+}
+
+//
 // Style buttons when they appear inside a table more subtely.
 // Make button pop a bit when hover OR when row selected.
 //

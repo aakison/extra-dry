@@ -57,8 +57,11 @@ section article ::deep nav ul li {
 }
 section article ::deep nav ul li a {
   color: #4d4d4d;
-  padding: 5px 10px;
+  padding: 1px 10px;
   text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 section article ::deep nav ul li:hover {
   border-bottom: solid 3px #fff4cc;

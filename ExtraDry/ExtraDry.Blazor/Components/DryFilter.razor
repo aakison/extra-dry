@@ -1,0 +1,17 @@
+﻿@namespace ExtraDry.Blazor
+@typeparam TItem
+
+<EditForm Model="this">
+    <div class="filters @TypeSlug">
+        <InputText @bind-Value="@FreeTextFilter" placeholder="@Placeholder" @oninput="OnInput" @onfocusout="OnFocusOut" @onkeypress="OnKeyPress" />
+        @foreach (var property in ViewModelDescription.FilterProperties)
+        {
+            var filter = property.Filter;
+            var cssClass = $"filter {property.Property.Name.ToLowerInvariant()} {filter.Type.ToString().ToLowerInvariant()}";
+            <div class="@cssClass">
+                @property.Property.Name
+                <DryIcon Key="chevron-down" />
+            </div>
+        }
+    </div>
+</EditForm>

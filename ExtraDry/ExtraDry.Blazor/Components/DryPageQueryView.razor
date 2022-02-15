@@ -1,0 +1,16 @@
+﻿@namespace ExtraDry.Blazor
+@using ExtraDry.Blazor.Internal
+
+<CascadingValue Value="@Query">
+    @ChildContent
+</CascadingValue>
+
+@code {
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [CascadingParameter]
+    public PageQuery Query { get; set; } = new NotifyPageQuery();
+
+}

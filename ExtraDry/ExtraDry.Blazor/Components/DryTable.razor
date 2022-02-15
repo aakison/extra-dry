@@ -1,5 +1,5 @@
 ﻿@namespace ExtraDry.Blazor
-@typeparam T
+@typeparam TItem
 
 @if (ViewModel == null)
 {
@@ -57,7 +57,7 @@ else
           <ViewModelTableRow Item="@context" Description="@description" Selection="@resolvedSelection" Height="45" />
         </ItemContent>
         <Placeholder>
-          <PlaceholderRow T="@T" Description="@description" Height="45" />
+          <PlaceholderRow T="@TItem" Description="@description" Height="45" />
         </Placeholder>
       </Virtualize>
     </tbody>

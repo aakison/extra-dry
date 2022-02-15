@@ -6,7 +6,7 @@ $bar-height: $button-size + 2*$button-margin;
 
 div.expandable {
     transition: height 0.5s;
-    
+
     &.showing, &.hiding, &.none {
         height: 0;
     }
@@ -16,7 +16,7 @@ div.expandable {
     }
 }
 
-div.tablemenu, div.filtermenu {
+div.tablemenu {
     background-color: $var-off-white;
     height: $bar-height;
     display: flex;
@@ -62,6 +62,55 @@ div.tablemenu, div.filtermenu {
 
         span {
             display: none;
+        }
+    }
+}
+
+div.filtermenu {
+    background-color: $var-off-white;
+    height: $bar-height + 2*$margin;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+    background-color: $var-white;
+    padding: 0 $margin;
+    border-bottom: solid $padding $var-off-white;
+
+    ::deep i {
+        color: $var-silver;
+    }
+
+    ::deep button {
+        background-color: transparent;
+        border: none;
+    }
+
+    ::deep form {
+        flex: 1 0 auto;
+
+        div.filters {
+            display: flex;
+            border-radius: 3px;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+
+            input {
+                flex: 1 0 auto;
+            }
+
+            input, input:active, input:hover, input:focus-visible {
+                border: none;
+                outline: none;
+            }
+
+            div.filter {
+                display: flex;
+                align-items: center;
+                margin-right: 10px;
+                gap: 5px;
+            }
         }
     }
 }

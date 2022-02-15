@@ -42,6 +42,8 @@ header article {
 }
 header article div.logo {
   flex: 1 1 auto;
+  display: flex;
+  align-items: center;
 }
 header article div.logo div.waffle {
   display: inline-block;
@@ -61,10 +63,11 @@ header article div.logo div.title {
   line-height: 26px;
   color: var(--secondary);
   margin-left: 5px;
-  transform: translateY(5.2px);
 }
 header article div.account {
   flex: 0 1 auto;
+  display: flex;
+  align-items: center;
 }
 header article div.account ::deep i {
   color: var(--secondary);

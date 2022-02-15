@@ -2,9 +2,10 @@
 @inject IListService<Sector> SectorService;
 @inject NavigationManager Navigation;
 
-<TableMenu />
-
-<DryTable T="Sector" ViewModel="@this" ItemsService="@SectorService" />
+<DryPageQueryView>
+    <TableMenu TItem="Sector" />
+    <DryTable TItem="Sector" ViewModel="@this" ItemsService="@SectorService" />
+</DryPageQueryView>
 
 @code {
 

@@ -4,7 +4,7 @@ section {
     border-bottom: solid 1px $gray;
     display: flex;
     justify-content: center;
-    padding: 0 $margin; 
+    padding: 0 $margin;
 
     article {
         display: flex;
@@ -30,8 +30,11 @@ section {
 
                     a {
                         color: $dark;
-                        padding: $margin/2 $margin;
+                        padding: 1px $margin;
                         text-decoration: none;
+                        display: flex;
+                        align-items: center;
+                        gap: 5px;
                     }
 
                     &:hover {

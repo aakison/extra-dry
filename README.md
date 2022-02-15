@@ -34,7 +34,7 @@ Add a Razor page component that lists items (examples assume T is `Item`)
 
      <h2>Items</h2>
 
-     <DryTable T="Item" ViewModel="@this" ItemsService="@ListService" />
+     <DryTable TItem="Item" ViewModel="@this" ItemsService="@ListService" />
       ```
 
 ### Adding a Razor Edit Item Page

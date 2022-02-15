@@ -17,6 +17,8 @@ header {
 
         div.logo {
             flex: 1 1 auto;
+            display: flex;
+            align-items: center;
 
             div.waffle {
                 display: inline-block;
@@ -39,13 +41,13 @@ header {
                 line-height: $title-size;
                 color: $var-secondary;
                 margin-left: $padding;
-                // Transform down as to center on text ignoring descenders.
-                transform: translateY(0.2*$title-size);
             }
         }
 
         div.account {
             flex: 0 1 auto;
+            display: flex;
+            align-items: center;
 
             ::deep i {
                 color: $var-secondary;

@@ -1,4 +1,6 @@
-﻿using ExtraDry.Core;
+﻿#nullable disable // EF Model Class
+
+using ExtraDry.Core;
 using ExtrayDry.Core;
 using Sample.Shared.Converters;
 using System;
@@ -6,53 +8,53 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace Sample.Shared {
+namespace Sample.Shared;
 
-    public class Company {
+public class Company {
 
-        [Key]
-        [JsonIgnore]
-        [Rules(RuleAction.Ignore)]
-        public int Id { get; set; }
+    [Key]
+    [JsonIgnore]
+    [Rules(RuleAction.Ignore)]
+    public int Id { get; set; }
 
-        [Rules(RuleAction.Ignore)]
-        public Guid Uuid { get; set; } = Guid.NewGuid();
+    [Rules(RuleAction.Ignore)]
+    public Guid Uuid { get; set; } = Guid.NewGuid();
 
-        [Display(Name = "Name", ShortName = "Name")]
-        [Filter]
-        public string Name { get; set; }
+    [Display(Name = "Name", ShortName = "Name")]
+    [Filter(FilterType.Contains)]
+    public string Name { get; set; }
 
-        [Display]
-        [MaxLength(1000)]
-        [Rules(RuleAction.IgnoreDefaults)]
-        public string Description { get; set; }
+    [Display]
+    [MaxLength(1000)]
+    [Rules(RuleAction.IgnoreDefaults)]
+    public string Description { get; set; }
 
-        [Display]
-        [Rules(RuleAction.Link)]
-        [JsonConverter(typeof(SectorInfoJsonConverter))]
-        public Sector PrimarySector { get; set; }
+    [Display]
+    [Rules(RuleAction.Link)]
+    [JsonConverter(typeof(SectorInfoJsonConverter))]
+    public Sector PrimarySector { get; set; }
 
-        [Display]
-        [Rules(RuleAction.Link)]
-        public List<Sector> AdditionalSectors { get; set; }
+    [Display]
+    [Rules(RuleAction.Link)]
+    public List<Sector> AdditionalSectors { get; set; }
 
-        [Display]
-        [Rules(RuleAction.Allow)]
-        public BankingDetails BankingDetails { get; set; } = new BankingDetails();
+    [Display]
+    [Rules(RuleAction.Allow)]
+    public BankingDetails BankingDetails { get; set; } = new BankingDetails();
 
-        [Display(Name = "Status", ShortName = "Status")]
-        [Rules(RuleAction.Allow)]
-        public CompanyStatus Status { get; set; }
+    [Display(Name = "Status", ShortName = "Status")]
+    [Rules(RuleAction.Allow)]
+    [Filter]
+    public CompanyStatus Status { get; set; }
 
-        //[Display]
-        //[Rules(RuleAction.Recurse)]
-        //public ICollection<Video> Videos { get; set; } = new Collection<Video>();
+    //[Display]
+    //[Rules(RuleAction.Recurse)]
+    //public ICollection<Video> Videos { get; set; } = new Collection<Video>();
 
-        /// <summary>
-        /// The version info which informs the audit log.
-        /// </summary>
-        [JsonIgnore]
-        public VersionInfo Version { get; set; } = new VersionInfo();
+    /// <summary>
+    /// The version info which informs the audit log.
+    /// </summary>
+    [JsonIgnore]
+    public VersionInfo Version { get; set; } = new VersionInfo();
 
-    }
 }

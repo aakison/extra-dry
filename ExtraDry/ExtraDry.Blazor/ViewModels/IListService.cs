@@ -4,17 +4,16 @@ using Microsoft.AspNetCore.Components.Web.Virtualization;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ExtraDry.Blazor {
+namespace ExtraDry.Blazor;
 
-    public interface IListService<T> : IOptionProvider<T> {
+public interface IListService<T> : IOptionProvider<T> {
 
-        string UriTemplate { get; set; }
+    string UriTemplate { get; set; }
 
-        object[] UriArguments { get; set; }
+    object[] UriArguments { get; set; }
 
-        int FetchSize { get; set; }
+    int FetchSize { get; set; }
 
-        ValueTask<ItemsProviderResult<T>> GetItemsAsync(string? sort, bool? ascending, int? skip, int? take, CancellationToken cancellationToken = default);
+    ValueTask<ItemsProviderResult<T>> GetItemsAsync(string? filter, string? sort, bool? ascending, int? skip, int? take, CancellationToken cancellationToken = default);
 
-    }
 }
