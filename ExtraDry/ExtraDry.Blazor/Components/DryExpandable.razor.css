@@ -1,0 +1,3 @@
+﻿div.none, div.collapsed, div.collapsing, div.expanding {
+  overflow: hidden;
+}

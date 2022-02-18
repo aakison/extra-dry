@@ -1,0 +1,8 @@
+﻿@namespace ExtraDry.Blazor
+
+<div class="@CssClassState" style="@InlineStyle">
+    @if (State != ExpandedState.None)
+    {
+        @ChildContent
+    }
+</div>

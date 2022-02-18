@@ -16,7 +16,7 @@ public sealed partial class TableMenu<TItem> : ComponentBase {
     public IListService<TItem>? ItemsSource { get; set; }
 
     [Parameter]
-    public Expandable Expandable { get; set; } = null!;
+    public DryExpandable Expandable { get; set; } = null!;
 
     [Command(Icon = "plus")]
     public void AddItem() { }

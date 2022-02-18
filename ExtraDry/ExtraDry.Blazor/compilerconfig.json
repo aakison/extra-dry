@@ -18,5 +18,9 @@
   {
     "outputFile": "Components/DryFilterSelect.razor.css",
     "inputFile": "Components/DryFilterSelect.razor.scss"
+  },
+  {
+    "outputFile": "Components/DryExpandable.razor.css",
+    "inputFile": "Components/DryExpandable.razor.scss"
   }
 ]

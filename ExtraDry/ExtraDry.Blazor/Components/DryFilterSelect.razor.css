@@ -1,10 +1,8 @@
 ﻿div {
-  position: relative;
-}
-div div.form {
-  position: absolute;
-  top: 25px;
-  right: 0;
-  background: white;
-  border: solid 1px black;
-}
+  position: relative; }
+  div div.form {
+    position: absolute;
+    top: 25px;
+    right: 0;
+    background: white;
+    border: solid 1px black; }

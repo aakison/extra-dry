@@ -19,36 +19,31 @@
   --warning-dark: #663f00;
   --white: #FFFFFF;
   --off-white: #f7f7f7;
-  --light: #e6e6e6;
+  --light: #e6e5e5;
   --silver: #cccccc;
   --gray: #999999;
-  --dark: #4d4d4d;
-  --charcoal: #1a1a1a;
-  --black: #0d0d0d;
-}
+  --dark: #4d4c4c;
+  --charcoal: #1a1919;
+  --black: #0d0d0d; }
 
 section {
   display: flex;
   justify-content: center;
-  padding: 0 10px;
-}
-section article {
-  flex: 0 1 1240px;
-  justify-content: center;
-  background-color: var(--white);
-  height: 48px;
-  margin: 0;
-  padding: 10px 0;
-}
-section article img {
-  width: 28px;
-  height: 28px;
-}
-section article div {
-  display: inline-block;
-  font-size: 18px;
-  font-weight: 700;
-  height: 28px;
-  line-height: 28px;
-  transform: translateY(2.8px);
-}
+  padding: 0 10px; }
+  section article {
+    flex: 0 1 1240px;
+    justify-content: center;
+    background-color: var(--white);
+    height: 48px;
+    margin: 0;
+    padding: 10px 0; }
+    section article img {
+      width: 28px;
+      height: 28px; }
+    section article div {
+      display: inline-block;
+      font-size: 18px;
+      font-weight: 700;
+      height: 28px;
+      line-height: 28px;
+      transform: translateY(2.8px); }
