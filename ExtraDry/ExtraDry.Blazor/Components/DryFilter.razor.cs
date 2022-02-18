@@ -24,12 +24,15 @@ public partial class DryFilter<TItem> : ComponentBase {
     private void OnInput(ChangeEventArgs args)
     {
         FreeTextFilter = $"{args.Value}";
+        if(string.IsNullOrWhiteSpace(FreeTextFilter)) {
+            SyncQuery();
+        }
     }
 
     private void OnKeyPress(KeyboardEventArgs args)
     {
+        Console.WriteLine($"OnKeyPress {args.Key}: {FreeTextFilter} on {Query}");
         if(args.Key == "Enter") {
-            Console.WriteLine($"OnKeyPress {args.Key}: {FreeTextFilter} on {Query}");
             SyncQuery();
         }
     }

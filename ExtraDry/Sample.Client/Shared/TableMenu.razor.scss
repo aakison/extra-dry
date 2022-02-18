@@ -114,3 +114,60 @@ div.filtermenu {
         }
     }
 }
+
+
+::deep div.filter {
+    padding: $padding $margin;
+    cursor: pointer;
+
+    &:hover {
+        background-color: $var-off-white;
+        border-radius: $padding/2;
+    }
+
+    div.caption {
+        color: $var-charcoal;
+        cursor: pointer;
+
+        label {
+            cursor: pointer;
+        }
+    }
+
+    div.form {
+        top: 34px;
+        background: $var-white;
+        border: solid 1px $var-silver;
+        border-radius: $padding;
+        min-width: 200px;
+        min-height: 200px;
+        max-width: 350px;
+        max-height: 800px;
+
+        ul {
+            list-style: none;
+            padding: 0;
+
+            li {
+                padding: $padding $margin;
+
+                &:hover {
+                    background-color: $var-off-white;
+                }
+
+                label {
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+
+                    input {
+                        flex: 0 0 auto;
+                        width: 16px;
+                        height: 16px;
+                        margin-right: $margin;
+                    }
+                }
+            }
+        }
+    }
+}

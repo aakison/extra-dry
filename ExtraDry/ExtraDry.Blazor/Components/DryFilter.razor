@@ -4,14 +4,10 @@
 <EditForm Model="this">
     <div class="filters @TypeSlug">
         <InputText @bind-Value="@FreeTextFilter" placeholder="@Placeholder" @oninput="OnInput" @onfocusout="OnFocusOut" @onkeypress="OnKeyPress" />
-        @foreach (var property in ViewModelDescription.FilterProperties)
+        @foreach (var property in ViewModelDescription.FilterProperties.Where(e => e.HasDiscreteValues))
         {
-            var filter = property.Filter;
-            var cssClass = $"filter {property.Property.Name.ToLowerInvariant()} {filter.Type.ToString().ToLowerInvariant()}";
-            <div class="@cssClass">
-                @property.Property.Name
-                <DryIcon Key="chevron-down" />
-            </div>
+            Console.WriteLine($"Loading property: {property.Property.PropertyType.Name}");
+            <DryFilterSelect Property="@property" />
         }
     </div>
 </EditForm>

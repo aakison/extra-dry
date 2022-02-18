@@ -14,5 +14,9 @@
   {
     "outputFile": "Components/DryNavigation.razor.css",
     "inputFile": "Components/DryNavigation.razor.scss"
+  },
+  {
+    "outputFile": "Components/DryFilterSelect.razor.css",
+    "inputFile": "Components/DryFilterSelect.razor.scss"
   }
 ]

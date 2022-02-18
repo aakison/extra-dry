@@ -121,3 +121,50 @@ div.filtermenu ::deep form div.filters div.filter {
   margin-right: 10px;
   gap: 5px;
 }
+
+::deep div.filter {
+  padding: 5px 10px;
+  cursor: pointer;
+}
+::deep div.filter:hover {
+  background-color: var(--off-white);
+  border-radius: 2.5px;
+}
+::deep div.filter div.caption {
+  color: var(--charcoal);
+  cursor: pointer;
+}
+::deep div.filter div.caption label {
+  cursor: pointer;
+}
+::deep div.filter div.form {
+  top: 34px;
+  background: var(--white);
+  border: solid 1px var(--silver);
+  border-radius: 5px;
+  min-width: 200px;
+  min-height: 200px;
+  max-width: 350px;
+  max-height: 800px;
+}
+::deep div.filter div.form ul {
+  list-style: none;
+  padding: 0;
+}
+::deep div.filter div.form ul li {
+  padding: 5px 10px;
+}
+::deep div.filter div.form ul li:hover {
+  background-color: var(--off-white);
+}
+::deep div.filter div.form ul li label {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+::deep div.filter div.form ul li label input {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  margin-right: 10px;
+}
