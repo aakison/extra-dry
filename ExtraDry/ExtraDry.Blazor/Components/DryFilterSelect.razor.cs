@@ -87,7 +87,9 @@ public partial class DryFilterSelect : ComponentBase {
         await EventsAndRefresh();
     }
 
-    private string CssClass => $"filter {Property?.Property?.Name?.ToLowerInvariant()} {Property?.Property?.PropertyType?.ToString()?.ToLowerInvariant()}";
+    private string CssClass => $"filter {Property?.Property?.Name?.ToLowerInvariant()} {Property?.Property?.PropertyType?.ToString()?.ToLowerInvariant()} {PopulatedClass}";
+
+    private string PopulatedClass => Selection.Any() ? "active" : "inactive";
 
     public List<string> Selection { get; } = new();
 

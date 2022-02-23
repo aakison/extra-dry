@@ -131,14 +131,18 @@ div.filtermenu ::deep form div.filters div.filter {
   border-radius: 2.5px;
 }
 ::deep div.filter div.caption {
-  color: var(--charcoal);
+  color: var(--gray);
   cursor: pointer;
   display: flex;
   align-items: center;
+  font-weight: 600;
 }
 ::deep div.filter div.caption label {
   cursor: pointer;
   margin-right: 5px;
+}
+::deep div.filter.active div.caption {
+  color: var(--charcoal);
 }
 ::deep div.filter div.form {
   background: var(--white);

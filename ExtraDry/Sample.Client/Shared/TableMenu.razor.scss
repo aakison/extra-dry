@@ -126,16 +126,22 @@ div.filtermenu {
     }
 
     div.caption {
-        color: $var-charcoal;
+        color: $var-gray;
         cursor: pointer;
         display: flex;
         align-items: center;
+        font-weight: 600;
 
         label {
             cursor: pointer;
             margin-right: $padding;
         }
+    }
 
+    &.active {
+        div.caption {
+            color: $var-charcoal;
+        }
     }
 
     div.form {
