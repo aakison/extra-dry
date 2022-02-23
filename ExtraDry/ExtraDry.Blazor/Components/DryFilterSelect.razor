@@ -1,49 +1,28 @@
 ﻿@namespace ExtraDry.Blazor
 
-<div class="@CssClass">
-    <div class="caption">
+@* Tabindex is required so the out diver can get focus, then respond to events *@
+<div class="@CssClass" @onfocusout="OnFocusOut" @onfocusin="OnFocusIn" @onkeydown="OnKeyDown" tabindex="0">
+    <div class="caption" @onclick="ToggleForm">
         <label>@Property.Property.Name</label>
         <DryIcon Key="chevron-down" />
     </div>
-    <div class="form">
-        @{
-            var propertyClass = $"enum {Property.Property.Name.ToLowerInvariant()}";
-        }
-        <ul class="@propertyClass">
-            @foreach (var value in Property.GetDiscreteValues())
-            {
-                var valueClass = $"{propertyClass} {value.Key.ToString().ToLowerInvariant()}";
-                <li class="@valueClass">
-                    <label class="@valueClass">
-                        <input class="@valueClass" type="checkbox" />
-                        <span class="@valueClass">@value.Display</span>
-                    </label>
-                        @*                var selected = value.Key.ToString() == selectedValue?.ToString(); // force object to enum compare
-                            var valueClassName = value.Key.ToString().ToLower();
-                            var selectedClassName = selected ? $"selected {valueClassName}" : $"{valueClassName}";
-                            <button class="@selectedClassName" @onclick="@(e => HandleClick(value.Key))">
-                            @if(!string.IsNullOrWhiteSpace(Property.IconTemplate)) {
-                            var source = string.Format(Property.IconTemplate, valueClassName);
-                            <img class="@valueClassName" src="@source" />
-                            }
-                            @if(!string.IsNullOrWhiteSpace(Property.CaptionTemplate)) {
-                            var content = string.Format(Property.CaptionTemplate, value.Display);
-                            <span class="@valueClassName">@content</span>
-                            }
-                            </button>
-                        *@
-                </li>
+    <DryExpandable @ref="Expandable" Height="350">
+        <div class="form">
+            @{
+                var propertyClass = $"enum {Property.Property.Name.ToLowerInvariant()}";
             }
-        </ul>
-    </div>
+            <ul class="@propertyClass">
+                @foreach (var value in Property.GetDiscreteValues())
+                {
+                    var valueClass = $"{propertyClass} {value.Key.ToString().ToLowerInvariant()}";
+                    <li class="@valueClass">
+                        <label class="@valueClass">
+                            <input class="@valueClass" type="checkbox" />
+                            <span class="@valueClass">@value.Display</span>
+                        </label>
+                    </li>
+                }
+            </ul>
+        </div>
+    </DryExpandable>
 </div>
-
-@code {
-    [Parameter]
-    public PropertyDescription Property { get; set; }
-
-
-
-    private string CssClass => $"filter {Property?.Property?.Name?.ToLowerInvariant()} {Property?.Property?.PropertyType?.ToString()?.ToLowerInvariant()}";
-
-}

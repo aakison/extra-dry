@@ -1,8 +1,16 @@
 ﻿div {
   position: relative; }
-  div div.form {
+  div ::deep div.curtain {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: #ffffff7f; }
+  div ::deep div.expandable {
     position: absolute;
-    top: 25px;
-    right: 0;
+    top: 35px;
+    right: 0; }
+  div div.form {
     background: white;
     border: solid 1px black; }

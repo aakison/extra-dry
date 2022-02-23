@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Components;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ExtraDry.Blazor;
@@ -22,6 +23,13 @@ public partial class DryExpandable : ComponentBase {
     /// </summary>
     [Parameter]
     public int Height { get; set; } = 40;
+
+    /// <summary>
+    /// The maximum height of the expanded are, in pixels.
+    /// Set to 0 to ignore MaxHeight during animations.
+    /// </summary>
+    [Parameter]
+    public int MaxHeight { get; set; } = 0;
 
     public async Task Expand()
     {
@@ -68,17 +76,34 @@ public partial class DryExpandable : ComponentBase {
     /// </summary>
     public ExpandedState State { get; set; } = ExpandedState.None;
 
+    public bool IsShown => State == ExpandedState.Expanded || State == ExpandedState.Collapsing || State == ExpandedState.Expanding;
+
     private const int minimumDuration = 15; // One frame to allow refresh to happen.
 
     private int AdjustedDuration => Math.Clamp(Duration, minimumDuration, 3000);
 
-    private string InlineStyle => $"transition: height {AdjustedDuration / 1000.0}s; height: {HeightString}";
+    private string InlineStyle { 
+        get {
+            var duration = $"{AdjustedDuration / 1000.0}s";
+            var transitions = new List<string>();
+            var attributes = new List<string>();
+            if(Height > 0) {
+                transitions.Add($"height {duration}");
+                attributes.Add($"height: {ToCollapsedString(Height)}");
+            }
+            if(MaxHeight > 0) {
+                transitions.Add($"max-height {duration}");
+                attributes.Add($"max-height: {ToCollapsedString(MaxHeight)}");
+            }
+            return $"transition: {string.Join(',', transitions)}; {string.Join(';', attributes)}";
+        }
+    }
 
-    private string HeightString => State switch {
+    private string ToCollapsedString(int value) => State switch {
         ExpandedState.None => "0",
         ExpandedState.Collapsed => "0",
         ExpandedState.Collapsing => "0",
-        _ => $"{Height}px",
+        _ => $"{value}px",
     };
 
     private string CssClassState => $"expandable {State.ToString().ToLowerInvariant()}";

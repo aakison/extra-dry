@@ -128,14 +128,17 @@ div.filtermenu {
     div.caption {
         color: $var-charcoal;
         cursor: pointer;
+        display: flex;
+        align-items: center;
 
         label {
             cursor: pointer;
+            margin-right: $padding;
         }
+
     }
 
     div.form {
-        top: 34px;
         background: $var-white;
         border: solid 1px $var-silver;
         border-radius: $padding;
