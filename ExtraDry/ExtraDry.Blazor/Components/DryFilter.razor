@@ -7,7 +7,7 @@
         @foreach (var property in ViewModelDescription.FilterProperties.Where(e => e.HasDiscreteValues))
         {
             Console.WriteLine($"Loading property: {property.Property.PropertyType.Name}");
-            <DryFilterSelect Property="@property" />
+            <DryFilterSelect Property="@property" FilterChanged="FilterChanged" />
         }
     </div>
 </EditForm>

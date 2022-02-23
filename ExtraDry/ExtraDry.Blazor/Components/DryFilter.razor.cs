@@ -5,6 +5,8 @@ using ExtraDry.Core;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ExtraDry.Blazor;
 
@@ -47,7 +49,7 @@ public partial class DryFilter<TItem> : ComponentBase {
     {
         if(Query != null) {
             Console.WriteLine("Setting query");
-            Query.Filter = FreeTextFilter;
+            Query.Filter = FilterExpression;
             StateHasChanged();
             if(Query is NotifyPageQuery notify) {
                 notify.NotifyChanged();
@@ -55,7 +57,31 @@ public partial class DryFilter<TItem> : ComponentBase {
         }
     }
 
+    public void FilterChanged(FilterChangedEventArgs args)
+    {
+        Console.WriteLine("FilterChanged");
+        if(args.FilterValues.Any()) {
+            if(!SelectFilters.ContainsKey(args.FilterName)) {
+                SelectFilters.Add(args.FilterName, args.FilterExpression);
+            }
+            else {
+                SelectFilters[args.FilterName] = args.FilterExpression;
+            }
+            SyncQuery();
+        }
+        else {
+            if(SelectFilters.ContainsKey(args.FilterName)) {
+                SelectFilters.Remove(args.FilterName);
+            }
+            SyncQuery();
+        }
+    }
+
     private string FreeTextFilter { get; set; } = string.Empty;
+
+    private Dictionary<string, string> SelectFilters { get; } = new();
+
+    private string FilterExpression => $"{FreeTextFilter} {string.Join(' ', SelectFilters.Values)}".Trim();
 
     private ViewModelDescription ViewModelDescription { get; set; }
 

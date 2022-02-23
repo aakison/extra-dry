@@ -17,7 +17,7 @@
                     var valueClass = $"{propertyClass} {value.Key.ToString().ToLowerInvariant()}";
                     <li class="@valueClass">
                         <label class="@valueClass">
-                            <input class="@valueClass" type="checkbox" />
+                            <input class="@valueClass" type="checkbox" @onchange="e => OnChange(e, value)" />
                             <span class="@valueClass">@value.Display</span>
                         </label>
                     </li>
