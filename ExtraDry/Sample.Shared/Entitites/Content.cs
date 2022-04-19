@@ -1,5 +1,4 @@
 ﻿using ExtraDry.Core;
-using ExtrayDry.Core;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

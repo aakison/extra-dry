@@ -112,6 +112,9 @@ $icon-size: 28px;
 $glyph-size: 20px;
 $max-article-width: 1240px;
 $border-radius: 3px;
+// Additional, specific attributes
+$header-height: $logo-size+2*$margin;
+$dialog-margin: 6*$margin;
 
 //
 // Responsive sizes declared using sass.
@@ -121,3 +124,4 @@ $phone-landscape: "only screen and (min-width: 600px)";
 $tablet-portrait: "only screen and (min-width: 750px)";
 $tablet-landscape: "only screen and (min-width: 1000px)";
 $desktop-landscape: "only screen and (min-width: 1200px)";
+

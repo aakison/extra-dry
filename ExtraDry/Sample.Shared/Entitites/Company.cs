@@ -1,7 +1,7 @@
 ﻿#nullable disable // EF Model Class
 
 using ExtraDry.Core;
-using ExtrayDry.Core;
+using ExtraDry.Core.Warehouse;
 using Sample.Shared.Converters;
 using System;
 using System.Collections.Generic;
@@ -10,6 +10,7 @@ using System.Text.Json.Serialization;
 
 namespace Sample.Shared;
 
+[Fact]
 public class Company {
 
     [Key]
@@ -22,6 +23,7 @@ public class Company {
 
     [Display(Name = "Name", ShortName = "Name")]
     [Filter(FilterType.Contains)]
+    [Measure]
     public string Name { get; set; }
 
     [Display]
@@ -45,6 +47,7 @@ public class Company {
     [Display(Name = "Status", ShortName = "Status")]
     [Rules(RuleAction.Allow)]
     [Filter]
+    [Measure]
     public CompanyStatus Status { get; set; }
 
     //[Display]

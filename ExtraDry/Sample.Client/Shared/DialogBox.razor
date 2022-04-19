@@ -1,0 +1,14 @@
+﻿<div class="curtain">
+    <div class="dialog">
+        <DryIcon Key="expand" />
+        <DryIcon Key="times" />
+        @ChildContent
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+}

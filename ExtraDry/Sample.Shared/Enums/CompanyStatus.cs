@@ -1,16 +1,22 @@
 ﻿#nullable enable
 
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using ExtraDry.Core.Warehouse;
 
 namespace Sample.Shared;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
+[Dimension("Company Status")]
 public enum CompanyStatus {
 
-    Inactive,
+    [Display(Order = 0, Description = "Company is active")]
+    Active = 0,
 
-    Active,
+    [Display(Order = 2, Description = "Company not currently used, but still exists.")]
+    Inactive = 1,
 
-    Deleted,
+    [Display(Order = 1, Description = "Company doesn't exist, but is linked to historic records.")]
+    Deleted = 2,
 
 }
