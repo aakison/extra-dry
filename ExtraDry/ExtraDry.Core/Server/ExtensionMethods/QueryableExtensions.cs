@@ -76,30 +76,9 @@ namespace ExtraDry.Server {
         /// <param name="filterQuery">A filter query that contains sorting information.</param>
         public static IQueryable<T> Sort<T>(this IQueryable<T> source, FilterQuery filterQuery)
         {
-            var keyPropertyName = "Id";
-            var type = typeof(T);
-            var properties = type.GetProperties();
-
-            var keyProperties = properties.Where(e => e.GetCustomAttributes(true).Any(e => e is KeyAttribute));
-            
-            if(keyProperties.Count() == 1) {
-                keyPropertyName = keyProperties.First().Name;
-            }
-            else if(keyProperties.Count() > 1) {
-                throw new DryException("Sort requires that a single EF key is well defined to stabalize the sort, composite keys are not supported.  Manually specify a Stabilizer in the FilterQuery, or use a single [Key] attribute.", "Unable to Sort (0x0F3F241D)");
-            }
-            else if(properties.Any(e => e.Name == "Id")) {
-                keyPropertyName = "Id";
-            }
-            else if(properties.Any(e => e.Name == $"{type.Name}Id")) {
-                keyPropertyName = $"{type.Name}Id";
-            }
-            else {
-                throw new DryException("Sort requires that an EF key is uniquely defined to stabalize the sort, even if another sort property is present.  Create a unique key following EF conventions or specify a Stabilizer in the FilterQuery.", "Unable to Sort (0x0F3F241C)");
-            }
-
+            var description = new ModelDescription(typeof(T));
             var token = (filterQuery as PageQuery)?.Token; // Only need the token if it's a PageQuery, null if FilterQuery.
-            return source.Sort(filterQuery.Sort, filterQuery.Ascending, keyPropertyName, token);
+            return source.Sort(filterQuery.Sort, filterQuery.Ascending, token, description);
         }
 
         /// <summary>
@@ -112,22 +91,19 @@ namespace ExtraDry.Server {
         /// <param name="ascending">Indicates if the order is ascending or not (optional, default true)</param>
         /// <param name="stabilizer">The name of a unique property to ensure paging works, use monotonically increasing value such as `int Identity` or created timestamp (required, case insensitive)</param>
         /// <param name="continuationToken">If this is not a new request, the token passed back from the previous request to maintain stability (optional)</param>
-        public static IQueryable<T> Sort<T>(this IQueryable<T> source, string? sort, bool? ascending, string stabilizer, string? continuationToken)
+        internal static IQueryable<T> Sort<T>(this IQueryable<T> source, string? sort, bool? ascending, string? continuationToken, ModelDescription modelDescription)
         {
             var token = ContinuationToken.FromString(continuationToken);
             var actualSort = token?.Sort ?? sort;
             var actualAscending = token?.Ascending ?? ascending ?? true;
             var query = source;
-            if(string.IsNullOrWhiteSpace(stabilizer)) {
-                throw new DryException($"Must supply a stabilizer to ensure paging is consistent", "Internal Server Error - 0x0F850FD9");
-            }
             if(!string.IsNullOrWhiteSpace(actualSort)) {
                 query = actualAscending ? 
-                    query.OrderBy(actualSort).ThenBy(stabilizer) : 
-                    query.OrderByDescending(actualSort).ThenByDescending(stabilizer);
+                    query.OrderBy(actualSort, modelDescription).ThenBy(modelDescription.StabilizerProperty.ExternalName, modelDescription) : 
+                    query.OrderByDescending(actualSort, modelDescription).ThenByDescending(modelDescription.StabilizerProperty.ExternalName, modelDescription);
             }
             else {
-                query = query.OrderBy(stabilizer);
+                query = query.OrderBy(modelDescription.StabilizerProperty.ExternalName, modelDescription);
             }
             return query;
         }

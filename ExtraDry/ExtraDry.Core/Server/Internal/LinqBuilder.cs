@@ -1,4 +1,4 @@
-﻿using ExtraDry.Core;
+using ExtraDry.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,51 +15,50 @@ namespace ExtraDry.Server.Internal {
         /// <summary>
         /// Sorts the elements of the sequence according to a key which is provided by name instead of a lambda.
         /// </summary>
-        public static IOrderedQueryable<T> OrderBy<T>(this IQueryable<T> source, string property)
+        public static IOrderedQueryable<T> OrderBy<T>(this IQueryable<T> source, string property, ModelDescription modelDescription)
         {
-            return ApplyOrder(source, property, OrderType.OrderBy);
+            return ApplyOrder(source, property, OrderType.OrderBy, modelDescription);
         }
 
         /// <summary>
         /// Sorts the elements of the sequence, in descending order, according to a key which is provided by name instead of a lambda.
         /// </summary>
-        public static IOrderedQueryable<T> OrderByDescending<T>(this IQueryable<T> source, string property)
+        public static IOrderedQueryable<T> OrderByDescending<T>(this IQueryable<T> source, string property, ModelDescription modelDescription)
         {
-            return ApplyOrder(source, property, OrderType.OrderByDescending);
+            return ApplyOrder(source, property, OrderType.OrderByDescending, modelDescription);
         }
 
         /// <summary>
         /// Performs a subsequent ordering of a sequence according to a key which is provided by name instead of a lambda.
         /// </summary>
-        public static IOrderedQueryable<T> ThenBy<T>(this IOrderedQueryable<T> source, string property)
+        public static IOrderedQueryable<T> ThenBy<T>(this IOrderedQueryable<T> source, string property, ModelDescription modelDescription)
         {
-            return ApplyOrder(source, property, OrderType.ThenBy);
+            return ApplyOrder(source, property, OrderType.ThenBy, modelDescription);
         }
 
         /// <summary>
         /// Performs a subsequent ordering of a sequence, in descending order, according to a key which is provided by name instead of a lambda.
         /// </summary>
-        public static IOrderedQueryable<T> ThenByDescending<T>(this IOrderedQueryable<T> source, string property)
+        public static IOrderedQueryable<T> ThenByDescending<T>(this IOrderedQueryable<T> source, string property, ModelDescription modelDescription)
         {
-            return ApplyOrder(source, property, OrderType.ThenByDescending);
+            return ApplyOrder(source, property, OrderType.ThenByDescending, modelDescription);
         }
 
         /// <summary>
         /// Applies LINQ method by property name and method name instead of using Method and Lambda.
         /// </summary>
         /// <remarks>see https://stackoverflow.com/questions/41244/dynamic-linq-orderby-on-ienumerablet-iqueryablet</remarks>
-        private static IOrderedQueryable<T> ApplyOrder<T>(IQueryable<T> source, string property, OrderType methodType)
+        private static IOrderedQueryable<T> ApplyOrder<T>(IQueryable<T> source, string property, OrderType methodType, ModelDescription modelDescription)
         {
             string[] props = property.Split('.');
             var type = typeof(T);
             var arg = Expression.Parameter(type, "x");
             Expression expr = arg;
             foreach(string prop in props) {
-                // use reflection (not ComponentModel) to mirror LINQ
-                var pi = type.GetProperty(prop, BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance);
-                if(pi == null) {
-                    throw new DryException($"Could not find sort property `{prop}`", "Could not apply requested sort");
-                }
+                var pi = modelDescription.SortProperties.FirstOrDefault(sortProp => sortProp.ExternalName.ToLower() == prop.ToLower())?.Property
+                    ?? (modelDescription.StabilizerProperty.ExternalName.ToLower() == prop.ToLower() 
+                            ? modelDescription.StabilizerProperty.Property 
+                            : throw new DryException($"Could not find sort property `{prop}`", "Could not apply requested sort"));
                 expr = Expression.Property(expr, pi);
                 type = pi.PropertyType;
             }
