@@ -15,41 +15,42 @@ namespace ExtraDry.Server.Internal {
         /// <summary>
         /// Sorts the elements of the sequence according to a key which is provided by name instead of a lambda.
         /// </summary>
-        public static IOrderedQueryable<T> OrderBy<T>(this IQueryable<T> source, string property, ModelDescription modelDescription)
+        public static IOrderedQueryable<T> OrderBy<T>(this IQueryable<T> source, string property)
         {
-            return ApplyOrder(source, property, OrderType.OrderBy, modelDescription);
+            return ApplyOrder(source, property, OrderType.OrderBy);
         }
 
         /// <summary>
         /// Sorts the elements of the sequence, in descending order, according to a key which is provided by name instead of a lambda.
         /// </summary>
-        public static IOrderedQueryable<T> OrderByDescending<T>(this IQueryable<T> source, string property, ModelDescription modelDescription)
+        public static IOrderedQueryable<T> OrderByDescending<T>(this IQueryable<T> source, string property)
         {
-            return ApplyOrder(source, property, OrderType.OrderByDescending, modelDescription);
+            return ApplyOrder(source, property, OrderType.OrderByDescending);
         }
 
         /// <summary>
         /// Performs a subsequent ordering of a sequence according to a key which is provided by name instead of a lambda.
         /// </summary>
-        public static IOrderedQueryable<T> ThenBy<T>(this IOrderedQueryable<T> source, string property, ModelDescription modelDescription)
+        public static IOrderedQueryable<T> ThenBy<T>(this IOrderedQueryable<T> source, string property)
         {
-            return ApplyOrder(source, property, OrderType.ThenBy, modelDescription);
+            return ApplyOrder(source, property, OrderType.ThenBy);
         }
 
         /// <summary>
         /// Performs a subsequent ordering of a sequence, in descending order, according to a key which is provided by name instead of a lambda.
         /// </summary>
-        public static IOrderedQueryable<T> ThenByDescending<T>(this IOrderedQueryable<T> source, string property, ModelDescription modelDescription)
+        public static IOrderedQueryable<T> ThenByDescending<T>(this IOrderedQueryable<T> source, string property)
         {
-            return ApplyOrder(source, property, OrderType.ThenByDescending, modelDescription);
+            return ApplyOrder(source, property, OrderType.ThenByDescending);
         }
 
         /// <summary>
         /// Applies LINQ method by property name and method name instead of using Method and Lambda.
         /// </summary>
         /// <remarks>see https://stackoverflow.com/questions/41244/dynamic-linq-orderby-on-ienumerablet-iqueryablet</remarks>
-        private static IOrderedQueryable<T> ApplyOrder<T>(IQueryable<T> source, string property, OrderType methodType, ModelDescription modelDescription)
+        private static IOrderedQueryable<T> ApplyOrder<T>(IQueryable<T> source, string property, OrderType methodType)
         {
+            var modelDescription = new ModelDescription(typeof(T));
             string[] props = property.Split('.');
             var type = typeof(T);
             var arg = Expression.Parameter(type, "x");
@@ -88,7 +89,7 @@ namespace ExtraDry.Server.Internal {
             var terms = new List<Expression>();
             var filter = FilterParser.Parse(filterQuery);
             foreach(var rule in filter.Rules) {
-                var property = filterProperties.FirstOrDefault(e => string.Equals(e.Property.Name, rule.PropertyName, StringComparison.OrdinalIgnoreCase));
+                var property = filterProperties.FirstOrDefault(e => string.Equals(e.ExternalName, rule.PropertyName, StringComparison.OrdinalIgnoreCase));
                 if(rule.PropertyName == "*") {
                     var keywords = new List<Expression>();
                     foreach(var filterProperty in filterProperties) {
@@ -122,9 +123,12 @@ namespace ExtraDry.Server.Internal {
                     throw new DryException($"Could not find property '{rule.PropertyName}' requested in filter query.  No property had with that name has a [Filter] attribute applied to it.", "Unable to apply filter. 0x0F4F4931");
                 }
             }
-            var cnf = AllOf(terms.ToArray());
-            var lambda = Expression.Lambda<Func<T, bool>>(cnf, param);
-            return source.Where(lambda);
+            if(terms.Any()) {
+                var cnf = AllOf(terms.ToArray());
+                var lambda = Expression.Lambda<Func<T, bool>>(cnf, param);
+                return source.Where(lambda);
+            }
+            return source;
         }
 
         private static void AddTerms(ParameterExpression param, List<Expression> terms, FilterRule rule, FilterProperty property)
@@ -201,7 +205,7 @@ namespace ExtraDry.Server.Internal {
                 }
             }
             catch {
-                throw new DryException($"Filter expression '{value}' was not of the correct type.");
+                throw new DryException($"Filter expression '{value}' was not of the correct type.", "Unable to apply filter. 0x0F4A10KL");
             }
         }
 
@@ -224,9 +228,9 @@ namespace ExtraDry.Server.Internal {
         private static MethodInfo StringStartsWithMethod => typeof(string).GetMethod(nameof(string.StartsWith), new[] { typeof(string) })!;
 
         private enum OrderType {
-            OrderBy, 
-            ThenBy, 
-            OrderByDescending, 
+            OrderBy,
+            ThenBy,
+            OrderByDescending,
             ThenByDescending,
         }
 

@@ -61,11 +61,10 @@ namespace ExtraDry.Server {
                 return source;
             }
             var description = new ModelDescription(typeof(T));
-            var filterProperties = description.FilterProperties;
-            if(!filterProperties.Any()) {
+            if(!description.FilterProperties.Any()) {
                 return source;
             }
-            return source.WhereFilterConditions(filterProperties.ToArray(), filter);
+            return source.WhereFilterConditions(description.FilterProperties.ToArray(), filter);
         }
 
         /// <summary>
@@ -76,9 +75,8 @@ namespace ExtraDry.Server {
         /// <param name="filterQuery">A filter query that contains sorting information.</param>
         public static IQueryable<T> Sort<T>(this IQueryable<T> source, FilterQuery filterQuery)
         {
-            var description = new ModelDescription(typeof(T));
             var token = (filterQuery as PageQuery)?.Token; // Only need the token if it's a PageQuery, null if FilterQuery.
-            return source.Sort(filterQuery.Sort, filterQuery.Ascending, token, description);
+            return source.Sort(filterQuery.Sort, filterQuery.Ascending, token);
         }
 
         /// <summary>
@@ -90,19 +88,20 @@ namespace ExtraDry.Server {
         /// <param name="sort">The name of the property to sort by (optional, case insensitive)</param>
         /// <param name="ascending">Indicates if the order is ascending or not (optional, default true)</param>
         /// <param name="continuationToken">If this is not a new request, the token passed back from the previous request to maintain stability (optional)</param>
-        internal static IQueryable<T> Sort<T>(this IQueryable<T> source, string? sort, bool? ascending, string? continuationToken, ModelDescription modelDescription)
+        internal static IQueryable<T> Sort<T>(this IQueryable<T> source, string? sort, bool? ascending, string? continuationToken)
         {
             var token = ContinuationToken.FromString(continuationToken);
             var actualSort = token?.Sort ?? sort;
             var actualAscending = token?.Ascending ?? ascending ?? true;
             var query = source;
+            var modelDescription = new ModelDescription(typeof(T));
             if(!string.IsNullOrWhiteSpace(actualSort)) {
                 query = actualAscending ? 
-                    query.OrderBy(actualSort, modelDescription).ThenBy(modelDescription.StabilizerProperty.ExternalName, modelDescription) : 
-                    query.OrderByDescending(actualSort, modelDescription).ThenByDescending(modelDescription.StabilizerProperty.ExternalName, modelDescription);
+                    query.OrderBy(actualSort).ThenBy(modelDescription.StabilizerProperty.ExternalName) : 
+                    query.OrderByDescending(actualSort).ThenByDescending(modelDescription.StabilizerProperty.ExternalName);
             }
             else {
-                query = query.OrderBy(modelDescription.StabilizerProperty.ExternalName, modelDescription);
+                query = query.OrderBy(modelDescription.StabilizerProperty.ExternalName);
             }
             return query;
         }

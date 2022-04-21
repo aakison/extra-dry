@@ -1,4 +1,4 @@
-using ExtraDry.Server.Internal;
+﻿using ExtraDry.Server.Internal;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -14,7 +14,7 @@ namespace ExtraDry.Core.Tests.Internals {
         {
             var linqSorted = SampleData.OrderBy(e => e.FirstName).ToList();
 
-            var linqBuilderSorted = SampleData.AsQueryable().OrderBy("FirstName", new ModelDescription(typeof(Datum))).ToList();
+            var linqBuilderSorted = SampleData.AsQueryable().OrderBy("FirstName").ToList();
 
             Assert.Equal(linqSorted, linqBuilderSorted);
         }
@@ -24,7 +24,7 @@ namespace ExtraDry.Core.Tests.Internals {
         {
             var linqSorted = SampleData.OrderBy(e => e.Number).ToList();
 
-            var linqBuilderSorted = SampleData.AsQueryable().OrderBy("Number", new ModelDescription(typeof(Datum))).ToList();
+            var linqBuilderSorted = SampleData.AsQueryable().OrderBy("Number").ToList();
 
             Assert.Equal(linqSorted, linqBuilderSorted);
         }
@@ -34,7 +34,7 @@ namespace ExtraDry.Core.Tests.Internals {
         {
             var linqSorted = SampleData.OrderBy(e => e.InternalName).ToList();
 
-            var linqBuilderSorted = SampleData.AsQueryable().OrderBy("PublicName", new ModelDescription(typeof(Datum))).ToList();
+            var linqBuilderSorted = SampleData.AsQueryable().OrderBy("PublicName").ToList();
 
             Assert.Equal(linqSorted, linqBuilderSorted);
         }
@@ -44,7 +44,7 @@ namespace ExtraDry.Core.Tests.Internals {
         {
             var linqSorted = SampleData.OrderByDescending(e => e.FirstName).ToList();
 
-            var linqBuilderSorted = SampleData.AsQueryable().OrderByDescending("FirstName", new ModelDescription(typeof(Datum))).ToList();
+            var linqBuilderSorted = SampleData.AsQueryable().OrderByDescending("FirstName").ToList();
 
             Assert.Equal(linqSorted, linqBuilderSorted);
         }
@@ -54,7 +54,7 @@ namespace ExtraDry.Core.Tests.Internals {
         {
             var linqSorted = SampleData.OrderByDescending(e => e.Number).ToList();
 
-            var linqBuilderSorted = SampleData.AsQueryable().OrderByDescending("Number", new ModelDescription(typeof(Datum))).ToList();
+            var linqBuilderSorted = SampleData.AsQueryable().OrderByDescending("Number").ToList();
 
             Assert.Equal(linqSorted, linqBuilderSorted);
         }
@@ -63,7 +63,7 @@ namespace ExtraDry.Core.Tests.Internals {
         public void OrderByInvalidNameException()
         {
             Assert.Throws<DryException>(() =>
-                SampleData.AsQueryable().OrderByDescending("Invalid", new ModelDescription(typeof(Datum))).ToList()
+                SampleData.AsQueryable().OrderByDescending("Invalid").ToList()
             );
         }
 
@@ -71,9 +71,8 @@ namespace ExtraDry.Core.Tests.Internals {
         public void ThenByCompatible()
         {
             var linqSorted = SampleData.OrderBy(e => e.FirstName).ThenBy(e => e.Number).ToList();
-            var modelDescription = new ModelDescription(typeof(Datum));
 
-            var linqBuilderSorted = SampleData.AsQueryable().OrderBy("FirstName", modelDescription).ThenBy("Number", modelDescription).ToList();
+            var linqBuilderSorted = SampleData.AsQueryable().OrderBy("FirstName").ThenBy("Number").ToList();
 
             Assert.Equal(linqSorted, linqBuilderSorted);
         }
@@ -84,7 +83,7 @@ namespace ExtraDry.Core.Tests.Internals {
             var linqSorted = SampleData.OrderByDescending(e => e.FirstName).ThenByDescending(e => e.Number).ToList();
             var modelDescription = new ModelDescription(typeof(Datum));
 
-            var linqBuilderSorted = SampleData.AsQueryable().OrderByDescending("FirstName", modelDescription).ThenByDescending("Number", modelDescription).ToList();
+            var linqBuilderSorted = SampleData.AsQueryable().OrderByDescending("FirstName").ThenByDescending("Number").ToList();
 
             Assert.Equal(linqSorted, linqBuilderSorted);
         }
@@ -96,6 +95,17 @@ namespace ExtraDry.Core.Tests.Internals {
 
             var filterProperty = GetFilterProperty("FirstName");
             var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "firstname:Bob").ToList();
+
+            Assert.Equal(linqWhere, linqBuilderWhere);
+        }
+
+        [Fact]
+        public void SingleEqualsWhereFilterJsonNameCompatible()
+        {
+            var linqWhere = SampleData.Where(e => e.InternalName == "Bobby").ToList();
+            var modelDescription = new ModelDescription(typeof(Datum));
+
+            var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(modelDescription.FilterProperties.ToArray(), "publicname:Bobby").ToList();
 
             Assert.Equal(linqWhere, linqBuilderWhere);
         }
@@ -147,14 +157,15 @@ namespace ExtraDry.Core.Tests.Internals {
 
             public int Number { get; set; }
 
+            [Filter(FilterType.Equals)]
             [JsonPropertyName("publicName")]
             public string InternalName { get; set; }
         }
 
         private readonly List<Datum> SampleData = new() {
-            new Datum { FirstName = "Charlie", LastName = "Coase", Number = 111 },
-            new Datum { FirstName = "Alice", LastName = "Cooper", Number = 333 },
-            new Datum { FirstName = "Bob", LastName = "Barker", Number = 222 },
+            new Datum { FirstName = "Charlie", LastName = "Coase", Number = 111, InternalName = "Chuck" },
+            new Datum { FirstName = "Alice", LastName = "Cooper", Number = 333, InternalName = "Al" },
+            new Datum { FirstName = "Bob", LastName = "Barker", Number = 222, InternalName = "Bobby" },
         };
 
         //private readonly List<Datum> SampleDataWithDuplicateNames = new() {
