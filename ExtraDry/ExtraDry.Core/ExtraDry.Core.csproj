@@ -6,6 +6,7 @@
     <PackageId>ExtraDry.Core</PackageId>
     <Authors>adrian.akison</Authors>
     <Company>FMI Works</Company>
+	<ImplicitUsings>enable</ImplicitUsings>
     <Description>Extensions to Blazor and DRY libraries to create Blazor client/server applications with a lower-code footprint.  Use this Core library for server side and shared library common elements.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/fmi-works/extra-dry</PackageProjectUrl>

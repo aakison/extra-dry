@@ -70,9 +70,10 @@ public class Warehouse {
         }
 
         foreach(var element in elements) {
-            var data = new Dictionary<string, object>();
-            data.Add(keyColumn, (int)(element.Key.GetValue(null) ?? 0));
-            data.Add("Title", element.Value?.Name ?? element.Key.Name);
+            var data = new Dictionary<string, object> {
+                { keyColumn, (int)(element.Key.GetValue(null) ?? 0) },
+                { "Title", element.Value?.Name ?? element.Key.Name }
+            };
             if(element.Value?.ShortName != null) {
                 data.Add("Short Name", element.Value.ShortName);
             }

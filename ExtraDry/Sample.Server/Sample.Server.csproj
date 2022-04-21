@@ -4,6 +4,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <OutputType>Exe</OutputType>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+	<nullable>enable</nullable>
+	<ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <PropertyGroup>

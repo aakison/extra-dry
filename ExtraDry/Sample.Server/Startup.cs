@@ -1,28 +1,15 @@
 #nullable enable
 
-using ExtraDry.Core;
 using ExtraDry.Server;
 using ExtraDry.Server.EF;
 using ExtraDry.Swashbuckle;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Sample.Data;
-using Sample.Data.Services;
 using Sample.Server.Security;
-using Sample.Shared;
-using Sample.Shared.Security;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace Sample.Server {
 
@@ -50,18 +37,22 @@ namespace Sample.Server {
         /// </summary>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddJsonOptions(j => {
+                    j.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+                    j.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
             services.AddRazorPages();
             services.AddSwaggerGen(openapi => {
-                openapi.SwaggerDoc("v1", new OpenApiInfo {
+                openapi.SwaggerDoc("sample-api", new OpenApiInfo {
                     Version = "v1",
                     Title = "Sample API",
-                    Description = @"A sample API for Blazor.ExtraDry  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
-  * Excepteur sint occaecat 
-  * cupidatat non proident, 
-  * sunt in culpa qui officia 
-
-deserunt mollit anim id est laborum.",
+                    Description = @"A sample API for Blazor.ExtraDry",
+                });
+                openapi.SwaggerDoc("reference-codes", new OpenApiInfo {
+                    Version = "v1",
+                    Title = "Reference Codes",
+                    Description = @"A sample API for Blazor.ExtraDry",
                 });
                 foreach(var docfile in new string[] { "Sample.Shared.xml", "Sample.Server.xml", "ExtraDry.Core.Xml" }) {
                     var webAppXml = Path.Combine(AppContext.BaseDirectory, docfile);
@@ -107,6 +98,7 @@ deserunt mollit anim id est laborum.",
             services.AddScoped<SectorService>();
             services.AddScoped<BlobService>();
             services.AddScoped<RuleEngine>();
+            services.AddScoped<RegionService>();
             
             services.AddScoped<IEntityResolver<Sector>>(e => e.GetService<SectorService>()!);
         }
@@ -129,7 +121,8 @@ deserunt mollit anim id est laborum.",
             app.UseHttpsRedirection();
             app.UseSwagger();
             app.UseSwaggerUI(c => {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                c.SwaggerEndpoint("/swagger/sample-api/swagger.json", "Sample API");
+                c.SwaggerEndpoint("/swagger/reference-codes/swagger.json", "Reference Codes");
                 c.InjectStylesheet("/css/swagger-ui-extensions.css");
                 c.InjectJavascript("/js/swagger-ui-extensions.js");
                 c.DocumentTitle = "Sample Blazor.ExtraDry APIs";

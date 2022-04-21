@@ -181,6 +181,34 @@ body {
     margin: 0 5px;
   }
 
+/* Re-align the operation block to have description (with markdown) below header and control */
+
+.swagger-ui .opblock-tag {
+  display: grid;
+  grid-template-areas:
+    "header controls"
+    "description description";
+  grid-template-columns: auto 30px;
+  padding: 10px 0;
+  margin: 30px 10px 10px 0;
+  border: 0;
+}
+
+  .swagger-ui .opblock-tag > a {
+      grid-area: header;
+  }
+
+  .swagger-ui .opblock-tag > small {
+    grid-area: description;
+    padding: 0;
+    margin-top: 10px;
+  }
+
+  .swagger-ui .opblock-tag > button {
+    grid-area: controls;
+  }
+
+
 /* Re-align the operation summary header to be two lines */
 .swagger-ui .opblock .opblock-summary-control {
   display: grid;
@@ -228,12 +256,6 @@ body {
 
 
 /* Change block tag spacing */
-.swagger-ui .opblock-tag {
-  border: 0;
-  margin: 20px 0 0;
-  padding: 10px 10px 10px;
-}
-
   .swagger-ui .opblock-tag:hover {
     background: none;
   }

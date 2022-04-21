@@ -61,6 +61,21 @@ namespace Sample.Data.Migrations
                     b.ToTable("Blobs");
                 });
 
+            modelBuilder.Entity("RegionRegion", b =>
+                {
+                    b.Property<int>("AncestorsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DescendantsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AncestorsId", "DescendantsId");
+
+                    b.HasIndex("DescendantsId");
+
+                    b.ToTable("RegionRegion");
+                });
+
             modelBuilder.Entity("Sample.Shared.Company", b =>
                 {
                     b.Property<int>("Id")
@@ -145,6 +160,37 @@ namespace Sample.Data.Migrations
                     b.ToTable("Employees");
                 });
 
+            modelBuilder.Entity("Sample.Shared.Region", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Regions");
+                });
+
             modelBuilder.Entity("Sample.Shared.Sector", b =>
                 {
                     b.Property<int>("Id")
@@ -178,13 +224,28 @@ namespace Sample.Data.Migrations
                     b.ToTable("Sectors");
                 });
 
+            modelBuilder.Entity("RegionRegion", b =>
+                {
+                    b.HasOne("Sample.Shared.Region", null)
+                        .WithMany()
+                        .HasForeignKey("AncestorsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Sample.Shared.Region", null)
+                        .WithMany()
+                        .HasForeignKey("DescendantsId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Sample.Shared.Company", b =>
                 {
                     b.HasOne("Sample.Shared.Sector", "PrimarySector")
                         .WithMany()
                         .HasForeignKey("PrimarySectorId");
 
-                    b.OwnsOne("ExtrayDry.Core.VersionInfo", "Version", b1 =>
+                    b.OwnsOne("ExtraDry.Core.VersionInfo", "Version", b1 =>
                         {
                             b1.Property<int>("CompanyId")
                                 .HasColumnType("int");
@@ -220,7 +281,7 @@ namespace Sample.Data.Migrations
 
             modelBuilder.Entity("Sample.Shared.Content", b =>
                 {
-                    b.OwnsOne("ExtrayDry.Core.VersionInfo", "Version", b1 =>
+                    b.OwnsOne("ExtraDry.Core.VersionInfo", "Version", b1 =>
                         {
                             b1.Property<int>("ContentId")
                                 .HasColumnType("int");
@@ -249,12 +310,13 @@ namespace Sample.Data.Migrations
                                 .HasForeignKey("ContentId");
                         });
 
-                    b.Navigation("Version");
+                    b.Navigation("Version")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Sample.Shared.Employee", b =>
                 {
-                    b.OwnsOne("ExtrayDry.Core.VersionInfo", "Version", b1 =>
+                    b.OwnsOne("ExtraDry.Core.VersionInfo", "Version", b1 =>
                         {
                             b1.Property<int>("EmployeeId")
                                 .HasColumnType("int");
@@ -293,7 +355,7 @@ namespace Sample.Data.Migrations
                         .WithMany("AdditionalSectors")
                         .HasForeignKey("CompanyId");
 
-                    b.OwnsOne("ExtrayDry.Core.VersionInfo", "Version", b1 =>
+                    b.OwnsOne("ExtraDry.Core.VersionInfo", "Version", b1 =>
                         {
                             b1.Property<int>("SectorId")
                                 .HasColumnType("int");

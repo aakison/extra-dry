@@ -1,12 +1,6 @@
 ﻿#nullable disable // EF Model Class
 
-using ExtraDry.Core;
-using ExtraDry.Core.Warehouse;
 using Sample.Shared.Converters;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 
 namespace Sample.Shared;
 

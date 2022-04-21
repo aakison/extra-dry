@@ -22,6 +22,8 @@ namespace Sample.Data {
 
         public DbSet<BlobInfo> Blobs { get; set; } = null!;
 
+        public DbSet<Region> Regions { get; set; } = null!;
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -37,6 +39,7 @@ namespace Sample.Data {
             modelBuilder.Entity<Content>().Property(e => e.Layout).HasConversion(
                 e => JsonSerializer.Serialize(e, (JsonSerializerOptions?)null),
                 e => JsonSerializer.Deserialize<ContentLayout>(e, (JsonSerializerOptions?)null) ?? new());
+
         }
     }
 }
