@@ -16,6 +16,7 @@ public abstract class TaxonomyEntity<T> where T : TaxonomyEntity<T>, ITaxonomyEn
             if(parent.Strata >= ((ITaxonomyEntity)this).Strata) {
                 throw new InvalidOperationException("Parent must be at a higher level than current entity.");
             }
+            Ancestors.Clear();
             Ancestors.AddRange(parent.Ancestors);
             Ancestors.Add(parent);
         }

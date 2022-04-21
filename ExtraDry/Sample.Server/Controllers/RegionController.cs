@@ -76,10 +76,7 @@ public class RegionController {
     [Authorize(SamplePolicies.SamplePolicy)]
     public async Task UpdateAsync(string code, Region item)
     {
-        if(code != item.Code) {
-            throw new ArgumentException("ID in URI must match body.", nameof(code));
-        }
-        await regions.UpdateAsync(item);
+        await regions.UpdateAsync(code, item);
     }
 
     /// <summary>

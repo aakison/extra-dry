@@ -47,10 +47,13 @@ public class RegionService {
             .FirstOrDefaultAsync(e => e.Code == code);
     }
 
-    public async Task UpdateAsync(Region item)
+    public async Task UpdateAsync(string code, Region item)
     {
-        // TODO: Change parent?
-        var existing = await RetrieveAsync(item.Code);
+        var existing = await RetrieveAsync(code);
+        if(existing.ParentCode != item.ParentCode) {
+            var parent = await RetrieveAsync(item.ParentCode);
+            existing.SetParent(parent);
+        }
         await rules.UpdateAsync(item, existing);
         await database.SaveChangesAsync();
     }
