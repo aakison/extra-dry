@@ -89,7 +89,6 @@ namespace ExtraDry.Server {
         /// <param name="source">The queryable source, typically from EF, this is from `DbSet.AsQueryable()`</param>
         /// <param name="sort">The name of the property to sort by (optional, case insensitive)</param>
         /// <param name="ascending">Indicates if the order is ascending or not (optional, default true)</param>
-        /// <param name="stabilizer">The name of a unique property to ensure paging works, use monotonically increasing value such as `int Identity` or created timestamp (required, case insensitive)</param>
         /// <param name="continuationToken">If this is not a new request, the token passed back from the previous request to maintain stability (optional)</param>
         internal static IQueryable<T> Sort<T>(this IQueryable<T> source, string? sort, bool? ascending, string? continuationToken, ModelDescription modelDescription)
         {

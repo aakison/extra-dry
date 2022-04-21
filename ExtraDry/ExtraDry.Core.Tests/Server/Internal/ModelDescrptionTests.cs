@@ -1,5 +1,8 @@
 ﻿using ExtraDry.Server.Internal;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Xunit;
 
 namespace ExtraDry.Core.Tests.Server.Internal {
@@ -7,7 +10,7 @@ namespace ExtraDry.Core.Tests.Server.Internal {
     public class ModelDescrptionTests {
 
         [Fact]
-        public void KeyPropertyIsKeyAttribute()
+        public void StabilizerPropertyIsKeyAttribute()
         {
             var modelDescription = new ModelDescription(typeof(KeyAttributeEntity));
 
@@ -17,7 +20,7 @@ namespace ExtraDry.Core.Tests.Server.Internal {
         }
 
         [Fact]
-        public void KeyPropertyIsIdConvention()
+        public void StabilizerPropertyIsIdConvention()
         {
             var modelDescription = new ModelDescription(typeof(IdConventionEntity));
 
@@ -27,7 +30,7 @@ namespace ExtraDry.Core.Tests.Server.Internal {
         }
 
         [Fact]
-        public void KeyPropertyIsClassNameConvention()
+        public void StabilizerPropertyIsClassNameConvention()
         {
             var modelDescription = new ModelDescription(typeof(ClassNameConventionEntity));
 
@@ -37,12 +40,32 @@ namespace ExtraDry.Core.Tests.Server.Internal {
         }
 
         [Fact]
-        public void KeyPropertyIsMissing()
+        public void StabilizerPropertyIsMissing()
         {
             var exception = Assert.Throws<DryException>(() => new ModelDescription(typeof(NoImplicitStabilizer)));
 
             Assert.NotNull(exception);
             Assert.Equal("Unable to Sort. 0x0F3F241C", exception.UserMessage);
+        }
+
+        [Fact]
+        public void SortPropertiesFiltered()
+        {
+            var modelDescription = new ModelDescription(typeof(SortPropertiesEntity));
+
+            Assert.Equal(2, modelDescription.SortProperties.Count);
+            Assert.Equal("Name", modelDescription.SortProperties[0].ExternalName);
+            Assert.Equal("ExternalName", modelDescription.SortProperties[1].ExternalName);
+        }
+
+        [Fact]
+        public void FilterPropertiesFiltered()
+        {
+            var modelDescription = new ModelDescription(typeof(SortPropertiesEntity));
+
+            Assert.Equal(2, modelDescription.FilterProperties.Count);
+            Assert.Equal("Name", modelDescription.FilterProperties[0].ExternalName);
+            Assert.Equal("ExternalName", modelDescription.FilterProperties[1].ExternalName);
         }
 
         public class KeyAttributeEntity {
@@ -70,6 +93,29 @@ namespace ExtraDry.Core.Tests.Server.Internal {
             public int PrimaryKey { get; set; }
 
             public string Payload { get; set; } = string.Empty;
+        }
+
+        public class SortPropertiesEntity {
+            
+            [Key]
+            public int Key { get; set; }
+
+            [Filter(FilterType.Contains)]
+            public string Name { get; set; }
+
+            [Filter(FilterType.Equals)]
+            [JsonPropertyName("externalName")]
+            public string InternalName { get; set; }
+
+            public object Entity { get; set; }
+
+            public ICollection<object> Collection { get; set; }
+
+            [JsonIgnore]
+            public string Ignored { get; set; }
+
+            [NotMapped]
+            public string NotMapped { get; set; }
         }
     }
 }

@@ -127,7 +127,7 @@ namespace ExtraDry.Core.Tests.Internals {
         {
             var property = typeof(Datum).GetProperty(propertyName);
             var filter = property.GetCustomAttributes(false).First() as FilterAttribute;
-            return new FilterProperty(property, filter);
+            return new FilterProperty(property, filter, property.Name);
         }
 
         public class Datum {

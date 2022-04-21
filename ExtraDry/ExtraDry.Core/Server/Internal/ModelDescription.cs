@@ -22,7 +22,7 @@ namespace ExtraDry.Server.Internal {
 
         public Collection<FilterProperty> FilterProperties { get; } = new Collection<FilterProperty>();
         public Collection<SortProperty> SortProperties { get; } = new Collection<SortProperty>();
-        public SortProperty StabilizerProperty { get; private set; }
+        public SortProperty StabilizerProperty { get; private set; } = null!;
 
         private void GetReflectedModelProperties(Type modelType)
         {
@@ -33,7 +33,7 @@ namespace ExtraDry.Server.Internal {
 
                 var filter = property.GetCustomAttribute<FilterAttribute>();
                 if(filter != null) {
-                    FilterProperties.Add(new FilterProperty(property, filter));
+                    FilterProperties.Add(new FilterProperty(property, filter, externalName));
                 }
 
                 if(IsSortable(property)) {
@@ -66,7 +66,7 @@ namespace ExtraDry.Server.Internal {
         {
             var propAttrib = property.GetCustomAttributes().FirstOrDefault(e => e.GetType().Name == "JsonPropertyNameAttribute");
             if(propAttrib != default && propAttrib is JsonPropertyNameAttribute jsonPropAttrib) {
-                return jsonPropAttrib.Name;
+                return $"{jsonPropAttrib.Name[..1].ToUpperInvariant()}{jsonPropAttrib.Name[1..]}";
             }
             return property.Name;
         }
