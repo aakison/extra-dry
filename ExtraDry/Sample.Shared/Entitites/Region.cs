@@ -62,8 +62,8 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, INamedSubject, IV
         return results;
     }
 
-    private static readonly Regex CountryRegex = new Regex(@"\w{2}", RegexOptions.Compiled);
-    private static readonly Regex DivisionRegex = new Regex(@"\w{2}-\w{2,4}", RegexOptions.Compiled);
-    private static readonly Regex SubdivisionRegex = new Regex(@"\w{2}-\w{2,4}-\w{2,20}", RegexOptions.Compiled);
+    private static readonly Regex CountryRegex = new Regex(@"^\w{2}$", RegexOptions.Compiled);
+    private static readonly Regex DivisionRegex = new Regex(@"^\w{2}-\w{2,4}$", RegexOptions.Compiled);
+    private static readonly Regex SubdivisionRegex = new Regex(@"^\w{2}-\w{2,4}-\w{2,20}$", RegexOptions.Compiled);
 
 }
