@@ -1,11 +1,8 @@
 ﻿#nullable enable
 
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace ExtraDry.Core;
-
 
 /// <summary>
 /// A version sub-object for objects in the ORM that are versioned.
@@ -28,7 +25,7 @@ public class VersionInfo {
     /// This is null if the object is not yet added to the database.
     /// This is "anonymous" if the object was created when a user was not logged in.
     /// </summary>
-    [MaxLength(MaxEmailLength)]
+    [StringLength(MaxEmailLength)]
     public string UserCreated { get; set; } = string.Empty;
 
     /// <summary>
@@ -43,7 +40,7 @@ public class VersionInfo {
     /// This is null if the object is not yet added to the database.
     /// This is "anonymous" if the object was last modified when a user was not logged in.
     /// </summary>
-    [MaxLength(MaxEmailLength)]
+    [StringLength(MaxEmailLength)]
     public string UserModified { get; set; } = string.Empty;
 
     /// <summary>
@@ -88,7 +85,7 @@ public class VersionInfo {
     public static bool SuppressUpdates { get; set; }
 
     /// <summary>
-    /// The maximum length of an e-mail address, above which the version log will be truncated.
+    /// The maximum length of an e-mail address, above which the version log will be silently truncated.
     /// See: https://www.freshaddress.com/blog/long-email-addresses/
     /// </summary>
     public const int MaxEmailLength = 80;
