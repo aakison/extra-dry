@@ -3,9 +3,7 @@
 namespace ExtraDry.Core {
 
     /// <summary>
-    /// Declare for a property to instruce the `RuleEngine` how to address the creating, updating and deleting of the property.
-    /// WARNING: May cause problems with Blazor debugging, see: https://github.com/dotnet/aspnetcore/issues/25380
-    /// NOTE: Issue reported fixed in .NET 6 (due Nov 2021)
+    /// Declare on properties to instruct the `RuleEngine` how to address the creating, updating and deleting of the property.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public sealed class RulesAttribute : Attribute {
