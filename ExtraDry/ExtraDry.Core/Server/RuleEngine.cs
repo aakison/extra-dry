@@ -97,14 +97,14 @@ public class RuleEngine {
 
     private (object? sourceValue, object? destinationValue) GetPropertyValues<T>(PropertyInfo property, T source, T destination)
     {
-        //try {
+        try {
             var sourceValue = property.GetValue(source);
             var destinationValue = property.GetValue(destination);
             return (sourceValue, destinationValue);
-        //}
-        //catch(TargetParameterCountException) {
-        //    return (null, null);
-        //}
+        }
+        catch(TargetParameterCountException) {
+            return (null, null);
+        }
     }
 
     private static RuleAction EffectiveRule(PropertyInfo property, JsonIgnoreAttribute? ignore, Func<RulesAttribute, RuleAction> selector, RuleAction defaultType)
