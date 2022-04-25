@@ -42,10 +42,23 @@ namespace ExtraDry.Core.Tests.Server.Internal {
         [Fact]
         public void StabilizerPropertyIsMissing()
         {
-            var exception = Assert.Throws<DryException>(() => new ModelDescription(typeof(NoImplicitStabilizer)));
+            var modelDescription = new ModelDescription(typeof(NoImplicitStabilizer));
+
+            var exception = Assert.Throws<DryException>(() => modelDescription.StabilizerProperty);
 
             Assert.NotNull(exception);
             Assert.Equal("Unable to Sort. 0x0F3F241C", exception.UserMessage);
+        }
+
+        [Fact]
+        public void StabilizerPropertyIsCompositeKey()
+        {
+            var modelDescription = new ModelDescription(typeof(CompositeKeyAttributeEntity));
+
+            var exception = Assert.Throws<DryException>(() => modelDescription.StabilizerProperty);
+
+            Assert.NotNull(exception);
+            Assert.Equal("Unable to Sort. 0x0F3F241D", exception.UserMessage);
         }
 
         [Fact]
@@ -93,6 +106,18 @@ namespace ExtraDry.Core.Tests.Server.Internal {
             public int PrimaryKey { get; set; }
 
             public string Payload { get; set; } = string.Empty;
+        }
+
+        public class CompositeKeyAttributeEntity {
+
+            [Key]
+            public int PrimaryKey { get; set; }
+
+            [Key]
+            public int SecondaryKey { get; set; }
+
+            public string Payload { get; set; } = string.Empty;
+
         }
 
         public class SortPropertiesEntity {

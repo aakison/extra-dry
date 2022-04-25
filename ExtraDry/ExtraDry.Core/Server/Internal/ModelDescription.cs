@@ -15,6 +15,9 @@ namespace ExtraDry.Server.Internal {
         private const string MissingStabilizerMessage = "Sort requires that an EF key is uniquely defined to stabalize the sort, even if another sort property is present.  Create a unique key following EF conventions or specify a Stabilizer in the FilterQuery.";
         private const string UserMessage = "Unable to Sort. {0}";
 
+        private SortProperty? stabilizerProperty = null;
+        private bool multipleStabilizerProperties;
+
         public ModelDescription(Type modelType)
         {
             GetReflectedModelProperties(modelType);
@@ -22,7 +25,19 @@ namespace ExtraDry.Server.Internal {
 
         public Collection<FilterProperty> FilterProperties { get; } = new Collection<FilterProperty>();
         public Collection<SortProperty> SortProperties { get; } = new Collection<SortProperty>();
-        public SortProperty StabilizerProperty { get; private set; } = null!;
+
+        public SortProperty StabilizerProperty {
+            get {
+                if(stabilizerProperty == null) {
+                    throw new DryException(MissingStabilizerMessage, string.Format(UserMessage, "0x0F3F241C"));
+                }
+                if(multipleStabilizerProperties) {
+
+                    throw new DryException(DuplicateKeyMessage, string.Format(UserMessage, "0x0F3F241D"));
+                }
+                return stabilizerProperty;
+            }
+        }
 
         private void GetReflectedModelProperties(Type modelType)
         {
@@ -42,11 +57,11 @@ namespace ExtraDry.Server.Internal {
 
                 var keyProperty = property.GetCustomAttribute<KeyAttribute>();
                 if(keyProperty != default) {
-                    if(StabilizerProperty == default) {
-                        StabilizerProperty = new SortProperty(property, externalName);
+                    if(stabilizerProperty == default) {
+                        stabilizerProperty = new SortProperty(property, externalName);
                     }
                     else {
-                        throw new DryException(DuplicateKeyMessage, string.Format(UserMessage, "0x0F3F241D"));
+                        multipleStabilizerProperties = true;
                     }
                 }
 
@@ -57,8 +72,8 @@ namespace ExtraDry.Server.Internal {
                     stabilizerPropertyByConvention = new SortProperty(property, externalName);
                 }
             }
-            if(StabilizerProperty == default) {
-                StabilizerProperty = stabilizerPropertyByConvention ?? throw new DryException(MissingStabilizerMessage, string.Format(UserMessage, "0x0F3F241C"));
+            if(stabilizerProperty == default) {
+                stabilizerProperty = stabilizerPropertyByConvention;
             }
         }
 

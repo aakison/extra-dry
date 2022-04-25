@@ -1,5 +1,4 @@
 ﻿using ExtraDry.Server.Internal;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -81,7 +80,6 @@ namespace ExtraDry.Core.Tests.Internals {
         public void ThenByDescendingCompatible()
         {
             var linqSorted = SampleData.OrderByDescending(e => e.FirstName).ThenByDescending(e => e.Number).ToList();
-            var modelDescription = new ModelDescription(typeof(Datum));
 
             var linqBuilderSorted = SampleData.AsQueryable().OrderByDescending("FirstName").ThenByDescending("Number").ToList();
 
@@ -137,7 +135,7 @@ namespace ExtraDry.Core.Tests.Internals {
         {
             var property = typeof(Datum).GetProperty(propertyName);
             var filter = property.GetCustomAttributes(false).First() as FilterAttribute;
-            return new FilterProperty(property, filter, property.Name);
+            return new FilterProperty(property, filter);
         }
 
         public class Datum {

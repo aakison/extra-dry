@@ -56,7 +56,7 @@ namespace ExtraDry.Server.Internal {
             var arg = Expression.Parameter(type, "x");
             Expression expr = arg;
             foreach(string prop in props) {
-                var pi = modelDescription.SortProperties.FirstOrDefault(sortProp => sortProp.ExternalName.ToLower() == prop.ToLower())?.Property
+                var pi = modelDescription.SortProperties.FirstOrDefault(sortProp => string.Equals(sortProp.ExternalName, prop, StringComparison.OrdinalIgnoreCase))?.Property
                     ?? (modelDescription.StabilizerProperty.ExternalName.ToLower() == prop.ToLower() 
                             ? modelDescription.StabilizerProperty.Property 
                             : throw new DryException($"Could not find sort property `{prop}`", "Could not apply requested sort"));

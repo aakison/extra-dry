@@ -8,11 +8,11 @@ namespace ExtraDry.Server.Internal {
     /// </summary>
     internal class FilterProperty {
 
-        public FilterProperty(PropertyInfo property, FilterAttribute filter, string externalName)
+        public FilterProperty(PropertyInfo property, FilterAttribute filter, string? externalName = null)
         {
             Property = property;
             Filter = filter;
-            ExternalName = externalName;
+            ExternalName = externalName ?? property.Name;
         }
 
         public PropertyInfo Property { get; set; }

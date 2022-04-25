@@ -12,7 +12,7 @@ namespace ExtraDry.Core.Tests.Internals {
             var property = GetType().GetProperty(nameof(ValidProperty));
             var attribute = new FilterAttribute();
 
-            var filter = new FilterProperty(property!, attribute, property!.Name);
+            var filter = new FilterProperty(property!, attribute);
 
             Assert.Equal(property, filter.Property);
             Assert.Equal(attribute, filter.Filter);
@@ -39,7 +39,7 @@ namespace ExtraDry.Core.Tests.Internals {
             get {
                 var property = GetType().GetProperty(nameof(ValidProperty));
                 var filter = new FilterAttribute();
-                return new FilterProperty(property!, filter, property!.Name);
+                return new FilterProperty(property!, filter);
             }
         } 
 
