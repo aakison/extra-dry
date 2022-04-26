@@ -7,7 +7,7 @@ namespace Sample.Server.Controllers;
 /// Manages collections of sectors for companies.
 /// </summary>
 [ApiController]
-[ApiExplorerSettings(GroupName = "sample-api")]
+[ApiExplorerSettings(GroupName = ApiGroupNames.SampleApi)]
 [SkipStatusCodePages]
 public class SectorController {
        

@@ -11,7 +11,7 @@ namespace Sample.Server.Controllers;
 /// Manages collections of sectors for companies.
 /// </summary>
 [ApiController]
-[ApiExplorerSettings(GroupName = "reference-codes")]
+[ApiExplorerSettings(GroupName = ApiGroupNames.ReferenceCodes)]
 [SkipStatusCodePages]
 public class SampleDataController {
 

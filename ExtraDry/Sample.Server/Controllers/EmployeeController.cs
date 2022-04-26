@@ -7,7 +7,7 @@ namespace Sample.Server.Controllers;
 /// Manages colleciton of employees.
 /// </summary>
 [ApiController]
-[ApiExplorerSettings(GroupName = "sample-api")]
+[ApiExplorerSettings(GroupName = ApiGroupNames.SampleApi)]
 [SkipStatusCodePages]
 public class EmployeeController {
        
