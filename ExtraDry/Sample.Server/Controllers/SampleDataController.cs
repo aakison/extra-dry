@@ -28,9 +28,9 @@ public class SampleDataController {
     /// <summary>
     /// Load the set of sample data, idempotent so allowed to be anonymous.
     /// </summary>
-    [HttpGet("api/load-sample-data")]
+    [HttpPost("api/load-sample-data")]
     [AllowAnonymous]
-    public async Task LoadDataRpc()
+    public async Task CreateBaseDataRpcAsync()
     {
         var shouldLoadSamples = !await context.Sectors.AnyAsync();
         var sampleData = new DummyData();

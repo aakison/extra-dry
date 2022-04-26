@@ -7961,7 +7961,7 @@ section article table thead {
   height: 40px;
   border-bottom: solid 1px var(--silver); }
 
-span.enum.status {
+span.enum {
   font-weight: 600;
   font-size: 15px; }
   span.enum.status::before {

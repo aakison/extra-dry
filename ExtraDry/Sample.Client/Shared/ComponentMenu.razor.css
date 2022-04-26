@@ -48,7 +48,9 @@ section {
         margin-bottom: 0; }
         section article ::deep nav ul li {
           list-style-type: none;
-          padding: 5px; }
+          padding: 5px;
+          border-radius: 3px 3px 0 0;
+          border-bottom: solid 3px transparent; }
           section article ::deep nav ul li a {
             color: #4d4c4c;
             padding: 1px 10px;
@@ -58,11 +60,9 @@ section {
             gap: 5px; }
           section article ::deep nav ul li:hover {
             border-bottom: solid 3px #fff4cc;
-            border-radius: 3px 3px 0 0;
             background-color: #f7f7f7; }
           section article ::deep nav ul li.active {
             border-bottom: solid 3px #FED434;
-            border-radius: 3px 3px 0 0;
             background-color: #e6e5e5; }
             section article ::deep nav ul li.active:hover {
               background-color: #f7f7f7; }

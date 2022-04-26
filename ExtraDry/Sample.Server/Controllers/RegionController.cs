@@ -94,7 +94,7 @@ public class RegionController {
     /// </summary>
     [HttpPost("api/populate/regions")]
     [AllowAnonymous]
-    public async Task PopulateAsync()
+    public async Task CreateBaseDataAsync()
     {
         var baseRegions = new Region[] {
             new Region { ParentCode = "", Code = "", Title = "All", Description = "All Regions", Level = RegionLevel.Global },

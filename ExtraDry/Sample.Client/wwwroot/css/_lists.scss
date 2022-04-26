@@ -19,29 +19,31 @@ section article table thead {
 // Add dot to beginning of fields that are called 'status'.
 // Color known values aligned with CompanyStatus, can put others here too...
 //
-span.enum.status {
+span.enum {
     font-weight: 600;
     font-size: 15px;
 
-    &::before {
-        font-weight: 700; // solid
-        content: "\f111"; // circle
-        color: $var-silver;
-        font-family: 'Font Awesome 5 Free';
-        font-size: 13px;
-        margin-right: $padding;
-    }
+    &.status {
+        &::before {
+            font-weight: 700; // solid
+            content: "\f111"; // circle
+            color: $var-silver;
+            font-family: 'Font Awesome 5 Free';
+            font-size: 13px;
+            margin-right: $padding;
+        }
 
-    &.active::before {
-        color: $var-success;
-    }
+        &.active::before {
+            color: $var-success;
+        }
 
-    &.inactive::before {
-        color: $var-warning;
-    }
+        &.inactive::before {
+            color: $var-warning;
+        }
 
-    &.deleted::before {
-        color: $var-danger;
+        &.deleted::before {
+            color: $var-danger;
+        }
     }
 }
 
