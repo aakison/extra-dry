@@ -48,11 +48,21 @@ div.curtain div.dialog {
 }
 div.curtain div.dialog div.controls {
   position: absolute;
-  right: 10px;
-  top: 10px;
+  right: 5px;
+  top: 5px;
   font-size: 28px;
   display: flex;
 }
-div.curtain div.dialog div.controls a {
+div.curtain div.dialog div.controls ::deep button {
   color: var(--dark);
+  border: none;
+  background: none;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+div.curtain div.dialog div.controls ::deep button:hover {
+  background-color: var(--primary-light);
 }

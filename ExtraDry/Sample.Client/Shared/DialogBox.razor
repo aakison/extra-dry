@@ -1,9 +1,10 @@
-﻿<div class="curtain">
+﻿@inject NavigationManager Navigation;
+
+<div class="curtain">
     <div class="dialog">
         @ChildContent
         <div class="controls">
-            <DryIcon Key="expand" />
-            <DryIcon Key="times" />
+            <DryButton IconOnly="true" Command="@CloseDialogCommand" Target="@this"></DryButton>
         </div>
     </div>
 </div>
@@ -12,5 +13,13 @@
 
     [Parameter]
     public RenderFragment ChildContent { get; set; }
+
+    [Command(Icon = "times")]
+    public void CloseDialog()
+    {
+        Navigation.NavigateTo($"/companies");
+    }
+
+    public CommandInfo CloseDialogCommand => new(this, CloseDialog);
 
 }

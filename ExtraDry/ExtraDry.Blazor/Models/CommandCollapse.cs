@@ -1,16 +1,13 @@
-﻿
-namespace ExtraDry.Blazor {
+﻿namespace ExtraDry.Blazor;
 
-    public enum CommandCollapse {
+public enum CommandCollapse {
 
-        Never,
+    Never,
 
-        Always,
+    Always,
 
-        IconThenEllipses,
+    IconThenEllipses,
 
-        StraightToEllipses,
-
-    }
+    StraightToEllipses,
 
 }

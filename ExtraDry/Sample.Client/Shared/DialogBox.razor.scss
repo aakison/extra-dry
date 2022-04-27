@@ -21,13 +21,24 @@ div.curtain {
 
         div.controls {
             position: absolute;
-            right: $margin;
-            top: $margin;
+            right: $margin/2;
+            top: $margin/2;
             font-size: 28px;
             display: flex;
 
-            a {
-                color: $var-dark
+            ::deep button {
+                color: $var-dark;
+                border: none;
+                background: none;
+                width: 32px;
+                height: 32px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                &:hover {
+                    background-color: $var-primary-light;
+                }
             }
         }
     }
