@@ -5,7 +5,7 @@ using Sample.Shared.Converters;
 namespace Sample.Shared;
 
 [Fact]
-public class Company {
+public class Company : INamedSubject {
 
     [Key]
     [JsonIgnore]
@@ -15,10 +15,14 @@ public class Company {
     [Rules(RuleAction.Ignore)]
     public Guid Uuid { get; set; } = Guid.NewGuid();
 
+    [Rules(CreateAction = RuleAction.Allow, UpdateAction = RuleAction.Block)]
+    public string Code { get; set; }
+
     [Display(Name = "Name", ShortName = "Name")]
     [Filter(FilterType.Contains)]
     [Measure]
-    public string Name { get; set; }
+    [Rules(RuleAction.IgnoreDefaults)]
+    public string Title { get; set; }
 
     [Display]
     [MaxLength(1000)]

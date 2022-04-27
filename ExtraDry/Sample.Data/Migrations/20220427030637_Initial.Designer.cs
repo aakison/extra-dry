@@ -12,7 +12,7 @@ using Sample.Data;
 namespace Sample.Data.Migrations
 {
     [DbContext(typeof(SampleContext))]
-    [Migration("20220426060924_Initial")]
+    [Migration("20220427030637_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -89,18 +89,21 @@ namespace Sample.Data.Migrations
                     b.Property<string>("BankingDetails")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Description")
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("PrimarySectorId")
                         .HasColumnType("int");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("Uuid")
                         .HasColumnType("uniqueidentifier");

@@ -1,57 +1,71 @@
 ﻿@namespace ExtraDry.Blazor
 @typeparam T
- 
-@if(Model == null) {
+
+@if (Model == null)
+{
     <progress>Loading...</progress>
 }
-else {
+else
+{
     <CascadingValue Value="@EditMode">
         <form onsubmit="return false;" action="/" method="GET">
+            @if (Model is INamedSubject named)
+            {
+                <div class="header">
+                    Huzzah
+                </div>
+            }
             <div class="columns">
-                @foreach(var column in FormDescription.Columns) {
-                    <div class="column @column.ClassName">
-                        @foreach(var fieldset in column.Fieldsets) {
-                            <fieldset>
-                                @if(!string.IsNullOrWhiteSpace(fieldset.Legend)) { 
-                                    <legend>@fieldset.Legend</legend>
-                                }
-                                @foreach(var group in fieldset.Groups) {
-                                    var redundant = "";// line.FormProperties.Count == 1 && line.FormProperties.First().FieldCaption == fieldset.Legend ? "redundant" : "";
-                                    <div class="group @group.ClassName">
-                                        @if(group.Type == Internal.FormGroupType.Element) { 
-                                        <div class="line header">
-                                            <span class="caption">Video</span>
-                                            <button @onclick="@(() => DeleteItem(group.ParentTarget, group.Target))">X</button>
-                                            @*<DryButton Target="@group.Target" Command="@MoveUpCommand" />
+                @foreach (var fieldset in FormDescription.Fieldsets)
+                {
+                    <fieldset>
+                        @if (!string.IsNullOrWhiteSpace(fieldset.Legend))
+                        {
+                            <legend>@fieldset.Legend</legend>
+                        }
+                        @foreach (var group in fieldset.Groups)
+                        {
+                            var redundant = "";// line.FormProperties.Count == 1 && line.FormProperties.First().FieldCaption == fieldset.Legend ? "redundant" : "";
+                            <div class="group @group.ClassName">
+                                @if (group.Type == Internal.FormGroupType.Element)
+                                {
+                                    <div class="line header">
+                                        <span class="caption">Video</span>
+                                        <button @onclick="@(() => DeleteItem(group.ParentTarget, group.Target))">X</button>
+                                        @*<DryButton Target="@group.Target" Command="@MoveUpCommand" />
                                             <DryButton Target="@group.Target" Command="@MoveDownCommand" />*@
-                                        </div>
-                                        }
-                                        @foreach (var line in group.Lines) {
-                                            <div class="line properties @redundant">
-                                                @foreach(var property in line.FormProperties) {
-                                                    <DryInput Model="@line.Model" Property="@property" />
-                                                }
-                                                @foreach(var command in line.Commands) { 
-                                                    if(command == Internal.FormCommand.AddNew) { 
-                                                        <DryButton Target="@line.Model" Command="@AddNewCommand" />
-                                                    }
-                                                    else {
-                                                        Console.WriteLine("Unrecognized command");
-                                                    }
-                                                }
-                                            </div>
-                                        } 
                                     </div>
                                 }
-                            </fieldset>
+                                @foreach (var line in group.Lines)
+                                {
+                                    <div class="line properties @redundant">
+                                        @foreach (var property in line.FormProperties)
+                                        {
+                                            <DryInput Model="@line.Model" Property="@property" />
+                                        }
+                                        @foreach (var command in line.Commands)
+                                        {
+                                            if (command == Internal.FormCommand.AddNew)
+                                            {
+                                                <DryButton Target="@line.Model" Command="@AddNewCommand" />
+                                            }
+                                            else
+                                            {
+                                                Console.WriteLine("Unrecognized command");
+                                            }
+                                        }
+                                    </div>
+                                }
+                            </div>
                         }
-                    </div>
+                    </fieldset>
                 }
             </div>
             <div class="content">
                 @ChildContent
             </div>
-            @if(error != null) {
+            @if (error != null)
+            {
                 <div class="alert danger">
                     <h5><i></i> Error</h5>
                     @error

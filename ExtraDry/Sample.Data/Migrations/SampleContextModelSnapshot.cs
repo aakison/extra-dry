@@ -87,18 +87,21 @@ namespace Sample.Data.Migrations
                     b.Property<string>("BankingDetails")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Description")
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("PrimarySectorId")
                         .HasColumnType("int");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("Uuid")
                         .HasColumnType("uniqueidentifier");

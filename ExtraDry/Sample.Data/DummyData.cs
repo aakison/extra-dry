@@ -42,7 +42,7 @@ public class DummyData {
                 trademarks.Add(name);
                 var company = new Company {
                     Uuid = PseudoRandomGuid(),
-                    Name = name,
+                    Title = name,
                     PrimarySector = PickRandom(services),
                     Status = PickRandom(companyStatuses),
                 };
