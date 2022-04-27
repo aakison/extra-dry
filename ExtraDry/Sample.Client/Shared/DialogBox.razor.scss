@@ -18,5 +18,17 @@ div.curtain {
         height: 100%;
         background-color: $var-white;
         margin: $dialog-margin;
+
+        div.controls {
+            position: absolute;
+            right: $margin;
+            top: $margin;
+            font-size: 28px;
+            display: flex;
+
+            a {
+                color: $var-dark
+            }
+        }
     }
 }

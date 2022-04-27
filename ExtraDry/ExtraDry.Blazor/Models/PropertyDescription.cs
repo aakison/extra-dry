@@ -15,7 +15,6 @@ public class PropertyDescription {
         Display = Property.GetCustomAttribute<DisplayAttribute>();
         Format = Property.GetCustomAttribute<DisplayFormatAttribute>();
         Rules = Property.GetCustomAttribute<RulesAttribute>();
-        Header = Property.GetCustomAttribute<HeaderAttribute>();
         MaxLength = Property.GetCustomAttribute<MaxLengthAttribute>();
         IsRequired = Property.GetCustomAttribute<RequiredAttribute>() != null;
         Control = Property.GetCustomAttribute<ControlAttribute>();
@@ -57,8 +56,6 @@ public class PropertyDescription {
     public string FieldCaption { get; set; }
 
     public string ColumnCaption { get; set; }
-
-    public HeaderAttribute Header { get; }
 
     public DisplayAttribute Display { get; }
 

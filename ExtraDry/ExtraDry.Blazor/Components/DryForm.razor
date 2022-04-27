@@ -9,13 +9,13 @@ else
 {
     <CascadingValue Value="@EditMode">
         <form onsubmit="return false;" action="/" method="GET">
-            <div class="columns">
+            <div class="@ModelNameWebId form-properties">
                 @foreach (var fieldset in FormDescription.Fieldsets)
                 {
-                    <fieldset>
+                    <fieldset class="@ModelNameWebId @fieldset.CssClass">
                         @if (!string.IsNullOrWhiteSpace(fieldset.Legend))
                         {
-                            <legend>@fieldset.Legend</legend>
+                            <legend class="@ModelNameWebId @fieldset.CssClass">@fieldset.Legend</legend>
                         }
                         @foreach (var group in fieldset.Groups)
                         {

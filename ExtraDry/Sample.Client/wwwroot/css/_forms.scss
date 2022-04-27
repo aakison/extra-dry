@@ -1,0 +1,52 @@
+﻿@import "_constants.scss";
+
+//
+// Forms that have a summary (should be most), are given the standard summary heading.
+// Color defaults to primary, some forms will want to change this to have special highlights for certain entities.
+//
+form fieldset.summary {
+    border-left: solid $margin $var-primary;
+    padding: $margin/2 $margin;
+    height: 102px;
+
+    legend {
+        display: none;
+    }
+}
+
+//
+// The status line is usually seldom written fields and gets a custom set of visual styles.
+//
+form fieldset.status {
+    background-color: $var-off-white;
+    border-top: solid 1px $var-light;
+    border-bottom: solid 1px $var-light;
+    padding: $margin/2 $margin;
+    height: 70px;
+
+    legend {
+        display: none;
+    }
+
+    div.line {
+        height: 28px;
+        padding: $margin/2;
+    }
+
+    div.field label {
+        color: $var-gray;
+        font-weight: 600;
+        font-size: 12px;
+        width: 80px;
+
+        span:after {
+            content: ":";
+        }
+    }
+
+    select {
+        border: none;
+        background: transparent;
+        font-weight: 700;
+    }
+}

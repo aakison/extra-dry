@@ -19,51 +19,66 @@
   --warning-dark: #663f00;
   --white: #FFFFFF;
   --off-white: #f7f7f7;
-  --light: #e6e5e5;
+  --light: #e6e6e6;
   --silver: #cccccc;
   --gray: #999999;
-  --dark: #4d4c4c;
-  --charcoal: #1a1919;
-  --black: #0d0d0d; }
+  --dark: #4d4d4d;
+  --charcoal: #1a1a1a;
+  --black: #0d0d0d;
+}
 
 div.expandable {
-  transition: height 0.5s; }
-  div.expandable.showing, div.expandable.hiding, div.expandable.none {
-    height: 0; }
-  div.expandable.visible {
-    height: auto; }
+  transition: height 0.5s;
+}
+div.expandable.showing, div.expandable.hiding, div.expandable.none {
+  height: 0;
+}
+div.expandable.visible {
+  height: auto;
+}
 
 div.tablemenu {
   background-color: var(--off-white);
   height: 40px;
   display: flex;
   flex-direction: row;
-  width: 100%; }
-  div.tablemenu div.viewselect {
-    flex: 1 0 auto; }
-  div.tablemenu div.buttons {
-    flex: 0 0 auto; }
-  div.tablemenu ::deep button {
-    border: none;
-    background-color: var(--off-white);
-    width: 32px;
-    height: 32px;
-    margin: 4px 0;
-    border-radius: 3px; }
-    div.tablemenu ::deep button[name=Expand], div.tablemenu ::deep button[name=Compress] {
-      display: none; }
-      @media only screen and (min-width: 1200px) {
-        div.tablemenu ::deep button[name=Expand], div.tablemenu ::deep button[name=Compress] {
-          display: inline-block; } }
-    div.tablemenu ::deep button:hover {
-      background-color: var(--light); }
-    div.tablemenu ::deep button:active {
-      background-color: var(--off-white);
-      border: solid 2px var(--light); }
-    div.tablemenu ::deep button i {
-      color: var(--gray); }
-    div.tablemenu ::deep button span {
-      display: none; }
+  width: 100%;
+}
+div.tablemenu div.viewselect {
+  flex: 1 0 auto;
+}
+div.tablemenu div.buttons {
+  flex: 0 0 auto;
+}
+div.tablemenu ::deep button {
+  border: none;
+  background-color: var(--off-white);
+  width: 32px;
+  height: 32px;
+  margin: 4px 0;
+  border-radius: 3px;
+}
+div.tablemenu ::deep button[name=Expand], div.tablemenu ::deep button[name=Compress] {
+  display: none;
+}
+@media only screen and (min-width: 1200px) {
+  div.tablemenu ::deep button[name=Expand], div.tablemenu ::deep button[name=Compress] {
+    display: inline-block;
+  }
+}
+div.tablemenu ::deep button:hover {
+  background-color: var(--light);
+}
+div.tablemenu ::deep button:active {
+  background-color: var(--off-white);
+  border: solid 2px var(--light);
+}
+div.tablemenu ::deep button i {
+  color: var(--gray);
+}
+div.tablemenu ::deep button span {
+  display: none;
+}
 
 div.filtermenu {
   background-color: var(--off-white);
@@ -74,69 +89,88 @@ div.filtermenu {
   align-items: center;
   background-color: var(--white);
   padding: 0 10px;
-  border-bottom: solid 5px var(--off-white); }
-  div.filtermenu ::deep i {
-    color: var(--silver); }
-  div.filtermenu ::deep button {
-    background-color: transparent;
-    border: none; }
-  div.filtermenu ::deep form {
-    flex: 1 0 auto; }
-    div.filtermenu ::deep form div.filters {
-      display: flex;
-      border-radius: 3px;
-      padding: 5px;
-      display: flex;
-      align-items: center; }
-      div.filtermenu ::deep form div.filters input {
-        flex: 1 0 auto; }
-      div.filtermenu ::deep form div.filters input, div.filtermenu ::deep form div.filters input:active, div.filtermenu ::deep form div.filters input:hover, div.filtermenu ::deep form div.filters input:focus-visible {
-        border: none;
-        outline: none; }
-      div.filtermenu ::deep form div.filters div.filter {
-        display: flex;
-        align-items: center;
-        margin-right: 10px;
-        gap: 5px; }
+  border-bottom: solid 5px var(--off-white);
+}
+div.filtermenu ::deep i {
+  color: var(--silver);
+}
+div.filtermenu ::deep button {
+  background-color: transparent;
+  border: none;
+}
+div.filtermenu ::deep form {
+  flex: 1 0 auto;
+}
+div.filtermenu ::deep form div.filters {
+  display: flex;
+  border-radius: 3px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+}
+div.filtermenu ::deep form div.filters input {
+  flex: 1 0 auto;
+}
+div.filtermenu ::deep form div.filters input, div.filtermenu ::deep form div.filters input:active, div.filtermenu ::deep form div.filters input:hover, div.filtermenu ::deep form div.filters input:focus-visible {
+  border: none;
+  outline: none;
+}
+div.filtermenu ::deep form div.filters div.filter {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+  gap: 5px;
+}
 
 ::deep div.filter {
   padding: 5px 10px;
-  cursor: pointer; }
-  ::deep div.filter:hover {
-    background-color: var(--off-white);
-    border-radius: 2.5px; }
-  ::deep div.filter div.caption {
-    color: var(--gray);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    font-weight: 600; }
-    ::deep div.filter div.caption label {
-      cursor: pointer;
-      margin-right: 5px; }
-  ::deep div.filter.active div.caption {
-    color: var(--charcoal); }
-  ::deep div.filter div.form {
-    background: var(--white);
-    border: solid 1px var(--silver);
-    border-radius: 5px;
-    min-width: 200px;
-    min-height: 200px;
-    max-width: 350px;
-    max-height: 800px; }
-    ::deep div.filter div.form ul {
-      list-style: none;
-      padding: 0; }
-      ::deep div.filter div.form ul li {
-        padding: 5px 10px; }
-        ::deep div.filter div.form ul li:hover {
-          background-color: var(--off-white); }
-        ::deep div.filter div.form ul li label {
-          width: 100%;
-          display: flex;
-          align-items: center; }
-          ::deep div.filter div.form ul li label input {
-            flex: 0 0 auto;
-            width: 16px;
-            height: 16px;
-            margin-right: 10px; }
+  cursor: pointer;
+}
+::deep div.filter:hover {
+  background-color: var(--off-white);
+  border-radius: 2.5px;
+}
+::deep div.filter div.caption {
+  color: var(--gray);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+}
+::deep div.filter div.caption label {
+  cursor: pointer;
+  margin-right: 5px;
+}
+::deep div.filter.active div.caption {
+  color: var(--charcoal);
+}
+::deep div.filter div.form {
+  background: var(--white);
+  border: solid 1px var(--silver);
+  border-radius: 5px;
+  min-width: 200px;
+  min-height: 200px;
+  max-width: 350px;
+  max-height: 800px;
+}
+::deep div.filter div.form ul {
+  list-style: none;
+  padding: 0;
+}
+::deep div.filter div.form ul li {
+  padding: 5px 10px;
+}
+::deep div.filter div.form ul li:hover {
+  background-color: var(--off-white);
+}
+::deep div.filter div.form ul li label {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+::deep div.filter div.form ul li label input {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  margin-right: 10px;
+}

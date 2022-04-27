@@ -58,8 +58,11 @@ public class ViewModelDescription {
 
     public IEnumerable<NavigationDescription> NavigationsInGroup(string group) => Navigations.Where(e => e.Group == group);
 
+    public string ModelDisplayName { get; private set; } = string.Empty;
+
     private void GetReflectedModelProperties(Type modelType)
     {
+        ModelDisplayName = modelType.GetCustomAttribute<DisplayAttribute>()?.Name ?? modelType.Name;
         var properties = modelType.GetProperties();
         foreach(var property in properties) {
             var display = property.GetCustomAttribute<DisplayAttribute>();
