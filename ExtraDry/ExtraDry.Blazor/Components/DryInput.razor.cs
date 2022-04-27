@@ -34,7 +34,9 @@ namespace ExtraDry.Blazor {
         protected async override Task OnInitializedAsync()
         {
             Property ??= new PropertyDescription(typeof(T).GetProperty(PropertyName));
-            if(Property?.HasTextRepresentation == false) {
+            if(Property?.Rules?.UpdateAction == RuleAction.Block) {
+            }
+            else if(Property?.HasTextRepresentation == false) {
                 await FetchLookupProviderOptions();
             }
         }

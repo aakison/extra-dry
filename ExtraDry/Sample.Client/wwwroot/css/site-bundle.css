@@ -11404,7 +11404,16 @@ form fieldset.status div.field label span:after {
   content: ":";
 }
 form fieldset.status select {
-  border: none;
+  border: solid 1px transparent;
   background: transparent;
-  font-weight: 700;
+  font-weight: 600;
+  appearance: none;
+}
+form fieldset.status select:hover {
+  background: var(--white);
+  border: solid 1px var(--gray);
+  appearance: auto;
+}
+form fieldset.status select:focus-visible {
+  outline: none;
 }

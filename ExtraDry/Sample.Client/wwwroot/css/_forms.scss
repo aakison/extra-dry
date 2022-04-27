@@ -45,8 +45,19 @@ form fieldset.status {
     }
 
     select {
-        border: none;
+        border: solid 1px transparent;
         background: transparent;
-        font-weight: 700;
+        font-weight: 600;
+        appearance: none;
+
+        &:hover {
+            background: $var-white;
+            border: solid 1px $var-gray;
+            appearance: auto;
+        }
+
+        &:focus-visible {
+            outline: none;
+        }
     }
 }

@@ -58,8 +58,8 @@ public class Company : INamedSubject {
     /// <summary>
     /// The version info which informs the audit log.
     /// </summary>
-    [JsonIgnore]
     [Display(GroupName = "Status")]
+    [Rules(RuleAction.Block)]
     public VersionInfo Version { get; set; } = new VersionInfo();
 
 }
