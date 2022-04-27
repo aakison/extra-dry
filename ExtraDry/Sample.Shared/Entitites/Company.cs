@@ -15,6 +15,11 @@ public class Company : INamedSubject {
     [Rules(RuleAction.Ignore)]
     public Guid Uuid { get; set; } = Guid.NewGuid();
 
+    [Header("Summary")]
+
+    [Display(Name = "Code")]
+    [Filter(FilterType.Equals)]
+    [Measure]
     [Rules(CreateAction = RuleAction.Allow, UpdateAction = RuleAction.Block)]
     public string Code { get; set; }
 
@@ -23,6 +28,8 @@ public class Company : INamedSubject {
     [Measure]
     [Rules(RuleAction.IgnoreDefaults)]
     public string Title { get; set; }
+
+
 
     [Display]
     [MaxLength(1000)]

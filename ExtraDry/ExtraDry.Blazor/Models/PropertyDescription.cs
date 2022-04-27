@@ -1,11 +1,8 @@
 ﻿using ExtraDry.Blazor.Internal;
 using ExtraDry.Core;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
 
 namespace ExtraDry.Blazor;
@@ -42,7 +39,7 @@ public class PropertyDescription {
                 var elementProperty = Property.PropertyType.SingleGenericType();
                 ChildModel = new ViewModelDescription(elementProperty, this);
             }
-            else {
+            else if(Property.PropertyType.IsClass && Property.PropertyType != typeof(string)) {
                 ChildModel = new ViewModelDescription(Property.PropertyType, this);
             }
         }

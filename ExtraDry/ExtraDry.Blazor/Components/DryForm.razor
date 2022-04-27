@@ -9,12 +9,6 @@ else
 {
     <CascadingValue Value="@EditMode">
         <form onsubmit="return false;" action="/" method="GET">
-            @if (Model is INamedSubject named)
-            {
-                <div class="header">
-                    Huzzah
-                </div>
-            }
             <div class="columns">
                 @foreach (var fieldset in FormDescription.Fieldsets)
                 {
