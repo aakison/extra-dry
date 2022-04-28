@@ -5,35 +5,6 @@
  * This is the approved way to handle color changes to bootstrap.
  * See https://getbootstrap.com/docs/5.0/customize/sass/#maps-and-loops
  */
-:root {
-  --primary: #FED434;
-  --secondary: #5E1508;
-  --danger: #D02516;
-  --success: #73AF36;
-  --info: #00AFE5;
-  --warning: #E58D00;
-  --primary-light: #fff4cc;
-  --secondary-light: #fbd7d0;
-  --danger-light: #fdeae8;
-  --success-light: #f2f9ec;
-  --info-light: #e6f9ff;
-  --warning-light: #fff5e6;
-  --primary-dark: #665101;
-  --secondary-dark: #2f0b04;
-  --danger-dark: #5c100a;
-  --success-dark: #334e18;
-  --info-dark: #004e66;
-  --warning-dark: #663f00;
-  --white: #FFFFFF;
-  --off-white: #f7f7f7;
-  --light: #e6e6e6;
-  --silver: #cccccc;
-  --gray: #999999;
-  --dark: #4d4d4d;
-  --charcoal: #1a1a1a;
-  --black: #0d0d0d;
-}
-
 /*!
  * Bootstrap v5.1.3 (https://getbootstrap.com/)
  * Copyright 2011-2021 The Bootstrap Authors
@@ -11211,6 +11182,9 @@ html, body {
 }
 
 body {
+  overflow-y: hidden;
+}
+body div#app {
   overflow-y: scroll;
 }
 
@@ -11238,35 +11212,6 @@ main section {
 }
 main section:last-child {
   flex: 1 0 auto;
-}
-
-:root {
-  --primary: #FED434;
-  --secondary: #5E1508;
-  --danger: #D02516;
-  --success: #73AF36;
-  --info: #00AFE5;
-  --warning: #E58D00;
-  --primary-light: #fff4cc;
-  --secondary-light: #fbd7d0;
-  --danger-light: #fdeae8;
-  --success-light: #f2f9ec;
-  --info-light: #e6f9ff;
-  --warning-light: #fff5e6;
-  --primary-dark: #665101;
-  --secondary-dark: #2f0b04;
-  --danger-dark: #5c100a;
-  --success-dark: #334e18;
-  --info-dark: #004e66;
-  --warning-dark: #663f00;
-  --white: #FFFFFF;
-  --off-white: #f7f7f7;
-  --light: #e6e6e6;
-  --silver: #cccccc;
-  --gray: #999999;
-  --dark: #4d4d4d;
-  --charcoal: #1a1a1a;
-  --black: #0d0d0d;
 }
 
 section article table {
@@ -11340,35 +11285,6 @@ table tbody tr:hover {
 }
 table tbody tr.selected {
   background-color: var(--primary-light);
-}
-
-:root {
-  --primary: #FED434;
-  --secondary: #5E1508;
-  --danger: #D02516;
-  --success: #73AF36;
-  --info: #00AFE5;
-  --warning: #E58D00;
-  --primary-light: #fff4cc;
-  --secondary-light: #fbd7d0;
-  --danger-light: #fdeae8;
-  --success-light: #f2f9ec;
-  --info-light: #e6f9ff;
-  --warning-light: #fff5e6;
-  --primary-dark: #665101;
-  --secondary-dark: #2f0b04;
-  --danger-dark: #5c100a;
-  --success-dark: #334e18;
-  --info-dark: #004e66;
-  --warning-dark: #663f00;
-  --white: #FFFFFF;
-  --off-white: #f7f7f7;
-  --light: #e6e6e6;
-  --silver: #cccccc;
-  --gray: #999999;
-  --dark: #4d4d4d;
-  --charcoal: #1a1a1a;
-  --black: #0d0d0d;
 }
 
 form fieldset.summary {
