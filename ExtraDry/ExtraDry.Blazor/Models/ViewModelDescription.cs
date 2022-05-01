@@ -15,6 +15,7 @@ public class ViewModelDescription {
         ViewModel = viewModel;
         GetReflectedViewModelCommands(viewModel);
         GetReflectedViewModelNavigations(viewModel);
+        GetReflectedModel(viewModel.GetType());
         SetListSelectMode();
     }
 
@@ -25,6 +26,7 @@ public class ViewModelDescription {
         GetReflectedModelProperties(modelType);
         GetReflectedViewModelCommands(viewModel);
         GetReflectedViewModelNavigations(viewModel);
+        GetReflectedModel(modelType);
         SetListSelectMode();
     }
 
@@ -59,6 +61,16 @@ public class ViewModelDescription {
     public IEnumerable<NavigationDescription> NavigationsInGroup(string group) => Navigations.Where(e => e.Group == group);
 
     public string ModelDisplayName { get; private set; } = string.Empty;
+
+    public FormatAttribute? Format { get; private set; }
+
+    public string Icon { get; private set; } = string.Empty;
+
+    private void GetReflectedModel(Type modelType)
+    {
+        Format = modelType.GetCustomAttribute<FormatAttribute>();
+        Icon = Format?.Icon ?? string.Empty;
+    }
 
     private void GetReflectedModelProperties(Type modelType)
     {

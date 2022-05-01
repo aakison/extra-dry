@@ -7,11 +7,14 @@ namespace ExtraDry.Blazor.Internal;
 /// </summary>
 internal class FormFieldset {
 
-    public FormFieldset(string legend, string cssClass)
+    public FormFieldset(string legend, string name)
     {
         Legend = legend;
-        CssClass = cssClass;
+        Name = name;
+        CssClass = WebId.ToWebId(Name);
     }
+
+    public string Name { get; set; }
 
     /// <summary>
     /// The legend for the fieldset, typically from the `HeaderAttribute`.

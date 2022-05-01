@@ -5,6 +5,7 @@ using Sample.Shared.Converters;
 namespace Sample.Shared;
 
 [Fact]
+[Format(Icon = "buildings")]
 public class Company : INamedSubject {
 
     [Key]

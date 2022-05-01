@@ -2,10 +2,8 @@
 
 using ExtraDry.Blazor.Internal;
 using ExtraDry.Blazor.Models;
-using ExtraDry.Core;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
-using System.Collections;
 
 namespace ExtraDry.Blazor;
 
@@ -19,6 +17,14 @@ public partial class DryForm<T> : ComponentBase {
 
     [Parameter]
     public EditMode EditMode { get; set; } = EditMode.Update;
+
+    /// <summary>
+    /// Represents the number of groups that are rendered in the first collection of fieldsets.
+    /// The remainder are rendered in a second collection of fieldsets.
+    /// CSS styles can render these two separately, i.e. making the second set scrollable.
+    /// </summary>
+    [Parameter]
+    public int FixedGroups { get; set; }
 
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
@@ -42,11 +48,11 @@ public partial class DryForm<T> : ComponentBase {
         }
     }
 
-    private string ModelNameWebId => WebId.ToWebId(FormDescription?.ViewModelDescription?.ModelDisplayName ?? "");
+    internal string ModelNameWebId => WebId.ToWebId(FormDescription?.ViewModelDescription?.ModelDisplayName ?? "");
 
-    private ViewModelDescription? Description { get; set; }
+    internal ViewModelDescription? Description { get; set; }
 
-    private FormDescription? FormDescription { get; set; }
+    internal FormDescription? FormDescription { get; set; }
 
     private async Task ExecuteAsync(CommandInfo command)
     {
@@ -61,39 +67,5 @@ public partial class DryForm<T> : ComponentBase {
         }
     }
 
-    private CommandInfo AddNewCommand =>
-        new(this, MethodInfoHelper.GetMethodInfo<DryForm<T>>(e => e.AddDefaultElementToList(Array.Empty<int>()))) {
-                Arguments = CommandArguments.Single, Context = CommandContext.Alternate};
-
-    [Command(Name = "Add New", Icon = "plus")]
-    private void AddDefaultElementToList(IList items)
-    {
-        var type = items.GetType().SingleGenericType();
-        var instance = type.CreateDefaultInstance();
-        items.Add(instance);
-        if(Description != null && Model != null) {
-            FormDescription = new FormDescription(Description, Model); // re-build description to add/remove UI elements.
-        }
-        StateHasChanged();
-    }
-
-    private void DeleteItem(object? items, object item)
-    {
-        Console.WriteLine("DeleteItem");
-        if(items == null) {
-            throw new ArgumentNullException(nameof(items));
-        }
-        if(items is IList list) {
-            Console.WriteLine("  A list");
-            list.Remove(item);
-            if(Description != null && Model != null) {
-                FormDescription = new FormDescription(Description, Model); // re-build description to add/remove UI elements.
-            }
-            StateHasChanged();
-        }
-        else {
-            Console.WriteLine("  Not a list: " + items.GetType().ToString());
-        }
-    }
 
 }
