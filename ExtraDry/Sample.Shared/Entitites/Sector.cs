@@ -1,5 +1,7 @@
 ﻿#nullable disable // EF Model Class
 
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Sample.Shared;
 
 /// <summary>
@@ -46,7 +48,10 @@ public class Sector : INamedSubject {
     [Display(Name = "Description")]
     [Filter(FilterType.Contains)]
     public string Description { get; set; }
-        
+
+    [NotMapped]
+    public string Caption => $"Sector {Code}";
+
     /// <summary>
     /// The current status of the sector.
     /// </summary>

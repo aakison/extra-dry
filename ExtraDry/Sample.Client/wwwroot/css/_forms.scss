@@ -104,3 +104,36 @@ form div.field.title {
         }
     }
 }
+
+//
+// The form entity info should be abridged and mostly hidden, except for the icon.
+// Then adjust the caption so they don't overlap each other.
+//
+form {
+    .entity-info {
+        height: 0;
+        transform: translate(22px, 8px);
+        color: $var-gray;
+
+        label {
+            display: none;
+        }
+    }
+}
+
+div.field.caption {
+    margin-left: 22px;
+    
+    input {
+        font-weight: 600;
+        font-size: 16px;
+    }
+
+    label span {
+        display: none;
+    }
+
+    input {
+        border: none;
+    }
+}

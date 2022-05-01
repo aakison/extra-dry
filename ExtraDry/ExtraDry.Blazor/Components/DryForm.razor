@@ -10,7 +10,11 @@ else
 {
     <CascadingValue Value="@EditMode">
         <CascadingValue Value="@this">
-            <form onsubmit="return false;" action="/" method="GET">
+            <form class="@ModelNameWebId" onsubmit="return false;" action="/" method="GET">
+                <div class="@ModelNameWebId entity-info">
+                    <DryIcon Key="@Description.Icon" />
+                    <label>Company</label>
+                </div>
                 <div class="@ModelNameWebId status-properties">
                     @foreach (var fieldset in FormDescription.Fieldsets.Take(FixedGroups)) {
                         <CascadingValue Value="@fieldset">

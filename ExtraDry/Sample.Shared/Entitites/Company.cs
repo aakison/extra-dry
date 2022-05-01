@@ -1,11 +1,12 @@
 ﻿#nullable disable // EF Model Class
 
 using Sample.Shared.Converters;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sample.Shared;
 
 [Fact]
-[Format(Icon = "buildings")]
+[Format(Icon = "building")]
 public class Company : INamedSubject {
 
     [Key]
@@ -15,6 +16,16 @@ public class Company : INamedSubject {
 
     [Rules(RuleAction.Ignore)]
     public Guid Uuid { get; set; } = Guid.NewGuid();
+
+    [NotMapped]
+    [Display(GroupName = "Summary")]
+    public string Caption => $"Company {Code}";
+
+    [Display(Name = "Name", ShortName = "Name", GroupName = "Summary")]
+    [Filter(FilterType.Contains)]
+    [Measure]
+    [Rules(RuleAction.IgnoreDefaults)]
+    public string Title { get; set; }
 
     [Display(Name = "Code", GroupName = "Summary")]
     [Filter(FilterType.Equals)]
@@ -27,12 +38,6 @@ public class Company : INamedSubject {
     [Filter]
     [Measure]
     public CompanyStatus Status { get; set; }
-
-    [Display(Name = "Name", ShortName = "Name", GroupName = "Summary")]
-    [Filter(FilterType.Contains)]
-    [Measure]
-    [Rules(RuleAction.IgnoreDefaults)]
-    public string Title { get; set; }
 
     [Display]
     [MaxLength(1000)]

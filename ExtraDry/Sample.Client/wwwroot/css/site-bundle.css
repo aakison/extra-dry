@@ -11363,3 +11363,26 @@ form div.field.title input:focus-visible {
   border-color: var(--info);
   outline: none;
 }
+
+form .entity-info {
+  height: 0;
+  transform: translate(22px, 8px);
+  color: var(--gray);
+}
+form .entity-info label {
+  display: none;
+}
+
+div.field.caption {
+  margin-left: 22px;
+}
+div.field.caption input {
+  font-weight: 600;
+  font-size: 16px;
+}
+div.field.caption label span {
+  display: none;
+}
+div.field.caption input {
+  border: none;
+}

@@ -21,4 +21,10 @@ public interface INamedSubject {
     /// A Description for the subject to elaborate on details, may also be considered for markdown support.
     /// </summary>
     string Description { get; }
+
+    /// <summary>
+    /// A caption for presenting on a card with other information
+    /// Typically not stored in database, and generated from other fields.
+    /// </summary>
+    string Caption { get; }
 }

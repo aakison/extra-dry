@@ -1,4 +1,6 @@
-﻿namespace Sample.Shared;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Sample.Shared;
 
 /// <summary>
 /// Represents a single geo-political region in a taxonomy of geo-political regions.
@@ -47,6 +49,9 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, INamedSubject, IV
     /// </remarks>
     [Required, StringLength(100)]
     public string Description { get; set; } = string.Empty;
+
+    [NotMapped]
+    public string Caption => $"Region {Code}";
 
     [Required]
     [Display(Name = "Status", ShortName = "Status")]
