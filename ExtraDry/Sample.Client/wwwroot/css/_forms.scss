@@ -79,3 +79,28 @@ form {
         overflow-y: auto;
     }
 }
+
+//
+// Title property is editable but also should display as a title, make it prominent with hover effects for visual pliancy.
+//
+form div.field.title {
+    label {
+        display: none;
+    }
+
+    input {
+        font-size: 18px;
+        font-weight: 600;
+        border: solid 1px transparent;
+        width: 100%;
+
+        &:hover {
+            border-color: $var-light;
+        }
+
+        &:focus-visible {
+            border-color: $var-info;
+            outline: none;
+        }
+    }
+}

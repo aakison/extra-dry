@@ -11346,3 +11346,20 @@ form .description-properties {
   flex: 1 1 auto;
   overflow-y: auto;
 }
+
+form div.field.title label {
+  display: none;
+}
+form div.field.title input {
+  font-size: 18px;
+  font-weight: 600;
+  border: solid 1px transparent;
+  width: 100%;
+}
+form div.field.title input:hover {
+  border-color: var(--light);
+}
+form div.field.title input:focus-visible {
+  border-color: var(--info);
+  outline: none;
+}
