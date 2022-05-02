@@ -1,10 +1,4 @@
-﻿#nullable enable
-
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-using ExtraDry.Core.Warehouse;
-
-namespace Sample.Shared;
+﻿namespace Sample.Shared;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 [Dimension("Company Status")]

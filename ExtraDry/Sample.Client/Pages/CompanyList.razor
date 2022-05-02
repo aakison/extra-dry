@@ -1,4 +1,5 @@
 ﻿@page "/companies"
+@page "/companies/{CompanyUuid:guid}"
 @inject IListService<Company> CompanyService;
 @inject NavigationManager Navigation;
 
@@ -14,15 +15,16 @@
 
 @code {
 
+    [Parameter]
+    public Guid CompanyUuid { get; set; } = Guid.Empty;
+
     [Command(CommandContext.Alternate, Icon = "edit")]
     public void Edit(Company company)
     {
         Console.WriteLine($"Huzzah {company.Uuid}");
-        CompanyUuid = company.Uuid;
-        StateHasChanged();
-        //Navigation.NavigateTo($"/companies/{company.Uuid}");
+        //CompanyUuid = company.Uuid;
+        //StateHasChanged();
+        Navigation.NavigateTo($"/companies/{company.Uuid}");
     }
-
-    public Guid CompanyUuid { get; set; } = Guid.Empty;
 
 }

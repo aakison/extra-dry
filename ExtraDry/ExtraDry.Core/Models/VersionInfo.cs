@@ -91,4 +91,9 @@ public class VersionInfo {
     public const int MaxEmailLength = 80;
 
     private static string Truncate(string value, int length) => value.Length > length ? value[..length] : value;
+
+    /// <summary>
+    /// User readable string representation, UI fallback.
+    /// </summary>
+    public override string ToString() => $"Updated by {UserModified} {DataConverter.DateToRelativeTime(DateModified)}";
 }

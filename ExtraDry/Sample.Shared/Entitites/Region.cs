@@ -1,4 +1,6 @@
-﻿namespace Sample.Shared;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Sample.Shared;
 
 /// <summary>
 /// Represents a single geo-political region in a taxonomy of geo-political regions.
@@ -15,6 +17,7 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, INamedSubject, IV
     /// <summary>
     /// The level for this region inside a taxonomy of regions.
     /// </summary>
+    [Display(Name = "Level", ShortName = "Level")]
     public RegionLevel Level { get; set; }
 
     /// <summary>
@@ -28,12 +31,14 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, INamedSubject, IV
     /// Use alpha-2 codes for country, then country specific codes.  E.g. "AU", then "AU-QLD", then "AU-QLD-Brisbane".
     /// </summary>
     [Required, StringLength(32)]
+    [Display(ShortName = "Code")]
     public string Code { get; set; } = string.Empty;
 
     /// <summary>
     /// The short name of the country or region, such as 'Australia', or 'USA'.
     /// </summary>
     [Required, StringLength(32)]
+    [Display(ShortName = "Title")]
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
@@ -44,6 +49,13 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, INamedSubject, IV
     /// </remarks>
     [Required, StringLength(100)]
     public string Description { get; set; } = string.Empty;
+
+    [NotMapped]
+    public string Caption => $"Region {Code}";
+
+    [Required]
+    [Display(Name = "Status", ShortName = "Status")]
+    public RegionStatus Status { get; set; }
 
     /// <summary>
     /// Validates the code is in the right ISO-3166 format based on the level of the region.
@@ -62,8 +74,8 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, INamedSubject, IV
         return results;
     }
 
-    private static readonly Regex CountryRegex = new Regex(@"^\w{2}$", RegexOptions.Compiled);
-    private static readonly Regex DivisionRegex = new Regex(@"^\w{2}-\w{2,4}$", RegexOptions.Compiled);
-    private static readonly Regex SubdivisionRegex = new Regex(@"^\w{2}-\w{2,4}-\w{2,20}$", RegexOptions.Compiled);
+    private static readonly Regex CountryRegex = new(@"^\w{2}$", RegexOptions.Compiled);
+    private static readonly Regex DivisionRegex = new(@"^\w{2}-\w{2,4}$", RegexOptions.Compiled);
+    private static readonly Regex SubdivisionRegex = new(@"^\w{2}-\w{2,4}-\w{2,20}$", RegexOptions.Compiled);
 
 }

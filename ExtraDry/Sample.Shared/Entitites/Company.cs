@@ -1,11 +1,13 @@
 ﻿#nullable disable // EF Model Class
 
 using Sample.Shared.Converters;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sample.Shared;
 
 [Fact]
-public class Company {
+[Format(Icon = "building")]
+public class Company : INamedSubject {
 
     [Key]
     [JsonIgnore]
@@ -15,10 +17,27 @@ public class Company {
     [Rules(RuleAction.Ignore)]
     public Guid Uuid { get; set; } = Guid.NewGuid();
 
-    [Display(Name = "Name", ShortName = "Name")]
+    [NotMapped]
+    [Display(GroupName = "Summary")]
+    public string Caption => $"Company {Code}";
+
+    [Display(Name = "Name", ShortName = "Name", GroupName = "Summary")]
     [Filter(FilterType.Contains)]
     [Measure]
-    public string Name { get; set; }
+    [Rules(RuleAction.IgnoreDefaults)]
+    public string Title { get; set; }
+
+    [Display(Name = "Code", GroupName = "Summary")]
+    [Filter(FilterType.Equals)]
+    [Measure]
+    [Rules(CreateAction = RuleAction.Allow, UpdateAction = RuleAction.Block)]
+    public string Code { get; set; }
+
+    [Display(Name = "Status", ShortName = "Status", GroupName = "Status")]
+    [Rules(RuleAction.Allow)]
+    [Filter]
+    [Measure]
+    public CompanyStatus Status { get; set; }
 
     [Display]
     [MaxLength(1000)]
@@ -38,12 +57,6 @@ public class Company {
     [Rules(RuleAction.Allow)]
     public BankingDetails BankingDetails { get; set; } = new BankingDetails();
 
-    [Display(Name = "Status", ShortName = "Status")]
-    [Rules(RuleAction.Allow)]
-    [Filter]
-    [Measure]
-    public CompanyStatus Status { get; set; }
-
     //[Display]
     //[Rules(RuleAction.Recurse)]
     //public ICollection<Video> Videos { get; set; } = new Collection<Video>();
@@ -51,7 +64,8 @@ public class Company {
     /// <summary>
     /// The version info which informs the audit log.
     /// </summary>
-    [JsonIgnore]
+    [Display(GroupName = "Status")]
+    [Rules(RuleAction.Block)]
     public VersionInfo Version { get; set; } = new VersionInfo();
 
 }

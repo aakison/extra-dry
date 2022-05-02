@@ -2,24 +2,24 @@
 
 using System.Collections.ObjectModel;
 
-namespace ExtraDry.Blazor.Internal {
-    /// <summary>
-    /// Indicates a logical sub-group of properties that can occur on a single line in a form.
-    /// Some `FormLine`s will contain a single property or a single header.
-    /// Others will contain several short properties that can be stacked together.
-    /// </summary>
-    internal class FormLine {
+namespace ExtraDry.Blazor.Internal;
 
-        public FormLine(object model)
-        {
-            Model = model;
-        }
+/// <summary>
+/// Indicates a logical sub-group of properties that can occur on a single line in a form.
+/// Some `FormLine`s will contain a single property or a single header.
+/// Others will contain several short properties that can be stacked together.
+/// </summary>
+internal class FormLine {
 
-        public Collection<PropertyDescription> FormProperties { get; } = new();
-
-        public Collection<FormCommand> Commands { get; } = new();
-
-        public object Model { get; set; }
-
+    public FormLine(object model)
+    {
+        Model = model;
     }
+
+    public Collection<PropertyDescription> FormProperties { get; } = new();
+
+    public Collection<FormCommand> Commands { get; } = new();
+
+    public object Model { get; set; }
+
 }

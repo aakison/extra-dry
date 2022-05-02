@@ -8,7 +8,7 @@ namespace Sample.Server.Controllers;
 /// Manages blob, such as used in Contents.
 /// </summary>
 [ApiController]
-[ApiExplorerSettings(GroupName = "sample-apis")]
+[ApiExplorerSettings(GroupName = ApiGroupNames.SampleApi)]
 [SkipStatusCodePages]
 [SuppressMessage("Usage", "DRY1002:ApiController shouldn't inherit from ControllerBase", 
     Justification = "Controller makes use of ControllerBase functionality for emitting file content.")]

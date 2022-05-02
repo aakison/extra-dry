@@ -44,12 +44,13 @@ namespace Sample.Server {
                 });
             services.AddRazorPages();
             services.AddSwaggerGen(openapi => {
-                openapi.SwaggerDoc("sample-api", new OpenApiInfo {
+                
+                openapi.SwaggerDoc(ApiGroupNames.SampleApi, new OpenApiInfo {
                     Version = "v1",
-                    Title = "Sample API",
+                    Title = "Sample APIs",
                     Description = @"A sample API for Blazor.ExtraDry",
                 });
-                openapi.SwaggerDoc("reference-codes", new OpenApiInfo {
+                openapi.SwaggerDoc(ApiGroupNames.ReferenceCodes, new OpenApiInfo {
                     Version = "v1",
                     Title = "Reference Codes",
                     Description = @"A sample API for Blazor.ExtraDry",
@@ -121,8 +122,9 @@ namespace Sample.Server {
             app.UseHttpsRedirection();
             app.UseSwagger();
             app.UseSwaggerUI(c => {
-                c.SwaggerEndpoint("/swagger/sample-api/swagger.json", "Sample API");
-                c.SwaggerEndpoint("/swagger/reference-codes/swagger.json", "Reference Codes");
+                //c.RoutePrefix
+                c.SwaggerEndpoint($"/swagger/{ApiGroupNames.SampleApi}/swagger.json", "Sample APIs");
+                c.SwaggerEndpoint($"/swagger/{ApiGroupNames.ReferenceCodes}/swagger.json", "Reference Codes");
                 c.InjectStylesheet("/css/swagger-ui-extensions.css");
                 c.InjectJavascript("/js/swagger-ui-extensions.js");
                 c.DocumentTitle = "Sample Blazor.ExtraDry APIs";

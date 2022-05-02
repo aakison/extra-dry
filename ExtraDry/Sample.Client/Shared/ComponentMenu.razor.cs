@@ -1,6 +1,5 @@
 #nullable enable
 
-using ExtraDry.Blazor;
 using ExtraDry.Core;
 using Microsoft.AspNetCore.Components;
 

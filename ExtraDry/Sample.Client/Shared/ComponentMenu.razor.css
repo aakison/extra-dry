@@ -19,13 +19,12 @@
   --warning-dark: #663f00;
   --white: #FFFFFF;
   --off-white: #f7f7f7;
-  --light: #e6e6e6;
+  --light: #e6e5e5;
   --silver: #cccccc;
   --gray: #999999;
-  --dark: #4d4d4d;
-  --charcoal: #1a1a1a;
-  --black: #0d0d0d;
-}
+  --dark: #4d4c4c;
+  --charcoal: #1a1919;
+  --black: #0d0d0d; }
 
 section {
   border-bottom: solid 1px #999999;

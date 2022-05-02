@@ -50,7 +50,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.WebJob", "Sample.Web
 		{CEE533E6-CCB0-4D4D-8F05-45E8F3FF20D5} = {CEE533E6-CCB0-4D4D-8F05-45E8F3FF20D5}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YellowJacket.Tests", "YellowJacket.Tests\YellowJacket.Tests.csproj", "{B3B96AF8-0BAB-403D-BFCE-40A0857FC680}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YellowJacket.Tests", "YellowJacket.Tests\YellowJacket.Tests.csproj", "{B3B96AF8-0BAB-403D-BFCE-40A0857FC680}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

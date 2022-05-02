@@ -1,10 +1,6 @@
 ﻿#nullable disable // EF Model Class
 
-using ExtraDry.Core;
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-using BI = ExtraDry.Core.Warehouse;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sample.Shared;
 
@@ -12,8 +8,8 @@ namespace Sample.Shared;
 /// Represents a service that a company may provide.
 /// This is for properties that may appear as Enums, but have additional data associated with them.
 /// </summary>
-[BI.Dimension]    
-public class Sector {
+[Dimension]    
+public class Sector : INamedSubject {
 
     /// <summary>
     /// A locally unique identifier, internal use only.
@@ -28,6 +24,11 @@ public class Sector {
     /// </summary>
     [Rules(RuleAction.Ignore)]
     public Guid Uuid { get; set; } = Guid.NewGuid();
+
+    /// <summary>
+    /// The code for the sector, which is trivially the Uuid.
+    /// </summary>
+    public string Code => Uuid.ToString();
 
     /// <summary>
     /// The title of the sector
@@ -47,7 +48,10 @@ public class Sector {
     [Display(Name = "Description")]
     [Filter(FilterType.Contains)]
     public string Description { get; set; }
-        
+
+    [NotMapped]
+    public string Caption => $"Sector {Code}";
+
     /// <summary>
     /// The current status of the sector.
     /// </summary>

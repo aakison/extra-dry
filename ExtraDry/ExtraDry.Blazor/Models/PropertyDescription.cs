@@ -1,11 +1,8 @@
 ﻿using ExtraDry.Blazor.Internal;
 using ExtraDry.Core;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
 
 namespace ExtraDry.Blazor;
@@ -18,7 +15,6 @@ public class PropertyDescription {
         Display = Property.GetCustomAttribute<DisplayAttribute>();
         Format = Property.GetCustomAttribute<DisplayFormatAttribute>();
         Rules = Property.GetCustomAttribute<RulesAttribute>();
-        Header = Property.GetCustomAttribute<HeaderAttribute>();
         MaxLength = Property.GetCustomAttribute<MaxLengthAttribute>();
         IsRequired = Property.GetCustomAttribute<RequiredAttribute>() != null;
         Control = Property.GetCustomAttribute<ControlAttribute>();
@@ -42,7 +38,7 @@ public class PropertyDescription {
                 var elementProperty = Property.PropertyType.SingleGenericType();
                 ChildModel = new ViewModelDescription(elementProperty, this);
             }
-            else {
+            else if(Property.PropertyType.IsClass && Property.PropertyType != typeof(string)) {
                 ChildModel = new ViewModelDescription(Property.PropertyType, this);
             }
         }
@@ -60,8 +56,6 @@ public class PropertyDescription {
     public string FieldCaption { get; set; }
 
     public string ColumnCaption { get; set; }
-
-    public HeaderAttribute Header { get; }
 
     public DisplayAttribute Display { get; }
 

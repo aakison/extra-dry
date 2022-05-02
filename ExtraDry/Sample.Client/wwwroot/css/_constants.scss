@@ -32,42 +32,6 @@ $charcoal: hsl(hue($white), saturation($white), 10%);
 $black: hsl(hue($white), saturation($white), 5%);
 
 //
-// Color palette mapped to CSS variables
-// Note: use #{} for SaaS expansion inside variable declarations.
-//
-:root {
-    --primary: #{$primary};
-    --secondary: #{$secondary};
-    --danger: #{$danger};
-    --success: #{$success};
-    --info: #{$info};
-    --warning: #{$warning};
-
-    --primary-light: #{$primary-light};
-    --secondary-light: #{$secondary-light};
-    --danger-light: #{$danger-light};
-    --success-light: #{$success-light};
-    --info-light: #{$info-light};
-    --warning-light: #{$warning-light};
-
-    --primary-dark: #{$primary-dark};
-    --secondary-dark: #{$secondary-dark};
-    --danger-dark: #{$danger-dark};
-    --success-dark: #{$success-dark};
-    --info-dark: #{$info-dark};
-    --warning-dark: #{$warning-dark};
-
-    --white: #{$white};
-    --off-white: #{$off-white};
-    --light: #{$light};
-    --silver: #{$silver};
-    --gray: #{$gray};
-    --dark: #{$dark};
-    --charcoal: #{$charcoal};
-    --black: #{$black};
-}
-
-//
 // Color palette variables mapped back to SaaS variables.
 // Prefer the use of these colors over non-var alternatives (e.g. $var-primary, not $primary)
 // This allows color tweaks in-browser to be seen across entire site.
@@ -114,7 +78,8 @@ $max-article-width: 1240px;
 $border-radius: 3px;
 // Additional, specific attributes
 $header-height: $logo-size+2*$margin;
-$dialog-margin: 6*$margin;
+$dialog-horizontal-margin: 6*$margin;
+$dialog-vertical-margin: 8*$margin;
 
 //
 // Responsive sizes declared using sass.

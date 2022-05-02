@@ -7,7 +7,7 @@ namespace Sample.Server.Controllers;
 /// Manages the collection of companies.
 /// </summary>
 [ApiController]
-[ApiExplorerSettings(GroupName = "sample-api")]
+[ApiExplorerSettings(GroupName = ApiGroupNames.SampleApi)]
 [SkipStatusCodePages]
 public class CompanyController {
         

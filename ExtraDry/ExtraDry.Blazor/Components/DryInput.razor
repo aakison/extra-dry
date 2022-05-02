@@ -82,6 +82,10 @@
             <DrySingleSelect CssClass="@CssClass" Model="@Model" Property="@Property" Values="@LookupValues" />
         }
     }
+    else if(ReadOnly) {
+        var selectedValue = Property.GetValue(Model);
+        <span class="@CssClass">@selectedValue.ToString()</span>
+    }
     else { 
         <progress>loading...</progress>
     }

@@ -17,7 +17,7 @@ namespace Sample.Server.Controllers;
 /// and each region is the child of a region in the level above it.
 /// </summary>
 [ApiController]
-[ApiExplorerSettings(GroupName = "reference-codes")]
+[ApiExplorerSettings(GroupName = ApiGroupNames.ReferenceCodes)]
 [SkipStatusCodePages]
 public class RegionController {
         
@@ -94,18 +94,25 @@ public class RegionController {
     /// </summary>
     [HttpPost("api/populate/regions")]
     [AllowAnonymous]
-    public async Task PopulateAsync()
+    public async Task CreateBaseDataAsync()
     {
-        var au = new Region { ParentCode = "", Code = "AU", Title = "Australia", Description = "Commonwealth of Australia", Level = RegionLevel.Country };
-        await regions.CreateAsync(au);
-        var qld = new Region { ParentCode = "AU", Code = "AU-QLD", Title = "Queensland", Description = "Queensland", Level = RegionLevel.Division };
-        await regions.CreateAsync(qld);
-        var vic = new Region { ParentCode = "AU", Code = "AU-VIC", Title = "Victoria", Description = "Victoria", Level = RegionLevel.Division };
-        await regions.CreateAsync(vic);
-        var brisbane = new Region { ParentCode = "AU-QLD", Code = "AU-QLD-Brisbane", Title = "Brisbane", Description = "Brisbane", Level = RegionLevel.Subdivision };
-        await regions.CreateAsync(brisbane);
-        var redlands = new Region { ParentCode = "AU-QLD", Code = "AU-QLD-Redlands", Title = "Redlands", Description = "City of Redlands", Level = RegionLevel.Subdivision };
-        await regions.CreateAsync(redlands);
+        var baseRegions = new Region[] {
+            new Region { ParentCode = "", Code = "", Title = "All", Description = "All Regions", Level = RegionLevel.Global },
+            new Region { ParentCode = "", Code = "AU", Title = "Australia", Description = "Commonwealth of Australia", Level = RegionLevel.Country },
+            new Region { ParentCode = "AU", Code = "AU-QLD", Title = "Queensland", Description = "Queensland", Level = RegionLevel.Division },
+            new Region { ParentCode = "AU", Code = "AU-VIC", Title = "Victoria", Description = "Victoria", Level = RegionLevel.Division },
+            new Region { ParentCode = "AU", Code = "AU-NSW", Title = "New South Wales", Description = "New South Wales", Level = RegionLevel.Division },
+            new Region { ParentCode = "AU", Code = "AU-ACT", Title = "Canberra", Description = "Australian Capital Territory", Level = RegionLevel.Division },
+            new Region { ParentCode = "AU", Code = "AU-TAS", Title = "Tasmania", Description = "Tasmania", Level = RegionLevel.Division },
+            new Region { ParentCode = "AU", Code = "AU-SA", Title = "South Australia", Description = "South Australia", Level = RegionLevel.Division },
+            new Region { ParentCode = "AU", Code = "AU-NT", Title = "Northern Territory", Description = "Northern Territory", Level = RegionLevel.Division },
+            new Region { ParentCode = "AU", Code = "AU-WA", Title = "Western Australia", Description = "Western Australia", Level = RegionLevel.Division },
+            new Region { ParentCode = "AU-QLD", Code = "AU-QLD-Brisbane", Title = "Brisbane", Description = "Brisbane", Level = RegionLevel.Subdivision },
+            new Region { ParentCode = "AU-QLD", Code = "AU-QLD-Redlands", Title = "Redlands", Description = "City of Redlands", Level = RegionLevel.Subdivision },
+        };
+        foreach(var region in baseRegions) {
+            await regions.CreateAsync(region);
+        }
     }
 
     private readonly RegionService regions;

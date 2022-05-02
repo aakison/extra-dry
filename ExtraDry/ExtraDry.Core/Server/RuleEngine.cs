@@ -132,7 +132,11 @@ public class RuleEngine {
         }
         (var resolved, var result) = await ResolveEntityValue(property.PropertyType, value);
         var destinationValue = property.GetValue(destination);
-        if(!resolved && !property.PropertyType.IsValueType && property.PropertyType != typeof(string)) {
+        if(action == RuleAction.Link && !resolved) {
+            // Copy object reference
+            property.SetValue(destination, result);
+        }
+        else if(!resolved && !property.PropertyType.IsValueType && property.PropertyType != typeof(string)) {
             // Recurse through child to copy values
             if(value != null && destinationValue == null) {
                 destinationValue = Activator.CreateInstance(value.GetType());
