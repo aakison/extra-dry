@@ -44,10 +44,9 @@ namespace ExtraDry.Core.Tests.Server.Internal {
         {
             var modelDescription = new ModelDescription(typeof(NoImplicitStabilizer));
 
-            var exception = Assert.Throws<DryException>(() => modelDescription.StabilizerProperty);
+            var stabilizerProperty = modelDescription.StabilizerProperty;
 
-            Assert.NotNull(exception);
-            Assert.Equal("Unable to Sort. 0x0F3F241C", exception.UserMessage);
+            Assert.Null(stabilizerProperty);
         }
 
         [Fact]
@@ -55,10 +54,9 @@ namespace ExtraDry.Core.Tests.Server.Internal {
         {
             var modelDescription = new ModelDescription(typeof(CompositeKeyAttributeEntity));
 
-            var exception = Assert.Throws<DryException>(() => modelDescription.StabilizerProperty);
+            var stabilizerProperty = modelDescription.StabilizerProperty;
 
-            Assert.NotNull(exception);
-            Assert.Equal("Unable to Sort. 0x0F3F241D", exception.UserMessage);
+            Assert.Null(stabilizerProperty);
         }
 
         [Fact]

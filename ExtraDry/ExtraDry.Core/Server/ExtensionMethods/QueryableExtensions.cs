@@ -13,6 +13,8 @@ namespace ExtraDry.Server {
     /// A very lightweight dynamic linq builder, just enough to satisfy needs of filtering, sorting and paging API result sets.
     /// </summary>
     public static class QueryableExtensions {
+        private const string MissingStabilizerErrorMessage = "Sort requires that a single EF key is uniquely defined to stabalize the sort, even if another sort property is present.  Use a single unique key following EF conventions or specify a Stabilizer in the FilterQuery.";
+        private const string SortErrorUserMessage = "Unable to Sort. 0x0F3F241C";
 
         /// <summary>
         /// Given a `PageQuery`, dynamically constructs an expression query that applies the indicated filtering, sorting, and paging.
@@ -95,6 +97,9 @@ namespace ExtraDry.Server {
             var actualAscending = token?.Ascending ?? ascending ?? true;
             var query = source;
             var modelDescription = new ModelDescription(typeof(T));
+            if(modelDescription.StabilizerProperty == default) {
+                throw new DryException(MissingStabilizerErrorMessage, SortErrorUserMessage);
+            }
             if(!string.IsNullOrWhiteSpace(actualSort)) {
                 query = actualAscending ? 
                     query.OrderBy(actualSort).ThenBy(modelDescription.StabilizerProperty.ExternalName) : 

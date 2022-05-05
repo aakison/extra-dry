@@ -11,10 +11,6 @@ using System.Text.Json.Serialization;
 namespace ExtraDry.Server.Internal {
 
     internal class ModelDescription {
-        private const string DuplicateKeyMessage = "Sort requires that a single EF key is well defined to stabalize the sort, composite keys are not supported.  Manually specify a Stabilizer in the FilterQuery, or use a single [Key] attribute.";
-        private const string MissingStabilizerMessage = "Sort requires that an EF key is uniquely defined to stabalize the sort, even if another sort property is present.  Create a unique key following EF conventions or specify a Stabilizer in the FilterQuery.";
-        private const string UserMessage = "Unable to Sort. {0}";
-
         private SortProperty? stabilizerProperty = null;
         private bool multipleStabilizerProperties;
 
@@ -26,18 +22,7 @@ namespace ExtraDry.Server.Internal {
         public Collection<FilterProperty> FilterProperties { get; } = new Collection<FilterProperty>();
         public Collection<SortProperty> SortProperties { get; } = new Collection<SortProperty>();
 
-        public SortProperty StabilizerProperty {
-            get {
-                if(stabilizerProperty == null) {
-                    throw new DryException(MissingStabilizerMessage, string.Format(UserMessage, "0x0F3F241C"));
-                }
-                if(multipleStabilizerProperties) {
-
-                    throw new DryException(DuplicateKeyMessage, string.Format(UserMessage, "0x0F3F241D"));
-                }
-                return stabilizerProperty;
-            }
-        }
+        public SortProperty? StabilizerProperty => multipleStabilizerProperties ? null : stabilizerProperty;
 
         private void GetReflectedModelProperties(Type modelType)
         {
