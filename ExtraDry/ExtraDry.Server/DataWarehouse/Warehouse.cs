@@ -1,4 +1,5 @@
-﻿using ExtraDry.Core.Warehouse;
+﻿using ExtraDry.Core;
+using ExtraDry.Core.DataWarehouse;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 
-namespace ExtraDry.Server.Warehouse;
+namespace ExtraDry.Server.DataWarehouse;
 
 public class Warehouse {
 
@@ -17,18 +18,17 @@ public class Warehouse {
         foreach(var entity in entityTypes) {
             var factAttribute = entity.GetCustomAttribute<FactAttribute>();
             if(factAttribute != null) {
-                var factTable = new Table(factAttribute.Name ?? entity.Name);
-                Facts.Add(factTable);
+                LoadClassFact(entity, factAttribute);
                 types.Add(entity);
             }
             var dimensionAttribute = entity.GetCustomAttribute<DimensionAttribute>();
             if(dimensionAttribute != null) {
-                var dimensionTable = new Table(dimensionAttribute.Name ?? entity.Name);
+                var dimensionTable = new Table(entity, dimensionAttribute.Name ?? entity.Name);
                 Dimensions.Add(dimensionTable);
                 types.Add(entity);
             }
         }
-        
+
         var assemblies = types.Select(e => e.Assembly).Distinct().ToList();
         foreach(var enumType in GetEnums(assemblies)) {
             var dimensionAttribute = enumType.GetCustomAttribute<DimensionAttribute>();
@@ -39,9 +39,52 @@ public class Warehouse {
 
     }
 
+    private void LoadClassFact(Type entity, FactAttribute factAttribute)
+    {
+        var table = new Table(entity, factAttribute.Name ?? entity.Name);
+        Facts.Add(table);
+
+        var keyColumn = $"{table.Title} ID";
+        table.Columns.Add(new Column(ColumnType.Integer, keyColumn));
+
+        // TODO: Check against [Key] not an integer?
+
+        var measures = GetMeasures(entity);
+        foreach(var measure in measures) {
+            var name = measure.Value.Name ?? measure.Key.Name;
+            table.Columns.Add(new Column(TypeToColumnType(measure.Key.PropertyType), name));
+        }
+    }
+
+    private static Dictionary<PropertyInfo, MeasureAttribute> GetMeasures(Type entity)
+    {
+        var properties = entity.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        var measures = properties.Where(e => e.GetCustomAttribute<MeasureAttribute>() != null);
+        return measures.ToDictionary(e => e, e => e.GetCustomAttribute<MeasureAttribute>()!);
+    }
+
+    private static ColumnType TypeToColumnType(Type entity)
+    {
+        if(entity.IsAssignableTo(typeof(long))) {
+            return ColumnType.Integer;
+        }
+        else if (entity.IsAssignableTo(typeof(double))) {
+            return ColumnType.Float;
+        }
+        else if (entity.IsAssignableTo(typeof(string))) {
+            return ColumnType.Text;
+        }
+        else if(entity.IsAssignableTo(typeof(Enum))) {
+            return ColumnType.Integer; // Foreign Key
+        }
+        else {
+            throw new DryException("Data type is not supported for a Measure", "Internal error mapping to data warehouse 0x0F68CC98");
+        }
+    }
+        
     private void LoadEnumDimension(Type enumType, DimensionAttribute dimensionAttribute)
     {
-        var table = new Table(dimensionAttribute.Name ?? enumType.Name);
+        var table = new Table(enumType, dimensionAttribute.Name ?? enumType.Name);
         var fields = enumType.GetFields(BindingFlags.Public | BindingFlags.Static);
 
         var keyColumn = $"{table.Title} ID";

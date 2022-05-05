@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server.Warehouse;
+﻿namespace ExtraDry.Server.DataWarehouse;
 
 public class Column {
 

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ExtraDry.Core.Warehouse;
+﻿namespace ExtraDry.Core.DataWarehouse;
 
 /// <summary>
 /// A data warehouse column is an attribute of a dimension table.

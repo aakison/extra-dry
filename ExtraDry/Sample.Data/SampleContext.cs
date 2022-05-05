@@ -1,9 +1,6 @@
 ﻿#nullable enable
 
-using ExtraDry.Core;
 using ExtraDry.Server.EF;
-using Microsoft.EntityFrameworkCore;
-using Sample.Shared;
 using System.Text.Json;
 
 namespace Sample.Data {

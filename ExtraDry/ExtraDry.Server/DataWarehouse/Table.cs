@@ -1,13 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
-namespace ExtraDry.Server.Warehouse;
+namespace ExtraDry.Server.DataWarehouse;
 
 public class Table {
 
-    public Table(string title)
+    public Table(Type type, string title)
     {
+        EntityType = type;
         Title = title;
     }
+
+    [JsonIgnore]
+    public Type EntityType { get; set; }
 
     public string Title { get; set; }
 

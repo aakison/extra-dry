@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ExtraDry.Core.Warehouse;
+﻿namespace ExtraDry.Core.DataWarehouse;
 
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Method)]
 public class MeasureAttribute : Attribute {
