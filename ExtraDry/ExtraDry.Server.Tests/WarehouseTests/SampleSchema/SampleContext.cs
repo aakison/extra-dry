@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using ExtraDry.Server.EF;
+﻿using ExtraDry.Server.EF;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
@@ -15,6 +13,8 @@ public class SampleContext : AspectDbContext {
     public DbSet<BlobInfo> Blobs { get; set; } = null!;
 
     public DbSet<Region> Regions { get; set; } = null!;
+
+    public DbSet<Employee> Employees { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

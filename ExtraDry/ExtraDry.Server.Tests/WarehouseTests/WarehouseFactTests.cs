@@ -6,14 +6,15 @@ namespace ExtraDry.Server.Tests.WarehouseTests;
 public class WarehouseFactTests {
 
     [Theory]
-    [InlineData(typeof(Company))]
-    public void EntityBecomesFact(Type entityType)
+    [InlineData(typeof(Company), "Company")]
+    [InlineData(typeof(Employee), "Worker Bees")]
+    public void EntityBecomesFact(Type entityType, string title)
     {
         var warehouse = new Warehouse();
         
         warehouse.CreateSchema(context);
 
-        Assert.Contains(warehouse.Facts, e => e.EntityType == entityType);
+        Assert.Contains(warehouse.Facts, e => e.EntityType == entityType && e.Title == title);
     }
 
     [Theory]

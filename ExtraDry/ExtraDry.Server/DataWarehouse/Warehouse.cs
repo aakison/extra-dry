@@ -51,7 +51,12 @@ public class Warehouse {
 
         var measures = GetMeasures(entity);
         foreach(var measure in measures) {
-            var name = measure.Value.Name ?? measure.Key.Name;
+            var name = measure.Value.Name;
+            name ??= measure.Key.PropertyType.GetCustomAttribute<DimensionAttribute>()?.Name;
+            name ??= measure.Key.Name;
+            if(measure.Key.PropertyType.IsEnum) {
+                name += " ID";
+            }
             table.Columns.Add(new Column(TypeToColumnType(measure.Key.PropertyType), name));
         }
     }
