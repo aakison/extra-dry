@@ -44,10 +44,10 @@ public class Warehouse {
         var table = new Table(entity, factAttribute.Name ?? entity.Name);
         Facts.Add(table);
 
-        var keyColumn = $"{table.Title} ID";
-        table.Columns.Add(new Column(ColumnType.Integer, keyColumn));
+        var keyColumn = $"{table.Name} ID";
+        table.Columns.Add(new Column(ColumnType.Key, keyColumn));
 
-        // TODO: Check against [Key] not an integer?
+        // TODO: Check against [Key] not an integer
 
         var measures = GetMeasures(entity);
         foreach(var measure in measures) {
@@ -58,6 +58,7 @@ public class Warehouse {
                 name += " ID";
             }
             table.Columns.Add(new Column(TypeToColumnType(measure.Key.PropertyType), name));
+            // TODO: Warn if Measure is Text?  Maybe better in a analysis rule?
         }
     }
 
@@ -73,10 +74,10 @@ public class Warehouse {
         if(entity.IsAssignableTo(typeof(long))) {
             return ColumnType.Integer;
         }
-        else if (entity.IsAssignableTo(typeof(double))) {
-            return ColumnType.Float;
+        else if(entity.IsAssignableTo(typeof(double))) {
+            return ColumnType.Double;
         }
-        else if (entity.IsAssignableTo(typeof(string))) {
+        else if(entity.IsAssignableTo(typeof(string))) {
             return ColumnType.Text;
         }
         else if(entity.IsAssignableTo(typeof(Enum))) {
@@ -86,16 +87,16 @@ public class Warehouse {
             throw new DryException("Data type is not supported for a Measure", "Internal error mapping to data warehouse 0x0F68CC98");
         }
     }
-        
+
     private void LoadEnumDimension(Type enumType, DimensionTableAttribute dimensionAttribute)
     {
         var table = new Table(enumType, dimensionAttribute.Name ?? enumType.Name);
         var fields = enumType.GetFields(BindingFlags.Public | BindingFlags.Static);
 
-        var keyColumn = $"{table.Title} ID";
+        var keyColumn = $"{table.Name} ID";
         var elements = fields.ToDictionary(k => k, e => e.GetCustomAttribute<DisplayAttribute>());
 
-        table.Columns.Add(new Column(ColumnType.Integer, keyColumn));
+        table.Columns.Add(new Column(ColumnType.Key, keyColumn));
         table.Columns.Add(new Column(ColumnType.Text, "Title"));
 
         if(elements.Values.Any(e => e?.ShortName != null)) {
@@ -163,9 +164,67 @@ public class Warehouse {
         }
     }
 
-    public IList<Table> Facts { get; set;} = new List<Table>();
+    public IList<Table> Facts { get; set; } = new List<Table>();
 
     public IList<Table> Dimensions { get; set; } = new List<Table>();
 
+    public string GenerateSql() => 
+        string.Join("\n", Dimensions.Union(Facts).Select(e => SqlTable(e))) +
+        string.Join("\n", Dimensions.Union(Facts).Select(e => SqlData(e)));
+
+    private static string SqlTable(Table table) =>
+        $"CREATE TABLE [{table.Name}] (\n    {SqlColumns(table.Columns)}\n)\nGO\n";
+
+    private static string SqlColumns(IEnumerable<Column> columns) =>
+        string.Join(",\n    ", columns.Select(e => SqlColumn(e)));
+
+    private static string SqlColumn(Column column) =>
+        $"[{column.Name}] {SqlColumnType(column)}";
+
+    private static string SqlColumnType(Column column) =>
+        (column.ColumnType, column.IsNullable) switch {
+            (ColumnType.Key, _) => "INT NOT NULL PRIMARY KEY",
+            (ColumnType.Double, false) => "REAL NOT NULL",
+            (ColumnType.Double, true) => "REAL",
+            (ColumnType.Integer, false) => "INT NOT NULL",
+            (ColumnType.Integer, true) => "INT",
+            (_, false) => $"{SqlVarchar(column.Length)} NOT NULL",
+            (_, _) => SqlVarchar(column.Length),
+        };
+
+    private static string SqlVarchar(int length) => 
+        length switch {
+            int.MaxValue => $"NVARCHAR(Max)",
+            _ => $"NVARCHAR({length})",
+        };
+
+    private static string SqlData(Table table) => !table.Data.Any() ? "" :
+        $"{SqlInsertInto(table)}";
+
+    private static string SqlInsertInto(Table table) =>
+        $"INSERT INTO [{table.Name}] \n    ({SqlInsertColumnNames(table)})\nVALUES\n    {SqlInsertColumnValues(table)}\nGO\n";
+
+    private static string SqlInsertColumnNames(Table table) =>
+        string.Join(", ", table.Columns.Select(e => $"[{e.Name}]"));
+
+    private static string SqlInsertColumnValues(Table table) =>
+        string.Join(",\n    ", table.Data.Select(e => SqlInsertColumnValues(table, e)));
+
+    private static string SqlInsertColumnValues(Table table, Dictionary<string, object> values) =>
+        $"({SqlInsertColumnValues(table.Columns.Select(e => values[e.Name]))})";
+
+    private static string SqlInsertColumnValues(IEnumerable<object> values) =>
+        string.Join(", ", values.Select(e => SqlInsertColumnValue(e)));
+
+    private static string SqlInsertColumnValue(object value)
+    {
+        if(value is string sValue) {
+            var escapedValue = sValue.Replace("'", "''");
+            return $"'{escapedValue}'";
+        }
+        else {
+            return value.ToString()!;
+        }
+    }
 }
 

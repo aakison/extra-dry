@@ -30,4 +30,14 @@ public class AttributeAttribute : Attribute {
     /// If `null`, then the name is inferred from the Property's name.
     /// </summary>
     public string? Name { get; set; }
+
+    /// <summary>
+    /// If a value in the source database is null, the value that replaces it in the data warehouse.
+    /// Attributes are not permitted to have NULL values in dimensions.
+    /// </summary>
+    /// <remarks>
+    /// For reasoning, see https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/kimball-techniques/dimensional-modeling-techniques/null-dimension-attribute/
+    /// </remarks>
+    public object ValueIfNull { get; set; } = "_NULL_";
+
 }

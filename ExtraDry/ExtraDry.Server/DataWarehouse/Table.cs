@@ -6,16 +6,16 @@ namespace ExtraDry.Server.DataWarehouse;
 
 public class Table {
 
-    public Table(Type type, string title)
+    public Table(Type type, string name)
     {
         EntityType = type;
-        Title = title;
+        Name = name;
     }
 
     [JsonIgnore]
     public Type EntityType { get; set; }
 
-    public string Title { get; set; }
+    public string Name { get; set; }
 
     public List<Column> Columns { get; } = new List<Column>();
 

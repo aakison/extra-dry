@@ -14,7 +14,7 @@ public class WarehouseFactTests {
         
         warehouse.CreateSchema(context);
 
-        Assert.Contains(warehouse.Facts, e => e.EntityType == entityType && e.Title == title);
+        Assert.Contains(warehouse.Facts, e => e.EntityType == entityType && e.Name == title);
     }
 
     [Theory]
@@ -41,7 +41,7 @@ public class WarehouseFactTests {
         warehouse.CreateSchema(context);
 
         var fact = warehouse.Facts.Single(e => e.EntityType == entityType);
-        Assert.Contains(fact.Columns, e => e.Title == title && e.ColumnType == columnType);
+        Assert.Contains(fact.Columns, e => e.Name == title && e.ColumnType == columnType);
     }
 
     [Theory]
