@@ -8,7 +8,7 @@ namespace Sample.Shared;
 /// Represents a service that a company may provide.
 /// This is for properties that may appear as Enums, but have additional data associated with them.
 /// </summary>
-[Dimension]    
+[DimensionTable]
 public class Sector : INamedSubject {
 
     /// <summary>
@@ -28,6 +28,7 @@ public class Sector : INamedSubject {
     /// <summary>
     /// The code for the sector, which is trivially the Uuid.
     /// </summary>
+    [Attribute]
     public string Code => Uuid.ToString();
 
     /// <summary>

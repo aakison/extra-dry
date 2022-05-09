@@ -1,8 +1,10 @@
 ﻿#nullable enable
 
+using ExtraDry.Core.DataWarehouse;
+
 namespace ExtraDry.Server.Tests.WarehouseTests;
 
-[Core.DataWarehouse.Fact("Worker Bees")]
+[FactTable("Worker Bees")]
 public class Employee
 {
     [Key]
@@ -16,12 +18,14 @@ public class Employee
     [Rules(RuleAction.Allow)]
     [Display(Name = "First Name", ShortName = "First Name")]
     [Filter(FilterType.Equals)]
+    [Measure]
     public string? FirstName { get; set; }
 
     [Required, MaxLength(50)]
     [Rules(RuleAction.Allow)]
     [Display(Name = "Last Name", ShortName = "Last Name")]
     [Filter(FilterType.StartsWith)]
+    [Measure("Last Name")]
     public string? LastName { get; set; }
 
     /// <summary>

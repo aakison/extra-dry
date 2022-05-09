@@ -1,7 +1,7 @@
 ﻿namespace Sample.Shared;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
-[Dimension("Company Status")]
+[DimensionTable("Company Status")]
 public enum CompanyStatus {
 
     [Display(Order = 0, Description = "Company is active")]

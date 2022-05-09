@@ -16,12 +16,12 @@ public class Warehouse {
         var entityTypes = GetEntities(context);
         var types = new List<Type>();
         foreach(var entity in entityTypes) {
-            var factAttribute = entity.GetCustomAttribute<FactAttribute>();
+            var factAttribute = entity.GetCustomAttribute<FactTableAttribute>();
             if(factAttribute != null) {
                 LoadClassFact(entity, factAttribute);
                 types.Add(entity);
             }
-            var dimensionAttribute = entity.GetCustomAttribute<DimensionAttribute>();
+            var dimensionAttribute = entity.GetCustomAttribute<DimensionTableAttribute>();
             if(dimensionAttribute != null) {
                 var dimensionTable = new Table(entity, dimensionAttribute.Name ?? entity.Name);
                 Dimensions.Add(dimensionTable);
@@ -31,7 +31,7 @@ public class Warehouse {
 
         var assemblies = types.Select(e => e.Assembly).Distinct().ToList();
         foreach(var enumType in GetEnums(assemblies)) {
-            var dimensionAttribute = enumType.GetCustomAttribute<DimensionAttribute>();
+            var dimensionAttribute = enumType.GetCustomAttribute<DimensionTableAttribute>();
             if(dimensionAttribute != null) {
                 LoadEnumDimension(enumType, dimensionAttribute);
             }
@@ -39,7 +39,7 @@ public class Warehouse {
 
     }
 
-    private void LoadClassFact(Type entity, FactAttribute factAttribute)
+    private void LoadClassFact(Type entity, FactTableAttribute factAttribute)
     {
         var table = new Table(entity, factAttribute.Name ?? entity.Name);
         Facts.Add(table);
@@ -52,7 +52,7 @@ public class Warehouse {
         var measures = GetMeasures(entity);
         foreach(var measure in measures) {
             var name = measure.Value.Name;
-            name ??= measure.Key.PropertyType.GetCustomAttribute<DimensionAttribute>()?.Name;
+            name ??= measure.Key.PropertyType.GetCustomAttribute<DimensionTableAttribute>()?.Name;
             name ??= measure.Key.Name;
             if(measure.Key.PropertyType.IsEnum) {
                 name += " ID";
@@ -87,7 +87,7 @@ public class Warehouse {
         }
     }
         
-    private void LoadEnumDimension(Type enumType, DimensionAttribute dimensionAttribute)
+    private void LoadEnumDimension(Type enumType, DimensionTableAttribute dimensionAttribute)
     {
         var table = new Table(enumType, dimensionAttribute.Name ?? enumType.Name);
         var fields = enumType.GetFields(BindingFlags.Public | BindingFlags.Static);

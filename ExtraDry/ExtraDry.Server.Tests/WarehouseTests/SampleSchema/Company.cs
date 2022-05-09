@@ -4,7 +4,7 @@ using ExtraDry.Core.DataWarehouse;
 
 namespace ExtraDry.Server.Tests.WarehouseTests;
 
-[Core.DataWarehouse.Fact]
+[FactTable]
 public class Company : INamedSubject {
 
     [Key]
@@ -45,10 +45,6 @@ public class Company : INamedSubject {
     [Display]
     [Rules(RuleAction.Allow)]
     public BankingDetails BankingDetails { get; set; } = new BankingDetails();
-
-    //[Display]
-    //[Rules(RuleAction.Recurse)]
-    //public ICollection<Video> Videos { get; set; } = new Collection<Video>();
 
     /// <summary>
     /// The version info which informs the audit log.

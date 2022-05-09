@@ -1,7 +1,7 @@
 ﻿namespace Sample.Shared;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
-[Dimension("Region Status")]
+[DimensionTable("Region Status")]
 public enum RegionStatus {
 
     [Display(Order = 0, Description = "Region is active")]

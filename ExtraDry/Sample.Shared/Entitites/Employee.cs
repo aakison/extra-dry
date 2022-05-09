@@ -2,6 +2,7 @@
 
 namespace Sample.Shared;
 
+[FactTable]
 public class Employee
 {
     [Key]
@@ -21,6 +22,7 @@ public class Employee
     [Rules(RuleAction.Allow)]
     [Display(Name = "Last Name", ShortName = "Last Name")]
     [Filter(FilterType.StartsWith)]
+    [Measure("Last Name")]
     public string? LastName { get; set; }
 
     /// <summary>
