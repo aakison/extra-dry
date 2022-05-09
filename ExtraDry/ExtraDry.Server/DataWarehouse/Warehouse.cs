@@ -194,7 +194,7 @@ public class Warehouse {
 
     private static string SqlVarchar(int length) => 
         length switch {
-            int.MaxValue => $"NVARCHAR(Max)",
+            0 => $"NVARCHAR(Max)",
             _ => $"NVARCHAR({length})",
         };
 

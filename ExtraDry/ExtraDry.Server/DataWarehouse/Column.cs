@@ -18,7 +18,7 @@ public class Column {
 
     public ColumnType ColumnType { get; set; }
 
-    public int Length { get; set; } = int.MaxValue;
+    public int Length { get; set; }
 
     public bool Nullable { get; set; }
 
