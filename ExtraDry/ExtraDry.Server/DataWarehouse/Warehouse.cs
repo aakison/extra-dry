@@ -182,7 +182,7 @@ public class Warehouse {
         $"[{column.Name}] {SqlColumnType(column)}";
 
     private static string SqlColumnType(Column column) =>
-        (column.ColumnType, column.IsNullable) switch {
+        (column.ColumnType, column.Nullable) switch {
             (ColumnType.Key, _) => "INT NOT NULL PRIMARY KEY",
             (ColumnType.Double, false) => "REAL NOT NULL",
             (ColumnType.Double, true) => "REAL",

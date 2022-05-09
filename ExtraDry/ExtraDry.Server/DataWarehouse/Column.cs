@@ -20,6 +20,6 @@ public class Column {
 
     public int Length { get; set; } = int.MaxValue;
 
-    public bool IsNullable { get; set; }
+    public bool Nullable { get; set; }
 
 }
