@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Server.DataWarehouse;
+﻿using System.Reflection;
+
+namespace ExtraDry.Server.DataWarehouse;
 
 /// <summary>
 /// A column for a table in the schema for the data warehouse.
@@ -21,6 +23,12 @@ public class Column {
     public int Length { get; set; }
 
     public bool Nullable { get; set; }
+
+    /// <summary>
+    /// The reflected PropertyInfo, if the column is a property of a Fact or Dimension class.
+    /// </summary>
+    [JsonIgnore]
+    public PropertyInfo? PropertyInfo { get; set; }
 
     /// <summary>
     /// If the column is a foreign key to a dimension, the information on referenced table/column.

@@ -43,8 +43,17 @@ public class Warehouse {
         var table = new Table(entity, factAttribute.Name ?? entity.Name);
         Facts.Add(table);
 
+        var properties = entity.GetProperties();
+        var keyProperty = properties.FirstOrDefault(e => e.GetCustomAttribute<KeyAttribute>() != null) ??
+            properties.FirstOrDefault(e => string.Compare(e.Name, "Id", StringComparison.OrdinalIgnoreCase) == 0) ??
+            properties.FirstOrDefault(e => string.Compare(e.Name, $"{entity.Name}Id", StringComparison.OrdinalIgnoreCase) == 0);
+        if(keyProperty == null) {
+            throw new DryException("Fact tables must have a primary key.");
+        }
         var keyColumn = $"{table.Name} ID";
-        table.Columns.Add(new Column(ColumnType.Key, keyColumn));
+        table.Columns.Add(new Column(ColumnType.Key, keyColumn) { 
+            PropertyInfo = keyProperty 
+        });
 
         // TODO: Check against [Key] not an integer
 
@@ -53,7 +62,9 @@ public class Warehouse {
             var name = measure.Value.Name;
             name ??= measure.Key.PropertyType.GetCustomAttribute<DimensionTableAttribute>()?.Name;
             name ??= measure.Key.Name;
-            var column = new Column(TypeToColumnType(measure.Key.PropertyType), name);
+            var column = new Column(TypeToColumnType(measure.Key.PropertyType), name) { 
+                PropertyInfo = measure.Key 
+            };
             if(measure.Key.PropertyType.IsEnum) {
                 var dimension = Dimensions.FirstOrDefault(e => e.EntityType == measure.Key.PropertyType);
                 if(dimension == null) {
@@ -182,7 +193,13 @@ public class Warehouse {
         string.Join("\n", Dimensions.Union(Facts).Select(e => SqlData(e)));
 
     private static string SqlTable(Table table) =>
-        $"CREATE TABLE [{table.Name}] (\n    {SqlColumns(table.Columns)}\n)\nGO\n";
+        $"CREATE TABLE [{table.Name}] (\n    {SqlColumns(table.Columns)}\n    {SqlConstraints(table)}\n)\nGO\n";
+
+    private static string SqlConstraints(Table table) =>
+        string.Join(",\n    ", table.Columns.Where(e => e.Reference != null).Select(e => SqlFKConstraint(table, e)));
+
+    private static string SqlFKConstraint(Table table, Column column) =>
+        $"CONSTRAINT FK_{table.EntityType.Name}_{column.PropertyInfo!.Name} FOREIGN KEY ([{column.Name}]) REFERENCES [{column.Reference!.Table.Name}]([{column.Reference!.Column.Name}])";
 
     private static string SqlColumns(IEnumerable<Column> columns) =>
         string.Join(",\n    ", columns.Select(e => SqlColumn(e)));
