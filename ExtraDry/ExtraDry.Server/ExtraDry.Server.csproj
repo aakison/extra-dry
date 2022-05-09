@@ -3,7 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <PackageId>ExtraDry.Server</PackageId>
+	<ImplicitUsings>enable</ImplicitUsings>
+	<PackageId>ExtraDry.Server</PackageId>
     <Authors>adrian.akison</Authors>
     <Company>FMI Works</Company>
     <Description>Extensions to Blazor and DRY libraries to create Blazor client/server applications with a lower-code footprint.  Use this Server library for server side only elements.</Description>
@@ -14,7 +15,7 @@
     <PackageTags>blazor spa microsoft dry don't repeat yourself low-code swashbuckle openapi</PackageTags>
     <NeutralLanguage />
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>  
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
   <ItemGroup>

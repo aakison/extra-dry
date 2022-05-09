@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace ExtraDry.Server.DataWarehouse;
+﻿namespace ExtraDry.Server.DataWarehouse;
 
 /// <summary>
 /// Type data types for columns in the schema for the data warehouse.

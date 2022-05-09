@@ -1,10 +1,4 @@
-﻿using ExtraDry.Core;
-using ExtraDry.Core.DataWarehouse;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace ExtraDry.Server.DataWarehouse;
@@ -14,22 +8,10 @@ public class Warehouse {
     public void CreateSchema(DbContext context)
     {
         var entityTypes = GetEntities(context);
-        var types = new List<Type>();
-        foreach(var entity in entityTypes) {
-            var factAttribute = entity.GetCustomAttribute<FactTableAttribute>();
-            if(factAttribute != null) {
-                LoadClassFact(entity, factAttribute);
-                types.Add(entity);
-            }
-            var dimensionAttribute = entity.GetCustomAttribute<DimensionTableAttribute>();
-            if(dimensionAttribute != null) {
-                var dimensionTable = new Table(entity, dimensionAttribute.Name ?? entity.Name);
-                Dimensions.Add(dimensionTable);
-                types.Add(entity);
-            }
-        }
 
-        var assemblies = types.Select(e => e.Assembly).Distinct().ToList();
+        var assemblies = entityTypes.Select(e => e.Assembly).Distinct().ToList();
+
+        // Load enums, they're never dependent on anything.
         foreach(var enumType in GetEnums(assemblies)) {
             var dimensionAttribute = enumType.GetCustomAttribute<DimensionTableAttribute>();
             if(dimensionAttribute != null) {
@@ -37,6 +19,23 @@ public class Warehouse {
             }
         }
 
+        // Load dimensions, needed before facts are loaded.
+        foreach(var entity in entityTypes) {
+            var dimensionAttribute = entity.GetCustomAttribute<DimensionTableAttribute>();
+            if(dimensionAttribute != null) {
+                var dimensionTable = new Table(entity, dimensionAttribute.Name ?? entity.Name);
+                Dimensions.Add(dimensionTable);
+            }
+        }
+
+        // Finally load facts and their foreign keys to dimensions.
+        foreach(var entity in entityTypes) {
+            var factAttribute = entity.GetCustomAttribute<FactTableAttribute>();
+            if(factAttribute != null) {
+                LoadClassFact(entity, factAttribute);
+            }
+        }
+ 
     }
 
     private void LoadClassFact(Type entity, FactTableAttribute factAttribute)
@@ -54,10 +53,20 @@ public class Warehouse {
             var name = measure.Value.Name;
             name ??= measure.Key.PropertyType.GetCustomAttribute<DimensionTableAttribute>()?.Name;
             name ??= measure.Key.Name;
+            var column = new Column(TypeToColumnType(measure.Key.PropertyType), name);
             if(measure.Key.PropertyType.IsEnum) {
-                name += " ID";
+                var dimension = Dimensions.FirstOrDefault(e => e.EntityType == measure.Key.PropertyType);
+                if(dimension == null) {
+                    throw new DryException($"Can't create a foreign key reference {entity.Name}/{measure.Key.Name} as target is not configured as a Dimension");
+                }
+                var dimensionKey = dimension?.Columns.FirstOrDefault(e => e.ColumnType == ColumnType.Key);
+                if(dimensionKey == null) {
+                    throw new DryException($"Can't create a foreign key reference {entity.Name}/{measure.Key.Name} as target dimension does not have a Key attribute");
+                }
+                column.Name += " ID";
+                column.Reference = new Reference(dimension!, dimensionKey);
             }
-            table.Columns.Add(new Column(TypeToColumnType(measure.Key.PropertyType), name));
+            table.Columns.Add(column);
             // TODO: Warn if Measure is Text?  Maybe better in a analysis rule?
         }
     }

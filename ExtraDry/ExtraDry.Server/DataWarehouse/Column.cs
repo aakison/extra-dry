@@ -22,4 +22,10 @@ public class Column {
 
     public bool Nullable { get; set; }
 
+    /// <summary>
+    /// If the column is a foreign key to a dimension, the information on referenced table/column.
+    /// </summary>
+    public Reference? Reference { get; set; }
+
 }
+
