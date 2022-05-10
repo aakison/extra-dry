@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sample.Shared;
 
-[FactTable]
+[FactTable, DimensionTable]
 [Format(Icon = "building")]
 public class Company : INamedSubject {
 
@@ -23,14 +23,16 @@ public class Company : INamedSubject {
 
     [Display(Name = "Name", ShortName = "Name", GroupName = "Summary")]
     [Filter(FilterType.Contains)]
-    [Measure]
+    [Attribute]
     [Rules(RuleAction.IgnoreDefaults)]
+    [Required, StringLength(80)]
     public string Title { get; set; }
 
     [Display(Name = "Code", GroupName = "Summary")]
     [Filter(FilterType.Equals)]
-    [Measure]
+    [Attribute]
     [Rules(CreateAction = RuleAction.Allow, UpdateAction = RuleAction.Block)]
+    [Required, StringLength(24)]
     public string Code { get; set; }
 
     [Display(Name = "Status", ShortName = "Status", GroupName = "Status")]

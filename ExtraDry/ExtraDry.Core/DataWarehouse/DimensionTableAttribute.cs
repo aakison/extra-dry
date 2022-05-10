@@ -3,7 +3,7 @@
 /// <summary>
 /// A data warehouse dimension table.
 /// </summary>
-[AttributeUsage(AttributeTargets.Class | AttributeTargets.Enum)]
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Enum, AllowMultiple = false)]
 public class DimensionTableAttribute : Attribute {
 
     /// <summary>

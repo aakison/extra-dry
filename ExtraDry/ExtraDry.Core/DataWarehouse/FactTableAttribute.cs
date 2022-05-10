@@ -3,7 +3,7 @@
 /// <summary>
 /// A data warehouse fact table.
 /// </summary>
-[AttributeUsage(AttributeTargets.Class)]
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 public class FactTableAttribute : Attribute {
 
     /// <summary>

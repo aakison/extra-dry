@@ -23,8 +23,7 @@ public class Warehouse {
         foreach(var entity in entityTypes) {
             var dimensionAttribute = entity.GetCustomAttribute<DimensionTableAttribute>();
             if(dimensionAttribute != null) {
-                var dimensionTable = new Table(entity, dimensionAttribute.Name ?? entity.Name);
-                Dimensions.Add(dimensionTable);
+                LoadClassDimension(entity, dimensionAttribute);
             }
         }
 
@@ -38,22 +37,31 @@ public class Warehouse {
  
     }
 
+    private void LoadClassDimension(Type entity, DimensionTableAttribute dimensionAttribute)
+    {
+        var table = new Table(entity, dimensionAttribute.Name ?? entity.Name);
+        Dimensions.Add(table);
+        var factAttribute = entity.GetCustomAttribute<FactTableAttribute>();
+        if(factAttribute != null) {
+            // Some dimensions are also facts, class gets split into two, use fact naming scheme for ID
+            var factName = factAttribute?.Name ?? entity.Name;
+            AddKeyColumn(entity, table, $"{factName} ID");
+            // Also, ensure the dimension table has a unique name
+            if(factName == table.Name) {
+                table.Name += " Details";
+            }
+        }
+        else {
+            AddKeyColumn(entity, table, $"{table.Name} ID");
+        }
+    }
+
     private void LoadClassFact(Type entity, FactTableAttribute factAttribute)
     {
         var table = new Table(entity, factAttribute.Name ?? entity.Name);
         Facts.Add(table);
 
-        var properties = entity.GetProperties();
-        var keyProperty = properties.FirstOrDefault(e => e.GetCustomAttribute<KeyAttribute>() != null) ??
-            properties.FirstOrDefault(e => string.Compare(e.Name, "Id", StringComparison.OrdinalIgnoreCase) == 0) ??
-            properties.FirstOrDefault(e => string.Compare(e.Name, $"{entity.Name}Id", StringComparison.OrdinalIgnoreCase) == 0);
-        if(keyProperty == null) {
-            throw new DryException("Fact tables must have a primary key.");
-        }
-        var keyColumn = $"{table.Name} ID";
-        table.Columns.Add(new Column(ColumnType.Key, keyColumn) { 
-            PropertyInfo = keyProperty 
-        });
+        AddKeyColumn(entity, table, $"{table.Name} ID");
 
         // TODO: Check against [Key] not an integer
 
@@ -62,8 +70,8 @@ public class Warehouse {
             var name = measure.Value.Name;
             name ??= measure.Key.PropertyType.GetCustomAttribute<DimensionTableAttribute>()?.Name;
             name ??= measure.Key.Name;
-            var column = new Column(TypeToColumnType(measure.Key.PropertyType), name) { 
-                PropertyInfo = measure.Key 
+            var column = new Column(TypeToColumnType(measure.Key), name) {
+                PropertyInfo = measure.Key
             };
             if(measure.Key.PropertyType.IsEnum) {
                 var dimension = Dimensions.FirstOrDefault(e => e.EntityType == measure.Key.PropertyType);
@@ -82,6 +90,20 @@ public class Warehouse {
         }
     }
 
+    private static void AddKeyColumn(Type entity, Table table, string columnName)
+    {
+        var properties = entity.GetProperties();
+        var keyProperty = properties.FirstOrDefault(e => e.GetCustomAttribute<KeyAttribute>() != null) ??
+            properties.FirstOrDefault(e => string.Compare(e.Name, "Id", StringComparison.OrdinalIgnoreCase) == 0) ??
+            properties.FirstOrDefault(e => string.Compare(e.Name, $"{entity.Name}Id", StringComparison.OrdinalIgnoreCase) == 0);
+        if(keyProperty == null) {
+            throw new DryException("Fact and Dimension tables must have primary keys.");
+        }
+        table.Columns.Add(new Column(ColumnType.Key, columnName) {
+            PropertyInfo = keyProperty
+        });
+    }
+
     private static Dictionary<PropertyInfo, MeasureAttribute> GetMeasures(Type entity)
     {
         var properties = entity.GetProperties(BindingFlags.Public | BindingFlags.Instance);
@@ -89,22 +111,23 @@ public class Warehouse {
         return measures.ToDictionary(e => e, e => e.GetCustomAttribute<MeasureAttribute>()!);
     }
 
-    private static ColumnType TypeToColumnType(Type entity)
+    private static ColumnType TypeToColumnType(PropertyInfo propertyInfo)
     {
-        if(entity.IsAssignableTo(typeof(long))) {
+        var type = propertyInfo.PropertyType;
+        if(type.IsAssignableTo(typeof(long))) {
             return ColumnType.Integer;
         }
-        else if(entity.IsAssignableTo(typeof(double))) {
+        else if(type.IsAssignableTo(typeof(double))) {
             return ColumnType.Double;
         }
-        else if(entity.IsAssignableTo(typeof(string))) {
+        else if(type.IsAssignableTo(typeof(string))) {
             return ColumnType.Text;
         }
-        else if(entity.IsAssignableTo(typeof(Enum))) {
+        else if(type.IsAssignableTo(typeof(Enum))) {
             return ColumnType.Integer; // Foreign Key
         }
         else {
-            throw new DryException("Data type is not supported for a Measure", "Internal error mapping to data warehouse 0x0F68CC98");
+            throw new DryException($"Data type '{type.Name}' is not supported for a Measure {propertyInfo.DeclaringType?.Name}/{propertyInfo.Name}", "Internal error mapping to data warehouse 0x0F68CC98");
         }
     }
 

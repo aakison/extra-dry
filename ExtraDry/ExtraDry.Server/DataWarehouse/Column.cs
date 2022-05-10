@@ -28,7 +28,7 @@ public class Column {
     /// The reflected PropertyInfo, if the column is a property of a Fact or Dimension class.
     /// </summary>
     [JsonIgnore]
-    public PropertyInfo? PropertyInfo { get; set; }
+    public PropertyInfo? PropertyInfo { get; set; } 
 
     /// <summary>
     /// If the column is a foreign key to a dimension, the information on referenced table/column.
