@@ -20,7 +20,11 @@ public class Column {
 
     public ColumnType ColumnType { get; set; }
 
-    public int Length { get; set; }
+    /// <summary>
+    /// If the column is Text field, indicates the length of the text field.
+    /// 0 implies maximum allowable length.
+    /// </summary>
+    public int? Length { get; set; }
 
     public bool Nullable { get; set; }
 

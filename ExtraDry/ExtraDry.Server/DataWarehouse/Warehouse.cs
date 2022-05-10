@@ -101,7 +101,11 @@ public class Warehouse {
             column.Name += " ID";
             column.Reference = new Reference(dimension!, dimensionKey);
         }
-
+        if(property.PropertyType == typeof(string)) {
+            column.Length = property.GetCustomAttribute<StringLengthAttribute>()?.MaximumLength
+                ?? property.GetCustomAttribute<MaxLengthAttribute>()?.Length
+                ?? 0;
+        }
         return column;
     }
 

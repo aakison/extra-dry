@@ -5,7 +5,7 @@
 /// </summary>
 /// <remarks>
 /// Note that this is a bizarrely named class as 'Attribute' is overloaded between the data warehouse and the framework.
-/// However, in practice users of this class don't notice this oddity, and no synonyms exist with the right meaning.
+/// However, in practice users of this class shouldn't notice this oddity, and no synonyms exist with the right meaning.
 /// E.g. Synonym 'Field' has an issue as Fields are a first class concept in C#.
 /// E.g. Synonym 'Column' has an issue as ColumnAttribute conflicts with DataAnnotations.Schema.
 /// </remarks>

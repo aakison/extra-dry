@@ -32,8 +32,9 @@ internal class SqlGenerator {
             (_, _) => SqlVarchar(column.Length),
         };
 
-    private static string SqlVarchar(int length) =>
+    private static string SqlVarchar(int? length) =>
         length switch {
+            null => $"NVARCHAR(Max)",
             0 => $"NVARCHAR(Max)",
             _ => $"NVARCHAR({length})",
         };
