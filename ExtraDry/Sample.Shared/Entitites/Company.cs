@@ -19,6 +19,7 @@ public class Company : INamedSubject {
 
     [NotMapped]
     [Display(GroupName = "Summary")]
+    [Attribute]
     public string Caption => $"Company {Code}";
 
     [Display(Name = "Name", ShortName = "Name", GroupName = "Summary")]

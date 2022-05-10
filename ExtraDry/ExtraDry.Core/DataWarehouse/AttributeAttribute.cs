@@ -34,6 +34,7 @@ public class AttributeAttribute : Attribute {
     /// <summary>
     /// If a value in the source database is null, the value that replaces it in the data warehouse.
     /// Attributes are not permitted to have NULL values in dimensions.
+    /// Default is '_NULL_'
     /// </summary>
     /// <remarks>
     /// For reasoning, see https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/kimball-techniques/dimensional-modeling-techniques/null-dimension-attribute/

@@ -34,7 +34,7 @@ public class Warehouse {
                 LoadClassFact(entity, factAttribute);
             }
         }
- 
+
     }
 
     private void LoadClassDimension(Type entity, DimensionTableAttribute dimensionAttribute)
@@ -54,6 +54,15 @@ public class Warehouse {
         else {
             AddKeyColumn(entity, table, $"{table.Name} ID");
         }
+
+        var attributes = GetAttributedProperties<AttributeAttribute>(entity);
+        foreach(var attribute in attributes) {
+            var name = attribute.Value.Name
+                ?? attribute.Key.PropertyType.GetCustomAttribute<DimensionTableAttribute>()?.Name
+                ?? attribute.Key.Name;
+            var column = EntityPropertyToColumn(entity, name, attribute.Key, true);
+            table.Columns.Add(column);
+        }
     }
 
     private void LoadClassFact(Type entity, FactTableAttribute factAttribute)
@@ -65,29 +74,35 @@ public class Warehouse {
 
         // TODO: Check against [Key] not an integer
 
-        var measures = GetMeasures(entity);
+        var measures = GetAttributedProperties<MeasureAttribute>(entity);
         foreach(var measure in measures) {
-            var name = measure.Value.Name;
-            name ??= measure.Key.PropertyType.GetCustomAttribute<DimensionTableAttribute>()?.Name;
-            name ??= measure.Key.Name;
-            var column = new Column(TypeToColumnType(measure.Key), name) {
-                PropertyInfo = measure.Key
-            };
-            if(measure.Key.PropertyType.IsEnum) {
-                var dimension = Dimensions.FirstOrDefault(e => e.EntityType == measure.Key.PropertyType);
-                if(dimension == null) {
-                    throw new DryException($"Can't create a foreign key reference {entity.Name}/{measure.Key.Name} as target is not configured as a Dimension");
-                }
-                var dimensionKey = dimension?.Columns.FirstOrDefault(e => e.ColumnType == ColumnType.Key);
-                if(dimensionKey == null) {
-                    throw new DryException($"Can't create a foreign key reference {entity.Name}/{measure.Key.Name} as target dimension does not have a Key attribute");
-                }
-                column.Name += " ID";
-                column.Reference = new Reference(dimension!, dimensionKey);
-            }
+            var name = measure.Value.Name
+                ?? measure.Key.PropertyType.GetCustomAttribute<DimensionTableAttribute>()?.Name
+                ?? measure.Key.Name;
+            var column = EntityPropertyToColumn(entity, name, measure.Key, false);
             table.Columns.Add(column);
-            // TODO: Warn if Measure is Text?  Maybe better in a analysis rule?
         }
+    }
+
+    private Column EntityPropertyToColumn(Type entity, string name, PropertyInfo property, bool allowString)
+    {
+        var column = new Column(TypeToColumnType(property, allowString), name) {
+            PropertyInfo = property,
+        };
+        if(property.PropertyType.IsEnum) {
+            var dimension = Dimensions.FirstOrDefault(e => e.EntityType == property.PropertyType);
+            if(dimension == null) {
+                throw new DryException($"Can't create a foreign key reference {entity.Name}/{property.Name} as target is not configured as a Dimension");
+            }
+            var dimensionKey = dimension?.Columns.FirstOrDefault(e => e.ColumnType == ColumnType.Key);
+            if(dimensionKey == null) {
+                throw new DryException($"Can't create a foreign key reference {entity.Name}/{property.Name} as target dimension does not have a Key attribute");
+            }
+            column.Name += " ID";
+            column.Reference = new Reference(dimension!, dimensionKey);
+        }
+
+        return column;
     }
 
     private static void AddKeyColumn(Type entity, Table table, string columnName)
@@ -104,14 +119,14 @@ public class Warehouse {
         });
     }
 
-    private static Dictionary<PropertyInfo, MeasureAttribute> GetMeasures(Type entity)
+    private static Dictionary<PropertyInfo, T> GetAttributedProperties<T>(Type entity) where T : Attribute
     {
         var properties = entity.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-        var measures = properties.Where(e => e.GetCustomAttribute<MeasureAttribute>() != null);
-        return measures.ToDictionary(e => e, e => e.GetCustomAttribute<MeasureAttribute>()!);
+        var attributes = properties.Where(e => e.GetCustomAttribute<T>() != null);
+        return attributes.ToDictionary(e => e, e => e.GetCustomAttribute<T>()!);
     }
 
-    private static ColumnType TypeToColumnType(PropertyInfo propertyInfo)
+    private static ColumnType TypeToColumnType(PropertyInfo propertyInfo, bool supportString)
     {
         var type = propertyInfo.PropertyType;
         if(type.IsAssignableTo(typeof(long))) {
@@ -120,14 +135,14 @@ public class Warehouse {
         else if(type.IsAssignableTo(typeof(double))) {
             return ColumnType.Double;
         }
-        else if(type.IsAssignableTo(typeof(string))) {
+        else if(supportString && type.IsAssignableTo(typeof(string))) {
             return ColumnType.Text;
         }
         else if(type.IsAssignableTo(typeof(Enum))) {
             return ColumnType.Integer; // Foreign Key
         }
         else {
-            throw new DryException($"Data type '{type.Name}' is not supported for a Measure {propertyInfo.DeclaringType?.Name}/{propertyInfo.Name}", "Internal error mapping to data warehouse 0x0F68CC98");
+            throw new DryException($"Data type '{type.Name}' is not supported for a Measure/Attribute {propertyInfo.DeclaringType?.Name}/{propertyInfo.Name}", "Internal error mapping to data warehouse 0x0F68CC98");
         }
     }
 
@@ -211,69 +226,7 @@ public class Warehouse {
 
     public IList<Table> Dimensions { get; set; } = new List<Table>();
 
-    public string GenerateSql() => 
-        string.Join("\n", Dimensions.Union(Facts).Select(e => SqlTable(e))) +
-        string.Join("\n", Dimensions.Union(Facts).Select(e => SqlData(e)));
+    public string GenerateSql() => new SqlGenerator().Generate(this);
 
-    private static string SqlTable(Table table) =>
-        $"CREATE TABLE [{table.Name}] (\n    {SqlColumns(table.Columns)}\n    {SqlConstraints(table)}\n)\nGO\n";
-
-    private static string SqlConstraints(Table table) =>
-        string.Join(",\n    ", table.Columns.Where(e => e.Reference != null).Select(e => SqlFKConstraint(table, e)));
-
-    private static string SqlFKConstraint(Table table, Column column) =>
-        $"CONSTRAINT FK_{table.EntityType.Name}_{column.PropertyInfo!.Name} FOREIGN KEY ([{column.Name}]) REFERENCES [{column.Reference!.Table.Name}]([{column.Reference!.Column.Name}])";
-
-    private static string SqlColumns(IEnumerable<Column> columns) =>
-        string.Join(",\n    ", columns.Select(e => SqlColumn(e)));
-
-    private static string SqlColumn(Column column) =>
-        $"[{column.Name}] {SqlColumnType(column)}";
-
-    private static string SqlColumnType(Column column) =>
-        (column.ColumnType, column.Nullable) switch {
-            (ColumnType.Key, _) => "INT NOT NULL PRIMARY KEY",
-            (ColumnType.Double, false) => "REAL NOT NULL",
-            (ColumnType.Double, true) => "REAL",
-            (ColumnType.Integer, false) => "INT NOT NULL",
-            (ColumnType.Integer, true) => "INT",
-            (_, false) => $"{SqlVarchar(column.Length)} NOT NULL",
-            (_, _) => SqlVarchar(column.Length),
-        };
-
-    private static string SqlVarchar(int length) => 
-        length switch {
-            0 => $"NVARCHAR(Max)",
-            _ => $"NVARCHAR({length})",
-        };
-
-    private static string SqlData(Table table) => !table.Data.Any() ? "" :
-        $"{SqlInsertInto(table)}";
-
-    private static string SqlInsertInto(Table table) =>
-        $"INSERT INTO [{table.Name}] \n    ({SqlInsertColumnNames(table)})\nVALUES\n    {SqlInsertColumnValues(table)}\nGO\n";
-
-    private static string SqlInsertColumnNames(Table table) =>
-        string.Join(", ", table.Columns.Select(e => $"[{e.Name}]"));
-
-    private static string SqlInsertColumnValues(Table table) =>
-        string.Join(",\n    ", table.Data.Select(e => SqlInsertColumnValues(table, e)));
-
-    private static string SqlInsertColumnValues(Table table, Dictionary<string, object> values) =>
-        $"({SqlInsertColumnValues(table.Columns.Select(e => values[e.Name]))})";
-
-    private static string SqlInsertColumnValues(IEnumerable<object> values) =>
-        string.Join(", ", values.Select(e => SqlInsertColumnValue(e)));
-
-    private static string SqlInsertColumnValue(object value)
-    {
-        if(value is string sValue) {
-            var escapedValue = sValue.Replace("'", "''");
-            return $"'{escapedValue}'";
-        }
-        else {
-            return value.ToString()!;
-        }
-    }
 }
 
