@@ -27,7 +27,7 @@ public class AttributeAttribute : Attribute {
 
     /// <summary>
     /// The name to use for the data warehouse attribute column.  
-    /// If `null`, then the name is inferred from the Property's name.
+    /// If `null`, then the name is inferred from the property's name.
     /// </summary>
     public string? Name { get; set; }
 
