@@ -35,10 +35,10 @@ public class Sector : INamedSubject {
     /// The title of the sector
     /// </summary>
     /// <example>Commerical Electrical Services</example>
-    [Required]
-    [MaxLength(50)]
+    [Required, MaxLength(50)]
     [Display(Name = "Title", ShortName = "Title")]
     [Filter(FilterType.Contains)]
+    [Attribute]
     public string Title { get; set; }
 
     /// <summary>
@@ -48,6 +48,7 @@ public class Sector : INamedSubject {
     [MaxLength(250)]
     [Display(Name = "Description")]
     [Filter(FilterType.Contains)]
+    [Attribute]
     public string Description { get; set; }
 
     [NotMapped]
@@ -58,6 +59,7 @@ public class Sector : INamedSubject {
     /// </summary>
     [Rules(DeleteValue = SectorState.Inactive)]
     [Filter(FilterType.Equals)]
+    [Attribute]
     public SectorState State { get; set;  }
 
     /// <summary>
