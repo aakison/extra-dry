@@ -23,6 +23,8 @@ public abstract class TableBuilder {
         return keyProperty;
     }
 
+    internal abstract bool HasColumnNamed(string name);
+
     protected void LoadKeyColumn(PropertyInfo property)
     {
         // TODO: Check against [Key] not an integer

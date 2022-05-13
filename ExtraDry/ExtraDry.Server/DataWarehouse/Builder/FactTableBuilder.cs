@@ -27,56 +27,6 @@ public abstract class FactTableBuilder : TableBuilder {
         }
     }
 
-    private FactTableAttribute? FactTableAttribute { get; set; }
-
-    private Dictionary<string, MeasureBuilder> MeasureBuilders { get; } = new Dictionary<string, MeasureBuilder>();
-
-    private void LoadMeasure(PropertyInfo measure)
-    {
-        if(TableEntityType == null) {
-            throw new DryException("Must load schema first.");
-        }
-        var builder = new MeasureBuilder(this, TableEntityType, measure);
-        MeasureBuilders.Add(measure.Name, builder);
-        //    Measure(measure.Name);
-        //var name = measure.Value.Name
-        //    ?? measure.Key.PropertyType.GetCustomAttribute<DimensionTableAttribute>()?.Name
-        //    ?? measure.Key.Name;
-        //var column = EntityPropertyToColumn(entity, name, measure.Key, false);
-        //table.Columns.Add(column);
-    }
-
-    private IEnumerable<PropertyInfo> GetMeasureProperties()
-    {
-        if(TableEntityType == null) {
-            throw new DryException("Must load a schema first");
-        }
-        return TableEntityType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
-            .Where(e => IsMeasureProperty(e));
-    }
-
-    private bool IsMeasureProperty(PropertyInfo property)
-    {
-        // Get by type.
-        var isMeasure = measureTypes.Contains(property.PropertyType);
-        // Override those those that should be hidden by convention.
-        if(property.GetCustomAttribute<NotMappedAttribute>() != null) {
-            isMeasure = false;
-        }
-        // Add in explicit measures.
-        if(property.GetCustomAttribute<MeasureAttribute>() != null) {
-            isMeasure = true;
-        }
-        // Unless explicity also ignored, e.g. for testing.
-        if(property.GetCustomAttribute<MeasureIgnoreAttribute>() != null) {
-            isMeasure = false;
-        }
-        return isMeasure;
-    }
-
-    private readonly Type[] measureTypes = new Type[] { typeof(decimal), typeof(float), typeof(int), 
-        typeof(double), typeof(long), typeof(short), typeof(uint), typeof(sbyte) };
-
     public Table Build()
     {
         if(TableEntityType == null || TableName == null || KeyBuilder == null) {
@@ -107,6 +57,61 @@ public abstract class FactTableBuilder : TableBuilder {
     {
         return MeasureBuilders[name];
     }
+
+    internal override bool HasColumnNamed(string name) => 
+        KeyBuilder?.ColumnName == name || MeasureBuilders.Values.Any(e => e.ColumnName == name);
+
+    private bool IsMeasureProperty(PropertyInfo property)
+    {
+        // Get by type.
+        var isMeasure = measureTypes.Contains(property.PropertyType);
+        // Override those those that should be hidden by convention.
+        if(property.GetCustomAttribute<NotMappedAttribute>() != null) {
+            isMeasure = false;
+        }
+        // Add in explicit measures.
+        if(property.GetCustomAttribute<MeasureAttribute>() != null) {
+            isMeasure = true;
+        }
+        // Unless explicity also ignored, e.g. for testing.
+        if(property.GetCustomAttribute<MeasureIgnoreAttribute>() != null) {
+            isMeasure = false;
+        }
+        return isMeasure;
+    }
+
+    private readonly Type[] measureTypes = new Type[] { typeof(decimal), typeof(float), typeof(int),
+        typeof(double), typeof(long), typeof(short), typeof(uint), typeof(sbyte) };
+
+    private FactTableAttribute? FactTableAttribute { get; set; }
+
+    private Dictionary<string, MeasureBuilder> MeasureBuilders { get; } = new Dictionary<string, MeasureBuilder>();
+
+    private void LoadMeasure(PropertyInfo measure)
+    {
+        if(TableEntityType == null) {
+            throw new DryException("Must load schema first.");
+        }
+        var builder = new MeasureBuilder(this, TableEntityType, measure);
+        MeasureBuilders.Add(measure.Name, builder);
+        //    Measure(measure.Name);
+        //var name = measure.Value.Name
+        //    ?? measure.Key.PropertyType.GetCustomAttribute<DimensionTableAttribute>()?.Name
+        //    ?? measure.Key.Name;
+        //var column = EntityPropertyToColumn(entity, name, measure.Key, false);
+        //table.Columns.Add(column);
+    }
+
+    private IEnumerable<PropertyInfo> GetMeasureProperties()
+    {
+        if(TableEntityType == null) {
+            throw new DryException("Must load a schema first");
+        }
+        return TableEntityType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
+            .Where(e => IsMeasureProperty(e));
+    }
+
+
 }
 
 public class FactTableBuilder<T> : FactTableBuilder {

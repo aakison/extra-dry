@@ -56,6 +56,74 @@ public class WarehouseMeasureTests {
         Assert.Contains(fact.Columns, e => e.Name == "Gross Margin" && e.ColumnType == ColumnType.Decimal);
     }
 
+    [Theory]
+    [InlineData(typeof(EmptyMeasureNameContext))]
+    [InlineData(typeof(BlankMeasureNameContext))]
+    public void BadMeasureNameThrowsException(Type type)
+    {
+        var builder = new WarehouseModelBuilder();
+        Assert.Throws<DryException>(() => builder.LoadSchema(type));
+    }
+
+    [Theory]
+    [InlineData("0123456789012345678901234567890123456789012345678901")]
+    [InlineData("")]
+    [InlineData("     ")]
+    public void BadMeasureNameInFluent(string name)
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<MeasureContext>();
+
+        Assert.Throws<DryException>(() => builder.FactTable<MeasureContainer>().Measure(e => e.GrossSalesLessCOGS).HasName(name));
+    }
+
+    [Theory]
+    [InlineData("012345678901234567890123456789012345678901234567")]
+    [InlineData("!!!")]
+    [InlineData("!@#$")]
+    public void WackyButValidMeasureNameInFluent(string name)
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<MeasureContext>();
+
+        builder.FactTable<MeasureContainer>().Measure(e => e.GrossSalesLessCOGS).HasName(name);
+
+        var warehouse = builder.Build();
+        var fact = warehouse.Facts.Single(e => e.EntityType == typeof(MeasureContainer));
+        Assert.Contains(fact.Columns, e => e.Name == name);
+    }
+
+    [Fact]
+    public void CanChangeToValidTypeViaFluent()
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<MeasureContext>();
+
+        builder.FactTable<MeasureContainer>().Measure(e => e.Gross).HasColumnType(ColumnType.Double);
+
+        var warehouse = builder.Build();
+        var fact = warehouse.Facts.Single(e => e.EntityType == typeof(MeasureContainer));
+        Assert.Contains(fact.Columns, e => e.Name == "Gross" && e.ColumnType == ColumnType.Double);
+    }
+
+    [Fact]
+    public void CannotChangeToInvalidTypeViaFluent()
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<MeasureContext>();
+
+        Assert.Throws<DryException>(() => builder.FactTable<MeasureContainer>().Measure(e => e.Gross).HasColumnType(ColumnType.Text));
+    }
+
+    [Fact]
+    public void CannotHaveDuplicateMeasureNames()
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<MeasureContext>();
+
+        Assert.Throws<DryException>(() => builder.FactTable<MeasureContainer>().Measure(e => e.Gross).HasName("Big Bucks"));
+    }
+
 }
 
 public class MeasureContext : DbContext {
@@ -101,3 +169,31 @@ public class MeasureContainer {
 
     public decimal GrossSalesLessCOGS { get; set; }
 }
+
+public class EmptyMeasureNameContext : DbContext {
+
+    [FactTable]
+    public class BadClass {
+
+        [Measure("")]
+        public decimal GoodName { get; set; }
+
+    }
+
+    public DbSet<BadClass> BadClasses { get; set; } = null!;
+}
+
+
+public class BlankMeasureNameContext : DbContext {
+
+    [FactTable]
+    public class BadClass {
+
+        [Measure("   ")]
+        public decimal GoodName { get; set; }
+
+    }
+
+    public DbSet<BadClass> BadClasses { get; set; } = null!;
+}
+

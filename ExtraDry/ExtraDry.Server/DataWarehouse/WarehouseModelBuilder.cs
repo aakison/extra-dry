@@ -8,7 +8,12 @@ public class WarehouseModelBuilder {
 
     public void LoadSchema<T>() where T : DbContext
     {
-        var entityTypes = GetEntities<T>();
+        LoadSchema(typeof(T));
+    }
+
+    public void LoadSchema(Type contextType)
+    {
+        var entityTypes = GetEntities(contextType);
 
         //var assemblies = entityTypes.Select(e => e.Assembly).Distinct().ToList();
 
@@ -35,7 +40,6 @@ public class WarehouseModelBuilder {
                 LoadClassFact(entity);
             }
         }
-
     }
 
     private void LoadClassFact(Type entity)
@@ -47,9 +51,9 @@ public class WarehouseModelBuilder {
         FactTables.Add(entity, factTableBuilder);
     }
 
-    private static IEnumerable<Type> GetEntities<T>() where T : DbContext
+    private static IEnumerable<Type> GetEntities(Type tableType)
     {
-        var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        var properties = tableType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
         foreach(var property in properties) {
             var type = property.PropertyType;
             if(type.IsGenericType && type.GetGenericTypeDefinition() == typeof(DbSet<>)) {
