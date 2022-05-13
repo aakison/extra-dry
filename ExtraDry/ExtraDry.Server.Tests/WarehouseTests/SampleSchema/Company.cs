@@ -47,8 +47,6 @@ public class Company : INamedSubject {
     [Measure("Big Bucks")]
     public decimal AnnualRevenue { get; set; }
 
-    public decimal GrossSalesLessCOGS { get; set; }
-
     [Display]
     [Rules(RuleAction.Allow)]
     public BankingDetails BankingDetails { get; set; } = new BankingDetails();

@@ -48,19 +48,6 @@ public class WarehouseFactTests {
         Assert.Contains(fact.Columns, e => e.Name == title && e.ColumnType == columnType);
     }
 
-    [Fact]
-    public void FactHasFluentRenameOfMeasure()
-    {
-        var builder = new WarehouseModelBuilder();
-        builder.LoadSchema<SampleContext>();
-
-        builder.FactTable<Company>().Measure(e => e.GrossSalesLessCOGS).HasName("Gross Margin");
-        
-        var warehouse = builder.Build();
-        var fact = warehouse.Facts.Single(e => e.EntityType == typeof(Company));
-        Assert.Contains(fact.Columns, e => e.Name == "Gross Margin" && e.ColumnType == ColumnType.Decimal);
-    }
-
     [Theory]
     [InlineData(typeof(Company), "Title")] // Regular string column
     [InlineData(typeof(Company), "Code")] // String column with Measure attribute.

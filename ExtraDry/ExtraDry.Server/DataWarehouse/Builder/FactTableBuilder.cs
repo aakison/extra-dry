@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace ExtraDry.Server.DataWarehouse.Builder;
@@ -22,9 +23,7 @@ public abstract class FactTableBuilder : TableBuilder {
 
         var measureProperties = GetMeasureProperties();
         foreach(var measure in measureProperties) {
-            if(measure.PropertyType != keyProperty.PropertyType) {
-                LoadMeasure(measure);
-            }
+            LoadMeasure(measure);
         }
     }
 
@@ -53,10 +52,27 @@ public abstract class FactTableBuilder : TableBuilder {
             throw new DryException("Must load a schema first");
         }
         return TableEntityType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
-            .Where(e => IsMeasureType(e.PropertyType));
+            .Where(e => IsMeasureProperty(e));
     }
 
-    private bool IsMeasureType(Type type) => measureTypes.Contains(type);
+    private bool IsMeasureProperty(PropertyInfo property)
+    {
+        // Get by type.
+        var isMeasure = measureTypes.Contains(property.PropertyType);
+        // Override those those that should be hidden by convention.
+        if(property.GetCustomAttribute<NotMappedAttribute>() != null) {
+            isMeasure = false;
+        }
+        // Add in explicit measures.
+        if(property.GetCustomAttribute<MeasureAttribute>() != null) {
+            isMeasure = true;
+        }
+        // Unless explicity also ignored, e.g. for testing.
+        if(property.GetCustomAttribute<MeasureIgnoreAttribute>() != null) {
+            isMeasure = false;
+        }
+        return isMeasure;
+    }
 
     private readonly Type[] measureTypes = new Type[] { typeof(decimal), typeof(float), typeof(int), 
         typeof(double), typeof(long), typeof(short), typeof(uint), typeof(sbyte) };
