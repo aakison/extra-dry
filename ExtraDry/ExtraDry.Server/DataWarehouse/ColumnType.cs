@@ -22,6 +22,11 @@ public enum ColumnType {
     Double,
 
     /// <summary>
+    /// A decimal/money field that has a fixed precision.
+    /// </summary>
+    Decimal,
+
+    /// <summary>
     /// A text column, length of text specified in Column's Length property.
     /// </summary>
     Text,

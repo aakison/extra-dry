@@ -24,4 +24,5 @@ public class MeasureAttribute : Attribute {
     /// If `null`, then the name is inferred from the property's name.
     /// </summary>
     public string? Name { get; set; }
+
 }

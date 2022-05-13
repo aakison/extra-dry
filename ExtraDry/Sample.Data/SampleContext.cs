@@ -37,6 +37,7 @@ namespace Sample.Data {
                 e => JsonSerializer.Serialize(e, (JsonSerializerOptions?)null),
                 e => JsonSerializer.Deserialize<ContentLayout>(e, (JsonSerializerOptions?)null) ?? new());
 
+            //modelBuilder.Entity<Content>().Property(e => e.Layout).HasColumnType()
         }
     }
 }

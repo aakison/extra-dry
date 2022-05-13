@@ -1,10 +1,14 @@
-﻿namespace ExtraDry.Server.DataWarehouse;
+﻿namespace ExtraDry.Server.DataWarehouse.Builder;
 
 internal class SqlGenerator {
 
     public string Generate(Warehouse warehouse) =>
         string.Join("\n", warehouse.Dimensions.Union(warehouse.Facts).Select(e => SqlTable(e))) +
         string.Join("\n", warehouse.Dimensions.Union(warehouse.Facts).Select(e => SqlData(e)));
+
+    public string Generate(WarehouseModel warehouse) =>
+    string.Join("\n", warehouse.Dimensions.Union(warehouse.Facts).Select(e => SqlTable(e))) +
+    string.Join("\n", warehouse.Dimensions.Union(warehouse.Facts).Select(e => SqlData(e)));
 
     private static string SqlTable(Table table) =>
         $"CREATE TABLE [{table.Name}] (\n    {SqlColumns(table.Columns)}\n    {SqlConstraints(table)}\n)\nGO\n";

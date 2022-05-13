@@ -5,8 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sample.Shared;
 
-[FactTable, DimensionTable]
 [Format(Icon = "building")]
+[FactTable]
 public class Company : INamedSubject {
 
     [Key]
@@ -23,14 +23,12 @@ public class Company : INamedSubject {
 
     [Display(Name = "Name", ShortName = "Name", GroupName = "Summary")]
     [Filter(FilterType.Contains)]
-    [Attribute]
     [Rules(RuleAction.IgnoreDefaults)]
     [Required, StringLength(80)]
     public string Title { get; set; }
 
     [Display(Name = "Code", GroupName = "Summary")]
     [Filter(FilterType.Equals)]
-    [Attribute]
     [Rules(CreateAction = RuleAction.Allow, UpdateAction = RuleAction.Block)]
     [Required, StringLength(24)]
     public string Code { get; set; }
@@ -38,7 +36,6 @@ public class Company : INamedSubject {
     [Display(Name = "Status", ShortName = "Status", GroupName = "Status")]
     [Rules(RuleAction.Allow)]
     [Filter]
-    [Measure]
     public CompanyStatus Status { get; set; }
 
     [Display]
@@ -54,6 +51,10 @@ public class Company : INamedSubject {
     [Display]
     [Rules(RuleAction.Link)]
     public List<Sector> AdditionalSectors { get; set; }
+
+    public decimal AnnualRevenue { get; set; }
+
+    public decimal SalesMargin { get; set; }
 
     [Display]
     [Rules(RuleAction.Allow)]

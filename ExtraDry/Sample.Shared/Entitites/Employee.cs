@@ -2,7 +2,6 @@
 
 namespace Sample.Shared;
 
-[DimensionTable]
 public class Employee
 {
     [Key]
