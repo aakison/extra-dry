@@ -10,9 +10,10 @@ public class WarehouseFactTests {
     [InlineData(typeof(Employee), "Worker Bees")]
     public void EntityBecomesFact(Type entityType, string title)
     {
-        var warehouse = new Warehouse();
-        
-        warehouse.CreateSchema(context);
+        var builder = new WarehouseModelBuilder();
+
+        builder.LoadSchema<SampleContext>();
+        var warehouse = builder.Build();
 
         Assert.Contains(warehouse.Facts, e => e.EntityType == entityType && e.Name == title);
     }
@@ -22,35 +23,66 @@ public class WarehouseFactTests {
     [InlineData(typeof(RegionLevel))]
     public void EntityDoesNotBecomeFact(Type entityType)
     {
-        var warehouse = new Warehouse();
+        var builder = new WarehouseModelBuilder();
 
-        warehouse.CreateSchema(context);
+        builder.LoadSchema<SampleContext>();
+        var warehouse = builder.Build();
 
         Assert.DoesNotContain(warehouse.Facts, e => e.EntityType == entityType);
     }
 
     [Theory]
-    [InlineData(typeof(Company), "Company ID", ColumnType.Integer)] // Key Column naming convention
-    [InlineData(typeof(Company), "Title", ColumnType.Text)] // Normal column naming convention
-    [InlineData(typeof(Company), "The Code", ColumnType.Text)] // Measure renamed column explicity
-    [InlineData(typeof(Company), "Company Status ID", ColumnType.Integer)] // Dimension PK naming convention.
+    [InlineData(typeof(Company), "Company ID", ColumnType.Key)] // Key Column naming convention
+    [InlineData(typeof(Company), "Gross", ColumnType.Decimal)] // Simple property, no decoration or special handling
+    [InlineData(typeof(Company), "Sales Margin", ColumnType.Decimal)] // Simple property, name title cased by default.
+    [InlineData(typeof(Company), "Big Bucks", ColumnType.Decimal)] // Measure attribute rename
+    //[InlineData(typeof(Company), "Company Status ID", ColumnType.Integer)] // Dimension PK naming convention.
     public void FactHasColumn(Type entityType, string title, ColumnType columnType)
     {
-        var warehouse = new Warehouse();
+        var builder = new WarehouseModelBuilder();
 
-        warehouse.CreateSchema(context);
+        builder.LoadSchema<SampleContext>();
+        var warehouse = builder.Build();
 
         var fact = warehouse.Facts.Single(e => e.EntityType == entityType);
         Assert.Contains(fact.Columns, e => e.Name == title && e.ColumnType == columnType);
+    }
+
+    [Fact]
+    public void FactHasFluentRenameOfMeasure()
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<SampleContext>();
+
+        builder.FactTable<Company>().Measure(e => e.GrossSalesLessCOGS).HasName("Gross Margin");
+        
+        var warehouse = builder.Build();
+        var fact = warehouse.Facts.Single(e => e.EntityType == typeof(Company));
+        Assert.Contains(fact.Columns, e => e.Name == "Gross Margin" && e.ColumnType == ColumnType.Decimal);
+    }
+
+    [Theory]
+    [InlineData(typeof(Company), "Title")] // Regular string column
+    [InlineData(typeof(Company), "Code")] // String column with Measure attribute.
+    public void FactDoesNotHaveColumn(Type entityType, string title)
+    {
+        var builder = new WarehouseModelBuilder();
+
+        builder.LoadSchema<SampleContext>();
+        var warehouse = builder.Build();
+
+        var fact = warehouse.Facts.Single(e => e.EntityType == entityType);
+        Assert.DoesNotContain(fact.Columns, e => e.Name == title);
     }
 
     [Theory]
     [InlineData(typeof(Company))]
     public void FactHasNoData(Type entityType)
     {
-        var warehouse = new Warehouse();
+        var builder = new WarehouseModelBuilder();
 
-        warehouse.CreateSchema(context);
+        builder.LoadSchema<SampleContext>();
+        var warehouse = builder.Build();
 
         var fact = warehouse.Facts.Single(e => e.EntityType == entityType);
         Assert.Empty(fact.Data);

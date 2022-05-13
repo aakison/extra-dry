@@ -21,26 +21,33 @@ public class Company : INamedSubject {
 
     [Display(Name = "Name", ShortName = "Name", GroupName = "Summary")]
     [Filter(FilterType.Contains)]
-    [Measure]
     [Rules(RuleAction.IgnoreDefaults)]
     public string Title { get; set; }
 
     [Display(Name = "Code", GroupName = "Summary")]
     [Filter(FilterType.Equals)]
-    [Measure(Name = "The Code")]
     [Rules(CreateAction = RuleAction.Allow, UpdateAction = RuleAction.Block)]
+    [Measure("For testing, should be ignored as type is `string`.")]
     public string Code { get; set; }
 
     [Display(Name = "Status", ShortName = "Status", GroupName = "Status")]
     [Rules(RuleAction.Allow)]
     [Filter]
-    [Measure]
     public CompanyStatus Status { get; set; }
 
     [Display]
     [MaxLength(1000)]
     [Rules(RuleAction.IgnoreDefaults)]
     public string Description { get; set; }
+
+    public decimal Gross { get; set; }
+
+    public decimal SalesMargin { get; set; }
+
+    [Measure("Big Bucks")]
+    public decimal AnnualRevenue { get; set; }
+
+    public decimal GrossSalesLessCOGS { get; set; }
 
     [Display]
     [Rules(RuleAction.Allow)]
