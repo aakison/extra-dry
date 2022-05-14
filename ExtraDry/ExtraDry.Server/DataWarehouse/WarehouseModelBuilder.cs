@@ -1,5 +1,6 @@
 ﻿using ExtraDry.Server.DataWarehouse.Builder;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using System.Reflection;
 
 namespace ExtraDry.Server.DataWarehouse;
@@ -44,11 +45,27 @@ public class WarehouseModelBuilder {
 
     private void LoadClassFact(Type entity)
     {
-        Type factTableBuilderType = typeof(FactTableBuilder<>).MakeGenericType(entity);
-        var factTableBuilder = Activator.CreateInstance(factTableBuilderType, true) as FactTableBuilder 
-            ?? throw new DryException("Couldn't create instance of FactBuilderTable");
-        factTableBuilder.LoadFactTable(this, entity);
-        FactTables.Add(entity, factTableBuilder);
+        // To activate, need type, args and indicator that the constructor is not public, tricky to get right overload...
+        var factTableBuilderType = typeof(FactTableBuilder<>).MakeGenericType(entity);
+        var args = new object[] { this, entity };
+        var binding = BindingFlags.NonPublic | BindingFlags.Instance;
+        var binder = (Binder?)null;
+        var culture = CultureInfo.InvariantCulture;
+        try {
+            var factTableBuilder = Activator.CreateInstance(factTableBuilderType, binding, binder, args, culture) as FactTableBuilder
+                //var factTableBuilder = Activator.CreateInstance(factTableBuilderType, true) as FactTableBuilder 
+                ?? throw new DryException("Couldn't create instance of FactBuilderTable");
+            FactTables.Add(entity, factTableBuilder);
+        }
+        catch(TargetInvocationException ex) {
+            // Unwrap invocation and throw as if reflection wasn't being used.
+            if(ex.InnerException is DryException dryEx) {
+                throw dryEx;
+            }
+            else {
+                throw;
+            }
+        }
     }
 
     private static IEnumerable<Type> GetEntities(Type tableType)

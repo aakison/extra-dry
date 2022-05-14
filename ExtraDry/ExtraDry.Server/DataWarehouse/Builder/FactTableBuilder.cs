@@ -6,20 +6,16 @@ namespace ExtraDry.Server.DataWarehouse.Builder;
 
 public abstract class FactTableBuilder : TableBuilder {
 
-    internal FactTableBuilder() { }
-
-    public void LoadFactTable(WarehouseModelBuilder warehouseBuilder, Type entity)
-    {
-        WarehouseBuilder = warehouseBuilder;
-        TableEntityType = entity;
-
+    internal FactTableBuilder(WarehouseModelBuilder warehouseBuilder, Type entity) 
+        : base(warehouseBuilder, entity)
+    { 
         FactTableAttribute = entity.GetCustomAttribute<FactTableAttribute>() ??
             throw new DryException($"Entity {entity.Name} must have a [FactTable] attribute.");
 
-        HasName(FactTableAttribute.Name ?? DataConverter.CamelCaseToTitleCase(entity.Name));
-
-        var keyProperty = GetKeyProperty();
-        LoadKeyColumn(keyProperty);
+        if(FactTableAttribute.Name != null) {
+            HasName(FactTableAttribute.Name);
+            HasKey().HasName($"{FactTableAttribute.Name} ID");
+        }
 
         var measureProperties = GetMeasureProperties();
         foreach(var measure in measureProperties) {
@@ -40,16 +36,7 @@ public abstract class FactTableBuilder : TableBuilder {
 
     public FactTableBuilder HasName(string name)
     {
-        if(WarehouseBuilder == null) {
-            throw new DryException("Must load a schema first");
-        }
-        if(string.IsNullOrWhiteSpace(name)) {
-            throw new DryException("Name must not be empty.");
-        }
-        if(WarehouseBuilder.HasTableNamed(name)) {
-            throw new DryException("Names for tables must be unique, {name} is duplicated.");
-        }
-        TableName = name;
+        SetName(name);
         return this;
     }
 
@@ -59,7 +46,7 @@ public abstract class FactTableBuilder : TableBuilder {
     }
 
     internal override bool HasColumnNamed(string name) => 
-        KeyBuilder?.ColumnName == name || MeasureBuilders.Values.Any(e => e.ColumnName == name);
+        KeyBuilder.ColumnName == name || MeasureBuilders.Values.Any(e => e.ColumnName == name);
 
     private bool IsMeasureProperty(PropertyInfo property)
     {
@@ -116,7 +103,10 @@ public abstract class FactTableBuilder : TableBuilder {
 
 public class FactTableBuilder<T> : FactTableBuilder {
 
-    internal FactTableBuilder() { }
+    internal FactTableBuilder(WarehouseModelBuilder warehouseModel, Type entity) 
+        : base(warehouseModel, entity)
+    { 
+    }
 
     public MeasureBuilder Measure<TProperty>(Expression<Func<T, TProperty>> propertyExpression)
     {

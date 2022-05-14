@@ -4,12 +4,21 @@ namespace ExtraDry.Server.DataWarehouse.Builder;
 
 public abstract class TableBuilder {
 
-    public KeyBuilder HasKey()
+    protected TableBuilder(WarehouseModelBuilder warehouseBuilder, Type entity)
     {
-        return KeyBuilder ?? throw new DryException("Must load a schema before accessing the Key.");
+        WarehouseBuilder = warehouseBuilder;
+        TableEntityType = entity;
+        TableName = DataConverter.CamelCaseToTitleCase(entity.Name);
+        var keyProperty = GetKeyProperty();
+        KeyBuilder = new KeyBuilder(this, TableEntityType, keyProperty);
     }
 
-    public string? TableName { get; protected set; }
+    public KeyBuilder HasKey()
+    {
+        return KeyBuilder;
+    }
+
+    public string TableName { get; private set; }
 
     protected PropertyInfo GetKeyProperty()
     {
@@ -31,13 +40,26 @@ public abstract class TableBuilder {
         if(TableEntityType == null) {
             throw new DryException("Must load a schema first");
         }
-        KeyBuilder = new KeyBuilder(this, TableEntityType, property);
     }
 
-    protected KeyBuilder? KeyBuilder { get; set; }
+    protected void SetName(string name)
+    {
+        if(WarehouseBuilder == null) {
+            throw new DryException("Must load a schema first");
+        }
+        if(string.IsNullOrWhiteSpace(name)) {
+            throw new DryException("Name must not be empty.");
+        }
+        if(WarehouseBuilder.HasTableNamed(name)) {
+            throw new DryException("Names for tables must be unique, {name} is duplicated.");
+        }
+        TableName = name;
+    }
 
-    protected Type? TableEntityType { get; set; }
+    protected KeyBuilder KeyBuilder { get; }
 
-    protected WarehouseModelBuilder? WarehouseBuilder { get; set; }
+    protected Type TableEntityType { get; }
+
+    protected WarehouseModelBuilder WarehouseBuilder { get; }
 
 }
