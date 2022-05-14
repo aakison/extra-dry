@@ -8,8 +8,7 @@ public abstract class FactTableBuilder : TableBuilder {
     internal FactTableBuilder(WarehouseModelBuilder warehouseBuilder, Type entity) 
         : base(warehouseBuilder, entity)
     { 
-        FactTableAttribute = entity.GetCustomAttribute<FactTableAttribute>() ??
-            throw new DryException($"Entity {entity.Name} must have a [FactTable] attribute.");
+        FactTableAttribute = entity.GetCustomAttribute<FactTableAttribute>()!;
 
         if(FactTableAttribute.Name != null) {
             HasName(FactTableAttribute.Name);
@@ -24,9 +23,6 @@ public abstract class FactTableBuilder : TableBuilder {
 
     public Table Build()
     {
-        if(TableEntityType == null || TableName == null || KeyBuilder == null) {
-            throw new DryException("Must load a schema first");
-        }
         var table = new Table(TableEntityType, TableName);
         table.Columns.Add(KeyBuilder.Build());
         table.Columns.AddRange(MeasureBuilders.Values.Where(e => !e.Ignore).Select(e => e.Build()));
@@ -60,15 +56,12 @@ public abstract class FactTableBuilder : TableBuilder {
     private readonly Type[] measureTypes = new Type[] { typeof(decimal), typeof(float), typeof(int),
         typeof(double), typeof(long), typeof(short), typeof(uint), typeof(sbyte) };
 
-    private FactTableAttribute? FactTableAttribute { get; set; }
+    private FactTableAttribute FactTableAttribute { get; set; }
 
     private Dictionary<string, MeasureBuilder> MeasureBuilders { get; } = new Dictionary<string, MeasureBuilder>();
 
     private void LoadMeasure(PropertyInfo measure)
     {
-        if(TableEntityType == null) {
-            throw new DryException("Must load schema first.");
-        }
         var builder = new MeasureBuilder(this, TableEntityType, measure);
         MeasureBuilders.Add(measure.Name, builder);
         //    Measure(measure.Name);
@@ -81,9 +74,6 @@ public abstract class FactTableBuilder : TableBuilder {
 
     private IEnumerable<PropertyInfo> GetMeasureProperties()
     {
-        if(TableEntityType == null) {
-            throw new DryException("Must load a schema first");
-        }
         return TableEntityType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
             .Where(e => IsMeasureProperty(e));
     }

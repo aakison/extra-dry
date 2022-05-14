@@ -32,6 +32,7 @@ public class WarehouseMeasureTests {
     [InlineData("ID")] // Key property doesn't slip through as measure.
     [InlineData("Name")] // String column not a measure.
     [InlineData("Sales")] // EF NotMappedAttribue suppresses by default.
+    [InlineData("Ignored")] // MeasureIgnoreAttribue suppresses.
     public void MeasureNotIncluded(string title)
     {
         var builder = new WarehouseModelBuilder();
@@ -124,6 +125,62 @@ public class WarehouseMeasureTests {
         Assert.Throws<DryException>(() => builder.FactTable<MeasureContainer>().Measure(e => e.Gross).HasName("Big Bucks"));
     }
 
+    [Fact]
+    public void FluentCanImplicitlyIgnoreMeasure()
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<MeasureContext>();
+
+        builder.FactTable<MeasureContainer>().Measure(e => e.AnnualRevenue).HasIgnore();
+        var warehouse = builder.Build();
+
+        var fact = warehouse.Facts.Single(e => e.EntityType == typeof(MeasureContainer));
+        Assert.DoesNotContain(fact.Columns, e => e.Name == "Annual Revenue");
+    }
+
+    [Fact]
+    public void FluentCanExplicitlyIgnoreMeasure()
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<MeasureContext>();
+
+        builder.FactTable<MeasureContainer>().Measure(e => e.AnnualRevenue).HasIgnore(true);
+        var warehouse = builder.Build();
+
+        var fact = warehouse.Facts.Single(e => e.EntityType == typeof(MeasureContainer));
+        Assert.DoesNotContain(fact.Columns, e => e.Name == "Annual Revenue");
+    }
+
+    [Fact]
+    public void FluentCanUnIgnoreMeasure()
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<MeasureContext>();
+
+        builder.FactTable<MeasureContainer>().Measure(e => e.Ignored).HasIgnore(false);
+        var warehouse = builder.Build();
+
+        var fact = warehouse.Facts.Single(e => e.EntityType == typeof(MeasureContainer));
+        Assert.Contains(fact.Columns, e => e.Name == "Ignored");
+    }
+
+    [Fact]
+    public void DuplicateNamesByConventionException()
+    {
+        var builder = new WarehouseModelBuilder();
+
+        Assert.Throws<DryException>(() => builder.LoadSchema<NameCollisionContext>());
+    }
+
+    [Fact]
+    public void DuplicateNamesByFluentException()
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<MeasureContext>();
+
+        Assert.Throws<DryException>(() => builder.FactTable<MeasureContainer>().Measure(e => e.Short).HasName("Integer"));
+    }
+
 }
 
 public class MeasureContext : DbContext {
@@ -168,6 +225,9 @@ public class MeasureContainer {
     public decimal Gifts { get; set; }
 
     public decimal GrossSalesLessCOGS { get; set; }
+
+    [MeasureIgnore]
+    public decimal Ignored { get; set; }
 }
 
 public class EmptyMeasureNameContext : DbContext {
@@ -183,7 +243,6 @@ public class EmptyMeasureNameContext : DbContext {
     public DbSet<BadClass> BadClasses { get; set; } = null!;
 }
 
-
 public class BlankMeasureNameContext : DbContext {
 
     [FactTable]
@@ -197,3 +256,16 @@ public class BlankMeasureNameContext : DbContext {
     public DbSet<BadClass> BadClasses { get; set; } = null!;
 }
 
+public class NameCollisionContext : DbContext {
+
+    [FactTable]
+    public class NameCollisionClass {
+
+        public decimal Name { get; set; }
+
+        [Measure("Name")]
+        public decimal Title { get; set; }
+    }
+
+    public DbSet<NameCollisionClass> NameCollisionClasses { get; set; } = null!;
+}
