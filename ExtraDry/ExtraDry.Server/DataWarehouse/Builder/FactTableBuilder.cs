@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Reflection;
 
 namespace ExtraDry.Server.DataWarehouse.Builder;
@@ -30,7 +29,7 @@ public abstract class FactTableBuilder : TableBuilder {
         }
         var table = new Table(TableEntityType, TableName);
         table.Columns.Add(KeyBuilder.Build());
-        table.Columns.AddRange(MeasureBuilders.Values.Select(e => e.Build()));
+        table.Columns.AddRange(MeasureBuilders.Values.Where(e => !e.Ignore).Select(e => e.Build()));
         return table;
     }
 
@@ -46,23 +45,14 @@ public abstract class FactTableBuilder : TableBuilder {
     }
 
     internal override bool HasColumnNamed(string name) => 
-        KeyBuilder.ColumnName == name || MeasureBuilders.Values.Any(e => e.ColumnName == name);
+        KeyBuilder?.ColumnName == name || MeasureBuilders.Values.Any(e => e.ColumnName == name);
 
     private bool IsMeasureProperty(PropertyInfo property)
     {
-        // Get by type.
         var isMeasure = measureTypes.Contains(property.PropertyType);
-        // Override those those that should be hidden by convention.
-        if(property.GetCustomAttribute<NotMappedAttribute>() != null) {
-            isMeasure = false;
-        }
         // Add in explicit measures.
         if(property.GetCustomAttribute<MeasureAttribute>() != null) {
             isMeasure = true;
-        }
-        // Unless explicity also ignored, e.g. for testing.
-        if(property.GetCustomAttribute<MeasureIgnoreAttribute>() != null) {
-            isMeasure = false;
         }
         return isMeasure;
     }
@@ -97,7 +87,6 @@ public abstract class FactTableBuilder : TableBuilder {
         return TableEntityType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
             .Where(e => IsMeasureProperty(e));
     }
-
 
 }
 

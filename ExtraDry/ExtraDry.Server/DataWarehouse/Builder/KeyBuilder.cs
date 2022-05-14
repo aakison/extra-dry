@@ -4,16 +4,17 @@ namespace ExtraDry.Server.DataWarehouse.Builder;
 
 public class KeyBuilder : ColumnBuilder {
 
-    internal KeyBuilder(TableBuilder tableBuilder, Type entityType, PropertyInfo propertyInfo) : base(tableBuilder, entityType, propertyInfo) { 
+    internal KeyBuilder(TableBuilder tableBuilder, Type entityType, PropertyInfo propertyInfo) 
+        : base(tableBuilder, entityType, propertyInfo) 
+    { 
         KeyAttribute = propertyInfo.GetCustomAttribute<KeyAttribute>();
-        ColumnName =  $"{tableBuilder.TableName} ID";
-        ColumnType = ColumnType.Key;
+        SetName($"{tableBuilder.TableName} ID");
+        SetType(ColumnType.Key);
     }
 
     public KeyBuilder HasName(string name)
     {
-        ColumnName = name;
-        // TODO: validate
+        SetName(name);
         return this;
     }
 

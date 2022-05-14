@@ -9,7 +9,14 @@ public abstract class ColumnBuilder {
         EntityType = entityType;
         PropertyInfo = propertyInfo;
         TableBuilder = tableBuilder;
+        ColumnName = DataConverter.CamelCaseToTitleCase(propertyInfo.Name);
     }
+
+    public string ColumnName { get; private set; }
+
+    public ColumnType ColumnType { get; private set; }
+
+    public bool Ignore { get; private set; }
 
     protected void SetName(string name)
     {
@@ -23,7 +30,6 @@ public abstract class ColumnBuilder {
         if(TableBuilder.HasColumnNamed(name)) {
             throw new DryException("Names for tables must be unique, {name} is duplicated.");
         }
-
         ColumnName = name;
     }
 
@@ -35,6 +41,11 @@ public abstract class ColumnBuilder {
         ColumnType = type;
     }
 
+    protected void SetIgnore(bool ignore)
+    {
+        Ignore = ignore;
+    }
+
     internal abstract Column Build();
 
     protected abstract bool IsValidColumnType(ColumnType type);
@@ -44,9 +55,5 @@ public abstract class ColumnBuilder {
     protected PropertyInfo PropertyInfo { get; set; }
 
     protected TableBuilder TableBuilder { get; set; }
-
-    public string ColumnName { get; protected set; } = null!;
-
-    public ColumnType ColumnType { get; protected set; }
 
 }

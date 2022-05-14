@@ -27,7 +27,7 @@ public class Company : INamedSubject {
     [Display(Name = "Code", GroupName = "Summary")]
     [Filter(FilterType.Equals)]
     [Rules(CreateAction = RuleAction.Allow, UpdateAction = RuleAction.Block)]
-    [Measure("For testing, should be ignored as type is `string`.")]
+    [Measure("For testing, ignored as type is `string`.")]
     public string Code { get; set; }
 
     [Display(Name = "Status", ShortName = "Status", GroupName = "Status")]
