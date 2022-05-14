@@ -58,4 +58,6 @@ public class Company : INamedSubject {
     [Rules(RuleAction.Block)]
     public VersionInfo Version { get; set; } = new VersionInfo();
 
+    // Not a measure as it's a field and not a property.
+    public decimal field;
 }

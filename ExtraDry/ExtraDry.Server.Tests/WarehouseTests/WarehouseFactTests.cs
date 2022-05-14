@@ -1,5 +1,4 @@
 ﻿using ExtraDry.Server.DataWarehouse;
-using Microsoft.EntityFrameworkCore;
 
 namespace ExtraDry.Server.Tests.WarehouseTests;
 
@@ -75,14 +74,22 @@ public class WarehouseFactTests {
         Assert.Empty(fact.Data);
     }
 
-    private readonly SampleContext context = GetDatabase();
-
-    private static SampleContext GetDatabase()
+    [Fact]
+    public void MethodExpressionThrowsException()
     {
-        var options = new DbContextOptionsBuilder<SampleContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .Options;
-        return new SampleContext(options);
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<SampleContext>();
+
+        Assert.Throws<DryException>(() => builder.FactTable<Company>().Measure(e => e.GetHashCode()));
+    }
+
+    [Fact]
+    public void FieldMemberExpressionThrowsException()
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<SampleContext>();
+
+        Assert.Throws<DryException>(() => builder.FactTable<Company>().Measure(e => e.field));
     }
 
 }
