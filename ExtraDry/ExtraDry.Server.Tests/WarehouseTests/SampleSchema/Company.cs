@@ -4,7 +4,7 @@ using ExtraDry.Core.DataWarehouse;
 
 namespace ExtraDry.Server.Tests.WarehouseTests;
 
-[FactTable]
+[FactTable, DimensionTable]
 public class Company : INamedSubject {
 
     [Key]

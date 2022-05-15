@@ -1,8 +1,11 @@
-﻿namespace ExtraDry.Server.Tests.WarehouseTests;
+﻿using ExtraDry.Core.DataWarehouse;
+
+namespace ExtraDry.Server.Tests.WarehouseTests;
 
 /// <summary>
 /// Represents a single geo-political region in a taxonomy of geo-political regions.
 /// </summary>
+[DimensionTable("Geographic Region")]
 public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, INamedSubject {
 
     /// <summary>
@@ -37,6 +40,7 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, INamedSubject {
     /// </summary>
     [Required, StringLength(32)]
     [Display(ShortName = "Title")]
+    [Attribute("The Title")]
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
@@ -50,6 +54,11 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, INamedSubject {
 
     [NotMapped]
     public string Caption => $"Region {Code}";
+
+    public string CompoundName { get; set; } = string.Empty;
+
+    [AttributeIgnore]
+    public string Password { get; set; } = string.Empty;
 
     [Required]
     [Display(Name = "Status", ShortName = "Status")]

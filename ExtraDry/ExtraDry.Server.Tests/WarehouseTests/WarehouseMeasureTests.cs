@@ -50,7 +50,7 @@ public class WarehouseMeasureTests {
         var builder = new WarehouseModelBuilder();
         builder.LoadSchema<MeasureContext>();
 
-        builder.FactTable<MeasureContainer>().Measure(e => e.GrossSalesLessCOGS).HasName("Gross Margin");
+        builder.Fact<MeasureContainer>().Measure(e => e.GrossSalesLessCOGS).HasName("Gross Margin");
 
         var warehouse = builder.Build();
         var fact = warehouse.Facts.Single(e => e.EntityType == typeof(MeasureContainer));
@@ -75,7 +75,7 @@ public class WarehouseMeasureTests {
         var builder = new WarehouseModelBuilder();
         builder.LoadSchema<MeasureContext>();
 
-        Assert.Throws<DryException>(() => builder.FactTable<MeasureContainer>().Measure(e => e.GrossSalesLessCOGS).HasName(name));
+        Assert.Throws<DryException>(() => builder.Fact<MeasureContainer>().Measure(e => e.GrossSalesLessCOGS).HasName(name));
     }
 
     [Theory]
@@ -87,7 +87,7 @@ public class WarehouseMeasureTests {
         var builder = new WarehouseModelBuilder();
         builder.LoadSchema<MeasureContext>();
 
-        builder.FactTable<MeasureContainer>().Measure(e => e.GrossSalesLessCOGS).HasName(name);
+        builder.Fact<MeasureContainer>().Measure(e => e.GrossSalesLessCOGS).HasName(name);
 
         var warehouse = builder.Build();
         var fact = warehouse.Facts.Single(e => e.EntityType == typeof(MeasureContainer));
@@ -100,7 +100,7 @@ public class WarehouseMeasureTests {
         var builder = new WarehouseModelBuilder();
         builder.LoadSchema<MeasureContext>();
 
-        builder.FactTable<MeasureContainer>().Measure(e => e.Gross).HasColumnType(ColumnType.Double);
+        builder.Fact<MeasureContainer>().Measure(e => e.Gross).HasColumnType(ColumnType.Double);
 
         var warehouse = builder.Build();
         var fact = warehouse.Facts.Single(e => e.EntityType == typeof(MeasureContainer));
@@ -113,7 +113,7 @@ public class WarehouseMeasureTests {
         var builder = new WarehouseModelBuilder();
         builder.LoadSchema<MeasureContext>();
 
-        Assert.Throws<DryException>(() => builder.FactTable<MeasureContainer>().Measure(e => e.Gross).HasColumnType(ColumnType.Text));
+        Assert.Throws<DryException>(() => builder.Fact<MeasureContainer>().Measure(e => e.Gross).HasColumnType(ColumnType.Text));
     }
 
     [Fact]
@@ -122,7 +122,7 @@ public class WarehouseMeasureTests {
         var builder = new WarehouseModelBuilder();
         builder.LoadSchema<MeasureContext>();
 
-        Assert.Throws<DryException>(() => builder.FactTable<MeasureContainer>().Measure(e => e.Gross).HasName("Big Bucks"));
+        Assert.Throws<DryException>(() => builder.Fact<MeasureContainer>().Measure(e => e.Gross).HasName("Big Bucks"));
     }
 
     [Fact]
@@ -131,7 +131,7 @@ public class WarehouseMeasureTests {
         var builder = new WarehouseModelBuilder();
         builder.LoadSchema<MeasureContext>();
 
-        builder.FactTable<MeasureContainer>().Measure(e => e.AnnualRevenue).HasIgnore();
+        builder.Fact<MeasureContainer>().Measure(e => e.AnnualRevenue).HasIgnore();
         var warehouse = builder.Build();
 
         var fact = warehouse.Facts.Single(e => e.EntityType == typeof(MeasureContainer));
@@ -144,7 +144,7 @@ public class WarehouseMeasureTests {
         var builder = new WarehouseModelBuilder();
         builder.LoadSchema<MeasureContext>();
 
-        builder.FactTable<MeasureContainer>().Measure(e => e.AnnualRevenue).HasIgnore(true);
+        builder.Fact<MeasureContainer>().Measure(e => e.AnnualRevenue).HasIgnore(true);
         var warehouse = builder.Build();
 
         var fact = warehouse.Facts.Single(e => e.EntityType == typeof(MeasureContainer));
@@ -157,7 +157,7 @@ public class WarehouseMeasureTests {
         var builder = new WarehouseModelBuilder();
         builder.LoadSchema<MeasureContext>();
 
-        builder.FactTable<MeasureContainer>().Measure(e => e.Ignored).HasIgnore(false);
+        builder.Fact<MeasureContainer>().Measure(e => e.Ignored).HasIgnore(false);
         var warehouse = builder.Build();
 
         var fact = warehouse.Facts.Single(e => e.EntityType == typeof(MeasureContainer));
@@ -178,7 +178,7 @@ public class WarehouseMeasureTests {
         var builder = new WarehouseModelBuilder();
         builder.LoadSchema<MeasureContext>();
 
-        Assert.Throws<DryException>(() => builder.FactTable<MeasureContainer>().Measure(e => e.Short).HasName("Integer"));
+        Assert.Throws<DryException>(() => builder.Fact<MeasureContainer>().Measure(e => e.Short).HasName("Integer"));
     }
 
 }

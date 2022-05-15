@@ -34,14 +34,6 @@ public abstract class TableBuilder {
 
     internal abstract bool HasColumnNamed(string name);
 
-    protected void LoadKeyColumn(PropertyInfo property)
-    {
-        // TODO: Check against [Key] not an integer
-        if(TableEntityType == null) {
-            throw new DryException("Must load a schema first");
-        }
-    }
-
     protected void SetName(string name)
     {
         if(WarehouseBuilder == null) {

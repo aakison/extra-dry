@@ -80,7 +80,7 @@ public class WarehouseFactTests {
         var builder = new WarehouseModelBuilder();
         builder.LoadSchema<SampleContext>();
 
-        Assert.Throws<DryException>(() => builder.FactTable<Company>().Measure(e => e.GetHashCode()));
+        Assert.Throws<DryException>(() => builder.Fact<Company>().Measure(e => e.GetHashCode()));
     }
 
     [Fact]
@@ -89,7 +89,7 @@ public class WarehouseFactTests {
         var builder = new WarehouseModelBuilder();
         builder.LoadSchema<SampleContext>();
 
-        Assert.Throws<DryException>(() => builder.FactTable<Company>().Measure(e => e.field));
+        Assert.Throws<DryException>(() => builder.Fact<Company>().Measure(e => e.field));
     }
 
 }

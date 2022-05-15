@@ -20,7 +20,7 @@ var options = new JsonSerializerOptions() { WriteIndented = true };
 var builder = new WarehouseModelBuilder();
 builder.LoadSchema<SampleContext>();
 
-builder.FactTable<Company>().Measure(e => e.AnnualRevenue).HasName("Big Bucks");
+builder.Fact<Company>().Measure(e => e.AnnualRevenue).HasName("Big Bucks");
 
 var model = builder.Build();
 var compareJson = JsonSerializer.Serialize(model, options);
