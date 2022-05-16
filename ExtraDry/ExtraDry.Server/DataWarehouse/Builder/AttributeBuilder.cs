@@ -13,7 +13,7 @@ public class AttributeBuilder : ColumnBuilder {
             SetName(AttributeAttribute.Name);
         }
 
-        if(PropertyInfo.PropertyType == typeof(string)) {
+        if(attributeTypes.Contains(propertyInfo.PropertyType)) {
             SetType(ColumnType.Text);
         }
         else {
@@ -57,6 +57,18 @@ public class AttributeBuilder : ColumnBuilder {
             PropertyInfo = PropertyInfo,
         };
     }
+
+    internal static bool IsAttribute(PropertyInfo property)
+    {
+        var isAttribute = attributeTypes.Contains(property.PropertyType);
+        // Add in explicit attributes.
+        if(property.GetCustomAttribute<AttributeAttribute>() != null) {
+            isAttribute = true;
+        }
+        return isAttribute;
+    }
+
+    private static readonly Type[] attributeTypes = new Type[] { typeof(string), typeof(Uri), typeof(Guid) };
 
     protected override bool IsValidColumnType(ColumnType type)
     {

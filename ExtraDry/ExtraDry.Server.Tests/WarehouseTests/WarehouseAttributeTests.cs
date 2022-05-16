@@ -6,43 +6,43 @@ namespace ExtraDry.Server.Tests.WarehouseTests;
 
 public class WarehouseAttributeTests {
 
-    //[Theory]
-    //[InlineData("Measure Container ID", ColumnType.Key)] // Key Column naming convention
-    //[InlineData("Integer", ColumnType.Integer)] // Simple int property, no decoration or special handling
-    //[InlineData("Short", ColumnType.Integer)] // Simple short property, no decoration or special handling
-    //[InlineData("Float", ColumnType.Double)] // Simple float property, no decoration or special handling
-    //[InlineData("Double", ColumnType.Double)] // Simple double property, no decoration or special handling
-    //[InlineData("Gross", ColumnType.Decimal)] // Simple decimal property, no decoration or special handling
-    //[InlineData("Annual Revenue", ColumnType.Decimal)] // Simple decimal property, with naming conversion
-    //[InlineData("Double Revenue", ColumnType.Decimal)] // Decimal property with getter only, with naming conversion
-    //[InlineData("Gifts", ColumnType.Decimal)] // NotMapped, but also Measure so include it.
-    //[InlineData("Big Bucks", ColumnType.Decimal)] // Measure attribute rename
-    //public void MeasureIncluded(string title, ColumnType columnType)
-    //{
-    //    var builder = new WarehouseModelBuilder();
+    [Theory]
+    [InlineData("Attribute Container ID", ColumnType.Key)] // Key Column naming convention
+    [InlineData("Uuid", ColumnType.Text)] // Simple Guid property, no decoration or special handling
+    [InlineData("Name", ColumnType.Text)] // Simple string property, no decoration or special handling
+    [InlineData("Uri", ColumnType.Text)] // Simple Uri property, no decoration or special handling
+    [InlineData("Caption", ColumnType.Text)] // Simple string property, with naming conversion
+    [InlineData("Christian Name", ColumnType.Text)] // Decimal property with getter only, with naming conversion
+    [InlineData("Notes", ColumnType.Text)] // NotMapped, but also Attribute so include it.
+    [InlineData("First Name", ColumnType.Text)] // Convention attribute rename
+    public void MeasureIncluded(string name, ColumnType columnType)
+    {
+        var builder = new WarehouseModelBuilder();
 
-    //    builder.LoadSchema<MeasureContext>();
-    //    var warehouse = builder.Build();
+        builder.LoadSchema<AttributeContext>();
+        var warehouse = builder.Build();
 
-    //    var fact = warehouse.Facts.Single(e => e.EntityType == typeof(MeasureContainer));
-    //    Assert.Contains(fact.Columns, e => e.Name == title && e.ColumnType == columnType);
-    //}
+        var fact = warehouse.Dimensions.Single(e => e.EntityType == typeof(AttributeContainer));
+        Assert.Contains(fact.Columns, e => e.Name == name && e.ColumnType == columnType);
+    }
 
-    //[Theory]
-    //[InlineData("ID")] // Key property doesn't slip through as measure.
-    //[InlineData("Name")] // String column not a measure.
-    //[InlineData("Sales")] // EF NotMappedAttribue suppresses by default.
-    //[InlineData("Ignored")] // MeasureIgnoreAttribue suppresses.
-    //public void MeasureNotIncluded(string title)
-    //{
-    //    var builder = new WarehouseModelBuilder();
+    [Theory]
+    [InlineData("ID")] // Key property doesn't slip through as an attribute.
+    [InlineData("Integer")] // int column not an attribute.
+    [InlineData("Double")] // double String column not an attribute.
+    [InlineData("Decimal")] // decimal column not an attribute.
+    [InlineData("Correlation")] // EF NotMappedAttribue suppresses by default.
+    [InlineData("Ignored")] // MeasureIgnoreAttribue suppresses.
+    public void MeasureNotIncluded(string name)
+    {
+        var builder = new WarehouseModelBuilder();
 
-    //    builder.LoadSchema<MeasureContext>();
-    //    var warehouse = builder.Build();
+        builder.LoadSchema<AttributeContext>();
+        var warehouse = builder.Build();
 
-    //    var fact = warehouse.Facts.Single(e => e.EntityType == typeof(MeasureContainer));
-    //    Assert.DoesNotContain(fact.Columns, e => e.Name == title);
-    //}
+        var fact = warehouse.Dimensions.Single(e => e.EntityType == typeof(AttributeContainer));
+        Assert.DoesNotContain(fact.Columns, e => e.Name == name);
+    }
 
     //[Fact]
     //public void FluentRenameOfMeasure()
@@ -194,40 +194,39 @@ public class AttributeContainer {
     [Key]
     public int Id { get; set; }
 
+    public Guid Uuid { get; set; }
+
     public string Name { get; set; } = string.Empty;
 
-    [Measure]
+    public Uri Uri { get; set; } = null!;
+
+    [Attribute("Caption")]
     public string Title { get; set; } = string.Empty;
+
+    [NotMapped]
+    public string Correlation { get; set; } = string.Empty;
+
+    [NotMapped, Attribute]
+    public string Notes { get; set; } = string.Empty;
+
+    // For title casing
+    public string FirstName { get; set; } = string.Empty;
+
+    // For Fluent renaming
+    public string LastName { get; set; } = string.Empty;
+
+    public string ChristianName { 
+        get => FirstName;
+    }
+
+    [AttributeIgnore]
+    public string Ignored { get; set; } = string.Empty;
 
     public int Integer { get; set; }
 
-    public short Short { get; set; }
+    public double Double { get; set; }  
 
-    public float Float { get; set; }
-
-    public double Double { get; set; }
-
-    public decimal Gross { get; set; }
-
-    public decimal AnnualRevenue { get; set; }
-
-    [Measure("Big Bucks")]
-    public decimal BadName { get; set; }
-
-    public decimal DoubleRevenue {
-        get => 2 * AnnualRevenue;
-    }
-
-    [NotMapped]
-    public decimal Sales { get; set; }
-
-    [NotMapped, Measure]
-    public decimal Gifts { get; set; }
-
-    public decimal GrossSalesLessCOGS { get; set; }
-
-    [MeasureIgnore]
-    public decimal Ignored { get; set; }
+    public decimal Decimal { get; set; }
 }
 
 //public class EmptyMeasureNameContext : DbContext {

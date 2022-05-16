@@ -43,18 +43,6 @@ public abstract class DimensionTableBuilder : TableBuilder {
     internal override bool HasColumnNamed(string name) => 
         KeyBuilder?.ColumnName == name || AttributeBuilders.Values.Any(e => e.ColumnName == name);
 
-    private bool IsAttributeProperty(PropertyInfo property)
-    {
-        var isAttribute = attributeTypes.Contains(property.PropertyType);
-        // Add in explicit attributes.
-        if(property.GetCustomAttribute<AttributeAttribute>() != null) {
-            isAttribute = true;
-        }
-        return isAttribute;
-    }
-
-    private readonly Type[] attributeTypes = new Type[] { typeof(string) };
-
     private DimensionTableAttribute DimensionTableAttribute { get; set; }
 
     private Dictionary<string, AttributeBuilder> AttributeBuilders { get; } = new();
@@ -68,7 +56,7 @@ public abstract class DimensionTableBuilder : TableBuilder {
     private IEnumerable<PropertyInfo> GetAttributeProperties()
     {
         return TableEntityType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
-            .Where(e => IsAttributeProperty(e));
+            .Where(e => AttributeBuilder.IsAttribute(e));
     }
 
 }

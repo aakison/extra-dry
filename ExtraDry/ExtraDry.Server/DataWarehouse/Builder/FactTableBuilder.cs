@@ -43,19 +43,6 @@ public abstract class FactTableBuilder : TableBuilder {
     internal override bool HasColumnNamed(string name) => 
         KeyBuilder?.ColumnName == name || MeasureBuilders.Values.Any(e => e.ColumnName == name);
 
-    private bool IsMeasureProperty(PropertyInfo property)
-    {
-        var isMeasure = measureTypes.Contains(property.PropertyType);
-        // Add in explicit measures.
-        if(property.GetCustomAttribute<MeasureAttribute>() != null) {
-            isMeasure = true;
-        }
-        return isMeasure;
-    }
-
-    private readonly Type[] measureTypes = new Type[] { typeof(decimal), typeof(float), typeof(int),
-        typeof(double), typeof(long), typeof(short), typeof(uint), typeof(sbyte) };
-
     private FactTableAttribute FactTableAttribute { get; set; }
 
     private Dictionary<string, MeasureBuilder> MeasureBuilders { get; } = new Dictionary<string, MeasureBuilder>();
@@ -75,7 +62,7 @@ public abstract class FactTableBuilder : TableBuilder {
     private IEnumerable<PropertyInfo> GetMeasureProperties()
     {
         return TableEntityType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
-            .Where(e => IsMeasureProperty(e));
+            .Where(e => MeasureBuilder.IsMeasure(e));
     }
 
 }
