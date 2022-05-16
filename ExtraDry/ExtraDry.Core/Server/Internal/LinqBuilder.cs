@@ -1,4 +1,4 @@
-﻿using ExtraDry.Core;
+using ExtraDry.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,16 +50,16 @@ namespace ExtraDry.Server.Internal {
         /// <remarks>see https://stackoverflow.com/questions/41244/dynamic-linq-orderby-on-ienumerablet-iqueryablet</remarks>
         private static IOrderedQueryable<T> ApplyOrder<T>(IQueryable<T> source, string property, OrderType methodType)
         {
+            var modelDescription = new ModelDescription(typeof(T));
             string[] props = property.Split('.');
             var type = typeof(T);
             var arg = Expression.Parameter(type, "x");
             Expression expr = arg;
             foreach(string prop in props) {
-                // use reflection (not ComponentModel) to mirror LINQ
-                var pi = type.GetProperty(prop, BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance);
-                if(pi == null) {
-                    throw new DryException($"Could not find sort property `{prop}`", "Could not apply requested sort");
-                }
+                var pi = modelDescription.SortProperties.FirstOrDefault(sortProp => string.Equals(sortProp.ExternalName, prop, StringComparison.OrdinalIgnoreCase))?.Property
+                    ?? (modelDescription.StabilizerProperty?.ExternalName.ToLower() == prop.ToLower() 
+                            ? modelDescription.StabilizerProperty.Property 
+                            : throw new DryException($"Could not find sort property `{prop}`", "Could not apply requested sort"));
                 expr = Expression.Property(expr, pi);
                 type = pi.PropertyType;
             }
@@ -89,7 +89,7 @@ namespace ExtraDry.Server.Internal {
             var terms = new List<Expression>();
             var filter = FilterParser.Parse(filterQuery);
             foreach(var rule in filter.Rules) {
-                var property = filterProperties.FirstOrDefault(e => string.Equals(e.Property.Name, rule.PropertyName, StringComparison.OrdinalIgnoreCase));
+                var property = filterProperties.FirstOrDefault(e => string.Equals(e.ExternalName, rule.PropertyName, StringComparison.OrdinalIgnoreCase));
                 if(rule.PropertyName == "*") {
                     var keywords = new List<Expression>();
                     foreach(var filterProperty in filterProperties) {
@@ -123,9 +123,12 @@ namespace ExtraDry.Server.Internal {
                     throw new DryException($"Could not find property '{rule.PropertyName}' requested in filter query.  No property had with that name has a [Filter] attribute applied to it.", "Unable to apply filter. 0x0F4F4931");
                 }
             }
-            var cnf = AllOf(terms.ToArray());
-            var lambda = Expression.Lambda<Func<T, bool>>(cnf, param);
-            return source.Where(lambda);
+            if(terms.Any()) {
+                var cnf = AllOf(terms.ToArray());
+                var lambda = Expression.Lambda<Func<T, bool>>(cnf, param);
+                return source.Where(lambda);
+            }
+            return source;
         }
 
         private static void AddTerms(ParameterExpression param, List<Expression> terms, FilterRule rule, FilterProperty property)
@@ -202,7 +205,7 @@ namespace ExtraDry.Server.Internal {
                 }
             }
             catch {
-                throw new DryException($"Filter expression '{value}' was not of the correct type.");
+                throw new DryException($"Filter expression '{value}' was not of the correct type.", "Unable to apply filter. 0x0F4A10KL");
             }
         }
 
@@ -225,9 +228,9 @@ namespace ExtraDry.Server.Internal {
         private static MethodInfo StringStartsWithMethod => typeof(string).GetMethod(nameof(string.StartsWith), new[] { typeof(string) })!;
 
         private enum OrderType {
-            OrderBy, 
-            ThenBy, 
-            OrderByDescending, 
+            OrderBy,
+            ThenBy,
+            OrderByDescending,
             ThenByDescending,
         }
 
