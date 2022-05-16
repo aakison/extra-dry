@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-using ExtraDry.Core;
 using ExtraDry.Server.Internal;
 using Xunit;
 
@@ -17,6 +16,7 @@ namespace ExtraDry.Core.Tests.Internals {
 
             Assert.Equal(property, filter.Property);
             Assert.Equal(attribute, filter.Filter);
+            Assert.Equal(property.Name, filter.ExternalName);
         }
 
         [Theory]
@@ -24,7 +24,7 @@ namespace ExtraDry.Core.Tests.Internals {
         [InlineData("Filter", null)]
         public void RoundtripProperties(string propertyName, object propertyValue)
         {
-            var filter = ValidProperty;
+            var filter = FilterProperty;
             var property = filter.GetType().GetProperty(propertyName);
 
             property?.SetValue(filter, propertyValue);
@@ -33,7 +33,9 @@ namespace ExtraDry.Core.Tests.Internals {
             Assert.Equal(propertyValue, result);
         }
 
-        private FilterProperty ValidProperty {
+        public string ValidProperty { get; set; } = string.Empty;
+
+        private FilterProperty FilterProperty {
             get {
                 var property = GetType().GetProperty(nameof(ValidProperty));
                 var filter = new FilterAttribute();
