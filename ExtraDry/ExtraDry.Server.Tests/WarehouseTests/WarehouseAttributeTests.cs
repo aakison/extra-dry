@@ -15,15 +15,15 @@ public class WarehouseAttributeTests {
     [InlineData("Christian Name", ColumnType.Text)] // Decimal property with getter only, with naming conversion
     [InlineData("Notes", ColumnType.Text)] // NotMapped, but also Attribute so include it.
     [InlineData("First Name", ColumnType.Text)] // Convention attribute rename
-    public void MeasureIncluded(string name, ColumnType columnType)
+    public void AttributeIncluded(string name, ColumnType columnType)
     {
         var builder = new WarehouseModelBuilder();
 
         builder.LoadSchema<AttributeContext>();
         var warehouse = builder.Build();
 
-        var fact = warehouse.Dimensions.Single(e => e.EntityType == typeof(AttributeContainer));
-        Assert.Contains(fact.Columns, e => e.Name == name && e.ColumnType == columnType);
+        var dimension = warehouse.Dimensions.Single(e => e.EntityType == typeof(AttributeContainer));
+        Assert.Contains(dimension.Columns, e => e.Name == name && e.ColumnType == columnType);
     }
 
     [Theory]
@@ -33,153 +33,131 @@ public class WarehouseAttributeTests {
     [InlineData("Decimal")] // decimal column not an attribute.
     [InlineData("Correlation")] // EF NotMappedAttribue suppresses by default.
     [InlineData("Ignored")] // MeasureIgnoreAttribue suppresses.
-    public void MeasureNotIncluded(string name)
+    public void AttributeNotIncluded(string name)
     {
         var builder = new WarehouseModelBuilder();
 
         builder.LoadSchema<AttributeContext>();
         var warehouse = builder.Build();
 
-        var fact = warehouse.Dimensions.Single(e => e.EntityType == typeof(AttributeContainer));
-        Assert.DoesNotContain(fact.Columns, e => e.Name == name);
+        var dimension = warehouse.Dimensions.Single(e => e.EntityType == typeof(AttributeContainer));
+        Assert.DoesNotContain(dimension.Columns, e => e.Name == name);
     }
 
-    //[Fact]
-    //public void FluentRenameOfMeasure()
-    //{
-    //    var builder = new WarehouseModelBuilder();
-    //    builder.LoadSchema<MeasureContext>();
+    [Fact]
+    public void FluentRenameOfMeasure()
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<AttributeContext>();
 
-    //    builder.Fact<MeasureContainer>().Measure(e => e.GrossSalesLessCOGS).HasName("Gross Margin");
+        builder.Dimension<AttributeContainer>().Attribute(e => e.LastName).HasName("Surname");
 
-    //    var warehouse = builder.Build();
-    //    var fact = warehouse.Facts.Single(e => e.EntityType == typeof(MeasureContainer));
-    //    Assert.Contains(fact.Columns, e => e.Name == "Gross Margin" && e.ColumnType == ColumnType.Decimal);
-    //}
+        var warehouse = builder.Build();
+        var dimension = warehouse.Dimensions.Single(e => e.EntityType == typeof(AttributeContainer));
+        Assert.Contains(dimension.Columns, e => e.Name == "Surname" && e.ColumnType == ColumnType.Text);
+    }
 
-    //[Theory]
-    //[InlineData(typeof(EmptyMeasureNameContext))]
-    //[InlineData(typeof(BlankMeasureNameContext))]
-    //public void BadMeasureNameThrowsException(Type type)
-    //{
-    //    var builder = new WarehouseModelBuilder();
-    //    Assert.Throws<DryException>(() => builder.LoadSchema(type));
-    //}
+    [Theory]
+    [InlineData(typeof(EmptyAttributeNameContext))]
+    [InlineData(typeof(BlankMeasureNameContext))]
+    public void BadMeasureNameThrowsException(Type type)
+    {
+        var builder = new WarehouseModelBuilder();
+        Assert.Throws<DryException>(() => builder.LoadSchema(type));
+    }
 
-    //[Theory]
-    //[InlineData("0123456789012345678901234567890123456789012345678901")]
-    //[InlineData("")]
-    //[InlineData("     ")]
-    //public void BadMeasureNameInFluent(string name)
-    //{
-    //    var builder = new WarehouseModelBuilder();
-    //    builder.LoadSchema<MeasureContext>();
+    [Theory]
+    [InlineData("0123456789012345678901234567890123456789012345678901")]
+    [InlineData("")]
+    [InlineData("     ")]
+    public void BadAttributeNameInFluent(string name)
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<AttributeContext>();
 
-    //    Assert.Throws<DryException>(() => builder.Fact<MeasureContainer>().Measure(e => e.GrossSalesLessCOGS).HasName(name));
-    //}
+        Assert.Throws<DryException>(() => builder.Dimension<AttributeContainer>().Attribute(e => e.LastName).HasName(name));
+    }
 
-    //[Theory]
-    //[InlineData("012345678901234567890123456789012345678901234567")]
-    //[InlineData("!!!")]
-    //[InlineData("!@#$")]
-    //public void WackyButValidMeasureNameInFluent(string name)
-    //{
-    //    var builder = new WarehouseModelBuilder();
-    //    builder.LoadSchema<MeasureContext>();
+    [Theory]
+    [InlineData("012345678901234567890123456789012345678901234567")]
+    [InlineData("!!!")]
+    [InlineData("!@#$")]
+    public void WackyButValidMeasureNameInFluent(string name)
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<AttributeContext>();
 
-    //    builder.Fact<MeasureContainer>().Measure(e => e.GrossSalesLessCOGS).HasName(name);
+        builder.Dimension<AttributeContainer>().Attribute(e => e.LastName).HasName(name);
 
-    //    var warehouse = builder.Build();
-    //    var fact = warehouse.Facts.Single(e => e.EntityType == typeof(MeasureContainer));
-    //    Assert.Contains(fact.Columns, e => e.Name == name);
-    //}
+        var warehouse = builder.Build();
+        var dimension = warehouse.Dimensions.Single(e => e.EntityType == typeof(AttributeContainer));
+        Assert.Contains(dimension.Columns, e => e.Name == name);
+    }
 
-    //[Fact]
-    //public void CanChangeToValidTypeViaFluent()
-    //{
-    //    var builder = new WarehouseModelBuilder();
-    //    builder.LoadSchema<MeasureContext>();
+    [Fact]
+    public void CannotHaveDuplicateAttributeNames()
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<AttributeContext>();
 
-    //    builder.Fact<MeasureContainer>().Measure(e => e.Gross).HasColumnType(ColumnType.Double);
+        Assert.Throws<DryException>(() => builder.Dimension<AttributeContainer>().Attribute(e => e.LastName).HasName("Caption"));
+    }
 
-    //    var warehouse = builder.Build();
-    //    var fact = warehouse.Facts.Single(e => e.EntityType == typeof(MeasureContainer));
-    //    Assert.Contains(fact.Columns, e => e.Name == "Gross" && e.ColumnType == ColumnType.Double);
-    //}
+    [Fact]
+    public void FluentCanImplicitlyIgnoreAttribute()
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<AttributeContext>();
 
-    //[Fact]
-    //public void CannotChangeToInvalidTypeViaFluent()
-    //{
-    //    var builder = new WarehouseModelBuilder();
-    //    builder.LoadSchema<MeasureContext>();
+        builder.Dimension<AttributeContainer>().Attribute(e => e.Name).HasIgnore();
+        var warehouse = builder.Build();
 
-    //    Assert.Throws<DryException>(() => builder.Fact<MeasureContainer>().Measure(e => e.Gross).HasColumnType(ColumnType.Text));
-    //}
+        var dimension = warehouse.Dimensions.Single(e => e.EntityType == typeof(AttributeContainer));
+        Assert.DoesNotContain(dimension.Columns, e => e.Name == "Name");
+    }
 
-    //[Fact]
-    //public void CannotHaveDuplicateMeasureNames()
-    //{
-    //    var builder = new WarehouseModelBuilder();
-    //    builder.LoadSchema<MeasureContext>();
+    [Fact]
+    public void FluentCanExplicitlyIgnoreAttribute()
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<AttributeContext>();
 
-    //    Assert.Throws<DryException>(() => builder.Fact<MeasureContainer>().Measure(e => e.Gross).HasName("Big Bucks"));
-    //}
+        builder.Dimension<AttributeContainer>().Attribute(e => e.Name).HasIgnore(true);
+        var warehouse = builder.Build();
 
-    //[Fact]
-    //public void FluentCanImplicitlyIgnoreMeasure()
-    //{
-    //    var builder = new WarehouseModelBuilder();
-    //    builder.LoadSchema<MeasureContext>();
+        var dimension = warehouse.Dimensions.Single(e => e.EntityType == typeof(AttributeContainer));
+        Assert.DoesNotContain(dimension.Columns, e => e.Name == "Name");
+    }
 
-    //    builder.Fact<MeasureContainer>().Measure(e => e.AnnualRevenue).HasIgnore();
-    //    var warehouse = builder.Build();
+    [Fact]
+    public void FluentCanUnIgnoreMeasure()
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<AttributeContext>();
 
-    //    var fact = warehouse.Facts.Single(e => e.EntityType == typeof(MeasureContainer));
-    //    Assert.DoesNotContain(fact.Columns, e => e.Name == "Annual Revenue");
-    //}
+        builder.Dimension<AttributeContainer>().Attribute(e => e.Ignored).HasIgnore(false);
+        var warehouse = builder.Build();
 
-    //[Fact]
-    //public void FluentCanExplicitlyIgnoreMeasure()
-    //{
-    //    var builder = new WarehouseModelBuilder();
-    //    builder.LoadSchema<MeasureContext>();
+        var dimension = warehouse.Dimensions.Single(e => e.EntityType == typeof(AttributeContainer));
+        Assert.Contains(dimension.Columns, e => e.Name == "Ignored");
+    }
 
-    //    builder.Fact<MeasureContainer>().Measure(e => e.AnnualRevenue).HasIgnore(true);
-    //    var warehouse = builder.Build();
+    [Fact]
+    public void DuplicateNamesByConventionException()
+    {
+        var builder = new WarehouseModelBuilder();
 
-    //    var fact = warehouse.Facts.Single(e => e.EntityType == typeof(MeasureContainer));
-    //    Assert.DoesNotContain(fact.Columns, e => e.Name == "Annual Revenue");
-    //}
+        Assert.Throws<DryException>(() => builder.LoadSchema<AttributeNameCollisionContext>());
+    }
 
-    //[Fact]
-    //public void FluentCanUnIgnoreMeasure()
-    //{
-    //    var builder = new WarehouseModelBuilder();
-    //    builder.LoadSchema<MeasureContext>();
+    [Fact]
+    public void DuplicateNamesByFluentException()
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<AttributeContext>();
 
-    //    builder.Fact<MeasureContainer>().Measure(e => e.Ignored).HasIgnore(false);
-    //    var warehouse = builder.Build();
-
-    //    var fact = warehouse.Facts.Single(e => e.EntityType == typeof(MeasureContainer));
-    //    Assert.Contains(fact.Columns, e => e.Name == "Ignored");
-    //}
-
-    //[Fact]
-    //public void DuplicateNamesByConventionException()
-    //{
-    //    var builder = new WarehouseModelBuilder();
-
-    //    Assert.Throws<DryException>(() => builder.LoadSchema<NameCollisionContext>());
-    //}
-
-    //[Fact]
-    //public void DuplicateNamesByFluentException()
-    //{
-    //    var builder = new WarehouseModelBuilder();
-    //    builder.LoadSchema<MeasureContext>();
-
-    //    Assert.Throws<DryException>(() => builder.Fact<MeasureContainer>().Measure(e => e.Short).HasName("Integer"));
-    //}
+        Assert.Throws<DryException>(() => builder.Dimension<AttributeContainer>().Attribute(e => e.LastName).HasName("Name"));
+    }
 
 }
 
@@ -229,42 +207,42 @@ public class AttributeContainer {
     public decimal Decimal { get; set; }
 }
 
-//public class EmptyMeasureNameContext : DbContext {
+public class EmptyAttributeNameContext : DbContext {
 
-//    [FactTable]
-//    public class BadClass {
+    [DimensionTable]
+    public class BadClass {
 
-//        [Measure("")]
-//        public decimal GoodName { get; set; }
+        [Measure("")]
+        public string GoodName { get; set; } = string.Empty;
 
-//    }
+    }
 
-//    public DbSet<BadClass> BadClasses { get; set; } = null!;
-//}
+    public DbSet<BadClass> BadClasses { get; set; } = null!;
+}
 
-//public class BlankMeasureNameContext : DbContext {
+public class BlankAttributeNameContext : DbContext {
 
-//    [FactTable]
-//    public class BadClass {
+    [DimensionTable]
+    public class BadClass {
 
-//        [Measure("   ")]
-//        public decimal GoodName { get; set; }
+        [Measure("   ")]
+        public string GoodName { get; set; } = string.Empty;
 
-//    }
+    }
 
-//    public DbSet<BadClass> BadClasses { get; set; } = null!;
-//}
+    public DbSet<BadClass> BadClasses { get; set; } = null!;
+}
 
-//public class NameCollisionContext : DbContext {
+public class AttributeNameCollisionContext : DbContext {
 
-//    [FactTable]
-//    public class NameCollisionClass {
+    [DimensionTable]
+    public class NameCollisionClass {
 
-//        public decimal Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
-//        [Measure("Name")]
-//        public decimal Title { get; set; }
-//    }
+        [Attribute("Name")]
+        public string Title { get; set; } = string.Empty;
+    }
 
-//    public DbSet<NameCollisionClass> NameCollisionClasses { get; set; } = null!;
-//}
+    public DbSet<NameCollisionClass> NameCollisionClasses { get; set; } = null!;
+}

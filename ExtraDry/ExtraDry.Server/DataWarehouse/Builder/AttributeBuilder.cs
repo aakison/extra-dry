@@ -13,12 +13,8 @@ public class AttributeBuilder : ColumnBuilder {
             SetName(AttributeAttribute.Name);
         }
 
-        if(attributeTypes.Contains(propertyInfo.PropertyType)) {
-            SetType(ColumnType.Text);
-        }
-        else {
-            throw new NotImplementedException();
-        }
+        // Only one type supported for attributes now, URI and Guid map here, possibly everything, always?
+        SetType(ColumnType.Text);
 
         var notMapped = propertyInfo.GetCustomAttribute<NotMappedAttribute>();
         if(notMapped != null && AttributeAttribute == null) {
@@ -35,12 +31,6 @@ public class AttributeBuilder : ColumnBuilder {
     public AttributeBuilder HasName(string name)
     {
         SetName(name);
-        return this;
-    }
-
-    public AttributeBuilder HasColumnType(ColumnType type)
-    {
-        SetType(type);
         return this;
     }
 

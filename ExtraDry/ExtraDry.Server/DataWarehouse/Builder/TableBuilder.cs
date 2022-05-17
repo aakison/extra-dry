@@ -36,9 +36,6 @@ public abstract class TableBuilder {
 
     protected void SetName(string name)
     {
-        if(WarehouseBuilder == null) {
-            throw new DryException("Must load a schema first");
-        }
         if(string.IsNullOrWhiteSpace(name)) {
             throw new DryException("Name must not be empty.");
         }
