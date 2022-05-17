@@ -39,7 +39,11 @@ public abstract class TableBuilder {
         if(string.IsNullOrWhiteSpace(name)) {
             throw new DryException("Name must not be empty.");
         }
-        if(WarehouseBuilder.HasTableNamed(name)) {
+        if(name.Length > 50) {
+            // Not a SQL limit, but a UX limit!
+            throw new DryException("Name limited to 50 characters.");
+        }
+        if(name != TableName && WarehouseBuilder.HasTableNamed(name)) {
             throw new DryException($"Names for tables must be unique, {name} is duplicated.");
         }
         TableName = name;

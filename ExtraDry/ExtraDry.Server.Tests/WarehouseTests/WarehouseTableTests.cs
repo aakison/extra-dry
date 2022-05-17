@@ -17,18 +17,59 @@ public class WarehouseTableTests {
         Assert.Throws<DryException>(() => builder.LoadSchema(type));
     }
 
-    //[Theory]
-    //[InlineData(typeof(RegionStatus))]
-    //[InlineData(typeof(RegionLevel))]
-    //public void EntityDoesNotBecomeFact(Type entityType)
-    //{
-    //    var builder = new WarehouseModelBuilder();
+    [Theory]
+    [InlineData("")] // empty
+    [InlineData("   ")] // blank
+    [InlineData("0123456789012345678901234567890123456789012345678901")] // too long
+    [InlineData("Worker Bees")] // collides with Employee fact
+    [InlineData("Geographic Region")] // collides with Region dimension
+    public void InvalidFluentFactNameChange(string name)
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<SampleContext>();
 
-    //    builder.LoadSchema<SampleContext>();
-    //    var warehouse = builder.Build();
+        Assert.Throws<DryException>(() => builder.Fact<Company>().HasName(name));
+    }
 
-    //    Assert.DoesNotContain(warehouse.Facts, e => e.EntityType == entityType);
-    //}
+    [Theory]
+    [InlineData("")] // empty
+    [InlineData("   ")] // blank
+    [InlineData("0123456789012345678901234567890123456789012345678901")] // too long
+    [InlineData("Worker Bees")] // collides with Employee fact
+    [InlineData("Geographic Region")] // collides with Region dimension
+    public void InvalidFluentDimensionNameChange(string name)
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<SampleContext>();
+
+        Assert.Throws<DryException>(() => builder.Dimension<Company>().HasName(name));
+    }
+
+    [Theory]
+    [InlineData("New and Unused")] // any non colliding name
+    [InlineData("Company")] // redundant, but OK
+    public void ValidFluentFactNameChange(string name)
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<SampleContext>();
+
+        builder.Fact<Company>().HasName(name);
+
+        Assert.Equal(name, builder.Fact<Company>().TableName);
+    }
+
+    [Theory]
+    [InlineData("New and Unused")] // any non colliding name
+    [InlineData("Company Details")] // redundant, but OK
+    public void ValidFluentDimensionNameChange(string name)
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<SampleContext>();
+
+        builder.Dimension<Company>().HasName(name);
+
+        Assert.Equal(name, builder.Dimension<Company>().TableName);
+    }
 
     //[Theory]
     //[InlineData(typeof(Company), "Company ID", ColumnType.Key)] // Key Column naming convention
