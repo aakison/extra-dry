@@ -159,53 +159,54 @@ public class WarehouseAttributeTests {
         Assert.Throws<DryException>(() => builder.Dimension<AttributeContainer>().Attribute(e => e.LastName).HasName("Name"));
     }
 
-}
-
-public class AttributeContext : DbContext {
-
-    public DbSet<AttributeContainer> Attributes { get; set; } = null!;
-}
-
-[DimensionTable]
-public class AttributeContainer {
-
-    [Key]
-    public int Id { get; set; }
-
-    public Guid Uuid { get; set; }
-
-    public string Name { get; set; } = string.Empty;
-
-    public Uri Uri { get; set; } = null!;
-
-    [Attribute("Caption")]
-    public string Title { get; set; } = string.Empty;
-
-    [NotMapped]
-    public string Correlation { get; set; } = string.Empty;
-
-    [NotMapped, Attribute]
-    public string Notes { get; set; } = string.Empty;
-
-    // For title casing
-    public string FirstName { get; set; } = string.Empty;
-
-    // For Fluent renaming
-    public string LastName { get; set; } = string.Empty;
-
-    public string ChristianName { 
-        get => FirstName;
+    public class AttributeContext : DbContext {
+        public DbSet<AttributeContainer> Attributes { get; set; } = null!;
     }
 
-    [AttributeIgnore]
-    public string Ignored { get; set; } = string.Empty;
+    [DimensionTable]
+    public class AttributeContainer {
 
-    public int Integer { get; set; }
+        [Key]
+        public int Id { get; set; }
 
-    public double Double { get; set; }  
+        public Guid Uuid { get; set; }
 
-    public decimal Decimal { get; set; }
+        public string Name { get; set; } = string.Empty;
+
+        public Uri Uri { get; set; } = null!;
+
+        [Attribute("Caption")]
+        public string Title { get; set; } = string.Empty;
+
+        [NotMapped]
+        public string Correlation { get; set; } = string.Empty;
+
+        [NotMapped, Attribute]
+        public string Notes { get; set; } = string.Empty;
+
+        // For title casing
+        public string FirstName { get; set; } = string.Empty;
+
+        // For Fluent renaming
+        public string LastName { get; set; } = string.Empty;
+
+        public string ChristianName {
+            get => FirstName;
+        }
+
+        [AttributeIgnore]
+        public string Ignored { get; set; } = string.Empty;
+
+        public int Integer { get; set; }
+
+        public double Double { get; set; }
+
+        public decimal Decimal { get; set; }
+    }
+
+
 }
+
 
 public class EmptyAttributeNameContext : DbContext {
 

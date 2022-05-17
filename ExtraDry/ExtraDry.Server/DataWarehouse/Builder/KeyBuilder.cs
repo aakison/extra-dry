@@ -7,7 +7,6 @@ public class KeyBuilder : ColumnBuilder {
     internal KeyBuilder(TableBuilder tableBuilder, Type entityType, PropertyInfo propertyInfo) 
         : base(tableBuilder, entityType, propertyInfo) 
     { 
-        KeyAttribute = propertyInfo.GetCustomAttribute<KeyAttribute>();
         SetName($"{tableBuilder.TableName} ID");
         SetType(ColumnType.Key);
     }
@@ -17,8 +16,6 @@ public class KeyBuilder : ColumnBuilder {
         SetName(name);
         return this;
     }
-
-    private KeyAttribute? KeyAttribute { get; set; }
 
     protected override bool IsValidColumnType(ColumnType type)
     {

@@ -26,6 +26,21 @@ public class AttributeBuilder : ColumnBuilder {
             // [MeasureIgnore] will always ignore, even if [Measure] is present.
             SetIgnore(true); 
         }
+
+        HasLength(propertyInfo.GetCustomAttribute<StringLengthAttribute>()?.MaximumLength
+            ?? propertyInfo.GetCustomAttribute<MaxLengthAttribute>()?.Length);
+        if(Length == null && propertyInfo.PropertyType == typeof(Guid)) {
+            HasLength(MaxGuidLength);
+        }
+        else if(Length == null && propertyInfo.PropertyType == typeof(Uri)) {
+            HasLength(MaxUriLength);
+        }
+    }
+
+    public AttributeBuilder HasLength(int? length)
+    {
+        SetLength(length);
+        return this;
     }
 
     public AttributeBuilder HasName(string name)
@@ -45,6 +60,7 @@ public class AttributeBuilder : ColumnBuilder {
         return new Column(ColumnType, ColumnName) {
             Nullable = false,
             PropertyInfo = PropertyInfo,
+            Length = Length,
         };
     }
 
@@ -67,4 +83,8 @@ public class AttributeBuilder : ColumnBuilder {
 
     private AttributeAttribute? AttributeAttribute { get; set; }
 
+    private const int MaxGuidLength = 36;
+
+    // http://net-informations.com/q/mis/len.html
+    private const int MaxUriLength = 2083;
 }

@@ -57,6 +57,7 @@ public class MeasureBuilder : ColumnBuilder {
         return new Column(ColumnType, ColumnName) {
             Nullable = false,
             PropertyInfo = PropertyInfo,
+            Length = Length,
         };
     }
 

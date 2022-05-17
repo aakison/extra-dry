@@ -18,6 +18,16 @@ public abstract class ColumnBuilder {
 
     public bool Ignore { get; private set; }
 
+    public int? Length { get; private set; }
+
+    protected void SetLength(int? length)
+    {
+        if(length != null && length < 0) {
+            throw new DryException("Length must be a non-negative integer or null.");
+        }
+        Length = length;
+    }
+
     protected void SetName(string name)
     {
         if(string.IsNullOrWhiteSpace(name)) {
