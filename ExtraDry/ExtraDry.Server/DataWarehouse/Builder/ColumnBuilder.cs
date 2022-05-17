@@ -27,8 +27,8 @@ public abstract class ColumnBuilder {
             // Not a SQL limit, but a UX limit!
             throw new DryException("Name limited to 50 characters.");
         }
-        if(TableBuilder.HasColumnNamed(name)) {
-            throw new DryException("Names for tables must be unique, {name} is duplicated.");
+        if(name != ColumnName && TableBuilder.HasColumnNamed(name)) {
+            throw new DryException($"Names for tables must be unique, {name} is duplicated.");
         }
         ColumnName = name;
     }

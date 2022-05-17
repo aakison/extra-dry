@@ -106,7 +106,8 @@ public class WarehouseModelBuilder {
     }
 
     internal bool HasTableNamed(string name) =>
-        FactTables.Values.Any(e => string.Compare(e.TableName, name, StringComparison.InvariantCultureIgnoreCase) == 0);
+        FactTables.Values.Any(e => string.Compare(e.TableName, name, StringComparison.InvariantCultureIgnoreCase) == 0) ||
+        DimensionTables.Values.Any(e => string.Compare(e.TableName, name, StringComparison.InvariantCultureIgnoreCase) == 0);
 
     public FactTableBuilder<T> Fact<T>() where T : class
     {

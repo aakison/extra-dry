@@ -10,10 +10,18 @@ public abstract class DimensionTableBuilder : TableBuilder {
     { 
         DimensionTableAttribute = entity.GetCustomAttribute<DimensionTableAttribute>()!;
 
-        if(DimensionTableAttribute.Name != null) {
-            HasName(DimensionTableAttribute.Name);
-            HasKey().HasName($"{DimensionTableAttribute.Name} ID");
+        var factTable = entity.GetCustomAttribute<FactTableAttribute>();
+
+        var name = DimensionTableAttribute?.Name ?? DataConverter.CamelCaseToTitleCase(entity.Name);
+        var key = $"{name} ID";
+        if(factTable != null && factTable.Name == null && DimensionTableAttribute?.Name == null) {
+            // Both fact and dimension without explicit names, avoid table name collision.
+            name += " Details";
+            // Note: key name doesn't change so they align between the fact and dimension.
         }
+
+        HasName(name);
+        HasKey().HasName(key);
 
         var attributeProperties = GetAttributeProperties();
         foreach(var attribute in attributeProperties) {

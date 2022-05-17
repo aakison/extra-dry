@@ -5,8 +5,8 @@ namespace ExtraDry.Server.Tests.WarehouseTests;
 public class WarehouseDimensionTests {
 
     [Theory]
-    [InlineData(typeof(Company), "Company")]
-    [InlineData(typeof(Region), "Geographic Region")]
+    [InlineData(typeof(Company), "Company Details")] // Both fact and dimension, so get "Details" appended.
+    [InlineData(typeof(Region), "Geographic Region")] // explicit name.
     public void EntityBecomesDimension(Type entityType, string title)
     {
         var builder = new WarehouseModelBuilder();

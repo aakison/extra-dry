@@ -4,11 +4,11 @@ namespace ExtraDry.Server.DataWarehouse.Builder;
 
 public abstract class TableBuilder {
 
-    protected TableBuilder(WarehouseModelBuilder warehouseBuilder, Type entity)
+    protected TableBuilder(WarehouseModelBuilder warehouseBuilder, Type entity, string? name = null)
     {
         WarehouseBuilder = warehouseBuilder;
         TableEntityType = entity;
-        TableName = DataConverter.CamelCaseToTitleCase(entity.Name);
+        SetName(DataConverter.CamelCaseToTitleCase(name ?? entity.Name));
         var keyProperty = GetKeyProperty();
         KeyBuilder = new KeyBuilder(this, TableEntityType, keyProperty);
     }
@@ -18,7 +18,7 @@ public abstract class TableBuilder {
         return KeyBuilder;
     }
 
-    public string TableName { get; private set; }
+    public string TableName { get; private set; } = null!; // Constructor sets via method, analyzer misses it...
 
     protected PropertyInfo GetKeyProperty()
     {
@@ -40,7 +40,7 @@ public abstract class TableBuilder {
             throw new DryException("Name must not be empty.");
         }
         if(WarehouseBuilder.HasTableNamed(name)) {
-            throw new DryException("Names for tables must be unique, {name} is duplicated.");
+            throw new DryException($"Names for tables must be unique, {name} is duplicated.");
         }
         TableName = name;
     }
