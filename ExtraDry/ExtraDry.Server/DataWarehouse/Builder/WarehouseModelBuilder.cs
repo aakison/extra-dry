@@ -45,42 +45,29 @@ public class WarehouseModelBuilder {
 
     private void LoadClassDimension(Type entity)
     {
-        // To activate, need type, args and indicator that the constructor is not public, tricky to get right overload...
-        var dimensionTableBuilderType = typeof(DimensionTableBuilder<>).MakeGenericType(entity);
-        var args = new object[] { this, entity };
-        var binding = BindingFlags.NonPublic | BindingFlags.Instance;
-        var binder = (Binder?)null;
-        var culture = CultureInfo.InvariantCulture;
-        try {
-            var dimensionTableBuilder = 
-                Activator.CreateInstance(dimensionTableBuilderType, binding, binder, args, culture) as DimensionTableBuilder
-                ?? throw new DryException("Couldn't create instance of DimensionBuilderTable");
+        if(LoadViaConstructor(typeof(DimensionTableBuilder<>), entity) is DimensionTableBuilder dimensionTableBuilder) {
             DimensionTables.Add(entity, dimensionTableBuilder);
-        }
-        catch(TargetInvocationException ex) {
-            // Unwrap invocation and throw as if reflection wasn't being used.
-            if(ex.InnerException is DryException dryEx) {
-                throw dryEx;
-            }
-            else {
-                throw;
-            }
         }
     }
 
     private void LoadClassFact(Type entity)
     {
+        if(LoadViaConstructor(typeof(FactTableBuilder<>), entity) is FactTableBuilder factTableBuilder) {
+            FactTables.Add(entity, factTableBuilder);
+        }
+    }
+
+    private object LoadViaConstructor(Type generic, Type entity) 
+    {
         // To activate, need type, args and indicator that the constructor is not public, tricky to get right overload...
-        var factTableBuilderType = typeof(FactTableBuilder<>).MakeGenericType(entity);
+        var factTableBuilderType = generic.MakeGenericType(entity);
         var args = new object[] { this, entity };
         var binding = BindingFlags.NonPublic | BindingFlags.Instance;
         var binder = (Binder?)null;
         var culture = CultureInfo.InvariantCulture;
         try {
-            var factTableBuilder = 
-                Activator.CreateInstance(factTableBuilderType, binding, binder, args, culture) as FactTableBuilder
+            return Activator.CreateInstance(factTableBuilderType, binding, binder, args, culture) 
                 ?? throw new DryException("Couldn't create instance of FactBuilderTable");
-            FactTables.Add(entity, factTableBuilder);
         }
         catch(TargetInvocationException ex) {
             // Unwrap invocation and throw as if reflection wasn't being used.
