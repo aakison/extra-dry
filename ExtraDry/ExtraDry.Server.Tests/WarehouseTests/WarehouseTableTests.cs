@@ -71,6 +71,24 @@ public class WarehouseTableTests {
         Assert.Equal(name, builder.Dimension<Company>().TableName);
     }
 
+    [Fact]
+    public void ExceptionOnNoFactTable()
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<SampleContext>();
+
+        var ex = Assert.Throws<DryException>(() => builder.Fact<Region>());
+    }
+
+    [Fact]
+    public void ExceptionOnNoDimensionTable()
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<SampleContext>();
+
+        var ex = Assert.Throws<DryException>(() => builder.Dimension<Employee>());
+    }
+
     //[Theory]
     //[InlineData(typeof(Company), "Company ID", ColumnType.Key)] // Key Column naming convention
     //[InlineData(typeof(Company), "Gross", ColumnType.Decimal)] // Simple property, no decoration or special handling

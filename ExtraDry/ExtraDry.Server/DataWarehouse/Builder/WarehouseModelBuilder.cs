@@ -98,12 +98,22 @@ public class WarehouseModelBuilder {
 
     public FactTableBuilder<T> Fact<T>() where T : class
     {
-        return FactTables[typeof(T)] as FactTableBuilder<T> ?? throw new DryException($"No Fact table of type {typeof(T).Name} was defined.");
+        try {
+            return FactTables[typeof(T)] as FactTableBuilder<T> ?? throw new KeyNotFoundException();
+        }
+        catch(KeyNotFoundException) {
+            throw new DryException($"No Fact table of type {typeof(T).Name} was defined.");
+        }
     }
 
     public DimensionTableBuilder<T> Dimension<T>() where T : class
     {
-        return DimensionTables[typeof(T)] as DimensionTableBuilder<T> ?? throw new DryException($"No Dimension table of type {typeof(T).Name} was defined.");
+        try {
+            return DimensionTables[typeof(T)] as DimensionTableBuilder<T> ?? throw new KeyNotFoundException();
+        }
+        catch(KeyNotFoundException) {
+            throw new DryException($"No Dimension table of type {typeof(T).Name} was defined.");
+        }
     }
 
     private Dictionary<Type, FactTableBuilder> FactTables { get; } = new();
