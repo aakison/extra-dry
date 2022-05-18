@@ -15,16 +15,15 @@ public class WarehouseModelBuilder {
     public void LoadSchema(Type contextType)
     {
         var entityTypes = GetEntities(contextType);
+        var assemblies = entityTypes.Select(e => e.Assembly).Distinct().ToList();
 
-        //var assemblies = entityTypes.Select(e => e.Assembly).Distinct().ToList();
-
-        //// Load enums, they're never dependent on anything.
-        //foreach(var enumType in GetEnums(assemblies)) {
-        //    var dimensionAttribute = enumType.GetCustomAttribute<DimensionTableAttribute>();
-        //    if(dimensionAttribute != null) {
-        //        LoadEnumDimension(enumType, dimensionAttribute);
-        //    }
-        //}
+        // Load enums, they're never dependent on anything.
+        foreach(var enumType in GetEnums(assemblies)) {
+            var dimensionAttribute = enumType.GetCustomAttribute<DimensionTableAttribute>();
+            if(dimensionAttribute != null) {
+                LoadEnumDimension(enumType, dimensionAttribute);
+            }
+        }
 
         // Load dimensions, needed before facts are loaded.
         foreach(var entity in entityTypes) {
@@ -43,17 +42,112 @@ public class WarehouseModelBuilder {
         }
     }
 
+    public FactTableBuilder<T> Fact<T>() where T : class
+    {
+        try {
+            return FactTables[typeof(T)] as FactTableBuilder<T> ?? throw new KeyNotFoundException();
+        }
+        catch(KeyNotFoundException) {
+            throw new DryException($"No Fact table of type {typeof(T).Name} was defined.");
+        }
+    }
+
+    public DimensionTableBuilder<T> Dimension<T>() where T : class
+    {
+        try {
+            return DimensionTables[typeof(T)] as DimensionTableBuilder<T> ?? throw new KeyNotFoundException();
+        }
+        catch(KeyNotFoundException) {
+            throw new DryException($"No Dimension table of type {typeof(T).Name} was defined.");
+        }
+    }
+
+    public DimensionTableBuilder<EnumDimension> EnumDimension<T>() where T : Enum
+    {
+        try {
+            return DimensionTables[typeof(T)] as DimensionTableBuilder<EnumDimension> ?? throw new KeyNotFoundException();
+        }
+        catch(KeyNotFoundException) {
+            throw new DryException($"No Dimension table of type {typeof(T).Name} was defined.");
+        }
+    }
+
+    public WarehouseModel Build()
+    {
+        var model = new WarehouseModel();
+        foreach(var dimensionBuilder in DimensionTables.Values) {
+            model.Dimensions.Add(dimensionBuilder.Build());
+        }
+        foreach(var factBuilder in FactTables.Values) {
+            model.Facts.Add(factBuilder.Build());
+        }
+        return model;
+    }
+
+    internal bool HasTableNamed(string name) =>
+        FactTables.Values.Any(e => string.Compare(e.TableName, name, StringComparison.InvariantCultureIgnoreCase) == 0) ||
+        DimensionTables.Values.Any(e => string.Compare(e.TableName, name, StringComparison.InvariantCultureIgnoreCase) == 0);
+
+    private void LoadEnumDimension(Type enumType, DimensionTableAttribute dimension)
+    {
+        if(LoadViaConstructor(typeof(DimensionTableBuilder<>), typeof(Builder.EnumDimension)) is DimensionTableBuilder builder) {
+            ConfigureEnumDimension(enumType, dimension, builder);
+            DimensionTables.Add(enumType, builder);
+        }
+    }
+
+    private static void ConfigureEnumDimension(Type enumType, DimensionTableAttribute dimension, DimensionTableBuilder builder)
+    {
+        var name = dimension.Name ?? DataConverter.CamelCaseToTitleCase(enumType.Name);
+        builder.HasName(name);
+        builder.HasKey().HasName($"{name} ID");
+        var fields = enumType.GetFields(BindingFlags.Public | BindingFlags.Static);
+        var elements = fields.ToDictionary(k => k, e => e.GetCustomAttribute<DisplayAttribute>());
+
+        var maxDisplay = elements.Values.Max(e => e?.Name?.Length) ?? 0;
+        var maxTitle = fields.Max(e => DataConverter.CamelCaseToTitleCase(e.Name).Length);
+        builder.Attribute(nameof(Builder.EnumDimension.Name)).HasLength(Math.Max(maxDisplay, maxTitle));
+
+        if(elements.Values.Any(e => e?.ShortName != null)) {
+            var maxLength = elements.Values.Max(e => e?.ShortName?.Length);
+            builder.Attribute(nameof(Builder.EnumDimension.ShortName)).HasLength(maxLength);
+        }
+        else {
+            builder.Attribute(nameof(Builder.EnumDimension.ShortName)).HasIgnore(true);
+        }
+
+        if(elements.Values.Any(e => e?.GroupName != null)) {
+            var maxLength = elements.Values.Max(e => e?.GroupName?.Length);
+            builder.Attribute(nameof(Builder.EnumDimension.GroupName)).HasLength(maxLength);
+        }
+        else {
+            builder.Attribute(nameof(Builder.EnumDimension.GroupName)).HasIgnore(true);
+        }
+
+        if(elements.Values.Any(e => e?.Description != null)) {
+            var maxLength = elements.Values.Max(e => e?.Description?.Length);
+            builder.Attribute(nameof(Builder.EnumDimension.Description)).HasLength(maxLength);
+        }
+        else {
+            builder.Attribute(nameof(Builder.EnumDimension.Description)).HasIgnore(true);
+        }
+
+        if(elements.Values.All(e => e?.GetOrder() == null)) {
+            builder.Attribute(nameof(Builder.EnumDimension.Description)).HasIgnore(true);
+        }
+    }
+
     private void LoadClassDimension(Type entity)
     {
-        if(LoadViaConstructor(typeof(DimensionTableBuilder<>), entity) is DimensionTableBuilder dimensionTableBuilder) {
-            DimensionTables.Add(entity, dimensionTableBuilder);
+        if(LoadViaConstructor(typeof(DimensionTableBuilder<>), entity) is DimensionTableBuilder builder) {
+            DimensionTables.Add(entity, builder);
         }
     }
 
     private void LoadClassFact(Type entity)
     {
-        if(LoadViaConstructor(typeof(FactTableBuilder<>), entity) is FactTableBuilder factTableBuilder) {
-            FactTables.Add(entity, factTableBuilder);
+        if(LoadViaConstructor(typeof(FactTableBuilder<>), entity) is FactTableBuilder builder) {
+            FactTables.Add(entity, builder);
         }
     }
 
@@ -92,44 +186,19 @@ public class WarehouseModelBuilder {
         }
     }
 
-    internal bool HasTableNamed(string name) =>
-        FactTables.Values.Any(e => string.Compare(e.TableName, name, StringComparison.InvariantCultureIgnoreCase) == 0) ||
-        DimensionTables.Values.Any(e => string.Compare(e.TableName, name, StringComparison.InvariantCultureIgnoreCase) == 0);
-
-    public FactTableBuilder<T> Fact<T>() where T : class
+    private static IEnumerable<Type> GetEnums(List<Assembly> assemblies)
     {
-        try {
-            return FactTables[typeof(T)] as FactTableBuilder<T> ?? throw new KeyNotFoundException();
-        }
-        catch(KeyNotFoundException) {
-            throw new DryException($"No Fact table of type {typeof(T).Name} was defined.");
-        }
-    }
-
-    public DimensionTableBuilder<T> Dimension<T>() where T : class
-    {
-        try {
-            return DimensionTables[typeof(T)] as DimensionTableBuilder<T> ?? throw new KeyNotFoundException();
-        }
-        catch(KeyNotFoundException) {
-            throw new DryException($"No Dimension table of type {typeof(T).Name} was defined.");
+        foreach(var assembly in assemblies) {
+            foreach(var type in assembly.GetTypes()) {
+                if(type.IsEnum) {
+                    yield return type;
+                }
+            }
         }
     }
 
     private Dictionary<Type, FactTableBuilder> FactTables { get; } = new();
 
     private Dictionary<Type, DimensionTableBuilder> DimensionTables { get; } = new();
-
-    public WarehouseModel Build()
-    {
-        var model = new WarehouseModel();
-        foreach(var dimensionBuilder in DimensionTables.Values) {
-            model.Dimensions.Add(dimensionBuilder.Build());
-        }
-        foreach(var factBuilder in FactTables.Values) {
-            model.Facts.Add(factBuilder.Build());
-        }
-        return model;
-    }
 
 }

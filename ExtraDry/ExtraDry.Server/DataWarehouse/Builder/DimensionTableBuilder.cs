@@ -7,14 +7,14 @@ public abstract class DimensionTableBuilder : TableBuilder {
 
     internal DimensionTableBuilder(WarehouseModelBuilder warehouseBuilder, Type entity) 
         : base(warehouseBuilder, entity)
-    { 
+    {
         DimensionTableAttribute = entity.GetCustomAttribute<DimensionTableAttribute>()!;
 
         var factTable = entity.GetCustomAttribute<FactTableAttribute>();
 
-        var name = DimensionTableAttribute?.Name ?? DataConverter.CamelCaseToTitleCase(entity.Name);
+        var name = DimensionTableAttribute.Name ?? DataConverter.CamelCaseToTitleCase(entity.Name);
         var key = $"{name} ID";
-        if(factTable != null && factTable.Name == null && DimensionTableAttribute?.Name == null) {
+        if(factTable != null && factTable.Name == null && DimensionTableAttribute.Name == null) {
             // Both fact and dimension without explicit names, avoid table name collision.
             name += " Details";
             // Note: key name doesn't change so they align between the fact and dimension.
@@ -23,10 +23,7 @@ public abstract class DimensionTableBuilder : TableBuilder {
         HasName(name);
         HasKey().HasName(key);
 
-        var attributeProperties = GetAttributeProperties();
-        foreach(var attribute in attributeProperties) {
-            LoadAttribute(attribute);
-        }
+        LoadClassAttributes();
     }
 
     public Table Build()
@@ -51,9 +48,13 @@ public abstract class DimensionTableBuilder : TableBuilder {
     internal override bool HasColumnNamed(string name) => 
         KeyBuilder?.ColumnName == name || AttributeBuilders.Values.Any(e => e.ColumnName == name);
 
-    private DimensionTableAttribute DimensionTableAttribute { get; set; }
-
-    private Dictionary<string, AttributeBuilder> AttributeBuilders { get; } = new();
+    private void LoadClassAttributes()
+    {
+        var attributeProperties = GetAttributeProperties();
+        foreach(var attribute in attributeProperties) {
+            LoadAttribute(attribute);
+        }
+    }
 
     private void LoadAttribute(PropertyInfo attribute)
     {
@@ -66,6 +67,10 @@ public abstract class DimensionTableBuilder : TableBuilder {
         return TableEntityType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
             .Where(e => AttributeBuilder.IsAttribute(e));
     }
+
+    private DimensionTableAttribute DimensionTableAttribute { get; set; }
+
+    private Dictionary<string, AttributeBuilder> AttributeBuilders { get; } = new();
 
 }
 
