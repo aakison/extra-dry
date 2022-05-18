@@ -8,7 +8,7 @@ namespace Sample.Shared;
 /// Represents a service that a company may provide.
 /// This is for properties that may appear as Enums, but have additional data associated with them.
 /// </summary>
-[Dimension]    
+[DimensionTable]
 public class Sector : INamedSubject {
 
     /// <summary>
@@ -28,16 +28,17 @@ public class Sector : INamedSubject {
     /// <summary>
     /// The code for the sector, which is trivially the Uuid.
     /// </summary>
+    [Attribute]
     public string Code => Uuid.ToString();
 
     /// <summary>
     /// The title of the sector
     /// </summary>
     /// <example>Commerical Electrical Services</example>
-    [Required]
-    [MaxLength(50)]
+    [Required, MaxLength(50)]
     [Display(Name = "Title", ShortName = "Title")]
     [Filter(FilterType.Contains)]
+    [Attribute]
     public string Title { get; set; }
 
     /// <summary>
@@ -47,6 +48,7 @@ public class Sector : INamedSubject {
     [MaxLength(250)]
     [Display(Name = "Description")]
     [Filter(FilterType.Contains)]
+    [Attribute]
     public string Description { get; set; }
 
     [NotMapped]
@@ -57,6 +59,7 @@ public class Sector : INamedSubject {
     /// </summary>
     [Rules(DeleteValue = SectorState.Inactive)]
     [Filter(FilterType.Equals)]
+    [Attribute]
     public SectorState State { get; set;  }
 
     /// <summary>

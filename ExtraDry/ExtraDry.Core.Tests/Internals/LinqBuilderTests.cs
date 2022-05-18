@@ -1,6 +1,8 @@
 ﻿using ExtraDry.Server.Internal;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.Json.Serialization;
 using Xunit;
 
 namespace ExtraDry.Core.Tests.Internals {
@@ -22,6 +24,16 @@ namespace ExtraDry.Core.Tests.Internals {
             var linqSorted = SampleData.OrderBy(e => e.Number).ToList();
 
             var linqBuilderSorted = SampleData.AsQueryable().OrderBy("Number").ToList();
+
+            Assert.Equal(linqSorted, linqBuilderSorted);
+        }
+
+        [Fact]
+        public void OrderByPublicNameCompatible()
+        {
+            var linqSorted = SampleData.OrderBy(e => e.InternalName).ToList();
+
+            var linqBuilderSorted = SampleData.AsQueryable().OrderBy("PublicName").ToList();
 
             Assert.Equal(linqSorted, linqBuilderSorted);
         }
@@ -49,7 +61,7 @@ namespace ExtraDry.Core.Tests.Internals {
         [Fact]
         public void OrderByInvalidNameException()
         {
-            Assert.Throws<DryException>(() => 
+            Assert.Throws<DryException>(() =>
                 SampleData.AsQueryable().OrderByDescending("Invalid").ToList()
             );
         }
@@ -86,6 +98,17 @@ namespace ExtraDry.Core.Tests.Internals {
         }
 
         [Fact]
+        public void SingleEqualsWhereFilterJsonNameCompatible()
+        {
+            var linqWhere = SampleData.Where(e => e.InternalName == "Bobby").ToList();
+            var modelDescription = new ModelDescription(typeof(Datum));
+
+            var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(modelDescription.FilterProperties.ToArray(), "publicname:Bobby").ToList();
+
+            Assert.Equal(linqWhere, linqBuilderWhere);
+        }
+
+        [Fact]
         public void SingleStartsWithWhereFilterCompatible()
         {
             var linqWhere = SampleData.Where(e => e.LastName.StartsWith("Bark")).ToList();
@@ -116,6 +139,11 @@ namespace ExtraDry.Core.Tests.Internals {
         }
 
         public class Datum {
+
+            [JsonIgnore]
+            [Key]
+            public int Id { get; set; }
+
             [Filter(FilterType.Equals)]
             public string FirstName { get; set; }
 
@@ -126,12 +154,16 @@ namespace ExtraDry.Core.Tests.Internals {
             public string Keywords { get; set; }
 
             public int Number { get; set; }
+
+            [Filter(FilterType.Equals)]
+            [JsonPropertyName("publicName")]
+            public string InternalName { get; set; }
         }
 
         private readonly List<Datum> SampleData = new() {
-            new Datum { FirstName = "Charlie", LastName = "Coase", Number = 111},
-            new Datum { FirstName = "Alice", LastName = "Cooper", Number = 333 },
-            new Datum { FirstName = "Bob", LastName = "Barker", Number = 222 },
+            new Datum { FirstName = "Charlie", LastName = "Coase", Number = 111, InternalName = "Chuck" },
+            new Datum { FirstName = "Alice", LastName = "Cooper", Number = 333, InternalName = "Al" },
+            new Datum { FirstName = "Bob", LastName = "Barker", Number = 222, InternalName = "Bobby" },
         };
 
         //private readonly List<Datum> SampleDataWithDuplicateNames = new() {

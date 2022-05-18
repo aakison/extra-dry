@@ -1,13 +1,12 @@
 ﻿#nullable enable
 
-using ExtraDry.Core;
 using ExtraDry.Server;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Xunit;
 
-namespace ExtraDry.Blazor.Tests.Core.Models {
+namespace ExtraDry.Core.Tests.Server.ExtensionMethods {
     public class QueryableExtensionsTests {
 
         [Fact]
@@ -19,7 +18,7 @@ namespace ExtraDry.Blazor.Tests.Core.Models {
                 new IdConventionKey { Id = 2 },
             };
             var query = new FilterQuery();
-            
+
             var sorted = list.AsQueryable()
                 .Sort(query)
                 .ToList();

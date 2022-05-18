@@ -110,7 +110,7 @@ public class RegionTests {
         Assert.DoesNotContain(propertyValue.ToString(), json);
     }
 
-    public Region ValidRegion => new() {
+    public static Region ValidRegion => new() {
         Id = 1,
         Code = "AU",
         Level = RegionLevel.Country,

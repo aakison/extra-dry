@@ -1,9 +1,6 @@
 ﻿#nullable enable
 
-using ExtraDry.Core;
 using ExtraDry.Server.EF;
-using Microsoft.EntityFrameworkCore;
-using Sample.Shared;
 using System.Text.Json;
 
 namespace Sample.Data {
@@ -40,6 +37,7 @@ namespace Sample.Data {
                 e => JsonSerializer.Serialize(e, (JsonSerializerOptions?)null),
                 e => JsonSerializer.Deserialize<ContentLayout>(e, (JsonSerializerOptions?)null) ?? new());
 
+            //modelBuilder.Entity<Content>().Property(e => e.Layout).HasColumnType()
         }
     }
 }

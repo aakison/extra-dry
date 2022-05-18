@@ -21,6 +21,7 @@ public class Employee
     [Rules(RuleAction.Allow)]
     [Display(Name = "Last Name", ShortName = "Last Name")]
     [Filter(FilterType.StartsWith)]
+    [Attribute("Last Name")]
     public string? LastName { get; set; }
 
     /// <summary>

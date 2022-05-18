@@ -1,13 +1,11 @@
 ﻿#nullable enable
 
 using ExtraDry.Core;
+using ExtraDry.Server.Internal;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text.Json.Serialization;
 
 namespace ExtraDry.Swashbuckle {
 
@@ -28,24 +26,22 @@ namespace ExtraDry.Swashbuckle {
             while(returnType.IsGenericType) {
                 returnType = returnType.GenericTypeArguments.First();
             }
-                
+
             if(takesFilter) {
-                var properties = returnType.GetProperties();
+                var modelDescription = new ModelDescription(returnType);
 
-                operation.Description += FilterDescription(properties);
+                operation.Description += FilterDescription(modelDescription.FilterProperties.ToArray());
 
-                operation.Description += SortDescription(properties);
+                operation.Description += SortDescription(modelDescription.SortProperties.ToArray());
 
-                var filterablePropertynames = properties.Where(e => IsFilterable(e)).Select(e => e.Name);
-                var filterableQuotedNames = filterablePropertynames.Select(e => $"`{e}`");
+                var filterableQuotedNames = modelDescription.FilterProperties.Select(e => $"`{e.ExternalName}`");
                 var filterable = string.Join(", ", filterableQuotedNames);
                 var filterParam = operation.Parameters.FirstOrDefault(e => e.Name == "Filter");
                 if(filterParam != null) {
                     filterParam.Description += $" Fields optionally can be any of [{filterable}]";
                 }
 
-                var sortablePropertyNames = properties.Where(e => IsSortable(e)).Select(e => e.Name);
-                var sortableQuotedNames = sortablePropertyNames.Select(e => $"`{e}`");
+                var sortableQuotedNames = modelDescription.SortProperties.Select(e => $"`{e.ExternalName}`");
                 var sortable = string.Join(", ", sortableQuotedNames);
                 var sortParam = operation.Parameters.FirstOrDefault(e => e.Name == "Sort");
                 if(sortParam != null) {
@@ -54,24 +50,9 @@ namespace ExtraDry.Swashbuckle {
             }
         }
 
-        private static bool IsFilterable(PropertyInfo prop) => prop.GetCustomAttribute<FilterAttribute>() != null;
-
-        private static bool IsSortable(PropertyInfo prop)
+        private static string SortDescription(SortProperty[] sortProps)
         {
-            // By name to avoid having to take dependency on EF and/or Newtonsoft.
-            var disqualifyingAttributes = new string[] { "JsonIgnore", "NotMapped", "Key" };
-            var ignore = prop.GetCustomAttributes().Any(e => disqualifyingAttributes.Any(f => f == e.GetType().Name));
-            if(prop.Name == "Id" || prop.Name == $"{prop.DeclaringType?.Name}Id") {
-                // EF convention for Key
-                ignore = true;
-            }
-            return !ignore;
-        }
-
-        private static string SortDescription(PropertyInfo[] props)
-        {
-            var sortablePropertyNames = props.Where(e => IsSortable(e)).Select(e => e.Name);
-            var sortableQuotedNames = sortablePropertyNames.Select(e => $"  * `{e}`\r\n");
+            var sortableQuotedNames = sortProps.Select(e => $"  * `{e.ExternalName}`\r\n");
             var sortable = string.Join("", sortableQuotedNames);
             var description = $@"
 ## Sorting
@@ -86,9 +67,8 @@ The ascending parameter may take the value `ascending` or `descending` to contro
             return description;
         }
 
-        private static string FilterDescription(PropertyInfo[] props)
+        private static string FilterDescription(FilterProperty[] filterProps)
         {
-
             var description = @"
 
 ## Filtering
@@ -129,24 +109,20 @@ Number and DateTime filterable fields also support ranges.  To specify a range, 
 For performance reasons, not all fields are filterable, and string filters might be applied differently.  Strings will match either the whole string, the start of the string, or anywhere in the string.  The filterable fields for this endpoint are:
 
 ";
-            foreach(var prop in props) {
-                var filter = prop.GetCustomAttribute<FilterAttribute>();
-                if(filter == null) {
-                    continue;
-                }
-                description += $"  * `{prop.Name}` ";
-                if(prop.PropertyType == typeof(string)) {
-                    description += filter.Type switch {
+            foreach(var filterProp in filterProps) {
+                description += $"  * `{filterProp.ExternalName}` ";
+                if(filterProp.Property.PropertyType == typeof(string)) {
+                    description += filterProp.Filter.Type switch {
                         FilterType.Contains => "string field matches term anywhere in string (contains)\r\n",
                         FilterType.StartsWith => "string field matches term at start of string (starts-with)\r\n",
                         _ => "string field matches the entire term (equals)\r\n",
                     };
                 }
-                else if(prop.PropertyType == typeof(DateTime)) {
+                else if(filterProp.Property.PropertyType == typeof(DateTime)) {
                     description += "date field matches value or range\r\n";
                 }
-                else if(prop.PropertyType.IsEnum) {
-                    var enumValues = Enum.GetNames(prop.PropertyType).Select(e => $"`{e}`");
+                else if(filterProp.Property.PropertyType.IsEnum) {
+                    var enumValues = Enum.GetNames(filterProp.Property.PropertyType).Select(e => $"`{e}`");
                     var values = string.Join(", ", enumValues);
                     description += $"enum field matches on specific values [{values}]\r\n";
                 }
@@ -156,7 +132,6 @@ For performance reasons, not all fields are filterable, and string filters might
             }
             return description;
         }
-
     }
 
 }

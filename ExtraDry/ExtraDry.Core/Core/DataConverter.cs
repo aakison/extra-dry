@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Core;
+﻿using System.Text.RegularExpressions;
+
+namespace ExtraDry.Core;
 
 public class DataConverter {
     /// <summary>
@@ -36,6 +38,21 @@ public class DataConverter {
         else {
             return $"{dateTime:MMM dd hh:mm tt}";
         }
+    }
+
+    /// <summary>
+    /// Given a camel-case (or Pascal-case) string, inserts spaces between words, retaining acronyms.
+    /// E.g. "TwoWords" becomes "Two Words", "VGAGraphics" becomes "VGA Graphics".
+    /// </summary>
+    public static string CamelCaseToTitleCase(string value)
+    {
+        var acronyms = new Regex(@"(\w)([A-Z][a-z])");
+        value = acronyms.Replace(value, "$1 $2");
+
+        var words = new Regex(@"([a-z])([A-Z])");
+        value = words.Replace(value, "$1 $2");
+
+        return value;
     }
 
 }
