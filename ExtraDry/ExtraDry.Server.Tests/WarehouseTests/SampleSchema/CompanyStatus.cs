@@ -3,7 +3,7 @@
 namespace ExtraDry.Server.Tests.WarehouseTests;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
-[DimensionTable("Company Status")]
+[DimensionTable]
 public enum CompanyStatus {
 
     [Display(Order = 0, Description = "Company is active")]
