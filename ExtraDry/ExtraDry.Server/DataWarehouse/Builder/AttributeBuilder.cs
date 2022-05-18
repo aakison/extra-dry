@@ -14,7 +14,14 @@ public class AttributeBuilder : ColumnBuilder {
         }
 
         // Only one type supported for attributes now, URI and Guid map here, possibly everything, always?
-        SetType(ColumnType.Text);
+        var type = PropertyInfo.PropertyType;
+        if(type == typeof(int)) {
+            SetType(ColumnType.Integer);
+        }
+        else {
+            SetType(ColumnType.Text);
+        }
+
 
         var notMapped = propertyInfo.GetCustomAttribute<NotMappedAttribute>();
         if(notMapped != null && AttributeAttribute == null) {
@@ -74,11 +81,13 @@ public class AttributeBuilder : ColumnBuilder {
         return isAttribute;
     }
 
-    private static readonly Type[] attributeTypes = new Type[] { typeof(string), typeof(Uri), typeof(Guid) };
+    // Int is interesting here, considering not including it as a valid attribute ever, but then came across 'SortOrder', snap.
+    // Not including decimal, float, long, etc unless an example justifying their use is identified.
+    private static readonly Type[] attributeTypes = new Type[] { typeof(string), typeof(Uri), typeof(Guid), typeof(int)};
 
     protected override bool IsValidColumnType(ColumnType type)
     {
-        return type == ColumnType.Text;
+        return type == ColumnType.Text || type == ColumnType.Integer;
     }
 
     private AttributeAttribute? AttributeAttribute { get; set; }

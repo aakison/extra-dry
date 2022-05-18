@@ -18,6 +18,7 @@ public class EnumDimension {
     [StringLength(50)]
     public string? GroupName { get; set; }
 
+    [Attribute]
     public int Order { get; set; }
 
 }

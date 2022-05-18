@@ -28,7 +28,7 @@ public class WarehouseAttributeTests {
 
     [Theory]
     [InlineData("ID")] // Key property doesn't slip through as an attribute.
-    [InlineData("Integer")] // int column not an attribute.
+    //[InlineData("Integer")] // int column not an attribute; but can be such as 'SortOrder', removed (scar tissue to remind us).
     [InlineData("Double")] // double String column not an attribute.
     [InlineData("Decimal")] // decimal column not an attribute.
     [InlineData("Correlation")] // EF NotMappedAttribue suppresses by default.
