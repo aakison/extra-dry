@@ -7,9 +7,9 @@
 public class EnumDimension {
 
     /// <summary>
-    /// Never to be instantiated, used by fluent builder interface to build other objects.
+    /// Not intended to be instantiated, used by fluent builder interface to build other objects.
     /// </summary>
-    private EnumDimension() { }
+    internal EnumDimension() { }
 
     /// <summary>
     /// The ID or value of the enum, used as the primary key in the dimension table.
