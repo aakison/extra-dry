@@ -80,7 +80,7 @@ public abstract class ColumnBuilder {
 
     protected Type EntityType { get; set; }
 
-    protected PropertyInfo PropertyInfo { get; set; }
+    internal PropertyInfo PropertyInfo { get; set; }
 
     protected TableBuilder TableBuilder { get; set; }
 

@@ -48,7 +48,6 @@ public class WarehouseEnumTests {
     public void EnumBuilderHasAllAttributes(string title, ColumnType columnType)
     {
         var builder = new WarehouseModelBuilder();
-
         builder.LoadSchema<SampleContext>();
 
         var attribute = builder.EnumDimension<RegionStatus>().Attribute(title);
@@ -58,13 +57,23 @@ public class WarehouseEnumTests {
     }
 
     [Theory]
-    [InlineData(typeof(RegionStatus), nameof(EnumDimension.Id), true)]
+    [InlineData(typeof(RegionStatus))]
+    [InlineData(typeof(CompanyStatus))]
+    public void KeysAreAlwaysIncluded(Type type)
+    {
+        var builder = new WarehouseModelBuilder();
+
+        builder.LoadSchema<SampleContext>();
+
+        Assert.NotNull(builder.EnumDimension(type).HasKey());
+    }
+
+    [Theory]
     [InlineData(typeof(RegionStatus), nameof(EnumDimension.ShortName), true)]
     [InlineData(typeof(RegionStatus), nameof(EnumDimension.Description), true)]
     [InlineData(typeof(RegionStatus), nameof(EnumDimension.Order), false)]
     [InlineData(typeof(RegionStatus), nameof(EnumDimension.GroupName), false)]
     [InlineData(typeof(RegionStatus), nameof(EnumDimension.Name), true)]
-    [InlineData(typeof(CompanyStatus), nameof(EnumDimension.Id), true)]
     [InlineData(typeof(CompanyStatus), nameof(EnumDimension.ShortName), false)]
     [InlineData(typeof(CompanyStatus), nameof(EnumDimension.Description), false)]
     [InlineData(typeof(CompanyStatus), nameof(EnumDimension.Order), true)]
@@ -100,5 +109,6 @@ public class WarehouseEnumTests {
 
         Assert.Throws<DryException>(() => builder.EnumDimension<RegionStatus>().Attribute(e => e.GetHashCode()));
     }
+
 
 }

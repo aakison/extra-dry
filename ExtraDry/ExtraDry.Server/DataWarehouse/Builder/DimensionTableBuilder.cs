@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using System.Collections.ObjectModel;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace ExtraDry.Server.DataWarehouse.Builder;
@@ -31,6 +32,10 @@ public abstract class DimensionTableBuilder : TableBuilder {
         var table = new Table(TableEntityType, TableName);
         table.Columns.Add(KeyBuilder.Build());
         table.Columns.AddRange(AttributeBuilders.Values.Where(e => e.Included).Select(e => e.Build()));
+        foreach(var row in baseData) {
+            var outputDict = row.ToDictionary(e => e.Key.ColumnName, e => e.Value);
+            table.Data.Add(outputDict);
+        }
         return table;
     }
 
@@ -40,10 +45,20 @@ public abstract class DimensionTableBuilder : TableBuilder {
         return this;
     }
 
+    public void HasData(Dictionary<ColumnBuilder, object> data)
+    {
+        baseData.Add(data);
+    }
+
     public AttributeBuilder Attribute(string name)
     {
         return AttributeBuilders[name];
     }
+
+    public ReadOnlyCollection<Dictionary<ColumnBuilder, object>> Data {
+        get => new ReadOnlyCollection<Dictionary<ColumnBuilder, object>>(baseData);
+    }
+    private List<Dictionary<ColumnBuilder, object>> baseData = new();
 
     internal override bool HasColumnNamed(string name) => 
         KeyBuilder?.ColumnName == name || AttributeBuilders.Values.Any(e => e.ColumnName == name);
@@ -65,7 +80,7 @@ public abstract class DimensionTableBuilder : TableBuilder {
     private IEnumerable<PropertyInfo> GetAttributeProperties()
     {
         return TableEntityType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
-            .Where(e => AttributeBuilder.IsAttribute(e));
+            .Where(e => AttributeBuilder.IsAttribute(e) && e != KeyBuilder.PropertyInfo);
     }
 
     private DimensionTableAttribute DimensionTableAttribute { get; set; }

@@ -140,6 +140,36 @@ public class WarehouseModelBuilder {
         if(elements.Values.All(e => (e?.GetOrder() ?? 0) == 0)) {
             builder.Attribute(nameof(Builder.EnumDimension.Order)).IsIncluded(false);
         }
+
+        LoadEnumBaseData(builder, elements);
+    }
+
+    private static void LoadEnumBaseData(DimensionTableBuilder builder, Dictionary<FieldInfo, DisplayAttribute?> elements)
+    {
+        var keyBuilder = builder.HasKey();
+        var nameBuilder = builder.Attribute(nameof(Builder.EnumDimension.Name));
+        var shortNameBuilder = builder.Attribute(nameof(Builder.EnumDimension.ShortName));
+        var descriptionBuilder = builder.Attribute(nameof(Builder.EnumDimension.Description));
+        var groupNameBuilder = builder.Attribute(nameof(Builder.EnumDimension.GroupName));
+        var orderBuilder = builder.Attribute(nameof(Builder.EnumDimension.Order));
+        foreach(var element in elements) {
+            var data = new Dictionary<ColumnBuilder, object> {
+                { keyBuilder, (int)(element.Key.GetValue(null) ?? 0) },
+                { nameBuilder, element.Value?.Name ?? element.Key.Name }
+            };
+            if(element.Value?.ShortName != null) {
+                data.Add(shortNameBuilder, element.Value.ShortName);
+            }
+            if(element.Value?.Description != null) {
+                data.Add(descriptionBuilder, element.Value.Description);
+            }
+            if(element.Value?.GroupName != null) {
+                data.Add(groupNameBuilder, element.Value.GroupName);
+            }
+            // Default per https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.displayattribute.order?view=net-6.0
+            data.Add(orderBuilder, element.Value?.GetOrder() ?? 10000);
+            builder.HasData(data);
+        }
     }
 
     private void LoadClassDimension(Type entity)
