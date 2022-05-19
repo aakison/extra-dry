@@ -6,7 +6,7 @@ namespace ExtraDry.Server.Tests.WarehouseTests;
 [DimensionTable("Geo Status")]
 public enum RegionStatus {
 
-    [Display(ShortName = "ACT", Description = "Region is active")]
+    [Display(ShortName = "ACT", Description = "Region is active.")]
     Active = 0,
 
     [Display(ShortName = "INA", Description = "Region is not currently used, but still exists.")]
