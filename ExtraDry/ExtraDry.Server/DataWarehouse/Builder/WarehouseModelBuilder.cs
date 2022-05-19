@@ -64,12 +64,7 @@ public class WarehouseModelBuilder {
 
     public DimensionTableBuilder<EnumDimension> EnumDimension<T>() where T : Enum
     {
-        try {
-            return DimensionTables[typeof(T)] as DimensionTableBuilder<EnumDimension> ?? throw new KeyNotFoundException();
-        }
-        catch(KeyNotFoundException) {
-            throw new DryException($"No Dimension table of type {typeof(T).Name} was defined.");
-        }
+        return EnumDimension(typeof(T));
     }
 
     public DimensionTableBuilder<EnumDimension> EnumDimension(Type type) 
