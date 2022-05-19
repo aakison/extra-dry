@@ -137,7 +137,7 @@ public class WarehouseModelBuilder {
             builder.Attribute(nameof(Builder.EnumDimension.Description)).IsIncluded(false);
         }
 
-        if(elements.Values.All(e => (e?.GetOrder() ?? 0) == 0)) {
+        if(elements.Values.All(e => e?.GetOrder() == null)) {
             builder.Attribute(nameof(Builder.EnumDimension.Order)).IsIncluded(false);
         }
 
@@ -166,8 +166,10 @@ public class WarehouseModelBuilder {
             if(element.Value?.GroupName != null) {
                 data.Add(groupNameBuilder, element.Value.GroupName);
             }
-            // Default per https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.displayattribute.order?view=net-6.0
-            data.Add(orderBuilder, element.Value?.GetOrder() ?? 10000);
+            if(orderBuilder.Included) {
+                // Default per https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.displayattribute.order?view=net-6.0
+                data.Add(orderBuilder, element.Value?.GetOrder() ?? 10000);
+            }
             builder.HasData(data);
         }
     }

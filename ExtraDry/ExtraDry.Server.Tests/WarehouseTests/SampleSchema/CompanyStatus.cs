@@ -6,10 +6,10 @@ namespace ExtraDry.Server.Tests.WarehouseTests;
 [DimensionTable]
 public enum CompanyStatus {
 
-    [Display(Order = 0, GroupName = "ForDisplay")]
+    [Display(Order = 123, GroupName = "ForDisplay")]
     Active = 0,
 
-    [Display(Order = 2, GroupName = "ForDisplay")]
+    [Display(GroupName = "ForDisplay")]
     Inactive = 1,
 
     Deleted = 2,

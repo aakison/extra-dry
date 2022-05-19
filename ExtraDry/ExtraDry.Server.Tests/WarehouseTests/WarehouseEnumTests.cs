@@ -110,5 +110,25 @@ public class WarehouseEnumTests {
         Assert.Throws<DryException>(() => builder.EnumDimension<RegionStatus>().Attribute(e => e.GetHashCode()));
     }
 
+    [Theory]
+    [InlineData(typeof(RegionStatus), (int)RegionStatus.Active, nameof(EnumDimension.Description), "Region is active")]
+    [InlineData(typeof(RegionStatus), (int)RegionStatus.Active, nameof(EnumDimension.ShortName), "ACT")]
+    [InlineData(typeof(CompanyStatus), (int)CompanyStatus.Active, nameof(EnumDimension.GroupName), "ForDisplay")]
+    [InlineData(typeof(CompanyStatus), (int)CompanyStatus.Active, nameof(EnumDimension.Order), 123)]
+    [InlineData(typeof(CompanyStatus), (int)CompanyStatus.Inactive, nameof(EnumDimension.Order), 10000)]
+    [InlineData(typeof(CompanyStatus), (int)CompanyStatus.Deleted, nameof(EnumDimension.Order), 10000)]
+    public void DimensionContainsData(Type type, int id, string attributeName, object value)
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<SampleContext>();
+
+        var dimension = builder.EnumDimension(type);
+
+        var key = dimension.HasKey();
+        var data = builder.EnumDimension(type).Data;
+        var attribute = dimension.Attribute(attributeName);
+        var values = data.First(e => (int)e[key] == id);
+        Assert.Equal(value, values[attribute]);
+    }
 
 }
