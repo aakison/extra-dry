@@ -25,7 +25,7 @@ public abstract class FactTableBuilder : TableBuilder {
     {
         var table = new Table(TableEntityType, TableName);
         table.Columns.Add(KeyBuilder.Build());
-        table.Columns.AddRange(MeasureBuilders.Values.Where(e => !e.Ignore).Select(e => e.Build()));
+        table.Columns.AddRange(MeasureBuilders.Values.Where(e => e.Included).Select(e => e.Build()));
         return table;
     }
 

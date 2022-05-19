@@ -22,16 +22,15 @@ public class AttributeBuilder : ColumnBuilder {
             SetType(ColumnType.Text);
         }
 
-
         var notMapped = propertyInfo.GetCustomAttribute<NotMappedAttribute>();
         if(notMapped != null && AttributeAttribute == null) {
             // [NotMapped] will ignore unless a [Attribute] attribute is also present.
-            SetIgnore(true);
+            SetIncluded(false);
         }
         var ignored = propertyInfo.GetCustomAttribute<AttributeIgnoreAttribute>();
         if(ignored != null) {
             // [MeasureIgnore] will always ignore, even if [Measure] is present.
-            SetIgnore(true); 
+            SetIncluded(false); 
         }
 
         HasLength(propertyInfo.GetCustomAttribute<StringLengthAttribute>()?.MaximumLength
@@ -56,9 +55,9 @@ public class AttributeBuilder : ColumnBuilder {
         return this;
     }
 
-    public AttributeBuilder HasIgnore(bool ignore = true)
+    public AttributeBuilder IsIncluded(bool included)
     {
-        SetIgnore(ignore);
+        SetIncluded(included);
         return this;
     }
 

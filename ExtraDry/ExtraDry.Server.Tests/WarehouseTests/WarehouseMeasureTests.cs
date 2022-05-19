@@ -126,25 +126,12 @@ public class WarehouseMeasureTests {
     }
 
     [Fact]
-    public void FluentCanImplicitlyIgnoreMeasure()
-    {
-        var builder = new WarehouseModelBuilder();
-        builder.LoadSchema<MeasureContext>();
-
-        builder.Fact<MeasureContainer>().Measure(e => e.AnnualRevenue).HasIgnore();
-        var warehouse = builder.Build();
-
-        var fact = warehouse.Facts.Single(e => e.EntityType == typeof(MeasureContainer));
-        Assert.DoesNotContain(fact.Columns, e => e.Name == "Annual Revenue");
-    }
-
-    [Fact]
     public void FluentCanExplicitlyIgnoreMeasure()
     {
         var builder = new WarehouseModelBuilder();
         builder.LoadSchema<MeasureContext>();
 
-        builder.Fact<MeasureContainer>().Measure(e => e.AnnualRevenue).HasIgnore(true);
+        builder.Fact<MeasureContainer>().Measure(e => e.AnnualRevenue).IsIncluded(false);
         var warehouse = builder.Build();
 
         var fact = warehouse.Facts.Single(e => e.EntityType == typeof(MeasureContainer));
@@ -157,7 +144,7 @@ public class WarehouseMeasureTests {
         var builder = new WarehouseModelBuilder();
         builder.LoadSchema<MeasureContext>();
 
-        builder.Fact<MeasureContainer>().Measure(e => e.Ignored).HasIgnore(false);
+        builder.Fact<MeasureContainer>().Measure(e => e.Ignored).IsIncluded(true);
         var warehouse = builder.Build();
 
         var fact = warehouse.Facts.Single(e => e.EntityType == typeof(MeasureContainer));

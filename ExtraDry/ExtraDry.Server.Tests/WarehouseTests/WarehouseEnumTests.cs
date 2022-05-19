@@ -30,6 +30,15 @@ public class WarehouseEnumTests {
         Assert.DoesNotContain(warehouse.Dimensions, e => e.EntityType == typeof(EnumDimension) && e.Name == title);
     }
 
+    [Fact]
+    public void MissingEnumThrowsException()
+    {
+        var builder = new WarehouseModelBuilder();
+
+        builder.LoadSchema<SampleContext>();
+        Assert.Throws<DryException>(() => builder.EnumDimension<RegionLevel>());
+    }
+
     [Theory]
     [InlineData("Name", ColumnType.Text)]
     [InlineData("Description", ColumnType.Text)]
@@ -48,49 +57,48 @@ public class WarehouseEnumTests {
         Assert.Equal(columnType, attribute.ColumnType);
     }
 
-    //[Theory]
-    //[InlineData(typeof(Region), "Population")] // Regular integer column
-    //[InlineData(typeof(Region), "Password")] // AttributeIgnore'd
-    //public void FactDoesNotHaveColumn(Type entityType, string title)
-    //{
-    //    var builder = new WarehouseModelBuilder();
+    [Theory]
+    [InlineData(typeof(RegionStatus), nameof(EnumDimension.Id), true)]
+    [InlineData(typeof(RegionStatus), nameof(EnumDimension.ShortName), true)]
+    [InlineData(typeof(RegionStatus), nameof(EnumDimension.Description), true)]
+    [InlineData(typeof(RegionStatus), nameof(EnumDimension.Order), false)]
+    [InlineData(typeof(RegionStatus), nameof(EnumDimension.GroupName), false)]
+    [InlineData(typeof(RegionStatus), nameof(EnumDimension.Name), true)]
+    [InlineData(typeof(CompanyStatus), nameof(EnumDimension.Id), true)]
+    [InlineData(typeof(CompanyStatus), nameof(EnumDimension.ShortName), false)]
+    [InlineData(typeof(CompanyStatus), nameof(EnumDimension.Description), false)]
+    [InlineData(typeof(CompanyStatus), nameof(EnumDimension.Order), true)]
+    [InlineData(typeof(CompanyStatus), nameof(EnumDimension.GroupName), true)]
+    [InlineData(typeof(CompanyStatus), nameof(EnumDimension.Name), true)]
+    public void AttributesAreConditionallyIncluded(Type type, string name, bool included)
+    {
+        var builder = new WarehouseModelBuilder();
+        
+        builder.LoadSchema<SampleContext>();
 
-    //    builder.LoadSchema<SampleContext>();
-    //    var warehouse = builder.Build();
+        Assert.Equal(included, builder.EnumDimension(type).Attribute(name).Included);
+    }
 
-    //    var fact = warehouse.Dimensions.Single(e => e.EntityType == entityType);
-    //    Assert.DoesNotContain(fact.Columns, e => e.Name == title);
-    //}
+    [Theory]
+    [InlineData(typeof(Region))]
+    public void DimensionHasNoData(Type entityType)
+    {
+        var builder = new WarehouseModelBuilder();
 
-    //[Theory]
-    //[InlineData(typeof(Region))]
-    //public void DimensionHasNoData(Type entityType)
-    //{
-    //    var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<SampleContext>();
+        var warehouse = builder.Build();
 
-    //    builder.LoadSchema<SampleContext>();
-    //    var warehouse = builder.Build();
+        var fact = warehouse.Dimensions.Single(e => e.EntityType == entityType);
+        Assert.Empty(fact.Data);
+    }
 
-    //    var fact = warehouse.Dimensions.Single(e => e.EntityType == entityType);
-    //    Assert.Empty(fact.Data);
-    //}
+    [Fact]
+    public void MethodExpressionThrowsException()
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<SampleContext>();
 
-    //[Fact]
-    //public void MethodExpressionThrowsException()
-    //{
-    //    var builder = new WarehouseModelBuilder();
-    //    builder.LoadSchema<SampleContext>();
-
-    //    Assert.Throws<DryException>(() => builder.Dimension<Region>().Attribute(e => e.GetHashCode()));
-    //}
-
-    //[Fact]
-    //public void FieldMemberExpressionThrowsException()
-    //{
-    //    var builder = new WarehouseModelBuilder();
-    //    builder.LoadSchema<SampleContext>();
-
-    //    Assert.Throws<DryException>(() => builder.Dimension<Company>().Attribute(e => e.field));
-    //}
+        Assert.Throws<DryException>(() => builder.EnumDimension<RegionStatus>().Attribute(e => e.GetHashCode()));
+    }
 
 }

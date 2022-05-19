@@ -2,6 +2,12 @@
 
 namespace ExtraDry.Server.DataWarehouse.Builder;
 
+/// <summary>
+/// 
+/// </summary>
+/// <remarks>
+/// Using a Get property with Set method to provide a fluent builder interface for developers.
+/// </remarks>
 public abstract class ColumnBuilder {
 
     internal ColumnBuilder(TableBuilder tableBuilder, Type entityType, PropertyInfo propertyInfo)
@@ -9,23 +15,35 @@ public abstract class ColumnBuilder {
         EntityType = entityType;
         PropertyInfo = propertyInfo;
         TableBuilder = tableBuilder;
-        ColumnName = DataConverter.CamelCaseToTitleCase(propertyInfo.Name);
+        columnName = DataConverter.CamelCaseToTitleCase(propertyInfo.Name);
     }
 
-    public string ColumnName { get; private set; }
+    public string ColumnName {
+        get => columnName;
+    } 
+    private string columnName;
 
-    public ColumnType ColumnType { get; private set; }
+    public ColumnType ColumnType { 
+        get => columnType; 
+    }
+    private ColumnType columnType;
 
-    public bool Ignore { get; private set; }
+    public bool Included {
+        get => included;
+    } 
+    private bool included =true;
 
-    public int? Length { get; private set; }
+    public int? Length {
+        get => length;
+    }
+    private int? length;
 
     protected void SetLength(int? length)
     {
         if(length != null && length < 0) {
             throw new DryException("Length must be a non-negative integer or null.");
         }
-        Length = length;
+        this.length = length;
     }
 
     protected void SetName(string name)
@@ -40,7 +58,7 @@ public abstract class ColumnBuilder {
         if(name != ColumnName && TableBuilder.HasColumnNamed(name)) {
             throw new DryException($"Names for tables must be unique, {name} is duplicated.");
         }
-        ColumnName = name;
+        columnName = name;
     }
 
     protected void SetType(ColumnType type)
@@ -48,12 +66,12 @@ public abstract class ColumnBuilder {
         if(!IsValidColumnType(type)) {
             throw new DryException("Column type is not valid.");
         }
-        ColumnType = type;
+        columnType = type;
     }
 
-    protected void SetIgnore(bool ignore)
+    protected void SetIncluded(bool included)
     {
-        Ignore = ignore;
+        this.included = included;
     }
 
     internal abstract Column Build();

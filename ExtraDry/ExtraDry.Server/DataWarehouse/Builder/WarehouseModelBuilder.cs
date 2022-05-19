@@ -72,6 +72,16 @@ public class WarehouseModelBuilder {
         }
     }
 
+    public DimensionTableBuilder<EnumDimension> EnumDimension(Type type) 
+    {
+        try {
+            return DimensionTables[type] as DimensionTableBuilder<EnumDimension> ?? throw new KeyNotFoundException();
+        }
+        catch(KeyNotFoundException) {
+            throw new DryException($"No Dimension table of type {type.Name} was defined.");
+        }
+    }
+
     public WarehouseModel Build()
     {
         var model = new WarehouseModel();
@@ -113,7 +123,7 @@ public class WarehouseModelBuilder {
             builder.Attribute(nameof(Builder.EnumDimension.ShortName)).HasLength(maxLength);
         }
         else {
-            builder.Attribute(nameof(Builder.EnumDimension.ShortName)).HasIgnore(true);
+            builder.Attribute(nameof(Builder.EnumDimension.ShortName)).IsIncluded(false);
         }
 
         if(elements.Values.Any(e => e?.GroupName != null)) {
@@ -121,19 +131,19 @@ public class WarehouseModelBuilder {
             builder.Attribute(nameof(Builder.EnumDimension.GroupName)).HasLength(maxLength);
         }
         else {
-            builder.Attribute(nameof(Builder.EnumDimension.GroupName)).HasIgnore(true);
+            builder.Attribute(nameof(Builder.EnumDimension.GroupName)).IsIncluded(false);
         }
 
-        if(elements.Values.Any(e => e?.Description != null)) {
+        if(elements.Values.Any(e => e?.GetDescription() != null)) {
             var maxLength = elements.Values.Max(e => e?.Description?.Length);
             builder.Attribute(nameof(Builder.EnumDimension.Description)).HasLength(maxLength);
         }
         else {
-            builder.Attribute(nameof(Builder.EnumDimension.Description)).HasIgnore(true);
+            builder.Attribute(nameof(Builder.EnumDimension.Description)).IsIncluded(false);
         }
 
-        if(elements.Values.All(e => e?.GetOrder() == null)) {
-            builder.Attribute(nameof(Builder.EnumDimension.Description)).HasIgnore(true);
+        if(elements.Values.All(e => (e?.GetOrder() ?? 0) == 0)) {
+            builder.Attribute(nameof(Builder.EnumDimension.Order)).IsIncluded(false);
         }
     }
 
@@ -163,14 +173,8 @@ public class WarehouseModelBuilder {
             return Activator.CreateInstance(factTableBuilderType, binding, binder, args, culture) 
                 ?? throw new DryException("Couldn't create instance of FactBuilderTable");
         }
-        catch(TargetInvocationException ex) {
-            // Unwrap invocation and throw as if reflection wasn't being used.
-            if(ex.InnerException is DryException dryEx) {
-                throw dryEx;
-            }
-            else {
-                throw;
-            }
+        catch(TargetInvocationException ex) when (ex.InnerException is DryException dryEx) {
+            throw dryEx;
         }
     }
 
