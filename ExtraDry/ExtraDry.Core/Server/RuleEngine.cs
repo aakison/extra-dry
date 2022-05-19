@@ -98,7 +98,7 @@ public class RuleEngine {
     private static (object? sourceValue, object? destinationValue) GetPropertyValues<T>(PropertyInfo property, T source, T destination)
     {
         try {
-            var sourceValue = property.GetValue(source);
+            var sourceValue = source != null ? property.GetValue(source) : null;
             var destinationValue = property.GetValue(destination);
             return (sourceValue, destinationValue);
         }
