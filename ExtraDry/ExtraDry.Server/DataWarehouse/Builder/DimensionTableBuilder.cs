@@ -56,9 +56,9 @@ public abstract class DimensionTableBuilder : TableBuilder {
     }
 
     public ReadOnlyCollection<Dictionary<ColumnBuilder, object>> Data {
-        get => new ReadOnlyCollection<Dictionary<ColumnBuilder, object>>(baseData);
+        get => new(baseData);
     }
-    private List<Dictionary<ColumnBuilder, object>> baseData = new();
+    private readonly List<Dictionary<ColumnBuilder, object>> baseData = new();
 
     internal override bool HasColumnNamed(string name) => 
         KeyBuilder?.ColumnName == name || AttributeBuilders.Values.Any(e => e.ColumnName == name);
