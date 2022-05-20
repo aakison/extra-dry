@@ -3,7 +3,11 @@ using ExtraDry.Server.DataWarehouse.Builder;
 
 namespace ExtraDry.Server.Tests.WarehouseTests;
 
-public class WarehouseEnumTests {
+/// <summary>
+/// Test for when an enum is a dimension.
+/// Occurs when [DimensionTable] on the enum.
+/// </summary>
+public class WarehouseEnumDimensionTests {
 
     [Theory]
     [InlineData("Company Status")] // implied name.
