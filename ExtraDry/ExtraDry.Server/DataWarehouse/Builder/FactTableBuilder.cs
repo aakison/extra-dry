@@ -7,7 +7,7 @@ public abstract class FactTableBuilder : TableBuilder {
 
     internal FactTableBuilder(WarehouseModelBuilder warehouseBuilder, Type entity) 
         : base(warehouseBuilder, entity)
-    { 
+    {
         FactTableAttribute = entity.GetCustomAttribute<FactTableAttribute>()!;
 
         if(FactTableAttribute.Name != null) {
@@ -19,6 +19,7 @@ public abstract class FactTableBuilder : TableBuilder {
         foreach(var measure in measureProperties) {
             LoadMeasure(measure);
         }
+        LoadSpokeBuilders();
     }
 
     public Table Build()
@@ -45,18 +46,13 @@ public abstract class FactTableBuilder : TableBuilder {
 
     private FactTableAttribute FactTableAttribute { get; set; }
 
-    private Dictionary<string, MeasureBuilder> MeasureBuilders { get; } = new Dictionary<string, MeasureBuilder>();
+    private Dictionary<string, MeasureBuilder> MeasureBuilders { get; } = new();
+
 
     private void LoadMeasure(PropertyInfo measure)
     {
         var builder = new MeasureBuilder(this, TableEntityType, measure);
         MeasureBuilders.Add(measure.Name, builder);
-        //    Measure(measure.Name);
-        //var name = measure.Value.Name
-        //    ?? measure.Key.PropertyType.GetCustomAttribute<DimensionTableAttribute>()?.Name
-        //    ?? measure.Key.Name;
-        //var column = EntityPropertyToColumn(entity, name, measure.Key, false);
-        //table.Columns.Add(column);
     }
 
     private IEnumerable<PropertyInfo> GetMeasureProperties()

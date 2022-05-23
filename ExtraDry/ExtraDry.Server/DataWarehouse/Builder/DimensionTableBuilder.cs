@@ -25,6 +25,7 @@ public abstract class DimensionTableBuilder : TableBuilder {
         HasKey().HasName(key);
 
         LoadClassAttributes();
+        LoadSpokeBuilders();
     }
 
     public Table Build()

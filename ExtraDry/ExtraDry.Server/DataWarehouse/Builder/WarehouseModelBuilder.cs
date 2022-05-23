@@ -67,6 +67,8 @@ public class WarehouseModelBuilder {
         return EnumDimension(typeof(T));
     }
 
+    public bool HasDimension(Type type) => DimensionTables.ContainsKey(type);
+
     public DimensionTableBuilder<EnumDimension> EnumDimension(Type type) 
     {
         try {

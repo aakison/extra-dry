@@ -13,11 +13,7 @@ public class AttributeBuilder : ColumnBuilder {
             SetName(AttributeAttribute.Name);
         }
 
-        // Only one type supported for attributes now, URI and Guid map here, possibly everything, always?
         var type = PropertyInfo.PropertyType;
-        if(type.IsEnum) {
-            SetType(ColumnType.Text);
-        }
         if(type == typeof(int)) {
             SetType(ColumnType.Integer);
         }
@@ -38,7 +34,7 @@ public class AttributeBuilder : ColumnBuilder {
 
         HasLength(propertyInfo.GetCustomAttribute<StringLengthAttribute>()?.MaximumLength
             ?? propertyInfo.GetCustomAttribute<MaxLengthAttribute>()?.Length);
-        if(type.IsEnum) {
+        if(type.IsEnum && ColumnType == ColumnType.Text) {
             var stats = new EnumStats(type);
             HasLength(stats.DisplayNameMaxLength());
         }
