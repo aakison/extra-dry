@@ -3,7 +3,11 @@ using ExtraDry.Server.DataWarehouse.Builder;
 
 namespace ExtraDry.Server.Tests.WarehouseTests;
 
-public class WarehouseEnumTests {
+/// <summary>
+/// Test for when an enum is a dimension.
+/// Occurs when [DimensionTable] on the enum.
+/// </summary>
+public class WarehouseEnumDimensionTests {
 
     [Theory]
     [InlineData("Company Status")] // implied name.
@@ -111,7 +115,7 @@ public class WarehouseEnumTests {
     }
 
     [Theory]
-    [InlineData(typeof(RegionStatus), (int)RegionStatus.Active, nameof(EnumDimension.Description), "Region is active")]
+    [InlineData(typeof(RegionStatus), (int)RegionStatus.Active, nameof(EnumDimension.Description), "Region is active.")]
     [InlineData(typeof(RegionStatus), (int)RegionStatus.Active, nameof(EnumDimension.ShortName), "ACT")]
     [InlineData(typeof(CompanyStatus), (int)CompanyStatus.Active, nameof(EnumDimension.GroupName), "ForDisplay")]
     [InlineData(typeof(CompanyStatus), (int)CompanyStatus.Active, nameof(EnumDimension.Order), 123)]
@@ -129,6 +133,32 @@ public class WarehouseEnumTests {
         var attribute = dimension.Attribute(attributeName);
         var values = data.First(e => (int)e[key] == id);
         Assert.Equal(value, values[attribute]);
+    }
+
+    [Theory]
+    [InlineData(typeof(RegionStatus), nameof(EnumDimension.Description), 59)] // "Region no longer exists, but is linked to historic records.".Length
+    [InlineData(typeof(RegionStatus), nameof(EnumDimension.ShortName), 3)] // "ACT"
+    [InlineData(typeof(CompanyStatus), nameof(EnumDimension.GroupName), 10)] // "ForDisplay"
+    public void EnumBuilderImplicitLength(Type type, string attributeName, int length)
+    {
+        var builder = new WarehouseModelBuilder();
+        
+        builder.LoadSchema<SampleContext>();
+
+        var descriptionAttribute = builder.EnumDimension(type).Attribute(attributeName);
+        Assert.Equal(length, descriptionAttribute.Length);
+    }
+
+    [Fact]
+    public void EnumBuilderFluentLength()
+    {
+        var builder = new WarehouseModelBuilder();
+
+        builder.LoadSchema<SampleContext>();
+        var descriptionAttribute = builder.EnumDimension<RegionStatus>().Attribute(e => e.Description);
+        descriptionAttribute.HasLength(80);
+
+        Assert.Equal(80, descriptionAttribute.Length);
     }
 
 }

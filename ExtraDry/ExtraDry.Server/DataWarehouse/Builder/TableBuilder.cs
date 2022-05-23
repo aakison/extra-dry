@@ -49,10 +49,32 @@ public abstract class TableBuilder {
         TableName = name;
     }
 
+    protected void LoadSpokeBuilders()
+    {
+        var spokeProperties = GetSpokeProperties();
+        foreach(var spoke in spokeProperties) {
+            LoadSpoke(spoke);
+        }
+    }
+
     protected KeyBuilder KeyBuilder { get; }
+
+    protected Dictionary<string, SpokeBuilder> SpokeBuilders { get; } = new();
 
     protected Type TableEntityType { get; }
 
-    protected WarehouseModelBuilder WarehouseBuilder { get; }
+    internal WarehouseModelBuilder WarehouseBuilder { get; }
+
+    private IEnumerable<PropertyInfo> GetSpokeProperties()
+    {
+        return TableEntityType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
+            .Where(e => WarehouseBuilder.HasDimension(e.PropertyType));
+    }
+
+    private void LoadSpoke(PropertyInfo spoke)
+    {
+        var builder = new SpokeBuilder(this, TableEntityType, spoke);
+        SpokeBuilders.Add(spoke.Name, builder);
+    }
 
 }

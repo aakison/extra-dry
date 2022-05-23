@@ -35,7 +35,7 @@ public class WarehouseFactTests {
     [InlineData(typeof(Company), "Gross", ColumnType.Decimal)] // Simple property, no decoration or special handling
     [InlineData(typeof(Company), "Sales Margin", ColumnType.Decimal)] // Simple property, name title cased by default.
     [InlineData(typeof(Company), "Big Bucks", ColumnType.Decimal)] // Measure attribute rename
-    //[InlineData(typeof(Company), "Company Status ID", ColumnType.Integer)] // Dimension PK naming convention.
+    [InlineData(typeof(Company), "Company Status ID", ColumnType.Integer)] // Dimension PK naming convention.
     public void FactHasColumn(Type entityType, string title, ColumnType columnType)
     {
         var builder = new WarehouseModelBuilder();
@@ -48,6 +48,7 @@ public class WarehouseFactTests {
     }
 
     [Theory]
+    [InlineData(typeof(Company), "Id")] // Should be key, not column.
     [InlineData(typeof(Company), "Title")] // Regular string column
     [InlineData(typeof(Company), "Code")] // String column with Measure attribute.
     public void FactDoesNotHaveColumn(Type entityType, string title)

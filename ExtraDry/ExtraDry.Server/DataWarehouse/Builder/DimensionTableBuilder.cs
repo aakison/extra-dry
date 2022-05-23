@@ -25,12 +25,17 @@ public abstract class DimensionTableBuilder : TableBuilder {
         HasKey().HasName(key);
 
         LoadClassAttributes();
+        if(factTable == null) {
+            // Only load spokes once, if this table is also a fact table, it will get the spokes instead.
+            LoadSpokeBuilders();
+        }
     }
 
     public Table Build()
     {
         var table = new Table(TableEntityType, TableName);
         table.Columns.Add(KeyBuilder.Build());
+        table.Columns.AddRange(SpokeBuilders.Values.Where(e => e.Included).Select(e => e.Build()));
         table.Columns.AddRange(AttributeBuilders.Values.Where(e => e.Included).Select(e => e.Build()));
         foreach(var row in baseData) {
             var outputDict = row.ToDictionary(e => e.Key.ColumnName, e => e.Value);
@@ -56,9 +61,9 @@ public abstract class DimensionTableBuilder : TableBuilder {
     }
 
     public ReadOnlyCollection<Dictionary<ColumnBuilder, object>> Data {
-        get => new ReadOnlyCollection<Dictionary<ColumnBuilder, object>>(baseData);
+        get => new(baseData);
     }
-    private List<Dictionary<ColumnBuilder, object>> baseData = new();
+    private readonly List<Dictionary<ColumnBuilder, object>> baseData = new();
 
     internal override bool HasColumnNamed(string name) => 
         KeyBuilder?.ColumnName == name || AttributeBuilders.Values.Any(e => e.ColumnName == name);

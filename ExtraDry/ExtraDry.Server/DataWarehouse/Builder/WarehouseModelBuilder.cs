@@ -48,7 +48,17 @@ public class WarehouseModelBuilder {
             return FactTables[typeof(T)] as FactTableBuilder<T> ?? throw new KeyNotFoundException();
         }
         catch(KeyNotFoundException) {
-            throw new DryException($"No Fact table of type {typeof(T).Name} was defined.");
+            throw new DryException($"No Fact table of type '{typeof(T).Name}' was defined.");
+        }
+    }
+
+    public DimensionTableBuilder Dimension(Type type)
+    {
+        try {
+            return DimensionTables[type] as DimensionTableBuilder ?? throw new KeyNotFoundException();
+        }
+        catch(KeyNotFoundException) {
+            throw new DryException($"No Dimension table of type '{type.Name}' was defined.");
         }
     }
 
@@ -58,7 +68,7 @@ public class WarehouseModelBuilder {
             return DimensionTables[typeof(T)] as DimensionTableBuilder<T> ?? throw new KeyNotFoundException();
         }
         catch(KeyNotFoundException) {
-            throw new DryException($"No Dimension table of type {typeof(T).Name} was defined.");
+            throw new DryException($"No Dimension table of type '{typeof(T).Name}' was defined.");
         }
     }
 
@@ -67,13 +77,15 @@ public class WarehouseModelBuilder {
         return EnumDimension(typeof(T));
     }
 
+    public bool HasDimension(Type type) => DimensionTables.ContainsKey(type);
+
     public DimensionTableBuilder<EnumDimension> EnumDimension(Type type) 
     {
         try {
             return DimensionTables[type] as DimensionTableBuilder<EnumDimension> ?? throw new KeyNotFoundException();
         }
         catch(KeyNotFoundException) {
-            throw new DryException($"No Dimension table of type {type.Name} was defined.");
+            throw new DryException($"No Dimension table of type '{type.Name}' was defined.");
         }
     }
 
@@ -106,45 +118,40 @@ public class WarehouseModelBuilder {
         var name = dimension.Name ?? DataConverter.CamelCaseToTitleCase(enumType.Name);
         builder.HasName(name);
         builder.HasKey().HasName($"{name} ID");
-        var fields = enumType.GetFields(BindingFlags.Public | BindingFlags.Static);
-        var elements = fields.ToDictionary(k => k, e => e.GetCustomAttribute<DisplayAttribute>());
 
-        var maxDisplay = elements.Values.Max(e => e?.Name?.Length) ?? 0;
-        var maxTitle = fields.Max(e => DataConverter.CamelCaseToTitleCase(e.Name).Length);
-        builder.Attribute(nameof(Builder.EnumDimension.Name)).HasLength(Math.Max(maxDisplay, maxTitle));
+        var stats = new EnumStats(enumType);
 
-        if(elements.Values.Any(e => e?.ShortName != null)) {
-            var maxLength = elements.Values.Max(e => e?.ShortName?.Length);
-            builder.Attribute(nameof(Builder.EnumDimension.ShortName)).HasLength(maxLength);
+        builder.Attribute(nameof(Builder.EnumDimension.Name)).HasLength(stats.DisplayNameMaxLength());
+
+        if(stats.HasShortName()) {
+            builder.Attribute(nameof(Builder.EnumDimension.ShortName)).HasLength(stats.ShortNameMaxLength());
         }
         else {
             builder.Attribute(nameof(Builder.EnumDimension.ShortName)).IsIncluded(false);
         }
 
-        if(elements.Values.Any(e => e?.GroupName != null)) {
-            var maxLength = elements.Values.Max(e => e?.GroupName?.Length);
-            builder.Attribute(nameof(Builder.EnumDimension.GroupName)).HasLength(maxLength);
+        if(stats.HasGroupName()) {
+            builder.Attribute(nameof(Builder.EnumDimension.GroupName)).HasLength(stats.GroupNameMaxLength());
         }
         else {
             builder.Attribute(nameof(Builder.EnumDimension.GroupName)).IsIncluded(false);
         }
 
-        if(elements.Values.Any(e => e?.GetDescription() != null)) {
-            var maxLength = elements.Values.Max(e => e?.Description?.Length);
-            builder.Attribute(nameof(Builder.EnumDimension.Description)).HasLength(maxLength);
+        if(stats.HasDescription()) {
+            builder.Attribute(nameof(Builder.EnumDimension.Description)).HasLength(stats.DescriptionMaxLength());
         }
         else {
             builder.Attribute(nameof(Builder.EnumDimension.Description)).IsIncluded(false);
         }
 
-        if(elements.Values.All(e => e?.GetOrder() == null)) {
+        if(!stats.HasOrder()) {
             builder.Attribute(nameof(Builder.EnumDimension.Order)).IsIncluded(false);
         }
 
-        LoadEnumBaseData(builder, elements);
+        LoadEnumBaseData(builder, stats);
     }
 
-    private static void LoadEnumBaseData(DimensionTableBuilder builder, Dictionary<FieldInfo, DisplayAttribute?> elements)
+    private static void LoadEnumBaseData(DimensionTableBuilder builder, EnumStats enumStats)
     {
         var keyBuilder = builder.HasKey();
         var nameBuilder = builder.Attribute(nameof(Builder.EnumDimension.Name));
@@ -152,23 +159,23 @@ public class WarehouseModelBuilder {
         var descriptionBuilder = builder.Attribute(nameof(Builder.EnumDimension.Description));
         var groupNameBuilder = builder.Attribute(nameof(Builder.EnumDimension.GroupName));
         var orderBuilder = builder.Attribute(nameof(Builder.EnumDimension.Order));
-        foreach(var element in elements) {
+        foreach(var enumField in enumStats.Fields) {
             var data = new Dictionary<ColumnBuilder, object> {
-                { keyBuilder, (int)(element.Key.GetValue(null) ?? 0) },
-                { nameBuilder, element.Value?.Name ?? element.Key.Name }
+                { keyBuilder, enumField.Value },
+                { nameBuilder, enumField.DisplayName }
             };
-            if(element.Value?.ShortName != null) {
-                data.Add(shortNameBuilder, element.Value.ShortName);
+            if(enumStats.HasShortName()) {
+                data.Add(shortNameBuilder, enumField.ShortName ?? string.Empty);
             }
-            if(element.Value?.Description != null) {
-                data.Add(descriptionBuilder, element.Value.Description);
+            if(enumStats.HasDescription()) {
+                data.Add(descriptionBuilder, enumField.Description ?? string.Empty);
             }
-            if(element.Value?.GroupName != null) {
-                data.Add(groupNameBuilder, element.Value.GroupName);
+            if(enumStats.HasGroupName()) {
+                data.Add(groupNameBuilder, enumField.GroupName ?? string.Empty);
             }
             if(orderBuilder.Included) {
                 // Default per https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.displayattribute.order?view=net-6.0
-                data.Add(orderBuilder, element.Value?.GetOrder() ?? 10000);
+                data.Add(orderBuilder, enumField.Order ?? 10000);
             }
             builder.HasData(data);
         }

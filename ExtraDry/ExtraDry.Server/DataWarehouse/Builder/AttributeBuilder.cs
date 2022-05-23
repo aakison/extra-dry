@@ -13,7 +13,6 @@ public class AttributeBuilder : ColumnBuilder {
             SetName(AttributeAttribute.Name);
         }
 
-        // Only one type supported for attributes now, URI and Guid map here, possibly everything, always?
         var type = PropertyInfo.PropertyType;
         if(type == typeof(int)) {
             SetType(ColumnType.Integer);
@@ -35,7 +34,11 @@ public class AttributeBuilder : ColumnBuilder {
 
         HasLength(propertyInfo.GetCustomAttribute<StringLengthAttribute>()?.MaximumLength
             ?? propertyInfo.GetCustomAttribute<MaxLengthAttribute>()?.Length);
-        if(Length == null && propertyInfo.PropertyType == typeof(Guid)) {
+        if(type.IsEnum && ColumnType == ColumnType.Text) {
+            var stats = new EnumStats(type);
+            HasLength(stats.DisplayNameMaxLength());
+        }
+        else if(Length == null && propertyInfo.PropertyType == typeof(Guid)) {
             HasLength(MaxGuidLength);
         }
         else if(Length == null && propertyInfo.PropertyType == typeof(Uri)) {
@@ -77,12 +80,15 @@ public class AttributeBuilder : ColumnBuilder {
         if(property.GetCustomAttribute<AttributeAttribute>() != null) {
             isAttribute = true;
         }
+        if(property.PropertyType.IsEnum) {
+            isAttribute = true;
+        }
         return isAttribute;
     }
 
     // Int is interesting here, considering not including it as a valid attribute ever, but then came across 'SortOrder', snap.
     // Not including decimal, float, long, etc unless an example justifying their use is identified.
-    private static readonly Type[] attributeTypes = new Type[] { typeof(string), typeof(Uri), typeof(Guid), typeof(int)};
+    private static readonly Type[] attributeTypes = new Type[] { typeof(string), typeof(Uri), typeof(Guid), typeof(int) };
 
     protected override bool IsValidColumnType(ColumnType type)
     {
@@ -95,4 +101,5 @@ public class AttributeBuilder : ColumnBuilder {
 
     // http://net-informations.com/q/mis/len.html
     private const int MaxUriLength = 2083;
+
 }
