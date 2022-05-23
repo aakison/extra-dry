@@ -13,7 +13,7 @@ internal class SqlGenerator {
         string.Join(",\n    ", table.Columns.Where(e => e.Reference != null).Select(e => SqlFKConstraint(table, e)));
 
     private static string SqlFKConstraint(Table table, Column column) =>
-        $"CONSTRAINT FK_{table.EntityType.Name}_{column.PropertyInfo!.Name} FOREIGN KEY ([{column.Name}]) REFERENCES [{column.Reference!.Table}]([{column.Reference!.Column}])";
+        $"CONSTRAINT [FK_{table.EntityType.Name}_{column.PropertyInfo!.Name}] FOREIGN KEY ([{column.Name}]) REFERENCES [{column.Reference!.Table}]([{column.Reference!.Column}])";
 
     private static string SqlColumns(IEnumerable<Column> columns) =>
         string.Join(",\n    ", columns.Select(e => SqlColumn(e)));

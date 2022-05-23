@@ -25,7 +25,10 @@ public abstract class DimensionTableBuilder : TableBuilder {
         HasKey().HasName(key);
 
         LoadClassAttributes();
-        LoadSpokeBuilders();
+        if(factTable == null) {
+            // Only load spokes once, if this table is also a fact table, it will get the spokes instead.
+            LoadSpokeBuilders();
+        }
     }
 
     public Table Build()
