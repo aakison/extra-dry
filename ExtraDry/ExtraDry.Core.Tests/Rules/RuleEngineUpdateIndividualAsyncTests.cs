@@ -182,6 +182,32 @@ namespace ExtraDry.Core.Tests.Rules {
         }
 
         [Theory]
+        [InlineData(ActiveType.Inactive)]
+        [InlineData(ActiveType.Active)]
+        public async Task UpdateDeletePropertyToNonDeletedValue(ActiveType activeType)
+        {
+            var rules = new RuleEngine(new ServiceProviderStub());
+            var source = SampleEntity();
+            var target = SampleEntity();
+            source.Active = activeType;
+
+            await rules.UpdateAsync(source, target);
+
+            Assert.Equal(activeType, target.Active);
+        }
+
+        [Fact]
+        public async Task UpdateDeletePropertyToDeletedValueThrows()
+        {
+            var rules = new RuleEngine(new ServiceProviderStub());
+            var source = SampleEntity();
+            var target = SampleEntity();
+            source.Active = ActiveType.Deleted;
+
+            await Assert.ThrowsAsync<DryException>(() => rules.UpdateAsync(source, target));
+        }
+
+        [Theory]
         [InlineData(null, null)]
         [InlineData(null, "abc")]
         [InlineData("abc", null)]
@@ -251,8 +277,10 @@ namespace ExtraDry.Core.Tests.Rules {
             public int ReadOnly {
                 get => HoursWorked;
             }
-        }
 
+            [Rules(DeleteValue = ActiveType.Deleted)]
+            public ActiveType Active { get; set; } = ActiveType.Pending;
+        }
         private static Entity SampleEntity() => new();
 
     }

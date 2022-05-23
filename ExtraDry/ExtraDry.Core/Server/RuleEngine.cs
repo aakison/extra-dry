@@ -154,6 +154,12 @@ public class RuleEngine {
                 }
                 throw new DryException($"Invalid attempt to change property '{property.Name}'", $"Attempt to change read-only property '{property.Name}'");
             }
+            // Do not allow property to be set to the value configured in DeleteValue.
+            var rule = property.GetCustomAttribute<RulesAttribute>();
+            if(rule?.DeleteValue != null && !same && (value?.Equals(rule?.DeleteValue) ?? false)) {
+                throw new DryException($"Invalid attempt to change property '{property.Name}'", $"Please use the Delete function to update '{property.Name}'");
+            }
+
             property.SetValue(destination, result);
         }
     }
