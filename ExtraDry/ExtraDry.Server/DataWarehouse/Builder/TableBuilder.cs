@@ -51,7 +51,6 @@ public abstract class TableBuilder {
 
     protected void LoadSpokeBuilders()
     {
-        return;
         var spokeProperties = GetSpokeProperties();
         foreach(var spoke in spokeProperties) {
             LoadSpoke(spoke);

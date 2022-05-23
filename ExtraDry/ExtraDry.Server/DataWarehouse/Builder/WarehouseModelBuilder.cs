@@ -48,7 +48,17 @@ public class WarehouseModelBuilder {
             return FactTables[typeof(T)] as FactTableBuilder<T> ?? throw new KeyNotFoundException();
         }
         catch(KeyNotFoundException) {
-            throw new DryException($"No Fact table of type {typeof(T).Name} was defined.");
+            throw new DryException($"No Fact table of type '{typeof(T).Name}' was defined.");
+        }
+    }
+
+    public DimensionTableBuilder Dimension(Type type)
+    {
+        try {
+            return DimensionTables[type] as DimensionTableBuilder ?? throw new KeyNotFoundException();
+        }
+        catch(KeyNotFoundException) {
+            throw new DryException($"No Dimension table of type '{type.Name}' was defined.");
         }
     }
 
@@ -58,7 +68,7 @@ public class WarehouseModelBuilder {
             return DimensionTables[typeof(T)] as DimensionTableBuilder<T> ?? throw new KeyNotFoundException();
         }
         catch(KeyNotFoundException) {
-            throw new DryException($"No Dimension table of type {typeof(T).Name} was defined.");
+            throw new DryException($"No Dimension table of type '{typeof(T).Name}' was defined.");
         }
     }
 
@@ -75,7 +85,7 @@ public class WarehouseModelBuilder {
             return DimensionTables[type] as DimensionTableBuilder<EnumDimension> ?? throw new KeyNotFoundException();
         }
         catch(KeyNotFoundException) {
-            throw new DryException($"No Dimension table of type {type.Name} was defined.");
+            throw new DryException($"No Dimension table of type '{type.Name}' was defined.");
         }
     }
 

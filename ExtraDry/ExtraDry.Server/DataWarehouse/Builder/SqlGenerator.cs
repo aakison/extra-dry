@@ -2,13 +2,9 @@
 
 internal class SqlGenerator {
 
-    public string Generate(Warehouse warehouse) =>
+    public string Generate(WarehouseModel warehouse) =>
         string.Join("\n", warehouse.Dimensions.Union(warehouse.Facts).Select(e => SqlTable(e))) +
         string.Join("\n", warehouse.Dimensions.Union(warehouse.Facts).Select(e => SqlData(e)));
-
-    public string Generate(WarehouseModel warehouse) =>
-    string.Join("\n", warehouse.Dimensions.Union(warehouse.Facts).Select(e => SqlTable(e))) +
-    string.Join("\n", warehouse.Dimensions.Union(warehouse.Facts).Select(e => SqlData(e)));
 
     private static string SqlTable(Table table) =>
         $"CREATE TABLE [{table.Name}] (\n    {SqlColumns(table.Columns)}\n    {SqlConstraints(table)}\n)\nGO\n";
@@ -17,7 +13,7 @@ internal class SqlGenerator {
         string.Join(",\n    ", table.Columns.Where(e => e.Reference != null).Select(e => SqlFKConstraint(table, e)));
 
     private static string SqlFKConstraint(Table table, Column column) =>
-        $"CONSTRAINT FK_{table.EntityType.Name}_{column.PropertyInfo!.Name} FOREIGN KEY ([{column.Name}]) REFERENCES [{column.Reference!.Table.Name}]([{column.Reference!.Column.Name}])";
+        $"CONSTRAINT FK_{table.EntityType.Name}_{column.PropertyInfo!.Name} FOREIGN KEY ([{column.Name}]) REFERENCES [{column.Reference!.Table}]([{column.Reference!.Column}])";
 
     private static string SqlColumns(IEnumerable<Column> columns) =>
         string.Join(",\n    ", columns.Select(e => SqlColumn(e)));

@@ -56,7 +56,7 @@ public abstract class ColumnBuilder {
             throw new DryException("Name limited to 50 characters.");
         }
         if(name != ColumnName && TableBuilder.HasColumnNamed(name)) {
-            throw new DryException($"Names for tables must be unique, {name} is duplicated.");
+            throw new DryException($"Names for tables must be unique, '{name}' is duplicated.");
         }
         columnName = name;
     }

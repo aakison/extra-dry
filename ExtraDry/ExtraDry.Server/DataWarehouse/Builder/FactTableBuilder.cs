@@ -15,10 +15,7 @@ public abstract class FactTableBuilder : TableBuilder {
             HasKey().HasName($"{FactTableAttribute.Name} ID");
         }
 
-        var measureProperties = GetMeasureProperties();
-        foreach(var measure in measureProperties) {
-            LoadMeasure(measure);
-        }
+        LoadMeasureBuilders();
         LoadSpokeBuilders();
     }
 
@@ -26,6 +23,7 @@ public abstract class FactTableBuilder : TableBuilder {
     {
         var table = new Table(TableEntityType, TableName);
         table.Columns.Add(KeyBuilder.Build());
+        table.Columns.AddRange(SpokeBuilders.Values.Where(e => e.Included).Select(e => e.Build()));
         table.Columns.AddRange(MeasureBuilders.Values.Where(e => e.Included).Select(e => e.Build()));
         return table;
     }
@@ -44,10 +42,13 @@ public abstract class FactTableBuilder : TableBuilder {
     internal override bool HasColumnNamed(string name) => 
         KeyBuilder?.ColumnName == name || MeasureBuilders.Values.Any(e => e.ColumnName == name);
 
-    private FactTableAttribute FactTableAttribute { get; set; }
-
-    private Dictionary<string, MeasureBuilder> MeasureBuilders { get; } = new();
-
+    private void LoadMeasureBuilders()
+    {
+        var measureProperties = GetMeasureProperties();
+        foreach(var measure in measureProperties) {
+            LoadMeasure(measure);
+        }
+    }
 
     private void LoadMeasure(PropertyInfo measure)
     {
@@ -58,8 +59,12 @@ public abstract class FactTableBuilder : TableBuilder {
     private IEnumerable<PropertyInfo> GetMeasureProperties()
     {
         return TableEntityType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
-            .Where(e => MeasureBuilder.IsMeasure(e));
+            .Where(e => MeasureBuilder.IsMeasure(e) && e != KeyBuilder.PropertyInfo);
     }
+
+    private FactTableAttribute FactTableAttribute { get; set; }
+
+    private Dictionary<string, MeasureBuilder> MeasureBuilders { get; } = new();
 
 }
 

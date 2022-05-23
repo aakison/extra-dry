@@ -6,9 +6,10 @@ public class SpokeBuilder : ColumnBuilder {
 
     internal SpokeBuilder(TableBuilder tableBuilder, Type entityType, PropertyInfo propertyInfo) 
         : base(tableBuilder, entityType, propertyInfo) 
-    { 
-        SetName($"{tableBuilder.TableName} ID");
-        SetType(ColumnType.Key);
+    {
+        TargetDimension = tableBuilder.WarehouseBuilder.Dimension(propertyInfo.PropertyType);
+        SetName(TargetDimension.HasKey().ColumnName);
+        SetType(ColumnType.Integer);
     }
 
     public SpokeBuilder HasName(string name)
@@ -19,15 +20,18 @@ public class SpokeBuilder : ColumnBuilder {
 
     protected override bool IsValidColumnType(ColumnType type)
     {
-        return type == ColumnType.Key;
+        return type == ColumnType.Integer;
     }
 
     internal override Column Build()
     {
-        return new Column(ColumnType.Key, ColumnName) {
+        return new Column(ColumnType.Integer, ColumnName) {
             Nullable = false,
             PropertyInfo = PropertyInfo,
+            Reference = new Reference(TargetDimension.TableName, TargetDimension.HasKey().ColumnName),
         };
     }
+
+    public DimensionTableBuilder TargetDimension { get; set; }
 
 }
