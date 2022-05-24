@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Sample.Shared;
 
 [Format(Icon = "building")]
-[FactTable]
+[FactTable, DimensionTable]
 public class Company : INamedSubject {
 
     [Key]

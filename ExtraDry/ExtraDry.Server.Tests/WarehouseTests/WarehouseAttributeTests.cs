@@ -28,7 +28,7 @@ public class WarehouseAttributeTests {
 
     [Theory]
     [InlineData("ID")] // Key property doesn't slip through as an attribute.
-    [InlineData("Integer")] // int column not an attribute.
+    //[InlineData("Integer")] // int column not an attribute; but can be such as 'SortOrder', removed (scar tissue to remind us).
     [InlineData("Double")] // double String column not an attribute.
     [InlineData("Decimal")] // decimal column not an attribute.
     [InlineData("Correlation")] // EF NotMappedAttribue suppresses by default.
@@ -104,25 +104,12 @@ public class WarehouseAttributeTests {
     }
 
     [Fact]
-    public void FluentCanImplicitlyIgnoreAttribute()
-    {
-        var builder = new WarehouseModelBuilder();
-        builder.LoadSchema<AttributeContext>();
-
-        builder.Dimension<AttributeContainer>().Attribute(e => e.Name).HasIgnore();
-        var warehouse = builder.Build();
-
-        var dimension = warehouse.Dimensions.Single(e => e.EntityType == typeof(AttributeContainer));
-        Assert.DoesNotContain(dimension.Columns, e => e.Name == "Name");
-    }
-
-    [Fact]
     public void FluentCanExplicitlyIgnoreAttribute()
     {
         var builder = new WarehouseModelBuilder();
         builder.LoadSchema<AttributeContext>();
 
-        builder.Dimension<AttributeContainer>().Attribute(e => e.Name).HasIgnore(true);
+        builder.Dimension<AttributeContainer>().Attribute(e => e.Name).IsIncluded(false);
         var warehouse = builder.Build();
 
         var dimension = warehouse.Dimensions.Single(e => e.EntityType == typeof(AttributeContainer));
@@ -135,7 +122,7 @@ public class WarehouseAttributeTests {
         var builder = new WarehouseModelBuilder();
         builder.LoadSchema<AttributeContext>();
 
-        builder.Dimension<AttributeContainer>().Attribute(e => e.Ignored).HasIgnore(false);
+        builder.Dimension<AttributeContainer>().Attribute(e => e.Ignored).IsIncluded(true);
         var warehouse = builder.Build();
 
         var dimension = warehouse.Dimensions.Single(e => e.EntityType == typeof(AttributeContainer));

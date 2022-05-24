@@ -25,12 +25,12 @@ public class MeasureBuilder : ColumnBuilder {
         var notMapped = propertyInfo.GetCustomAttribute<NotMappedAttribute>();
         if(notMapped != null && MeasureAttribute == null) {
             // [NotMapped] will ignore unless a [Measure] attribute is also present.
-            SetIgnore(true);
+            SetIncluded(false);
         }
         var ignored = propertyInfo.GetCustomAttribute<MeasureIgnoreAttribute>();
         if(ignored != null) {
             // [MeasureIgnore] will always ignore, even if [Measure] is present.
-            SetIgnore(true);
+            SetIncluded(false);
         }
     }
 
@@ -46,9 +46,9 @@ public class MeasureBuilder : ColumnBuilder {
         return this;
     }
 
-    public MeasureBuilder HasIgnore(bool ignore = true)
+    public MeasureBuilder IsIncluded(bool included)
     {
-        SetIgnore(ignore);
+        SetIncluded(included);
         return this;
     }
 
@@ -73,7 +73,6 @@ public class MeasureBuilder : ColumnBuilder {
 
     private static readonly Type[] measureTypes = new Type[] { typeof(decimal), typeof(float), typeof(int),
         typeof(double), typeof(long), typeof(short), typeof(uint), typeof(sbyte) };
-
 
     protected override bool IsValidColumnType(ColumnType type)
     {

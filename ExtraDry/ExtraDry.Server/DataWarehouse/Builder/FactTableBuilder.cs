@@ -7,7 +7,7 @@ public abstract class FactTableBuilder : TableBuilder {
 
     internal FactTableBuilder(WarehouseModelBuilder warehouseBuilder, Type entity) 
         : base(warehouseBuilder, entity)
-    { 
+    {
         FactTableAttribute = entity.GetCustomAttribute<FactTableAttribute>()!;
 
         if(FactTableAttribute.Name != null) {
@@ -15,17 +15,16 @@ public abstract class FactTableBuilder : TableBuilder {
             HasKey().HasName($"{FactTableAttribute.Name} ID");
         }
 
-        var measureProperties = GetMeasureProperties();
-        foreach(var measure in measureProperties) {
-            LoadMeasure(measure);
-        }
+        LoadMeasureBuilders();
+        LoadSpokeBuilders();
     }
 
     public Table Build()
     {
         var table = new Table(TableEntityType, TableName);
         table.Columns.Add(KeyBuilder.Build());
-        table.Columns.AddRange(MeasureBuilders.Values.Where(e => !e.Ignore).Select(e => e.Build()));
+        table.Columns.AddRange(SpokeBuilders.Values.Where(e => e.Included).Select(e => e.Build()));
+        table.Columns.AddRange(MeasureBuilders.Values.Where(e => e.Included).Select(e => e.Build()));
         return table;
     }
 
@@ -43,27 +42,29 @@ public abstract class FactTableBuilder : TableBuilder {
     internal override bool HasColumnNamed(string name) => 
         KeyBuilder?.ColumnName == name || MeasureBuilders.Values.Any(e => e.ColumnName == name);
 
-    private FactTableAttribute FactTableAttribute { get; set; }
-
-    private Dictionary<string, MeasureBuilder> MeasureBuilders { get; } = new Dictionary<string, MeasureBuilder>();
+    private void LoadMeasureBuilders()
+    {
+        var measureProperties = GetMeasureProperties();
+        foreach(var measure in measureProperties) {
+            LoadMeasure(measure);
+        }
+    }
 
     private void LoadMeasure(PropertyInfo measure)
     {
         var builder = new MeasureBuilder(this, TableEntityType, measure);
         MeasureBuilders.Add(measure.Name, builder);
-        //    Measure(measure.Name);
-        //var name = measure.Value.Name
-        //    ?? measure.Key.PropertyType.GetCustomAttribute<DimensionTableAttribute>()?.Name
-        //    ?? measure.Key.Name;
-        //var column = EntityPropertyToColumn(entity, name, measure.Key, false);
-        //table.Columns.Add(column);
     }
 
     private IEnumerable<PropertyInfo> GetMeasureProperties()
     {
         return TableEntityType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
-            .Where(e => MeasureBuilder.IsMeasure(e));
+            .Where(e => MeasureBuilder.IsMeasure(e) && e != KeyBuilder.PropertyInfo);
     }
+
+    private FactTableAttribute FactTableAttribute { get; set; }
+
+    private Dictionary<string, MeasureBuilder> MeasureBuilders { get; } = new();
 
 }
 
