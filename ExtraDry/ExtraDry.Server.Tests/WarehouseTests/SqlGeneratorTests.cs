@@ -4,7 +4,18 @@ using ExtraDry.Server.DataWarehouse.Builder;
 namespace ExtraDry.Server.Tests.WarehouseTests;
 
 public class SqlGeneratorTests {
-    
+
+    [Fact]
+    public void ColumnTableSyntax()
+    {
+        var table = new Table(this.GetType(), "Test");
+
+        var sql = SqlGenerator.SqlTable(table);
+
+        Assert.Contains("CREATE TABLE [Test] (", sql);
+        Assert.Contains("GO", sql);
+    }
+
     [Theory]
     [InlineData(ColumnType.Integer, "Foo", false, "[Foo] INT NOT NULL,")]
     [InlineData(ColumnType.Integer, "Foo", true, "[Foo] INT,")]
@@ -50,5 +61,23 @@ public class SqlGeneratorTests {
         var sql = SqlGenerator.SqlTable(table);
         Assert.Contains(expected, sql);
     }
+
+    [Fact]
+    public void DataInsertsRows()
+    {
+        var table = new Table(this.GetType(), "Test");
+        table.Columns.Add(new Column(ColumnType.Key, "Id"));
+        table.Columns.Add(new Column(ColumnType.Text, "Value"));
+
+        table.Data.Add(new Dictionary<string, object>() {
+            { "Id",  1 }, {"Value", "name" }
+        });
+        var sql = SqlGenerator.SqlData(table);
+
+        // ignore CR and double space for test...
+        sql = sql.Replace("\n", " ").Replace("  ", " ").Replace("  ", " ").Replace("  ", " ").Replace("  ", " ").Replace("  ", " ");
+        Assert.Contains("INSERT INTO [Test] ([Id], [Value]) VALUES (1, 'name')", sql);
+    }
+
 
 }

@@ -44,7 +44,7 @@ internal class SqlGenerator {
         }
     }
 
-    private static string SqlData(Table table) => !table.Data.Any() ? "" :
+    internal static string SqlData(Table table) => !table.Data.Any() ? "" :
         $"{SqlInsertInto(table)}";
 
     private static string SqlInsertInto(Table table) =>
