@@ -168,6 +168,19 @@ public class WarehouseMeasureTests {
         Assert.Throws<DryException>(() => builder.Fact<MeasureContainer>().Measure(e => e.Short).HasName("Integer"));
     }
 
+    [Fact]
+    public void DefaultPrecision()
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<PrecisionContext>();
+
+        var warehouse = builder.Build();
+
+        var fact = warehouse.Facts.Single(e => e.EntityType == typeof(PrecisionContext.PrecisionClass));
+        var measure = fact.Columns.First(e => e.Name == "Default");
+        Assert.Contains(fact.Columns, e => e.Name == "Ignored");
+    }
+
 }
 
 public class MeasureContext : DbContext {
@@ -255,4 +268,22 @@ public class NameCollisionContext : DbContext {
     }
 
     public DbSet<NameCollisionClass> NameCollisionClasses { get; set; } = null!;
+}
+
+public class PrecisionContext : DbContext {
+
+    [FactTable]
+    public class PrecisionClass {
+
+        public decimal Default { get; set; }
+
+        [Precision(6, 2)]
+        public decimal ShortSize { get; set; }
+
+        [Precision(18, 6)]
+        public decimal LongScale { get; set; }
+
+    }
+
+    public DbSet<PrecisionClass> PrecisionClasses { get; set; } = null!;
 }
