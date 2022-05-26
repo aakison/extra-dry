@@ -1,12 +1,12 @@
 ﻿namespace ExtraDry.Server.DataWarehouse.Builder;
 
-internal class SqlGenerator {
+internal static class SqlGenerator {
 
-    public string Generate(WarehouseModel warehouse) =>
+    public static string Generate(WarehouseModel warehouse) =>
         string.Join("\n", warehouse.Dimensions.Union(warehouse.Facts).Select(e => SqlTable(e))) +
         string.Join("\n", warehouse.Dimensions.Union(warehouse.Facts).Select(e => SqlData(e)));
 
-    private static string SqlTable(Table table) =>
+    internal static string SqlTable(Table table) =>
         $"CREATE TABLE [{table.Name}] (\n    {SqlColumns(table.Columns)}\n    {SqlConstraints(table)}\n)\nGO\n";
 
     private static string SqlConstraints(Table table) =>
@@ -28,18 +28,23 @@ internal class SqlGenerator {
             (ColumnType.Double, true) => "REAL",
             (ColumnType.Integer, false) => "INT NOT NULL",
             (ColumnType.Integer, true) => "INT",
+            (ColumnType.Decimal, false) => $"DECIMAL({column.Precision}) NOT NULL",
+            (ColumnType.Decimal, true) => $"DECIMAL({column.Precision})",
             (_, false) => $"{SqlVarchar(column.Length)} NOT NULL",
             (_, _) => SqlVarchar(column.Length),
         };
 
-    private static string SqlVarchar(int? length) =>
-        length switch {
-            null => $"NVARCHAR(Max)",
-            0 => $"NVARCHAR(Max)",
-            _ => $"NVARCHAR({length})",
-        };
+    private static string SqlVarchar(int? length)
+    {
+        if(length == null || length > 8000 || length <= 0) {
+            return "NVARCHAR(Max)";
+        }
+        else {
+            return $"NVARCHAR({length})";
+        }
+    }
 
-    private static string SqlData(Table table) => !table.Data.Any() ? "" :
+    internal static string SqlData(Table table) => !table.Data.Any() ? "" :
         $"{SqlInsertInto(table)}";
 
     private static string SqlInsertInto(Table table) =>

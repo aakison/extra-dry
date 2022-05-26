@@ -33,6 +33,11 @@ public class WarehouseModelBuilder {
             }
         }
 
+        // After dimensions are loaded, load spokes between them
+        foreach(var dimension in DimensionTables.Values) {
+            dimension.LoadSpokesDeferred();
+        }
+
         // Finally load facts and their foreign keys to dimensions.
         foreach(var entity in entityTypes) {
             var factAttribute = entity.GetCustomAttribute<FactTableAttribute>();

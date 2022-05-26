@@ -8,7 +8,16 @@ public class SpokeBuilder : ColumnBuilder {
         : base(tableBuilder, entityType, propertyInfo) 
     {
         TargetDimension = tableBuilder.WarehouseBuilder.Dimension(propertyInfo.PropertyType);
-        SetName(TargetDimension.HasKey().ColumnName);
+
+        var allPropertiesOfType = entityType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
+            .Where(e => e.PropertyType == propertyInfo.PropertyType).ToList();
+        if(allPropertiesOfType.Count > 1) {
+            SetName($"{DataConverter.CamelCaseToTitleCase(propertyInfo.Name)} {TargetDimension.HasKey().ColumnName}");
+        }
+        else {
+            SetName(TargetDimension.HasKey().ColumnName);
+        }
+
         SetType(ColumnType.Integer);
     }
 

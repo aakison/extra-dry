@@ -168,6 +168,62 @@ public class WarehouseMeasureTests {
         Assert.Throws<DryException>(() => builder.Fact<MeasureContainer>().Measure(e => e.Short).HasName("Integer"));
     }
 
+    [Fact]
+    public void DefaultPrecision()
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<PrecisionContext>();
+
+        var warehouse = builder.Build();
+
+        var fact = warehouse.Facts.Single(e => e.EntityType == typeof(PrecisionContext.PrecisionClass));
+        var measure = fact.Columns.First(e => e.Name == "Default");
+        Assert.Contains("18,2", measure.Precision);
+    }
+
+    [Theory]
+    [InlineData("Short Size", "6,2")]
+    [InlineData("Long Scale", "18,6")]
+    [InlineData("Missing Scale", "20,2")] // default scale is 2 (matching EF default scale, not C# or database)
+    public void AttributePrecision(string propertyName, string expected)
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<PrecisionContext>();
+
+        var warehouse = builder.Build();
+
+        var fact = warehouse.Facts.Single(e => e.EntityType == typeof(PrecisionContext.PrecisionClass));
+        var measure = fact.Columns.First(e => e.Name == propertyName);
+        Assert.Contains(expected, measure.Precision);
+    }
+
+    [Fact]
+    public void FluentPrecision()
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<PrecisionContext>();
+
+        builder.Fact<PrecisionContext.PrecisionClass>().Measure(e => e.FluentScale).HasPrecision(5, 3);
+        var warehouse = builder.Build();
+
+        var fact = warehouse.Facts.Single(e => e.EntityType == typeof(PrecisionContext.PrecisionClass));
+        var measure = fact.Columns.First(e => e.Name == "Fluent Scale");
+        Assert.Contains("5,3", measure.Precision);
+    }
+
+    [Theory]
+    [InlineData(40, 3)] // precision overflow
+    [InlineData(2, 18)] // scale bigger than precision
+    [InlineData(0, 0)] // precision too low
+    [InlineData(18, -1)] // scale too low
+    public void InvalidPrecisionForDecimal(int precision, int scale)
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<PrecisionContext>();
+
+        Assert.Throws<DryException>(() => builder.Fact<PrecisionContext.PrecisionClass>().Measure(e => e.FluentScale).HasPrecision(precision, scale));
+    }
+
 }
 
 public class MeasureContext : DbContext {
@@ -255,4 +311,29 @@ public class NameCollisionContext : DbContext {
     }
 
     public DbSet<NameCollisionClass> NameCollisionClasses { get; set; } = null!;
+}
+
+public class PrecisionContext : DbContext {
+
+    [FactTable]
+    public class PrecisionClass {
+
+        public int Id { get; set; }
+
+        public decimal Default { get; set; }
+
+        [Precision(6, 2)]
+        public decimal ShortSize { get; set; }
+
+        [Precision(18, 6)]
+        public decimal LongScale { get; set; }
+
+        [Precision(20)]
+        public decimal MissingScale { get; set; }
+
+        public decimal FluentScale { get; set; }
+
+    }
+
+    public DbSet<PrecisionClass> PrecisionClasses { get; set; } = null!;
 }

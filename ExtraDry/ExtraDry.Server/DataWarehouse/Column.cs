@@ -39,5 +39,10 @@ public class Column {
     /// </summary>
     public Reference? Reference { get; set; }
 
+    /// <summary>
+    /// When using a decimal, the precision that is stored.  
+    /// Default aligned with Entity Framework default.
+    /// </summary>
+    public string Precision { get; set; } = "18,2";
 }
 

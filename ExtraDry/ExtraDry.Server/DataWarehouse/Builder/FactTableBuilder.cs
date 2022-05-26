@@ -77,13 +77,25 @@ public class FactTableBuilder<T> : FactTableBuilder {
 
     public MeasureBuilder Measure<TProperty>(Expression<Func<T, TProperty>> propertyExpression)
     {
+        var property = ExtractPropertyName(propertyExpression);
+        return Measure(property.Name);
+    }
+
+    public SpokeBuilder Spoke<TProperty>(Expression<Func<T, TProperty>> propertyExpression)
+    {
+        var property = ExtractPropertyName(propertyExpression);
+        return Spoke(property.Name);
+    }
+
+    private static PropertyInfo ExtractPropertyName<TProperty>(Expression<Func<T, TProperty>> propertyExpression)
+    {
         if(propertyExpression.Body is not MemberExpression member) {
             throw new DryException("Expression should be a property expression such as `e => e.Property`.");
         }
         if(member.Member is not PropertyInfo property) {
             throw new DryException("Expression should be a property expression such as `e => e.Property`.");
         }
-        return Measure(property.Name);
+        return property;
     }
 
 }

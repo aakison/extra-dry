@@ -18,6 +18,11 @@ public abstract class TableBuilder {
         return KeyBuilder;
     }
 
+    public SpokeBuilder Spoke(string name)
+    {
+        return SpokeBuilders[name];
+    }
+
     public string TableName { get; private set; } = null!; // Constructor sets via method, analyzer misses it...
 
     protected PropertyInfo GetKeyProperty()
@@ -68,7 +73,8 @@ public abstract class TableBuilder {
     private IEnumerable<PropertyInfo> GetSpokeProperties()
     {
         return TableEntityType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
-            .Where(e => WarehouseBuilder.HasDimension(e.PropertyType));
+            .Where(e => WarehouseBuilder.HasDimension(e.PropertyType))
+            .Where(e => e.GetCustomAttribute<SpokeIgnoreAttribute>() == null);
     }
 
     private void LoadSpoke(PropertyInfo spoke)
