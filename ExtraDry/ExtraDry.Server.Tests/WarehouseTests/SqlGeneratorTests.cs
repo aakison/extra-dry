@@ -1,5 +1,7 @@
-﻿using ExtraDry.Server.DataWarehouse;
+﻿using ExtraDry.Core.DataWarehouse;
+using ExtraDry.Server.DataWarehouse;
 using ExtraDry.Server.DataWarehouse.Builder;
+using Microsoft.EntityFrameworkCore;
 
 namespace ExtraDry.Server.Tests.WarehouseTests;
 
@@ -79,5 +81,36 @@ public class SqlGeneratorTests {
         Assert.Contains("INSERT INTO [Test] ([Id], [Value]) VALUES (1, 'name')", sql);
     }
 
+    [Fact]
+    public void ForeignKeyConstraints()
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<TestContext>();
+
+        var warehouse = builder.Build();
+        var sql = warehouse.ToSql();
+
+        Assert.Contains("CONSTRAINT [FK_Source_Target] FOREIGN KEY ([Target ID]) REFERENCES [Target]([Target ID])", sql);
+    }
+
+    public class TestContext : DbContext {
+
+        [FactTable]
+        public class Source {
+            public int Id { get; set; }
+
+            public Target? Target { get; set; }
+        }
+
+        [DimensionTable]
+        public class Target {
+            public int Id { get; set; }
+        }
+
+        public DbSet<Source> Sources { get; set; } = null!;
+
+        public DbSet<Target> Targets { get; set; } = null!;
+    }
 
 }
+
