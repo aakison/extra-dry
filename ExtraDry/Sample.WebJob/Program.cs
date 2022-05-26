@@ -1,6 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using ExtraDry.Server.DataWarehouse;
-using Microsoft.EntityFrameworkCore;
 using Sample.Data;
 using Sample.Shared;
 using System.Text.Json;
