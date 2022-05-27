@@ -99,6 +99,18 @@ public class WarehouseSpokeTests {
         Assert.DoesNotContain(dimension.Columns, e => e.Name == "Target ID");
     }
 
+    [Fact]
+    public void SelfReferentialDimension()
+    {
+        var builder = new WarehouseModelBuilder();
+        builder.LoadSchema<SelfReferenceContext>();
+
+        var warehouse = builder.Build();
+
+        var dimension = warehouse.Dimensions.First(e => e.EntityType == typeof(SelfReferenceContext.SelfReference));
+        Assert.Contains(dimension.Columns, e => e.Name.EndsWith("Self Reference ID"));
+    }
+
     public class TestContext : DbContext {
 
         [FactTable]
@@ -124,7 +136,7 @@ public class WarehouseSpokeTests {
 
         [FactTable]
         public class Spokeless {
-            public int Id { get; set; } 
+            public int Id { get; set; }
             [SpokeIgnore]
             public Target? Taret { get; set; }
         }
@@ -148,18 +160,31 @@ public class WarehouseSpokeTests {
             public Target? Target { get; set; } // dimensions can also have spokes (snowflake schema)
         }
 
-
         public DbSet<SimpleSource> SimpleSources { get; set; } = null!;
 
         public DbSet<MultipleTarget> DoubleTargets { get; set; } = null!;
 
-        public DbSet<Spokeless> Spokelesses { get; set;} = null!;
+        public DbSet<Spokeless> Spokelesses { get; set; } = null!;
 
         public DbSet<Target> Targets { get; set; } = null!;
 
         public DbSet<DimensionSource> DimensionSources { get; set; } = null!;
 
         public DbSet<DoubleDutySource> DoubleDutySources { get; set; } = null!;
+
+    }
+
+    public class SelfReferenceContext : DbContext {
+
+        [DimensionTable]
+        public class SelfReference {
+            public int Id { get; set; }
+
+            public SelfReference? RelatedSelfReference { get; set; }
+        }
+
+        public DbSet<SelfReference> SelfReferences { get; set; } = null!;
+
     }
 
 }
