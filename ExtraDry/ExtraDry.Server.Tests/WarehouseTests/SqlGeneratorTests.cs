@@ -12,7 +12,7 @@ public class SqlGeneratorTests {
     {
         var table = new Table(this.GetType(), "Test");
 
-        var sql = SqlGenerator.SqlTable(table);
+        var sql = new SqlGenerator().SqlTable(table);
 
         Assert.Contains("CREATE TABLE [Test] (", sql);
         Assert.Contains("GO", sql);
@@ -40,7 +40,7 @@ public class SqlGeneratorTests {
         });
         table.Columns.Add(new Column(ColumnType.Integer, "Second"));  // force comma at end of first line.
 
-        var sql = SqlGenerator.SqlTable(table);
+        var sql = new SqlGenerator().SqlTable(table);
         Assert.Contains(expected, sql);
     }
 
@@ -60,7 +60,7 @@ public class SqlGeneratorTests {
         });
         table.Columns.Add(new Column(ColumnType.Integer, "Second")); // force comma at end of first line.
 
-        var sql = SqlGenerator.SqlTable(table);
+        var sql = new SqlGenerator().SqlTable(table);
         Assert.Contains(expected, sql);
     }
 
@@ -90,7 +90,7 @@ public class SqlGeneratorTests {
         var warehouse = builder.Build();
         var sql = warehouse.ToSql();
 
-        Assert.Contains("CONSTRAINT [FK_Source_Target] FOREIGN KEY ([Target ID]) REFERENCES [Target]([Target ID])", sql);
+        Assert.DoesNotContain("CONSTRAINT", sql);
     }
 
     public class TestContext : DbContext {
