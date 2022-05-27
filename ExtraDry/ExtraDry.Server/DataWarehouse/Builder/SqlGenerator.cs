@@ -1,19 +1,21 @@
 ﻿namespace ExtraDry.Server.DataWarehouse.Builder;
 
-internal static class SqlGenerator {
+internal class SqlGenerator {
 
-    public static string Generate(WarehouseModel warehouse) =>
+    public bool IncludeConstraints { get; set; } = false;
+
+    public string Generate(WarehouseModel warehouse) =>
         string.Join("\n", warehouse.Dimensions.Union(warehouse.Facts).Select(e => SqlTable(e))) +
         string.Join("\n", warehouse.Dimensions.Union(warehouse.Facts).Select(e => SqlData(e)));
 
-    internal static string SqlTable(Table table) =>
+    internal string SqlTable(Table table) =>
         $"CREATE TABLE [{table.Name}] (\n    {SqlColumns(table.Columns)}\n    {SqlConstraints(table)}\n)\nGO\n";
 
-    private static string SqlConstraints(Table table) =>
+    private string SqlConstraints(Table table) =>
         string.Join(",\n    ", table.Columns.Where(e => e.Reference != null).Select(e => SqlFKConstraint(table, e)));
 
-    private static string SqlFKConstraint(Table table, Column column) =>
-        $"CONSTRAINT [FK_{table.EntityType.Name}_{column.PropertyInfo!.Name}] FOREIGN KEY ([{column.Name}]) REFERENCES [{column.Reference!.Table}]([{column.Reference!.Column}])";
+    private string SqlFKConstraint(Table table, Column column) =>
+        IncludeConstraints ? $"CONSTRAINT [FK_{table.EntityType.Name}_{column.PropertyInfo!.Name}] FOREIGN KEY ([{column.Name}]) REFERENCES [{column.Reference!.Table}]([{column.Reference!.Column}])" : "";
 
     private static string SqlColumns(IEnumerable<Column> columns) =>
         string.Join(",\n    ", columns.Select(e => SqlColumn(e)));
