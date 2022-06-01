@@ -1,6 +1,7 @@
 ﻿#nullable disable // EF Model Class
 
 using ExtraDry.Core.DataWarehouse;
+using Microsoft.EntityFrameworkCore;
 
 namespace ExtraDry.Server.Tests.WarehouseTests;
 
@@ -40,11 +41,14 @@ public class Company : INamedSubject {
     [Rules(RuleAction.IgnoreDefaults)]
     public string Description { get; set; }
 
+    [Precision(18, 2)]
     public decimal Gross { get; set; }
 
+    [Precision(18, 2)]
     public decimal SalesMargin { get; set; }
 
     [Measure("Big Bucks")]
+    [Precision(18, 2)]
     public decimal AnnualRevenue { get; set; }
 
     [Display]

@@ -12,7 +12,7 @@ public class SqlGeneratorTests {
     {
         var table = new Table(this.GetType(), "Test");
 
-        var sql = new SqlGenerator().SqlTable(table);
+        var sql = new SqlServerSqlGenerator().CreateTable(table);
 
         Assert.Contains("CREATE TABLE [Test] (", sql);
         Assert.Contains("GO", sql);
@@ -40,7 +40,7 @@ public class SqlGeneratorTests {
         });
         table.Columns.Add(new Column(ColumnType.Integer, "Second"));  // force comma at end of first line.
 
-        var sql = new SqlGenerator().SqlTable(table);
+        var sql = new SqlServerSqlGenerator().CreateTable(table);
         Assert.Contains(expected, sql);
     }
 
@@ -60,7 +60,7 @@ public class SqlGeneratorTests {
         });
         table.Columns.Add(new Column(ColumnType.Integer, "Second")); // force comma at end of first line.
 
-        var sql = new SqlGenerator().SqlTable(table);
+        var sql = new SqlServerSqlGenerator().CreateTable(table);
         Assert.Contains(expected, sql);
     }
 
@@ -74,7 +74,7 @@ public class SqlGeneratorTests {
         table.Data.Add(new Dictionary<string, object>() {
             { "Id",  1 }, {"Value", "name" }
         });
-        var sql = SqlGenerator.SqlData(table);
+        var sql = new SqlServerSqlGenerator().InsertData(table);
 
         // ignore CR and double space for test...
         sql = sql.Replace("\n", " ").Replace("  ", " ").Replace("  ", " ").Replace("  ", " ").Replace("  ", " ").Replace("  ", " ");

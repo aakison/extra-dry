@@ -12,7 +12,7 @@ using Sample.Data;
 namespace Sample.Data.Migrations
 {
     [DbContext(typeof(SampleContext))]
-    [Migration("20220427030637_Initial")]
+    [Migration("20220531035832_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -86,11 +86,17 @@ namespace Sample.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<decimal>("AnnualRevenue")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("BankingDetails")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("nvarchar(24)");
 
                     b.Property<string>("Description")
                         .HasMaxLength(1000)
@@ -99,11 +105,17 @@ namespace Sample.Data.Migrations
                     b.Property<int?>("PrimarySectorId")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("SalesMargin")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
 
                     b.Property<Guid>("Uuid")
                         .HasColumnType("uniqueidentifier");

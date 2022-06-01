@@ -55,4 +55,24 @@ public class DataConverter {
         return value;
     }
 
+    /// <summary>
+    /// Gets the DataAnnotation DisplayName attribute for a given enum (for displaying enums values nicely to users)
+    /// </summary>
+    public static string DisplayEnum(Enum value)
+    {
+        if(value == null) {
+            throw new ArgumentNullException(nameof(value));
+        }
+        var enumType = value.GetType();
+        var enumValue = Enum.GetName(enumType, value);
+        if(enumValue == null) {
+            // can't find member any more, e.g. it was removed from enum but in value still around.
+            return value.ToString();
+        }
+        var member = enumType.GetMember(enumValue)[0];
+
+        var displayAttribute = member.GetCustomAttributes(typeof(DisplayAttribute), false)?.FirstOrDefault() as DisplayAttribute;
+        return displayAttribute?.Name ?? member.Name;
+    }
+
 }

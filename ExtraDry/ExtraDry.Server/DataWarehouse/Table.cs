@@ -17,4 +17,8 @@ public class Table {
 
     public List<Dictionary<string, object>> Data { get; } = new List<Dictionary<string, object>>();
 
+    public Column KeyColumn => Columns.First(e => e.ColumnType == ColumnType.Key);
+
+    public IEnumerable<Column> ValueColumns => Columns.Where(e => e.ColumnType != ColumnType.Key);
+
 }

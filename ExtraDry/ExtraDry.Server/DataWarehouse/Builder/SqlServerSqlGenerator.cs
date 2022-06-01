@@ -1,15 +1,47 @@
 ﻿namespace ExtraDry.Server.DataWarehouse.Builder;
 
-internal class SqlGenerator {
+public class SqlServerSqlGenerator : ISqlGenerator {
 
     public bool IncludeConstraints { get; set; } = false;
 
     public string Generate(WarehouseModel warehouse) =>
-        string.Join("\n", warehouse.Dimensions.Union(warehouse.Facts).Select(e => SqlTable(e))) +
-        string.Join("\n", warehouse.Dimensions.Union(warehouse.Facts).Select(e => SqlData(e)));
+        string.Join("\nGO\n", warehouse.Dimensions.Union(warehouse.Facts).Select(e => CreateTable(e))) +
+        "\nGO\n" + 
+        string.Join("\nGO\n", warehouse.Dimensions.Union(warehouse.Facts).Select(e => InsertData(e)));
 
-    internal string SqlTable(Table table) =>
-        $"CREATE TABLE [{table.Name}] (\n    {SqlColumns(table.Columns)}\n    {SqlConstraints(table)}\n)\nGO\n";
+    /// <summary>
+    /// Generate the SQL to create a table.
+    /// When overloading, avoid foreign key constraints as they cause performance bottlenecks in data warehouses.
+    /// </summary>
+    public string CreateTable(Table table) =>
+        $"CREATE TABLE [{table.Name}] (\n    {SqlColumns(table.Columns)}\n    {SqlConstraints(table)}\n)\n";
+
+    public string DropTable(Table table) =>
+        $"DROP TABLE IF EXISTS [{table.Name}]\n";
+
+    public string InsertData(Table table) => !table.Data.Any() ? "" :
+        $"{SqlInsertInto(table)}";
+
+    public string Upsert(Table table, int keyValue, Dictionary<string, object> values)
+    {
+        var keyName = table.KeyColumn.Name;
+        return @$"MERGE INTO [{table.Name}] AS [Target]
+USING (SELECT {keyValue}) AS [Source]([Id])
+    ON [Target].[{table.KeyColumn.Name}] = [Source].[Id]
+WHEN MATCHED THEN
+    UPDATE SET {UpdateExpressions()}
+WHEN NOT MATCHED THEN
+    INSERT ([{keyName}], {InsertColumns()})
+	VALUES ({keyValue}, {InsertValues()})
+;
+";
+
+        string UpdateExpressions() => string.Join(", ", table.ValueColumns.Select(e => $"[{e.Name}] = {SqlQuotedValue(values[e.Name])}"));
+
+        string InsertColumns() => string.Join(", ", table.ValueColumns.Select(e => $"[{e.Name}]"));
+
+        string InsertValues() => string.Join(", ", table.ValueColumns.Select(e => $"{SqlQuotedValue(values[e.Name])}"));
+    }
 
     private string SqlConstraints(Table table) =>
         string.Join(",\n    ", table.Columns.Where(e => e.Reference != null).Select(e => SqlFKConstraint(table, e)));
@@ -46,11 +78,8 @@ internal class SqlGenerator {
         }
     }
 
-    internal static string SqlData(Table table) => !table.Data.Any() ? "" :
-        $"{SqlInsertInto(table)}";
-
     private static string SqlInsertInto(Table table) =>
-        $"INSERT INTO [{table.Name}] \n    ({SqlInsertColumnNames(table)})\nVALUES\n    {SqlInsertColumnValues(table)}\nGO\n";
+        $"INSERT INTO [{table.Name}] \n    ({SqlInsertColumnNames(table)})\nVALUES\n    {SqlInsertColumnValues(table)}\n";
 
     private static string SqlInsertColumnNames(Table table) =>
         string.Join(", ", table.Columns.Select(e => $"[{e.Name}]"));
@@ -62,13 +91,19 @@ internal class SqlGenerator {
         $"({SqlInsertColumnValues(table.Columns.Select(e => values[e.Name]))})";
 
     private static string SqlInsertColumnValues(IEnumerable<object> values) =>
-        string.Join(", ", values.Select(e => SqlInsertColumnValue(e)));
+        string.Join(", ", values.Select(e => SqlQuotedValue(e)));
 
-    private static string SqlInsertColumnValue(object value)
+    private static string SqlQuotedValue(object value)
     {
         if(value is string sValue) {
             var escapedValue = sValue.Replace("'", "''");
             return $"'{escapedValue}'";
+        }
+        else if(value is Enum eValue) {
+            return $"'{DataConverter.DisplayEnum(eValue)}'";
+        }
+        else if(value is Guid gValue) {
+            return $"'{gValue}'";
         }
         else {
             return value.ToString()!;

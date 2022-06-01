@@ -42,9 +42,12 @@ public class DummyData {
                 trademarks.Add(name);
                 var company = new Company {
                     Uuid = PseudoRandomGuid(),
+                    Code = WebId.RandomWebString(6),
                     Title = name,
                     PrimarySector = PickRandom(services),
                     Status = PickRandom(companyStatuses),
+                    AnnualRevenue = random.Next(1_000_000, 3_000_000),
+                    SalesMargin = random.Next(100_000, 300_000),
                 };
                 //company.Videos.Add(new Video { Title = "Huzzah 1", Uri = "https://www.example.com/huzzah1" });
                 //company.Videos.Add(new Video { Title = "Huzzah 2", Uri = "https://www.example.com/huzzah2" });

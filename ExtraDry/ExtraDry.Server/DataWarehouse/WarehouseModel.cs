@@ -9,6 +9,6 @@ public class WarehouseModel {
 
     public IList<Table> Dimensions { get; set; } = new List<Table>();
 
-    public string ToSql() => new SqlGenerator().Generate(this);
+    public string ToSql() => new SqlServerSqlGenerator().Generate(this);
 
 }
