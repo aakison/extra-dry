@@ -1,4 +1,5 @@
 ﻿using ExtraDry.Server.DataWarehouse.Builder;
+using ExtraDry.Server.Internal;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExtraDry.Server.DataWarehouse;
@@ -34,6 +35,8 @@ public class DataFactory {
                 await CreateTargetTable(table, updateInfo);
                 await Olap.Database.CommitTransactionAsync();
             }
+
+            await ProcessTableBatch(table);
         }
     }
 
@@ -48,8 +51,14 @@ public class DataFactory {
 
         var dbSet = table.SourceProperty.GetValue(Oltp) as IQueryable
             ?? throw new DryException("Source context for model must match the source DbContext for the factory.");
-        
-        
+
+        var dyn = (dynamic)dbSet;
+        var where = LinqBuilder.WhereVersionModifiedAfter(dyn, batchStats.SyncTimestamp);
+        var ordered = LinqBuilder.OrderBy(where, "Id");
+        var taken = Queryable.Take(ordered, Options.BatchSize);
+        var batch = await EntityFrameworkQueryableExtensions.ToListAsync(taken);
+
+
         //var batchIncoming = await Oltp.Companies
         //    .Where(e => e.Version.DateModified > batchStats.SyncTimestamp)
         //    .OrderBy(e => e.Version.DateModified)

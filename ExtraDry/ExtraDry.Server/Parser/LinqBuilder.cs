@@ -72,6 +72,28 @@ internal static class LinqBuilder {
         return (IOrderedQueryable<T>)result;
     }
 
+    public static IQueryable<T> WhereVersionModifiedAfter<T>(this IQueryable<T> source, DateTime timestamp)
+    {
+        // Build the tree for the following manually... (where 'Version' is the first property of type VersionInfo)
+        // .Where(e => e.Version.DateModified >= timestamp)
+        var param = Expression.Parameter(typeof(T), "e");
+
+        Expression propertyExpression = param;
+        var versionProperty = typeof(T).GetProperties().FirstOrDefault(e => e.PropertyType == typeof(VersionInfo))
+            ?? throw new DryException("Can't do version modified after without a VersionInfo property.");
+        propertyExpression = Expression.Property(propertyExpression, versionProperty);
+        var modifiedProperty = typeof(VersionInfo).GetProperty(nameof(VersionInfo.DateModified))!;
+        propertyExpression = Expression.Property(propertyExpression, modifiedProperty);
+
+        var lowerValue = Expression.Constant(timestamp);
+
+        var rangeExpression = Expression.GreaterThanOrEqual(propertyExpression, lowerValue);
+        
+        var lambda = Expression.Lambda<Func<T, bool>>(rangeExpression, param);
+        
+        return source.Where(lambda);
+    }
+
     /// <summary>
     /// Given a list of filter properties and a list of match strings, constructs a queryable for an existing queryable.
     /// </summary>
