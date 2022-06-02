@@ -37,6 +37,35 @@ public class DataFactory {
         }
     }
 
+    public async Task ProcessTableBatch(Table table)
+    {
+        if(table.SourceProperty == null) {
+            return; // can't process changers
+        }
+
+        var batchStats = await Olap.TableSyncs.FirstOrDefaultAsync(e => e.Table == table.Name)
+            ?? throw new DryException("Unable to process batch, stats missing, run MigrateAsync() first.");
+
+        var dbSet = table.SourceProperty.GetValue(Oltp) as IQueryable
+            ?? throw new DryException("Source context for model must match the source DbContext for the factory.");
+        
+        
+        //var batchIncoming = await Oltp.Companies
+        //    .Where(e => e.Version.DateModified > batchStats.SyncTimestamp)
+        //    .OrderBy(e => e.Version.DateModified)
+        //    .Take(10).ToListAsync();
+        //var target = model.Dimensions.First(e => e.Name == targetTableName);
+
+        //foreach(var item in batchIncoming) {
+        //    var sql = factory.Upsert(target, item);
+        //    Console.WriteLine(sql);
+        //    await warehouseContext.Database.ExecuteSqlRawAsync(sql);
+        //}
+        //batchStats.SyncTimestamp = batchIncoming.Max(e => e.Version.DateModified);
+        //await warehouseContext.SaveChangesAsync();
+
+    }
+
     public string Upsert(Table table, object entity)
     {
         var values = new Dictionary<string, object>();

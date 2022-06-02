@@ -1,7 +1,6 @@
 ﻿using ExtraDry.Core.DataWarehouse;
 using ExtraDry.Server.DataWarehouse;
 using ExtraDry.Server.DataWarehouse.Builder;
-using Microsoft.EntityFrameworkCore;
 
 namespace ExtraDry.Server.Tests.WarehouseTests;
 
@@ -15,7 +14,6 @@ public class SqlGeneratorTests {
         var sql = new SqlServerSqlGenerator().CreateTable(table);
 
         Assert.Contains("CREATE TABLE [Test] (", sql);
-        Assert.Contains("GO", sql);
     }
 
     [Theory]

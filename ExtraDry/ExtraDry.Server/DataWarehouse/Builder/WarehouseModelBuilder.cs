@@ -14,8 +14,8 @@ public class WarehouseModelBuilder {
 
     public void LoadSchema(Type contextType)
     {
-        var entityTypes = GetEntities(contextType);
-        var assemblies = entityTypes.Select(e => e.Assembly).Distinct().ToList();
+        var entitySources = GetEntitySources(contextType);
+        var assemblies = entitySources.Select(e => e.EntityType.Assembly).Distinct().ToList();
 
         // Load enums, they're never dependent on anything.
         foreach(var enumType in GetEnums(assemblies)) {
@@ -26,10 +26,10 @@ public class WarehouseModelBuilder {
         }
 
         // Load dimensions, needed before facts are loaded.
-        foreach(var entity in entityTypes) {
-            var dimensionAttribute = entity.GetCustomAttribute<DimensionTableAttribute>();
+        foreach(var source in entitySources) {
+            var dimensionAttribute = source.EntityType.GetCustomAttribute<DimensionTableAttribute>();
             if(dimensionAttribute != null) {
-                LoadClassDimension(entity);
+                LoadClassDimension(source);
             }
         }
 
@@ -39,10 +39,10 @@ public class WarehouseModelBuilder {
         }
 
         // Finally load facts and their foreign keys to dimensions.
-        foreach(var entity in entityTypes) {
-            var factAttribute = entity.GetCustomAttribute<FactTableAttribute>();
+        foreach(var source in entitySources) {
+            var factAttribute = source.EntityType.GetCustomAttribute<FactTableAttribute>();
             if(factAttribute != null) {
-                LoadClassFact(entity);
+                LoadClassFact(source);
             }
         }
     }
@@ -186,17 +186,19 @@ public class WarehouseModelBuilder {
         }
     }
 
-    private void LoadClassDimension(Type entity)
+    private void LoadClassDimension(EntitySource entitySource)
     {
-        if(LoadViaConstructor(typeof(DimensionTableBuilder<>), entity) is DimensionTableBuilder builder) {
-            DimensionTables.Add(entity, builder);
+        if(LoadViaConstructor(typeof(DimensionTableBuilder<>), entitySource.EntityType) is DimensionTableBuilder builder) {
+            builder.Source = entitySource;
+            DimensionTables.Add(entitySource.EntityType, builder);
         }
     }
 
-    private void LoadClassFact(Type entity)
+    private void LoadClassFact(EntitySource entitySource)
     {
-        if(LoadViaConstructor(typeof(FactTableBuilder<>), entity) is FactTableBuilder builder) {
-            FactTables.Add(entity, builder);
+        if(LoadViaConstructor(typeof(FactTableBuilder<>), entitySource.EntityType) is FactTableBuilder builder) {
+            builder.Source = entitySource;
+            FactTables.Add(entitySource.EntityType, builder);
         }
     }
 
@@ -217,14 +219,14 @@ public class WarehouseModelBuilder {
         }
     }
 
-    private static IEnumerable<Type> GetEntities(Type tableType)
+    private static IEnumerable<EntitySource> GetEntitySources(Type dbContextType)
     {
-        var properties = tableType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        var properties = dbContextType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
         foreach(var property in properties) {
             var type = property.PropertyType;
             if(type.IsGenericType && type.GetGenericTypeDefinition() == typeof(DbSet<>)) {
                 var entityType = type.GetGenericArguments()[0];
-                yield return entityType;
+                yield return new EntitySource(entityType) { ContextType = dbContextType, PropertyInfo = property };
             }
         }
     }

@@ -25,6 +25,8 @@ public abstract class TableBuilder {
 
     public string TableName { get; private set; } = null!; // Constructor sets via method, analyzer misses it...
 
+    public EntitySource? Source { get; internal set; } 
+
     protected PropertyInfo GetKeyProperty()
     {
         var properties = TableEntityType!.GetProperties();

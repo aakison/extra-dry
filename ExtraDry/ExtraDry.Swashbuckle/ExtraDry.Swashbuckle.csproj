@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ExtraDry.Core\ExtraDry.Core.csproj" />
+    <ProjectReference Include="..\ExtraDry.Server\ExtraDry.Server.csproj" />
   </ItemGroup>
 
 </Project>
