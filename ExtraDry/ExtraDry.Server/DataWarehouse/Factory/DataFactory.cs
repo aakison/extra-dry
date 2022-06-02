@@ -1,6 +1,7 @@
 ﻿using ExtraDry.Server.DataWarehouse.Builder;
 using ExtraDry.Server.Internal;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace ExtraDry.Server.DataWarehouse;
 
@@ -43,37 +44,49 @@ public class DataFactory {
     public async Task ProcessTableBatch(Table table)
     {
         if(table.SourceProperty == null) {
-            return; // can't process changers
+            return; // can't process changes on enums without a source property.
         }
 
         var batchStats = await Olap.TableSyncs.FirstOrDefaultAsync(e => e.Table == table.Name)
             ?? throw new DryException("Unable to process batch, stats missing, run MigrateAsync() first.");
 
-        var dbSet = table.SourceProperty.GetValue(Oltp) as IQueryable
+        // Dynamically build up something comparable to the following:
+        // var batchIncoming = await Oltp.Companies
+        //      .Where(e => e.Version.DateModified > batchStats.SyncTimestamp)
+        //      .OrderBy(e => e.Version.DateModified)
+        //      .Take(Options.BatchSize)
+        //      .ToListAsync();
+        // Dynamic used to access extensions methods manually, then once batch received get out of dynamic hell.
+        var dbSet = (dynamic?)table.SourceProperty.GetValue(Oltp)
             ?? throw new DryException("Source context for model must match the source DbContext for the factory.");
-
-        var dyn = (dynamic)dbSet;
-        var where = LinqBuilder.WhereVersionModifiedAfter(dyn, batchStats.SyncTimestamp);
+        var where = LinqBuilder.WhereVersionModifiedAfter(dbSet, batchStats.SyncTimestamp);
         var ordered = LinqBuilder.OrderBy(where, "Id");
         var taken = Queryable.Take(ordered, Options.BatchSize);
-        var batch = await EntityFrameworkQueryableExtensions.ToListAsync(taken);
+        var batch = new List<object>();
+        batch.AddRange(await EntityFrameworkQueryableExtensions.ToListAsync(taken));
 
-
-        //var batchIncoming = await Oltp.Companies
-        //    .Where(e => e.Version.DateModified > batchStats.SyncTimestamp)
-        //    .OrderBy(e => e.Version.DateModified)
-        //    .Take(10).ToListAsync();
-        //var target = model.Dimensions.First(e => e.Name == targetTableName);
-
-        //foreach(var item in batchIncoming) {
-        //    var sql = factory.Upsert(target, item);
-        //    Console.WriteLine(sql);
-        //    await warehouseContext.Database.ExecuteSqlRawAsync(sql);
-        //}
-        //batchStats.SyncTimestamp = batchIncoming.Max(e => e.Version.DateModified);
-        //await warehouseContext.SaveChangesAsync();
-
+        if(batch.Any()) {
+            var target = Model.Dimensions.First(e => e.Name == table.Name);
+            foreach(var item in batch) {
+                var sql = Upsert(target, item);
+                await Olap.Database.ExecuteSqlRawAsync(sql);
+            }
+            batchStats.SyncTimestamp = batch.Max(e => GetVersionInfo(e)?.DateModified ?? DateTime.MinValue);
+            await Olap.SaveChangesAsync();
+        }
     }
+
+    private VersionInfo? GetVersionInfo(object item)
+    {
+        var type = item.GetType();
+        if(!VersionInfoProperties.ContainsKey(type)) {
+            var property = type.GetProperties().FirstOrDefault(e => e.PropertyType == typeof(VersionInfo))
+                ?? throw new DryException("Object does not have a VersionInfo property.");
+            VersionInfoProperties[type] = property;
+        }
+        return VersionInfoProperties[type].GetValue(item) as VersionInfo;
+    }
+    private Dictionary<Type, PropertyInfo> VersionInfoProperties { get; } = new();
 
     public string Upsert(Table table, object entity)
     {
