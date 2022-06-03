@@ -47,5 +47,5 @@ var factoryOptions = new DataFactoryOptions() {
 
 
 var factory = new DataFactory(model, databaseContext, warehouseContext, dataFactoryLogger, factoryOptions);
-await factory.ProcessBatchesAsync();
+while(await factory.ProcessBatchesAsync() > 0) ;
 

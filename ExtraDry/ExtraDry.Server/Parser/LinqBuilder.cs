@@ -72,7 +72,7 @@ internal static class LinqBuilder {
         return (IOrderedQueryable<T>)result;
     }
 
-    public static IQueryable<T> WhereVersionModifiedAfter<T>(this IQueryable<T> source, DateTime timestamp)
+    public static IQueryable<T> WhereVersionModified<T>(this IQueryable<T> source, EqualityType equality, DateTime timestamp)
     {
         // Build the tree for the following manually... (where 'Version' is the first property of type VersionInfo)
         // .Where(e => e.Version.DateModified >= timestamp)
@@ -85,9 +85,12 @@ internal static class LinqBuilder {
         var modifiedProperty = typeof(VersionInfo).GetProperty(nameof(VersionInfo.DateModified))!;
         propertyExpression = Expression.Property(propertyExpression, modifiedProperty);
 
-        var lowerValue = Expression.Constant(timestamp);
+        var dateConstant = Expression.Constant(timestamp);
 
-        var rangeExpression = Expression.GreaterThanOrEqual(propertyExpression, lowerValue);
+        var rangeExpression =
+            equality == EqualityType.GreaterThan
+                ? Expression.GreaterThan(propertyExpression, dateConstant)
+                : Expression.Equal(propertyExpression, dateConstant);
         
         var lambda = Expression.Lambda<Func<T, bool>>(rangeExpression, param);
         
@@ -250,6 +253,11 @@ internal static class LinqBuilder {
         ThenBy,
         OrderByDescending,
         ThenByDescending,
+    }
+
+    public enum EqualityType {
+        GreaterThan,
+        EqualTo,
     }
 
 }

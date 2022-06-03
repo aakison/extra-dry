@@ -47,27 +47,62 @@ public class DataFactory {
         }
     }
 
-    public async Task ProcessBatchesAsync()
+    public async Task<int> ProcessBatchesAsync()
     {
         await OptionallyApplyMigrationsAsync();
         var tables = Model.Dimensions.Union(Model.Facts).Where(e => e.SourceProperty != null);
+        var count = 0;
         foreach(var table in tables) {
-            await ProcessTableBatch(table);
+            count += await ProcessTableBatch(table);
         }
+        return count;
     }
 
-    private async Task ProcessTableBatch(Table table)
+    private async Task<int> ProcessTableBatch(Table table)
     {
         Logger.LogDebug("Processing batch for [{tableName}]", table.Name);
         if(table.SourceProperty == null) {
             Logger.LogDebug("Table [{tableName}] not dynamic, batch load aborted", table.Name);
-            return; // can't process changes on enums without a source property.
+            return 0; // can't process changes on enums without a source property.
         }
 
         var batchStats = await Olap.TableSyncs.FirstOrDefaultAsync(e => e.Table == table.Name)
             ?? throw new DryException("Unable to process batch, stats missing, run MigrateAsync() first.");
         Logger.LogDebug("Most recent record for [{tableName}] was modified on {timestamp}", table.Name, batchStats.SyncTimestamp);
 
+        var batch = await GetBatchAfterTimestampAsync(table.SourceProperty, batchStats);
+
+        if(batch.Any()) {
+            await UpsertBatch(table, batchStats, batch);
+
+            var duplicateTimestamps = await GetBatchExactTimestamp(table.SourceProperty, batchStats);
+            duplicateTimestamps = duplicateTimestamps.Where(e => !batch.Contains(e)).ToList();
+            if(duplicateTimestamps.Any()) {
+                Logger.LogInformation("Duplicate entities with same modified timestamp {timestamp}, extending batch.", batchStats.SyncTimestamp);
+                await UpsertBatch(table, batchStats, duplicateTimestamps);
+            }
+        }
+        else {
+            Logger.LogDebug("No entities modified on [{tableName}], batch completed with no changes.", table.Name);
+        }
+        return batch.Count;
+    }
+
+    private async Task UpsertBatch(Table table, DataTableSync batchStats, List<object> batch)
+    {
+        Logger.LogInformation("Modified entities on [{tableName}], processing {batchCount} upserts.", table.Name, batch.Count);
+        foreach(var item in batch) {
+            var sql = Upsert(table, item);
+            Logger.LogTrace("Executing Upsert SQL: {sql}", sql);
+            await Olap.Database.ExecuteSqlRawAsync(sql);
+        }
+        batchStats.SyncTimestamp = batch.Max(e => GetVersionInfo(e)?.DateModified ?? DateTime.MinValue);
+        await Olap.SaveChangesAsync();
+        Logger.LogInformation("Processed {batchCount} upserts on [{tableName}], updating sync timestamp to {timestamp}.", batch.Count, table.Name, batchStats.SyncTimestamp);
+    }
+
+    private async Task<List<object>> GetBatchAfterTimestampAsync(PropertyInfo entitiesDbSet, DataTableSync batchStats)
+    {
         // Dynamically build up something comparable to the following:
         // var batchIncoming = await Oltp.Companies
         //      .Where(e => e.Version.DateModified > batchStats.SyncTimestamp)
@@ -75,29 +110,31 @@ public class DataFactory {
         //      .Take(Options.BatchSize)
         //      .ToListAsync();
         // Dynamic used to access extensions methods manually, then once batch received get out of dynamic hell.
-        var dbSet = (dynamic?)table.SourceProperty.GetValue(Oltp)
+        var dbSet = (dynamic?)entitiesDbSet.GetValue(Oltp)
             ?? throw new DryException("Source context for model must match the source DbContext for the factory.");
-        var where = LinqBuilder.WhereVersionModifiedAfter(dbSet, batchStats.SyncTimestamp);
+        var where = LinqBuilder.WhereVersionModified(dbSet, LinqBuilder.EqualityType.GreaterThan, batchStats.SyncTimestamp);
         var ordered = LinqBuilder.OrderBy(where, "Id");
         var taken = Queryable.Take(ordered, Options.BatchSize);
-        var batch = new List<object>();
-        batch.AddRange(await EntityFrameworkQueryableExtensions.ToListAsync(taken));
+        var results = await EntityFrameworkQueryableExtensions.ToListAsync(taken);
+        var ret = new List<object>();
+        ret.AddRange(results);
+        return ret;
+    }
 
-        if(batch.Any()) {
-            Logger.LogInformation("Modified entities on [{tableName}], processing {batchCount} upserts.", table.Name, batch.Count);
-            var target = Model.Dimensions.First(e => e.Name == table.Name);
-            foreach(var item in batch) {
-                var sql = Upsert(target, item);
-                Logger.LogTrace("Executing Upsert SQL: {sql}", sql);
-                await Olap.Database.ExecuteSqlRawAsync(sql);
-            }
-            batchStats.SyncTimestamp = batch.Max(e => GetVersionInfo(e)?.DateModified ?? DateTime.MinValue);
-            await Olap.SaveChangesAsync();
-            Logger.LogInformation("Processed {batchCount} upserts on [{tableName}], updating sync timestamp to {timestamp}.", batch.Count, table.Name, batchStats.SyncTimestamp);
-        }
-        else {
-            Logger.LogDebug("No entities modified on [{tableName}], batch completed with no changes.", table.Name);
-        }
+    private async Task<List<object>> GetBatchExactTimestamp(PropertyInfo entitiesDbSet, DataTableSync batchStats)
+    {
+        // Dynamically build up something comparable to the following:
+        // var batchIncoming = await Oltp.Companies
+        //      .Where(e => e.Version.DateModified == batchStats.SyncTimestamp)
+        //      .ToListAsync();
+        // Dynamic used to access extensions methods manually, then once batch received get out of dynamic hell.
+        var dbSet = (dynamic?)entitiesDbSet.GetValue(Oltp)
+            ?? throw new DryException("Source context for model must match the source DbContext for the factory.");
+        var where = LinqBuilder.WhereVersionModified(dbSet, LinqBuilder.EqualityType.EqualTo, batchStats.SyncTimestamp);
+        var results = await EntityFrameworkQueryableExtensions.ToListAsync(where);
+        var ret = new List<object>();
+        ret.AddRange(results);
+        return ret;
     }
 
     private VersionInfo? GetVersionInfo(object item)
@@ -119,8 +156,18 @@ public class DataFactory {
         foreach(var column in table.ValueColumns) {
             var value = column.PropertyInfo?.GetValue(entity, null) ?? column.Default;
             if(column.ColumnType == ColumnType.Integer) {
-                // Ensure that enums that are marked as integer aren't created as strings.
-                values.Add(column.Name, (int)value);
+                if(column.PropertyInfo?.PropertyType?.IsClass ?? false) {
+                    var referencedEntity = Model.Dimensions.FirstOrDefault(e => e.EntityType == column.PropertyInfo.PropertyType);
+                    var valueKey = referencedEntity?.KeyColumn?.PropertyInfo?.GetValue(value, null);
+                    if(valueKey != null) {
+                        // reference is a dimension with a primary key, use it.
+                        values.Add(column.Name, valueKey);
+                    }
+                }
+                else {
+                    // Ensure that enums that are marked as integer aren't created as strings.
+                    values.Add(column.Name, (int)value);
+                }
             }
             else {
                 values.Add(column.Name, value);
