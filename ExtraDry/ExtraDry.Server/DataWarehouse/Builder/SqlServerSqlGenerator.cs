@@ -32,7 +32,7 @@ WHEN MATCHED THEN
     UPDATE SET {UpdateExpressions()}
 WHEN NOT MATCHED THEN
     INSERT ([{keyName}], {InsertColumns()})
-	VALUES ({keyValue}, {InsertValues()})
+    VALUES ({keyValue}, {InsertValues()})
 ;
 ";
 
