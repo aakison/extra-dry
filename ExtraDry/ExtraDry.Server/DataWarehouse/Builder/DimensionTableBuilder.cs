@@ -13,9 +13,9 @@ public abstract class DimensionTableBuilder : TableBuilder {
 
         var factTable = entity.GetCustomAttribute<FactTableAttribute>();
 
-        var name = DimensionTableAttribute.Name ?? DataConverter.CamelCaseToTitleCase(entity.Name);
+        var name = DimensionTableAttribute?.Name ?? DataConverter.CamelCaseToTitleCase(entity.Name);
         var key = $"{name} ID";
-        if(factTable != null && factTable.Name == null && DimensionTableAttribute.Name == null) {
+        if(factTable != null && factTable.Name == null && DimensionTableAttribute?.Name == null) {
             // Both fact and dimension without explicit names, avoid table name collision.
             name += " Details";
             // Note: key name doesn't change so they align between the fact and dimension.
@@ -55,7 +55,7 @@ public abstract class DimensionTableBuilder : TableBuilder {
         return table;
     }
 
-    public DimensionTableBuilder HasName(string name)
+    public virtual DimensionTableBuilder HasName(string name)
     {
         SetName(name);
         return this;
@@ -99,7 +99,8 @@ public abstract class DimensionTableBuilder : TableBuilder {
             .Where(e => AttributeBuilder.IsAttribute(e) && e != KeyBuilder.PropertyInfo);
     }
 
-    private DimensionTableAttribute DimensionTableAttribute { get; set; }
+    // May be null when subclassed by DateDimensionTable
+    private DimensionTableAttribute? DimensionTableAttribute { get; set; }
 
     private Dictionary<string, AttributeBuilder> AttributeBuilders { get; } = new();
 

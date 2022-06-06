@@ -15,7 +15,14 @@ var options = new JsonSerializerOptions() { WriteIndented = true };
 var builder = new WarehouseModelBuilder();
 builder.LoadSchema<SampleContext>();
 
+
 builder.Fact<Company>().Measure(e => e.AnnualRevenue).HasName("Big Bucks");
+builder.DateDimension<Date>()
+    .HasMinimumValue(new DateTime(2020, 1, 1))
+    .HasMaximumValue(new DateTime(DateTime.UtcNow.Year, 12, 31));
+builder.DateDimension<Date>()
+    .Attribute(e => e.DayOfWeekName).IsIncluded(false);
+
 
 var model = builder.Build();
 var compareJson = JsonSerializer.Serialize(model, options);
