@@ -37,7 +37,136 @@ namespace ExtraDry.Core.Tests.Rules {
             await rules.UpdateAsync(source, destination);
 
             Assert.NotNull(destination.Child);
-            Assert.Equal(guid, destination.Child.Uuid);
+            Assert.Equal(guid, destination.Child?.Uuid);
+        }
+
+        [Fact]
+        public async Task ChildRemovedWhenPresent()
+        {
+            var services = new ServiceProviderStub();
+            var rules = new RuleEngine(services);
+            var guid = Guid.NewGuid();
+            var source = new Parent { Child = null };
+            var destination = new Parent { Child = new Child { Uuid = guid } };
+
+            await rules.UpdateAsync(source, destination);
+
+            Assert.Null(destination.Child);
+        }
+
+        [Fact]
+        public async Task AllowChildAddedWhenNotPresent()
+        {
+            var services = new ServiceProviderStub();
+            var rules = new RuleEngine(services);
+            var guid = Guid.NewGuid();
+            var source = new Parent { AllowChild = new Child { Uuid = guid } };
+            var destination = new Parent { AllowChild = null };
+
+            await rules.UpdateAsync(source, destination);
+
+            Assert.NotNull(destination.AllowChild);
+            Assert.Equal(guid, destination.AllowChild?.Uuid);
+        }
+
+        [Fact]
+        public async Task AllowChildRemovedWhenPresent()
+        {
+            var services = new ServiceProviderStub();
+            var rules = new RuleEngine(services);
+            var guid = Guid.NewGuid();
+            var source = new Parent { AllowChild = null };
+            var destination = new Parent { AllowChild = new Child { Uuid = guid } };
+
+            await rules.UpdateAsync(source, destination);
+
+            Assert.Null(destination.AllowChild);
+        }
+
+        [Fact]
+        public async Task IgnoreChildNotAddedWhenNotPresent()
+        {
+            var services = new ServiceProviderStub();
+            var rules = new RuleEngine(services);
+            var guid = Guid.NewGuid();
+            var source = new Parent { IgnoreChild = new Child { Uuid = guid } };
+            var destination = new Parent { IgnoreChild = null };
+
+            await rules.UpdateAsync(source, destination);
+
+            Assert.Null(destination.IgnoreChild);
+        }
+
+        [Fact]
+        public async Task IgnoreChildNotRemovedWhenPresent()
+        {
+            var services = new ServiceProviderStub();
+            var rules = new RuleEngine(services);
+            var guid = Guid.NewGuid();
+            var source = new Parent { IgnoreChild = null };
+            var destination = new Parent { IgnoreChild = new Child { Uuid = guid } };
+
+            await rules.UpdateAsync(source, destination);
+
+            Assert.NotNull(destination.IgnoreChild);
+            Assert.Equal(guid, destination.IgnoreChild?.Uuid);
+        }
+
+        [Fact]
+        public async Task IgnoreDefaultsChildAddedWhenNotPresent()
+        {
+            var services = new ServiceProviderStub();
+            var rules = new RuleEngine(services);
+            var guid = Guid.NewGuid();
+            var source = new Parent { IgnoreDefaultsChild = new Child { Uuid = guid } };
+            var destination = new Parent { IgnoreDefaultsChild = null };
+
+            await rules.UpdateAsync(source, destination);
+
+            Assert.NotNull(destination.IgnoreDefaultsChild);
+            Assert.Equal(guid, destination.IgnoreDefaultsChild?.Uuid);
+        }
+
+        [Fact]
+        public async Task IgnoreDefaultsChildNotRemovedWhenPresent()
+        {
+            var services = new ServiceProviderStub();
+            var rules = new RuleEngine(services);
+            var guid = Guid.NewGuid();
+            var source = new Parent { IgnoreDefaultsChild = null };
+            var destination = new Parent { IgnoreDefaultsChild = new Child { Uuid = guid } };
+
+            await rules.UpdateAsync(source, destination);
+
+            Assert.NotNull(destination.IgnoreDefaultsChild);
+            Assert.Equal(guid, destination.IgnoreDefaultsChild?.Uuid);
+        }
+
+        [Fact]
+        public async Task BlockChildNotAddedWhenNotPresent()
+        {
+            var services = new ServiceProviderStub();
+            var rules = new RuleEngine(services);
+            var guid = Guid.NewGuid();
+            var source = new Parent { BlockChild = new Child { Uuid = guid } };
+            var destination = new Parent { BlockChild = null };
+
+            await Assert.ThrowsAsync<DryException>(async () => await rules.UpdateAsync(source, destination));
+        }
+
+        [Fact]
+        public async Task BlockChildNotRemovedWhenPresent()
+        {
+            var services = new ServiceProviderStub();
+            var rules = new RuleEngine(services);
+            var guid = Guid.NewGuid();
+            var source = new Parent { BlockChild = null };
+            var destination = new Parent { BlockChild = new Child { Uuid = guid } };
+
+            await rules.UpdateAsync(source, destination);
+
+            Assert.NotNull(destination.BlockChild);
+            Assert.Equal(guid, destination.BlockChild?.Uuid);
         }
 
         [Fact]
@@ -168,13 +297,19 @@ namespace ExtraDry.Core.Tests.Rules {
             [Rules(RuleAction.Block)]
             public int Id { get; set; } = 1;
 
-            public Child Child { get; set; }
+            public Child? Child { get; set; }
 
             [Rules(RuleAction.Allow)]
-            public Child AllowChild { get; set; }
+            public Child? AllowChild { get; set; }
 
             [Rules(RuleAction.Ignore)]
-            public Child IgnoreChild { get; set; }
+            public Child? IgnoreChild { get; set; }
+
+            [Rules(RuleAction.IgnoreDefaults)]
+            public Child? IgnoreDefaultsChild { get; set; }
+
+            [Rules(RuleAction.Block)]
+            public Child? BlockChild { get; set; }
 
         }
 

@@ -1,10 +1,6 @@
-﻿using ExtraDry.Server;
-using System;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using Xunit;
+﻿using ExtraDry.Core.Tests.Rules;
 
-namespace ExtraDry.Core.Tests.Rules {
+namespace ExtraDry.Server.Tests.Rules {
     public class RuleEngineUpdateIndividualAsyncTests {
 
         [Fact]
@@ -181,19 +177,6 @@ namespace ExtraDry.Core.Tests.Rules {
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await rules.UpdateAsync(null, destination));
         }
 
-        [Fact]
-        public async Task SourceChildNull()
-        {
-            var rules = new RuleEngine(new ServiceProviderStub());
-            var source = SampleEntity();
-            var destination = SampleEntity();
-            destination.Child = new() { PropertyOne = "PropertyOne" };
-
-            await rules.UpdateAsync(source, destination);
-
-            Assert.Null(destination.Child.PropertyOne);
-        }
-
         [Theory]
         [InlineData(null, null)]
         [InlineData(null, "abc")]
@@ -264,14 +247,6 @@ namespace ExtraDry.Core.Tests.Rules {
             public int ReadOnly {
                 get => HoursWorked;
             }
-
-            public ChildEntity Child { get; set; }
-        }
-
-        public class ChildEntity {
-            public string PropertyOne { get; set; }
-            public string PropertyTwo { get; set; }
-            public string PropertyThree { get; set; }
         }
 
         private static Entity SampleEntity() => new();
