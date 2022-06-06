@@ -3,16 +3,15 @@
 namespace ExtraDry.Server.Tests.WarehouseTests;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
-[DimensionTable("Company Status")]
+[DimensionTable]
 public enum CompanyStatus {
 
-    [Display(Order = 0, Description = "Company is active")]
+    [Display(Order = 123, GroupName = "ForDisplay")]
     Active = 0,
 
-    [Display(Order = 2, Description = "Company not currently used, but still exists.")]
+    [Display(GroupName = "ForDisplay")]
     Inactive = 1,
 
-    [Display(Order = 1, Description = "Company doesn't exist, but is linked to historic records.")]
     Deleted = 2,
 
 }

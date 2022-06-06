@@ -13,23 +13,32 @@ public class AttributeBuilder : ColumnBuilder {
             SetName(AttributeAttribute.Name);
         }
 
-        // Only one type supported for attributes now, URI and Guid map here, possibly everything, always?
-        SetType(ColumnType.Text);
+        var type = PropertyInfo.PropertyType;
+        if(type == typeof(int)) {
+            SetType(ColumnType.Integer);
+        }
+        else {
+            SetType(ColumnType.Text);
+        }
 
         var notMapped = propertyInfo.GetCustomAttribute<NotMappedAttribute>();
         if(notMapped != null && AttributeAttribute == null) {
             // [NotMapped] will ignore unless a [Attribute] attribute is also present.
-            SetIgnore(true);
+            SetIncluded(false);
         }
         var ignored = propertyInfo.GetCustomAttribute<AttributeIgnoreAttribute>();
         if(ignored != null) {
             // [MeasureIgnore] will always ignore, even if [Measure] is present.
-            SetIgnore(true); 
+            SetIncluded(false); 
         }
 
         HasLength(propertyInfo.GetCustomAttribute<StringLengthAttribute>()?.MaximumLength
             ?? propertyInfo.GetCustomAttribute<MaxLengthAttribute>()?.Length);
-        if(Length == null && propertyInfo.PropertyType == typeof(Guid)) {
+        if(type.IsEnum && ColumnType == ColumnType.Text) {
+            var stats = new EnumStats(type);
+            HasLength(stats.DisplayNameMaxLength());
+        }
+        else if(Length == null && propertyInfo.PropertyType == typeof(Guid)) {
             HasLength(MaxGuidLength);
         }
         else if(Length == null && propertyInfo.PropertyType == typeof(Uri)) {
@@ -49,9 +58,9 @@ public class AttributeBuilder : ColumnBuilder {
         return this;
     }
 
-    public AttributeBuilder HasIgnore(bool ignore = true)
+    public AttributeBuilder IsIncluded(bool included)
     {
-        SetIgnore(ignore);
+        SetIncluded(included);
         return this;
     }
 
@@ -71,14 +80,19 @@ public class AttributeBuilder : ColumnBuilder {
         if(property.GetCustomAttribute<AttributeAttribute>() != null) {
             isAttribute = true;
         }
+        if(property.PropertyType.IsEnum) {
+            isAttribute = true;
+        }
         return isAttribute;
     }
 
-    private static readonly Type[] attributeTypes = new Type[] { typeof(string), typeof(Uri), typeof(Guid) };
+    // Int is interesting here, considering not including it as a valid attribute ever, but then came across 'SortOrder', snap.
+    // Not including decimal, float, long, etc unless an example justifying their use is identified.
+    private static readonly Type[] attributeTypes = new Type[] { typeof(string), typeof(Uri), typeof(Guid), typeof(int) };
 
     protected override bool IsValidColumnType(ColumnType type)
     {
-        return type == ColumnType.Text;
+        return type == ColumnType.Text || type == ColumnType.Integer;
     }
 
     private AttributeAttribute? AttributeAttribute { get; set; }
@@ -87,4 +101,5 @@ public class AttributeBuilder : ColumnBuilder {
 
     // http://net-informations.com/q/mis/len.html
     private const int MaxUriLength = 2083;
+
 }

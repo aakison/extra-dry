@@ -1,12 +1,13 @@
 ﻿#nullable disable // EF Model Class
 
+using Microsoft.EntityFrameworkCore;
 using Sample.Shared.Converters;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sample.Shared;
 
 [Format(Icon = "building")]
-[FactTable]
+[FactTable, DimensionTable]
 public class Company : INamedSubject {
 
     [Key]
@@ -52,8 +53,10 @@ public class Company : INamedSubject {
     [Rules(RuleAction.Link)]
     public List<Sector> AdditionalSectors { get; set; }
 
+    [Precision(18, 2)]
     public decimal AnnualRevenue { get; set; }
 
+    [Precision(18, 2)]
     public decimal SalesMargin { get; set; }
 
     [Display]

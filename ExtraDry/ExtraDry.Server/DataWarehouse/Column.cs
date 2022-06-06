@@ -39,5 +39,18 @@ public class Column {
     /// </summary>
     public Reference? Reference { get; set; }
 
+    /// <summary>
+    /// When using a decimal, the precision that is stored.  
+    /// Default aligned with Entity Framework default.
+    /// </summary>
+    public string Precision { get; set; } = "18,2";
+
+    /// <summary>
+    /// The default value for the column if no data is present.
+    /// Data warehouses don't work well with null values, so replace with some content.
+    /// Defaults to "_NULL_", but can be overridden in the [Attribute] declaration.
+    /// </summary>
+    public object Default { get; set; } = "_NULL_";
+
 }
 

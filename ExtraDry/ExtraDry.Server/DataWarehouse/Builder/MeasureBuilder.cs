@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 
 namespace ExtraDry.Server.DataWarehouse.Builder;
@@ -25,12 +26,17 @@ public class MeasureBuilder : ColumnBuilder {
         var notMapped = propertyInfo.GetCustomAttribute<NotMappedAttribute>();
         if(notMapped != null && MeasureAttribute == null) {
             // [NotMapped] will ignore unless a [Measure] attribute is also present.
-            SetIgnore(true);
+            SetIncluded(false);
         }
         var ignored = propertyInfo.GetCustomAttribute<MeasureIgnoreAttribute>();
         if(ignored != null) {
             // [MeasureIgnore] will always ignore, even if [Measure] is present.
-            SetIgnore(true);
+            SetIncluded(false);
+        }
+
+        var precisionAttribute = propertyInfo.GetCustomAttribute<PrecisionAttribute>();
+        if(precisionAttribute != null) {
+            SetPrecision(precisionAttribute.Precision, precisionAttribute.Scale ?? 2);
         }
     }
 
@@ -46,19 +52,34 @@ public class MeasureBuilder : ColumnBuilder {
         return this;
     }
 
-    public MeasureBuilder HasIgnore(bool ignore = true)
+    /// <summary>
+    /// Set the precision for Decimal data types
+    /// </summary>
+    /// <param name="precision">The total number of decimal digits both before and after the decimal point.</param>
+    /// <param name="scale">The number of decimal digits after the decimal point.</param>
+    public MeasureBuilder HasPrecision(int precision, int scale)
     {
-        SetIgnore(ignore);
+        SetPrecision(precision, scale);
+        return this;
+    }
+
+    public MeasureBuilder IsIncluded(bool included)
+    {
+        SetIncluded(included);
         return this;
     }
 
     internal override Column Build()
     {
-        return new Column(ColumnType, ColumnName) {
+        var column = new Column(ColumnType, ColumnName) {
             Nullable = false,
             PropertyInfo = PropertyInfo,
             Length = Length,
         };
+        if(ColumnType == ColumnType.Decimal) {
+            column.Precision = $"{Precision.precision},{Precision.scale}";
+        }
+        return column;
     }
 
     internal static bool IsMeasure(PropertyInfo property)
@@ -73,7 +94,6 @@ public class MeasureBuilder : ColumnBuilder {
 
     private static readonly Type[] measureTypes = new Type[] { typeof(decimal), typeof(float), typeof(int),
         typeof(double), typeof(long), typeof(short), typeof(uint), typeof(sbyte) };
-
 
     protected override bool IsValidColumnType(ColumnType type)
     {
