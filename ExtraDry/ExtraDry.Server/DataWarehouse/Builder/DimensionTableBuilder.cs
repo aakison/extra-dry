@@ -25,6 +25,15 @@ public abstract class DimensionTableBuilder : TableBuilder {
         HasKey().HasName(key);
 
         LoadClassAttributes();
+    }
+
+    /// <summary>
+    /// Dimensions can reference other dimensions, so need to first load all the dimension,
+    /// then in a second pass load the spokes/references between them.
+    /// </summary>
+    internal void LoadSpokesDeferred()
+    {
+        var factTable = TableEntityType.GetCustomAttribute<FactTableAttribute>();
         if(factTable == null) {
             // Only load spokes once, if this table is also a fact table, it will get the spokes instead.
             LoadSpokeBuilders();
@@ -33,7 +42,9 @@ public abstract class DimensionTableBuilder : TableBuilder {
 
     public Table Build()
     {
-        var table = new Table(TableEntityType, TableName);
+        var table = new Table(TableEntityType, TableName) {
+            SourceProperty = Source?.PropertyInfo,
+        };
         table.Columns.Add(KeyBuilder.Build());
         table.Columns.AddRange(SpokeBuilders.Values.Where(e => e.Included).Select(e => e.Build()));
         table.Columns.AddRange(AttributeBuilders.Values.Where(e => e.Included).Select(e => e.Build()));
@@ -103,13 +114,25 @@ public class DimensionTableBuilder<T> : DimensionTableBuilder {
 
     public AttributeBuilder Attribute<TProperty>(Expression<Func<T, TProperty>> propertyExpression)
     {
+        var property = ExtractPropertyName(propertyExpression);
+        return Attribute(property.Name);
+    }
+
+    public SpokeBuilder Spoke<TProperty>(Expression<Func<T, TProperty>> propertyExpression)
+    {
+        var property = ExtractPropertyName(propertyExpression);
+        return Spoke(property.Name);
+    }
+
+    private static PropertyInfo ExtractPropertyName<TProperty>(Expression<Func<T, TProperty>> propertyExpression)
+    {
         if(propertyExpression.Body is not MemberExpression member) {
             throw new DryException("Expression should be a property expression such as `e => e.Property`.");
         }
         if(member.Member is not PropertyInfo property) {
             throw new DryException("Expression should be a property expression such as `e => e.Property`.");
         }
-        return Attribute(property.Name);
+        return property;
     }
 
 }

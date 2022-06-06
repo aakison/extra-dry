@@ -38,6 +38,11 @@ public abstract class ColumnBuilder {
     }
     private int? length;
 
+    public (int precision, int scale) Precision {
+        get => precision;
+    }
+    private (int precision, int scale) precision = (18, 2);
+
     protected void SetLength(int? length)
     {
         if(length != null && length < 0) {
@@ -56,7 +61,7 @@ public abstract class ColumnBuilder {
             throw new DryException("Name limited to 50 characters.");
         }
         if(name != ColumnName && TableBuilder.HasColumnNamed(name)) {
-            throw new DryException($"Names for tables must be unique, '{name}' is duplicated.");
+            throw new DryException($"Names for columns must be unique, '{name}' is duplicated on '{TableBuilder.TableName}'.");
         }
         columnName = name;
     }
@@ -67,6 +72,23 @@ public abstract class ColumnBuilder {
             throw new DryException("Column type is not valid.");
         }
         columnType = type;
+    }
+
+    protected void SetPrecision(int precision, int scale)
+    {
+        if(precision <= 0) {
+            throw new DryException("Decimal precision must have a positive integer length.");
+        }
+        if(scale < 0) {
+            throw new DryException("Decimal scale must have non-negative length.");
+        }
+        if(precision > 38) {
+            throw new DryException("Decimal precision is limited to 38 bytes by .NET, even though SQL Server can handle more.");
+        }
+        if(scale > precision) {
+            throw new DryException("Scale must be less than or equal to the precision.");
+        }
+        this.precision = (precision, scale);
     }
 
     protected void SetIncluded(bool included)

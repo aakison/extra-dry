@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 
 namespace ExtraDry.Server.DataWarehouse.Builder;
@@ -32,6 +33,11 @@ public class MeasureBuilder : ColumnBuilder {
             // [MeasureIgnore] will always ignore, even if [Measure] is present.
             SetIncluded(false);
         }
+
+        var precisionAttribute = propertyInfo.GetCustomAttribute<PrecisionAttribute>();
+        if(precisionAttribute != null) {
+            SetPrecision(precisionAttribute.Precision, precisionAttribute.Scale ?? 2);
+        }
     }
 
     public MeasureBuilder HasName(string name)
@@ -46,6 +52,17 @@ public class MeasureBuilder : ColumnBuilder {
         return this;
     }
 
+    /// <summary>
+    /// Set the precision for Decimal data types
+    /// </summary>
+    /// <param name="precision">The total number of decimal digits both before and after the decimal point.</param>
+    /// <param name="scale">The number of decimal digits after the decimal point.</param>
+    public MeasureBuilder HasPrecision(int precision, int scale)
+    {
+        SetPrecision(precision, scale);
+        return this;
+    }
+
     public MeasureBuilder IsIncluded(bool included)
     {
         SetIncluded(included);
@@ -54,11 +71,15 @@ public class MeasureBuilder : ColumnBuilder {
 
     internal override Column Build()
     {
-        return new Column(ColumnType, ColumnName) {
+        var column = new Column(ColumnType, ColumnName) {
             Nullable = false,
             PropertyInfo = PropertyInfo,
             Length = Length,
         };
+        if(ColumnType == ColumnType.Decimal) {
+            column.Precision = $"{Precision.precision},{Precision.scale}";
+        }
+        return column;
     }
 
     internal static bool IsMeasure(PropertyInfo property)

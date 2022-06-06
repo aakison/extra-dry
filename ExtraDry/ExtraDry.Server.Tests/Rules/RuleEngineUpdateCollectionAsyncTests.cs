@@ -475,18 +475,18 @@ namespace ExtraDry.Core.Tests.Rules {
             [Rules(RuleAction.Block)]
             public int Id { get; set; } = 1;
 
-            public Child Child { get; set; }
+            public Child? Child { get; set; }
 
-            public List<Child> Children { get; set; }
+            public List<Child>? Children { get; set; }
 
             [Rules(RuleAction.Ignore)]
-            public List<Child> IgnoredChildren { get; set; }
+            public List<Child>? IgnoredChildren { get; set; }
 
             [Rules(RuleAction.IgnoreDefaults)]
-            public List<Child> IgnoredDefaultsChildren { get; set; }
+            public List<Child>? IgnoredDefaultsChildren { get; set; }
 
             [Rules(RuleAction.Block)]
-            public List<Child> BlockedChildren { get; set; }
+            public List<Child>? BlockedChildren { get; set; }
 
         }
 
