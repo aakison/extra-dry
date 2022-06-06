@@ -1,12 +1,4 @@
-﻿using ExtraDry.Core;
-using ExtraDry.Server;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Xunit;
-
-namespace ExtraDry.Core.Tests.Rules {
+﻿namespace ExtraDry.Server.Tests.Rules {
     public class RuleEngineUpdateTreeAsyncTests {
 
         [Fact]
@@ -21,8 +13,8 @@ namespace ExtraDry.Core.Tests.Rules {
 
             await rules.UpdateAsync(source, destination);
 
-            Assert.Equal(guid, destination.Child.Uuid);
-            Assert.Equal(gcguid, destination.Child.Grandchild.Uuid);
+            Assert.Equal(guid, destination.Child?.Uuid);
+            Assert.Equal(gcguid, destination.Child?.Grandchild?.Uuid);
         }
 
         [Fact]
@@ -178,14 +170,14 @@ namespace ExtraDry.Core.Tests.Rules {
             var gcguid = Guid.NewGuid();
             var source = new Parent(guid, "Child", gcguid, "Grandchild");
             var destination = new Parent(guid, "Child", gcguid, "Grandchild");
-            source.Child.DontTouchThis = "dont-copy";
-            destination.Child.DontTouchThis = "remains";
+            source.Child!.DontTouchThis = "dont-copy";
+            destination.Child!.DontTouchThis = "remains";
 
             await rules.UpdateAsync(source, destination);
 
             Assert.NotNull(destination.Child);
             Assert.Equal(guid, destination.Child.Uuid);
-            Assert.Equal(gcguid, destination.Child.Grandchild.Uuid);
+            Assert.Equal(gcguid, destination.Child.Grandchild?.Uuid);
             Assert.Equal("remains", destination.Child.DontTouchThis);
         }
 
@@ -198,8 +190,8 @@ namespace ExtraDry.Core.Tests.Rules {
             var gcguid = Guid.NewGuid();
             var source = new Parent(guid, "Child", gcguid, "Grandchild");
             var destination = new Parent(guid, "Child", gcguid, "Grandchild");
-            source.Child.CantTouchThis = "dont-copy";
-            destination.Child.CantTouchThis = "remains";
+            source.Child!.CantTouchThis = "dont-copy";
+            destination.Child!.CantTouchThis = "remains";
 
             await Assert.ThrowsAsync<DryException>(async () => await rules.UpdateAsync(source, destination));
         }
@@ -213,8 +205,8 @@ namespace ExtraDry.Core.Tests.Rules {
             var gcguid = Guid.NewGuid();
             var source = new Parent(guid, "Child", gcguid, "Grandchild");
             var destination = new Parent(guid, "Child", gcguid, "Grandchild");
-            source.Child.Grandchild.Name = "source";
-            destination.Child.Grandchild.Name = "destination";
+            source.Child!.Grandchild!.Name = "source";
+            destination.Child!.Grandchild!.Name = "destination";
 
             await rules.UpdateAsync(source, destination);
 
@@ -243,8 +235,8 @@ namespace ExtraDry.Core.Tests.Rules {
             var gcguid = Guid.NewGuid();
             var source = new Parent(guid, "Child", gcguid, "Grandchild");
             var destination = new Parent(guid, "Child", gcguid, "Grandchild");
-            source.Child.Grandchild.Name = "source";
-            destination.Child.Grandchild.Name = "destination";
+            source.Child!.Grandchild!.Name = "source";
+            destination.Child!.Grandchild!.Name = "destination";
 
             rules.MaxRecursionDepth = 1;
             await Assert.ThrowsAsync<DryException>(async () => await rules.UpdateAsync(source, destination));
@@ -264,15 +256,15 @@ namespace ExtraDry.Core.Tests.Rules {
 
             public string Name { get; set; } = "Child";
 
-            public Grandchild Grandchild { get; set; }
+            public Grandchild? Grandchild { get; set; }
 
             [Rules(RuleAction.Ignore)]
-            public string DontTouchThis { get; set; }
+            public string? DontTouchThis { get; set; }
 
             [Rules(RuleAction.Block)]
-            public string CantTouchThis { get; set; }
+            public string? CantTouchThis { get; set; }
 
-            public override bool Equals(object obj) => (obj as Child)?.Uuid == Uuid;
+            public override bool Equals(object? obj) => (obj as Child)?.Uuid == Uuid;
 
             public override int GetHashCode() => Uuid.GetHashCode();
 
@@ -317,10 +309,10 @@ namespace ExtraDry.Core.Tests.Rules {
             public Task<Child> ResolveAsync(Child exemplar)
             {
                 if(database.ContainsKey(exemplar?.Uuid ?? Guid.Empty)) {
-                    return Task.FromResult(database[exemplar.Uuid]);
+                    return Task.FromResult(database[exemplar!.Uuid]);
                 }
                 else {
-                    return Task.FromResult<Child>(null);
+                    return Task.FromResult<Child>(null!);
                 }
             }
 
@@ -334,7 +326,7 @@ namespace ExtraDry.Core.Tests.Rules {
         }
 
         public class ServiceProviderStubWithChildResolver : IServiceProvider {
-            public object GetService(Type serviceType)
+            public object? GetService(Type serviceType)
             {
                 if(serviceType.IsAssignableTo(typeof(IEntityResolver<Child>))) {
                     return ChildResolver;
@@ -349,13 +341,13 @@ namespace ExtraDry.Core.Tests.Rules {
         }
 
         public class ServiceProviderStub : IServiceProvider {
-            public object GetService(Type serviceType) => null;
+            public object? GetService(Type serviceType) => null;
 
         }
 
         public class Malformed {
             public string Name { get; set; } = "Name";
-            public Malformed Child { get; set; }
+            public Malformed? Child { get; set; }
         }
 
     }

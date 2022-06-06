@@ -121,7 +121,7 @@ namespace ExtraDry.Server.Tests.Rules {
             var rules = new RuleEngine(new ServiceProviderStub());
             var source = SampleEntity();
             var destination = SampleEntity();
-            source.DefaultIgnoredString = null;
+            source.DefaultIgnoredString = null!;
             destination.DefaultIgnoredString = "something";
 
             await rules.UpdateAsync(source, destination);
@@ -239,7 +239,7 @@ namespace ExtraDry.Server.Tests.Rules {
             public string JsonIgnoredFakeOut { get; set; } = "json";
 
             [Rules(RuleAction.Block)]
-            public string BlockChangesString { get; set; }
+            public string? BlockChangesString { get; set; }
 
             [Rules(RuleAction.Block)]
             public int HoursWorked { get; set; }
