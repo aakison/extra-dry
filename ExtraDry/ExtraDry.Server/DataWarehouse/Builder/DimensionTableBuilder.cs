@@ -44,6 +44,7 @@ public abstract class DimensionTableBuilder : TableBuilder {
     {
         var table = new Table(TableEntityType, TableName) {
             SourceProperty = Source?.PropertyInfo,
+            Generator = Generator,
         };
         table.Columns.Add(KeyBuilder.Build());
         table.Columns.AddRange(SpokeBuilders.Values.Where(e => e.Included).Select(e => e.Build()));
