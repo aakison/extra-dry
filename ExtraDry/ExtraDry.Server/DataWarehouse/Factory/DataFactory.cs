@@ -58,6 +58,8 @@ public class DataFactory {
         return count;
     }
 
+
+
     private async Task<int> ProcessTableBatch(Table table)
     {
         Logger.LogDebug("Processing batch for [{tableName}]", table.Name);
