@@ -18,24 +18,31 @@ public class WarehouseModelBuilder {
         var assemblies = entitySources.Select(e => e.EntityType.Assembly).Distinct().ToList();
         assemblies.Add(GetType().Assembly); // Load current assembly to pick up Date, etc.
 
-        // Load enums, they're never dependant on anything.
-        foreach(var enumType in GetEnums(assemblies)) {
-            var dimensionAttribute = enumType.GetCustomAttribute<DimensionTableAttribute>();
-            if(dimensionAttribute != null) {
-                LoadEnumDimension(enumType, dimensionAttribute);
-            }
-        }
+        var dimensions = GetDimensions(assemblies);
+        var nonEntityDimensions = dimensions.Except(entitySources.Select(e => e.EntityType));
 
-        // Load Date dimension(s), also not dependant on anything.
-        foreach(var dateDimensionType in GetDateDimensions(assemblies)) {
-            LoadDateDimension(dateDimensionType);
+        // Load enums, they're never dependant on anything.
+        //foreach(var enumType in GetEnums(assemblies)) {
+        //    var dimensionAttribute = enumType.GetCustomAttribute<DimensionTableAttribute>();
+        //    if(dimensionAttribute != null) {
+        //        LoadEnumDimension(enumType, dimensionAttribute);
+        //    }
+        //}
+
+        foreach(var dimension in nonEntityDimensions) {
+            if(dimension.IsEnum) {
+                LoadEnumDimension(dimension, dimension.GetCustomAttribute<DimensionTableAttribute>()!);
+            }
+            else {
+                LoadClassDimension(dimension, null);
+            }
         }
 
         // Load dimensions, needed before facts are loaded.
         foreach(var source in entitySources) {
             var dimensionAttribute = source.EntityType.GetCustomAttribute<DimensionTableAttribute>();
             if(dimensionAttribute != null) {
-                LoadClassDimension(source);
+                LoadClassDimension(source.EntityType, source);
             }
         }
 
@@ -100,33 +107,9 @@ public class WarehouseModelBuilder {
         }
     }
 
-    public DateDimensionTableBuilder DateDimension(Type type)
-    {
-        try {
-            return DateDimensionTables[type] ?? throw new KeyNotFoundException();
-        }
-        catch(KeyNotFoundException) {
-            throw new DryException($"No Date Dimension table of type '{type.Name}' was defined.");
-        }
-    }
-
-    public DateDimensionTableBuilder<T> DateDimension<T>() where T : class
-    {
-        try {
-            return DateDimensionTables[typeof(T)] as DateDimensionTableBuilder<T> ?? throw new KeyNotFoundException();
-        }
-        catch(KeyNotFoundException) {
-            throw new DryException($"No Dimension table of type '{typeof(T).Name}' was defined.");
-        }
-    }
-
-
     public WarehouseModel Build()
     {
         var model = new WarehouseModel();
-        foreach(var dataDimensionBuilder in DateDimensionTables.Values) {
-            model.Dimensions.Add(dataDimensionBuilder.Build());
-        }
         foreach(var dimensionBuilder in DimensionTables.Values) {
             model.Dimensions.Add(dimensionBuilder.Build());
         }
@@ -216,17 +199,11 @@ public class WarehouseModelBuilder {
         }
     }
 
-    private void LoadDateDimension(Type type) {
-        if(LoadViaConstructor(typeof(DateDimensionTableBuilder<>), type) is DateDimensionTableBuilder builder) {
-            DateDimensionTables.Add(type, builder);
-        }
-    }
-
-    private void LoadClassDimension(EntitySource entitySource)
+    private void LoadClassDimension(Type type, EntitySource? entitySource)
     {
-        if(LoadViaConstructor(typeof(DimensionTableBuilder<>), entitySource.EntityType) is DimensionTableBuilder builder) {
+        if(LoadViaConstructor(typeof(DimensionTableBuilder<>), type) is DimensionTableBuilder builder) {
             builder.Source = entitySource;
-            DimensionTables.Add(entitySource.EntityType, builder);
+            DimensionTables.Add(type, builder);
         }
     }
 
@@ -267,17 +244,6 @@ public class WarehouseModelBuilder {
         }
     }
 
-    private static IEnumerable<Type> GetDateDimensions(List<Assembly> assemblies)
-    {
-        foreach(var assembly in assemblies) {
-            foreach(var type in assembly.GetTypes()) {
-                if(type.GetCustomAttribute<DateDimensionTableAttribute>() != null) {
-                    yield return type;
-                }
-            }
-        }
-    }
-
     private static IEnumerable<Type> GetEnums(List<Assembly> assemblies)
     {
         foreach(var assembly in assemblies) {
@@ -289,10 +255,19 @@ public class WarehouseModelBuilder {
         }
     }
 
+    private static IEnumerable<Type> GetDimensions(List<Assembly> assemblies)
+    {
+        foreach(var assembly in assemblies) {
+            foreach(var type in assembly.GetTypes()) {
+                if(type.GetCustomAttribute<DimensionTableAttribute>() != null) {
+                    yield return type;
+                }
+            }
+        }
+    }
+
     private Dictionary<Type, FactTableBuilder> FactTables { get; } = new();
 
     private Dictionary<Type, DimensionTableBuilder> DimensionTables { get; } = new();
-
-    private Dictionary<Type, DateDimensionTableBuilder> DateDimensionTables { get; } = new();
 
 }

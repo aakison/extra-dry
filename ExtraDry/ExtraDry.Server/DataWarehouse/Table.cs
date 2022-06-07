@@ -33,6 +33,8 @@ public class Table {
     /// </summary>
     public List<Column> Columns { get; } = new List<Column>();
 
+    public IDataGenerator? Generator { get; init; }
+
     /// <summary>
     /// If the table is linked to a DbSet`T on the source DbContext, the PropertyInfo for that property.
     /// </summary>

@@ -96,7 +96,8 @@ public class DataFactory {
             Logger.LogTrace("Executing Upsert SQL: {sql}", sql);
             await Olap.Database.ExecuteSqlRawAsync(sql);
         }
-        batchStats.SyncTimestamp = batch.Max(e => GetVersionInfo(e)?.DateModified ?? DateTime.MinValue);
+        batchStats.SyncTimestamp =  table.Generator?.GetSyncTimestamp()
+            ?? batch.Max(e => GetVersionInfo(e)?.DateModified ?? DateTime.MinValue);
         await Olap.SaveChangesAsync();
         Logger.LogInformation("Processed {batchCount} upserts on [{tableName}], updating sync timestamp to {timestamp}.", batch.Count, table.Name, batchStats.SyncTimestamp);
     }

@@ -66,6 +66,14 @@ public abstract class DimensionTableBuilder : TableBuilder {
         baseData.Add(data);
     }
 
+    public DimensionTableBuilder HasGenerator(IDataGenerator generator)
+    {
+        Generator = generator;
+        return this;
+    }
+
+    private IDataGenerator? Generator { get; set; }
+
     public AttributeBuilder Attribute(string name)
     {
         return AttributeBuilders[name];

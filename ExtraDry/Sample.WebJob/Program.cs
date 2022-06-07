@@ -17,10 +17,11 @@ builder.LoadSchema<SampleContext>();
 
 
 builder.Fact<Company>().Measure(e => e.AnnualRevenue).HasName("Big Bucks");
-builder.DateDimension<Date>()
-    .HasMinimumValue(new DateTime(2020, 1, 1))
-    .HasMaximumValue(new DateTime(DateTime.UtcNow.Year, 12, 31));
-builder.DateDimension<Date>()
+builder.Dimension<Date>().HasGenerator(new DateGenerator());
+//builder.Dimension<Date>()
+//    .HasMinimumValue(new DateTime(2020, 1, 1))
+//    .HasMaximumValue(new DateTime(DateTime.UtcNow.Year, 12, 31));
+builder.Dimension<Date>()
     .Attribute(e => e.DayOfWeekName).IsIncluded(false);
 
 

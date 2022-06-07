@@ -3,7 +3,6 @@
 /// <summary>
 /// Represents the possible expansion of an Enum into a Dimension when Enums are annotated with [DimensionTable].
 /// </summary>
-[DimensionTable]
 public class EnumDimension {
 
     /// <summary>
