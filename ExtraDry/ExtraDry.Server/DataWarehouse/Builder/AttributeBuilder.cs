@@ -17,7 +17,7 @@ public class AttributeBuilder : ColumnBuilder {
         if(type == typeof(int)) {
             SetType(ColumnType.Integer);
         }
-        if(type == typeof(DateOnly)) {
+        else if(type == typeof(DateOnly)) {
             SetType(ColumnType.Date);
         }
         else {

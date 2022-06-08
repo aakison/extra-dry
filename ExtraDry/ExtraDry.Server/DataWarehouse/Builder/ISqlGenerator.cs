@@ -22,6 +22,16 @@ public interface ISqlGenerator {
     string InsertData(Table table);
 
     /// <summary>
+    /// Generate the SQL to find the smallest key (i.e. ID) in the table.
+    /// </summary>
+    string SelectMaximumKey(Table table);
+
+    /// <summary>
+    /// Generate the SQL to find the largest key (i.e. ID) in the table.
+    /// </summary>
+    string SelectMinimumKey(Table table);
+
+    /// <summary>
     /// Generate the SQL for an Upsert statement for the given table and row, with the values provided.
     /// </summary>
     string Upsert(Table table, int keyValue, Dictionary<string, object> values);

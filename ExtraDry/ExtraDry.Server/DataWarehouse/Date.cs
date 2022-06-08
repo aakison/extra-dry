@@ -46,14 +46,17 @@ public class Date {
     [Attribute("Day of Year")]
     public int DayOfYear => Value.DayOfYear;
 
+    [StringLength(9)]
     public string MonthName => Value.ToString("MMMM");
 
+    [StringLength(3)]
     public string MonthShortName => Value.ToString("MMM");
 
     /// <summary>
     /// The name of the day of the week.
     /// </summary>
     [Attribute("Day of Week Name")]
+    [StringLength(8)]
     public DayOfWeek DayOfWeekName => Value.DayOfWeek;
 
 }

@@ -43,6 +43,12 @@ WHEN NOT MATCHED THEN
         string InsertValues() => string.Join(", ", table.ValueColumns.Select(e => $"{SqlQuotedValue(values[e.Name])}"));
     }
 
+    public string SelectMinimumKey(Table table) =>
+    $"SELECT Min([{table.KeyColumn.Name}]) AS [Id] FROM [{table.Name}]";
+
+    public string SelectMaximumKey(Table table) =>
+        $"SELECT Max([{table.KeyColumn.Name}]) AS [Id] FROM [{table.Name}]";
+
     private string SqlConstraints(Table table) =>
         string.Join(",\n    ", table.Columns.Where(e => e.Reference != null).Select(e => SqlFKConstraint(table, e)));
 

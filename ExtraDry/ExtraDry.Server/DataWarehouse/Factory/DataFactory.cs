@@ -75,10 +75,7 @@ public class DataFactory {
             ?? throw new DryException("Unable to process batch, stats missing, run MigrateAsync() first.");
         Logger.LogDebug("Most recent record for [{tableName}] was modified on {timestamp}", table.Name, batchStats.SyncTimestamp);
 
-        //var dbMin = await Olap.Database.ExecuteSqlRawAsync(Sql.SelectMinimumKey(table));
-        //var dbMax = await Olap.Database.ExecuteSqlRawAsync(Sql.SelectMaximumKey(table));
-
-        var batch = await table.Generator.GetBatchAsync(Oltp, Olap);
+        var batch = await table.Generator.GetBatchAsync(table, Oltp, Olap, Sql);
 
         if(batch.Any()) {
             await UpsertBatch(table, batchStats, batch);

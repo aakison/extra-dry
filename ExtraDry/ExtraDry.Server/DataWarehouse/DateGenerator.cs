@@ -1,11 +1,12 @@
 ﻿using ExtraDry.Server.DataWarehouse.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace ExtraDry.Server.DataWarehouse;
 
 public interface IDataGenerator {
 
-    public Task<List<object>> GetBatchAsync(DbContext oltpContext, DbContext olapContext, ISqlGenerator sqlGenerator);
+    public Task<List<object>> GetBatchAsync(Table table, DbContext oltpContext, DbContext olapContext, ISqlGenerator sqlGenerator);
 
     public DateTime GetSyncTimestamp();
 
@@ -29,6 +30,7 @@ public static class DateGeneratorBuilderExtensions {
 
 }
 
+
 public class DateGenerator : IDataGenerator {
 
     public DateGenerator(Action<DateGeneratorOptions>? options = null)
@@ -40,20 +42,53 @@ public class DateGenerator : IDataGenerator {
 
     public DateOnly EndDate => Options.EndDate;
 
-    public async Task<List<object>> GetBatchAsync(DbContext oltp, DbContext olap, ISqlGenerator sql)
+    public async Task<List<object>> GetBatchAsync(Table table, DbContext oltp, DbContext olap, ISqlGenerator sql)
     {
         RefreshOptions();
-
-        var dbMin = await olap.Database.ExecuteSqlRawAsync(sql.SelectMinimumKey(table));
-        var dbMax = await olap.Database.ExecuteSqlRawAsync(sql.SelectMaximumKey(table));
-
-
         var batch = new List<object>();
-        for(int i = 0; i < 100; ++i) {
-            var date = new Date { Id = i, Value = IntToDate(i) };
-            batch.Add(date);
+
+        var minSql = sql.SelectMinimumKey(table);
+        var actualMin = await ExecuteScalerAsync(olap.Database, minSql);
+        var requiredMin = DateToInt(StartDate);
+        if(requiredMin < actualMin) {
+            // Earlier dates are required, ensure they're added in decreasing order, reverses typical for loop.
+            var start = actualMin - 1;
+            var end = Math.Max(requiredMin, start - 100);
+            for(int d = start; d >= end; --d) {
+                var date = new Date {  Id = d, Value = IntToDate(d) };
+                batch.Add(date);
+            }
+            return batch;
         }
+
+        var maxSql = sql.SelectMaximumKey(table);
+        var actualMax = await ExecuteScalerAsync(olap.Database, maxSql); 
+        
+        var requiredMax = DateToInt(EndDate);
+        if(requiredMax > actualMax) {
+            var start = Math.Max(DateToInt(StartDate), actualMax + 1);
+            var end = Math.Min(requiredMax, start + 100);
+            for(int d = start; d < end; ++d) {
+                var date = new Date { Id = d, Value = IntToDate(d) };
+                batch.Add(date);
+            }
+            return batch;
+        }
+
         return batch;
+    }
+
+    // Not part of EF any more, need to hack it.  Might want to promote to an extension method if needed again.
+    private async Task<int> ExecuteScalerAsync(DatabaseFacade facade, string sql)
+    {
+        using var cmd = facade.GetDbConnection().CreateCommand();
+        cmd.CommandText = sql;
+        cmd.CommandType = System.Data.CommandType.Text;
+        if(cmd.Connection!.State != System.Data.ConnectionState.Open) {
+            cmd.Connection.Open();
+        }
+        var val = await cmd.ExecuteScalarAsync();
+        return (val as int?) ?? -1;
     }
 
     public DateTime GetSyncTimestamp() => DateTime.UtcNow;
