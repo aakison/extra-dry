@@ -64,6 +64,8 @@ WHEN NOT MATCHED THEN
             (ColumnType.Integer, true) => "INT",
             (ColumnType.Decimal, false) => $"DECIMAL({column.Precision}) NOT NULL",
             (ColumnType.Decimal, true) => $"DECIMAL({column.Precision})",
+            (ColumnType.Date, false) => "DATE NOT NULL",
+            (ColumnType.Date, true) => "DATE",
             (_, false) => $"{SqlVarchar(column.Length)} NOT NULL",
             (_, _) => SqlVarchar(column.Length),
         };
@@ -104,6 +106,9 @@ WHEN NOT MATCHED THEN
         }
         else if(value is Guid gValue) {
             return $"'{gValue}'";
+        }
+        else if(value is DateOnly dateValue) {
+            return $"'{dateValue}'";
         }
         else {
             return value.ToString()!;

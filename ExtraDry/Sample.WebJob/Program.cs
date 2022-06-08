@@ -17,13 +17,12 @@ builder.LoadSchema<SampleContext>();
 
 
 builder.Fact<Company>().Measure(e => e.AnnualRevenue).HasName("Big Bucks");
-builder.Dimension<Date>().HasGenerator(new DateGenerator());
-//builder.Dimension<Date>()
-//    .HasMinimumValue(new DateTime(2020, 1, 1))
-//    .HasMaximumValue(new DateTime(DateTime.UtcNow.Year, 12, 31));
 builder.Dimension<Date>()
-    .Attribute(e => e.DayOfWeekName).IsIncluded(false);
-
+    .HasDateGenerator(options => {
+        options.StartDate = new DateOnly(2020, 1, 1);
+        options.EndDate = new DateOnly(DateTime.UtcNow.Year, 12, 31);
+    });
+builder.Dimension<Date>().Attribute(e => e.DayOfWeekName).IsIncluded(false);
 
 var model = builder.Build();
 var compareJson = JsonSerializer.Serialize(model, options);

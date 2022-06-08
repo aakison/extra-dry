@@ -58,14 +58,18 @@ public class DataFactory {
         // TODO: Expand for custom date tables
         var dateTables = Model.Dimensions.Where(e => e.Generator != null);
         foreach(var table in dateTables) {
-            count += await ProcessDateBatchAsync(table);
+            count += await ProcessGeneratorBatchAsync(table);
         }
         return count;
     }
 
-    private async Task<int> ProcessDateBatchAsync(Table table)
+    private async Task<int> ProcessGeneratorBatchAsync(Table table)
     {
         Logger.LogDebug("Processing date records for [{tableName}]", table.Name);
+
+        if(table.Generator == null) {
+            throw new DryException("Can't use method when no generator is defined.");
+        }
 
         var batchStats = await Olap.TableSyncs.FirstOrDefaultAsync(e => e.Table == table.Name)
             ?? throw new DryException("Unable to process batch, stats missing, run MigrateAsync() first.");
@@ -74,8 +78,7 @@ public class DataFactory {
         //var dbMin = await Olap.Database.ExecuteSqlRawAsync(Sql.SelectMinimumKey(table));
         //var dbMax = await Olap.Database.ExecuteSqlRawAsync(Sql.SelectMaximumKey(table));
 
-        var generator = new DateGenerator();
-        var batch = await generator.GetBatchAsync();
+        var batch = await table.Generator.GetBatchAsync(Oltp, Olap);
 
         if(batch.Any()) {
             await UpsertBatch(table, batchStats, batch);

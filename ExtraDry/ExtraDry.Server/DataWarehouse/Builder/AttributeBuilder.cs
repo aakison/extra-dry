@@ -17,6 +17,9 @@ public class AttributeBuilder : ColumnBuilder {
         if(type == typeof(int)) {
             SetType(ColumnType.Integer);
         }
+        if(type == typeof(DateOnly)) {
+            SetType(ColumnType.Date);
+        }
         else {
             SetType(ColumnType.Text);
         }
@@ -88,11 +91,11 @@ public class AttributeBuilder : ColumnBuilder {
 
     // Int is interesting here, considering not including it as a valid attribute ever, but then came across 'SortOrder', snap.
     // Not including decimal, float, long, etc unless an example justifying their use is identified.
-    private static readonly Type[] attributeTypes = new Type[] { typeof(string), typeof(Uri), typeof(Guid), typeof(int) };
+    private static readonly Type[] attributeTypes = new Type[] { typeof(string), typeof(Uri), typeof(Guid), typeof(int), typeof(DateOnly) };
 
     protected override bool IsValidColumnType(ColumnType type)
     {
-        return type == ColumnType.Text || type == ColumnType.Integer;
+        return type == ColumnType.Text || type == ColumnType.Integer || type == ColumnType.Date;
     }
 
     private AttributeAttribute? AttributeAttribute { get; set; }

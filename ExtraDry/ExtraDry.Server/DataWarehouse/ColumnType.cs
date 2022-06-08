@@ -30,4 +30,9 @@ public enum ColumnType {
     /// A text column, length of text specified in Column's Length property.
     /// </summary>
     Text,
+
+    /// <summary>
+    /// A date column, without time.
+    /// </summary>
+    Date,
 }
