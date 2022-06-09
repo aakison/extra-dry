@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Sample.Data;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Sample.Server.Controllers;
 
@@ -30,6 +31,7 @@ public class SampleDataController {
     /// </summary>
     [HttpPost("api/load-sample-data")]
     [AllowAnonymous]
+    [SuppressMessage("ApiUsage", "DRY1107:HttpPost, HttpPut and HttpPatch methods should have Consumes attribute", Justification = "RPC, not REST.")]
     public async Task CreateBaseDataRpcAsync()
     {
         var shouldLoadSamples = !await context.Sectors.AnyAsync();

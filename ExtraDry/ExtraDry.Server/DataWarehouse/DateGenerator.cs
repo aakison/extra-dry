@@ -45,12 +45,26 @@ public class DateGeneratorOptions {
         get => fiscalYearEndingMonth;
         set {
             if(value < 1 || value > 12) {
-                throw new ArgumentOutOfRangeException("Fiscal Year Ending Month is 1 indexed from January and must be between 1 and 12 inclusive.");
+                throw new ArgumentOutOfRangeException(nameof(value), "Fiscal Year Ending Month is 1 indexed from January and must be between 1 and 12 inclusive.");
             }
             fiscalYearEndingMonth = value;
         }
     }
     private int fiscalYearEndingMonth = 12;
+
+    public Func<DateOnly, IEnumerable<DayType>> DayTypesSelector { get; set; } = TrivialHolidaySelector;
+
+    private static IEnumerable<DayType> TrivialHolidaySelector(DateOnly date) {
+        if((date.Month == 12 && date.Day == 25) || (date.Month == 1 && date.Day == 1)) {
+            yield return DayType.Holiday;
+        }
+        else if(date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday) {
+            yield return DayType.Weekend;
+        }
+        else {
+            yield return DayType.Workday;
+        }
+    }
 
 }
 
@@ -86,7 +100,7 @@ public class DateGenerator : IDataGenerator {
         RefreshOptions();
         var batch = new List<object>();
 
-        var minSql = sql.SelectMinimumKey(table);
+        var minSql = sql.SelectMinimum(table, nameof(Date.Sequence));
         var actualMin = await ExecuteScalerAsync(olap.Database, minSql);
         var requiredMin = DateToInt(StartDate);
         if(requiredMin < actualMin) {
@@ -94,13 +108,12 @@ public class DateGenerator : IDataGenerator {
             var start = actualMin - 1;
             var end = Math.Max(requiredMin, start - 100);
             for(int d = start; d >= end; --d) {
-                var date = new Date { Id = d, Value = IntToDate(d), FiscalYearEndingMonth = FiscalYearEndingMonth };
-                batch.Add(date);
+                AddDatesToBatch(batch, d);
             }
             return batch;
         }
 
-        var maxSql = sql.SelectMaximumKey(table);
+        var maxSql = sql.SelectMaximum(table, nameof(Date.Sequence));
         var actualMax = await ExecuteScalerAsync(olap.Database, maxSql);
 
         var requiredMax = DateToInt(EndDate);
@@ -108,13 +121,20 @@ public class DateGenerator : IDataGenerator {
             var start = Math.Max(DateToInt(StartDate), actualMax + 1);
             var end = Math.Min(requiredMax, start + 100);
             for(int d = start; d < end; ++d) {
-                var date = new Date { Id = d, Value = IntToDate(d), FiscalYearEndingMonth = FiscalYearEndingMonth };
-                batch.Add(date);
+                AddDatesToBatch(batch, d);
             }
             return batch;
         }
 
         return batch;
+    }
+
+    private void AddDatesToBatch(List<object> batch, int d)
+    {
+        var date = IntToDate(d);
+        foreach(var day in Options.DayTypesSelector(date)) {
+            batch.Add(new Date(d, day) { FiscalYearEndingMonth = FiscalYearEndingMonth });
+        }
     }
 
     // Not part of EF any more, need to hack it.  Might want to promote to an extension method if needed again.

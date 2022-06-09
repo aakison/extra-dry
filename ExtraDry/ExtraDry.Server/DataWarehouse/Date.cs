@@ -3,8 +3,29 @@
 [DimensionTable]
 public class Date {
 
+    public Date(int sequence, DayType dayType)
+    {
+        Sequence = sequence;
+        DayType = dayType;
+        Id = CreateId(sequence, dayType);
+        Value = new DateOnly(1970, 1, 1).AddDays(sequence);
+    }
+
+    /// <summary>
+    /// For a given date sequence and day type, creates a deterministic and monotonically increasing Id.
+    /// </summary>
+    public static int CreateId(int sequence, DayType dayType)
+    {
+        return 5 * sequence + (int)dayType;
+    }
+
     [Key]
     public int Id { get; set; }
+
+    /// <summary>
+    /// The Excel date format for the date, number of days since Jan 1 1970.
+    /// </summary>
+    public int Sequence { get; set; }
 
     [Attribute("Date")]
     public DateOnly Value { get; set; }
@@ -59,6 +80,10 @@ public class Date {
     [StringLength(8)]
     public DayOfWeek DayOfWeekName => Value.DayOfWeek;
 
+    [Attribute("Day of Week Short Name")]
+    [StringLength(3)]
+    public string DayOfWeekShortName => $"{DayOfWeekName}"[0..3];
+
     [AttributeIgnore]
     public int FiscalYearEndingMonth { get; set; } = 12;
 
@@ -72,5 +97,7 @@ public class Date {
     public string FiscalQuarterName => $"{FiscalQuarterShortName} {FiscalYear}";
 
     public string FiscalQuarterShortName => $"Q{FiscalQuarter}";
+
+    public DayType DayType { get; set; }
 
 }
