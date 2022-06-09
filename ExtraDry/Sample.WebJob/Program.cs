@@ -1,4 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
+using ExtraDry.Core.DataWarehouse;
 using ExtraDry.Server.DataWarehouse;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,14 +16,15 @@ var options = new JsonSerializerOptions() { WriteIndented = true };
 var builder = new WarehouseModelBuilder();
 builder.LoadSchema<SampleContext>();
 
-
 builder.Fact<Company>().Measure(e => e.AnnualRevenue).HasName("Big Bucks");
 builder.Dimension<Date>()
     .HasDateGenerator(options => {
         options.StartDate = new DateOnly(2020, 1, 1);
         options.EndDate = new DateOnly(DateTime.UtcNow.Year, 12, 31);
+        options.FiscalYearEndingMonth = 6;
     });
 builder.Dimension<Date>().Attribute(e => e.DayOfWeekName).IsIncluded(false);
+
 
 var model = builder.Build();
 var compareJson = JsonSerializer.Serialize(model, options);
@@ -41,7 +43,7 @@ var warehouseContext = new WarehouseContext(warehouseOptionsBuilder.Options);
 var services = new ServiceCollection();
 services.AddLogging(configure => {
         configure.AddConsole();
-        configure.SetMinimumLevel(LogLevel.Trace);
+        configure.SetMinimumLevel(LogLevel.Debug);
     });
 var provider = services.BuildServiceProvider();
 var dataFactoryLogger = provider.GetRequiredService<ILogger<DataFactory>>();
@@ -55,4 +57,3 @@ var factoryOptions = new DataFactoryOptions() {
 
 var factory = new DataFactory(model, databaseContext, warehouseContext, dataFactoryLogger, factoryOptions);
 while(await factory.ProcessBatchesAsync() > 0) ;
-

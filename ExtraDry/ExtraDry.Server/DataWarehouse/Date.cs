@@ -59,4 +59,18 @@ public class Date {
     [StringLength(8)]
     public DayOfWeek DayOfWeekName => Value.DayOfWeek;
 
+    [AttributeIgnore]
+    public int FiscalYearEndingMonth { get; set; } = 12;
+
+    public int FiscalYear => Value.Month <= FiscalYearEndingMonth ? Value.Year : Value.Year + 1;
+
+    public int FiscalQuarter => (Value.Month - FiscalYearEndingMonth + 11) % 12 / 3 + 1;
+
+    [StringLength(7)]
+    public string FiscalYearName => $"FY {FiscalYear}";
+
+    public string FiscalQuarterName => $"{FiscalQuarterShortName} {FiscalYear}";
+
+    public string FiscalQuarterShortName => $"Q{FiscalQuarter}";
+
 }

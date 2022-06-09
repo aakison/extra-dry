@@ -4,6 +4,29 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace ExtraDry.Server.DataWarehouse;
 
+public class DataGeneratorConverter : JsonConverter<IDataGenerator> {
+
+    public override IDataGenerator Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void Write(Utf8JsonWriter writer, IDataGenerator value, JsonSerializerOptions options)
+    {
+        var type = value.GetType();
+        JsonSerializer.Serialize(writer, value, type, options);
+    }
+}
+
+[AttributeUsage(AttributeTargets.Interface, AllowMultiple = false)]
+public class JsonInterfaceConverterAttribute : JsonConverterAttribute {
+    public JsonInterfaceConverterAttribute(Type converterType)
+        : base(converterType)
+    {
+    }
+}
+
+[JsonInterfaceConverter(typeof(DataGeneratorConverter))]
 public interface IDataGenerator {
 
     public Task<List<object>> GetBatchAsync(Table table, DbContext oltpContext, DbContext olapContext, ISqlGenerator sqlGenerator);
@@ -17,6 +40,17 @@ public class DateGeneratorOptions {
     public DateOnly StartDate { get; set; } = new DateOnly(2000, 1, 1);
 
     public DateOnly EndDate { get; set; } = new DateOnly(DateTime.UtcNow.Year, 12, 31);
+
+    public int FiscalYearEndingMonth {
+        get => fiscalYearEndingMonth;
+        set {
+            if(value < 1 || value > 12) {
+                throw new ArgumentOutOfRangeException("Fiscal Year Ending Month is 1 indexed from January and must be between 1 and 12 inclusive.");
+            }
+            fiscalYearEndingMonth = value;
+        }
+    }
+    private int fiscalYearEndingMonth = 12;
 
 }
 
@@ -36,11 +70,16 @@ public class DateGenerator : IDataGenerator {
     public DateGenerator(Action<DateGeneratorOptions>? options = null)
     {
         OptionsBuilder = options;
+        RefreshOptions();
     }
 
+    [JsonIgnore]
     public DateOnly StartDate => Options.StartDate;
 
+    [JsonIgnore] 
     public DateOnly EndDate => Options.EndDate;
+
+    public int FiscalYearEndingMonth => Options.FiscalYearEndingMonth;
 
     public async Task<List<object>> GetBatchAsync(Table table, DbContext oltp, DbContext olap, ISqlGenerator sql)
     {
@@ -55,21 +94,21 @@ public class DateGenerator : IDataGenerator {
             var start = actualMin - 1;
             var end = Math.Max(requiredMin, start - 100);
             for(int d = start; d >= end; --d) {
-                var date = new Date {  Id = d, Value = IntToDate(d) };
+                var date = new Date { Id = d, Value = IntToDate(d), FiscalYearEndingMonth = FiscalYearEndingMonth };
                 batch.Add(date);
             }
             return batch;
         }
 
         var maxSql = sql.SelectMaximumKey(table);
-        var actualMax = await ExecuteScalerAsync(olap.Database, maxSql); 
-        
+        var actualMax = await ExecuteScalerAsync(olap.Database, maxSql);
+
         var requiredMax = DateToInt(EndDate);
         if(requiredMax > actualMax) {
             var start = Math.Max(DateToInt(StartDate), actualMax + 1);
             var end = Math.Min(requiredMax, start + 100);
             for(int d = start; d < end; ++d) {
-                var date = new Date { Id = d, Value = IntToDate(d) };
+                var date = new Date { Id = d, Value = IntToDate(d), FiscalYearEndingMonth = FiscalYearEndingMonth };
                 batch.Add(date);
             }
             return batch;
@@ -79,7 +118,7 @@ public class DateGenerator : IDataGenerator {
     }
 
     // Not part of EF any more, need to hack it.  Might want to promote to an extension method if needed again.
-    private async Task<int> ExecuteScalerAsync(DatabaseFacade facade, string sql)
+    private static async Task<int> ExecuteScalerAsync(DatabaseFacade facade, string sql)
     {
         using var cmd = facade.GetDbConnection().CreateCommand();
         cmd.CommandText = sql;

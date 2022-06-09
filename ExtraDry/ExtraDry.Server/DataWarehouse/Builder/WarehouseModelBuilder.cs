@@ -21,14 +21,7 @@ public class WarehouseModelBuilder {
         var dimensions = GetDimensions(assemblies);
         var nonEntityDimensions = dimensions.Except(entitySources.Select(e => e.EntityType));
 
-        // Load enums, they're never dependant on anything.
-        //foreach(var enumType in GetEnums(assemblies)) {
-        //    var dimensionAttribute = enumType.GetCustomAttribute<DimensionTableAttribute>();
-        //    if(dimensionAttribute != null) {
-        //        LoadEnumDimension(enumType, dimensionAttribute);
-        //    }
-        //}
-
+        // Load dimensions that have static or generated content, not sourced from a EF entity.
         foreach(var dimension in nonEntityDimensions) {
             if(dimension.IsEnum) {
                 LoadEnumDimension(dimension, dimension.GetCustomAttribute<DimensionTableAttribute>()!);
@@ -240,17 +233,6 @@ public class WarehouseModelBuilder {
             if(type.IsGenericType && type.GetGenericTypeDefinition() == typeof(DbSet<>)) {
                 var entityType = type.GetGenericArguments()[0];
                 yield return new EntitySource(entityType) { ContextType = dbContextType, PropertyInfo = property };
-            }
-        }
-    }
-
-    private static IEnumerable<Type> GetEnums(List<Assembly> assemblies)
-    {
-        foreach(var assembly in assemblies) {
-            foreach(var type in assembly.GetTypes()) {
-                if(type.IsEnum) {
-                    yield return type;
-                }
             }
         }
     }
