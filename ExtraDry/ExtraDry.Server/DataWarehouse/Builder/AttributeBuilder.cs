@@ -20,6 +20,9 @@ public class AttributeBuilder : ColumnBuilder {
         else if(type == typeof(DateOnly)) {
             SetType(ColumnType.Date);
         }
+        else if(type == typeof(TimeOnly)) {
+            SetType(ColumnType.Time);
+        }
         else {
             SetType(ColumnType.Text);
         }
@@ -95,7 +98,7 @@ public class AttributeBuilder : ColumnBuilder {
 
     protected override bool IsValidColumnType(ColumnType type)
     {
-        return type == ColumnType.Text || type == ColumnType.Integer || type == ColumnType.Date;
+        return type == ColumnType.Text || type == ColumnType.Integer || type == ColumnType.Date || type == ColumnType.Time;
     }
 
     private AttributeAttribute? AttributeAttribute { get; set; }

@@ -72,6 +72,8 @@ WHEN NOT MATCHED THEN
             (ColumnType.Decimal, true) => $"DECIMAL({column.Precision})",
             (ColumnType.Date, false) => "DATE NOT NULL",
             (ColumnType.Date, true) => "DATE",
+            (ColumnType.Time, false) => "TIME(0) NOT NULL",
+            (ColumnType.Time, true) => "TIME(0)",
             (_, false) => $"{SqlVarchar(column.Length)} NOT NULL",
             (_, _) => SqlVarchar(column.Length),
         };
@@ -115,6 +117,9 @@ WHEN NOT MATCHED THEN
         }
         else if(value is DateOnly dateValue) {
             return $"'{dateValue}'";
+        }
+        else if(value is TimeOnly timeValue) {
+            return $"'{timeValue:HH:mm}'";
         }
         else {
             return value.ToString()!;

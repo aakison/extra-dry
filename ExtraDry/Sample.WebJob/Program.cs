@@ -24,7 +24,7 @@ builder.Dimension<Date>()
         options.FiscalYearEndingMonth = 6;
     });
 builder.Dimension<Date>().Attribute(e => e.DayOfWeekName).IsIncluded(false);
-
+builder.Dimension<Time>().HasTimeGenerator();
 
 var model = builder.Build();
 var compareJson = JsonSerializer.Serialize(model, options);
