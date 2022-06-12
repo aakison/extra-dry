@@ -1,4 +1,5 @@
 ﻿using ExtraDry.Server.DataWarehouse.Builder;
+using ExtraDry.Server.Internal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
@@ -26,7 +27,7 @@ public class DateGenerator : IDataGenerator {
         var batch = new List<object>();
 
         var minSql = sql.SelectMinimum(table, nameof(Date.Sequence));
-        var actualMin = await ExecuteScalerAsync(olap.Database, minSql);
+        var actualMin = await olap.Database.ExecuteScalerAsync(minSql);
         var requiredMin = DateToInt(StartDate);
         if(requiredMin < actualMin) {
             // Earlier dates are required, ensure they're added in decreasing order, reverses typical for loop.
@@ -39,7 +40,7 @@ public class DateGenerator : IDataGenerator {
         }
 
         var maxSql = sql.SelectMaximum(table, nameof(Date.Sequence));
-        var actualMax = await ExecuteScalerAsync(olap.Database, maxSql);
+        var actualMax = await olap.Database.ExecuteScalerAsync(maxSql);
 
         var requiredMax = DateToInt(EndDate);
         if(requiredMax > actualMax) {
@@ -60,19 +61,6 @@ public class DateGenerator : IDataGenerator {
         foreach(var day in Options.DayTypesSelector(date)) {
             batch.Add(new Date(d, day) { FiscalYearEndingMonth = FiscalYearEndingMonth });
         }
-    }
-
-    // Not part of EF any more, need to hack it.  Might want to promote to an extension method if needed again.
-    private static async Task<int> ExecuteScalerAsync(DatabaseFacade facade, string sql)
-    {
-        using var cmd = facade.GetDbConnection().CreateCommand();
-        cmd.CommandText = sql;
-        cmd.CommandType = System.Data.CommandType.Text;
-        if(cmd.Connection!.State != System.Data.ConnectionState.Open) {
-            cmd.Connection.Open();
-        }
-        var val = await cmd.ExecuteScalarAsync();
-        return (val as int?) ?? -1;
     }
 
     public DateTime GetSyncTimestamp() => DateTime.UtcNow;
