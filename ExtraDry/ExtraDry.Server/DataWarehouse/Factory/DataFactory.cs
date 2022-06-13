@@ -183,23 +183,15 @@ public class DataFactory {
         var values = new Dictionary<string, object>();
         var key = table.KeyColumn.PropertyInfo?.GetValue(entity, null) ?? throw new DryException("No key value defined");
         foreach(var column in table.ValueColumns) {
-            var value = column.PropertyInfo?.GetValue(entity, null) ?? column.Default;
-            if(column.ColumnType == ColumnType.Integer) {
-                if(column.PropertyInfo?.PropertyType?.IsClass ?? false) {
-                    var referencedEntity = Model.Dimensions.FirstOrDefault(e => e.EntityType == column.PropertyInfo.PropertyType);
-                    var valueKey = referencedEntity?.KeyColumn?.PropertyInfo?.GetValue(value, null);
-                    if(valueKey != null) {
-                        // reference is a dimension with a primary key, use it.
-                        values.Add(column.Name, valueKey);
-                    }
-                }
-                else {
-                    // Ensure that enums that are marked as integer aren't created as strings.
-                    values.Add(column.Name, (int)value);
-                }
+            var sourceValue = column.PropertyInfo?.GetValue(entity, null);
+            var destinationValue = sourceValue == null ? column.Default : column.Converter(sourceValue);
+            if(sourceValue != null && column.ColumnType == ColumnType.Integer && (column.PropertyInfo?.PropertyType?.IsClass ?? false)) {
+                var referencedEntity = Model.Dimensions.FirstOrDefault(e => e.EntityType == column.PropertyInfo.PropertyType);
+                var valueKey = referencedEntity?.KeyColumn?.PropertyInfo?.GetValue(sourceValue, null);
+                values.Add(column.Name, valueKey ?? destinationValue);
             }
             else {
-                values.Add(column.Name, value);
+                values.Add(column.Name, destinationValue);
             }
         }
         return Sql.Upsert(table, (int)key, values);

@@ -118,6 +118,9 @@ WHEN NOT MATCHED THEN
         else if(value is DateOnly dateValue) {
             return $"'{dateValue}'";
         }
+        else if(value is DateTime dateTimeValue) {
+            return $"'{dateTimeValue:yyyy-MM-dd}'";
+        }
         else if(value is TimeOnly timeValue) {
             return $"'{timeValue:HH:mm}'";
         }

@@ -100,6 +100,9 @@ namespace Sample.Data.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
+                    b.Property<DateTime>("IncorporationDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int?>("PrimarySectorId")
                         .HasColumnType("int");
 

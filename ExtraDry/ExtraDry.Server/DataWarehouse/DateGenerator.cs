@@ -1,7 +1,6 @@
 ﻿using ExtraDry.Server.DataWarehouse.Builder;
 using ExtraDry.Server.Internal;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace ExtraDry.Server.DataWarehouse;
 
@@ -28,7 +27,7 @@ public class DateGenerator : IDataGenerator {
 
         var minSql = sql.SelectMinimum(table, nameof(Date.Sequence));
         var actualMin = await olap.Database.ExecuteScalerAsync(minSql);
-        var requiredMin = DateToInt(StartDate);
+        var requiredMin = StandardConversions.DateOnlyToSequence(StartDate);
         if(requiredMin < actualMin) {
             // Earlier dates are required, ensure they're added in decreasing order, reverses typical for loop.
             var start = actualMin - 1;
@@ -42,9 +41,9 @@ public class DateGenerator : IDataGenerator {
         var maxSql = sql.SelectMaximum(table, nameof(Date.Sequence));
         var actualMax = await olap.Database.ExecuteScalerAsync(maxSql);
 
-        var requiredMax = DateToInt(EndDate);
+        var requiredMax = StandardConversions.DateOnlyToSequence(EndDate);
         if(requiredMax > actualMax) {
-            var start = Math.Max(DateToInt(StartDate), actualMax + 1);
+            var start = Math.Max(StandardConversions.DateOnlyToSequence(StartDate), actualMax + 1);
             var end = Math.Min(requiredMax, start + 100);
             for(int d = start; d < end; ++d) {
                 AddDatesToBatch(batch, d);
@@ -66,8 +65,6 @@ public class DateGenerator : IDataGenerator {
     public DateTime GetSyncTimestamp() => DateTime.UtcNow;
 
     private void RefreshOptions() => OptionsBuilder?.Invoke(Options);
-
-    private static int DateToInt(DateOnly date) => (date.ToDateTime(new TimeOnly(0)) - DateTime.UnixEpoch).Days;
 
     private static DateOnly IntToDate(int days) => new DateOnly(1970, 1, 1).AddDays(days);
 

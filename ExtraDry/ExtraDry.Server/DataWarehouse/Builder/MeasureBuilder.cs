@@ -38,6 +38,8 @@ public class MeasureBuilder : ColumnBuilder {
         if(precisionAttribute != null) {
             SetPrecision(precisionAttribute.Precision, precisionAttribute.Scale ?? 2);
         }
+
+        SetDefault(0);
     }
 
     public MeasureBuilder HasName(string name)
@@ -63,6 +65,18 @@ public class MeasureBuilder : ColumnBuilder {
         return this;
     }
 
+    public MeasureBuilder HasConversion(Func<object, object> converter)
+    {
+        SetConverter(converter);
+        return this;
+    }
+
+    public MeasureBuilder HasDefault(object _default)
+    {
+        SetDefault(_default);
+        return this;
+    }
+
     public MeasureBuilder IsIncluded(bool included)
     {
         SetIncluded(included);
@@ -71,10 +85,11 @@ public class MeasureBuilder : ColumnBuilder {
 
     internal override Column Build()
     {
-        var column = new Column(ColumnType, ColumnName) {
+        var column = new Column(ColumnType, ColumnName, Converter) {
             Nullable = false,
             PropertyInfo = PropertyInfo,
             Length = Length,
+            Default = Default,
         };
         if(ColumnType == ColumnType.Decimal) {
             column.Precision = $"{Precision.precision},{Precision.scale}";

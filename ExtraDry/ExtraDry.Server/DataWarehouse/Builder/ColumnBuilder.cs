@@ -16,6 +16,7 @@ public abstract class ColumnBuilder {
         PropertyInfo = propertyInfo;
         TableBuilder = tableBuilder;
         columnName = DataConverter.CamelCaseToTitleCase(propertyInfo.Name);
+        Converter = e => e;
     }
 
     public string ColumnName {
@@ -42,6 +43,11 @@ public abstract class ColumnBuilder {
         get => precision;
     }
     private (int precision, int scale) precision = (18, 2);
+
+    public object Default {
+        get => _default;
+    }
+    private object _default;
 
     protected void SetLength(int? length)
     {
@@ -96,6 +102,18 @@ public abstract class ColumnBuilder {
         this.included = included;
     }
 
+    protected void SetConverter(Func<object, object> converter)
+    {
+        Converter = converter;
+    }
+
+    protected void SetDefault(object _default)
+    {
+        this._default = _default;
+    }
+
+    protected Func<object, object> Converter { get; private set; }
+
     internal abstract Column Build();
 
     protected abstract bool IsValidColumnType(ColumnType type);
@@ -105,5 +123,6 @@ public abstract class ColumnBuilder {
     internal PropertyInfo PropertyInfo { get; set; }
 
     protected TableBuilder TableBuilder { get; set; }
+
 
 }
