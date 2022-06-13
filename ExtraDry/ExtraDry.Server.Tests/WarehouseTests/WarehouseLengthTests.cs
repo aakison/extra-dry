@@ -102,7 +102,7 @@ public class WarehouseLengthTests {
     public class BadLengthContext : DbContext {
 
         [DimensionTable]
-        public class BadLengthClass {
+        public class BadClass {
 
             [Key]
             public int Id { get; set; }
@@ -112,7 +112,7 @@ public class WarehouseLengthTests {
 
         }
 
-        public DbSet<BadLengthClass> BadLengthClasses { get; set; } = null!;
+        public DbSet<BadClass> BadLengthClasses { get; set; } = null!;
     }
 
 }

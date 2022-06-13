@@ -12,7 +12,17 @@ var options = new JsonSerializerOptions() { WriteIndented = true };
 //Console.WriteLine(json);
 //Console.WriteLine(warehouse.GenerateSql());
 
-var builder = new WarehouseModelBuilder();
+var services = new ServiceCollection();
+services.AddLogging(configure => {
+    configure.AddConsole();
+    configure.SetMinimumLevel(LogLevel.Trace);
+});
+services.AddScoped<WarehouseModelBuilder>();
+var provider = services.BuildServiceProvider();
+var dataFactoryLogger = provider.GetRequiredService<ILogger<DataFactory>>();
+var warehouseLogger = provider.GetRequiredService<ILogger<WarehouseModelBuilder>>();
+
+var builder = provider.GetRequiredService<WarehouseModelBuilder>();// new WarehouseModelBuilder(warehouseLogger);
 builder.LoadSchema<SampleContext>();
 
 builder.Fact<Company>().Measure(e => e.AnnualRevenue).HasName("Big Bucks");
@@ -37,15 +47,6 @@ var databaseContext = new SampleContext(dbOptionsBuilder.Options);
 var warehouseConnectionString = @"Server=(localdb)\mssqllocaldb;Database=ExtraDryWarehouse;Trusted_Connection=True;";
 var warehouseOptionsBuilder = new DbContextOptionsBuilder<WarehouseContext>().UseSqlServer(warehouseConnectionString);
 var warehouseContext = new WarehouseContext(warehouseOptionsBuilder.Options);
-
-
-var services = new ServiceCollection();
-services.AddLogging(configure => {
-        configure.AddConsole();
-        configure.SetMinimumLevel(LogLevel.Trace);
-    });
-var provider = services.BuildServiceProvider();
-var dataFactoryLogger = provider.GetRequiredService<ILogger<DataFactory>>();
 
 
 var factoryOptions = new DataFactoryOptions() {

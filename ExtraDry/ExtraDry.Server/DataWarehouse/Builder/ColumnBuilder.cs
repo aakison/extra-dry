@@ -52,7 +52,7 @@ public abstract class ColumnBuilder {
     protected void SetLength(int? length)
     {
         if(length != null && length < 0) {
-            throw new DryException("Length must be a non-negative integer or null.");
+            throw new DryException($"Column '{ColumnName}' length must be a non-negative integer or null.");
         }
         this.length = length;
     }
