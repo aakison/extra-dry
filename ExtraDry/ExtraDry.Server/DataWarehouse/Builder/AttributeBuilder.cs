@@ -20,7 +20,7 @@ public class AttributeBuilder : ColumnBuilder {
         }
         else if(type == typeof(DateTime)) {
             SetType(ColumnType.Integer);
-            SetConverter(e => StandardConversions.DateTimeToId((DateTime)e));
+            SetConverter(e => StandardConversions.DateTimeToSequence((DateTime)e));
             SetDefault(0);
         }
         else if(type == typeof(DateOnly)) {

@@ -5,27 +5,13 @@ public class Date {
 
     public Date(int sequence, DayType dayType)
     {
-        Sequence = sequence;
+        Id = sequence;
         DayType = dayType;
-        Id = CreateId(sequence, dayType);
         Value = new DateOnly(1970, 1, 1).AddDays(sequence);
-    }
-
-    /// <summary>
-    /// For a given date sequence and day type, creates a deterministic and monotonically increasing Id.
-    /// </summary>
-    public static int CreateId(int sequence, DayType dayType)
-    {
-        return 5 * sequence + (int)dayType;
     }
 
     [Key]
     public int Id { get; set; }
-
-    /// <summary>
-    /// The Excel date format for the date, number of days since Jan 1 1970.
-    /// </summary>
-    public int Sequence { get; set; }
 
     [Attribute("Date")]
     public DateOnly Value { get; set; }

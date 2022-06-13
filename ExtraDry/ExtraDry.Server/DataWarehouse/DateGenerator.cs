@@ -25,7 +25,7 @@ public class DateGenerator : IDataGenerator {
         RefreshOptions();
         var batch = new List<object>();
 
-        var minSql = sql.SelectMinimum(table, nameof(Date.Sequence));
+        var minSql = sql.SelectMinimum(table, table.KeyColumn.Name);
         var actualMin = await olap.Database.ExecuteScalerAsync(minSql);
         var requiredMin = StandardConversions.DateOnlyToSequence(StartDate);
         if(requiredMin < actualMin) {
@@ -38,7 +38,7 @@ public class DateGenerator : IDataGenerator {
             return batch;
         }
 
-        var maxSql = sql.SelectMaximum(table, nameof(Date.Sequence));
+        var maxSql = sql.SelectMaximum(table, table.KeyColumn.Name);
         var actualMax = await olap.Database.ExecuteScalerAsync(maxSql);
 
         var requiredMax = StandardConversions.DateOnlyToSequence(EndDate);

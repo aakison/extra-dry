@@ -47,7 +47,7 @@ public abstract class ColumnBuilder {
     public object Default {
         get => _default;
     }
-    private object _default;
+    private object _default = new();
 
     protected void SetLength(int? length)
     {
