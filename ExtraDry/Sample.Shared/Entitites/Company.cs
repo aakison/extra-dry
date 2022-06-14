@@ -59,6 +59,8 @@ public class Company : INamedSubject {
     [Precision(18, 2)]
     public decimal SalesMargin { get; set; }
 
+    public DateTime IncorporationDate { get; set; }
+
     [Display]
     [Rules(RuleAction.Allow)]
     public BankingDetails BankingDetails { get; set; } = new BankingDetails();

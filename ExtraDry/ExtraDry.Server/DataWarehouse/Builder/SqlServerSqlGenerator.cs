@@ -32,7 +32,7 @@ WHEN MATCHED THEN
     UPDATE SET {UpdateExpressions()}
 WHEN NOT MATCHED THEN
     INSERT ([{keyName}], {InsertColumns()})
-	VALUES ({keyValue}, {InsertValues()})
+    VALUES ({keyValue}, {InsertValues()})
 ;
 ";
 
@@ -42,6 +42,12 @@ WHEN NOT MATCHED THEN
 
         string InsertValues() => string.Join(", ", table.ValueColumns.Select(e => $"{SqlQuotedValue(values[e.Name])}"));
     }
+
+    public string SelectMinimum(Table table, string column) =>
+        $"SELECT Min([{column}]) AS [Min {column}] FROM [{table.Name}]";
+
+    public string SelectMaximum(Table table, string column) =>
+        $"SELECT Max([{column}]) AS [Max {column}] FROM [{table.Name}]";
 
     private string SqlConstraints(Table table) =>
         string.Join(",\n    ", table.Columns.Where(e => e.Reference != null).Select(e => SqlFKConstraint(table, e)));
@@ -64,6 +70,10 @@ WHEN NOT MATCHED THEN
             (ColumnType.Integer, true) => "INT",
             (ColumnType.Decimal, false) => $"DECIMAL({column.Precision}) NOT NULL",
             (ColumnType.Decimal, true) => $"DECIMAL({column.Precision})",
+            (ColumnType.Date, false) => "DATE NOT NULL",
+            (ColumnType.Date, true) => "DATE",
+            (ColumnType.Time, false) => "TIME(0) NOT NULL",
+            (ColumnType.Time, true) => "TIME(0)",
             (_, false) => $"{SqlVarchar(column.Length)} NOT NULL",
             (_, _) => SqlVarchar(column.Length),
         };
@@ -104,6 +114,15 @@ WHEN NOT MATCHED THEN
         }
         else if(value is Guid gValue) {
             return $"'{gValue}'";
+        }
+        else if(value is DateOnly dateValue) {
+            return $"'{dateValue}'";
+        }
+        else if(value is DateTime dateTimeValue) {
+            return $"'{dateTimeValue:yyyy-MM-dd}'";
+        }
+        else if(value is TimeOnly timeValue) {
+            return $"'{timeValue:HH:mm}'";
         }
         else {
             return value.ToString()!;

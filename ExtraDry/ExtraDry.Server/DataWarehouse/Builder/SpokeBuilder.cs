@@ -25,11 +25,27 @@ public class SpokeBuilder : ColumnBuilder {
         }
 
         SetType(ColumnType.Integer);
+        SetDefault(0);
+        if(propertyInfo.PropertyType.IsEnum) {
+            SetConverter(e => (int)e); // Enums need to map to Int.
+        }
     }
 
     public SpokeBuilder HasName(string name)
     {
         SetName(name);
+        return this;
+    }
+
+    public SpokeBuilder HasDefault(object _default)
+    {
+        SetDefault(_default);
+        return this;
+    }
+
+    public SpokeBuilder HasConversion(Func<object, object> converter)
+    {
+        SetConverter(converter);
         return this;
     }
 
@@ -40,10 +56,11 @@ public class SpokeBuilder : ColumnBuilder {
 
     internal override Column Build()
     {
-        return new Column(ColumnType.Integer, ColumnName) {
+        return new Column(ColumnType.Integer, ColumnName, Converter) {
             Nullable = false,
             PropertyInfo = PropertyInfo,
             Reference = new Reference(TargetDimension.TableName, TargetDimension.HasKey().ColumnName),
+            Default = Default,
         };
     }
 

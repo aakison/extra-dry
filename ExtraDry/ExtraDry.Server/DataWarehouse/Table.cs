@@ -33,10 +33,15 @@ public class Table {
     /// </summary>
     public List<Column> Columns { get; } = new List<Column>();
 
+    public IDataGenerator? Generator { get; init; }
+
     /// <summary>
     /// If the table is linked to a DbSet`T on the source DbContext, the PropertyInfo for that property.
     /// </summary>
+    [JsonIgnore]
     public PropertyInfo? SourceProperty { get; internal init; }
+
+    public string SourcePropertyName => $"{SourceProperty?.Name}";
 
     /// <summary>
     /// The base data, if any, for this table.

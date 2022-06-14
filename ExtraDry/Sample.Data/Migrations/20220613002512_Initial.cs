@@ -120,6 +120,7 @@ namespace Sample.Data.Migrations
                     PrimarySectorId = table.Column<int>(type: "int", nullable: true),
                     AnnualRevenue = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     SalesMargin = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    IncorporationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     BankingDetails = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Version_DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Version_UserCreated = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: true),

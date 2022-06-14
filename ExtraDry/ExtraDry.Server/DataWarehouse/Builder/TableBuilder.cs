@@ -34,7 +34,7 @@ public abstract class TableBuilder {
             properties.FirstOrDefault(e => string.Compare(e.Name, "Id", StringComparison.OrdinalIgnoreCase) == 0) ??
             properties.FirstOrDefault(e => string.Compare(e.Name, $"{TableEntityType.Name}Id", StringComparison.OrdinalIgnoreCase) == 0);
         if(keyProperty == null) {
-            throw new DryException("Fact and Dimension tables must have primary keys.");
+            throw new DryException($"Missing primary key on {TableName}. Fact and Dimension tables must have primary keys.");
         }
         return keyProperty;
     }
@@ -51,7 +51,7 @@ public abstract class TableBuilder {
             throw new DryException("Name limited to 50 characters.");
         }
         if(name != TableName && WarehouseBuilder.HasTableNamed(name)) {
-            throw new DryException($"Names for tables must be unique, {name} is duplicated.");
+            throw new DryException($"Names for tables must be unique, '{name}' is duplicated.");
         }
         TableName = name;
     }

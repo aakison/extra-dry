@@ -30,4 +30,14 @@ public enum ColumnType {
     /// A text column, length of text specified in Column's Length property.
     /// </summary>
     Text,
+
+    /// <summary>
+    /// A date column, without time. Typically only occurs in the Date dimension.
+    /// </summary>
+    Date,
+
+    /// <summary>
+    /// A time column, without date. Typically only occurs in the Time dimension.
+    /// </summary>
+    Time,
 }

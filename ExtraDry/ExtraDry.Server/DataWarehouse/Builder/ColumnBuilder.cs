@@ -16,6 +16,7 @@ public abstract class ColumnBuilder {
         PropertyInfo = propertyInfo;
         TableBuilder = tableBuilder;
         columnName = DataConverter.CamelCaseToTitleCase(propertyInfo.Name);
+        Converter = e => e;
     }
 
     public string ColumnName {
@@ -43,10 +44,15 @@ public abstract class ColumnBuilder {
     }
     private (int precision, int scale) precision = (18, 2);
 
+    public object Default {
+        get => _default;
+    }
+    private object _default = new();
+
     protected void SetLength(int? length)
     {
         if(length != null && length < 0) {
-            throw new DryException("Length must be a non-negative integer or null.");
+            throw new DryException($"Column '{ColumnName}' length must be a non-negative integer or null.");
         }
         this.length = length;
     }
@@ -96,6 +102,18 @@ public abstract class ColumnBuilder {
         this.included = included;
     }
 
+    protected void SetConverter(Func<object, object> converter)
+    {
+        Converter = converter;
+    }
+
+    protected void SetDefault(object _default)
+    {
+        this._default = _default;
+    }
+
+    protected Func<object, object> Converter { get; private set; }
+
     internal abstract Column Build();
 
     protected abstract bool IsValidColumnType(ColumnType type);
@@ -105,5 +123,6 @@ public abstract class ColumnBuilder {
     internal PropertyInfo PropertyInfo { get; set; }
 
     protected TableBuilder TableBuilder { get; set; }
+
 
 }

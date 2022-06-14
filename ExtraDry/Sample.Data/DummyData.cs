@@ -48,6 +48,7 @@ public class DummyData {
                     Status = PickRandom(companyStatuses),
                     AnnualRevenue = random.Next(1_000_000, 3_000_000),
                     SalesMargin = random.Next(100_000, 300_000),
+                    IncorporationDate = new DateTime(random.Next(2020, 2021), random.Next(1, 12), random.Next(1, 28)),
                 };
                 //company.Videos.Add(new Video { Title = "Huzzah 1", Uri = "https://www.example.com/huzzah1" });
                 //company.Videos.Add(new Video { Title = "Huzzah 2", Uri = "https://www.example.com/huzzah2" });

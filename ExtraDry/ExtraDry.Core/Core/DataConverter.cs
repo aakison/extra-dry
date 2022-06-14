@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace ExtraDry.Core;
 
@@ -9,21 +10,22 @@ public class DataConverter {
     /// </summary>
     public static string DateToRelativeTime(DateTime dateTime)
     {
-        var delta = DateTime.UtcNow - dateTime;
-        var today = DateTime.UtcNow.Date == dateTime.Date;
-        var yesterday = DateTime.UtcNow.Date == dateTime.Date.AddDays(1);
+        var utc = dateTime.ToUniversalTime();
+        var delta = DateTime.UtcNow - utc;
+        var today = DateTime.UtcNow.Date == utc.Date;
+        var yesterday = DateTime.UtcNow.Date == utc.Date.AddDays(1);
         if(delta.TotalSeconds < 30) {
-            return "Just Now";
+            return "Just now";
         }
         else if(delta.TotalMinutes < 2) {
-            return "1 minute ago";
+            return "A minute ago";
         }
-        else if(delta.TotalMinutes < 90) {
+        else if(delta.TotalMinutes < 60) {
             var minutes = (int)delta.TotalMinutes;
             return $"{minutes} minutes ago";
         }
         else if(delta.TotalHours < 2) {
-            return "1 hour ago";
+            return "An hour ago";
         }
         else if(delta.TotalHours < 24 && today) {
             var hours = (int)delta.TotalHours;
@@ -71,7 +73,7 @@ public class DataConverter {
         }
         var member = enumType.GetMember(enumValue)[0];
 
-        var displayAttribute = member.GetCustomAttributes(typeof(DisplayAttribute), false)?.FirstOrDefault() as DisplayAttribute;
+        var displayAttribute = member.GetCustomAttribute<DisplayAttribute>();
         return displayAttribute?.Name ?? member.Name;
     }
 

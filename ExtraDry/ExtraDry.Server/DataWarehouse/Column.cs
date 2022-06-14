@@ -10,10 +10,11 @@ public class Column {
     /// <summary>
     /// Creates a new column of the indicate type and with the specified title.
     /// </summary>
-    public Column(ColumnType type, string name)
+    public Column(ColumnType type, string name, Func<object, object>? converter = null)
     {
         ColumnType = type;
         Name = name;
+        Converter = converter ?? (e => e);
     }
 
     public string Name { get; set; }
@@ -48,9 +49,14 @@ public class Column {
     /// <summary>
     /// The default value for the column if no data is present.
     /// Data warehouses don't work well with null values, so replace with some content.
-    /// Defaults to "_NULL_", but can be overridden in the [Attribute] declaration.
     /// </summary>
-    public object Default { get; set; } = "_NULL_";
+    public object Default { get; set; } = new();
+
+    /// <summary>
+    /// Functor that converts data from source database to destination data warehouse.
+    /// </summary>
+    [JsonIgnore]
+    public Func<object, object> Converter { get; set; }
 
 }
 

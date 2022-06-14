@@ -12,7 +12,7 @@ using Sample.Data;
 namespace Sample.Data.Migrations
 {
     [DbContext(typeof(SampleContext))]
-    [Migration("20220531035832_Initial")]
+    [Migration("20220613002512_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -101,6 +101,9 @@ namespace Sample.Data.Migrations
                     b.Property<string>("Description")
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("IncorporationDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int?>("PrimarySectorId")
                         .HasColumnType("int");

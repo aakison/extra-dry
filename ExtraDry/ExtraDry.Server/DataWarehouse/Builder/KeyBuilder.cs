@@ -17,6 +17,12 @@ public class KeyBuilder : ColumnBuilder {
         return this;
     }
 
+    public KeyBuilder HasConversion(Func<object, object> converter)
+    {
+        SetConverter(converter);
+        return this;
+    }
+
     protected override bool IsValidColumnType(ColumnType type)
     {
         return type == ColumnType.Key;
@@ -24,7 +30,7 @@ public class KeyBuilder : ColumnBuilder {
 
     internal override Column Build()
     {
-        return new Column(ColumnType.Key, ColumnName) {
+        return new Column(ColumnType.Key, ColumnName, Converter) {
             Nullable = false,
             PropertyInfo = PropertyInfo,
         };
