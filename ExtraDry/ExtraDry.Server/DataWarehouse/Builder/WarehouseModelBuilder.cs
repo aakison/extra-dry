@@ -1,17 +1,11 @@
 ﻿using ExtraDry.Server.DataWarehouse.Builder;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System.Globalization;
 using System.Reflection;
 
 namespace ExtraDry.Server.DataWarehouse;
 
 public class WarehouseModelBuilder {
-
-    public WarehouseModelBuilder(ILogger<WarehouseModelBuilder>? logger = null)
-    {
-        this.logger = logger;
-    }
 
     public void LoadSchema<T>(string? group = null) where T : DbContext
     {
@@ -20,14 +14,11 @@ public class WarehouseModelBuilder {
 
     public void LoadSchema(Type contextType, string? group = null)
     {
-        logger?.LogInformation("Loading schema for '{type}' context.", contextType.Name);
         var entitySources = GetEntitySources(contextType);
-        //var assemblies = entitySources.Select(e => e.EntityType.Assembly).Distinct().ToList();
-        //assemblies.Add(GetType().Assembly); // Load current assembly to pick up Date, etc.
+        EntityContextType = contextType;
 
         var factsAndDimensions = GetWarehouseTables(entitySources.Select(e => e.EntityType));
 
-        //var dimensions = GetDimensions(assemblies, group);
         var dimensions = factsAndDimensions.Where(e => e.GetCustomAttribute<DimensionTableAttribute>() != null);
         var nonEntityDimensions = dimensions.Except(entitySources.Select(e => e.EntityType));
 
@@ -63,7 +54,7 @@ public class WarehouseModelBuilder {
         }
     }
 
-    private List<Type> GetWarehouseTables(IEnumerable<Type> enumerable)
+    private static List<Type> GetWarehouseTables(IEnumerable<Type> enumerable)
     {
         var tableClasses = new List<Type>() { typeof(Date), typeof(Time) };
         var rejectedClasses = new List<Type>();
@@ -78,11 +69,9 @@ public class WarehouseModelBuilder {
                 return;
             }
             if(candidate.GetCustomAttribute<FactTableAttribute>() != null || candidate.GetCustomAttribute<DimensionTableAttribute>() != null) {
-                logger?.LogInformation("Adding class {typeName} to table list.", candidate.Name);
                 tableClasses.Add(candidate);
             }
             else {
-                logger?.LogDebug("Determined class {typeName} is not a table.", candidate.Name);
                 rejectedClasses.Add(candidate);
                 return;
             }
@@ -141,16 +130,24 @@ public class WarehouseModelBuilder {
         }
     }
 
-    public WarehouseModel Build()
+    internal WarehouseModel Build()
     {
-        var model = new WarehouseModel();
+        var type = EntityContextType ?? throw new DryException("Can't generate warehouse model without first loading schema.");
+        return new WarehouseModel(this, type, Group);
+    }
+
+    internal IEnumerable<Table> BuildDimensions()
+    {
         foreach(var dimensionBuilder in DimensionTables.Values) {
-            model.Dimensions.Add(dimensionBuilder.Build());
+            yield return dimensionBuilder.Build();
         }
+    }
+
+    internal IEnumerable<Table> BuildFacts()
+    {
         foreach(var factBuilder in FactTables.Values) {
-            model.Facts.Add(factBuilder.Build());
+            yield return factBuilder.Build();
         }
-        return model;
     }
 
     internal bool HasTableNamed(string name) =>
@@ -278,24 +275,12 @@ public class WarehouseModelBuilder {
         }
     }
 
-    private static IEnumerable<Type> GetDimensions(List<Assembly> assemblies, string? group)
-    {
-        foreach(var assembly in assemblies) {
-            foreach(var type in assembly.GetTypes()) {
-                var dimensionTable = type.GetCustomAttribute<DimensionTableAttribute>();
-                if(dimensionTable == null) {
-                    continue;
-                }
-                if(dimensionTable.MatchesGroup(group)) { 
-                    yield return type;
-                }
-            }
-        }
-    }
+    private Type? EntityContextType { get; set;  }
+
+    private string? Group { get; set; }
 
     private Dictionary<Type, FactTableBuilder> FactTables { get; } = new();
 
     private Dictionary<Type, DimensionTableBuilder> DimensionTables { get; } = new();
 
-    private readonly ILogger<WarehouseModelBuilder>? logger;
 }

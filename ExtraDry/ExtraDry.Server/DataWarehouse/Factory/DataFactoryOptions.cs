@@ -9,7 +9,7 @@ public class DataFactoryOptions {
     /// </summary>
     public int BatchSize { 
         get => batchSize; 
-        init {
+        set {
             if(value < 1 || value > 10_000) {
                 throw new ArgumentOutOfRangeException(nameof(batchSize), "Valid batch sizes are between 1 and 10,000");
             }
@@ -21,6 +21,6 @@ public class DataFactoryOptions {
     /// <summary>
     /// Determines if migrations are automatically checked and applied each time the factory starts.
     /// </summary>
-    public bool AutoMigrations { get; init; } = true;
+    public bool AutoMigrations { get; set; } = true;
 
 }

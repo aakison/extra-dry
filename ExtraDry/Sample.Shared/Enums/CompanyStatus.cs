@@ -13,4 +13,7 @@ public enum CompanyStatus {
     [Display(Order = 1, Description = "Company doesn't exist, but is linked to historic records.")]
     Deleted = 2,
 
+    [Display(Description = "Trying to get money out of a turnip.")]
+    InArbitration = 3,
+
 }
