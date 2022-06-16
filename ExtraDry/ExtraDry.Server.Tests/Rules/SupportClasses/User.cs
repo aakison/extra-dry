@@ -1,23 +1,16 @@
-﻿using ExtraDry.Core;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace ExtraDry.Server.Tests.Rules;
 
-namespace ExtraDry.Core.Tests.Rules {
-    public class User {
+public class User {
 
-        [Key]
-        public int Id { get; set; }
+    [Key]
+    [JsonIgnore]
+    public int Id { get; set; }
 
-        [Rules(DeleteValue = ActiveType.Deleted)]
-        public ActiveType Active { get; set; } = ActiveType.Pending;
+    [Rules(DeleteValue = ActiveType.Deleted)]
+    public ActiveType Active { get; set; } = ActiveType.Pending;
 
-        public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
-        public Address Address { get; set; }
+    public Address? Address { get; set; }
 
-    }
 }

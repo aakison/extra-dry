@@ -235,6 +235,7 @@ public class MeasureContext : DbContext {
 public class MeasureContainer {
 
     [Key]
+    [JsonIgnore]
     public int Id { get; set; }
 
     public string Name { get; set; } = string.Empty;
@@ -318,6 +319,7 @@ public class PrecisionContext : DbContext {
     [FactTable]
     public class PrecisionClass {
 
+        [JsonIgnore]
         public int Id { get; set; }
 
         public decimal Default { get; set; }

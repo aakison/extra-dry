@@ -6,6 +6,7 @@ namespace ExtraDry.Server.DataWarehouse;
 public class DataTableSync {
     
     [Key]
+    [JsonIgnore]
     public int Id { get; set; }
 
     /// <summary>

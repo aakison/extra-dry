@@ -10,6 +10,7 @@ public class Time {
     }
 
     [Key]
+    [JsonIgnore]
     public int Id { get; set; }
 
     [Attribute("Time")]

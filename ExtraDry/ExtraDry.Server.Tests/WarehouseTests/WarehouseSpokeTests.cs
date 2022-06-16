@@ -115,6 +115,7 @@ public class WarehouseSpokeTests {
 
         [FactTable]
         public class SimpleSource {
+            [JsonIgnore]
             public int Id { get; set; }
 
             public Target? TargetName { get; set; }
@@ -123,6 +124,7 @@ public class WarehouseSpokeTests {
 
         [FactTable]
         public class MultipleTarget {
+            [JsonIgnore]
             public int Id { get; set; }
 
             public Target? First { get; set; }
@@ -136,18 +138,23 @@ public class WarehouseSpokeTests {
 
         [FactTable]
         public class Spokeless {
+
+            [JsonIgnore]
             public int Id { get; set; }
+
             [SpokeIgnore]
             public Target? Taret { get; set; }
         }
 
         [DimensionTable]
         public class Target {
+            [JsonIgnore]
             public int Id { get; set; }
         }
 
         [DimensionTable]
         public class DimensionSource {
+            [JsonIgnore]
             public int Id { get; set; }
 
             public Target? Target { get; set; } // dimensions can also have spokes (snowflake schema)
@@ -155,6 +162,7 @@ public class WarehouseSpokeTests {
 
         [FactTable, DimensionTable]
         public class DoubleDutySource {
+            [JsonIgnore]
             public int Id { get; set; }
 
             public Target? Target { get; set; } // dimensions can also have spokes (snowflake schema)
@@ -178,6 +186,7 @@ public class WarehouseSpokeTests {
 
         [DimensionTable]
         public class SelfReference {
+            [JsonIgnore]
             public int Id { get; set; }
 
             public SelfReference? RelatedSelfReference { get; set; }
