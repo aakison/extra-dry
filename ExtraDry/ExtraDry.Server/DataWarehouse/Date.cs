@@ -11,6 +11,7 @@ public class Date {
     }
 
     [Key]
+    [JsonIgnore]
     public int Id { get; set; }
 
     [Attribute("Date")]

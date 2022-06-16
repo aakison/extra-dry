@@ -61,6 +61,7 @@ public class WarehouseLengthTests {
     public class AttributeContainer {
 
         [Key]
+        [JsonIgnore]
         public int Id { get; set; }
 
         // Default is 36
@@ -105,6 +106,7 @@ public class WarehouseLengthTests {
         public class BadClass {
 
             [Key]
+            [JsonIgnore]
             public int Id { get; set; }
 
             [StringLength(-1)]

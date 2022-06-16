@@ -93,11 +93,13 @@ public class WarehouseTableTests {
 
         [FactTable]
         public class FirstTable {
+            [JsonIgnore]
             public int Id { get; set; }
         }
 
         [FactTable("First Table")]
         public class SecondTable {
+            [JsonIgnore]
             public int Id { get; set; }
         }
 
@@ -111,11 +113,13 @@ public class WarehouseTableTests {
 
         [DimensionTable]
         public class FirstTable {
+            [JsonIgnore]
             public int Id { get; set; }
         }
 
         [DimensionTable("First Table")]
         public class SecondTable {
+            [JsonIgnore]
             public int Id { get; set; }
         }
 
@@ -129,11 +133,13 @@ public class WarehouseTableTests {
 
         [FactTable]
         public class FirstTable {
+            [JsonIgnore]
             public int Id { get; set; }
         }
 
         [DimensionTable("First Table")]
         public class SecondTable {
+            [JsonIgnore]
             public int Id { get; set; }
         }
 

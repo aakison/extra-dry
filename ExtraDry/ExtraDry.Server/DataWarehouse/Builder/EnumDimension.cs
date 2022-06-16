@@ -14,6 +14,7 @@ public class EnumDimension {
     /// The ID or value of the enum, used as the primary key in the dimension table.
     /// </summary>
     [Key]
+    [JsonIgnore]
     public int Id { get; set; }
 
     /// <summary>

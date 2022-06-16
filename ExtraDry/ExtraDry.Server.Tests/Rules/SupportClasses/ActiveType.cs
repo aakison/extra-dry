@@ -1,13 +1,13 @@
-﻿namespace ExtraDry.Core.Tests.Rules {
-    public enum ActiveType {
+﻿namespace ExtraDry.Server.Tests.Rules;
 
-        Pending,
+public enum ActiveType {
 
-        Inactive,
+    Pending,
 
-        Active,
+    Inactive,
 
-        Deleted,
+    Active,
 
-    }
+    Deleted,
+
 }

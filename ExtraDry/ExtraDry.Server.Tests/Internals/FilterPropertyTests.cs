@@ -1,47 +1,44 @@
-﻿#nullable enable
+﻿using ExtraDry.Server.Internal;
 
-using ExtraDry.Server.Internal;
-using Xunit;
+namespace ExtraDry.Server.Tests.Internals;
 
-namespace ExtraDry.Core.Tests.Internals {
-    public class FilterPropertyTests {
+public class FilterPropertyTests {
 
-        [Fact]
-        public void DefaultValues()
-        {
-            var property = GetType().GetProperty(nameof(ValidProperty));
-            var attribute = new FilterAttribute();
+    [Fact]
+    public void DefaultValues()
+    {
+        var property = GetType().GetProperty(nameof(ValidProperty))!;
+        var attribute = new FilterAttribute();
 
-            var filter = new FilterProperty(property!, attribute);
+        var filter = new FilterProperty(property, attribute);
 
-            Assert.Equal(property, filter.Property);
-            Assert.Equal(attribute, filter.Filter);
-            Assert.Equal(property.Name, filter.ExternalName);
-        }
-
-        [Theory]
-        [InlineData("Property", null)]
-        [InlineData("Filter", null)]
-        public void RoundtripProperties(string propertyName, object propertyValue)
-        {
-            var filter = FilterProperty;
-            var property = filter.GetType().GetProperty(propertyName);
-
-            property?.SetValue(filter, propertyValue);
-            var result = property?.GetValue(filter);
-
-            Assert.Equal(propertyValue, result);
-        }
-
-        public string ValidProperty { get; set; } = string.Empty;
-
-        private FilterProperty FilterProperty {
-            get {
-                var property = GetType().GetProperty(nameof(ValidProperty));
-                var filter = new FilterAttribute();
-                return new FilterProperty(property!, filter);
-            }
-        } 
-
+        Assert.Equal(property, filter.Property);
+        Assert.Equal(attribute, filter.Filter);
+        Assert.Equal(property.Name, filter.ExternalName);
     }
+
+    [Theory]
+    [InlineData("Property", null)]
+    [InlineData("Filter", null)]
+    public void RoundtripProperties(string propertyName, object propertyValue)
+    {
+        var filter = FilterProperty;
+        var property = filter.GetType().GetProperty(propertyName);
+
+        property?.SetValue(filter, propertyValue);
+        var result = property?.GetValue(filter);
+
+        Assert.Equal(propertyValue, result);
+    }
+
+    public string ValidProperty { get; set; } = string.Empty;
+
+    private FilterProperty FilterProperty {
+        get {
+            var property = GetType().GetProperty(nameof(ValidProperty));
+            var filter = new FilterAttribute();
+            return new FilterProperty(property!, filter);
+        }
+    } 
+
 }

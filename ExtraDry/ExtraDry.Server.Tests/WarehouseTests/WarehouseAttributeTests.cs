@@ -154,6 +154,7 @@ public class WarehouseAttributeTests {
     public class AttributeContainer {
 
         [Key]
+        [JsonIgnore]
         public int Id { get; set; }
 
         public Guid Uuid { get; set; }

@@ -49,9 +49,6 @@ public class WarehouseModel {
     public ReadOnlyCollection<Table> Dimensions => dimensions ??= new ReadOnlyCollection<Table>(DimensionTables);
     private ReadOnlyCollection<Table>? dimensions;
 
-    [Obsolete("Remove SQL at this level")]
-    public string ToSql() => new SqlServerSqlGenerator().Generate(this);
-
     private List<Table> DimensionTables { get; }
 
     private List<Table> FactTables { get; }

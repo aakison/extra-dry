@@ -86,7 +86,7 @@ public class SqlGeneratorTests {
         builder.LoadSchema<TestContext>();
 
         var warehouse = builder.Build();
-        var sql = warehouse.ToSql();
+        var sql = new SqlServerSqlGenerator().Generate(warehouse);
 
         Assert.DoesNotContain("CONSTRAINT", sql);
     }
@@ -95,6 +95,7 @@ public class SqlGeneratorTests {
 
         [FactTable]
         public class Source {
+            [JsonIgnore]
             public int Id { get; set; }
 
             public Target? Target { get; set; }
@@ -102,6 +103,7 @@ public class SqlGeneratorTests {
 
         [DimensionTable]
         public class Target {
+            [JsonIgnore]
             public int Id { get; set; }
         }
 

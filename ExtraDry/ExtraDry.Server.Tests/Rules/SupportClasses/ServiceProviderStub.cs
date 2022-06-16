@@ -1,10 +1,8 @@
-﻿using System;
+﻿namespace ExtraDry.Server.Tests.Rules;
 
-namespace ExtraDry.Core.Tests.Rules {
-    public class ServiceProviderStub : IServiceProvider {
-        public object GetService(Type serviceType)
-        {
-            return null;
-        }
+public class ServiceProviderStub : IServiceProvider {
+    public object? GetService(Type serviceType)
+    {
+        return null;
     }
 }

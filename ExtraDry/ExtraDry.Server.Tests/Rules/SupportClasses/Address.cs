@@ -1,16 +1,14 @@
-﻿using ExtraDry.Core;
-using System.ComponentModel.DataAnnotations;
+﻿namespace ExtraDry.Server.Tests.Rules;
 
-namespace ExtraDry.Core.Tests.Rules {
-    public class Address {
+public class Address {
 
-        [Key]
-        public int Id { get; set; }
+    [Key]
+    [JsonIgnore]
+    public int Id { get; set; }
 
-        [Rules(DeleteValue = ActiveType.Deleted)]
-        public ActiveType Active { get; set; } = ActiveType.Pending;
+    [Rules(DeleteValue = ActiveType.Deleted)]
+    public ActiveType Active { get; set; } = ActiveType.Pending;
 
-        public string Line { get; set; }
+    public string Line { get; set; } = string.Empty;
 
-    }
 }
