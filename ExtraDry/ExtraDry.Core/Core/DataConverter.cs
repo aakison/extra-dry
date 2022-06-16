@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 namespace ExtraDry.Core;
 
 public class DataConverter {
+
     /// <summary>
     /// Given a date, formats it for display using a relative time.
     /// For example, 5 minutes ago, or Yesterday.
@@ -11,9 +12,10 @@ public class DataConverter {
     public static string DateToRelativeTime(DateTime dateTime)
     {
         var utc = dateTime.ToUniversalTime();
-        var delta = DateTime.UtcNow - utc;
-        var today = DateTime.UtcNow.Date == utc.Date;
-        var yesterday = DateTime.UtcNow.Date == utc.Date.AddDays(1);
+        var current = CurrentDateTime().ToUniversalTime();
+        var delta = current - utc;
+        var today = current.Date == utc.Date;
+        var yesterday = current.Date == utc.Date.AddDays(1);
         if(delta.TotalSeconds < 30) {
             return "Just now";
         }
@@ -41,6 +43,12 @@ public class DataConverter {
             return $"{dateTime:MMM dd hh:mm tt}";
         }
     }
+
+    /// <summary>
+    /// A function which returns the current date and time.  
+    /// Defaults to UTC which should match date storage format in databases.
+    /// </summary>
+    public static Func<DateTime> CurrentDateTime { get; set; } = () => DateTime.UtcNow;
 
     /// <summary>
     /// Given a camel-case (or Pascal-case) string, inserts spaces between words, retaining acronyms.
