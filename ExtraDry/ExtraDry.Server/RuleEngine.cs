@@ -157,17 +157,14 @@ public class RuleEngine {
             // Do not allow property to be set to the value configured in DeleteValue.
             
             if(!same && rulesAttribute != null && rulesAttribute.HasDeleteValue() && AreEqual(value, rulesAttribute.GetDeleteValue())) {
-                throw new DryException($"Invalid attempt to change property '{property.Name}'", $"Please use the Delete function to update '{property.Name}'");
+                throw new DryException($"Invalid attempt to change property '{property.Name}' to the DeleteValue", "Unable to update, an attempt was made to make the entity appear deleted. Check your values to prevent this or use the dedicated delete functionality if available.");
             }
 
             property.SetValue(destination, result);
         }
     }
 
-    private static bool AreEqual(object? result, object? destinationValue)
-    {
-        return (result == null && destinationValue == null) || (result?.Equals(destinationValue) ?? false);
-    }
+    private static bool AreEqual(object? result, object? destinationValue) => (result == null && destinationValue == null) || (result?.Equals(destinationValue) ?? false);
 
     private async Task ProcessCollectionUpdates<T>(RuleAction action, PropertyInfo property, T destination, IList? sourceList)
     {
