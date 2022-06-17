@@ -11,11 +11,23 @@ public sealed class RulesAttribute : Attribute {
 
     }
 
-    public RulesAttribute(RuleAction defaultRule = RuleAction.Allow)
+    public RulesAttribute(RuleAction defaultRule/*, object? deleteValue*/)
     {
         UpdateAction = defaultRule;
         CreateAction = defaultRule;
+        //DeleteValue = deleteValue;
+        //HasDeleteValue = true;
     }
+
+    //public RulesAttribute(RuleAction defaultRule, object? deleteValue, object? undeleteValue)
+    //{
+    //    UpdateAction = defaultRule;
+    //    CreateAction = defaultRule;
+    //    DeleteValue = deleteValue;
+    //    HasDeleteValue = true;
+    //    UndeleteValue = undeleteValue;
+    //    HasUndeleteValue = true;
+    //}
 
     public RuleAction CreateAction { get; set; } = RuleAction.Allow;
 
@@ -28,4 +40,30 @@ public sealed class RulesAttribute : Attribute {
     /// </summary>
     public object? DeleteValue { get; set; }
 
+    //public bool HasDeleteValue { get; }
+
+    //public object? UndeleteValue { get; }
+
+    //public bool HasUndeleteValue { get; }
 }
+
+// Any DeleteValue implies Soft-Delete enabled.
+// When soft-delete enabled:
+//   Calls to rules.Delete(entity) will set deleted value.
+//   Calls to rules.Create(entity), rules.Update(entity) will block this value from this property.
+//   If no value is set rules.Delete does nothing (other values might work or lambda might do something).
+
+// Any UndeleteValue implies Soft-Undelete enabled.
+//   Calls to rules.Undelete(entity) will set undeleted value.
+//   Calls to rules.Create, rules.Update ignore this value always.
+//   USAGE PREVENTS THIS: If no DeleteValue set, exception is thrown on rules.Undelete
+//   If value is the same as DeleteValue, exception is thrown on rules.Delete or rules.Undelete
+//   If no UndeleteValue, rules.Undelete does nothing (other values might work or lambda might do something).
+
+// If multiple properties have DeleteValues declared...
+//   ??? Analysis rule
+//   ??? Framework exception
+//   ??? Treat as a single value for above rules
+//   ??? Treat as a combination of values for the above rules
+
+

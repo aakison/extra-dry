@@ -1,116 +1,53 @@
 ﻿using ExtraDry.Server.DataWarehouse;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Sample.Data;
-using Sample.Shared;
+using Sample.WebJob;
 
-var services = new ServiceCollection();
-services.AddLogging(configure => {
-    configure.AddConsole();
-    configure.SetMinimumLevel(LogLevel.Debug);
-});
-services.AddScoped<SampleContext>(services => {
-    var connectionString = @"Server=(localdb)\mssqllocaldb;Database=ExtraDrySample;Trusted_Connection=True;";
-    var dbOptionsBuilder = new DbContextOptionsBuilder<SampleContext>().UseSqlServer(connectionString);
-    var databaseContext = new SampleContext(dbOptionsBuilder.Options);
-    return databaseContext;
-});
-services.AddScoped<WarehouseContext>(services => {
-    var warehouseConnectionString = @"Server=(localdb)\mssqllocaldb;Database=ExtraDryWarehouse;Trusted_Connection=True;";
-    var warehouseOptionsBuilder = new DbContextOptionsBuilder<WarehouseContext>().UseSqlServer(warehouseConnectionString);
-    var warehouseContext = new WarehouseContext(warehouseOptionsBuilder.Options);
-    return warehouseContext;
-});
-services.AddScoped<WarehouseModel>(services => 
-    new WarehouseModel<SampleContext>(builder => {
-        builder.Fact<Company>().Measure(e => e.AnnualRevenue).HasName("Big Bucks");
-        builder.Dimension<Date>().HasDateGenerator(options => {
-            options.StartDate = new DateOnly(2020, 1, 1);
-            options.EndDate = new DateOnly(DateTime.UtcNow.Year, 12, 31);
-            options.FiscalYearEndingMonth = 6;
-        });
-        builder.Dimension<Date>().Attribute(e => e.DayOfWeekName).IsIncluded(false);
-        builder.Dimension<Time>().HasTimeGenerator();
-    }));
-services.AddDataFactory<WarehouseModel, SampleContext, WarehouseContext>(options => {
-    options.BatchSize = 10;
-    options.AutoMigrations = true;
-});
+var netCoreEnvironment = Environment.GetEnvironmentVariable("NETCORE_ENVIRONMENT");
+var isDevelopment = string.IsNullOrEmpty(netCoreEnvironment) || string.Compare(netCoreEnvironment, "development", StringComparison.OrdinalIgnoreCase) == 0;
 
-var provider = services.BuildServiceProvider();
-var factory = provider.GetRequiredService<DataFactory<WarehouseModel, SampleContext, WarehouseContext>>();
-while(await factory.ProcessBatchesAsync() > 0) {
-    // no-op
+var configurationBuilder = new ConfigurationBuilder()
+    .SetBasePath(Environment.CurrentDirectory)
+    .AddEnvironmentVariables();
+if(isDevelopment) {
+    configurationBuilder.AddUserSecrets<Program>();
 }
+var configuration = configurationBuilder.Build();
 
+var builder = new HostBuilder();
+builder.ConfigureAppConfiguration(config => {
+    config.SetBasePath(Environment.CurrentDirectory);
+    config.AddEnvironmentVariables();
+    if(isDevelopment) {
+        config.AddUserSecrets<Program>();
+    }
+});
+builder.ConfigureWebJobs(b => {
+    b.AddAzureStorageCoreServices();
+    b.AddAzureStorage();
+    b.AddTimers();
+});
+builder.ConfigureLogging((context, b) => {
+    b.AddConsole();
+    b.AddApplicationInsightsWebJobs();
+    //b.SetMinimumLevel(LogLevel.Debug); // from user secrets
+});
+builder.ConfigureServices(services => {
+    services.AddLogging();
+    //services.Configure<AppConfiguration>(configuration.GetSection("AppConfiguration"));
+    services.AddSingleton(factory => configuration);
+    services.AddScoped<SampleWarehouseModel>();
+    services.AddSqlServer<SampleContext>(configuration.GetConnectionString("OltpDatabase"));
+    services.AddSqlServer<WarehouseContext>(configuration.GetConnectionString("OlapDatabase"));
+    services.AddDataFactory<SampleWarehouseModel, SampleContext, WarehouseContext>(options => {
+        options.BatchSize = 10;
+        options.AutoMigrations = true;
+    });
+});
+using var host = builder.Build();
+await host.RunAsync();
 
-
-
-
-
-
-
-
-
-
-
-
-// Today and Tomorrow:
-//services.AddScoped<FinanceWarehouseContext>();
-// Tomorrow:
-//services.AddWarehouseContext<FinanceWarehouseContext>(options => {
-//    options.NamingScheme = NamingScheme.KebabCase;
-//});
-
-//public class ContextlessWarehouseModel : WarehouseModel {
-
-//    public ContextlessWarehouseModel() : base(typeof(SampleContext)) { }
-
-//    protected override void OnCreating(WarehouseModelBuilder builder)
-//    {
-//        builder.Fact<Company>().Measure(e => e.AnnualRevenue).HasName("Big Bucks");
-//        builder.Dimension<Date>().HasDateGenerator(options => {
-//            options.StartDate = new DateOnly(2020, 1, 1);
-//            options.EndDate = new DateOnly(DateTime.UtcNow.Year, 12, 31);
-//            options.FiscalYearEndingMonth = 6;
-//        });
-//        builder.Dimension<Date>().Attribute(e => e.DayOfWeekName).IsIncluded(false);
-//        builder.Dimension<Time>().HasTimeGenerator();
-//    }
-
-//}
-
-//public class SampleWarehouseModel : WarehouseModel<SampleContext> {
-
-//    protected override void OnCreating(WarehouseModelBuilder builder)
-//    {
-//        builder.Fact<Company>().Measure(e => e.AnnualRevenue).HasName("Big Bucks");
-//        builder.Dimension<Date>().HasDateGenerator(options => {
-//            options.StartDate = new DateOnly(2020, 1, 1);
-//            options.EndDate = new DateOnly(DateTime.UtcNow.Year, 12, 31);
-//            options.FiscalYearEndingMonth = 6;
-//        });
-//        builder.Dimension<Date>().Attribute(e => e.DayOfWeekName).IsIncluded(false);
-//        builder.Dimension<Time>().HasTimeGenerator();
-//    }
-
-//}
-
-//public class FinanceWarehouseContext : WarehouseModel<SampleContext> {
-
-//    public FinanceWarehouseContext() : base("Finance") { }
-
-//    protected override void OnCreating(WarehouseModelBuilder builder)
-//    {
-//        builder.Fact<Company>().Measure(e => e.AnnualRevenue).HasName("Big Bucks");
-//        builder.Dimension<Date>().HasDateGenerator(options => {
-//            options.StartDate = new DateOnly(2020, 1, 1);
-//            options.EndDate = new DateOnly(DateTime.UtcNow.Year, 12, 31);
-//            options.FiscalYearEndingMonth = 6;
-//        });
-//        builder.Dimension<Date>().Attribute(e => e.DayOfWeekName).IsIncluded(false);
-//        builder.Dimension<Time>().HasTimeGenerator();
-//    }
-
-//}
