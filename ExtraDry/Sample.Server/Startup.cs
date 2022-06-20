@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Sample.Data;
+using Sample.Server.Instructions;
 using Sample.Server.Security;
 using System.Text.Json.Serialization;
 
@@ -47,7 +48,7 @@ namespace Sample.Server {
                 openapi.SwaggerDoc(ApiGroupNames.Instructions, new OpenApiInfo {
                     Version = "v1",
                     Title = "Sample API Instructions",
-                    Description = @"A sample API for Blazor.ExtraDry _test_, and *test*.",
+                    Description = "The Sample API provides consistent access to services available on this system.",
                 });
                 openapi.SwaggerDoc(ApiGroupNames.SampleApi, new OpenApiInfo {
                     Version = "v1",

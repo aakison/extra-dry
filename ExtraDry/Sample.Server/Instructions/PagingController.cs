@@ -50,7 +50,7 @@ namespace Sample.Server.Instructions;
 [ApiController]
 [ApiExplorerSettings(GroupName = ApiGroupNames.Instructions)]
 [SkipStatusCodePages]
-[Display(Name = "Paging and Tokens", Order = 3)]
+[Display(Name = "Paging and Tokens", Order = 4)]
 public class PagingController {
 
     public PagingController()

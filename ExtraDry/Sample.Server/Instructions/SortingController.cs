@@ -20,7 +20,7 @@ namespace Sample.Server.Instructions;
 [ApiController]
 [ApiExplorerSettings(GroupName = ApiGroupNames.Instructions)]
 [SkipStatusCodePages]
-[Display(Order = 2)]
+[Display(Order = 3)]
 public class SortingController {
 
     public SortingController()

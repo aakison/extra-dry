@@ -54,6 +54,38 @@ public class InstructionDataService {
             .ToPagedCollectionAsync();
     }
 
+    public string RandomAffirmation() => affirmations[random.Next(affirmations.Length)];
+
+    private static Random random = new Random();
+
     private readonly static List<Automobile> automobiles;
+
+    private readonly static string[] affirmations = new string[] {
+        "I experience gratitude for everything I have in my life",
+        "I always receive exactly what I ask for and appreciate that",
+        "My life is filled with an abundance of goodness",
+        "Gratitude brings me into a harmonious relationship with everyone",
+        "Happiness expands within me",
+        "Joy floods my thoughts and my life",
+        "I release all negativity and hold joy in my heart",
+        "I am overcome with gratitude for the bliss that fills my life",
+        "I accept the good that is flowing into my life",
+        "I display a natural sense of wonder",
+        "My whole world is viewed through the eyes of wonder and excitement",
+        "I view life through innocence, purity and curiosity",
+        "Everything is mysterious and absolutely incredible",
+        "I am worthy to receive the unlimited offerings of the Universe",
+        "I affirm only the best for myself and others",
+        "I am so grateful for supportive friends and a loving family",
+        "I appreciate everything I have in my life",
+        "I am always open to receive more blessings",
+        "I see the beauty in nature that surrounds me",
+        "I give thanks for the helpful people that guide me in this life journey",
+        "I am creatively expressing my highest potential",
+        "I am a powerful body, a powerful mind, and a powerful soul",
+        "I am a channel for love and healing",
+        "Everything I need comes to me",
+        "All is well in my life",
+    };
 
 }

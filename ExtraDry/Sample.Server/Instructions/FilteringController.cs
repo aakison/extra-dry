@@ -75,7 +75,7 @@ namespace Sample.Server.Instructions;
 [ApiController]
 [ApiExplorerSettings(GroupName = ApiGroupNames.Instructions)]
 [SkipStatusCodePages]
-[Display(Order = 1)]
+[Display(Order = 2)]
 public class FilteringController {
 
     public FilteringController()
