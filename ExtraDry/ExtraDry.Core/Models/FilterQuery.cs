@@ -5,19 +5,6 @@
 /// </summary>
 public class FilterQuery {
 
-    public FilterQuery() { 
-    }
-
-    /// <summary>
-    /// Forces the string comparisons in the query are built using an explicit string comparison.
-    /// This _will_ break entity framework if attempted to be sent to a database.
-    /// Only use this if the database is known to be in-memory.
-    /// </summary>
-    public FilterQuery(StringComparison forceInMemoryStringComparison)
-    {
-        ForceStringComparison = forceInMemoryStringComparison;
-    }
-
     /// <summary>
     /// The entity specific text filter for the collection.
     /// </summary>
@@ -32,7 +19,5 @@ public class FilterQuery {
     /// Indicates if the results are requested in ascending order by `Sort`.
     /// </summary>
     public bool Ascending { get; set; }
-
-    public StringComparison? ForceStringComparison { get; private set; }
 
 }

@@ -88,7 +88,7 @@ public class FilteringController {
     [AllowAnonymous]
     public async Task<FilteredCollection<Automobile>> ListFilteredAsync([FromQuery] string? filter)
     {
-        var query = new FilterQuery(StringComparison.OrdinalIgnoreCase) { Filter = filter };
+        var query = new FilterQuery { Filter = filter };
         return await sampleData.ListAsync(query);
     }
 

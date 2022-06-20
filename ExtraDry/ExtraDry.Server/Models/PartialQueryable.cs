@@ -6,8 +6,15 @@ namespace ExtraDry.Server;
 
 public class PartialQueryable<T> : IPartialQueryable<T> {
 
+    public PartialQueryable(IQueryable<T> queryable, StringComparison forceStringComparison) { 
+        ForceStringComparison = forceStringComparison;
+        query = new();
+        pagedQuery = sortedQuery = filteredQuery = queryable;
+    }
+
     public PartialQueryable(IQueryable<T> queryable, FilterQuery filterQuery, Expression<Func<T, bool>>? defaultFilter)
     {
+        ForceStringComparison = (queryable as PartialQueryable<T>)?.ForceStringComparison;
         query = filterQuery;
         filteredQuery = InitializeMergedFilter(queryable, filterQuery, defaultFilter);
         sortedQuery = filteredQuery.Sort(filterQuery);
@@ -16,6 +23,7 @@ public class PartialQueryable<T> : IPartialQueryable<T> {
 
     public PartialQueryable(IQueryable<T> queryable, PageQuery pageQuery, Expression<Func<T, bool>>? defaultFilter)
     {
+        ForceStringComparison = (queryable as PartialQueryable<T>)?.ForceStringComparison;
         query = pageQuery;
         token = ContinuationToken.FromString(pageQuery.Token);
         filteredQuery = InitializeMergedFilter(queryable, pageQuery, defaultFilter);
@@ -155,6 +163,8 @@ public class PartialQueryable<T> : IPartialQueryable<T> {
         }
         return CreatePartialCollection(items);
     }
+
+    internal StringComparison? ForceStringComparison { get; private set; }
 
     private PagedCollection<T> CreatePartialCollection(List<T> items)
     {

@@ -40,6 +40,7 @@ public class InstructionDataService {
     {
         return await automobiles
             .AsQueryable()
+            .ForceStringComparison(StringComparison.OrdinalIgnoreCase)
             .QueryWith(query)
             .ToFilteredCollectionAsync();
     }

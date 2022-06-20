@@ -34,6 +34,11 @@ public static class QueryableExtensions {
         return new PartialQueryable<T>(source, filterQuery, defaultFilter);
     }
 
+    public static IPartialQueryable<T> ForceStringComparison<T>(this IQueryable<T> source, StringComparison forceStringComparison)
+    {
+        return new PartialQueryable<T>(source, forceStringComparison);
+    }
+
     /// <summary>
     /// Given a `FilterQuery`, dynamically constructs an expression query that applies the indicated filtering but not the indicated sorting.
     /// </summary>
@@ -42,7 +47,7 @@ public static class QueryableExtensions {
     /// <param name="filterQuery">A filter query that contains filtering and sorting information.</param>
     public static IQueryable<T> Filter<T>(this IQueryable<T> source, FilterQuery filterQuery)
     {
-        return source.Filter(filterQuery.Filter, filterQuery.ForceStringComparison);
+        return source.Filter(filterQuery.Filter);
     }
 
     /// <summary>
@@ -53,11 +58,6 @@ public static class QueryableExtensions {
     /// <param name="filter">A filter query that contains filtering information.</param>
     public static IQueryable<T> Filter<T>(this IQueryable<T> source, string? filter)
     {
-        return source.Filter(filter, null);
-    }
-
-    private static IQueryable<T> Filter<T>(this IQueryable<T> source, string? filter, StringComparison? forceStringComparison)
-    {
         if(string.IsNullOrWhiteSpace(filter)) {
             return source;
         }
@@ -65,7 +65,8 @@ public static class QueryableExtensions {
         if(!description.FilterProperties.Any()) {
             return source;
         }
-        return source.WhereFilterConditions(description.FilterProperties.ToArray(), filter, forceStringComparison);
+        var comparison = (source as PartialQueryable<T>)?.ForceStringComparison;
+        return source.WhereFilterConditions(description.FilterProperties.ToArray(), filter, comparison);
     }
 
     /// <summary>
