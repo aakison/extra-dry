@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Sample.Server.Instructions;
 
@@ -74,6 +75,7 @@ namespace Sample.Server.Instructions;
 [ApiController]
 [ApiExplorerSettings(GroupName = ApiGroupNames.Instructions)]
 [SkipStatusCodePages]
+[Display(Order = 1)]
 public class FilteringController {
 
     public FilteringController()
@@ -84,6 +86,7 @@ public class FilteringController {
     /// <summary>
     /// Filterable list of all cars
     /// </summary>
+    /// <param name="filter">The entity specific text filter for the collection. Filter fields include any of [`Make`, `Model`, `Year`, `Market`, `Description`]</param>
     [HttpGet("sample-data/filter-cars"), Produces("application/json")]
     [AllowAnonymous]
     public async Task<FilteredCollection<Automobile>> ListFilteredAsync([FromQuery] string? filter)

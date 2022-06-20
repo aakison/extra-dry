@@ -38,7 +38,7 @@ public class QueryDocumentationOperationFilter : IOperationFilter {
             var sortParam = operation.Parameters.FirstOrDefault(e => e.Name == "Sort");
             if(sortParam != null) {
                 sortParam.Description += $" Sort field is one of [{sortable}]";
-                sortParam.Schema.Enum = ArrayOfString(modelDescription.FilterProperties.Select(e => e.ExternalName));
+                sortParam.Schema.Enum = ArrayOfString(modelDescription.SortProperties.Select(e => e.ExternalName));
             }
         }
     }

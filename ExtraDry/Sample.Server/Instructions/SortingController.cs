@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace Sample.Server.Instructions;
@@ -19,6 +20,7 @@ namespace Sample.Server.Instructions;
 [ApiController]
 [ApiExplorerSettings(GroupName = ApiGroupNames.Instructions)]
 [SkipStatusCodePages]
+[Display(Order = 2)]
 public class SortingController {
 
     public SortingController()
@@ -29,6 +31,8 @@ public class SortingController {
     /// <summary>
     /// Sortable list of all cars
     /// </summary>
+    /// <param name="sort">If the request would like sorted results, the name of the property to sort by.</param>
+    /// <param name="ascending">Indicates if the results are requested in ascending order by Sort.</param>
     [HttpGet("sample-data/sort-cars"), Produces("application/json")]
     [AllowAnonymous]
     public async Task<FilteredCollection<Automobile>> ListFilteredAsync([FromQuery] SortField? sort, bool ascending = false)

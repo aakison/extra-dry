@@ -158,6 +158,9 @@ public class PartialQueryable<T> : IPartialQueryable<T> {
                 items.Add(element);
             }
         }
+        else if(pagedQuery is IEnumerable<T> pagedSyncQuery) {
+            items.AddRange(pagedSyncQuery);
+        }
         else {
             throw new InvalidOperationException("");
         }

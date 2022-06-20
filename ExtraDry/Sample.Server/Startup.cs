@@ -44,7 +44,6 @@ namespace Sample.Server {
                 });
             services.AddRazorPages();
             services.AddSwaggerGen(openapi => {
-
                 openapi.SwaggerDoc(ApiGroupNames.Instructions, new OpenApiInfo {
                     Version = "v1",
                     Title = "Sample API Instructions",
@@ -74,6 +73,7 @@ namespace Sample.Server {
                 openapi.OperationFilter<SignatureImpliesStatusCodes>();
                 openapi.OperationFilter<BasicAuthOperationFilter>();
                 openapi.OperationFilter<QueryDocumentationOperationFilter>();
+                openapi.DocumentFilter<DisplayControllerDocumentFilter>();
             });
 
             services.AddAuthentication("WorthlessAuthentication")

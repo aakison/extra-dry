@@ -45,6 +45,15 @@ public class InstructionDataService {
             .ToFilteredCollectionAsync();
     }
 
+    public async Task<PagedCollection<Automobile>> ListAsync(PageQuery query)
+    {
+        return await automobiles
+            .AsQueryable()
+            .ForceStringComparison(StringComparison.OrdinalIgnoreCase)
+            .QueryWith(query)   
+            .ToPagedCollectionAsync();
+    }
+
     private readonly static List<Automobile> automobiles;
 
 }
