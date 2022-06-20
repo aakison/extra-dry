@@ -14,6 +14,8 @@ public class QueryDocumentationOperationFilter : IOperationFilter {
     {
         var takesFilter = context.MethodInfo.GetParameters()
             .Any(e => typeof(FilterQuery).IsAssignableFrom(e.ParameterType));
+        var takesToken = context.MethodInfo.GetParameters()
+            .Any(e => typeof(PageQuery).IsAssignableFrom(e.ParameterType));
         var returnType = context.MethodInfo.ReturnType;
         // Strip Task, List, ICollection, FilteredCollection, etc.
         while(returnType.IsGenericType) {
@@ -41,6 +43,9 @@ public class QueryDocumentationOperationFilter : IOperationFilter {
                 sortParam.Schema.Enum = ArrayOfString(modelDescription.SortProperties.Select(e => e.ExternalName));
             }
         }
+        if(takesToken) {
+            operation.Description += PagingDescription();
+        }
     }
 
     private static OpenApiArray ArrayOfString(IEnumerable<string> values)
@@ -52,33 +57,32 @@ public class QueryDocumentationOperationFilter : IOperationFilter {
         return openApiValues;
     }
 
+    private static string PagingDescription()
+    {
+        var description = $@"
+## Paging
+Paging is supported using the [standard paging rules](?urls.primaryName=Instructions).";
+        return description;
+    }
+
     private static string SortDescription(SortProperty[] sortProps)
     {
-        var sortableQuotedNames = sortProps.Select(e => $"  * `{e.ExternalName}`\r\n");
-        var sortable = string.Join("", sortableQuotedNames);
         var description = $@"
 ## Sorting
-The `sort` and `ascending` parameters allow for the sorting of the results before being returned.
-
-### Sortable Fields (endpoint specific)
-The sort parameter, if provided, is only valid for specific sortable fields, this is one of:
-{sortable}
-
-The ascending parameter may take the value `ascending` or `descending` to control order, if not provided then `ascending` is the default.
-";
+Sorting is supported using the [standard sorting rules](?urls.primaryName=Instructions).";
         return description;
     }
 
     private static string FilterDescription(FilterProperty[] filterProps)
     {
-        var description = "## Filtering\nThis endpoint supports filtering using the [standard filtering rules](?urls.primaryName=Instructions).  For performance reasons, not all fields are filterable, and string filters might be applied differently.  The filterable fields for this endpoint are: \n";
+        var description = "## Filtering\nFiltering is supported using the [standard filtering rules](?urls.primaryName=Instructions).  The filterable fields for this endpoint are: \n";
         foreach(var filterProp in filterProps) {
             description += $"  * `{filterProp.ExternalName}` ";
             if(filterProp.Property.PropertyType == typeof(string)) {
                 description += filterProp.Filter.Type switch {
                     FilterType.Contains => "string field matches term anywhere in string (contains)\r\n",
                     FilterType.StartsWith => "string field matches term at start of string (starts-with)\r\n",
-                    _ => "string field matches the entire term (equals)\r\n",
+                    _ => "string field that matches the entire term (equal-to)\r\n",
                 };
             }
             else if(filterProp.Property.PropertyType == typeof(DateTime)) {

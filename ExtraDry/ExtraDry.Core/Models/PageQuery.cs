@@ -12,13 +12,11 @@ public class PageQuery : FilterQuery {
 
     /// <summary>
     /// The requested number of records to take.  
-    /// Actual result might be less based on available records or endpoint limitations.
     /// </summary>
     public int Take { get; set; }
 
     /// <summary>
     /// The continuation token from the previous response.
-    /// When provided, this will override other options such as `Sort` and `Filter`, but not `Skip` and `Take`.
     /// </summary>
     public string? Token { get; set; }
 
