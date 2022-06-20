@@ -1,5 +1,4 @@
-﻿using ExtraDry.Core.Models;
-using ExtraDry.Server;
+﻿using ExtraDry.Server;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -78,7 +77,7 @@ namespace Sample.Server.Controllers;
 [ApiController]
 [ApiExplorerSettings(GroupName = ApiGroupNames.Instructions)]
 [SkipStatusCodePages]
-public class FilteringController : ControllerBase {
+public class FilteringController {
 
     public FilteringController()
     {
@@ -92,7 +91,7 @@ public class FilteringController : ControllerBase {
     [AllowAnonymous]
     public async Task<FilteredCollection<Automobile>> ListFilteredAsync([FromQuery] string? filter)
     {
-        var query = new FilterQuery() { Filter = filter };
+        var query = new FilterQuery(StringComparison.OrdinalIgnoreCase) { Filter = filter };
         return await sampleData.ListAsync(query);
     }
 
@@ -160,14 +159,14 @@ public class Automobile {
     /// </summary>
     /// <example>Toyota</example>
     [Filter(FilterType.Equals)]
-    public CaselessString Make { get; set; } = string.Empty;
+    public string Make { get; set; } = string.Empty;
 
     /// <summary>
     /// The model name of the car.
     /// </summary>
     /// <example>FJ Cruiser</example>
     [Filter(FilterType.StartsWith)]
-    public CaselessString Model { get; set; } = string.Empty;
+    public string Model { get; set; } = string.Empty;
 
     /// <summary>
     /// The year that the car was first introduced.
@@ -181,14 +180,14 @@ public class Automobile {
     /// </summary>
     /// <example>Japan and Australasia</example>
     [Filter(FilterType.Contains)]
-    public CaselessString Market { get; set; } = string.Empty;
+    public string Market { get; set; } = string.Empty;
 
     /// <summary>
     /// A description of the car, as sourced from Wikipedia.
     /// </summary>
     /// <example>Retro-styled body-on-frame mid-size SUV inspired by the Toyota FJ40.</example>
     [Filter(FilterType.Contains)]
-    public CaselessString Description { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
 
 }
 

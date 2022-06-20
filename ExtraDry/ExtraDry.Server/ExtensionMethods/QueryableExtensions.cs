@@ -42,7 +42,7 @@ public static class QueryableExtensions {
     /// <param name="filterQuery">A filter query that contains filtering and sorting information.</param>
     public static IQueryable<T> Filter<T>(this IQueryable<T> source, FilterQuery filterQuery)
     {
-        return source.Filter(filterQuery.Filter);
+        return source.Filter(filterQuery.Filter, filterQuery.ForceStringComparison);
     }
 
     /// <summary>
@@ -53,6 +53,11 @@ public static class QueryableExtensions {
     /// <param name="filter">A filter query that contains filtering information.</param>
     public static IQueryable<T> Filter<T>(this IQueryable<T> source, string? filter)
     {
+        return source.Filter(filter, null);
+    }
+
+    private static IQueryable<T> Filter<T>(this IQueryable<T> source, string? filter, StringComparison? forceStringComparison)
+    {
         if(string.IsNullOrWhiteSpace(filter)) {
             return source;
         }
@@ -60,7 +65,7 @@ public static class QueryableExtensions {
         if(!description.FilterProperties.Any()) {
             return source;
         }
-        return source.WhereFilterConditions(description.FilterProperties.ToArray(), filter);
+        return source.WhereFilterConditions(description.FilterProperties.ToArray(), filter, forceStringComparison);
     }
 
     /// <summary>

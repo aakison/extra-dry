@@ -1,4 +1,3 @@
-using ExtraDry.Core.Models;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -105,7 +104,7 @@ internal static class LinqBuilder {
     /// This builds a Conjunctive Normal Form (CNF) linq expression where each string in `matchValues` must exist in 
     /// at least one of the properties.  The exact comparison function is also determined by the properties' filter attribute.
     /// </remarks>
-    public static IQueryable<T> WhereFilterConditions<T>(this IQueryable<T> source, FilterProperty[] filterProperties, string filterQuery)
+    public static IQueryable<T> WhereFilterConditions<T>(this IQueryable<T> source, FilterProperty[] filterProperties, string filterQuery, StringComparison? forceStringComparison = null)
     {
         var param = Expression.Parameter(typeof(T), "e");
         var terms = new List<Expression>();
@@ -116,7 +115,7 @@ internal static class LinqBuilder {
                 var keywords = new List<Expression>();
                 foreach(var filterProperty in filterProperties) {
                     try {
-                        AddTerms(param, keywords, rule, filterProperty);
+                        AddTerms(param, keywords, rule, filterProperty, forceStringComparison);
                     }
                     catch {
                         // E.g. when "abc" is passed to an Int32, ignore when part of keyword/wildcard search.
@@ -138,7 +137,7 @@ internal static class LinqBuilder {
                     terms.Add(AllOf(fields));
                 }
                 else {
-                    AddTerms(param, terms, rule, property);
+                    AddTerms(param, terms, rule, property, forceStringComparison);
                 }
             }
             else {
@@ -153,10 +152,10 @@ internal static class LinqBuilder {
         return source;
     }
 
-    private static void AddTerms(ParameterExpression param, List<Expression> terms, FilterRule rule, FilterProperty property)
+    private static void AddTerms(ParameterExpression param, List<Expression> terms, FilterRule rule, FilterProperty property, StringComparison? forceStringComparison)
     {
-        if(property.Property.PropertyType == typeof(string) || property.Property.PropertyType == typeof(CaselessString)) {
-            var fields = rule.Values.Select(e => StringExpression(param, property.Property, property.Filter.Type, e)).ToArray();
+        if(property.Property.PropertyType == typeof(string)) {
+            var fields = rule.Values.Select(e => StringExpression(param, property.Property, property.Filter.Type, e, forceStringComparison)).ToArray();
             terms.Add(AnyOf(fields));
         }
         else {
@@ -231,26 +230,27 @@ internal static class LinqBuilder {
         }
     }
 
-    private static Expression StringExpression(ParameterExpression parameter, PropertyInfo propertyInfo, FilterType filterType, string value)
+    private static Expression StringExpression(ParameterExpression parameter, PropertyInfo propertyInfo, FilterType filterType, string value, StringComparison? forceStringComparison)
     {
         var property = Expression.Property(parameter, propertyInfo);
         var valueConstant = Expression.Constant(value);
-        MethodInfo method;
-        if(propertyInfo.PropertyType == typeof(CaselessString)) {
-            method = filterType switch {
-                FilterType.Contains => CaselessStringContainsMethod,
-                FilterType.StartsWith => CaselessStringStartsWithMethod,
-                _ => CaselessStringEqualsMethod,
+        if(forceStringComparison != null) {
+            var method = filterType switch {
+                FilterType.Contains => StringContainsWithComparisonMethod,
+                FilterType.StartsWith => StringStartsWithWithComparisonMethod,
+                _ => StringEqualsWithComparisonMethod,
             };
+            var ignoreConstant = Expression.Constant(forceStringComparison);
+            return Expression.Call(property, method, valueConstant, ignoreConstant);
         }
         else {
-            method = filterType switch {
+            var method = filterType switch {
                 FilterType.Contains => StringContainsMethod,
                 FilterType.StartsWith => StringStartsWithMethod,
                 _ => StringEqualsMethod,
             };
+            return Expression.Call(property, method, valueConstant);
         }
-        return Expression.Call(property, method, valueConstant);
     }
 
     private static MethodInfo StringContainsMethod => typeof(string).GetMethod(nameof(string.Contains), new[] { typeof(string) })!;
@@ -259,11 +259,11 @@ internal static class LinqBuilder {
 
     private static MethodInfo StringStartsWithMethod => typeof(string).GetMethod(nameof(string.StartsWith), new[] { typeof(string) })!;
 
-    private static MethodInfo CaselessStringContainsMethod => typeof(CaselessString).GetMethod(nameof(CaselessString.Contains), new[] { typeof(string) })!;
+    private static MethodInfo StringContainsWithComparisonMethod => typeof(string).GetMethod(nameof(string.Contains), new[] { typeof(string), typeof(StringComparison) })!;
 
-    private static MethodInfo CaselessStringEqualsMethod => typeof(CaselessString).GetMethod(nameof(CaselessString.Equals), new[] { typeof(string) })!;
+    private static MethodInfo StringEqualsWithComparisonMethod => typeof(string).GetMethod(nameof(string.Equals), new[] { typeof(string), typeof(StringComparison) })!;
 
-    private static MethodInfo CaselessStringStartsWithMethod => typeof(CaselessString).GetMethod(nameof(CaselessString.StartsWith), new[] { typeof(string) })!;
+    private static MethodInfo StringStartsWithWithComparisonMethod => typeof(string).GetMethod(nameof(string.StartsWith), new[] { typeof(string), typeof(StringComparison) })!;
 
     private enum OrderType {
         OrderBy,

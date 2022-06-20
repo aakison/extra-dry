@@ -12,8 +12,6 @@ public class QueryDocumentationOperationFilter : IOperationFilter {
     /// </summary>
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
-        AdjustCaselessStringSchema(context);
-
         var takesFilter = context.MethodInfo.GetParameters()
             .Any(e => typeof(FilterQuery).IsAssignableFrom(e.ParameterType));
         var returnType = context.MethodInfo.ReturnType;
@@ -44,17 +42,6 @@ public class QueryDocumentationOperationFilter : IOperationFilter {
             }
         }
     }
-
-    // If using operation filters, then examples will have a CaselessString class, make it appear as a regular string.
-    private static void AdjustCaselessStringSchema(OperationFilterContext context)
-    {
-        if(!adjusted) {
-            var caselessSchema = context.SchemaRepository.Schemas["CaselessString"];
-            caselessSchema.Type = "string";
-            adjusted = true;
-        }
-    }
-    private static bool adjusted = false;
 
     private static OpenApiArray ArrayOfString(IEnumerable<string> values)
     {

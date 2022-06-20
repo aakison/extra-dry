@@ -141,8 +141,8 @@ public class LinqBuilderFilterTests {
 
     private static FilterProperty GetFilterProperty<T>(string propertyName)
     {
-        var property = typeof(T).GetProperty(propertyName) ?? throw new ArgumentException(nameof(propertyName));
-        var filter = property.GetCustomAttribute<FilterAttribute>() ?? throw new ArgumentException(nameof(propertyName));
+        var property = typeof(T).GetProperty(propertyName) ?? throw new ArgumentException("Invalid argument", nameof(propertyName));
+        var filter = property.GetCustomAttribute<FilterAttribute>() ?? throw new ArgumentException("Invalid argument", nameof(propertyName));
         return new FilterProperty(property, filter);
     }
 
