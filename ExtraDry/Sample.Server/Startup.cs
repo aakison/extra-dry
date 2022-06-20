@@ -44,7 +44,12 @@ namespace Sample.Server {
                 });
             services.AddRazorPages();
             services.AddSwaggerGen(openapi => {
-                
+
+                openapi.SwaggerDoc(ApiGroupNames.Instructions, new OpenApiInfo {
+                    Version = "v1",
+                    Title = "Sample API Instructions",
+                    Description = @"A sample API for Blazor.ExtraDry _test_, and *test*.",
+                });
                 openapi.SwaggerDoc(ApiGroupNames.SampleApi, new OpenApiInfo {
                     Version = "v1",
                     Title = "Sample APIs",
@@ -122,13 +127,14 @@ namespace Sample.Server {
             app.UseHttpsRedirection();
             app.UseSwagger();
             app.UseSwaggerUI(c => {
-                //c.RoutePrefix
+                c.SwaggerEndpoint($"/swagger/{ApiGroupNames.Instructions}/swagger.json", "Instructions");
                 c.SwaggerEndpoint($"/swagger/{ApiGroupNames.SampleApi}/swagger.json", "Sample APIs");
                 c.SwaggerEndpoint($"/swagger/{ApiGroupNames.ReferenceCodes}/swagger.json", "Reference Codes");
                 c.InjectStylesheet("/css/swagger-ui-extensions.css");
                 c.InjectJavascript("/js/swagger-ui-extensions.js");
                 c.DocumentTitle = "Sample Blazor.ExtraDry APIs";
                 c.EnableTryItOutByDefault();
+                c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List);
             });
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();

@@ -1,3 +1,4 @@
+using ExtraDry.Core.Models;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -154,7 +155,7 @@ internal static class LinqBuilder {
 
     private static void AddTerms(ParameterExpression param, List<Expression> terms, FilterRule rule, FilterProperty property)
     {
-        if(property.Property.PropertyType == typeof(string)) {
+        if(property.Property.PropertyType == typeof(string) || property.Property.PropertyType == typeof(CaselessString)) {
             var fields = rule.Values.Select(e => StringExpression(param, property.Property, property.Filter.Type, e)).ToArray();
             terms.Add(AnyOf(fields));
         }
@@ -234,11 +235,21 @@ internal static class LinqBuilder {
     {
         var property = Expression.Property(parameter, propertyInfo);
         var valueConstant = Expression.Constant(value);
-        var method = filterType switch {
-            FilterType.Contains => StringContainsMethod,
-            FilterType.StartsWith => StringStartsWithMethod,
-            _ => StringEqualsMethod,
-        };
+        MethodInfo method;
+        if(propertyInfo.PropertyType == typeof(CaselessString)) {
+            method = filterType switch {
+                FilterType.Contains => CaselessStringContainsMethod,
+                FilterType.StartsWith => CaselessStringStartsWithMethod,
+                _ => CaselessStringEqualsMethod,
+            };
+        }
+        else {
+            method = filterType switch {
+                FilterType.Contains => StringContainsMethod,
+                FilterType.StartsWith => StringStartsWithMethod,
+                _ => StringEqualsMethod,
+            };
+        }
         return Expression.Call(property, method, valueConstant);
     }
 
@@ -248,6 +259,12 @@ internal static class LinqBuilder {
 
     private static MethodInfo StringStartsWithMethod => typeof(string).GetMethod(nameof(string.StartsWith), new[] { typeof(string) })!;
 
+    private static MethodInfo CaselessStringContainsMethod => typeof(CaselessString).GetMethod(nameof(CaselessString.Contains), new[] { typeof(string) })!;
+
+    private static MethodInfo CaselessStringEqualsMethod => typeof(CaselessString).GetMethod(nameof(CaselessString.Equals), new[] { typeof(string) })!;
+
+    private static MethodInfo CaselessStringStartsWithMethod => typeof(CaselessString).GetMethod(nameof(CaselessString.StartsWith), new[] { typeof(string) })!;
+
     private enum OrderType {
         OrderBy,
         ThenBy,
@@ -255,6 +272,7 @@ internal static class LinqBuilder {
         ThenByDescending,
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum EqualityType {
         GreaterThan,
         EqualTo,

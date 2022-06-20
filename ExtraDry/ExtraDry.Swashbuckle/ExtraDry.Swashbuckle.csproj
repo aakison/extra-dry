@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
 		<Authors>adrian.akison</Authors>
 		<Company>FMI Works</Company>
 		<Description>Extensions to Blazor and DRY libraries to create Blazor client/server applications with a lower-code footprint.  Use this Swashbuckle library to efficiently extend the documentation capabilities of Swashbuckle for building OpenAPI interfaces.</Description>
