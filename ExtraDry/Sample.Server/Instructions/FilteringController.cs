@@ -61,7 +61,7 @@ namespace Sample.Server.Instructions;
 /// * `items` - an array of entities, serialization varies by endpoint. 
 /// 
 /// ### Try It Out
-/// Use the endpoint below to test some filters against a sample database of car make and models - no authentication required.
+/// Use the endpoint below to test some filters against a sample database of car make and models - no authentication required.  All fields in this example are 'filterable fields'.
 /// Try the following:
 /// * *blank* - get a full list of all cars, no filter applied.
 /// * `Toyota` - get a list of vehicles that reference 'Toyota'.
