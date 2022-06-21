@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 
-namespace Sample.Server.Instructions;
+namespace Sample.Swashbuckle.Instructions;
 
 /// <summary>
 /// This API is exposed using the OpenAPI 3.0 specification.  This provides a rigorous and discoverable set of APIs which can be easily consumed by humans, as well as by machines that make service access layers for application.
@@ -45,7 +43,7 @@ namespace Sample.Server.Instructions;
 /// Where possible, these instructions also contain live samples to demonstrate these concepts.  For example, if this all feels too much, why not start with this affirmation:
 /// </summary>
 [ApiController]
-[ApiExplorerSettings(GroupName = ApiGroupNames.Instructions)]
+[ApiExplorerSettings(GroupName = SwaggerOptionsExtensions.GroupName)]
 [SkipStatusCodePages]
 [Display(Name = "Getting Started", Order = 1)]
 public class GettingStartedController {
@@ -60,7 +58,7 @@ public class GettingStartedController {
     /// </summary>
     [HttpGet("sample-data/transient-affirmation"), Produces("application/json")]
     [AllowAnonymous]
-    public AffirmationContainer GetAffirmation()
+    public AffirmationContainer RetrieveAffirmation()
     {
         return new AffirmationContainer { Affirmation = sampleData.RandomAffirmation() };
     }

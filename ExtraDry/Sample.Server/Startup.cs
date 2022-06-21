@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Sample.Data;
-using Sample.Server.Instructions;
 using Sample.Server.Security;
 using System.Text.Json.Serialization;
 
@@ -45,11 +44,7 @@ namespace Sample.Server {
                 });
             services.AddRazorPages();
             services.AddSwaggerGen(openapi => {
-                openapi.SwaggerDoc(ApiGroupNames.Instructions, new OpenApiInfo {
-                    Version = "v1",
-                    Title = "Sample API Instructions",
-                    Description = "The Sample API provides consistent access to services available on this system.",
-                });
+                openapi.AddExtraDry();
                 openapi.SwaggerDoc(ApiGroupNames.SampleApi, new OpenApiInfo {
                     Version = "v1",
                     Title = "Sample APIs",
@@ -60,7 +55,7 @@ namespace Sample.Server {
                     Title = "Reference Codes",
                     Description = @"A sample API for Blazor.ExtraDry",
                 });
-                foreach(var docfile in new string[] { "Sample.Shared.xml", "Sample.Server.xml", "ExtraDry.Core.Xml" }) {
+                foreach(var docfile in new string[] { "Sample.Shared.xml", "Sample.Server.xml" }) {
                     var webAppXml = Path.Combine(AppContext.BaseDirectory, docfile);
                     openapi.IncludeXmlComments(webAppXml, includeControllerXmlComments: true);
                 }
@@ -71,10 +66,7 @@ namespace Sample.Server {
                     Type = SecuritySchemeType.Http,
                     Scheme = "basic",
                 });
-                openapi.OperationFilter<SignatureImpliesStatusCodes>();
                 openapi.OperationFilter<BasicAuthOperationFilter>();
-                openapi.OperationFilter<QueryDocumentationOperationFilter>();
-                openapi.DocumentFilter<DisplayControllerDocumentFilter>();
             });
 
             services.AddAuthentication("WorthlessAuthentication")
@@ -127,15 +119,13 @@ namespace Sample.Server {
 
             app.UseHttpsRedirection();
             app.UseSwagger();
-            app.UseSwaggerUI(c => {
-                c.SwaggerEndpoint($"/swagger/{ApiGroupNames.Instructions}/swagger.json", "Instructions");
-                c.SwaggerEndpoint($"/swagger/{ApiGroupNames.SampleApi}/swagger.json", "Sample APIs");
-                c.SwaggerEndpoint($"/swagger/{ApiGroupNames.ReferenceCodes}/swagger.json", "Reference Codes");
-                c.InjectStylesheet("/css/swagger-ui-extensions.css");
-                c.InjectJavascript("/js/swagger-ui-extensions.js");
-                c.DocumentTitle = "Sample Blazor.ExtraDry APIs";
-                c.EnableTryItOutByDefault();
-                c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List);
+            app.UseSwaggerUI(swagger => {
+                swagger.AddExtraDry();
+                swagger.SwaggerEndpoint($"/swagger/{ApiGroupNames.SampleApi}/swagger.json", "Sample APIs");
+                swagger.SwaggerEndpoint($"/swagger/{ApiGroupNames.ReferenceCodes}/swagger.json", "Reference Codes");
+                swagger.InjectStylesheet("/css/swagger-ui-extensions.css");
+                swagger.InjectJavascript("/js/swagger-ui-extensions.js");
+                swagger.DocumentTitle = "Sample Blazor.ExtraDry APIs";
             });
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();

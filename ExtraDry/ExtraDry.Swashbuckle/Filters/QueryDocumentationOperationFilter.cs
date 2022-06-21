@@ -69,8 +69,15 @@ Paging is supported using the [standard paging rules](?urls.primaryName=Instruct
     {
         var description = $@"
 ## Sorting
-Sorting is supported using the [standard sorting rules](?urls.primaryName=Instructions).";
+Sorting is supported using the [standard sorting rules](?urls.primaryName=Instructions).  The sortable fields for this endpoint are [{DisplaySortProps()}]";
+
+        if(!sortProps.Any()) {
+            description = "##### This endpoint does not support sorting.  Fix [Sort] attribute on sortable fields.";
+        }
+
         return description;
+
+        string DisplaySortProps() => string.Join(", ", sortProps.Select(e => $"`{e.ExternalName}`"));
     }
 
     private static string FilterDescription(FilterProperty[] filterProps)

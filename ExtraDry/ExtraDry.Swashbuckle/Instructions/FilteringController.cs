@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 
-namespace Sample.Server.Instructions;
+namespace Sample.Swashbuckle.Instructions;
 
 /// <summary>
-/// Most API endpoints have the ability to list entities.  When provided, these list methods accept a `filter` query parameter, allowing for filtering to only a subset of entities.
+/// Most API endpoints have the ability to list entities.  When provided, these list methods accept a `filter` query parameter, allowing for filtering results to a subset of entities.
 /// 
 /// The `filter` parameter allows for both simple and advanced filtering scenarios against a pre-defined set of fields.  The simple version of the filters are suitable for filters that might be seen by average users.  While the advanced filters start to look more complex than users prefer.  The advanced options, however, are suitable for constructing filter view for users with multiple UI controls.
 /// 
@@ -24,13 +22,13 @@ namespace Sample.Server.Instructions;
 /// * `"Toyota Corolla" "Honda Civic"` - returns all matches of 'Toyota Corolla' _or_ 'Honda Civic' on any filterable fields.
 /// 
 /// ### Advanced Filters
-/// Using advanced filters, it is also possible to specify specific fields for filter terms.  Simply provide the field name and a colon before the filter term.
+/// Using advanced filters, it is also possible to specify fields for filter terms.  Simply provide the field name and a colon before the filter term.
 /// For example:
 /// 
 /// * `make:Toyota model:Corolla` - returns all matches of 'Toyota' in the 'make' field _and_ 'Corolla' in the 'model' field.
-/// * `make:Toyota model:""FJ Cruiser""` - returns all matches of 'Toyota' in the 'make' field _and_ 'FJ Cruiser' in the 'model' field, note the use of quotes because of the space in the name 'FJ Cruiser'. 
+/// * `make:Toyota model:"FJ Cruiser"` - returns all matches of 'Toyota' in the 'make' field _and_ 'FJ Cruiser' in the 'model' field, note the use of quotes because of the space in the name 'FJ Cruiser'. 
 /// 
-/// Advanced filters can also specify a list of alternate values.  This can be done by either listing the field multiple times or by separating the terms using a pipe '|' character.  
+/// Advanced filters can also specify a list of alternate values.  This can be done two ways.  Either listing the field multiple times or by separating the terms using a pipe '|' character.  
 /// 
 /// For example, all of the following are equivalent and will return all matches of 'Corolla' in the 'model' field union with all matches of 'Prado' in the 'model' field.
 /// 
@@ -38,6 +36,14 @@ namespace Sample.Server.Instructions;
 /// * `model:"Corolla" model:"Prado"`
 /// * `model:Corolla|Prado`
 /// * `model:"Corolla"|"Prado"`
+/// 
+/// ### String Constraints
+/// When searching fields for string values, the API will decide which matching logic to apply.  This will be one of the following:
+/// * Match the full field only (equal-to) - This will only match if the text requested matches the entity exactly.  This is common for status fields. E.g. a search for 'active' should not match a status of 'inactive'.
+/// * Match the beginning of the field (starts-with) - Will match any string that begins with the text requested.  Less common, this can be used effectively for surnames.
+/// * Match anywhere within the field (contains) - Will match any part of the string.  This is common for searching in titles and descriptions but is also offers the lowest performance.
+/// 
+/// When calling the API, you cannot request a constraint type.  Instead, each API is pre-configured to treat each field with the appropriate constraint.  This ensures requests remain simple and provide expected results.  The filter documentation for each endpoint describes which constraint is applied to which field.
 /// 
 /// ### Range Filters
 /// Number and DateTime filterable fields also support ranges.
@@ -52,7 +58,7 @@ namespace Sample.Server.Instructions;
 /// * `age:(,18)` - Any age below 18.
 /// 
 /// ### Filterable Fields
-/// Each of the above examples only works on 'filterable fields'.  For performance reasons, not all fields are filterable.  Each endpoint will list the fields that can be filtered on.  Additionally, string filters might be applied differently depending on the content of the filter field. Strings may match either the whole string (equality), the start of the string (starts-with), or anywhere in the string (contains).  
+/// For performance reasons, not all fields are filterable.  So each of the above examples only works on 'filterable fields'.  Individual endpoints will list the fields that can be filtered on.  
 ///
 /// ### Response Body
 /// The response body is a container of both items and metadata about the request.  In particular, it contains:
@@ -73,7 +79,7 @@ namespace Sample.Server.Instructions;
 /// * Look at the JSON produced and mix and match, all automobile fields are filterable.
 /// </summary>
 [ApiController]
-[ApiExplorerSettings(GroupName = ApiGroupNames.Instructions)]
+[ApiExplorerSettings(GroupName = SwaggerOptionsExtensions.GroupName)]
 [SkipStatusCodePages]
 [Display(Order = 2)]
 public class FilteringController {

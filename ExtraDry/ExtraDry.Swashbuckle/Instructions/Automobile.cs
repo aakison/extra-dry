@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-
-namespace Sample.Server.Instructions;
+﻿namespace Sample.Swashbuckle.Instructions;
 
 /// <summary>
 /// A sample class used for demonstrating the common features of APIs.

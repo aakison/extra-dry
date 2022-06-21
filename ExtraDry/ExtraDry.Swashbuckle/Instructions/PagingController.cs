@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 
-namespace Sample.Server.Instructions;
+namespace Sample.Swashbuckle.Instructions;
 
 /// <summary>
 /// When listing entities, sometimes the number of entities returned is too large for a single API call.  This could be because of size limits.  It could also be because of user constraints.  Regardless, when APIs may return large sets, they'll usually have a paging mechanism.  
@@ -48,7 +45,7 @@ namespace Sample.Server.Instructions;
 /// Use the endpoint below to test some paging against a sample database of car make and models - no authentication required.  The sample set is small, so the server limits the maximum `take` size to 10 records.
 /// </summary>
 [ApiController]
-[ApiExplorerSettings(GroupName = ApiGroupNames.Instructions)]
+[ApiExplorerSettings(GroupName = SwaggerOptionsExtensions.GroupName)]
 [SkipStatusCodePages]
 [Display(Name = "Paging and Tokens", Order = 4)]
 public class PagingController {

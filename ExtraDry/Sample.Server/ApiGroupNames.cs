@@ -9,7 +9,5 @@ public static class ApiGroupNames {
 
     public const string ReferenceCodes = "reference-codes";
 
-    public const string Instructions = "instructions";
-
 }
 

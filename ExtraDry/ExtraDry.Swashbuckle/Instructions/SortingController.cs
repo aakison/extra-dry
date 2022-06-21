@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace Sample.Server.Instructions;
+namespace Sample.Swashbuckle.Instructions;
 
 /// <summary>
 /// When listing entities, the common query mechanism also allows for sorted output.  These list methods accept a `sort` query parameter, allowing for a field to be selected to order the results.  Additionally, results can either be sorted ascending or descending using the `ascending` query parameter. 
@@ -18,7 +18,7 @@ namespace Sample.Server.Instructions;
 /// Use the endpoint below to test some sorting against a sample database of car make and models - no authentication required.  All fields in this example are 'sortable fields'.
 /// </summary>
 [ApiController]
-[ApiExplorerSettings(GroupName = ApiGroupNames.Instructions)]
+[ApiExplorerSettings(GroupName = SwaggerOptionsExtensions.GroupName)]
 [SkipStatusCodePages]
 [Display(Order = 3)]
 public class SortingController {
