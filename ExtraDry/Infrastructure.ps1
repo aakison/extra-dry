@@ -6,144 +6,8 @@
 
 $env = "dev"
 
-$configuration = @"
-{
-    "subscription" : {
-        "name" : "YellowJacket"
-    },
-    "location" : "centralus",
-    "group" : {
-        "name" : "sample-$env"
-    },
-    "keyVault" : {
-        "name" : "sample-$env-keyvault",
-        "secrets" : [
-            {
-                "name" : "sample-$env-dbms-username",
-                "contents" : "username",
-                "default" : "sample-dbms-admin"
-            },
-            {
-                "name" : "sample-$env-dbms-password",
-                "contents" : "password",
-                "default" : "{Generate-Password 30}"
-            },
-            {
-                "name" : "sample-$env-database-username",
-                "contents" : "username",
-                "default" : "sample-database-agent"
-            },
-            {
-                "name" : "sample-$env-database-password",
-                "contents" : "password",
-                "default" : "{Generate-Password 30}"
-            },
-            {
-                "name" : "sample-$env-warehouse-username",
-                "contents" : "username",
-                "default" : "sample-warehouse-agent"
-            },
-            {
-                "name" : "sample-$env-warehouse-password",
-                "contents" : "password",
-                "default" : "{Generate-Password 30}"
-            }
-        ]
-    },
-    "storageAccounts" : [
-        {
-            "name" : "sample-$env-webjobs"
-        }
-    ],
-    "dbms" : {
-        "name" : "sample-$env-dbms",
-        "username" : '{Get-Secret "sample-$env-dbms-username"}',
-        "password" : '{Get-Secret "sample-$env-dbms-password"}',
-        "users" : [
-            {
-                "name" : "sample-database-agent",
-                "password" : '{Get-Secret "sample-$env-database-password"}'
-            },
-            {
-                "name" : "sample-warehouse-agent",
-                "password" : '{Get-Secret "sample-$env-warehouse-password"}'
-            }            
-        ],
-        "firewall" : [
-            {
-                "name" : "AllowAllWindowsAzureIps",
-                "value" : "0.0.0.0"
-            },
-            {
-                "name" : "My Creator's IP",
-                "value" : "Get-LocalIPAddress()"
-            }
-        ],
-        databases : [
-            {
-                "name" : "sample-$env-database",
-                "users" : [
-                    {
-                        "username" : "sample-database-agent",
-                        "roles" : [ "db_datareader", "db_datawriter", "db_executor" ]
-                    },
-                    {
-                        "username" : "sample-warehouse-agent",
-                        "roles" : [ "db_datareader" ]
-                    }
-                ]
-            },
-            {
-                "name" : "sample-$env-warehouse",
-                "users" : [
-                    {
-                        "username" : "sample-database-agent",
-                        "roles" : [ "db_datareader" ]
-                    },
-                    {
-                        "username" : "sample-warehouse-agent",
-                        "roles" : [ "db_datareader", "db_datawriter", "db_executor" ]
-                    }
-                ]
-            }
-        ]
-    },
-    "appServicePlan" : {
-        "name" : "YellowJacketWebShared",
-        "group" : "YellowJacketWebDev",
-        "appService" : {
-            "name" : "sample-$env-web",
-            "connectionStrings" : [
-                {
-                    "name" : "AzureWebJobsStorage",
-                    "value" : '{Get-StorageConnectionString "sample-$env-webjobs"}'
-                },
-                {
-                    "name" : "AzureWebJobsDashboard",
-                    "value" : '{Get-StorageConnectionString "sample-$env-webjobs"}'
-                },
-                {
-                    "name" : "OltpDatabase",
-                    "type" : "SqlServer",
-                    "value" : '{Get-SqlConnectionString "sample-$env-database" "sample-$env-database-username" "sample-$env-database-password"}'
-                },
-                {
-                    "name" : "OlapDatabase",
-                    "type" : "SqlServer",
-                    "value" : '{Get-SqlConnectionString "sample-$env-warehouse" "sample-$env-database-username" "sample-$env-database-password"}'
-                }
-            ],
-            "environmentVariables" : [
-                {
-                    "name" : "asdf",
-                    "value" : "asdf"
-                }
-            ]
-        }
-    }
-}
-"@ | ConvertFrom-Json
-
+$json = Get-Content infrastructure.json
+$configuration = $json | convertFrom-Json 
 
 #
 # Helper Functions
@@ -168,24 +32,30 @@ function Get-LocalIPAddress() {
 }
 
 function Get-Secret($name) {
+    $eName = Expand-Variable $name
     foreach($secret in $configuration.keyVault.secrets) {
-        if($secret.name -eq $name) {
+        $eSecretName = Expand-Variable $secret.name
+        if($eSecretName -eq $eName) {
             $secret.value
         }
     }
 }
 
 function Get-StorageConnectionString($name) {
+    $eName = Expand-Variable $name
     foreach($storage in $configuration.storageAccounts) {
-        if($storage.name -eq $name) {
+        $eStorageName = Expand-Variable $storage.name
+        if($eStorageName -eq $eName) {
             $storage.connectionString
         }
     }
 }
 
 function Get-ConnectionStringTemplate($serverName) {
+    $eServerName = Expand-Variable $serverName
     foreach($database in $configuration.dbms.databases) {
-        if($database.name -eq $serverName) {
+        $eDatabaseName = Expand-Variable $database.name
+        if($eDatabaseName -eq $eServerName) {
             $database.connectionString
         }
     }
@@ -201,6 +71,10 @@ function Get-SqlConnectionString($serverName, $usernameKey, $passwordKey) {
 function Expand-Variable($value) {
     if($value.EndsWith("}")) {
         $expr = $value.Trim("{}")
+        $value = Invoke-Expression $expr
+    }
+    elseif($value.Contains("`$")) {
+        $expr = "`"$value`""
         $value = Invoke-Expression $expr
     }
     $value
@@ -231,7 +105,7 @@ function Configure-Subscription() {
 }
 
 function Configure-Group() {
-    $name = $configuration.group.name
+    $name = Expand-Variable $configuration.group.name
     Log-Output "Configuring Resource Group '$name'"
     $result = az group show --name $name 2>&1
     if($result[0].ToString().Contains("ResourceGroupNotFound")) {
@@ -246,14 +120,14 @@ function Configure-Group() {
 }
 
 function Configure-KeyVault() {
-    $vault = $configuration.keyVault.name
+    $vault = Expand-Variable $configuration.keyVault.name
     Log-Output "Configuring Key Vault '$vault'"
 
     $result = az keyvault show --name $vault 2>&1
     if($result.ToString().Contains("not found")) {
         Log-Output "  Vault not found, creating..."
-        $location = $configuration.location
-        $group = $configuration.group.name
+        $location = Expand-Variable $configuration.location
+        $group = Expand-Variable $configuration.group.name
         $result = az keyvault create --location $location --resource-group $group --name $vault | ConvertFrom-Json
     }
     else {
@@ -263,13 +137,13 @@ function Configure-KeyVault() {
     Add-Member -InputObject $configuration.keyVault -NotePropertyName az -NotePropertyValue $result
 
     foreach($secret in $configuration.keyVault.secrets) {
-        $name = $secret.name
+        $name = Expand-Variable $secret.name
         Log-Output "    Syncing secret '$name'"
         $result = az keyvault secret show --vault-name $vault --name $name 2>&1
         if($result.ToString().Contains("SecretNotFound")) {
             Log-Output "      Secret not found, creating..."
-            $value = Expand-Variable($secret.default)
-            $contents = $secret.contents
+            $value = Expand-Variable $secret.default
+            $contents = Expand-Variable $secret.contents
             $newSecret = az keyvault secret set --vault-name $vault --name $name --value $value --description $contents | ConvertFrom-Json
             Add-Member -InputObject $secret -NotePropertyName az -NotePropertyValue $newSecret
             Add-Member -InputObject $secret -NotePropertyName value -NotePropertyValue $newSecret.value
@@ -285,9 +159,9 @@ function Configure-KeyVault() {
 
 function Configure-Storage() {
     Log-Output "Configuring Storage Accounts"
-    $group = $configuration.group.name
+    $group = Expand-Variable $configuration.group.name
     foreach($account in $configuration.storageAccounts) {
-        $name = $account.name.Replace("-", "") # kebab case not allowed.
+        $name = (Expand-Variable $account.name).Replace("-", "") # kebab case not allowed.
         Log-Output "  Configuring Storage Account '$name'"
         $result = $azureStorage = az storage account show --name $name 2>&1
         if($result.ToString().Contains("not found")) {
@@ -358,8 +232,9 @@ function Invoke-Sql($server, $database, $sql) {
 }
 
 function Configure-SqlServer() {
-    $name = $configuration.dbms.name.ToLower()
+    $name = (Expand-Variable $configuration.dbms.name).ToLower()
     $group = if($configuration.dbms.group) { $configuration.dbms.group } else { $configuration.group.name }
+    $group = Expand-Variable $group
     $location = $configuration.location
     $username = Expand-Variable $configuration.dbms.username
     $password = Expand-Variable $configuration.dbms.password
@@ -380,10 +255,10 @@ function Configure-SqlServer() {
     Add-Member -InputObject $configuration.dbms -NotePropertyName az -NotePropertyValue $result
 
     foreach($rule in $configuration.dbms.firewall) {
-        $ruleName = $rule.name
+        $ruleName = Expand-Variable $rule.name
         Log-Output "    Syncing firewall rule '$ruleName'"
         $result = az sql server firewall-rule show --resource-group $group --server $name --name $ruleName 2>&1
-        $value = Expand-Variable($rule.value)
+        $value = Expand-Variable $rule.value
         if($result[0].ToString().Contains("ResourceNotFound")) {
             Log-Output "      No firewall rule found, creating..."
             $result = az sql server firewall-rule create --resource-group $group --server $name --name $ruleName --start-ip-address $value --end-ip-address $value | ConvertFrom-Json
@@ -396,7 +271,7 @@ function Configure-SqlServer() {
     }
 
     foreach($user in $configuration.dbms.users) {
-        $username = $user.name
+        $username = Expand-Variable $user.name
         $password = Expand-Variable $user.password
         $sql = Get-CreateUserSql $username $password
         Log-Output "    Creating user '$username'... (updating password if already exists)"
@@ -405,10 +280,11 @@ function Configure-SqlServer() {
 }
 
 function Configure-SqlDatabases() {
-    $serverName = $configuration.dbms.name
+    $serverName = Expand-Variable $configuration.dbms.name
     foreach($database in $configuration.dbms.databases) {
-        $name = $database.name
+        $name = Expand-Variable $database.name
         $group = if($database.group) { $database.group } else { $configuration.group.name }
+        $group = Expand-Variable $group
         Log-Output "Configuring SQL Database '$name'"
         $result = az sql db show --resource-group $group --server $serverName --name $name 2>&1
         if($result[0].ToString().Contains("ResourceNotFound")) {
@@ -442,8 +318,9 @@ function Configure-SqlDatabases() {
 
 function Configure-AppServicePlan() {
     Log-Output "Configuring AppServicePlan"
-    $name = $configuration.appServicePlan.name
+    $name = Expand-Variable $configuration.appServicePlan.name
     $group = if($configuration.appServicePlan.group) { $configuration.appServicePlan.group } else { $configuration.group.name }
+    $group = Expand-Variable $group
     $result = az appservice plan show --resource-group $group --name $name 2>&1
     if($result.ToString().Contains("ResourceNotFound")) {
         Log-Output "  App service plan '$name ($group)' not found"
@@ -470,9 +347,9 @@ function Set-EnvironmentVariable($group, $name, $key, $value) {
 }
 
 function Configure-AppService() {
-    $name = $configuration.appServicePlan.appService.name
+    $name = Expand-Variable $configuration.appServicePlan.appService.name
     Log-Output "Configuring AppService '$name'"
-    $group = $configuration.group.name
+    $group = Expand-Variable $configuration.group.name
     $result = az webapp show --resource-group $group --name $name 2>&1
     if($result[0].ToString().Contains("ResourceNotFound")) {
         Log-Output "  App service not found, creating..."
@@ -485,9 +362,9 @@ function Configure-AppService() {
     Add-Member -InputObject $configuration.appServicePlan.appService -NotePropertyName az -NotePropertyValue $result
 
     foreach($connectionString in $configuration.appServicePlan.appService.connectionStrings) {
-        $key = $connectionString.name
-        $type = if($connectionString.type) { $connectionString.type } else { "Custom" }
-        $value = Expand-Variable($connectionString.value)
+        $key = Expand-Variable $connectionString.name
+        $type = Expand-Variable if($connectionString.type) { $connectionString.type } else { "Custom" }
+        $value = Expand-Variable $connectionString.value
 
         Log-Output "    Setting connection string '$key'"
         $result = Set-ConnectionString $group $name $type $key $value
@@ -495,8 +372,8 @@ function Configure-AppService() {
     }
 
     foreach($environmentVariable in $configuration.appServicePlan.appService.environmentVariables) {
-        $key = $environmentVariable.name
-        $value = Expand-Variable($environmentVariable.value)
+        $key = Expand-Variable $environmentVariable.name
+        $value = Expand-Variable $environmentVariable.value
 
         Log-Output "    Setting environment variable '$key'"
         $result = Set-EnvironmentVariable $group $name $key $value
