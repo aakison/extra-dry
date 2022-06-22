@@ -1,7 +1,5 @@
 ﻿using ExtraDry.Blazor.Internal;
-using ExtraDry.Core;
 using System.Collections;
-using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Reflection;
 
@@ -205,7 +203,9 @@ public class PropertyDescription {
         foreach(var value in enumValues) {
             var memberInfo = Property.PropertyType.GetMember(value.ToString()).First();
             var valueDescription = new ValueDescription(value, memberInfo);
-            values.Add(valueDescription);
+            if(valueDescription.AutoGenerate) {
+                values.Add(valueDescription);
+            }
         }
         return values;
     }

@@ -13,8 +13,7 @@ public class ValueDescription {
 
         var display = memberInfo.GetCustomAttribute<DisplayAttribute>();
         Display = display?.Name ?? memberInfo.Name; // TODO: Format display name with global title case converter.
-
-
+        AutoGenerate = display?.GetAutoGenerateField() ?? true;
     }
 
     public object Key { get; set; }
@@ -23,5 +22,8 @@ public class ValueDescription {
 
     public string? Image { get; set; }
 
-
+    /// <summary>
+    /// Indicates if the value should be in generated structures such as dropdown filter lists.
+    /// </summary>
+    public bool AutoGenerate { get; set; }
 }

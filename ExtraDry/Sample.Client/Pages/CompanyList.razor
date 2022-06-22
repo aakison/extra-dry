@@ -21,9 +21,6 @@
     [Command(CommandContext.Alternate, Icon = "edit")]
     public void Edit(Company company)
     {
-        Console.WriteLine($"Huzzah {company.Uuid}");
-        //CompanyUuid = company.Uuid;
-        //StateHasChanged();
         Navigation.NavigateTo($"/companies/{company.Uuid}");
     }
 

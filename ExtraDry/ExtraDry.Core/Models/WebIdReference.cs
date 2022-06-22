@@ -1,36 +1,30 @@
-﻿#nullable enable
+﻿using System.Text.RegularExpressions;
 
-using System;
-using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
+namespace ExtraDry.Core;
 
-namespace ExtraDry.Core {
+/// <summary>
+/// A simple container for holding a Web Identifier (WebID) that is safe for use URI paths, such as returned from a Create method.
+/// </summary>
+public class WebIdReference {
 
     /// <summary>
-    /// A simple container for holding a Web Identifier (WebID) that is safe for use URI paths, such as returned from a Create method.
+    /// Create with mandatory UUID.
     /// </summary>
-    public class WebIdReference {
-
-        /// <summary>
-        /// Create with mandatory UUID.
-        /// </summary>
-        public WebIdReference(string webId)
-        {
-            if(!validWebId.IsMatch(webId)) {
-                throw new ArgumentException("When creating a WebId, only characters allowed in a URL path are allowed.");
-            }
-            WebId = webId;
+    public WebIdReference(string webId)
+    {
+        if(!validWebId.IsMatch(webId)) {
+            throw new ArgumentException("When creating a WebId, only characters allowed in a URL path are allowed.");
         }
-
-        /// <summary>
-        /// The universally unique identifier.
-        /// </summary>
-        [JsonPropertyName("id")]
-        public string WebId { get; }
-
-        // Only allow safe characters, following RFC3986
-        private static readonly Regex validWebId = new Regex(WebIdAttribute.WebIdRegex, RegexOptions.Compiled);
-
+        WebId = webId;
     }
+
+    /// <summary>
+    /// The universally unique identifier.
+    /// </summary>
+    [JsonPropertyName("id")]
+    public string WebId { get; }
+
+    // Only allow safe characters, following RFC3986
+    private static readonly Regex validWebId = new Regex(WebIdAttribute.WebIdRegex, RegexOptions.Compiled);
 
 }

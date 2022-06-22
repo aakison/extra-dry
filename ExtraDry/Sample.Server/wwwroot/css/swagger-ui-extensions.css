@@ -114,12 +114,12 @@ body {
   width: 100%;
 }
 
-.swagger-container > .swagger-ui > div {
-  display: grid;
-  grid-template-columns: 1fr 180px;
-  grid-template-rows: min-content 1fr;
-  grid-template-areas: "information authorize" "wrapper wrapper";
-}
+  .swagger-container > .swagger-ui > div {
+    display: grid;
+    grid-template-columns: 1fr 180px;
+    grid-template-rows: min-content 1fr;
+    grid-template-areas: "information authorize" "wrapper wrapper";
+  }
 
 /* TODO: David: This is incorrect when there is no authorization, the button doesn't show and this blanks the whole page. */
 .swagger-container > .swagger-ui > div > div {
