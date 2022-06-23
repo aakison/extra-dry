@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json.Serialization;
-
-namespace ExtraDry.Core;
+﻿namespace ExtraDry.Core;
 
 /// <summary>
 /// Represents a generic payload for returning lists of items from an API.
@@ -31,7 +26,7 @@ public class FilteredCollection<T> {
     public string? Sort { get; set; }
 
     /// <summary>
-    /// The total number of items in the full collection of items.
+    /// The total number of items in the result set.
     /// </summary>
     /// <example>1</example>
     public int Count => Items.Count;

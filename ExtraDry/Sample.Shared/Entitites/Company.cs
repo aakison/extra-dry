@@ -1,16 +1,14 @@
 ﻿#nullable disable // EF Model Class
 
-using ExtraDry.Core;
-using ExtrayDry.Core;
+using Microsoft.EntityFrameworkCore;
 using Sample.Shared.Converters;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sample.Shared;
 
-public class Company {
+[Format(Icon = "building")]
+[FactTable, DimensionTable]
+public class Company : INamedSubject {
 
     [Key]
     [JsonIgnore]
@@ -20,9 +18,26 @@ public class Company {
     [Rules(RuleAction.Ignore)]
     public Guid Uuid { get; set; } = Guid.NewGuid();
 
-    [Display(Name = "Name", ShortName = "Name")]
+    [NotMapped]
+    [Display(GroupName = "Summary")]
+    public string Caption => $"Company {Code}";
+
+    [Display(Name = "Name", ShortName = "Name", GroupName = "Summary")]
     [Filter(FilterType.Contains)]
-    public string Name { get; set; }
+    [Rules(RuleAction.IgnoreDefaults)]
+    [Required, StringLength(80)]
+    public string Title { get; set; }
+
+    [Display(Name = "Code", GroupName = "Summary")]
+    [Filter(FilterType.Equals)]
+    [Rules(CreateAction = RuleAction.Allow, UpdateAction = RuleAction.Block)]
+    [Required, StringLength(24)]
+    public string Code { get; set; }
+
+    [Display(Name = "Status", ShortName = "Status", GroupName = "Status")]
+    [Rules(RuleAction.Allow)]
+    [Filter]
+    public CompanyStatus Status { get; set; }
 
     [Display]
     [MaxLength(1000)]
@@ -38,14 +53,17 @@ public class Company {
     [Rules(RuleAction.Link)]
     public List<Sector> AdditionalSectors { get; set; }
 
+    [Precision(18, 2)]
+    public decimal AnnualRevenue { get; set; }
+
+    [Precision(18, 2)]
+    public decimal SalesMargin { get; set; }
+
+    public DateTime IncorporationDate { get; set; }
+
     [Display]
     [Rules(RuleAction.Allow)]
     public BankingDetails BankingDetails { get; set; } = new BankingDetails();
-
-    [Display(Name = "Status", ShortName = "Status")]
-    [Rules(RuleAction.Allow)]
-    [Filter]
-    public CompanyStatus Status { get; set; }
 
     //[Display]
     //[Rules(RuleAction.Recurse)]
@@ -54,7 +72,8 @@ public class Company {
     /// <summary>
     /// The version info which informs the audit log.
     /// </summary>
-    [JsonIgnore]
+    [Display(GroupName = "Status")]
+    [Rules(RuleAction.Block)]
     public VersionInfo Version { get; set; } = new VersionInfo();
 
 }

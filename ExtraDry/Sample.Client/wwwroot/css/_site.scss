@@ -35,9 +35,14 @@ html, body {
 
 //
 // Some pages need scroll and other don't, always show scrollbar so pages don't jitter back and forth.
+// Ensure it's at the app level and not the body so dialog boxes can put a curtain over them.
 //
 body {
-    overflow-y: scroll;
+    overflow-y: hidden;
+
+    div#app {
+        overflow-y: scroll;
+    }
 }
 
 //

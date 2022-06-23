@@ -1,4 +1,5 @@
 ﻿@page "/companies"
+@page "/companies/{CompanyUuid:guid}"
 @inject IListService<Company> CompanyService;
 @inject NavigationManager Navigation;
 
@@ -7,7 +8,15 @@
     <DryTable TItem="Company" ViewModel="@this" ItemsService="@CompanyService" />
 </DryPageQueryView>
 
+@if (CompanyUuid != Guid.Empty)
+{
+    <CompanyEditDialog Uuid="@CompanyUuid" />
+}
+
 @code {
+
+    [Parameter]
+    public Guid CompanyUuid { get; set; } = Guid.Empty;
 
     [Command(CommandContext.Alternate, Icon = "edit")]
     public void Edit(Company company)

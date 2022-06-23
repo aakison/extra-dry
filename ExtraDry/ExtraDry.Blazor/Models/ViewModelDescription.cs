@@ -2,11 +2,8 @@
 
 using ExtraDry.Blazor.Models;
 using ExtraDry.Core;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Reflection;
 
 namespace ExtraDry.Blazor;
@@ -18,6 +15,7 @@ public class ViewModelDescription {
         ViewModel = viewModel;
         GetReflectedViewModelCommands(viewModel);
         GetReflectedViewModelNavigations(viewModel);
+        GetReflectedModel(viewModel.GetType());
         SetListSelectMode();
     }
 
@@ -28,6 +26,7 @@ public class ViewModelDescription {
         GetReflectedModelProperties(modelType);
         GetReflectedViewModelCommands(viewModel);
         GetReflectedViewModelNavigations(viewModel);
+        GetReflectedModel(modelType);
         SetListSelectMode();
     }
 
@@ -61,8 +60,21 @@ public class ViewModelDescription {
 
     public IEnumerable<NavigationDescription> NavigationsInGroup(string group) => Navigations.Where(e => e.Group == group);
 
+    public string ModelDisplayName { get; private set; } = string.Empty;
+
+    public FormatAttribute? Format { get; private set; }
+
+    public string Icon { get; private set; } = string.Empty;
+
+    private void GetReflectedModel(Type modelType)
+    {
+        Format = modelType.GetCustomAttribute<FormatAttribute>();
+        Icon = Format?.Icon ?? string.Empty;
+    }
+
     private void GetReflectedModelProperties(Type modelType)
     {
+        ModelDisplayName = modelType.GetCustomAttribute<DisplayAttribute>()?.Name ?? modelType.Name;
         var properties = modelType.GetProperties();
         foreach(var property in properties) {
             var display = property.GetCustomAttribute<DisplayAttribute>();

@@ -27,6 +27,8 @@ section {
                 li {
                     list-style-type: none;
                     padding: $padding;
+                    border-radius: $border-radius $border-radius 0 0;
+                    border-bottom: solid 3px transparent; // So when hover or active not set, layout is consistent.
 
                     a {
                         color: $dark;
@@ -39,20 +41,17 @@ section {
 
                     &:hover {
                         border-bottom: solid 3px $primary-light;
-                        border-radius: $border-radius $border-radius 0 0;
                         background-color: $off-white;
                     }
 
                     &.active {
                         border-bottom: solid 3px $primary;
-                        border-radius: $border-radius $border-radius 0 0;
                         background-color: $light;
 
                         &:hover {
                             background-color: $off-white;
                         }
                     }
-
 
                     img {
                         display: none;

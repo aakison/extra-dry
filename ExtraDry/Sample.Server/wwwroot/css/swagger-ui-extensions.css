@@ -114,12 +114,12 @@ body {
   width: 100%;
 }
 
-.swagger-container > .swagger-ui > div {
-  display: grid;
-  grid-template-columns: 1fr 180px;
-  grid-template-rows: min-content 1fr;
-  grid-template-areas: "information authorize" "wrapper wrapper";
-}
+  .swagger-container > .swagger-ui > div {
+    display: grid;
+    grid-template-columns: 1fr 180px;
+    grid-template-rows: min-content 1fr;
+    grid-template-areas: "information authorize" "wrapper wrapper";
+  }
 
 /* TODO: David: This is incorrect when there is no authorization, the button doesn't show and this blanks the whole page. */
 .swagger-container > .swagger-ui > div > div {
@@ -181,6 +181,34 @@ body {
     margin: 0 5px;
   }
 
+/* Re-align the operation block to have description (with markdown) below header and control */
+
+.swagger-ui .opblock-tag {
+  display: grid;
+  grid-template-areas:
+    "header controls"
+    "description description";
+  grid-template-columns: auto 30px;
+  padding: 10px 0;
+  margin: 30px 10px 10px 0;
+  border: 0;
+}
+
+  .swagger-ui .opblock-tag > a {
+      grid-area: header;
+  }
+
+  .swagger-ui .opblock-tag > small {
+    grid-area: description;
+    padding: 0;
+    margin-top: 10px;
+  }
+
+  .swagger-ui .opblock-tag > button {
+    grid-area: controls;
+  }
+
+
 /* Re-align the operation summary header to be two lines */
 .swagger-ui .opblock .opblock-summary-control {
   display: grid;
@@ -228,12 +256,6 @@ body {
 
 
 /* Change block tag spacing */
-.swagger-ui .opblock-tag {
-  border: 0;
-  margin: 20px 0 0;
-  padding: 10px 10px 10px;
-}
-
   .swagger-ui .opblock-tag:hover {
     background: none;
   }
@@ -301,7 +323,7 @@ body {
 
   .swagger-ui .opblock-description-wrapper {
     margin: 0;
-    padding: 24px 24px 0;
+    padding: 20px 20px 0;
   }
 
 
@@ -659,36 +681,29 @@ body {
     outline: none;
 }
 
-
 /*
-    Markdown in operation block can become excessively long, especially with auto-generated comments.
-    Start with a summarized version, which shows h2 headers and their first paragraph, hiding the rest.
-    Provide a "link" to click to expand the content, this works with the associated JavaScript.
+    Hide the ability to expand / collapse the tag-level instruction test.
+    Ensure this is used with `c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List);` in app.UseSwaggerUI in Startup.
 */
-.opblock-description .renderedMarkdown:after {
-    content: "expand details";
-    color: var(--hyperlink-secondary);
-    cursor: pointer;
+.swagger-ui .expand-operation {
+    display: none;
 }
 
-.opblock-description .renderedMarkdown.detailed:after {
-    content: initial;
+.swagger-ui .opblock-tag-section {
+    pointer-events: none;
 }
 
-.opblock-description .renderedMarkdown h3 + p,
-.opblock-description .renderedMarkdown P + ul,
-.opblock-description .renderedMarkdown p + h3,
-.opblock-description .renderedMarkdown ul + p,
-.opblock-description .renderedMarkdown ul + h3,
-.opblock-description .renderedMarkdown p + p {
-  display: none;
-}
+    .swagger-ui .opblock-tag-section .operation-tag-content {
+        pointer-events: all;
+    }
 
-.opblock-description .renderedMarkdown.detailed h3 + p,
-.opblock-description .renderedMarkdown.detailed P + ul,
-.opblock-description .renderedMarkdown.detailed p + h3,
-.opblock-description .renderedMarkdown.detailed ul + p,
-.opblock-description .renderedMarkdown.detailed ul + h3,
-.opblock-description .renderedMarkdown.detailed p + p {
-  display: block;
+/* 
+    Provide some warning text to stop developers from skipping features.
+*/
+.opblock-description .renderedMarkdown h5 {
+    color: red;
+    font-weight: bold;
+    font-size: 16px;
+    margin-top: 0;
+    margin-bottom: 10px;
 }

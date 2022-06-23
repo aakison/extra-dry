@@ -1,0 +1,51 @@
+﻿@inject NavigationManager Navigation;
+
+<div class="curtain">
+    <div class="dialog @CssClass">
+        @ChildContent
+        <div class="controls">
+            @if(FullScreen) {
+                <DryButton IconOnly="true" Command="@MakeWindowCommand" Target="@this"></DryButton>
+            }
+            else {
+                <DryButton IconOnly="true" Command="@MakeFullScreenCommand" Target="@this"></DryButton>
+            }
+            <DryButton IconOnly="true" Command="@CloseDialogCommand"></DryButton>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public bool FullScreen { get; set; }
+
+    public string CssClass => FullScreen ? "full" : "window";
+
+    [Command(Icon = "times")]
+    public void CloseDialog()
+    {
+        Navigation.NavigateTo($"/companies");
+    }
+    public CommandInfo CloseDialogCommand => new(this, CloseDialog);
+
+    [Command(Icon = "arrow-right")] //"arrow-up-right-and-arrow-down-left-from-center"
+    public void MakeFullScreen()
+    {
+        FullScreen = true;
+        StateHasChanged();
+    }
+    public CommandInfo MakeFullScreenCommand => new(this, MakeFullScreen);
+
+    [Command(Icon = "arrow-left")] //"arrow-down-left-and-arrow-up-right-to-center"
+    public void MakeWindow()
+    {
+        FullScreen = false;
+        StateHasChanged();
+    }
+    public CommandInfo MakeWindowCommand => new(this, MakeWindow);
+
+}

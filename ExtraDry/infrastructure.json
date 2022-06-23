@@ -1,0 +1,135 @@
+{
+  "subscription": {
+    "name": "YellowJacket"
+  },
+  "location": "centralus",
+  "group": {
+    "name": "sample-$env"
+  },
+  "keyVault": {
+    "name": "sample-$env-keyvault",
+    "secrets": [
+      {
+        "name": "sample-$env-dbms-username",
+        "contents": "username",
+        "default": "sample-dbms-admin"
+      },
+      {
+        "name": "sample-$env-dbms-password",
+        "contents": "password",
+        "default": "{Generate-Password 30}"
+      },
+      {
+        "name": "sample-$env-database-username",
+        "contents": "username",
+        "default": "sample-database-agent"
+      },
+      {
+        "name": "sample-$env-database-password",
+        "contents": "password",
+        "default": "{Generate-Password 30}"
+      },
+      {
+        "name": "sample-$env-warehouse-username",
+        "contents": "username",
+        "default": "sample-warehouse-agent"
+      },
+      {
+        "name": "sample-$env-warehouse-password",
+        "contents": "password",
+        "default": "{Generate-Password 30}"
+      }
+    ]
+  },
+  "storageAccounts": [
+    {
+      "name": "sample-$env-webjobs"
+    }
+  ],
+  "dbms": {
+    "name": "sample-$env-dbms",
+    "username": "{Get-Secret 'sample-$env-dbms-username'}",
+    "password": "{Get-Secret 'sample-$env-dbms-password'}",
+    "users": [
+      {
+        "name": "sample-database-agent",
+        "password": "{Get-Secret 'sample-$env-database-password'}"
+      },
+      {
+        "name": "sample-warehouse-agent",
+        "password": "{Get-Secret 'sample-$env-warehouse-password'}"
+      }
+    ],
+    "firewall": [
+      {
+        "name": "AllowAllWindowsAzureIps",
+        "value": "0.0.0.0"
+      },
+      {
+        "name": "My Creator's IP",
+        "value": "{Get-LocalIPAddress}"
+      }
+    ],
+    "databases": [
+      {
+        "name": "sample-$env-database",
+        "users": [
+          {
+            "username": "sample-database-agent",
+            "roles": [ "db_datareader", "db_datawriter", "db_executor" ]
+          },
+          {
+            "username": "sample-warehouse-agent",
+            "roles": [ "db_datareader" ]
+          }
+        ]
+      },
+      {
+        "name": "sample-$env-warehouse",
+        "users": [
+          {
+            "username": "sample-database-agent",
+            "roles": [ "db_datareader" ]
+          },
+          {
+            "username": "sample-warehouse-agent",
+            "roles": [ "db_datareader", "db_datawriter", "db_executor" ]
+          }
+        ]
+      }
+    ]
+  },
+  "appServicePlan": {
+    "name": "YellowJacketWebShared",
+    "group": "YellowJacketWebDev",
+    "appService": {
+      "name": "sample-$env-web",
+      "connectionStrings": [
+        {
+          "name": "AzureWebJobsStorage",
+          "value": "{Get-StorageConnectionString 'sample-$env-webjobs'}"
+        },
+        {
+          "name": "AzureWebJobsDashboard",
+          "value": "{Get-StorageConnectionString 'sample-$env-webjobs'}"
+        },
+        {
+          "name": "OltpDatabase",
+          "type": "SqlServer",
+          "value": "{Get-SqlConnectionString 'sample-$env-database' 'sample-$env-database-username' 'sample-$env-database-password'}"
+        },
+        {
+          "name": "OlapDatabase",
+          "type": "SqlServer",
+          "value": "{Get-SqlConnectionString 'sample-$env-warehouse' 'sample-$env-database-username' 'sample-$env-database-password'}"
+        }
+      ],
+      "environmentVariables": [
+        {
+          "name": "asdf",
+          "value": "asdf"
+        }
+      ]
+    }
+  }
+}

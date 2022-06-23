@@ -1,0 +1,45 @@
+﻿@namespace ExtraDry.Blazor
+@using ExtraDry.Blazor.Internal
+@typeparam T
+
+<fieldset class="@Form.ModelNameWebId @Fieldset.CssClass">
+    @if (!string.IsNullOrWhiteSpace(Fieldset.Legend))
+    {
+        <legend class="@Form.ModelNameWebId @Fieldset.CssClass">@Fieldset.Legend</legend>
+    }
+    @foreach (var group in Fieldset.Groups)
+    {
+        var redundant = "";// line.FormProperties.Count == 1 && line.FormProperties.First().FieldCaption == fieldset.Legend ? "redundant" : "";
+        <div class="group @group.ClassName">
+            @if (group.Type == FormGroupType.Element)
+            {
+                <div class="line header">
+                    <span class="caption">Video</span>
+                    <button @onclick="@(() => DeleteItem(group.ParentTarget, group.Target))">X</button>
+                    @*<DryButton Target="@group.Target" Command="@MoveUpCommand" />
+                        <DryButton Target="@group.Target" Command="@MoveDownCommand" />*@
+                </div>
+            }
+            @foreach (var line in group.Lines)
+            {
+                <div class="line properties @redundant">
+                    @foreach (var property in line.FormProperties)
+                    {
+                        <DryInput Model="@line.Model" Property="@property" />
+                    }
+                    @foreach (var command in line.Commands)
+                    {
+                        if (command == Internal.FormCommand.AddNew)
+                        {
+                            <DryButton Target="@line.Model" Command="@AddNewCommand" />
+                        }
+                        else
+                        {
+                            Console.WriteLine("Unrecognized command");
+                        }
+                    }
+                </div>
+            }
+        </div>
+    }
+</fieldset>
