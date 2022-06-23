@@ -113,7 +113,7 @@ steps:
   inputs:
     command: build
     projects: $(nugetProjectsGlob)
-    arguments: '--configuration $(BuildConfiguration) /p:Version=$(semanticVersion) /p:InformationalVersion=$(semanticVersion) --output '$(build.artifactstagingdirectory)\nuspec' --no-restore'
+    arguments: '--configuration $(BuildConfiguration) /p:Version=$(semanticVersion) /p:InformationalVersion=$(semanticVersion) --output '$(build.artifactstagingdirectory)'\nuspec --no-restore'
 
 - task: DotNetCoreCLI@2
   displayName: Test
