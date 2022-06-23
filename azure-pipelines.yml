@@ -20,8 +20,9 @@ variables:
   patchVersion: 0
   prereleaseVersion: ''
   semanticVersion: '0.1.0'  
-  projectsGlob: '**/*.csproj' # don't build samples
-  testsGlob: '**/*.Tests.csproj'
+  nugetProjectsGlob: '**/ExtraDry.+(Core|Server|Blazor|Swashbuckle).csproj' # don't build samples
+  sampleProjectsGlob: '**/Sample.*.csproj'
+  testsGlob: '**/ExtraDry.+(Core|Server|Blazor).Tests.csproj'
   isForDeployment: $[in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/develop', 'refs/heads/release')]
 
 steps:
@@ -34,7 +35,7 @@ steps:
   displayName: Restore
   inputs:
     command: restore
-    projects: $(projectsGlob)
+    projects: $(nugetProjectsGlob)
 
 - task: PowerShell@2
   name: CheckVulnerability
@@ -111,8 +112,8 @@ steps:
   displayName: Build
   inputs:
     command: build
-    projects: $(projectsGlob)
-    arguments: '--configuration $(BuildConfiguration) /p:Version=$(semanticVersion) /p:InformationalVersion=$(semanticVersion) --no-restore'
+    projects: $(nugetProjectsGlob)
+    arguments: '--configuration $(BuildConfiguration) /p:Version=$(semanticVersion) /p:InformationalVersion=$(semanticVersion) --output '$(build.artifactstagingdirectory)\nuspec' --no-restore'
 
 - task: DotNetCoreCLI@2
   displayName: Test
@@ -126,7 +127,7 @@ steps:
   condition: and(succeeded(), eq(variables.isForDeployment, true))
   inputs:
     command: 'pack'
-    packagesToPack: $(projectsGlob)
+    packagesToPack: $(nugetProjectsGlob)
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'semanticVersion'
     nobuild: true
