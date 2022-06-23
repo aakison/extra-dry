@@ -20,7 +20,7 @@ internal class ModelDescription {
 
     public static bool IsSortable(PropertyInfo prop)
     {
-        // By name to avoid having to take dependency on EF and/or Newtonsoft.
+        // By name to avoid having to take dependency on EF.
         var disqualifyingAttributes = new string[] { "JsonIgnoreAttribute", "NotMappedAttribute", "KeyAttribute" };
         var ignore = prop.GetCustomAttributes().Any(e => disqualifyingAttributes.Any(f => f == e.GetType().Name));
         if(prop.Name == "Id" || prop.Name == $"{prop.DeclaringType?.Name}Id") {

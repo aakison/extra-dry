@@ -3,15 +3,19 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<Nullable>enable</Nullable>
-		<ImplicitUsings>enable</ImplicitUsings>
+		<PackageId>ExtraDry.Swashbuckle</PackageId>
 		<Authors>adrian.akison</Authors>
 		<Company>FMI Works</Company>
+		<ImplicitUsings>enable</ImplicitUsings>
 		<Description>Extensions to Blazor and DRY libraries to create Blazor client/server applications with a lower-code footprint.  Use this Swashbuckle library to efficiently extend the documentation capabilities of Swashbuckle for building OpenAPI interfaces.</Description>
-		<PackageTags>blazor spa microsoft dry don't repeat yourself low-code swashbuckle openapi</PackageTags>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/fmi-works/extra-dry</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/fmi-works/extra-dry.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageTags>blazor spa microsoft dry don't repeat yourself low-code swashbuckle openapi</PackageTags>
+		<NeutralLanguage />
+		<EnableNETAnalyzers>true</EnableNETAnalyzers>
+		<EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -19,13 +23,6 @@
 		<PackageIcon>extradry-logo.png</PackageIcon>
 		<PackageIconUrl />
 	</PropertyGroup>
-
-	<ItemGroup>
-	  <None Include="..\extradry-logo.png" Link="extradry-logo.png">
-	    <PackagePath></PackagePath>
-	    <Pack>True</Pack>
-	  </None>
-	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" />
@@ -46,4 +43,11 @@
 		<ProjectReference Include="..\ExtraDry.Server\ExtraDry.Server.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<None Include="..\extradry-logo.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
+	
 </Project>
