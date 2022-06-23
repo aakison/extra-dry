@@ -14,6 +14,8 @@
 		<PackageTags>blazor spa microsoft dry don't repeat yourself low-code</PackageTags>
 		<PackageIcon>extradry-logo.png</PackageIcon>
 		<PackageIconUrl />
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<EnableNETAnalyzers>True</EnableNETAnalyzers>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -39,11 +41,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
 		<PackageReference Include="ExtraDry.Analyzers" Version="0.2.*">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
