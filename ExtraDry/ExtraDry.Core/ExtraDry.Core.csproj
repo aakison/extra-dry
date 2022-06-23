@@ -36,6 +36,19 @@
 		<PackageReference Include="System.Text.Json" Version="6.0.5" />
 	</ItemGroup>
 
+	<!-- 
+		Indirect dependencies that are re-stated as older versions have known vulnerabilities.
+		These packages should be removed from here when direct dependencies are updated.
+		All projects in this solution reference this project, so only need to fix once.
+		As reported by: `dotnet list package -vulnerable -include-transitive`
+	-->
+	<ItemGroup>
+		<!-- https://github.com/advisories/GHSA-5crp-9r3c-p9vr -->
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<!-- https://github.com/advisories/GHSA-cmhx-cq75-c4mj -->
+		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<None Include="..\extradry-logo.png">
 			<Pack>True</Pack>
