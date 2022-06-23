@@ -33,4 +33,4 @@ jobs:
         run: dotnet build ./ExtraDry/ExtraDry.sln --configuration Release --no-restore
 
       - name: Test with dotnet
-        run: dotnet test ./ExtraDry/ExtraDry.sln --no-build
+        run: dotnet test ./ExtraDry/ExtraDry.sln --configuration Release --no-build
