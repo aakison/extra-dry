@@ -21,7 +21,8 @@ variables:
   prereleaseVersion: ''
   semanticVersion: '0.1.0'  
   nugetProjectsGlob: '**/ExtraDry.+(Core|Server|Blazor|Swashbuckle).csproj' # don't build samples
-  sampleProjectsGlob: '**/Sample.*.csproj'
+  sampleProjectsGlob: '**/Sample.+(Client|Data|Shared|Server|WebJob).csproj'
+  allProjectsGlob: '**/*.csproj'
   testsGlob: '**/ExtraDry.+(Core|Server|Blazor).Tests.csproj'
   isForDeployment: $[in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/develop', 'refs/heads/release')]
 
@@ -35,7 +36,7 @@ steps:
   displayName: Restore
   inputs:
     command: restore
-    projects: $(nugetProjectsGlob)
+    projects: $(allProjectsGlob)
 
 - task: PowerShell@2
   name: CheckVulnerability
@@ -113,7 +114,14 @@ steps:
   inputs:
     command: build
     projects: $(nugetProjectsGlob)
-    arguments: '--configuration $(BuildConfiguration) /p:Version=$(semanticVersion) /p:InformationalVersion=$(semanticVersion) --output '$(build.artifactstagingdirectory)'\nuspec --no-restore'
+    arguments: '--configuration $(BuildConfiguration) /p:Version=$(semanticVersion) /p:InformationalVersion=$(semanticVersion) --no-restore'
+
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    command: build
+    projects: $(sampleProjectsGlob)
+    arguments: '--configuration $(BuildConfiguration) /p:Version=$(semanticVersion) /p:InformationalVersion=$(semanticVersion) --output$(build.artifactstagingdirectory)/sample/ --no-restore'
 
 - task: DotNetCoreCLI@2
   displayName: Test
