@@ -141,6 +141,20 @@ steps:
     nobuild: true
 
 - task: DotNetCoreCLI@2
+  displayName: Install Entity Framework
+  inputs:
+    command: 'custom'
+    custom: 'tool'
+    arguments: 'install --global dotnet-ef'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Publish Migration Script'
+  inputs:
+    command: 'custom'
+    custom: 'ef'
+    arguments: 'migrations script --project $(build.sourcesdirectory)/Sample.Data/Sample.Data.csproj --idempotent --verbose --output $(build.artifactstagingdirectory)/sql/migrations.sql'
+
+- task: DotNetCoreCLI@2
   displayName: 'Publish Sample WebApp'
   inputs:
     command: publish
