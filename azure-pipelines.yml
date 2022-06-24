@@ -23,7 +23,6 @@ variables:
   semanticVersion: '0.1.0'  
   nugetProjectsGlob: '**/ExtraDry.+(Core|Server|Blazor|Swashbuckle).csproj' # don't build samples
   sampleProjectsGlob: '**/Sample.Server.csproj'
-  allProjectsGlob: '**/*.csproj'
   testsGlob: '**/ExtraDry.+(Core|Server|Blazor).Tests.csproj'
   isForDeployment: $[in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/develop', 'refs/heads/release')]
 
@@ -34,10 +33,17 @@ steps:
     version: '6.0.x'
 
 - task: DotNetCoreCLI@2
+  displayName: Install Entity Framework
+  inputs:
+    command: 'custom'
+    custom: 'tool'
+    arguments: 'install --global dotnet-ef'
+
+- task: DotNetCoreCLI@2
   displayName: Restore
   inputs:
     command: restore
-    projects: $(allProjectsGlob)
+    projects: '**/*.csproj'
     verbosityRestore: normal
 
 - task: PowerShell@2
@@ -112,47 +118,27 @@ steps:
       PublishVariable "semanticVersion" $semanticVersion
 
 - task: DotNetCoreCLI@2
-  displayName: Build NuGet Packages
+  displayName: Build Projects
   inputs:
     command: build
-    projects: $(nugetProjectsGlob)
+    projects: '**/*.csproj'
     arguments: '--configuration $(BuildConfiguration) /p:Version=$(semanticVersion) /p:InformationalVersion=$(semanticVersion) --no-restore'
 
 - task: DotNetCoreCLI@2
-  displayName: Build Sample Project
-  inputs:
-    command: build
-    projects: $(sampleProjectsGlob)
-    arguments: '--configuration $(BuildConfiguration) /p:Version=$(semanticVersion) /p:InformationalVersion=$(semanticVersion) --no-restore'
-
-- task: DotNetCoreCLI@2
-  displayName: Build Tests
-  inputs:
-    command: build
-    projects: $(testsGlob)
-    arguments: '--configuration $(BuildConfiguration) /p:Version=$(semanticVersion) /p:InformationalVersion=$(semanticVersion) --no-restore'
-
-- task: DotNetCoreCLI@2
-  displayName: Test
+  displayName: Run Unit Tests
   inputs:
     command: test
-    projects: $(testsGlob)
+    projects: '**/*.Tests.csproj'
     arguments: '--configuration $(BuildConfiguration) --collect "Code coverage"'
     nobuild: true
-
-- task: DotNetCoreCLI@2
-  displayName: Install Entity Framework
-  inputs:
-    command: 'custom'
-    custom: 'tool'
-    arguments: 'install --global dotnet-ef'
 
 - task: DotNetCoreCLI@2
   displayName: 'Publish Migration Script'
   inputs:
     command: 'custom'
     custom: 'ef'
-    arguments: 'migrations script --project $(build.sourcesdirectory)/Sample.Data/Sample.Data.csproj --idempotent --verbose --output $(build.artifactstagingdirectory)/sql/migrations.sql'
+    projects: '**/Sample.Data.csproj'
+    arguments: 'migrations script --idempotent --verbose --output $(build.artifactstagingdirectory)/sql/migrations.sql'
 
 - task: DotNetCoreCLI@2
   displayName: 'Publish Sample WebApp'
