@@ -110,18 +110,25 @@ steps:
       PublishVariable "semanticVersion" $semanticVersion
 
 - task: DotNetCoreCLI@2
-  displayName: Build
+  displayName: Build NuGet Packages
   inputs:
     command: build
     projects: $(nugetProjectsGlob)
     arguments: '--configuration $(BuildConfiguration) /p:Version=$(semanticVersion) /p:InformationalVersion=$(semanticVersion) --no-restore'
 
 - task: DotNetCoreCLI@2
-  displayName: Build
+  displayName: Build Sample Project
   inputs:
     command: build
     projects: $(sampleProjectsGlob)
     arguments: '--configuration $(BuildConfiguration) /p:Version=$(semanticVersion) /p:InformationalVersion=$(semanticVersion) --output $(build.artifactstagingdirectory)\sample --no-restore'
+
+- task: DotNetCoreCLI@2
+  displayName: Build Tests
+  inputs:
+    command: build
+    projects: $(testsGlob)
+    arguments: '--configuration $(BuildConfiguration) /p:Version=$(semanticVersion) /p:InformationalVersion=$(semanticVersion) --no-restore'
 
 - task: DotNetCoreCLI@2
   displayName: Test
