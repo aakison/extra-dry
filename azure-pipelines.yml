@@ -145,11 +145,19 @@ steps:
     packagesToPack: $(nugetProjectsGlob)
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'semanticVersion'
+    packDirectory: '$(Build.ArtifactStagingDirectory)\packages'
     nobuild: true
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact'
   condition: and(succeeded(), eq(variables.isForDeployment, true))
   inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)'
+    PathtoPublish: '$(build.artifactstagingdirectory)'\packages
+    artifactName: NuGetPackages
 
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Sample Artifact'
+  condition: and(succeeded(), eq(variables.isForDeployment, true))
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'\sample
+    artifactName: SampleApp
