@@ -137,7 +137,7 @@ steps:
   inputs:
     command: 'custom'
     custom: 'ef'
-    arguments: 'migrations script --project $(build.sourcesdirectory)/ExtraDry/Sample.Data/Sample.Data.csproj --idempotent --verbose --output $(build.artifactstagingdirectory)/sql/migrations.sql'
+    arguments: 'migrations script --project $(build.sourcesdirectory)/ExtraDry/Sample.Data/Sample.Data.csproj --idempotent --verbose --output $(build.artifactstagingdirectory)\sample\sql\migrations.sql'
 
 - task: DotNetCoreCLI@2
   displayName: 'Publish Sample WebApp'
