@@ -146,9 +146,7 @@ steps:
     command: publish
     publishWebProjects: false
     projects: $(sampleProjectsGlob)
-    arguments: '--configuration $(BuildConfiguration)'
-    outputdir: '$(build.artifactstagingdirectory)\sample'
-    nobuild: true
+    arguments: '--configuration $(BuildConfiguration) --no-build --output $(build.artifactstagingdirectory)\sample'
     zipAfterPublish: false
     modifyOutputPath: false
 
