@@ -22,7 +22,7 @@ variables:
   prereleaseVersion: ''
   semanticVersion: '0.1.0'  
   nugetProjectsGlob: '**/ExtraDry.+(Core|Server|Blazor|Swashbuckle).csproj' # don't build samples
-  sampleProjectsGlob: '**/Sample.+(Client|Data|Shared|Server|WebJob).csproj'
+  sampleProjectsGlob: '**/Sample.Server.csproj'
   allProjectsGlob: '**/*.csproj'
   testsGlob: '**/ExtraDry.+(Core|Server|Blazor).Tests.csproj'
   isForDeployment: $[in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/develop', 'refs/heads/release')]
@@ -150,7 +150,7 @@ steps:
     nobuild: true
 
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact'
+  displayName: 'Publish NuGet Artifact'
   condition: and(succeeded(), eq(variables.isForDeployment, true))
   inputs:
     PathtoPublish: '$(build.artifactstagingdirectory)\packages'
