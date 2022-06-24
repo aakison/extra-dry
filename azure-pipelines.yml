@@ -38,6 +38,7 @@ steps:
   inputs:
     command: restore
     projects: $(allProjectsGlob)
+    verbosityRestore: normal
 
 - task: PowerShell@2
   name: CheckVulnerability
@@ -136,7 +137,8 @@ steps:
   inputs:
     command: test
     projects: $(testsGlob)
-    arguments: '--configuration $(BuildConfiguration) --collect "Code coverage" --no-build'
+    arguments: '--configuration $(BuildConfiguration) --collect "Code coverage"'
+    nobuild: true
 
 - task: DotNetCoreCLI@2
   displayName: 'Publish Sample WebApp'
@@ -144,10 +146,11 @@ steps:
     command: publish
     publishWebProjects: false
     projects: $(sampleProjectsGlob)
-    arguments: '--configuration $(BuildConfiguration) --no-build --output $(build.artifactstagingdirectory)\sample'
+    arguments: '--configuration $(BuildConfiguration)'
+    outputdir: '$(build.artifactstagingdirectory)\sample'
+    nobuild: true
     zipAfterPublish: false
     modifyOutputPath: false
-
 
 - task: DotNetCoreCLI@2
   displayName: Pack
