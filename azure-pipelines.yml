@@ -152,12 +152,12 @@ steps:
   displayName: 'Publish Artifact'
   condition: and(succeeded(), eq(variables.isForDeployment, true))
   inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)'\packages
+    PathtoPublish: '$(build.artifactstagingdirectory)\packages'
     artifactName: NuGetPackages
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Sample Artifact'
   condition: and(succeeded(), eq(variables.isForDeployment, true))
   inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)'\sample
+    PathtoPublish: '$(build.artifactstagingdirectory)\sample'
     artifactName: SampleApp
