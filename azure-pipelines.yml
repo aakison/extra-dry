@@ -122,7 +122,7 @@ steps:
   inputs:
     command: build
     projects: $(sampleProjectsGlob)
-    arguments: '--configuration $(BuildConfiguration) /p:Version=$(semanticVersion) /p:InformationalVersion=$(semanticVersion) --output $(build.artifactstagingdirectory)\sample --no-restore'
+    arguments: '--configuration $(BuildConfiguration) /p:Version=$(semanticVersion) /p:InformationalVersion=$(semanticVersion) --no-restore'
 
 - task: DotNetCoreCLI@2
   displayName: Build Tests
@@ -137,6 +137,17 @@ steps:
     command: test
     projects: $(testsGlob)
     arguments: '--configuration $(BuildConfiguration) --collect "Code coverage" --no-build'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Publish Sample WebApp'
+  inputs:
+    command: publish
+    publishWebProjects: false
+    projects: $(sampleProjectsGlob)
+    arguments: '--configuration $(BuildConfiguration) --no-build --output $(build.artifactstagingdirectory)\sample'
+    zipAfterPublish: false
+    modifyOutputPath: false
+
 
 - task: DotNetCoreCLI@2
   displayName: Pack
