@@ -41,6 +41,16 @@ function Get-Secret($name) {
     }
 }
 
+function Get-AspNetEnvironment($name) {
+    $value = Expand-Variable $name
+    if($value -eq 'dev') {
+        "Development"
+    }
+    else {
+        "Production"
+    }
+}
+
 function Get-StorageConnectionString($name) {
     $eName = Expand-Variable $name
     foreach($storage in $configuration.storageAccounts) {

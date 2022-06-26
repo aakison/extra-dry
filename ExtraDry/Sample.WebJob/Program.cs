@@ -41,8 +41,8 @@ builder.ConfigureServices(services => {
     //services.Configure<AppConfiguration>(configuration.GetSection("AppConfiguration"));
     services.AddSingleton(factory => configuration);
     services.AddScoped<SampleWarehouseModel>();
-    services.AddSqlServer<SampleContext>(configuration.GetConnectionString("OltpDatabase"));
-    services.AddSqlServer<WarehouseContext>(configuration.GetConnectionString("OlapDatabase"));
+    services.AddSqlServer<SampleContext>(configuration.GetConnectionString("WebJobOltpDatabase"));
+    services.AddSqlServer<WarehouseContext>(configuration.GetConnectionString("WebJobOlapDatabase"));
     services.AddDataFactory<SampleWarehouseModel, SampleContext, WarehouseContext>(options => {
         options.BatchSize = 10;
         options.AutoMigrations = true;
