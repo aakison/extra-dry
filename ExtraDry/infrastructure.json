@@ -119,7 +119,7 @@
           "value": "{Get-SqlConnectionString 'sample-$env-database' 'sample-$env-database-username' 'sample-$env-database-password'}"
         },
         {
-          "name": "WebAppOltpDatabase",
+          "name": "WebAppOlapDatabase",
           "type": "SqlServer",
           "value": "{Get-SqlConnectionString 'sample-$env-warehouse' 'sample-$env-database-username' 'sample-$env-database-password'}"
         },
@@ -129,7 +129,7 @@
           "value": "{Get-SqlConnectionString 'sample-$env-database' 'sample-$env-warehouse-username' 'sample-$env-warehouse-password'}"
         },
         {
-          "name": "WebJobOltpDatabase",
+          "name": "WebJobOlapDatabase",
           "type": "SqlServer",
           "value": "{Get-SqlConnectionString 'sample-$env-warehouse' 'sample-$env-warehouse-username' 'sample-$env-warehouse-password'}"
         }
