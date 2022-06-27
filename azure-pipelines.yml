@@ -140,7 +140,7 @@ steps:
     arguments: 'migrations script --project $(build.sourcesdirectory)/ExtraDry/Sample.Data/Sample.Data.csproj --idempotent --verbose --output $(build.artifactstagingdirectory)\sample\sql\migrations.sql'
 
 - task: DotNetCoreCLI@2
-  displayName: 'Publish Sample WebApp'
+  displayName: 'Publish Web App'
   inputs:
     command: publish
     publishWebProjects: false
@@ -150,7 +150,16 @@ steps:
     modifyOutputPath: false
 
 - task: DotNetCoreCLI@2
-  displayName: Pack
+  displayName: 'Publish Web Jobs'
+  inputs:
+    command: publish
+    publishWebProjects: false
+    projects: '**/Sample.WebJobs.csproj'
+    arguments: '--configuration $(BuildConfiguration) --no-build --output $(build.artifactstagingdirectory)\sample\App_Data\jobs\continuous'
+    zipAfterPublish: false
+
+- task: DotNetCoreCLI@2
+  displayName: Pack NuGet Packages
   condition: and(succeeded(), eq(variables.isForDeployment, true))
   inputs:
     command: 'pack'
@@ -161,7 +170,7 @@ steps:
     nobuild: true
 
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish NuGet Artifact'
+  displayName: 'Publish NuGet Artifacts'
   condition: and(succeeded(), eq(variables.isForDeployment, true))
   inputs:
     PathtoPublish: '$(build.artifactstagingdirectory)\packages'
