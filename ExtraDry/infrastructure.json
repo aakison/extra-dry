@@ -114,20 +114,30 @@
           "value": "{Get-StorageConnectionString 'sample-$env-webjobs'}"
         },
         {
-          "name": "OltpDatabase",
+          "name": "WebAppOltpDatabase",
           "type": "SqlServer",
           "value": "{Get-SqlConnectionString 'sample-$env-database' 'sample-$env-database-username' 'sample-$env-database-password'}"
         },
         {
-          "name": "OlapDatabase",
+          "name": "WebAppOlapDatabase",
           "type": "SqlServer",
           "value": "{Get-SqlConnectionString 'sample-$env-warehouse' 'sample-$env-database-username' 'sample-$env-database-password'}"
+        },
+        {
+          "name": "WebJobOltpDatabase",
+          "type": "SqlServer",
+          "value": "{Get-SqlConnectionString 'sample-$env-database' 'sample-$env-warehouse-username' 'sample-$env-warehouse-password'}"
+        },
+        {
+          "name": "WebJobOlapDatabase",
+          "type": "SqlServer",
+          "value": "{Get-SqlConnectionString 'sample-$env-warehouse' 'sample-$env-warehouse-username' 'sample-$env-warehouse-password'}"
         }
       ],
       "environmentVariables": [
         {
-          "name": "asdf",
-          "value": "asdf"
+          "name": "ASPNETCORE_ENVIRONMENT",
+          "value": "{Get-AspNetEnvironment '$env'}"
         }
       ]
     }

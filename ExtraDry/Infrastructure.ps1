@@ -41,6 +41,16 @@ function Get-Secret($name) {
     }
 }
 
+function Get-AspNetEnvironment($name) {
+    $value = Expand-Variable $name
+    if($value -eq 'dev') {
+        "Development"
+    }
+    else {
+        "Production"
+    }
+}
+
 function Get-StorageConnectionString($name) {
     $eName = Expand-Variable $name
     foreach($storage in $configuration.storageAccounts) {
@@ -337,7 +347,7 @@ function Set-ConnectionString($group, $name, $type, $key, $value) {
     $quotedString = "$key=""" + $value.Replace("""", """""") + """"
     az webapp config connection-string set `
         --resource-group $group --name $name `
-        --connection-string-type Custom --settings $quotedString
+        --connection-string-type $type --settings $quotedString
 }
 
 function Set-EnvironmentVariable($group, $name, $key, $value) {
@@ -363,7 +373,7 @@ function Configure-AppService() {
 
     foreach($connectionString in $configuration.appServicePlan.appService.connectionStrings) {
         $key = Expand-Variable $connectionString.name
-        $type = Expand-Variable if($connectionString.type) { $connectionString.type } else { "Custom" }
+        $type = if($connectionString.type) { $connectionString.type } else { "Custom" }
         $value = Expand-Variable $connectionString.value
 
         Log-Output "    Setting connection string '$key'"

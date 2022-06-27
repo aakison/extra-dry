@@ -78,8 +78,7 @@ namespace Sample.Server {
 
             //services.AddDbContext<SampleContext>(opt => opt.UseInMemoryDatabase("sample"));
             services.AddScoped(services => {
-                var connectionString = @"Server=(localdb)\mssqllocaldb;Database=ExtraDrySample;Trusted_Connection=True;";
-                //var connectionString = Configuration.GetConnectionString("Sample");
+                var connectionString = Configuration.GetConnectionString("WebAppOltpDatabase");
                 var dbOptionsBuilder = new DbContextOptionsBuilder<SampleContext>().UseSqlServer(connectionString);
                 var context = new SampleContext(dbOptionsBuilder.Options);
                 var accessor = services.GetService<IHttpContextAccessor>();
