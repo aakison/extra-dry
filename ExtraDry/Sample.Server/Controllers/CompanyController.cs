@@ -8,7 +8,7 @@ namespace Sample.Server.Controllers;
 /// </summary>
 [ApiController]
 [ApiExplorerSettings(GroupName = ApiGroupNames.SampleApi)]
-[SkipStatusCodePages]
+[ApiExceptionStatusCodes]
 public class CompanyController {
         
     /// <summary>

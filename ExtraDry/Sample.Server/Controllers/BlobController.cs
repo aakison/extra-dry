@@ -9,7 +9,7 @@ namespace Sample.Server.Controllers;
 /// </summary>
 [ApiController]
 [ApiExplorerSettings(GroupName = ApiGroupNames.SampleApi)]
-[SkipStatusCodePages]
+[ApiExceptionStatusCodes]
 [SuppressMessage("Usage", "DRY1002:ApiController shouldn't inherit from ControllerBase", 
     Justification = "Controller makes use of ControllerBase functionality for emitting file content.")]
 public class BlobController : ControllerBase {
