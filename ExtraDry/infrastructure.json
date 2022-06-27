@@ -2,10 +2,10 @@
   "subscription": {
     "name": "YellowJacket"
   },
-  "location": "centralus",
   "group": {
     "name": "sample-$env"
   },
+  "location": "centralus",
   "keyVault": {
     "name": "sample-$env-keyvault",
     "secrets": [
@@ -46,6 +46,29 @@
       "name": "sample-$env-webjobs"
     }
   ],
+  "serviceBus": {
+    "name": "sample-$env-servicebus",
+    "sku": "Basic",
+    "queues": [
+      {
+        "name": "warehouse-update"
+      }
+    ],
+    "authorization": [
+      {
+        "name": "webjob-agent",
+        "send": true,
+        "listen": true,
+        "manage": false
+      },
+      {
+        "name": "webapp-agent",
+        "send": true,
+        "listen": false,
+        "manage": false
+      }
+    ]
+  },
   "dbms": {
     "name": "sample-$env-dbms",
     "username": "{Get-Secret 'sample-$env-dbms-username'}",
@@ -132,6 +155,16 @@
           "name": "WebJobOlapDatabase",
           "type": "SqlServer",
           "value": "{Get-SqlConnectionString 'sample-$env-warehouse' 'sample-$env-warehouse-username' 'sample-$env-warehouse-password'}"
+        },
+        {
+          "name": "WebAppServiceBus",
+          "type": "Custom",
+          "value": "{Get-ServiceBusConnectionString 'webapp-agent'}"
+        },
+        {
+          "name": "WebJobServiceBus",
+          "type": "Custom",
+          "value": "{Get-ServiceBusConnectionString 'webjob-agent'}"
         }
       ],
       "environmentVariables": [

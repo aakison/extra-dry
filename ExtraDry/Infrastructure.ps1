@@ -78,6 +78,16 @@ function Get-SqlConnectionString($serverName, $usernameKey, $passwordKey) {
     $template.Replace("<username>", $username).Replace("<password>", $password);
 }
 
+function Get-ServiceBusConnectionString($ruleName) {
+    $eRuleName = Expand-Variable $ruleName
+    foreach($rule in $configuration.serviceBus.authorization) {
+        $expandedRuleName = Expand-Variable $rule.name
+        if($expandedRuleName -eq $eRuleName) {
+            $rule.connectionString
+        }
+    }
+}
+
 function Expand-Variable($value) {
     if($value.EndsWith("}")) {
         $expr = $value.Trim("{}")
@@ -185,6 +195,62 @@ function Configure-Storage() {
         Add-Member -InputObject $account -NotePropertyName az -NotePropertyValue $result
         $result = az storage account show-connection-string --name $name | convertFrom-Json
         Add-Member -InputObject $account -NotePropertyName connectionString -NotePropertyValue $result.connectionString
+    }
+}
+
+function Configure-ServiceBus() {
+    $group = Expand-Variable $configuration.group.name
+    $bus = $configuration.serviceBus
+    $name = Expand-Variable $bus.name
+    Log-Output "Configuring Service Bus '$name'"
+    $result = az servicebus namespace show --resource-group $group --name $name 2>&1
+    if($result[0].ToString().Contains("ResourceNotFound")) {
+        Log-Output "  Service bus not found, creating..."
+        $sku = $bus.sku
+        $location = $configuration.location
+        $result = az servicebus namespace create --resource-group $group --name $name --sku $sku --location $location 2>&1
+    }
+    else {
+        Log-Output "  Service bus retrieved"
+        $result = $result | ConvertFrom-Json
+    }
+    Add-Member -InputObject $bus -NotePropertyName az -NotePropertyValue $result
+    
+    foreach($queue in $bus.queues) {
+        $queueName = $queue.name
+        Log-Output "  Configuring queue '$queueName'"
+        $result = az servicebus queue show --resource-group $group --namespace-name $name --name $queueName 2>&1
+        if($result[0].ToString().Contains("NotFound")) {
+            Log-Output "    Queue not found, creating..."
+            $result = az servicebus queue create --resource-group $group --namespace-name $name --name $queueName 2>&1 | ConvertFrom-Json
+        }
+        else {
+            Log-Output "    Queue retrieved"
+            $result = $result | ConvertFrom-Json
+        }
+        Add-Member -InputObject $queue -NotePropertyName az -NotePropertyValue $result
+    }
+
+    foreach($rule in $bus.authorization) {
+        $ruleName = $rule.name
+        Log-Output "  Configuring Authorization Rule '$ruleName'"
+        $result = az servicebus namespace authorization-rule show --resource-group $group --namespace-name $name --name $ruleName 2>&1
+        if($result[0].ToString().Contains("NotFound")) {
+            Log-Output "    Authorization not found, creating..."
+            $send = if($rule.send) { "Send" } else { "" }
+            $listen = if($rule.listen) { "Listen" } else { "" }
+            $manage = if($rule.manage) { "Manage" } else { "" }
+            $result = az servicebus namespace authorization-rule create --resource-group $group --namespace-name $name --name $ruleName --rights $send $listen $manage | ConvertFrom-Json
+        }
+        else {
+            Log-Output "    Authorization retrieved"
+            $result = $result | ConvertFrom-Json
+        }
+        Add-Member -InputObject $rule -NotePropertyName az -NotePropertyValue $result
+
+        $result = az servicebus namespace authorization-rule keys list --resource-group $group --namespace-name $name --name $ruleName | ConvertFrom-Json
+        Add-Member -InputObject $rule -NotePropertyName keys -NotePropertyValue $result
+        Add-Member -InputObject $rule -NotePropertyName connectionString -NotePropertyValue $result.primaryConnectionString
     }
 }
 
@@ -396,6 +462,7 @@ function Configure-All() {
     Configure-Group
     Configure-KeyVault
     Configure-Storage
+    Configure-ServiceBus
     Configure-SqlServer
     Configure-SqlDatabases
     Configure-AppServicePlan

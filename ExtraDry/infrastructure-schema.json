@@ -1,0 +1,743 @@
+{
+	"definitions": {},
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"$id": "https://example.com/object1656312543.json",
+	"title": "Root",
+	"type": "object",
+	"required": [
+		"subscription",
+		"location",
+		"group",
+		"keyVault",
+		"storageAccounts",
+		"serviceBus",
+		"dbms",
+		"appServicePlan"
+	],
+	"properties": {
+		"subscription": {
+			"$id": "#root/subscription",
+			"title": "Subscription",
+			"type": "object",
+			"required": [
+				"name"
+			],
+			"properties": {
+				"name": {
+					"$id": "#root/subscription/name",
+					"title": "Name",
+					"type": "string",
+					"default": "",
+					"description": "The name of the subscription to place the application.",
+					"examples": [
+						"YellowJacket"
+					],
+					"pattern": "^.*$"
+				}
+			}
+		},
+		"location": {
+			"$id": "#root/location",
+			"title": "Location",
+			"type": "string",
+			"default": "",
+			"examples": [
+				"centralus"
+			],
+			"description": "The location of the data center.",
+			"enum": [
+				"eastus",
+				"eastus2",
+				"southcentralus",
+				"westus2",
+				"westus3",
+				"australiaeast",
+				"southeastasia",
+				"northeurope",
+				"swedencentral",
+				"uksouth",
+				"westeurope",
+				"centralus",
+				"southafricanorth",
+				"centralindia",
+				"eastasia",
+				"japaneast",
+				"koreacentral",
+				"canadacentral",
+				"francecentral",
+				"germanywestcentral",
+				"norwayeast",
+				"switzerlandnorth",
+				"brazilsouth",
+				"eastus2euap",
+				"centralusstage",
+				"eastusstage",
+				"eastus2stage",
+				"northcentralusstage",
+				"southcentralusstage",
+				"westusstage",
+				"westus2stage",
+				"asia",
+				"asiapacific",
+				"australia",
+				"brazil",
+				"canada",
+				"europe",
+				"france",
+				"germany",
+				"global",
+				"india",
+				"japan",
+				"korea",
+				"norway",
+				"singapore",
+				"southafrica",
+				"switzerland",
+				"uae",
+				"uk",
+				"unitedstates",
+				"unitedstateseuap",
+				"eastasiastage",
+				"southeastasiastage",
+				"northcentralus",
+				"westus",
+				"jioindiawest",
+				"uaenorth",
+				"centraluseuap",
+				"westcentralus",
+				"southafricawest",
+				"australiacentral",
+				"australiacentral2",
+				"australiasoutheast",
+				"japanwest",
+				"jioindiacentral",
+				"koreasouth",
+				"southindia",
+				"westindia",
+				"canadaeast",
+				"francesouth",
+				"germanynorth",
+				"norwaywest",
+				"switzerlandwest",
+				"ukwest",
+				"uaecentral",
+				"brazilsoutheast"
+			]
+		},
+		"group": {
+			"$id": "#root/group",
+			"title": "Group",
+			"type": "object",
+			"required": [
+				"name"
+			],
+			"description": "The default resource-group if not specified per resource.",
+			"properties": {
+				"name": {
+					"$id": "#root/group/name",
+					"title": "Name",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"sample-$env"
+					],
+					"pattern": "^[a-zA-Z][a-zA-Z0-9-$]*$",
+					"description": "The name of the resource group.  Name may contain $variables.",
+					"minLength": 3,
+					"maxLength": 64
+				}
+			}
+		},
+		"keyVault": {
+			"$id": "#root/keyVault",
+			"title": "Keyvault",
+			"type": "object",
+			"required": [
+				"name"
+			],
+			"description": "Creates or links to a KeyVault, use to store generated secrets such as passwords.",
+			"properties": {
+				"name": {
+					"$id": "#root/keyVault/name",
+					"title": "Name",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"sample-$env-keyvault"
+					],
+					"pattern": "^[a-zA-Z$][a-zA-Z0-9$]*(-[a-zA-Z0-9$]+)*$",
+					"minLength": 3,
+					"maxLength": 24,
+					"description": "The name of the key vault.  Name may contain $variables."
+				},
+				"secrets": {
+					"$id": "#root/keyVault/secrets",
+					"title": "Secrets",
+					"type": "array",
+					"default": [],
+					"items": {
+						"$id": "#root/keyVault/secrets/items",
+						"title": "Items",
+						"type": "object",
+						"required": [
+							"name",
+							"contents",
+							"default"
+						],
+						"properties": {
+							"name": {
+								"$id": "#root/keyVault/secrets/items/name",
+								"title": "Name",
+								"type": "string",
+								"default": "",
+								"examples": [
+									"sample-$env-dbms-username"
+								],
+								"pattern": "^[a-zA-Z0-9-$]+$",
+								"maxLength": 127,
+								"description": "The name of the secret.  Name may contain $variables."
+							},
+							"contents": {
+								"$id": "#root/keyVault/secrets/items/contents",
+								"title": "Contents",
+								"type": "string",
+								"default": "",
+								"examples": [
+									"username"
+								],
+								"pattern": "^.*$",
+								"description": "The name of the contents, typically 'username', 'password', 'sasKey', etc.  Name may contain $variables.",
+								"maxLength": 127
+							},
+							"default": {
+								"$id": "#root/keyVault/secrets/items/default",
+								"title": "Default",
+								"type": "string",
+								"default": "",
+								"examples": [
+									"{Generate-Password 30}"
+								],
+								"pattern": "^.*$",
+								"description": "The default value of the secret should one not already exist.  Typically use function expression to auto-generate something."
+							}
+						}
+					}
+
+				}
+			}
+		},
+		"storageAccounts": {
+			"$id": "#root/storageAccounts",
+			"title": "Storage Accounts",
+			"type": "array",
+			"default": [],
+			"description": "The storage accounts created and/or linked to the application.",
+			"items": {
+				"$id": "#root/storageAccounts/items",
+				"title": "Items",
+				"type": "object",
+				"required": [
+					"name"
+				],
+				"properties": {
+					"name": {
+						"$id": "#root/storageAccounts/items/name",
+						"title": "Name",
+						"type": "string",
+						"default": "",
+						"examples": [
+							"sample-$env-webjobs"
+						],
+						"pattern": "^[\\w$-]*$",
+						"minLength": 3,
+						"maxLength": 60
+					}
+				}
+			}
+
+		},
+		"serviceBus": {
+			"$id": "#root/serviceBus",
+			"title": "Servicebus",
+			"type": "object",
+			"required": [
+				"name",
+				"sku",
+				"queues",
+				"authorization"
+			],
+			"properties": {
+				"name": {
+					"$id": "#root/serviceBus/name",
+					"title": "Name",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"sample-$env-servicebus"
+					],
+					"pattern": "^.*$"
+				},
+				"sku": {
+					"$id": "#root/serviceBus/sku",
+					"title": "Sku",
+					"type": "string",
+					"default": "Basic",
+					"examples": [
+						"Basic"
+					],
+					"pattern": "^.*$",
+					"enum": [ "Basic", "Standard", "Premium" ],
+					"description": "The SKU for the plan.  Basic is $0.05 per 1M queue messages.  Standard is $10.00 per $12.5M and also supports Topics.  Premium is $650/month on dedicated hardware."
+				},
+				"queues": {
+					"$id": "#root/serviceBus/queues",
+					"title": "Queues",
+					"type": "array",
+					"default": [],
+					"description": "The list of queues to generate.",
+					"items": {
+						"$id": "#root/serviceBus/queues/items",
+						"title": "Items",
+						"type": "object",
+						"required": [
+							"name"
+						],
+						"properties": {
+							"name": {
+								"$id": "#root/serviceBus/queues/items/name",
+								"title": "Name",
+								"type": "string",
+								"default": "",
+								"examples": [
+									"warehouse-update"
+								],
+								"pattern": "^[a-zA-Z0-9$][\\w\\.$-]*[a-zA-Z0-9]$",
+								"maxLength": 260,
+								"description": "The name of the queue.  Name may contain $variables."
+							}
+						}
+					}
+
+				},
+				"authorization": {
+					"$id": "#root/serviceBus/authorization",
+					"title": "Authorization",
+					"type": "array",
+					"default": [],
+					"description": "The list of shared access authorization policies.",
+					"items": {
+						"$id": "#root/serviceBus/authorization/items",
+						"title": "Items",
+						"type": "object",
+						"required": [
+							"name",
+							"send",
+							"listen",
+							"manage"
+						],
+						"properties": {
+							"name": {
+								"$id": "#root/serviceBus/authorization/items/name",
+								"title": "Name",
+								"type": "string",
+								"default": "",
+								"examples": [
+									"webjob-agent"
+								],
+								"pattern": "^[a-zA-Z0-9$][\\w\\.$-]*[a-zA-Z0-9]*$",
+								"maxLength": 50,
+								"description": "The name of the authorization rule set."
+							},
+							"send": {
+								"$id": "#root/serviceBus/authorization/items/send",
+								"title": "Send",
+								"type": "boolean",
+								"examples": [
+									true
+								],
+								"default": true,
+								"description": "Determines if authorization rules allow sending to queues and topics."
+							},
+							"listen": {
+								"$id": "#root/serviceBus/authorization/items/listen",
+								"title": "Listen",
+								"type": "boolean",
+								"examples": [
+									true
+								],
+								"default": true,
+								"description": "Determines if authorization rules allow listening and reading from queues and topics."
+							},
+							"manage": {
+								"$id": "#root/serviceBus/authorization/items/manage",
+								"title": "Manage",
+								"type": "boolean",
+								"examples": [
+									false
+								],
+								"default": true,
+								"description": "Determines if authorization rules allow for creating and deleting queues and topics."
+							}
+						}
+					}
+
+				}
+			}
+		},
+		"dbms": {
+			"$id": "#root/dbms",
+			"title": "Dbms",
+			"type": "object",
+			"required": [
+				"name",
+				"username",
+				"password"
+			],
+			"properties": {
+				"name": {
+					"$id": "#root/dbms/name",
+					"title": "Name",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"sample-$env-dbms"
+					],
+					"pattern": "^[\\w$-]*$",
+					"description": "The name of the DBMS, must also be unique within the *.database.windows.net domain.  Name may contain $variables.",
+					"maxLength": 63
+				},
+				"username": {
+					"$id": "#root/dbms/username",
+					"title": "Username",
+					"type": "string",
+					"default": "{Get-Secret 'keyvault-secret-username'}",
+					"examples": [
+						"{Get-Secret 'sample-$env-dbms-username'}"
+					],
+					"pattern": "^.*$",
+					"description": "The username for the admin role of the DBMS, typically either static text or KeyVault secret.  Using a keyvault secret is for ease of sharing between configuration, application, and pipelines.  Extra security is not necessarily required."
+				},
+				"password": {
+					"$id": "#root/dbms/password",
+					"title": "Password",
+					"type": "string",
+					"default": "{Get-Secret 'keyvault-secret-password'}",
+					"examples": [
+						"{Get-Secret 'sample-$env-dbms-password'}"
+					],
+					"pattern": "^.*$",
+					"description": "The password for the admin role of the DBMS, typically a KeyVault secret.  Name may contain $variables or {Functions}."
+				},
+				"users": {
+					"$id": "#root/dbms/users",
+					"title": "Users",
+					"type": "array",
+					"default": [],
+					"description": "A list of users that are also added to the DBMS.  It's best practice to create and use these accounts for database access and reserver the DBMS account for server-level administration tasks.",
+					"items": {
+						"$id": "#root/dbms/users/items",
+						"title": "Items",
+						"type": "object",
+						"required": [
+							"name",
+							"password"
+						],
+						"properties": {
+							"name": {
+								"$id": "#root/dbms/users/items/name",
+								"title": "Name",
+								"type": "string",
+								"default": "",
+								"examples": [
+									"sample-database-agent"
+								],
+								"pattern": "^.*$",
+								"description": "The username to be created on the server.  Assign roles to this user on individual databases.",
+								"maxLength": 127
+							},
+							"password": {
+								"$id": "#root/dbms/users/items/password",
+								"title": "Password",
+								"type": "string",
+								"default": "",
+								"examples": [
+									"{Get-Secret 'sample-$env-database-password'}"
+								],
+								"pattern": "^.*$",
+								"description": "The password to be used for this user.  Recommended to retrieve the secret from the KeyVault."
+							}
+						}
+					}
+
+				},
+				"firewall": {
+					"$id": "#root/dbms/firewall",
+					"title": "Firewall",
+					"type": "array",
+					"default": [],
+					"description": "Assign firewall rules to the DBMS.  For development purposes this can be set to the IP address of developers for debugging.  For production, these should not allow external access.",
+					"items": {
+						"$id": "#root/dbms/firewall/items",
+						"title": "Items",
+						"type": "object",
+						"required": [
+							"name",
+							"value"
+						],
+						"properties": {
+							"name": {
+								"$id": "#root/dbms/firewall/items/name",
+								"title": "Name",
+								"type": "string",
+								"default": "",
+								"examples": [
+									"AllowAllWindowsAzureIps"
+								],
+								"pattern": "^[\\w\\.$-].*$",
+								"maxLength": 128
+							},
+							"value": {
+								"$id": "#root/dbms/firewall/items/value",
+								"title": "Value",
+								"type": "string",
+								"default": "",
+								"examples": [
+									"127.0.0.1"
+								],
+								"pattern": "^.*$",
+								"description": "Should be an IP Address or a built-in function, i.e. {Get-LocalIPAddress}"
+							}
+						}
+					}
+
+				},
+				"databases": {
+					"$id": "#root/dbms/databases",
+					"title": "Databases",
+					"type": "array",
+					"default": [],
+					"description": "The database and user-roles to create or link for this application.",
+					"items": {
+						"$id": "#root/dbms/databases/items",
+						"title": "Items",
+						"type": "object",
+						"required": [
+							"name"
+						],
+						"properties": {
+							"name": {
+								"$id": "#root/dbms/databases/items/name",
+								"title": "Name",
+								"type": "string",
+								"default": "",
+								"examples": [
+									"sample-$env-database"
+								],
+								"pattern": "^[\\w\\.$-]*$",
+								"minLength": 1,
+								"maxLength": 128,
+								"description": "The name of the database.  Name may contain $variables."
+							},
+							"users": {
+								"$id": "#root/dbms/databases/items/users",
+								"title": "Users",
+								"type": "array",
+								"default": [],
+								"items": {
+									"$id": "#root/dbms/databases/items/users/items",
+									"title": "Items",
+									"type": "object",
+									"required": [
+										"username",
+										"roles"
+									],
+									"properties": {
+										"username": {
+											"$id": "#root/dbms/databases/items/users/items/username",
+											"title": "Username",
+											"type": "string",
+											"default": "",
+											"examples": [
+												"sample-database-agent"
+											],
+											"pattern": "^.*$",
+											"maxLength": 127,
+											"description": "The username for the user.  Must match a user in the DBMS."
+										},
+										"roles": {
+											"$id": "#root/dbms/databases/items/users/items/roles",
+											"title": "Roles",
+											"type": "array",
+											"default": [],
+											"items": {
+												"$id": "#root/dbms/databases/items/users/items/roles/items",
+												"title": "Items",
+												"type": "string",
+												"default": "db_datareader",
+												"examples": [
+													"db_datareader"
+												],
+												"enum": [ "db_datareader", "db_datawriter", "db_executor", "db_owner", "db_backupoperator", "db_securityadmin", "db_accessadmin" ]
+											}
+										}
+									}
+								}
+
+							}
+						}
+					}
+
+				}
+			}
+		},
+		"appServicePlan": {
+			"$id": "#root/appServicePlan",
+			"title": "Appserviceplan",
+			"type": "object",
+			"required": [
+				"name",
+				"appService"
+			],
+			"description": "Creates or links to an app service plan.  Offers option to link to another group so cost savings can be achieved by running multiple app services on the same app service plan, even when these app services are for different applications.",
+			"properties": {
+				"name": {
+					"$id": "#root/appServicePlan/name",
+					"title": "Name",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"sample-web-shared"
+					],
+					"maxLength": 64,
+					"description": "The name of the server for the app service plan, must conform to DNS naming."
+				},
+				"group": {
+					"$id": "#root/appServicePlan/group",
+					"title": "Group",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"sample-shared-plan"
+					],
+					"pattern": "^[a-zA-Z][a-zA-Z0-9-$]*$",
+					"description": "The name of the resource group.  Name may contain $variables.  If empty, inherits the global resource group, typically only include to explicitly use a shared app service plan.",
+					"minLength": 3,
+					"maxLength": 64
+				},
+				"appService": {
+					"$id": "#root/appServicePlan/appService",
+					"title": "Appservice",
+					"type": "object",
+					"required": [
+						"name"
+					],
+					"properties": {
+						"name": {
+							"$id": "#root/appServicePlan/appService/name",
+							"title": "Name",
+							"type": "string",
+							"default": "",
+							"examples": [
+								"sample-$env-web"
+							],
+							"pattern": "^.*$",
+							"description": "The name of the app service.  Name may contain $variables.",
+							"maxLength": 50
+						},
+						"connectionStrings": {
+							"$id": "#root/appServicePlan/appService/connectionStrings",
+							"title": "Connectionstrings",
+							"type": "array",
+							"default": [],
+							"description": "Creates a set of connection strings for the app service which are stored as configuration options.  These are exposed using environment variables to the app, e.g. using IConfiguration interface.  ",
+							"items": {
+								"$id": "#root/appServicePlan/appService/connectionStrings/items",
+								"title": "Items",
+								"type": "object",
+								"required": [
+									"name",
+									"value"
+								],
+								"properties": {
+									"name": {
+										"$id": "#root/appServicePlan/appService/connectionStrings/items/name",
+										"title": "Name",
+										"type": "string",
+										"default": "",
+										"examples": [
+											"AzureWebJobsStorage"
+										],
+										"pattern": "^.*$",
+										"description": "The name of the connection string."
+									},
+									"type": {
+										"$id": "#root/appServicePlan/appService/connectionStrings/items/type",
+										"title": "Type",
+										"type": "string",
+										"default": "Custom",
+										"enum": [ "MySQL", "SqlAzure", "SqlServer", "PostgreSQL", "Custom" ],
+										"description": "The type of the connection string, can be omitted and will default to 'Custom'."
+									},
+									"value": {
+										"$id": "#root/appServicePlan/appService/connectionStrings/items/value",
+										"title": "Value",
+										"type": "string",
+										"default": "",
+										"examples": [
+											"{Get-StorageConnectionString 'sample-$env-webjobs'}"
+										],
+										"pattern": "^.*$",
+										"description": "The connection string for the resource.  In general this should never be filled in directly and should lookup the connection string for the other resources defined here.  Use one of the following: {Get-StorageConnectionString 'storage-account-name'}, {Get-SqlConnectionString 'database-name', 'keyvault-username-secret-name', 'keyvault-password-secret-name'}, or {Get-ServiceBusConnectionString 'authorization-rule-name'}.  Names may contain $variables."
+									}
+								}
+							}
+
+						},
+						"environmentVariables": {
+							"$id": "#root/appServicePlan/appService/environmentVariables",
+							"title": "Environmentvariables",
+							"type": "array",
+							"default": [],
+							"items": {
+								"$id": "#root/appServicePlan/appService/environmentVariables/items",
+								"title": "Items",
+								"type": "object",
+								"required": [
+									"name",
+									"value"
+								],
+								"properties": {
+									"name": {
+										"$id": "#root/appServicePlan/appService/environmentVariables/items/name",
+										"title": "Name",
+										"type": "string",
+										"default": "",
+										"examples": [
+											"ASPNETCORE_ENVIRONMENT"
+										],
+										"pattern": "^.*$",
+										"description": "The name of the connection string."
+									},
+									"value": {
+										"$id": "#root/appServicePlan/appService/environmentVariables/items/value",
+										"title": "Value",
+										"type": "string",
+										"default": "",
+										"examples": [
+											"{Get-AspNetEnvironment '$env'}"
+										],
+										"pattern": "^.*$",
+										"description": "The value for the environment variable.  Name may contain $variables and {Functions}."
+									}
+								}
+							}
+
+						}
+					}
+				}
+
+			}
+		}
+
+	}
+}
