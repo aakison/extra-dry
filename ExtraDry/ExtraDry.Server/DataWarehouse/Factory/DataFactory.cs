@@ -52,7 +52,6 @@ public class DataFactory {
     /// </summary>
     public async Task<int> ProcessBatchAsync(string entity)
     {
-        await OptionallyApplyMigrationsAsync();
         var tables = Model.Dimensions.Union(Model.Facts).Where(e => e.SourceProperty != null);
         var count = 0;
         foreach(var table in tables) {
