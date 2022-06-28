@@ -26,10 +26,10 @@ builder.ConfigureAppConfiguration(config => {
         config.AddUserSecrets<Program>();
     }
 });
-builder.ConfigureWebJobs(b => {
-    b.AddAzureStorageCoreServices();
-    b.AddAzureStorage();
-    b.AddTimers();
+builder.ConfigureWebJobs(config => {
+    config.AddAzureStorageCoreServices();
+    config.AddServiceBus();
+    config.AddTimers();
 });
 builder.ConfigureLogging((context, b) => {
     b.AddConsole();

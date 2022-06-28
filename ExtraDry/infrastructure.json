@@ -162,7 +162,7 @@
           "value": "{Get-ServiceBusConnectionString 'webapp-agent'}"
         },
         {
-          "name": "WebJobServiceBus",
+          "name": "AzureWebJobsServiceBus", 
           "type": "Custom",
           "value": "{Get-ServiceBusConnectionString 'webjob-agent'}"
         }
