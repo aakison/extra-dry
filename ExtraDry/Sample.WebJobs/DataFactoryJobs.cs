@@ -39,7 +39,7 @@ public class DataFactoryJobs {
     /// See https://codehollow.com/2017/02/azure-functions-time-trigger-cron-cheat-sheet/
     /// </remarks>
     [FunctionName("IntradayProcessing")]
-    public async Task IntradayProcessing([TimerTrigger(EveryHourCron)] TimerInfo _)
+    public async Task IntradayProcessing([TimerTrigger(EveryFiveMinutesCron)] TimerInfo _)
     {
         logger.LogInformation("Started 'IntradayProcessing' Web Job");
         var count = await factory.ProcessBatchesAsync();
@@ -64,9 +64,7 @@ public class DataFactoryJobs {
         logger.LogInformation("Completed 'NightlyProcessing' Web Job, {count} batches processed.", count);
     }
 
-    private const string EveryMinuteCron = "0 * * * * *";
-
-    private const string EveryHourCron = "0 0 * * * *";
+    private const string EveryFiveMinutesCron = "*/5 * * * * *";
 
     private const string AestMidnightCron = "0 0 14 * * *";
 
