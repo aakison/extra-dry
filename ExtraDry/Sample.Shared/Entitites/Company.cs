@@ -74,6 +74,7 @@ public class Company : INamedSubject {
     /// </summary>
     [Display(GroupName = "Status")]
     [Rules(RuleAction.Block)]
+    [JsonIgnore]
     public VersionInfo Version { get; set; } = new VersionInfo();
 
 }

@@ -25,8 +25,6 @@ public class CompanyController {
     /// <remarks>
     /// Provides a complete list of all companies, as this list is not too large, all are returned on every call.
     /// </remarks>
-    /// <param name="query"></param>
-    /// <returns></returns>
     [HttpGet("api/companies"), Produces("application/json")]
     [AllowAnonymous]
     public async Task<FilteredCollection<Company>> List([FromQuery] FilterQuery query)
@@ -37,8 +35,6 @@ public class CompanyController {
     /// <summary>
     /// Retrieve a specific company
     /// </summary>
-    /// <param name="companyId"></param>
-    /// <returns></returns>
     [HttpGet("api/companies/{companyId}"), Produces("application/json")]
     [AllowAnonymous]
     public async Task<Company> Retrieve(Guid companyId)
@@ -52,8 +48,6 @@ public class CompanyController {
     /// <remarks>
     /// Create a new company at the URI, the uniqueId in the URI must match the Id in the payload.
     /// </remarks>
-    /// <param name="value"></param>
-    /// <returns></returns>
     [HttpPost("api/companies"), Consumes("application/json")]
     [Authorize(SamplePolicies.SamplePolicy)]
     public async Task Create(Company value)
@@ -67,15 +61,12 @@ public class CompanyController {
     /// <remarks>
     /// Update the company at the URI, the uniqueId in the URI must match the Id in the payload.
     /// </remarks>
-    /// <param name="companyId"></param>
-    /// <param name="value"></param>
-    /// <returns></returns>
     [HttpPut("api/companies/{companyId}"), Consumes("application/json")]
     [Authorize(SamplePolicies.SamplePolicy)]
     public async Task Update(Guid companyId, Company value)
     {
         if(companyId != value?.Uuid) {
-            throw new ArgumentException("ID in URI must match body.", nameof(companyId));
+            throw new ArgumentMismatchException("ID in URI must match body.", nameof(companyId));
         }
         await companies.Update(value);
     }
@@ -83,8 +74,6 @@ public class CompanyController {
     /// <summary>
     /// Delete an existing company
     /// </summary>
-    /// <param name="companyId"></param>
-    /// <returns></returns>
     [HttpDelete("api/companies/{companyId}")]
     [Authorize(SamplePolicies.SamplePolicy)]
     public async Task Delete(Guid companyId)

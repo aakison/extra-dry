@@ -57,6 +57,9 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, INamedSubject, IV
     [Display(Name = "Status", ShortName = "Status")]
     public RegionStatus Status { get; set; }
 
+    [JsonIgnore]
+    public VersionInfo Version { get; set; } = new();
+
     /// <summary>
     /// Validates the code is in the right ISO-3166 format based on the level of the region.
     /// </summary>

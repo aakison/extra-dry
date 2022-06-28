@@ -66,7 +66,7 @@ public class SectorController {
     public async Task Update(Guid sectorId, Sector value)
     {
         if(sectorId != value?.Uuid) {
-            throw new ArgumentException("ID in URI must match body.", nameof(sectorId));
+            throw new ArgumentMismatchException("ID in URI must match body.", nameof(sectorId));
         }
         await sectors.UpdateAsync(value);
     }

@@ -51,7 +51,7 @@ public class DataConverter {
     public static Func<DateTime> CurrentDateTime { get; set; } = () => DateTime.UtcNow;
 
     /// <summary>
-    /// Given a camel-case (or Pascal-case) string, inserts spaces between words, retaining acronyms.
+    /// Given a camelCase (or PascalCase) string, inserts spaces between words, retaining acronyms.
     /// E.g. "TwoWords" becomes "Two Words", "VGAGraphics" becomes "VGA Graphics".
     /// </summary>
     public static string CamelCaseToTitleCase(string value)
@@ -64,6 +64,11 @@ public class DataConverter {
 
         return value;
     }
+
+    /// <summary>
+    /// Given a camelCase (or PascalCase) string, converts it to kebab-case.
+    /// </summary>
+    public static string CamelCaseToKebabCase(string value) => WebId.ToWebId(CamelCaseToTitleCase(value));
 
     /// <summary>
     /// Gets the DataAnnotation DisplayName attribute for a given enum (for displaying enums values nicely to users)

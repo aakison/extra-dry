@@ -125,6 +125,7 @@ namespace Sample.Server {
                 swagger.InjectStylesheet("/css/swagger-ui-extensions.css");
                 swagger.InjectJavascript("/js/swagger-ui-extensions.js");
                 swagger.DocumentTitle = "Sample Blazor.ExtraDry APIs";
+                swagger.EnableDeepLinking();
             });
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();

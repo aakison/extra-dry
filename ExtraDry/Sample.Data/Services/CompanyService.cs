@@ -19,11 +19,11 @@ public class CompanyService {
         await database.SaveChangesAsync();
     }
 
-    public async Task<Company> RetrieveAsync(Guid uniqueId)
+    public async Task<Company> RetrieveAsync(Guid companyId)
     {
-        var result = await TryRetrieveAsync(uniqueId);
+        var result = await TryRetrieveAsync(companyId);
         if(result == null) {
-            throw new ArgumentOutOfRangeException(nameof(uniqueId));
+            throw new ArgumentOutOfRangeException(nameof(companyId));
         }
         return result;
     }

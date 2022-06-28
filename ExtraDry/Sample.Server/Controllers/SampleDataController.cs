@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-using ExtraDry.Server;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -36,7 +35,6 @@ public class SampleDataController {
     [SuppressMessage("ApiUsage", "DRY1107:HttpPost, HttpPut and HttpPatch methods should have Consumes attribute", Justification = "RPC, not REST.")]
     public async Task CreateBaseDataRpcAsync()
     {
-        throw new NotImplementedException();
         var shouldLoadSamples = !await context.Sectors.AnyAsync();
         var sampleData = new DummyData();
         if(shouldLoadSamples) {
