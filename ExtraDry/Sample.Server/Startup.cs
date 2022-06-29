@@ -1,6 +1,7 @@
 #nullable enable
 
-using ExtraDry.Server;
+using ExtraDry.Core.Models;
+using ExtraDry.Server.DataWarehouse;
 using ExtraDry.Server.EF;
 using ExtraDry.Swashbuckle;
 using Microsoft.AspNetCore.Authentication;
@@ -76,16 +77,23 @@ namespace Sample.Server {
 
             services.AddHttpContextAccessor();
 
-            //services.AddDbContext<SampleContext>(opt => opt.UseInMemoryDatabase("sample"));
+            services.AddServiceBusQueue<EntityMessage>(options => {
+                options.ConnectionStringKey = "WebAppServiceBus";
+                options.QueueName = "warehouse-update";
+            });
+
             services.AddScoped(services => {
                 var connectionString = Configuration.GetConnectionString("WebAppOltpDatabase");
                 var dbOptionsBuilder = new DbContextOptionsBuilder<SampleContext>().UseSqlServer(connectionString);
                 var context = new SampleContext(dbOptionsBuilder.Options);
-                var accessor = services.GetService<IHttpContextAccessor>();
-                if(accessor == null) {
-                    throw new Exception("Need HTTP Accessor for VersionInfoAspect");
-                }
+
+                var accessor = services.GetRequiredService<IHttpContextAccessor>();
                 _ = new VersionInfoAspect(context, accessor);
+
+                var logger = services.GetService<ILogger<DataWarehouseAspect>>();
+                var queue = services.GetRequiredService<ServiceBusQueue<EntityMessage>>();
+                _ = new DataWarehouseAspect(context, queue, logger);
+
                 //_ = new SearchIndexAspect(context, services.GetService<SearchService>());
                 return context;
             });
@@ -99,6 +107,7 @@ namespace Sample.Server {
             services.AddScoped<RegionService>();
             
             services.AddScoped<IEntityResolver<Sector>>(e => e.GetService<SectorService>()!);
+
         }
 
         /// <summary>
