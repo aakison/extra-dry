@@ -17,17 +17,17 @@ public class DateGeneratorOptions {
     }
     private int fiscalYearEndingMonth = 12;
 
-    public Func<DateOnly, IEnumerable<DayType>> DayTypesSelector { get; set; } = TrivialHolidaySelector;
+    public Func<DateOnly, DayType> DayTypesSelector { get; set; } = TrivialHolidaySelector;
 
-    private static IEnumerable<DayType> TrivialHolidaySelector(DateOnly date) {
+    private static DayType TrivialHolidaySelector(DateOnly date) {
         if((date.Month == 12 && date.Day == 25) || (date.Month == 1 && date.Day == 1)) {
-            yield return DayType.Holiday;
+            return DayType.Holiday;
         }
         else if(date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday) {
-            yield return DayType.Weekend;
+            return DayType.Weekend;
         }
         else {
-            yield return DayType.Workday;
+            return DayType.Workday;
         }
     }
 

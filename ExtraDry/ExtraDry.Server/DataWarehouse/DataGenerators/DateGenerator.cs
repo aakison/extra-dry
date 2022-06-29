@@ -57,9 +57,8 @@ public class DateGenerator : IDataGenerator {
     private void AddDatesToBatch(List<object> batch, int d)
     {
         var date = IntToDate(d);
-        foreach(var day in Options.DayTypesSelector(date)) {
-            batch.Add(new Date(d, day) { FiscalYearEndingMonth = FiscalYearEndingMonth });
-        }
+        var day = Options.DayTypesSelector(date);
+        batch.Add(new Date(d, day) { FiscalYearEndingMonth = FiscalYearEndingMonth });
     }
 
     public DateTime GetSyncTimestamp() => DateTime.UtcNow;
