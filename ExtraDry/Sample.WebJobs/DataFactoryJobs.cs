@@ -33,13 +33,10 @@ public class DataFactoryJobs {
 
     /// <summary>
     /// A routine processing step that runs a single batch until all batches are complete, chance to catch up if tons of updates.
-    /// Cron is set to run at 2pm UTC, which is midnight AEST.
+    /// Cron is set to run hourly and only process a single batch.
     /// </summary>
-    /// <remarks>
-    /// See https://codehollow.com/2017/02/azure-functions-time-trigger-cron-cheat-sheet/
-    /// </remarks>
     [FunctionName("IntradayProcessing")]
-    public async Task IntradayProcessing([TimerTrigger(EveryFiveMinutesCron)] TimerInfo _)
+    public async Task IntradayProcessing([TimerTrigger(HourlyCron)] TimerInfo _)
     {
         logger.LogInformation("Started 'IntradayProcessing' Web Job");
         var count = await factory.ProcessBatchesAsync();
@@ -64,7 +61,7 @@ public class DataFactoryJobs {
         logger.LogInformation("Completed 'NightlyProcessing' Web Job, {count} batches processed.", count);
     }
 
-    private const string EveryFiveMinutesCron = "*/5 * * * * *";
+    private const string HourlyCron = "0 0 * * * *";
 
     private const string AestMidnightCron = "0 0 14 * * *";
 
