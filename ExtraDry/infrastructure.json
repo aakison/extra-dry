@@ -11,34 +11,24 @@
     "name": "sample-$env-keyvault",
     "secrets": [
       {
-        "name": "sample-$env-dbms-username",
-        "contents": "username",
-        "default": "sample-dbms-admin"
-      },
-      {
-        "name": "sample-$env-dbms-password",
+        "name": "sample-dbms-admin-password",
         "contents": "password",
         "default": "{Generate-Password 30}"
       },
       {
-        "name": "sample-$env-database-username",
-        "contents": "username",
-        "default": "sample-database-agent"
-      },
-      {
-        "name": "sample-$env-database-password",
+        "name": "sample-webapp-agent-password",
         "contents": "password",
         "default": "{Generate-Password 30}"
       },
       {
-        "name": "sample-$env-warehouse-username",
-        "contents": "username",
-        "default": "sample-warehouse-agent"
-      },
-      {
-        "name": "sample-$env-warehouse-password",
+        "name": "sample-webjob-agent-password",
         "contents": "password",
         "default": "{Generate-Password 30}"
+      },
+      {
+        "name": "sample-powerbi-user-password",
+        "contents": "password",
+        "default": "{Generate-Password 12}"
       }
     ]
   },
@@ -72,16 +62,20 @@
   },
   "dbms": {
     "name": "sample-$env-dbms",
-    "username": "{Get-Secret 'sample-$env-dbms-username'}",
-    "password": "{Get-Secret 'sample-$env-dbms-password'}",
+    "username": "sample-dbms-admin",
+    "password": "{Get-Secret 'sample-dbms-admin-password'}",
     "users": [
       {
-        "name": "sample-database-agent",
-        "password": "{Get-Secret 'sample-$env-database-password'}"
+        "name": "sample-webapp-agent",
+        "password": "{Get-Secret 'sample-webapp-agent-password'}"
       },
       {
-        "name": "sample-warehouse-agent",
-        "password": "{Get-Secret 'sample-$env-warehouse-password'}"
+        "name": "sample-webjob-agent",
+        "password": "{Get-Secret 'sample-webjob-agent-password'}"
+      },
+      {
+        "name": "sample-powerbi-user",
+        "password": "{Get-Secret 'sample-powerbi-user-password'}"
       }
     ],
     "firewall": [
@@ -99,11 +93,11 @@
         "name": "sample-$env-database",
         "users": [
           {
-            "username": "sample-database-agent",
+            "username": "sample-webapp-agent",
             "roles": [ "db_datareader", "db_datawriter", "db_executor" ]
           },
           {
-            "username": "sample-warehouse-agent",
+            "username": "sample-webjob-agent",
             "roles": [ "db_datareader" ]
           }
         ]
@@ -112,12 +106,16 @@
         "name": "sample-$env-warehouse",
         "users": [
           {
-            "username": "sample-database-agent",
+            "username": "sample-webapp-agent",
             "roles": [ "db_datareader" ]
           },
           {
-            "username": "sample-warehouse-agent",
+            "username": "sample-webjob-agent",
             "roles": [ "db_datareader", "db_datawriter", "db_executor", "db_owner" ]
+          },
+          {
+            "username": "sample-powerbi-user",
+            "roles": [ "db_datareader" ]
           }
         ]
       }
@@ -127,7 +125,7 @@
     "name": "YellowJacketWebShared",
     "group": "YellowJacketWebDev",
     "appService": {
-      "name": "sample-$env-web",
+      "name": "sample-$env-webapp",
       "connectionStrings": [
         {
           "name": "AzureWebJobsStorage",
@@ -140,22 +138,22 @@
         {
           "name": "WebAppOltpDatabase",
           "type": "SqlServer",
-          "value": "{Get-SqlConnectionString 'sample-$env-database' 'sample-$env-database-username' 'sample-$env-database-password'}"
+          "value": "{Get-SqlConnectionString 'sample-$env-database' 'sample-webapp-agent' (Get-Secret 'sample-webapp-agent-password')}"
         },
         {
           "name": "WebAppOlapDatabase",
           "type": "SqlServer",
-          "value": "{Get-SqlConnectionString 'sample-$env-warehouse' 'sample-$env-database-username' 'sample-$env-database-password'}"
+          "value": "{Get-SqlConnectionString 'sample-$env-warehouse' 'sample-webapp-agent' (Get-Secret 'sample-webapp-agent-password')}"
         },
         {
           "name": "WebJobOltpDatabase",
           "type": "SqlServer",
-          "value": "{Get-SqlConnectionString 'sample-$env-database' 'sample-$env-warehouse-username' 'sample-$env-warehouse-password'}"
+          "value": "{Get-SqlConnectionString 'sample-$env-database' 'sample-webjob-agent' (Get-Secret 'sample-webjob-agent-password')}"
         },
         {
           "name": "WebJobOlapDatabase",
           "type": "SqlServer",
-          "value": "{Get-SqlConnectionString 'sample-$env-warehouse' 'sample-$env-warehouse-username' 'sample-$env-warehouse-password'}"
+          "value": "{Get-SqlConnectionString 'sample-$env-warehouse' 'sample-webjob-agent' (Get-Secret 'sample-webjob-agent-password')}"
         },
         {
           "name": "WebAppServiceBus",

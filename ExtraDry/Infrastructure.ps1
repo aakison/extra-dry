@@ -71,10 +71,10 @@ function Get-ConnectionStringTemplate($serverName) {
     }
 }
 
-function Get-SqlConnectionString($serverName, $usernameKey, $passwordKey) {
+function Get-SqlConnectionString($serverName, $username, $password) {
     $template = Get-ConnectionStringTemplate $serverName
-    $username = Get-Secret $usernameKey
-    $password = Get-Secret $passwordKey
+    #$username = Get-Secret $usernameKey
+    #$password = Get-Secret $passwordKey
     $template.Replace("<username>", $username).Replace("<password>", $password);
 }
 
@@ -400,7 +400,7 @@ function Configure-AppServicePlan() {
     $result = az appservice plan show --resource-group $group --name $name 2>&1
     if($result.ToString().Contains("ResourceNotFound")) {
         Log-Output "  App service plan '$name ($group)' not found"
-        $result = az appservice plan create --resource-group $group --name $name | ConvertFrom-Json
+
     }
     else {
         Log-Output "  App service plan '$name' found"
@@ -427,8 +427,7 @@ function Configure-AppService() {
     Log-Output "Configuring AppService '$name'"
     $group = Expand-Variable $configuration.group.name
     $result = az webapp show --resource-group $group --name $name 2>&1
-    #different errors depending on windows or linux servers... 
-    if($result[0].ToString().Contains("ResourceNotFound") -or $result[0].ToString().Contains("Unable to find")) {
+    if($result[0].ToString().Contains("ResourceNotFound")) {
         Log-Output "  App service not found, creating..."
         $result = az webapp create --resource-group $group --plan $configuration.appServicePlan.az.id --name $name | ConvertFrom-Json
     }
