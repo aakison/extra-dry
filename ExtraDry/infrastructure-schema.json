@@ -675,7 +675,7 @@
 										"title": "Type",
 										"type": "string",
 										"default": "Custom",
-										"enum": [ "MySQL", "SqlAzure", "SqlServer", "PostgreSQL", "Custom" ],
+										"enum": [ "MySQL", "SQLAzure", "SQLServer", "PostgreSQL", "Custom" ],
 										"description": "The type of the connection string, can be omitted and will default to 'Custom'."
 									},
 									"value": {

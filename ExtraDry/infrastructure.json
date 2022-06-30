@@ -1,4 +1,5 @@
 {
+  "$schema": "https://raw.githubusercontent.com/fmi-works/extra-dry/develop/ExtraDry/infrastructure-schema.json",
   "subscription": {
     "name": "YellowJacket"
   },
@@ -162,7 +163,7 @@
           "value": "{Get-ServiceBusConnectionString 'webapp-agent'}"
         },
         {
-          "name": "AzureWebJobsServiceBus", 
+          "name": "AzureWebJobsServiceBus",
           "type": "Custom",
           "value": "{Get-ServiceBusConnectionString 'webjob-agent'}"
         }
