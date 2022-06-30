@@ -1,5 +1,6 @@
 {
-  "$schema": "https://raw.githubusercontent.com/fmi-works/extra-dry/develop/ExtraDry/infrastructure-schema.json",
+  "$schema": "https://raw.githubusercontent.com/fmi-works/extra-dry-azure/main/infrastructure-schema.json",
+  "version": "0.3.1",
   "subscription": {
     "name": "YellowJacket"
   },
