@@ -13,7 +13,7 @@ else
             <form class="@ModelNameWebId" onsubmit="return false;" action="/" method="GET">
                 <div class="@ModelNameWebId entity-info">
                     <DryIcon Key="@Description.Icon" />
-                    <label>Company</label>
+                    <label>@Description.ModelDisplayName</label>
                 </div>
                 <div class="@ModelNameWebId status-properties">
                     @foreach (var fieldset in FormDescription.Fieldsets.Take(FixedGroups)) {
