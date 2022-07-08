@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System.Collections;
 
 namespace ExtraDry.Blazor;
@@ -55,7 +53,7 @@ public partial class DryInput<T> : OwningComponentBase, IDisposable {
 
     private bool valid = true;
 
-    private string CssClass => Property.DisplayClass + (valid ? " valid" : " invalid");
+    private string CssClass => $"{Property.DisplayClass} {StateCss} {ValidCss}";
 
     private string SizeClass => Property.Size.ToString().ToLowerInvariant();
 
@@ -84,17 +82,16 @@ public partial class DryInput<T> : OwningComponentBase, IDisposable {
             Logger.LogError($"An attempt to display a DryInput for type `{Property?.Property?.PropertyType}`, but no option provider was registered.  To enable select functionality for linked types, please add a scoped reference to the `IOptionProvider` in `Main`.  E.g. `builder.Services.AddScoped<IOptionProvider<{Property?.Property?.PropertyType}>>(e => new MyOptionProvider());`.  Also note that IListService implements IOptionProvider and can be used to register RESTful APIs.");
         }
     }
-         
-    private string TextDescription {
-        get {
-            if(Editable) {
-                return Property.Description + (Property.IsRequired ? " (required)" : "");
-            }
-            else {
-                return $"{Property.Description} (read-only)"; 
-            }
-        }
-    }
+
+    private string TextDescription => Property.Description;
+
+    private string StateCss => (Editable, Property.IsRequired) switch {
+        (true, true) => "required",
+        (true, false) => "optional",
+        (false, _) => "readonly"
+    };
+
+    private string ValidCss => valid ? " valid" : " invalid";
 
     private string HtmlDescription => TextDescription.Replace("-", "&#8209;"); // non-breaking-hyphen.
 

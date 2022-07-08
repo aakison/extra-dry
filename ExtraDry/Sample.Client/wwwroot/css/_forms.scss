@@ -137,3 +137,12 @@ div.field.caption {
         border: none;
     }
 }
+
+form {
+    select {
+        option::before {
+            color: red;
+            content: "X";
+        }
+    }
+}
