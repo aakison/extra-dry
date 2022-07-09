@@ -60,7 +60,7 @@ public partial class DryForm<T> : ComponentBase {
             await command.ExecuteAsync(Model);
         }
         catch(DryException ex) {
-            error = ex.UserMessage;
+            error = ex.ProblemDetails.Title;
         }
         catch(Exception) {
             error = "Unrecognized error occurred";

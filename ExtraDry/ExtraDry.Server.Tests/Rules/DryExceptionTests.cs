@@ -7,7 +7,7 @@ public class DryExceptionTests {
     {
         var exception = new DryException();
 
-        Assert.Null(exception.UserMessage);
+        Assert.Null(exception.ProblemDetails.Detail);
         Assert.Contains(nameof(DryException), exception.Message);
         Assert.Null(exception.InnerException);
     }
@@ -17,7 +17,7 @@ public class DryExceptionTests {
     {
         var exception = new DryException("message");
 
-        Assert.Null(exception.UserMessage);
+        Assert.Null(exception.ProblemDetails.Detail);
         Assert.Contains("message", exception.Message);
         Assert.Null(exception.InnerException);
     }
@@ -28,7 +28,7 @@ public class DryExceptionTests {
         var inner = new Exception();
         var exception = new DryException("message", inner);
 
-        Assert.Null(exception.UserMessage);
+        Assert.Null(exception.ProblemDetails.Detail);
         Assert.Contains("message", exception.Message);
         Assert.Equal(inner, exception.InnerException);
     }
@@ -38,7 +38,7 @@ public class DryExceptionTests {
     {
         var exception = new DryException("message", "user");
 
-        Assert.Equal("user", exception.UserMessage);
+        Assert.Equal("user", exception.ProblemDetails.Detail);
         Assert.Contains("message", exception.Message);
         Assert.Null(exception.InnerException);
     }
@@ -46,11 +46,10 @@ public class DryExceptionTests {
     [Fact]
     public void UserMessageChangable()
     {
-        var exception = new DryException("message", "user") {
-            UserMessage = "new-message"
-        };
+        var exception = new DryException("message", "user");
+        exception.ProblemDetails.Detail = "new-message";
 
-        Assert.Equal("new-message", exception.UserMessage);
+        Assert.Equal("new-message", exception.ProblemDetails.Detail);
     }
 
 }

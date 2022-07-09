@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using ExtraDry.Blazor.Components.Internal;
+using ExtraDry.Core.Models;
 
 namespace ExtraDry.Blazor;
 
@@ -39,7 +40,8 @@ public partial class DryErrorBoundary : ComponentBase {
     private Type ErrorType => ErrorComponent ?? ThemeInfo?.ErrorComponent ?? typeof(DefaultErrorComponent);
 
     private Dictionary<string, object?> ErrorParameters => new() {
-        { nameof(Exception), ErrorBoundary.ExposedCurrentException }
+        { nameof(Exception), ErrorBoundary.ExposedCurrentException },
+        { nameof(ProblemDetails), (ErrorBoundary.ExposedCurrentException as DryException)?.ProblemDetails }
     };
 
 }

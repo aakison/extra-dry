@@ -37,7 +37,8 @@ public class ApiExceptionStatusCodesAttribute : ExceptionFilterAttribute {
             context.ExceptionHandled = true;
         }
         else if(context.Exception is DryException dryException) {
-            ExceptionResponse.RewriteResponse(context, HttpStatusCode.BadRequest, dryException.UserMessage);
+            // TODO: better handling here...
+            ExceptionResponse.RewriteResponse(context, HttpStatusCode.BadRequest, dryException.ProblemDetails.Detail);
             context.ExceptionHandled = true;
         }
     }
