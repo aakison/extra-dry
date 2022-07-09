@@ -10,7 +10,11 @@
 
 @if (CompanyUuid != Guid.Empty)
 {
-    <CompanyEditDialog Uuid="@CompanyUuid" />
+    <DialogBox>
+        <DryErrorBoundary>
+            <CompanyEditDialog Uuid="@CompanyUuid" />
+        </DryErrorBoundary>
+    </DialogBox>
 }
 
 @code {

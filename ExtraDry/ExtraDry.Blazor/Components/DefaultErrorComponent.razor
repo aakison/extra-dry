@@ -1,0 +1,55 @@
+﻿@namespace ExtraDry.Blazor
+
+<div class="@CssClass">
+    <h3>Error Occurred</h3>
+
+    @if(Details != null) {
+        <div class="problemDetails @CssClass">
+            <div class="placeholder"></div>
+            <dl>
+                <dt class="status">Status</dt>
+                <dd class="status">@Details.Status</dd>
+
+                <dt class="title">Title</dt>
+                <dd class="title">@Details.Title</dd>
+
+                <dt class="instance">Instance</dt>
+                <dd class="instance">@Details.Instance</dd>
+            </dl>
+        </div>
+    }   
+    else {
+        <div class="exception @CssClass">
+            <div class="placeholder"></div>
+            <dl>
+                <dt class="exception">Exception</dt>
+                <dd class="exception">@DataConverter.CamelCaseToTitleCase(Exception.GetType().Name)</dd>
+
+                <dt class="message">Message</dt>
+                <dd class="message">@Exception?.Message</dd>
+
+                <dt class="instructions">Instructions</dt>
+                <dd class="instructions">
+                    Exposing exceptions is not friendly for users, considering shifting exceptions
+                    to problem details.
+                </dd>
+            </dl>
+            
+        </div>
+    }
+</div>
+
+@code {
+
+    #nullable enable
+
+    [Parameter]
+    public Exception? Exception { get; set; }
+
+    [Parameter]
+    public ProblemDetails? Details { get; set; }
+
+    private string ErrorCss => Details?.Status == null ? "errorXxx" : $"error{Details.Status}";
+
+    private string CssClass => $"error {ErrorCss}";
+}

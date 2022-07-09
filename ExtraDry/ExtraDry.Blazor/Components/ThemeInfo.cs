@@ -1,8 +1,11 @@
-﻿namespace ExtraDry.Blazor {
+﻿#nullable enable
 
-    public class ThemeInfo {
+namespace ExtraDry.Blazor;
 
-        public string IconPrefix { get; set; } = "fas fa-";
+public class ThemeInfo {
 
-    }
+    public string IconPrefix { get; set; } = "fas fa-";
+
+    public Type ErrorComponent { get; set; } = typeof(DefaultErrorComponent);
+
 }
