@@ -11400,3 +11400,46 @@ div.field.caption label span {
 div.field.caption input {
   border: none;
 }
+
+form select option::before {
+  color: red;
+  content: "X";
+}
+
+div.error h3, div.error .h3 {
+  display: none;
+}
+div.error div.problemDetails {
+  position: relative;
+}
+div.error div.problemDetails div.errorImagePlaceholder {
+  position: absolute;
+  z-index: 10;
+}
+div.error div.problemDetails div.errorImagePlaceholder::before {
+  content: url("../img/error-generic.svg");
+}
+div.error div.problemDetails dl {
+  position: absolute;
+  z-index: 0;
+  margin-left: 50px;
+  margin-top: 50px;
+}
+div.error div.problemDetails dl dt {
+  margin-left: 10px;
+}
+div.error div.problemDetails dl dt.title {
+  margin-top: 40px;
+}
+div.error div.problemDetails dl dt.status {
+  display: none;
+}
+div.error div.problemDetails dl dd {
+  margin-left: 10px;
+}
+div.error div.problemDetails dl dd.status {
+  margin-left: 0;
+  font-weight: 900;
+  font-size: 24px;
+  color: var(--danger);
+}

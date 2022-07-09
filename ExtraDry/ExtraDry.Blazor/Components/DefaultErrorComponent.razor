@@ -1,12 +1,12 @@
 ﻿@namespace ExtraDry.Blazor
 @using ExtraDry.Core.Models
 
-<div class="@CssClass">
+<div class="error @ErrorCss">
     <h3>Error Occurred</h3>
 
     @if(ProblemDetails != null) {
-        <div class="problemDetails @CssClass">
-            <div class="placeholder"></div>
+        <div class="problemDetails @ErrorCss">
+            <div class="errorImagePlaceholder"></div>
             <dl>
                 <dt class="status">Status</dt>
                 <dd class="status">@ProblemDetails.Status</dd>
@@ -14,17 +14,21 @@
                 <dt class="title">Title</dt>
                 <dd class="title">@ProblemDetails.Title</dd>
 
-                <dt class="details">Details</dt>
-                <dd class="details">@ProblemDetails.Detail</dd>
+                @if(!string.IsNullOrWhiteSpace(ProblemDetails.Detail)) {
+                    <dt class="details">Details</dt>
+                    <dd class="details">@ProblemDetails.Detail</dd>
+                }
 
-                <dt class="instance">Instance</dt>
-                <dd class="instance">@ProblemDetails.Instance</dd>
+                @if(!string.IsNullOrWhiteSpace(ProblemDetails.Instance)) {
+                    <dt class="instance">Instance</dt>
+                    <dd class="instance">@ProblemDetails.Instance</dd>
+                }
             </dl>
         </div>
     }   
     else {
-        <div class="exception @CssClass">
-            <div class="placeholder"></div>
+        <div class="exception @ErrorCss">
+            <div class="errorImagePlaceholder"></div>
             <dl>
                 <dt class="exception">Exception</dt>
                 <dd class="exception">@DataConverter.CamelCaseToTitleCase(Exception.GetType().Name)</dd>
@@ -55,5 +59,4 @@
 
     private string ErrorCss => ProblemDetails?.Status == null ? "errorXxx" : $"error{ProblemDetails.Status}";
 
-    private string CssClass => $"error {ErrorCss}";
 }
