@@ -1,17 +1,38 @@
 ﻿#nullable enable
 
-using ExtraDry.Blazor.Components;
-using ExtraDry.Core.Models;
+using ExtraDry.Blazor.Extensions;
 using Microsoft.Extensions.Logging;
-using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 
 namespace ExtraDry.Blazor;
 
+/// <summary>
+/// A simple CRUD API service wrapper for Extra Dry service endpoints.
+/// This wrapper assumes that 4 endpoints exist following standard RESTful principles for endpoints.
+/// The entity of Type `T must be JSON serializable and accepted by the server.
+/// On non-success (2xx) results, the service endpoints should return a ProblemDetails (RFC7807)
+/// response body.  This body will be unwrapped and throw in the body of a DryException.  If 
+/// ProblemDetails are not present, then a trivial attempt to unpacke the arbitrary response 
+/// payload will be made.
+/// </summary>
 public class CrudService<T> {
 
+    /// <summary>
+    /// Create a CRUD service with the specified configuration.  This service should not be 
+    /// manually added to the IServiceCollection.  Instead, use the AddCrudService`T 
+    /// extension method.
+    /// </summary>
+    /// <param name="client">A HttpClient object, typically from DI</param>
+    /// <param name="entityEndpointTemplate">
+    /// The template for the API.  This is that path portion of the URI as the app can only call
+    /// the server that it came from.  The endpoint may include placeholders for any number of 
+    /// replacements, e.g. "{0}".  During construction of the final endpoint, these placeholders
+    /// are used with `args` provided to each method to resolve the final endpoint.
+    /// E.g. /widgets/{0}
+    /// </param>
+    /// <param name="iLogger">An optional logger</param>
     public CrudService(HttpClient client, string entityEndpointTemplate, ILogger<CrudService<T>>? iLogger = null)
     {
         http = client;
@@ -19,65 +40,48 @@ public class CrudService<T> {
         logger = iLogger;
     }
 
+    /// <summary>
+    /// The API Template used to determine the final endpoint URI.
+    /// </summary>
     public string ApiTemplate { get; set; }
 
     public async Task CreateAsync(T item, params object[] args)
     {
-        // TODO: Map DryException on server to DryException in Blazor for better messaging...
         var json = JsonSerializer.Serialize(item);
         using var content = new StringContent(json, Encoding.UTF8, "application/json");
-        var endpoint = ApiEndpoint("POST", args);
-        try {
-            var response = await http.PostAsync(endpoint, content);
-            await response.AssertSuccess();
-        }
-        catch(Exception ex) {
-            Console.Error.WriteLine($"Server Side Error while processing CrudService.CreateAsync.\n" +
-                $"API Endpoint: POST {endpoint}\n" +
-                $"Error Response: {ex.Message}");
-            throw;
-        }
+        var endpoint = ApiEndpoint(nameof(CreateAsync), args);
+        var response = await http.PostAsync(endpoint, content);
+        await response.AssertSuccess();
+        logger?.LogDebug("Created '{entity}' on '{endpoint}' with content: {content}", nameof(T), endpoint, json);
     }
 
     public async Task<T?> RetrieveAsync(object key, params object[] args)
     {
-        var endpoint = ApiEndpoint("RetrieveAsync", key, args);
+        var endpoint = ApiEndpoint(nameof(RetrieveAsync), key, args);
         logger?.LogInformation("Retrieving '{entity}' from '{endpoint}'", nameof(T), endpoint);
-        Console.WriteLine(endpoint);
         var response = await http.GetAsync(endpoint);
-        if(response.IsSuccessStatusCode) {
-            var item = await response.Content.ReadFromJsonAsync<T>();
-            logger?.LogDebug("Retrieved '{entity}' from '{endpoint}' with content: {content}", nameof(T), endpoint, item);
-            return item;
-        }
-        else {
-            var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>();
-            logger?.LogDebug("Retrieve '{entity}' from '{endpoint}' failed with problem: {problem}", nameof(T), endpoint, problem);
-            throw new DryException(problem);
-        }
+        await response.AssertSuccess();
+        var item = await response.Content.ReadFromJsonAsync<T>();
+        logger?.LogDebug("Retrieved '{entity}' from '{endpoint}' with content: {content}", nameof(T), endpoint, item);
+        return item;
     }
 
     public async Task UpdateAsync(object key, T item, params object[] args)
     {
-        // TODO: Map DryException on server to DryException in Blazor for better messaging...
-        var endpoint = ApiEndpoint("UpdateAsync", key, args);
-        Console.WriteLine(endpoint);
-        try {
-            var response = await http.PutAsJsonAsync(endpoint, item);
-            await response.AssertSuccess();
-        }
-        catch(Exception ex) {
-            Console.Error.WriteLine($" {ex.Message}");
-        }
+        var endpoint = ApiEndpoint(nameof(UpdateAsync), key, args);
+        logger?.LogInformation("Updating '{entity}' on '{endpoint}'", nameof(T), endpoint);
+        var response = await http.PutAsJsonAsync(endpoint, item);
+        await response.AssertSuccess();
+        logger?.LogDebug("Updated '{entity}' on '{endpoint}' with content: {content}", nameof(T), endpoint, item);
     }
 
     public async Task DeleteAsync(object key, params object[] args)
     {
-        // TODO: Map DryException on server to DryException in Blazor for better messaging...
-        var endpoint = ApiEndpoint("DeleteAsync", key, args);
-        Console.WriteLine(endpoint);
+        var endpoint = ApiEndpoint(nameof(DeleteAsync), key, args);
+        logger?.LogInformation("Deleting '{entity}' at '{endpoint}'", nameof(T), endpoint);
         var response = await http.DeleteAsync(endpoint);
         await response.AssertSuccess();
+        logger?.LogDebug("Deleted '{entity}' at '{endpoint}'", nameof(T), endpoint);
     }
 
     private string ApiEndpoint(string method, object key, params object[] args)
@@ -90,82 +94,12 @@ public class CrudService<T> {
         }
         catch(FormatException ex) {
             var argsFormatted = string.Join(',', args?.Select(e => e?.ToString()) ?? Array.Empty<string>());
-            var message = $"Formatting problem while constructing endpoint for `CrudService.{method}`.  Typically the endpoint provided has additional placeholders that have not been provided. The endpoint template ({ApiTemplate}), could not be satisifed with arguments ({argsFormatted}).  Inner Exception was:  {ex.Message}";
-            Console.Error.WriteLine(message);
-            throw new DryException(message, "Error occurred connecting to server.");
+            logger?.LogWarning("Formatting problem while constructing endpoint for `CrudService.{method}`.  Typically the endpoint provided has additional placeholders that have not been provided. The endpoint template ({ApiTemplate}), could not be satisifed with arguments ({argsFormatted}).  Inner Exception was:  {ex.Message}", method, ApiTemplate, argsFormatted, ex.Message);
+            throw new DryException("Error occurred connecting to server", "This is a mis-configuration and not a user error, please see the console output for more information.");
         }
     }
 
     private readonly HttpClient http;
 
     private readonly ILogger<CrudService<T>>? logger;
-}
-
-
-public static class HttpResponseMessageExtensions {
-
-    internal static async Task AssertSuccess(this HttpResponseMessage response)
-    {
-        try {
-            await response.EnsureSuccessStatusCodeAsync();
-            // Handle success
-        }
-        catch(SimpleHttpResponseException exc) {
-            // Handle failure
-            var x2 = exc.Data;
-        }
-
-        if(!response.IsSuccessStatusCode) {
-            var userMessage = "An unspecified error has occurred.";
-            try {
-                // Map server side validation messages.
-                var str = await response.Content.ReadAsStringAsync();
-                var message = await response.Content.ReadFromJsonAsync<ErrorContent>();
-                if(message == null) {
-                    userMessage = await response.Content.ReadAsStringAsync();
-                }
-                else {
-                    var individualMessages = message.Errors.SelectMany(e => e.Value, (e, f) => f);
-                    userMessage = string.Join("; ", individualMessages);
-                }
-            }
-            catch(Exception ex) {
-                // Just eat it.
-                var x = ex;
-            }
-            throw new DryException(response?.ReasonPhrase ?? "Response failed.", userMessage);
-        }
-    }
-
-    public static async Task EnsureSuccessStatusCodeAsync(this HttpResponseMessage response)
-    {
-        if(response.IsSuccessStatusCode) {
-            return;
-        }
-
-        var content = await response.Content.ReadAsStringAsync();
-
-        if(response.Content != null) {
-            response.Content.Dispose();
-        }
-
-        var error = JsonSerializer.Deserialize<ErrorContent>(content);
-
-        if(error == null) {
-            throw new SimpleHttpResponseException(response.StatusCode, content);
-        }
-        else {
-            var message = $"Validation issues: {string.Join(',', error.Errors.Keys)}";
-            throw new DryException(message);
-        }
-    }
-}
-
-public class SimpleHttpResponseException : Exception {
-    public HttpStatusCode StatusCode { get; private set; }
-
-    public SimpleHttpResponseException(HttpStatusCode statusCode, string content) : base(content)
-    {
-        StatusCode = statusCode;
-    }
 }
