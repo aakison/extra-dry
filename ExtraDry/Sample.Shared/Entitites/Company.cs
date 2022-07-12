@@ -1,6 +1,4 @@
-﻿#nullable disable // EF Model Class
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Sample.Shared.Converters;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -26,13 +24,13 @@ public class Company : INamedSubject {
     [Filter(FilterType.Contains)]
     [Rules(RuleAction.IgnoreDefaults)]
     [Required, StringLength(80)]
-    public string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
 
     [Display(Name = "Code", GroupName = "Summary")]
     [Filter(FilterType.Equals)]
     [Rules(CreateAction = RuleAction.Allow, UpdateAction = RuleAction.Block)]
     [Required, StringLength(24)]
-    public string Code { get; set; }
+    public string Code { get; set; } = string.Empty;
 
     [Display(Name = "Status", ShortName = "Status", GroupName = "Status")]
     [Rules(RuleAction.Allow)]
@@ -42,16 +40,16 @@ public class Company : INamedSubject {
     [Display]
     [MaxLength(1000)]
     [Rules(RuleAction.IgnoreDefaults)]
-    public string Description { get; set; }
+    public string Description { get; set; } = string.Empty;
 
     [Display]
     [Rules(RuleAction.Link)]
     [JsonConverter(typeof(SectorInfoJsonConverter))]
-    public Sector PrimarySector { get; set; }
+    public Sector? PrimarySector { get; set; }
 
     [Display]
     [Rules(RuleAction.Link)]
-    public List<Sector> AdditionalSectors { get; set; }
+    public List<Sector> AdditionalSectors { get; set; } = new();
 
     [Precision(18, 2)]
     public decimal AnnualRevenue { get; set; }

@@ -122,7 +122,9 @@ public class PartialQueryable<T> : IPartialQueryable<T> {
         var items = new List<T>();
         if(sortedQuery is IAsyncEnumerable<T> sortedAsyncQuery) {
             await foreach(var element in sortedAsyncQuery.WithCancellation(cancellationToken)) {
-                items.Add(element);
+                if(element != null) {
+                    items.Add(element);
+                }
             }
         }
         else if(sortedQuery is IEnumerable<T> sortedSyncQuery) {

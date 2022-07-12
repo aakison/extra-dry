@@ -76,7 +76,11 @@ namespace Sample.Data.Migrations
                     Code = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
                     Title = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false)
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Version_DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Version_UserCreated = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false),
+                    Version_DateModified = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Version_UserModified = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -116,16 +120,16 @@ namespace Sample.Data.Migrations
                     Title = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false),
                     Code = table.Column<string>(type: "nvarchar(24)", maxLength: 24, nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     PrimarySectorId = table.Column<int>(type: "int", nullable: true),
                     AnnualRevenue = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     SalesMargin = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     IncorporationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    BankingDetails = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Version_DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Version_UserCreated = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: true),
-                    Version_DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Version_UserModified = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: true)
+                    BankingDetails = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Version_DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Version_UserCreated = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false),
+                    Version_DateModified = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Version_UserModified = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -140,12 +144,12 @@ namespace Sample.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Uuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
                     State = table.Column<int>(type: "int", nullable: false),
-                    Version_DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Version_UserCreated = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: true),
-                    Version_DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Version_UserModified = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: true),
+                    Version_DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Version_UserCreated = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false),
+                    Version_DateModified = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Version_UserModified = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false),
                     CompanyId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>

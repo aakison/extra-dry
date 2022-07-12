@@ -12,14 +12,14 @@ using Sample.Data;
 namespace Sample.Data.Migrations
 {
     [DbContext(typeof(SampleContext))]
-    [Migration("20220613002512_Initial")]
+    [Migration("20220712045106_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.1")
+                .HasAnnotation("ProductVersion", "6.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -91,6 +91,7 @@ namespace Sample.Data.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("BankingDetails")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Code")
@@ -99,6 +100,7 @@ namespace Sample.Data.Migrations
                         .HasColumnType("nvarchar(24)");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
@@ -226,6 +228,7 @@ namespace Sample.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
@@ -299,7 +302,8 @@ namespace Sample.Data.Migrations
 
                     b.Navigation("PrimarySector");
 
-                    b.Navigation("Version");
+                    b.Navigation("Version")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Sample.Shared.Content", b =>
@@ -372,6 +376,41 @@ namespace Sample.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Sample.Shared.Region", b =>
+                {
+                    b.OwnsOne("ExtraDry.Core.VersionInfo", "Version", b1 =>
+                        {
+                            b1.Property<int>("RegionId")
+                                .HasColumnType("int");
+
+                            b1.Property<DateTime>("DateCreated")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<DateTime>("DateModified")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<string>("UserCreated")
+                                .IsRequired()
+                                .HasMaxLength(80)
+                                .HasColumnType("nvarchar(80)");
+
+                            b1.Property<string>("UserModified")
+                                .IsRequired()
+                                .HasMaxLength(80)
+                                .HasColumnType("nvarchar(80)");
+
+                            b1.HasKey("RegionId");
+
+                            b1.ToTable("Regions");
+
+                            b1.WithOwner()
+                                .HasForeignKey("RegionId");
+                        });
+
+                    b.Navigation("Version")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Sample.Shared.Sector", b =>
                 {
                     b.HasOne("Sample.Shared.Company", null)
@@ -407,7 +446,8 @@ namespace Sample.Data.Migrations
                                 .HasForeignKey("SectorId");
                         });
 
-                    b.Navigation("Version");
+                    b.Navigation("Version")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Sample.Shared.Company", b =>
