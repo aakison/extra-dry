@@ -33,9 +33,11 @@
     }
     @if(Description.ContextCommands.Any()) {
         <td class="commands">
-            @foreach(var command in Description.ContextCommands) {
-                <DryButton Command="@command" Target="@Item.Item" IconOnly="true" />
-            }
+            <div class="contextCommands">
+                @foreach(var command in Description.ContextCommands) {
+                    <DryButton Command="@command" Target="@Item.Item" IconOnly="true" />
+                }
+            </div>
         </td>
     }
 </tr>
