@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using ExtraDry.Server;
+using Microsoft.AspNetCore.Authorization;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Sample.Swashbuckle.Instructions;
@@ -46,7 +47,7 @@ namespace Sample.Swashbuckle.Instructions;
 /// </summary>
 [ApiController]
 [ApiExplorerSettings(GroupName = SwaggerOptionsExtensions.GroupName)]
-[SkipStatusCodePages]
+[ApiExceptionStatusCodes]
 [Display(Name = "Paging and Tokens", Order = 4)]
 public class PagingController {
 

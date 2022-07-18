@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using ExtraDry.Server;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Sample.Swashbuckle.Instructions;
 
@@ -44,7 +45,7 @@ namespace Sample.Swashbuckle.Instructions;
 /// </summary>
 [ApiController]
 [ApiExplorerSettings(GroupName = SwaggerOptionsExtensions.GroupName)]
-[SkipStatusCodePages]
+[ApiExceptionStatusCodes]
 [Display(Name = "Getting Started", Order = 1)]
 public class GettingStartedController {
 

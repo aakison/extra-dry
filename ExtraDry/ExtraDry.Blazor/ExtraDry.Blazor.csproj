@@ -48,7 +48,7 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="BuildWebCompiler2022" Version="1.14.8" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.6" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.7" />
 	</ItemGroup>
 
 	<ItemGroup>

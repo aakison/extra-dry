@@ -22,8 +22,6 @@ public class SectorController {
     /// <summary>
     /// Filtered list of all company services
     /// </summary>
-    /// <param name="query"></param>
-    /// <returns></returns>
     [HttpGet("api/sectors"), Produces("application/json")]
     [AllowAnonymous]
     public async Task<FilteredCollection<Sector>> List([FromQuery] FilterQuery query)
@@ -34,10 +32,8 @@ public class SectorController {
     /// <summary>
     /// Create a new global sector
     /// </summary>
-    /// <param name="value"></param>
-    /// <returns></returns>
     [HttpPost("api/sectors"), Consumes("application/json")]
-    [Authorize("SamplePolicy")]
+    [Authorize(nameof(SectorController))]
     public async Task Create(Sector value)
     {
         await sectors.CreateAsync(value);
@@ -46,8 +42,6 @@ public class SectorController {
     /// <summary>
     /// Retreive a specific company sector
     /// </summary>
-    /// <param name="uuid"></param>
-    /// <returns></returns>
     [HttpGet("api/sectors/{uuid}"), Produces("application/json")]
     [AllowAnonymous]
     public async Task<Sector> Retrieve(Guid uuid)
@@ -58,9 +52,6 @@ public class SectorController {
     /// <summary>
     /// Update an existing company sector
     /// </summary>
-    /// <param name="sectorId"></param>
-    /// <param name="value"></param>
-    /// <returns></returns>
     [HttpPut("api/sectors/{sectorId}"), Consumes("application/json")]
     [Authorize(SamplePolicies.SamplePolicy)]
     public async Task Update(Guid sectorId, Sector value)
@@ -74,8 +65,6 @@ public class SectorController {
     /// <summary>
     /// Delete an existing company service
     /// </summary>
-    /// <param name="sectorId"></param>
-    /// <returns></returns>
     [HttpDelete("api/sectors/{sectorId}")]
     [Authorize(SamplePolicies.SamplePolicy)]
     public async Task Delete(Guid sectorId)
