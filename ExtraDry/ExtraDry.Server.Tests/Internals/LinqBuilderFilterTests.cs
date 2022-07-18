@@ -17,15 +17,6 @@ public class LinqBuilderFilterTests {
     }
 
     [Fact]
-    public void MissingFilterAttributeOnProperty()
-    {
-        var linqWhere = SampleData.Where(e => e.FirstName == "Bob").ToList();
-        var filterProperty = GetFilterProperty<Datum>(nameof(Datum.FirstName));
-
-        Assert.Throws<DryException>(() => SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "number:bob"));
-    }
-
-    [Fact]
     public void MultipleNamesOnSingleField()
     {
         var linqWhere = SampleData.Where(e => e.FirstName == "Bob" || e.FirstName == "Alice").ToList();
@@ -113,6 +104,23 @@ public class LinqBuilderFilterTests {
         Assert.Equal(2, linqBuilderWhere.Count);
     }
 
+    [Theory]
+    [InlineData("active", 2)]
+    [InlineData("inactive", 1)]
+    [InlineData("status:active", 2)]
+    [InlineData("status:inactive", 1)]
+    [InlineData("firstname:active", 0)] // don't match on status
+    [InlineData("status:act", 0)] // don't match on status prefix
+    public void QueryThatPicksEnum(string filter, int count)
+    {
+        var status = GetFilterProperty<Datum>(nameof(Datum.Status));
+        var firstName = GetFilterProperty<Datum>(nameof(Datum.FirstName));
+
+        var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { status, firstName }, filter).ToList();
+
+        Assert.Equal(count, linqBuilderWhere.Count);
+    }
+
     [Fact]
     public void StringRangeNotSupported()
     {
@@ -158,12 +166,21 @@ public class LinqBuilderFilterTests {
 
         [Filter]
         public int Number { get; set; }
+
+        [Filter]
+        public DatumType Status { get; set; }
+    }
+
+    public enum DatumType
+    {
+        Active,
+        Inactive,
     }
 
     private readonly List<Datum> SampleData = new() {
-        new Datum { FirstName = "Charlie", LastName = "Coase", Number = 111, Keywords = "alpha beta gamma"},
-        new Datum { FirstName = "Alice", LastName = "Cooper", Number = 333, Keywords = "beta gamma delta" },
-        new Datum { FirstName = "Bob", LastName = "Barker", Number = 222, Keywords = "gamma delta epsilon" },
+        new Datum { FirstName = "Charlie", LastName = "Coase", Number = 111, Keywords = "alpha beta gamma", Status = DatumType.Active },
+        new Datum { FirstName = "Alice", LastName = "Cooper", Number = 333, Keywords = "beta gamma delta", Status = DatumType.Active  },
+        new Datum { FirstName = "Bob", LastName = "Barker", Number = 222, Keywords = "gamma delta epsilon", Status = DatumType.Inactive  },
     };
 
     private readonly List<Datum> SampleDataWithDuplicateNames = new() {

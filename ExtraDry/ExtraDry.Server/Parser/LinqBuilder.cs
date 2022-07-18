@@ -141,7 +141,8 @@ internal static class LinqBuilder {
                 }
             }
             else {
-                throw new DryException($"Could not find property '{rule.PropertyName}' requested in filter query.  No property had with that name has a [Filter] attribute applied to it.", "Unable to apply filter. 0x0F4F4931");
+                // unrecognized filter => force to empty set.
+                terms.Add(EmptySetExpression);
             }
         }
         if(terms.Any()) {
@@ -184,11 +185,20 @@ internal static class LinqBuilder {
 
     private static Expression ComparisonExpression(ParameterExpression parameter, PropertyInfo propertyInfo, string value)
     {
-        var property = Expression.Property(parameter, propertyInfo);
-        var valueConstant = Expression.Constant(ParseToType(propertyInfo.PropertyType, value));
-        var equality = Expression.Equal(property, valueConstant);
-        return equality;
+        try {
+            var property = Expression.Property(parameter, propertyInfo);
+            var valueConstant = Expression.Constant(ParseToType(propertyInfo.PropertyType, value));
+            var equality = Expression.Equal(property, valueConstant);
+            return equality;
+        }
+        catch(DryException) {
+            // Can't construct or parse value, comparison is impossible and can't convert to expression.
+            // Replace with a similarly impossible but syntactically correct expression.
+            return EmptySetExpression;
+        }
     }
+
+    private static Expression EmptySetExpression => Expression.Equal(Expression.Constant(0), Expression.Constant(1));
 
     private static Expression[] RangeExpression(ParameterExpression parameter, PropertyInfo propertyInfo, FilterRule rule)
     {

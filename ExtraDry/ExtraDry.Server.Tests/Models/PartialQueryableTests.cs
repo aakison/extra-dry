@@ -122,11 +122,23 @@ public class PartialQueryableTests {
     }
 
     [Fact]
-    public async Task InvalidEnumValueThrowException()
+    public async Task InvalidFieldNameReturnsEmpty()
+    {
+        var filter = new FilterQuery { Filter = "invalid:latin" };
+
+        var actual = await Models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync();
+
+        Assert.Empty(actual.Items);
+    }
+
+    [Fact]
+    public async Task InvalidEnumValueReturnsEmpty()
     {
         var filter = new FilterQuery { Filter = "type:invalid" };
 
-        await Assert.ThrowsAsync<DryException>(async () => await Models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync());
+        var actual = await Models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync();
+
+        Assert.Empty(actual.Items);
     }
 
     [Fact]
