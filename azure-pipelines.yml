@@ -45,6 +45,7 @@ steps:
     command: restore
     projects: '**/*.csproj'
     verbosityRestore: normal
+    feedsToUse: config
     nugetConfigPath: ./ExtraDry/nuget.config
 
 - task: PowerShell@2
