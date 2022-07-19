@@ -21,6 +21,14 @@
 		<PackageReference Include="Microsoft.Azure.WebJobs.Logging.ApplicationInsights" Version="3.0.33" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
+
+		<!-- Used to fix vulnerability https://github.com/advisories/GHSA-5crp-9r3c-p9vr 
+			 Even though this solution doesn't rely on Newtonsoft.  
+			 Remove this when dependant packages are updated.
+		-->
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
+
 	</ItemGroup>
 
 	<ItemGroup>

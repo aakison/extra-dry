@@ -23,10 +23,18 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
+
 		<!-- XUnit uses out of date libraries with vulnerabilities, bring in explicit one. 
 			 Can be removed after XUnit is updated (last checked XUnit 2.4.2-pre12) -->
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
 		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
+
+		<!-- Used to fix vulnerability https://github.com/advisories/GHSA-5crp-9r3c-p9vr 
+			 Even though this solution doesn't rely on Newtonsoft.  
+			 Remove this when dependant packages are updated.
+		-->
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+
 	</ItemGroup>
 
 	<ItemGroup>

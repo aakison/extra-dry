@@ -31,6 +31,13 @@
 		</PackageReference>
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.7" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.2" />
+
+		<!-- Used to fix vulnerability https://github.com/advisories/GHSA-5crp-9r3c-p9vr 
+			 Even though this solution doesn't rely on Newtonsoft.  
+			 Remove this when dependant packages are updated.
+		-->
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+
 	</ItemGroup>
 
 	<ItemGroup>
