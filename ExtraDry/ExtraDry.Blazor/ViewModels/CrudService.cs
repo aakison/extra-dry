@@ -25,18 +25,20 @@ public class CrudService<T> {
     /// extension method.
     /// </summary>
     /// <param name="client">A HttpClient object, typically from DI</param>
-    /// <param name="entityEndpointTemplate">
+    /// <param name="collectionEndpointTemplate">
     /// The template for the API.  This is that path portion of the URI as the app can only call
-    /// the server that it came from.  The endpoint may include placeholders for any number of 
+    /// the server that it came from.  This is used directly for Create methods and is the stem
+    /// for Retrieve/Update/Delete methods where the Id is appended to the template.
+    /// Additionally the endpoint may include placeholders for any number of 
     /// replacements, e.g. "{0}".  During construction of the final endpoint, these placeholders
     /// are used with `args` provided to each method to resolve the final endpoint.
-    /// E.g. /widgets/{0}
+    /// This allows for version numbers, tenant names, etc. to be added.
     /// </param>
     /// <param name="iLogger">An optional logger</param>
-    public CrudService(HttpClient client, string entityEndpointTemplate, ILogger<CrudService<T>>? iLogger = null)
+    public CrudService(HttpClient client, string collectionEndpointTemplate, ILogger<CrudService<T>>? iLogger = null)
     {
         http = client;
-        ApiTemplate = entityEndpointTemplate;
+        ApiTemplate = collectionEndpointTemplate;
         logger = iLogger;
     }
 
@@ -87,10 +89,9 @@ public class CrudService<T> {
     private string ApiEndpoint(string method, object key, params object[] args)
     {
         try {
-            var formatArgs = new List<object>(args);
-            formatArgs.Insert(0, key);
-            args = formatArgs.ToArray();
-            return string.Format(ApiTemplate, args).TrimEnd('/');
+            var baseUrl = string.Format(ApiTemplate, args);
+            var url = $"{baseUrl}/{key}".TrimEnd('/');
+            return url;
         }
         catch(FormatException ex) {
             var argsFormatted = string.Join(',', args?.Select(e => e?.ToString()) ?? Array.Empty<string>());

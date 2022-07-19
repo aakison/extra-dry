@@ -25,10 +25,10 @@ namespace Sample.Client {
 
             builder.Services.AddPagedListService<Employee>("/api/employees");
 
-            builder.Services.AddCrudService<Sector>("/api/sectors/{0}");
-            builder.Services.AddCrudService<Company>("/api/companies/{0}");
-            builder.Services.AddCrudService<Content>("/api/contents/{0}");
-            builder.Services.AddCrudService<Region>("/api/regions/{0}");
+            builder.Services.AddCrudService<Sector>("/api/sectors");
+            builder.Services.AddCrudService<Company>("/api/companies");
+            builder.Services.AddCrudService<Content>("/api/contents");
+            builder.Services.AddCrudService<Region>("/api/regions");
 
             builder.Services.AddScoped<IBlobService>(e => 
                 new DryBlobService(e.GetService<HttpClient>(), "/api/blobs/{0}/{1}") {
