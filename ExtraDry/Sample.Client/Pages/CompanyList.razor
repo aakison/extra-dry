@@ -17,6 +17,22 @@
     </DialogBox>
 }
 
+@{
+    var count = 2;
+    var size = "medium";
+    if(count < 10) {
+        size = "small";
+    }
+    if(count > 40) {
+        size = "large";
+    }
+}
+<DryMiniDialog @ref="MiniDialog" CssClass="@size" ShowCancelButton="false" OkButtonCaption="Save &amp; Close">
+    @for(int i = 0; i < count; ++i) {
+        <div>Huzzah</div>
+    }
+</DryMiniDialog>
+
 @code {
 
     [Parameter]
@@ -27,5 +43,13 @@
     {
         Navigation.NavigateTo($"/companies/{company.Uuid}");
     }
+
+    [Command(CommandContext.Alternate, Icon = "briefcase", Name = "Do It")]
+    public void Pop()
+    {
+        MiniDialog.Toggle();
+    }
+
+    private DryMiniDialog MiniDialog { get; set; }
 
 }

@@ -1,0 +1,76 @@
+﻿@import "_constants.scss";
+
+.mini.dialog {
+    &.curtain {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: #0000007f;
+        display: flex;
+    }
+
+    &.form {
+        background-color: white;
+        margin: auto;
+        width: calc(100vw - 4*$margin);
+        height: calc(100vh - 4*$margin);
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        // On iPad/Tablets max the size.
+        max-width: 500px;
+        max-height: 854px;
+
+        header {
+            background-color: $var-light;
+            flex: 0 0 auto;
+            display: flex;
+            flex-direction: row;
+
+            .title {
+                flex: 1 1 auto;
+
+                h3 {
+                    margin: 0;
+                    padding: $margin;
+                    font-size: 18px;
+                    font-weight: bold;
+                }
+            }
+
+            .item.commands {
+                flex: 0 0 auto;
+                display: flex;
+                align-items: center;
+
+                button {
+                    height: 40px;
+
+                    &.cancel {
+                        font-size: 32px;
+                        line-height: 20px;
+                    }
+                }
+            }
+        }
+
+        .content {
+            flex: 1 1 auto;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        footer {
+            padding: $margin;
+            flex: 0 0 auto;
+            border-top: solid 1px $var-silver;
+
+            button {
+                width: 100%;
+            }
+        }
+    }
+}

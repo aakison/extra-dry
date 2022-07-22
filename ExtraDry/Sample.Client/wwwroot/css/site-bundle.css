@@ -11443,3 +11443,109 @@ div.error div.problemDetails dl dd.status {
   font-size: 24px;
   color: var(--danger);
 }
+
+button {
+  border: 0;
+  outline: 0;
+  margin: 0;
+  padding: 3.3333333333px 10px;
+  min-width: 88px;
+  height: 30px;
+}
+button.primary {
+  background-color: var(--primary);
+  color: var(--black);
+}
+button.primary:hover {
+  background-color: #fedf67;
+}
+button.secondary {
+  background-color: var(--secondary);
+  color: var(--black);
+}
+button.danger {
+  background-color: var(--danger);
+  color: var(--white);
+}
+button.subtle {
+  color: var(--silver);
+}
+button.subtle:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+button.subtle:active {
+  background-color: rgba(0, 0, 0, 0.15);
+}
+button.unobtrusive {
+  min-width: initial;
+  background-color: transparent;
+  color: var(--gray);
+}
+button.unobtrusive:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+button.unobtrusive:active {
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+.mini.dialog.curtain {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #0000007f;
+  display: flex;
+}
+.mini.dialog.form {
+  background-color: white;
+  margin: auto;
+  width: calc(100vw - 40px);
+  height: calc(100vh - 40px);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+  max-height: 854px;
+}
+.mini.dialog.form header {
+  background-color: var(--light);
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: row;
+}
+.mini.dialog.form header .title {
+  flex: 1 1 auto;
+}
+.mini.dialog.form header .title h3, .mini.dialog.form header .title .h3 {
+  margin: 0;
+  padding: 10px;
+  font-size: 18px;
+  font-weight: bold;
+}
+.mini.dialog.form header .item.commands {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+}
+.mini.dialog.form header .item.commands button {
+  height: 40px;
+}
+.mini.dialog.form header .item.commands button.cancel {
+  font-size: 32px;
+  line-height: 20px;
+}
+.mini.dialog.form .content {
+  flex: 1 1 auto;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+.mini.dialog.form footer {
+  padding: 10px;
+  flex: 0 0 auto;
+  border-top: solid 1px var(--silver);
+}
+.mini.dialog.form footer button {
+  width: 100%;
+}

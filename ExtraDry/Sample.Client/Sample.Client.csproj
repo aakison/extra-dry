@@ -8,15 +8,18 @@
 	<ItemGroup>
 		<Content Remove="compilerconfig.json" />
 		<Content Remove="libman.json" />
+		<Content Remove="wwwroot\css\_mini-dialog.scss" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<_ContentIncludedByDefault Remove="compilerconfig.json" />
+		<_ContentIncludedByDefault Remove="wwwroot\css\_mini-dialog.scss" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<None Include="compilerconfig.json" />
 		<None Include="libman.json" />
+		<None Include="wwwroot\css\_mini-dialog.scss" />
 	</ItemGroup>
 
 	<ItemGroup>

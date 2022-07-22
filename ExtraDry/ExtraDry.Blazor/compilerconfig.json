@@ -22,5 +22,9 @@
   {
     "outputFile": "Components/DryExpandable.razor.css",
     "inputFile": "Components/DryExpandable.razor.scss"
+  },
+  {
+    "outputFile": "Components/DryMiniDialog.razor.css",
+    "inputFile": "Components/DryMiniDialog.razor.scss"
   }
 ]
