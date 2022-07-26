@@ -1,12 +1,12 @@
 ﻿namespace ExtraDry.Server.Tests.Rules;
 
+[SoftDeleteRule(nameof(Active), ActiveType.Deleted, ActiveType.Active)]
 public class User {
 
     [Key]
     [JsonIgnore]
     public int Id { get; set; }
 
-    [Rules(DeleteValue = ActiveType.Deleted)]
     public ActiveType Active { get; set; } = ActiveType.Pending;
 
     public string Name { get; set; } = string.Empty;

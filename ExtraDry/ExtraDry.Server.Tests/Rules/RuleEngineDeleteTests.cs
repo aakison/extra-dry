@@ -172,6 +172,32 @@ public class RuleEngineDeleteTests {
         Assert.Equal(DeleteResult.SoftDeleted, result);
     }
 
+    [Fact]
+    public void SoftDeleteOnInvalidPropertyException()
+    {
+        var rules = new RuleEngine(new ServiceProviderStub());
+        var obj = new BadPropertyDeletable();
+
+        var lambda = () => {
+            _ = rules.DeleteSoft(obj, NoOp, NoOp);
+        };
+
+        Assert.Throws<DryException>(lambda);
+    }
+
+    [Fact]
+    public void SoftDeleteOnInvalidValueException()
+    {
+        var rules = new RuleEngine(new ServiceProviderStub());
+        var obj = new BadDeleteValueDeletable();
+
+        var lambda = () => {
+            _ = rules.DeleteSoft(obj, NoOp, NoOp);
+        };
+
+        Assert.Throws<DryException>(lambda);
+    }
+
     private static void NoOp() { }
 
     private void FakePrepare(ref int stepStamp) => stepStamp = step++;
@@ -180,8 +206,8 @@ public class RuleEngineDeleteTests {
 
     private int step = 1;
 
+    [SoftDeleteRule(nameof(Active), false, true)]
     public class SoftDeletable {
-        [Rules(DeleteValue = false)]
         public bool Active { get; set; } = true;
 
         [Rules]
@@ -190,4 +216,14 @@ public class RuleEngineDeleteTests {
         public int UnRuled { get; set; } = 3;
     }
 
+    [SoftDeleteRule("BadName", false, true)]
+    public class BadPropertyDeletable
+    {
+        public bool Active { get; set; } = true;
+    }
+
+    [SoftDeleteRule(nameof(Active), "not-bool")]
+    public class BadDeleteValueDeletable {
+        public bool Active { get; set; } = true;
+    }
 }

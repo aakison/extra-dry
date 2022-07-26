@@ -132,8 +132,8 @@ public class RuleEngineDeleteAsyncTests {
         Done = 2,
     }
 
+    [SoftDeleteRule(nameof(Active), false, true)]
     public class SoftDeletable {
-        [Rules(DeleteValue = false)]
         public bool Active { get; set; } = true;
     }
 

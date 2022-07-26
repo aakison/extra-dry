@@ -19,7 +19,7 @@ public class ProblemDetails {
     public string? Type { get; set; }
 
     /// <summary>
-    /// A short, human-readable summary of the problem type.It SHOULD NOT change from
+    /// A short, human-readable summary of the problem type. It SHOULD NOT change from
     /// occurrence to occurrence of the problem, except for purposes of localization, e.g.
     /// using proactive content negotiation.
     /// (see RFC7231, Section 3.4)
@@ -51,7 +51,7 @@ public class ProblemDetails {
     /// </summary>
     /// <remarks>
     /// The round-tripping behavior for Microsoft.AspNetCore.Mvc.ProblemDetails.Extensions
-    /// is determined by the implementation of the Input \ Output formatters. In particular,
+    /// is determined by the implementation of the Input/Output formatters. In particular,
     /// complex types or collection types may not round-trip to the original type when
     /// using the built-in JSON or XML formatters.
     /// </remarks>
