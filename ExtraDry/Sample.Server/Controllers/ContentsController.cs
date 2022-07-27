@@ -8,7 +8,7 @@ namespace Sample.Server.Controllers;
 /// </summary>
 [ApiController]
 [ApiExplorerSettings(GroupName = ApiGroupNames.SampleApi)]
-[SkipStatusCodePages]
+[ApiExceptionStatusCodes]
 public class ContentsController {
        
     /// <summary>
@@ -73,7 +73,7 @@ public class ContentsController {
     public async Task Update(Guid contentId, Content value)
     {
         if(contentId != value?.Uuid) {
-            throw new ArgumentException("ID in URI must match body.", nameof(contentId));
+            throw new ArgumentMismatchException("ID in URI must match body.", nameof(contentId));
         }
         await contents.UpdateAsync(value);
     }

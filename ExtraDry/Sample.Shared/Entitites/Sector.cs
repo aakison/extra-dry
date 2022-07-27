@@ -1,6 +1,4 @@
-﻿#nullable disable // EF Model Class
-
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sample.Shared;
 
@@ -9,6 +7,7 @@ namespace Sample.Shared;
 /// This is for properties that may appear as Enums, but have additional data associated with them.
 /// </summary>
 [DimensionTable]
+[SoftDeleteRule(nameof(State), SectorState.Inactive, SectorState.Active)]
 public class Sector : INamedSubject {
 
     /// <summary>
@@ -37,7 +36,7 @@ public class Sector : INamedSubject {
     [Required, MaxLength(50)]
     [Display(Name = "Title", ShortName = "Title")]
     [Filter(FilterType.Contains)]
-    public string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
 
     /// <summary>
     /// The description of the sector.
@@ -46,7 +45,7 @@ public class Sector : INamedSubject {
     [MaxLength(250)]
     [Display(Name = "Description")]
     [Filter(FilterType.Contains)]
-    public string Description { get; set; }
+    public string Description { get; set; } = string.Empty;
 
     [NotMapped]
     public string Caption => $"Sector {Code}";
@@ -54,7 +53,6 @@ public class Sector : INamedSubject {
     /// <summary>
     /// The current status of the sector.
     /// </summary>
-    [Rules(DeleteValue = SectorState.Inactive)]
     [Filter(FilterType.Equals)]
     public SectorState State { get; set;  }
 
@@ -72,7 +70,7 @@ public class Sector : INamedSubject {
     /// <summary>
     /// Entity equality comparer, as uniquely defined by the `Uuid`.
     /// </summary>
-    public override bool Equals(object obj) => (obj as Sector)?.Uuid == Uuid;
+    public override bool Equals(object? obj) => (obj as Sector)?.Uuid == Uuid;
 
     /// <summary>
     /// Entity hash code, as uniquely defined by the `Uuid`.

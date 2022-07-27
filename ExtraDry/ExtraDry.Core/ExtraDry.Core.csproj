@@ -25,21 +25,29 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="ExtraDry.Analyzers" Version="0.2.*">
+		<PackageReference Include="ExtraDry.Analyzers" Version="0.3.*">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="6.0.6" />
-		<PackageReference Include="Pidgin" Version="3.1.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="6.0.7" />
+		<PackageReference Include="Pidgin" Version="3.2.0" />
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
 		<PackageReference Include="System.Text.Json" Version="6.0.5" />
 	</ItemGroup>
+
+	<!-- 
+		Indirect dependencies that are re-stated as older versions have known vulnerabilities.
+		These packages should be removed from here when direct dependencies are updated.
+		All projects in this solution reference this project, so only need to fix once.
+		As reported by: `dotnet list package -vulnerable -include-transitive`
+	-->
+	<!--<ItemGroup>
+		--><!-- https://github.com/advisories/GHSA-5crp-9r3c-p9vr --><!--
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		--><!-- https://github.com/advisories/GHSA-cmhx-cq75-c4mj --><!--
+		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
+	</ItemGroup>-->
 
 	<ItemGroup>
 		<None Include="..\extradry-logo.png">

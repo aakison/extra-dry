@@ -1,0 +1,12 @@
+﻿@namespace ExtraDry.Blazor
+@using Microsoft.AspNetCore.Components.Rendering
+@using ExtraDry.Blazor.Internal
+
+<ExposedErrorBoundary @ref="@ErrorBoundary">
+    <ChildContent>
+        @ChildContent
+    </ChildContent>
+    <ErrorContent>
+        <DynamicComponent Type="@ErrorType" Parameters="@ErrorParameters" />
+    </ErrorContent>
+</ExposedErrorBoundary>

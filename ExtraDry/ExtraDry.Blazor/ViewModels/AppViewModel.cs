@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 
-namespace ExtraDry.Blazor {
-    public class AppViewModel {
+namespace ExtraDry.Blazor;
 
-        public string Name { get; set; }
+public class AppViewModel {
 
-        public string Copyright { get; set; }
+    public string Name { get; set; }
 
-        public string Version { get; set; }
+    public string Copyright { get; set; }
 
-        public Collection<SectionViewModel> Sections { get; } = new Collection<SectionViewModel>();
-    }
+
+    [SuppressMessage("Security", "DRY1304:Properties that might leak PID should be JsonIgnore.", Justification = "Not an auditing verison, the application version.")]
+    public string Version { get; set; }
+
+    public Collection<SectionViewModel> Sections { get; } = new Collection<SectionViewModel>();
 }

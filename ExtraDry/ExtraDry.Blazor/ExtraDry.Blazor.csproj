@@ -14,11 +14,14 @@
 		<PackageTags>blazor spa microsoft dry don't repeat yourself low-code</PackageTags>
 		<PackageIcon>extradry-logo.png</PackageIcon>
 		<PackageIconUrl />
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<EnableNETAnalyzers>True</EnableNETAnalyzers>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<Content Remove="bundleconfig.json" />
 		<Content Remove="compilerconfig.json" />
+		<Content Remove="libman.json" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -32,6 +35,7 @@
 		</None>
 		<None Include="bundleconfig.json" />
 		<None Include="compilerconfig.json" />
+		<None Include="libman.json" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -39,17 +43,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="ExtraDry.Analyzers" Version="0.2.*">
+		<PackageReference Include="ExtraDry.Analyzers" Version="0.3.*">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="BuildWebCompiler2022" Version="1.14.8" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.6" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.7" />
+
+		<!-- Used to fix vulnerability https://github.com/advisories/GHSA-5crp-9r3c-p9vr 
+			 Even though this solution doesn't rely on Newtonsoft.  
+			 Remove this when dependant packages are updated.
+		-->
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+
 	</ItemGroup>
 
 	<ItemGroup>

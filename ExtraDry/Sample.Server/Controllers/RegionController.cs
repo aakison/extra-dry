@@ -18,7 +18,7 @@ namespace Sample.Server.Controllers;
 /// </summary>
 [ApiController]
 [ApiExplorerSettings(GroupName = ApiGroupNames.ReferenceCodes)]
-[SkipStatusCodePages]
+[ApiExceptionStatusCodes]
 public class RegionController {
         
     /// <summary>

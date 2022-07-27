@@ -3,6 +3,7 @@
 # Build and test ASP.NET Core projects targeting .NET Core.
 # Add steps that run tests, create a NuGet package, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+# Packages ExtraDry for NuGet and builds sample application.
 
 trigger:
 - main
@@ -20,7 +21,8 @@ variables:
   patchVersion: 0
   prereleaseVersion: ''
   semanticVersion: '0.1.0'  
-  projectsGlob: '**/ExtraDry.+(Core|Server|Blazor|Swashbuckle).csproj' # don't build samples
+  nugetProjectsGlob: '**/ExtraDry.+(Core|Server|Blazor|Swashbuckle).csproj' # don't build samples
+  sampleProjectsGlob: '**/Sample.Server.csproj'
   testsGlob: '**/ExtraDry.+(Core|Server|Blazor).Tests.csproj'
   isForDeployment: $[in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/develop', 'refs/heads/release')]
 
@@ -31,10 +33,20 @@ steps:
     version: '6.0.x'
 
 - task: DotNetCoreCLI@2
+  displayName: Install Entity Framework
+  inputs:
+    command: 'custom'
+    custom: 'tool'
+    arguments: 'install --global dotnet-ef'
+
+- task: DotNetCoreCLI@2
   displayName: Restore
   inputs:
     command: restore
-    projects: $(projectsGlob)
+    projects: '**/*.csproj'
+    verbosityRestore: normal
+    feedsToUse: config
+    nugetConfigPath: ./ExtraDry/nuget.config
 
 - task: PowerShell@2
   name: CheckVulnerability
@@ -108,32 +120,67 @@ steps:
       PublishVariable "semanticVersion" $semanticVersion
 
 - task: DotNetCoreCLI@2
-  displayName: Build
+  displayName: Build Projects
   inputs:
     command: build
-    projects: $(projectsGlob)
+    projects: '**/*.csproj'
     arguments: '--configuration $(BuildConfiguration) /p:Version=$(semanticVersion) /p:InformationalVersion=$(semanticVersion) --no-restore'
 
 - task: DotNetCoreCLI@2
-  displayName: Test
+  displayName: Run Unit Tests
   inputs:
     command: test
-    projects: $(testsGlob)
-    arguments: '--configuration $(BuildConfiguration) --collect "Code coverage" --no-build'
+    projects: '**/*.Tests.csproj'
+    arguments: '--configuration $(BuildConfiguration) --collect "Code coverage"'
+    nobuild: true
 
 - task: DotNetCoreCLI@2
-  displayName: Pack
+  displayName: 'Publish Migration Script'
+  inputs:
+    command: 'custom'
+    custom: 'ef'
+    arguments: 'migrations script --project $(build.sourcesdirectory)/ExtraDry/Sample.Data/Sample.Data.csproj --idempotent --verbose --output $(build.artifactstagingdirectory)\sample\sql\migrations.sql'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Publish Web App'
+  inputs:
+    command: publish
+    publishWebProjects: false
+    projects: $(sampleProjectsGlob)
+    arguments: '--configuration $(BuildConfiguration) --no-build --output $(build.artifactstagingdirectory)\sample'
+    zipAfterPublish: false
+    modifyOutputPath: false
+
+- task: DotNetCoreCLI@2
+  displayName: 'Publish Web Jobs'
+  inputs:
+    command: publish
+    publishWebProjects: false
+    projects: '**/Sample.WebJobs.csproj'
+    arguments: '--configuration $(BuildConfiguration) --no-build --output $(build.artifactstagingdirectory)\sample\App_Data\jobs\continuous'
+    zipAfterPublish: false
+
+- task: DotNetCoreCLI@2
+  displayName: Pack NuGet Packages
   condition: and(succeeded(), eq(variables.isForDeployment, true))
   inputs:
     command: 'pack'
-    packagesToPack: $(projectsGlob)
+    packagesToPack: $(nugetProjectsGlob)
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'semanticVersion'
+    packDirectory: '$(Build.ArtifactStagingDirectory)\packages'
     nobuild: true
 
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact'
+  displayName: 'Publish NuGet Artifacts'
   condition: and(succeeded(), eq(variables.isForDeployment, true))
   inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)'
+    PathtoPublish: '$(build.artifactstagingdirectory)\packages'
+    artifactName: NuGetPackages
 
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Sample Artifact'
+  condition: and(succeeded(), eq(variables.isForDeployment, true))
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)\sample'
+    artifactName: SampleApp

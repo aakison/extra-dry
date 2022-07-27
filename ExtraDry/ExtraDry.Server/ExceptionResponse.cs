@@ -1,23 +1,29 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net;
-using System.Text.Json;
 
 namespace ExtraDry.Server;
 
-public static class ExceptionResponse {
+internal static class ExceptionResponse {
 
-    public static void RewriteResponse(HttpResponse response, HttpStatusCode code, string display, string description)
+    public static void RewriteResponse(ExceptionContext context, HttpStatusCode code, string? details = null)
     {
-        var er = new ErrorResponse {
-            StatusCode = (int)code,
-            Description = description,
-            Display = display,
-
+        var kebab = DataConverter.CamelCaseToKebabCase(context.Exception.GetType().Name);
+        var url = $"https://{context.HttpContext.Request.Host}/problem-details/{kebab}";
+        var uri = context.HttpContext.Request.Path;
+        var er = new ProblemDetails {
+            Type = url,
+            Status = (int)code,
+            Title = context.Exception.Message,
+            Detail = details,
+            Instance = uri,
         };
         var body = JsonSerializer.Serialize(er);
+        var response = context.HttpContext.Response;
         response.Clear();
         response.StatusCode = (int)code;
-        response.ContentType = "application/json";
+        response.ContentType = "application/problem+json";
         response.ContentLength = body.Length;
         response.WriteAsync(body);
     }

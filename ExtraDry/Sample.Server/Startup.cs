@@ -1,6 +1,7 @@
 #nullable enable
 
-using ExtraDry.Server;
+using ExtraDry.Core.Models;
+using ExtraDry.Server.DataWarehouse;
 using ExtraDry.Server.EF;
 using ExtraDry.Swashbuckle;
 using Microsoft.AspNetCore.Authentication;
@@ -44,7 +45,7 @@ namespace Sample.Server {
                 });
             services.AddRazorPages();
             services.AddSwaggerGen(openapi => {
-                
+                openapi.AddExtraDry();
                 openapi.SwaggerDoc(ApiGroupNames.SampleApi, new OpenApiInfo {
                     Version = "v1",
                     Title = "Sample APIs",
@@ -55,7 +56,7 @@ namespace Sample.Server {
                     Title = "Reference Codes",
                     Description = @"A sample API for Blazor.ExtraDry",
                 });
-                foreach(var docfile in new string[] { "Sample.Shared.xml", "Sample.Server.xml", "ExtraDry.Core.Xml" }) {
+                foreach(var docfile in new string[] { "Sample.Shared.xml", "Sample.Server.xml" }) {
                     var webAppXml = Path.Combine(AppContext.BaseDirectory, docfile);
                     openapi.IncludeXmlComments(webAppXml, includeControllerXmlComments: true);
                 }
@@ -66,9 +67,7 @@ namespace Sample.Server {
                     Type = SecuritySchemeType.Http,
                     Scheme = "basic",
                 });
-                openapi.OperationFilter<SignatureImpliesStatusCodes>();
                 openapi.OperationFilter<BasicAuthOperationFilter>();
-                openapi.OperationFilter<QueryDocumentationOperationFilter>();
             });
 
             services.AddAuthentication("WorthlessAuthentication")
@@ -78,17 +77,23 @@ namespace Sample.Server {
 
             services.AddHttpContextAccessor();
 
-            //services.AddDbContext<SampleContext>(opt => opt.UseInMemoryDatabase("sample"));
+            services.AddServiceBusQueue<EntityMessage>(options => {
+                options.ConnectionStringKey = "WebAppServiceBus";
+                options.QueueName = "warehouse-update";
+            });
+
             services.AddScoped(services => {
-                var connectionString = @"Server=(localdb)\mssqllocaldb;Database=ExtraDrySample;Trusted_Connection=True;";
-                //var connectionString = Configuration.GetConnectionString("Sample");
+                var connectionString = Configuration.GetConnectionString("WebAppOltpDatabase");
                 var dbOptionsBuilder = new DbContextOptionsBuilder<SampleContext>().UseSqlServer(connectionString);
                 var context = new SampleContext(dbOptionsBuilder.Options);
-                var accessor = services.GetService<IHttpContextAccessor>();
-                if(accessor == null) {
-                    throw new Exception("Need HTTP Accessor for VersionInfoAspect");
-                }
+
+                var accessor = services.GetRequiredService<IHttpContextAccessor>();
                 _ = new VersionInfoAspect(context, accessor);
+
+                var logger = services.GetService<ILogger<DataWarehouseAspect>>();
+                var queue = services.GetRequiredService<ServiceBusQueue<EntityMessage>>();
+                _ = new DataWarehouseAspect(context, queue, logger);
+
                 //_ = new SearchIndexAspect(context, services.GetService<SearchService>());
                 return context;
             });
@@ -102,6 +107,7 @@ namespace Sample.Server {
             services.AddScoped<RegionService>();
             
             services.AddScoped<IEntityResolver<Sector>>(e => e.GetService<SectorService>()!);
+
         }
 
         /// <summary>
@@ -121,14 +127,14 @@ namespace Sample.Server {
 
             app.UseHttpsRedirection();
             app.UseSwagger();
-            app.UseSwaggerUI(c => {
-                //c.RoutePrefix
-                c.SwaggerEndpoint($"/swagger/{ApiGroupNames.SampleApi}/swagger.json", "Sample APIs");
-                c.SwaggerEndpoint($"/swagger/{ApiGroupNames.ReferenceCodes}/swagger.json", "Reference Codes");
-                c.InjectStylesheet("/css/swagger-ui-extensions.css");
-                c.InjectJavascript("/js/swagger-ui-extensions.js");
-                c.DocumentTitle = "Sample Blazor.ExtraDry APIs";
-                c.EnableTryItOutByDefault();
+            app.UseSwaggerUI(swagger => {
+                swagger.AddExtraDry();
+                swagger.SwaggerEndpoint($"/swagger/{ApiGroupNames.SampleApi}/swagger.json", "Sample APIs");
+                swagger.SwaggerEndpoint($"/swagger/{ApiGroupNames.ReferenceCodes}/swagger.json", "Reference Codes");
+                swagger.InjectStylesheet("/css/swagger-ui-extensions.css");
+                swagger.InjectJavascript("/js/swagger-ui-extensions.js");
+                swagger.DocumentTitle = "Sample Blazor.ExtraDry APIs";
+                swagger.EnableDeepLinking();
             });
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();

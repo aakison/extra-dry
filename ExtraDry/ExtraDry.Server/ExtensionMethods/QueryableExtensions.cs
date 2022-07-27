@@ -34,6 +34,11 @@ public static class QueryableExtensions {
         return new PartialQueryable<T>(source, filterQuery, defaultFilter);
     }
 
+    public static IPartialQueryable<T> ForceStringComparison<T>(this IQueryable<T> source, StringComparison forceStringComparison)
+    {
+        return new PartialQueryable<T>(source, forceStringComparison);
+    }
+
     /// <summary>
     /// Given a `FilterQuery`, dynamically constructs an expression query that applies the indicated filtering but not the indicated sorting.
     /// </summary>
@@ -60,7 +65,8 @@ public static class QueryableExtensions {
         if(!description.FilterProperties.Any()) {
             return source;
         }
-        return source.WhereFilterConditions(description.FilterProperties.ToArray(), filter);
+        var comparison = (source as PartialQueryable<T>)?.ForceStringComparison;
+        return source.WhereFilterConditions(description.FilterProperties.ToArray(), filter, comparison);
     }
 
     /// <summary>

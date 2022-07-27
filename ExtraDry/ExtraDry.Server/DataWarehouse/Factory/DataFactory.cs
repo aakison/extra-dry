@@ -47,13 +47,31 @@ public class DataFactory {
         }
     }
 
+    /// <summary>
+    /// For a given entity, process the changes for all warehouse table that have the entity as a source.
+    /// </summary>
+    public async Task<int> ProcessBatchAsync(string entity)
+    {
+        var tables = Model.Dimensions.Union(Model.Facts).Where(e => e.SourceProperty != null);
+        var count = 0;
+        foreach(var table in tables) {
+            if(table.EntityType.Name.Equals(entity, StringComparison.OrdinalIgnoreCase)) {
+                count += await ProcessTableBatchAsync(table);
+            }
+        }
+        return count;
+    }
+
+    /// <summary>
+    /// Process changes for all entities.
+    /// </summary>
     public async Task<int> ProcessBatchesAsync()
     {
         await OptionallyApplyMigrationsAsync();
         var tables = Model.Dimensions.Union(Model.Facts).Where(e => e.SourceProperty != null);
         var count = 0;
         foreach(var table in tables) {
-            count += await ProcessTableBatch(table);
+            count += await ProcessTableBatchAsync(table);
         }
         // TODO: Expand for custom date tables
         var dateTables = Model.Dimensions.Where(e => e.Generator != null);
@@ -86,7 +104,7 @@ public class DataFactory {
         return batch.Count;
     }
 
-    private async Task<int> ProcessTableBatch(Table table)
+    private async Task<int> ProcessTableBatchAsync(Table table)
     {
         Logger?.LogDebug("Processing batch for [{tableName}]", table.Name);
         if(table.SourceProperty == null) {

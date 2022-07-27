@@ -1,0 +1,51 @@
+﻿@import "_constants.scss";
+
+div.error {
+
+    h3 {
+        display: none;
+    }
+
+    div.problemDetails {
+        position: relative;
+
+        div.errorImagePlaceholder {
+            position: absolute;
+            z-index: 10;
+
+            &::before {
+                content: url('../img/error-generic.svg');
+            }
+        }
+
+        dl {
+            position: absolute;
+            z-index: 0;
+            margin-left: 50px;
+            margin-top: 50px;
+
+            dt {
+                margin-left: 10px;
+
+                &.title {
+                    margin-top: 40px;
+                }
+
+                &.status {
+                    display: none;
+                }
+            }
+
+            dd {
+                margin-left: 10px;
+
+                &.status {
+                    margin-left: 0;
+                    font-weight: 900;
+                    font-size: 24px;
+                    color: $var-danger;
+                }
+            }
+        }
+    }
+}

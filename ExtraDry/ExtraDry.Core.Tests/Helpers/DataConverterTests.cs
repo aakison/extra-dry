@@ -19,6 +19,7 @@ public class DataConverterTests {
         Assert.Throws<ArgumentNullException>(() => DataConverter.DisplayEnum(null));
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum TestEnum {
 
         SimpleName = 0,

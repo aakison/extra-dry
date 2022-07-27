@@ -2,15 +2,8 @@
 
 using ExtraDry.Blazor.Components.Internal;
 using ExtraDry.Blazor.Internal;
-using ExtraDry.Core;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web.Virtualization;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ExtraDry.Blazor;
 
@@ -60,6 +53,14 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
     private bool HasRadioColumn => description.ListSelectMode == ListSelectMode.Single;
 
     private bool HasCommandsColumn => description.ContextCommands.Any();
+
+    private string TableClasses => $"{ModelClass} {FilteredClass} {EmptyClass}";
+
+    private string ModelClass => description.ModelType?.Name?.ToLowerInvariant() ?? "";
+
+    private string FilteredClass => string.IsNullOrWhiteSpace(Query?.Filter) ? "unfiltered" : "filtered";
+
+    private string EmptyClass => InternalItems.Any() ? "full" : firstLoadCompleted ? "empty" : "loading";
 
     private Virtualize<ListItemInfo<TItem>>? VirtualContainer { get; set; }
 
@@ -217,7 +218,6 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
     private async ValueTask<ItemsProviderResult<ListItemInfo<TItem>>> GetItemsAsync(ItemsProviderRequest request)
     {
         Logger.LogInformation(@"DryTable: Getting page of results, from index {StartIndex}, fetching {Count}", request.StartIndex, request.Count);
-        Console.WriteLine("GetItemsAsync");
         if(ItemsService == null) {
             return new ItemsProviderResult<ListItemInfo<TItem>>();
         }
@@ -280,6 +280,8 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
         }
         finally {
             serviceLock.Release();
+            firstLoadCompleted = true;
+            StateHasChanged(); // update classes affected by InternalItems
         }
 
         bool AllItemsCached(int start, int count) => InternalItems.Skip(start).Take(count).All(e => e.IsLoaded);
@@ -288,6 +290,8 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
 
         int FirstItemOnPage(int page) => ItemsService.FetchSize * page;
     }
+
+    private bool firstLoadCompleted = false;
 
     public void Dispose()
     {

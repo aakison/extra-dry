@@ -13,7 +13,8 @@ namespace Sample.Server.Controllers;
 /// </summary>
 [ApiController]
 [ApiExplorerSettings(GroupName = ApiGroupNames.ReferenceCodes)]
-[SkipStatusCodePages]
+//[SkipStatusCodePages]
+[ApiExceptionStatusCodes]
 public class SampleDataController {
 
     /// <summary>

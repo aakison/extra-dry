@@ -1,6 +1,6 @@
 ﻿@namespace ExtraDry.Blazor
 
-@* Tabindex is required so the out diver can get focus, then respond to events *@
+@* Tabindex is required so the outer div can get focus, then respond to events *@
 <div class="@CssClass" @onfocusout="OnFocusOut" @onfocusin="OnFocusIn" @onkeydown="OnKeyDown" tabindex="0">
     <div class="caption" @onclick="ToggleForm">
         <label>@Property.Property.Name</label>

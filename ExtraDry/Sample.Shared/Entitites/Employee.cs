@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace Sample.Shared;
+﻿namespace Sample.Shared;
 
 public class Employee
 {

@@ -237,6 +237,7 @@ public class RuleEngineUpdateIndividualAsyncTests {
         Assert.Equal(output, destination.BlockChangesString);
     }
 
+    [SoftDeleteRule("Active", ActiveType.Deleted)]
     public class Entity {
 
         [JsonIgnore]
@@ -273,7 +274,6 @@ public class RuleEngineUpdateIndividualAsyncTests {
             get => HoursWorked;
         }
 
-        [Rules(DeleteValue = ActiveType.Deleted)]
         public ActiveType Active { get; set; } = ActiveType.Pending;
     }
     private static Entity SampleEntity() => new();

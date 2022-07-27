@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net;
 using System.Security;
 
@@ -15,31 +16,33 @@ public class ApiExceptionStatusCodesAttribute : ExceptionFilterAttribute {
     public override void OnException(ExceptionContext context)
     {
         base.OnException(context);
-        if(context.Exception is ArgumentOutOfRangeException) {
-            var response = context.HttpContext.Response;
-            ExceptionResponse.RewriteResponse(response, HttpStatusCode.NotFound, "Not Found", context.Exception.Message);
+        if(context.Exception is ArgumentMismatchException ex) {
+            ExceptionResponse.RewriteResponse(context, HttpStatusCode.BadRequest, ex.UserMessage);
+            context.ExceptionHandled = true;
+        }
+        else if(context.Exception is ArgumentOutOfRangeException) {
+            ExceptionResponse.RewriteResponse(context, HttpStatusCode.NotFound);
             context.ExceptionHandled = true;
         }
         else if(context.Exception is ArgumentException || context.Exception is ArgumentNullException) {
-            var response = context.HttpContext.Response;
-            ExceptionResponse.RewriteResponse(response, HttpStatusCode.BadRequest, "Bad Request", context.Exception.Message);
+            ExceptionResponse.RewriteResponse(context, HttpStatusCode.BadRequest);
             context.ExceptionHandled = true;
         }
         else if(context.Exception is NotImplementedException) {
-            var response = context.HttpContext.Response;
-            ExceptionResponse.RewriteResponse(response, HttpStatusCode.NotImplemented, "Not Implemented", context.Exception.Message);
+            ExceptionResponse.RewriteResponse(context, HttpStatusCode.NotImplemented);
             context.ExceptionHandled = true;
         }
         else if(context.Exception is SecurityException) {
-            var response = context.HttpContext.Response;
-            ExceptionResponse.RewriteResponse(response, HttpStatusCode.Forbidden, "Forbidden", context.Exception.Message);
+            ExceptionResponse.RewriteResponse(context, HttpStatusCode.Forbidden);
             context.ExceptionHandled = true;
         }
         else if(context.Exception is DryException dryException) {
-            var response = context.HttpContext.Response;
-            ExceptionResponse.RewriteResponse(response, HttpStatusCode.BadRequest, dryException.UserMessage ?? "Unspecified", dryException.Message);
+            // TODO: better handling here...
+            ExceptionResponse.RewriteResponse(context, HttpStatusCode.BadRequest, dryException.ProblemDetails.Detail);
             context.ExceptionHandled = true;
         }
     }
+
+
 
 }

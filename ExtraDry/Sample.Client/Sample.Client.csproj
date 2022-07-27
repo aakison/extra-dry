@@ -2,36 +2,44 @@
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
+		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<Content Remove="compilerconfig.json" />
+		<Content Remove="libman.json" />
+		<Content Remove="wwwroot\css\_mini-dialog.scss" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<_ContentIncludedByDefault Remove="compilerconfig.json" />
+		<_ContentIncludedByDefault Remove="wwwroot\css\_mini-dialog.scss" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<None Include="compilerconfig.json" />
+		<None Include="libman.json" />
+		<None Include="wwwroot\css\_mini-dialog.scss" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="ExtraDry.Analyzers" Version="0.2.*">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
 		<PackageReference Include="BuildWebCompiler2022" Version="1.14.8" />
+		<PackageReference Include="ExtraDry.Analyzers" Version="0.3.*">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="BundlerMinifier.Core" Version="3.2.449" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.6" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.6" PrivateAssets="all" />
-		<PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.161" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.7" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.7" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.175" />
 		<PackageReference Include="System.Net.Http.Json" Version="6.0.0" />
+
+		<!-- Used to fix vulnerability https://github.com/advisories/GHSA-5crp-9r3c-p9vr 
+			 Even though this solution doesn't rely on Newtonsoft.  
+			 Remove this when dependant packages are updated.
+		-->
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+
 	</ItemGroup>
 
 	<ItemGroup>

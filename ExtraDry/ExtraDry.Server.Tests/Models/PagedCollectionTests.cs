@@ -27,7 +27,7 @@ public class PagedCollectionTests {
     public void RoundtripProperties(string propertyName, object propertyValue)
     {
         var target = new PagedCollection<object>();
-        var property = target.GetType().GetProperty(propertyName) ?? throw new ArgumentException(nameof(propertyValue));
+        var property = target.GetType().GetProperty(propertyName) ?? throw new ArgumentException("Can't find property", nameof(propertyValue));
 
         property.SetValue(target, propertyValue);
         var result = property.GetValue(target);

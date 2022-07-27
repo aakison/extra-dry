@@ -21,8 +21,7 @@ public class ExceptionStatusCodeAttribute : ExceptionFilterAttribute {
     {
         base.OnException(context);
         if(context.Exception.GetType().Name == matchingExceptionType.Name) {
-            var response = context.HttpContext.Response;
-            ExceptionResponse.RewriteResponse(response, returnCode, returnCode.ToString(), context.Exception.Message);
+            ExceptionResponse.RewriteResponse(context, returnCode, context.Exception.Message);
             context.ExceptionHandled = true;
         }
     }

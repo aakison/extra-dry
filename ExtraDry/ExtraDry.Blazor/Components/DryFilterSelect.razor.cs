@@ -1,13 +1,5 @@
 ﻿#nullable enable
 
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.JSInterop;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ExtraDry.Blazor;
 
@@ -30,11 +22,8 @@ public partial class DryFilterSelect : ComponentBase {
         StateHasChanged();
     }
 
-    private Stopwatch stopwatch = new Stopwatch();
-
     public async Task OnFocusOut(FocusEventArgs args)
     {
-        stopwatch.Restart();
         shouldCollapse = true;
         // wait and see if we should ignore the out because we're switching focus within control.
         await Task.Delay(1);

@@ -1,0 +1,38 @@
+﻿@namespace ExtraDry.Blazor
+
+@* Tabindex is required so the outer div can get focus, then respond to events *@
+@if(Visible) {
+    <section class="mini dialog curtain">
+        <div class="mini dialog form @CssClass" @onfocusout="OnFocusOut" @onfocusin="OnFocusIn" @onkeydown="OnKeyDown" tabindex="0">
+            <header>
+                @if(ShowTitle) {
+                    <div class="title">
+                        <h3>@Title</h3>
+                    </div>
+                }
+                @if(ShowClearButton || ShowCancelButton) {
+                    <div class="item commands">
+                        @if(ShowClearButton) {
+                            <button class="clear unobtrusive" @onclick="OnClearClick">@((MarkupString)ClearButtonCaption)</button>
+                        }
+                        @if(ShowCancelButton) {
+                            <button class="cancel unobtrusive" @onclick="OnCancelClick">@((MarkupString)CancelButtonCaption)</button>
+                        }
+                    </div>
+                }
+            </header>
+            <div class="content">
+                <CascadingValue Value="@this">
+                    @ChildContent
+                </CascadingValue>
+            </div>
+            <footer>
+                @if(ShowOkButton) {
+                    <div class="form commands">
+                        <button class="ok primary" @onclick="OnOkClick">@((MarkupString)OkButtonCaption)</button>
+                    </div>
+                }
+            </footer>
+        </div>
+    </section>
+}
