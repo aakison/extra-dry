@@ -198,6 +198,17 @@ public class RuleEngineDeleteTests {
         Assert.Throws<DryException>(lambda);
     }
 
+    [Fact]
+    public void NullIsValidDeleteValue()
+    {
+        var rules = new RuleEngine(new ServiceProviderStub());
+        var obj = new ObjectDeletable();
+
+        rules.Delete(obj);
+
+        Assert.Null(obj.Status);
+    }
+
     private static void NoOp() { }
 
     private void FakePrepare(ref int stepStamp) => stepStamp = step++;
@@ -226,4 +237,11 @@ public class RuleEngineDeleteTests {
     public class BadDeleteValueDeletable {
         public bool Active { get; set; } = true;
     }
+
+    [SoftDeleteRule(nameof(Status), null)]
+    public class ObjectDeletable
+    {
+        public object Status { get; set; } = new();
+    }
+
 }

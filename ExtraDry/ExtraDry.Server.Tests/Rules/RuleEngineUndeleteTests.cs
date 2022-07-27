@@ -87,6 +87,23 @@ public class RuleEngineUndeleteTests {
         Assert.Throws<DryException>(lambda);
     }
 
+    [Fact]
+    public void NullIsValidUndeleteValue()
+    {
+        var rules = new RuleEngine(new ServiceProviderStub());
+        var obj = new NullUndelete();
+        rules.Delete(obj);
+
+        rules.Undelete(obj);
+
+        Assert.Null(obj.Status);
+    }
+
+    [SoftDeleteRule(nameof(Status), "Deleted", null)]
+    public class NullUndelete {
+        public string Status { get; set; } = "Active";
+    }
+
     [SoftDeleteRule(nameof(State), State.Deleted, State.Active)]
     public class SoftDeletable {
         public State State { get; set; } = State.Inactive;
