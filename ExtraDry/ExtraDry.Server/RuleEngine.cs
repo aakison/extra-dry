@@ -172,7 +172,7 @@ public class RuleEngine {
             throw new DryException($"Can't complete undelete, property '{softDelete.PropertyName}' does not exist as a public instance property of class '{type.Name}'.", "Can't undelete item, internal application issue.");
         }
         var value = property.GetValue(item);
-        if(!softDelete.DeleteValue.Equals(value)) {
+        if(!AreEqual(softDelete.DeleteValue, value)) {
             return UndeleteResult.NotUndeleted;
         }
         try {
@@ -229,8 +229,9 @@ public class RuleEngine {
         if(depth == 0) {
             throw new DryException("Recursion limit on update reached");
         }
-        var properties = typeof(T).GetProperties();
-        var softDeleteAttribute = typeof(T).GetCustomAttribute<SoftDeleteRuleAttribute>();
+        var type = typeof(T);
+        var properties = type.GetProperties();
+        var softDeleteAttribute = type.GetCustomAttribute<SoftDeleteRuleAttribute>();
 
         foreach(var property in properties) {
             var ignore = property.GetCustomAttribute<JsonIgnoreAttribute>();
