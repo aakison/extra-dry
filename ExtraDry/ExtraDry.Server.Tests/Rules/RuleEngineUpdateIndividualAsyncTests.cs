@@ -202,6 +202,19 @@ public class RuleEngineUpdateIndividualAsyncTests {
         await Assert.ThrowsAsync<DryException>(() => rules.UpdateAsync(source, target));
     }
 
+    [Fact]
+    public async Task UpdateSecondStatusPropertyToDeletedValueShouldNotThrow()
+    {
+        var rules = new RuleEngine(new ServiceProviderStub());
+        var source = SampleEntity();
+        var target = SampleEntity();
+        source.ChildStatus = ActiveType.Deleted;
+
+        await rules.UpdateAsync(source, target);
+
+        Assert.Equal(source.ChildStatus, target.ChildStatus);
+    }
+
     [Theory]
     [InlineData(null, null)]
     [InlineData(null, "abc")]
@@ -275,6 +288,7 @@ public class RuleEngineUpdateIndividualAsyncTests {
         }
 
         public ActiveType Active { get; set; } = ActiveType.Pending;
+        public ActiveType ChildStatus { get; set; } = ActiveType.Pending;
     }
     private static Entity SampleEntity() => new();
 

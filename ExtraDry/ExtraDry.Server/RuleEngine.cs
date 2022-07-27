@@ -314,7 +314,7 @@ public class RuleEngine {
             }
             
             // Do not allow property to be set to the value configured in SoftDeleteAttribute.
-            if(!same && softDeleteRuleAttribute?.DeleteValue != null && AreEqual(value, softDeleteRuleAttribute.DeleteValue)) {
+            if(!same && softDeleteRuleAttribute?.DeleteValue != null && softDeleteRuleAttribute.PropertyName == property.Name && AreEqual(value, softDeleteRuleAttribute.DeleteValue)) {
                 throw new DryException($"Invalid attempt to change property '{property.Name}' to the DeleteValue", "Unable to update, an attempt was made to make the entity appear deleted. Check your values to prevent this or use the dedicated delete functionality if available.");
             }
 
