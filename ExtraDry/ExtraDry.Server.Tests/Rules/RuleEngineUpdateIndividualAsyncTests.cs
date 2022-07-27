@@ -177,6 +177,45 @@ public class RuleEngineUpdateIndividualAsyncTests {
     }
 
     [Theory]
+    [InlineData(ActiveType.Inactive)]
+    [InlineData(ActiveType.Active)]
+    public async Task UpdateDeletePropertyToNonDeletedValue(ActiveType activeType)
+    {
+        var rules = new RuleEngine(new ServiceProviderStub());
+        var source = SampleEntity();
+        var target = SampleEntity();
+        source.Active = activeType;
+
+        await rules.UpdateAsync(source, target);
+
+        Assert.Equal(activeType, target.Active);
+    }
+
+    [Fact]
+    public async Task UpdateDeletePropertyToDeletedValueThrows()
+    {
+        var rules = new RuleEngine(new ServiceProviderStub());
+        var source = SampleEntity();
+        var target = SampleEntity();
+        source.Active = ActiveType.Deleted;
+
+        await Assert.ThrowsAsync<DryException>(() => rules.UpdateAsync(source, target));
+    }
+
+    [Fact]
+    public async Task UpdateSecondStatusPropertyToDeletedValueShouldNotThrow()
+    {
+        var rules = new RuleEngine(new ServiceProviderStub());
+        var source = SampleEntity();
+        var target = SampleEntity();
+        source.ChildStatus = ActiveType.Deleted;
+
+        await rules.UpdateAsync(source, target);
+
+        Assert.Equal(source.ChildStatus, target.ChildStatus);
+    }
+
+    [Theory]
     [InlineData(null, null)]
     [InlineData(null, "abc")]
     [InlineData("abc", null)]
@@ -211,6 +250,7 @@ public class RuleEngineUpdateIndividualAsyncTests {
         Assert.Equal(output, destination.BlockChangesString);
     }
 
+    [SoftDeleteRule(nameof(Active), ActiveType.Deleted)]
     public class Entity {
 
         [JsonIgnore]
@@ -246,8 +286,10 @@ public class RuleEngineUpdateIndividualAsyncTests {
         public int ReadOnly {
             get => HoursWorked;
         }
-    }
 
+        public ActiveType Active { get; set; } = ActiveType.Pending;
+        public ActiveType ChildStatus { get; set; } = ActiveType.Pending;
+    }
     private static Entity SampleEntity() => new();
 
 }

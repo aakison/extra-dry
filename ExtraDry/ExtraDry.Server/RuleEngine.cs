@@ -172,7 +172,7 @@ public class RuleEngine {
             throw new DryException($"Can't complete undelete, property '{softDelete.PropertyName}' does not exist as a public instance property of class '{type.Name}'.", "Can't undelete item, internal application issue.");
         }
         var value = property.GetValue(item);
-        if(!softDelete.DeleteValue.Equals(value)) {
+        if(!AreEqual(softDelete.DeleteValue, value)) {
             return UndeleteResult.NotUndeleted;
         }
         try {
@@ -229,10 +229,14 @@ public class RuleEngine {
         if(depth == 0) {
             throw new DryException("Recursion limit on update reached");
         }
-        var properties = typeof(T).GetProperties();
+        var type = typeof(T);
+        var properties = type.GetProperties();
+        var softDeleteAttribute = type.GetCustomAttribute<SoftDeleteRuleAttribute>();
+
         foreach(var property in properties) {
             var ignore = property.GetCustomAttribute<JsonIgnoreAttribute>();
-            var action = EffectiveRule(property, ignore, selector, RuleAction.Allow);
+            var rulesAttribute = property.GetCustomAttribute<RulesAttribute>();
+            var action = EffectiveRule(property, ignore, selector, RuleAction.Allow, rulesAttribute);
             if(action == RuleAction.Ignore) {
                 continue;
             }
@@ -246,7 +250,7 @@ public class RuleEngine {
                 await ProcessCollectionUpdates(action, property, destination, sourceList);
             }
             else {
-                await ProcessIndividualUpdate(action, property, destination, sourceValue, depth, ignore, selector);
+                await ProcessIndividualUpdate(action, property, destination, sourceValue, depth, ignore, selector, softDeleteAttribute);
             }
         }
     }
@@ -263,14 +267,13 @@ public class RuleEngine {
         }
     }
 
-    private static RuleAction EffectiveRule(PropertyInfo property, JsonIgnoreAttribute? ignore, Func<RulesAttribute, RuleAction> selector, RuleAction defaultType)
+    private static RuleAction EffectiveRule(PropertyInfo property, JsonIgnoreAttribute? ignore, Func<RulesAttribute, RuleAction> selector, RuleAction defaultType, RulesAttribute? rulesAttribute)
     {
-        var rules = property.GetCustomAttribute<RulesAttribute>();
         if(property.SetMethod == null) {
             return RuleAction.Ignore;
         }
-        if(rules != null) {
-            return selector(rules);
+        if(rulesAttribute != null) {
+            return selector(rulesAttribute);
         }
         else if(ignore?.Condition == JsonIgnoreCondition.Always) {
             return RuleAction.Ignore;
@@ -280,7 +283,7 @@ public class RuleEngine {
         }
     }
 
-    private async Task ProcessIndividualUpdate<T>(RuleAction action, PropertyInfo property, T destination, object? value, int depth, JsonIgnoreAttribute? ignore, Func<RulesAttribute, RuleAction> selector)
+    private async Task ProcessIndividualUpdate<T>(RuleAction action, PropertyInfo property, T destination, object? value, int depth, JsonIgnoreAttribute? ignoreAttribute, Func<RulesAttribute, RuleAction> selector, SoftDeleteRuleAttribute? softDeleteRuleAttribute)
     {
         // Check against null for object types and GetDefaultValue for boxed value types.
         if(action == RuleAction.IgnoreDefaults && (value == null || value.Equals(property.PropertyType.GetDefaultValue()))) {
@@ -303,16 +306,24 @@ public class RuleEngine {
             }
         }
         else {
-            var same = (result == null && destinationValue == null) || (result?.Equals(destinationValue) ?? false);
+            bool same = AreEqual(result, destinationValue);
             if(action == RuleAction.Block && !same) {
-                if(ignore?.Condition == JsonIgnoreCondition.Always) {
+                if(ignoreAttribute?.Condition == JsonIgnoreCondition.Always) {
                     return;
                 }
                 throw new DryException($"Invalid attempt to change property '{property.Name}'", $"Attempt to change read-only property '{property.Name}'");
             }
+            
+            // Do not allow property to be set to the value configured in SoftDeleteAttribute.
+            if(!same && softDeleteRuleAttribute?.DeleteValue != null && softDeleteRuleAttribute.PropertyName == property.Name && AreEqual(value, softDeleteRuleAttribute.DeleteValue)) {
+                throw new DryException($"Invalid attempt to change property '{property.Name}' to the DeleteValue", "Unable to update, an attempt was made to make the entity appear deleted. Check your values to prevent this or use the dedicated delete functionality if available.");
+            }
+
             property.SetValue(destination, result);
         }
     }
+
+    private static bool AreEqual(object? result, object? destinationValue) => (result == null && destinationValue == null) || (result?.Equals(destinationValue) ?? false);
 
     private async Task ProcessCollectionUpdates<T>(RuleAction action, PropertyInfo property, T destination, IList? sourceList)
     {

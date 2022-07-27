@@ -7,14 +7,14 @@ public class SoftDeleteRuleAttribute : Attribute {
     // TODO: analysis rule that deleteValue != undeleteValue
     // TODO: analysis rule that nameof(xxx) should point to property on class or base class
 
-    public SoftDeleteRuleAttribute(string propertyName, object deleteValue)
+    public SoftDeleteRuleAttribute(string propertyName, object? deleteValue)
     {
         PropertyName = propertyName;
         DeleteValue = deleteValue;
         CanUndelete = false;
     }
 
-    public SoftDeleteRuleAttribute(string propertyName, object deleteValue, object undeleteValue)
+    public SoftDeleteRuleAttribute(string propertyName, object? deleteValue, object? undeleteValue)
     {
         PropertyName = propertyName;
         DeleteValue = deleteValue;
@@ -24,7 +24,7 @@ public class SoftDeleteRuleAttribute : Attribute {
 
     public string PropertyName { get; }
 
-    public object DeleteValue { get; }
+    public object? DeleteValue { get; }
 
     public object? UndeleteValue { get; }
 
