@@ -5,6 +5,26 @@
 
 <DryPageQueryView>
     <TableMenu TItem="Company" />
+
+    @{
+        var count = 2;
+        var size = "several";
+        if(count < 10) {
+            size = "few";
+        }
+        if(count > 40) {
+            size = "many";
+        }
+    }
+    <div class="Huzzah">
+        <button @onclick="@OnClick">Click Me</button>
+        <MiniDialog @ref="MiniDialog" CssClass="@size" AnimationDuration="100" OkButtonCaption="Save &amp; Close">
+            @for(int i = 0; i < count; ++i) {
+                <div>Huzzah</div>
+            }
+        </MiniDialog>
+    </div>
+
     <DryTable TItem="Company" ViewModel="@this" ItemsService="@CompanyService" />
 </DryPageQueryView>
 
@@ -17,23 +37,11 @@
     </DialogBox>
 }
 
-@{
-    var count = 2;
-    var size = "medium";
-    if(count < 10) {
-        size = "small";
-    }
-    if(count > 40) {
-        size = "large";
-    }
-}
-<DryMiniDialog @ref="MiniDialog" CssClass="@size" ShowCancelButton="false" OkButtonCaption="Save &amp; Close">
-    @for(int i = 0; i < count; ++i) {
-        <div>Huzzah</div>
-    }
-</DryMiniDialog>
-
 @code {
+    public async Task OnClick()
+    {
+        await MiniDialog.Toggle();
+    }
 
     [Parameter]
     public Guid CompanyUuid { get; set; } = Guid.Empty;
@@ -45,11 +53,11 @@
     }
 
     [Command(CommandContext.Alternate, Icon = "briefcase", Name = "Do It")]
-    public void Pop()
+    public async Task Pop()
     {
-        MiniDialog.Toggle();
+        await MiniDialog.Toggle();
     }
 
-    private DryMiniDialog MiniDialog { get; set; }
+    private MiniDialog MiniDialog { get; set; }
 
 }
