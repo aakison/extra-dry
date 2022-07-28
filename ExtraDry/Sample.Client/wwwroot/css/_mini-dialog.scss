@@ -5,13 +5,6 @@
 .mini.dialog {
 
     &.curtain {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100vw;
-        height: 100vh;
-        background-color: #00000040;
-        display: flex;
         // On desktop, curtain becomes a relative placement element instead of a normal curtain.
         @media #{$desktop-landscape} {
             width: initial;
@@ -22,12 +15,6 @@
 
     &.form {
         background-color: $var-white;
-        margin: auto;
-        width: calc(100vw - 4*$margin);
-        height: calc(100vh - 4*$margin);
-        position: relative;
-        display: flex;
-        flex-direction: column;
         // On desktop, the form becomes absolute relative to the curtain which should be next to the visibility control.
         @media #{$desktop-landscape} {
             position: absolute;
@@ -42,8 +29,6 @@
             }
         }
         // Max a max size for the form
-        max-width: 500px;
-        max-height: 854px;
         @include depth-large;
 
         &.many {
@@ -64,17 +49,12 @@
 
         header {
             background-color: $var-off-white;
-            flex: 0 0 auto;
-            display: flex;
-            flex-direction: row;
 
             @media #{$desktop-landscape} {
                 display: none;
             }
 
             .title {
-                flex: 1 1 auto;
-
                 h3 {
                     margin: 0;
                     padding: $margin;
@@ -82,45 +62,19 @@
                     font-weight: bold;
                 }
             }
-
-            .item.commands {
-                flex: 0 0 auto;
-                display: flex;
-                align-items: center;
-
-                button {
-                    height: 40px;
-
-                    &.cancel {
-                        font-size: 32px;
-                        line-height: 20px;
-                    }
-                }
-            }
-        }
-
-        .content {
-            flex: 1 1 auto;
-            padding: 0;
-            margin: 0;
-            overflow: hidden;
         }
 
         footer {
             background-color: $var-off-white;
             padding: $margin;
-            flex: 0 0 auto;
             border-top: solid 1px $var-silver;
 
-            button {
-                width: 100%;
-            }
         }
     }
 }
 
 // Example of animation using fade-in fade-out
-// Change AnimationDuration on MiniDialog to 1000 to see this work.
+// Match with Change AnimationDuration on MiniDialog to 100 to see this work.
 .mini.dialog.form, .mini.dialog.curtain {
     transition: opacity 0.1s;
     &.showing, &.visible {

@@ -11488,15 +11488,6 @@ button.unobtrusive:active {
   background-color: rgba(0, 0, 0, 0.15);
 }
 
-.mini.dialog.curtain {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: #00000040;
-  display: flex;
-}
 @media only screen and (min-width: 1200px) {
   .mini.dialog.curtain {
     width: initial;
@@ -11506,14 +11497,6 @@ button.unobtrusive:active {
 }
 .mini.dialog.form {
   background-color: var(--white);
-  margin: auto;
-  width: calc(100vw - 40px);
-  height: calc(100vh - 40px);
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  max-width: 500px;
-  max-height: 854px;
   background: #FFFFFF;
   box-shadow: 0px 1.2px 3.6px rgba(0, 0, 0, 0.1), 0px 6.4px 14.4px rgba(0, 0, 0, 0.13);
   border-radius: 2px;
@@ -11543,17 +11526,11 @@ button.unobtrusive:active {
 }
 .mini.dialog.form header {
   background-color: var(--off-white);
-  flex: 0 0 auto;
-  display: flex;
-  flex-direction: row;
 }
 @media only screen and (min-width: 1200px) {
   .mini.dialog.form header {
     display: none;
   }
-}
-.mini.dialog.form header .title {
-  flex: 1 1 auto;
 }
 .mini.dialog.form header .title h3, .mini.dialog.form header .title .h3 {
   margin: 0;
@@ -11561,32 +11538,10 @@ button.unobtrusive:active {
   font-size: 18px;
   font-weight: bold;
 }
-.mini.dialog.form header .item.commands {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-}
-.mini.dialog.form header .item.commands button {
-  height: 40px;
-}
-.mini.dialog.form header .item.commands button.cancel {
-  font-size: 32px;
-  line-height: 20px;
-}
-.mini.dialog.form .content {
-  flex: 1 1 auto;
-  padding: 0;
-  margin: 0;
-  overflow: hidden;
-}
 .mini.dialog.form footer {
   background-color: var(--off-white);
   padding: 10px;
-  flex: 0 0 auto;
   border-top: solid 1px var(--silver);
-}
-.mini.dialog.form footer button {
-  width: 100%;
 }
 
 .mini.dialog.form, .mini.dialog.curtain {
