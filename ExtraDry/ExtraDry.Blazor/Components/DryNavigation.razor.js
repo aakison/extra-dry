@@ -13,8 +13,6 @@ function ilerp(value, from, to) {
 }
 
 function DryHorizontalScrollNav() {
-    console.log("Scrolling the Nav...")
-
     var li = document.querySelector("nav li.active");
     if (li == null) {
         // Nothing is active, typically when first loaded and script is called before navigation rendered.

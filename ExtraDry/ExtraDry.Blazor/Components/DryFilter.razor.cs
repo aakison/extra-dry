@@ -33,7 +33,7 @@ public partial class DryFilter<TItem> : ComponentBase {
 
     private void OnKeyPress(KeyboardEventArgs args)
     {
-        Console.WriteLine($"OnKeyPress {args.Key}: {FreeTextFilter} on {Query}");
+        //Console.WriteLine($"OnKeyPress {args.Key}: {FreeTextFilter} on {Query}");
         if(args.Key == "Enter") {
             SyncQuery();
         }
@@ -41,14 +41,14 @@ public partial class DryFilter<TItem> : ComponentBase {
 
     private void OnFocusOut(FocusEventArgs args)
     {
-        Console.WriteLine($"OnFocusOut: {args.Type}: {FreeTextFilter} on {Query}");
+        //Console.WriteLine($"OnFocusOut: {args.Type}: {FreeTextFilter} on {Query}");
         SyncQuery();
     }
 
     private void SyncQuery()
     {
         if(Query != null) {
-            Console.WriteLine("Setting query");
+            //Console.WriteLine("Setting query");
             Query.Filter = FilterExpression;
             StateHasChanged();
             if(Query is NotifyPageQuery notify) {

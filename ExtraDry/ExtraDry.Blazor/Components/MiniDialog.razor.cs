@@ -179,7 +179,7 @@ public partial class MiniDialog : ComponentBase {
 
     public async Task OnKeyDown(KeyboardEventArgs args)
     {
-        Console.WriteLine("OnKeyDown");
+        //Console.WriteLine("OnKeyDown");
         //await EventsAndRefresh();
     }
 
@@ -207,7 +207,7 @@ public partial class MiniDialog : ComponentBase {
 
     private async Task OnFocusOut(FocusEventArgs args)
     {
-        Console.WriteLine("OnFocusOut");
+        //Console.WriteLine("OnFocusOut");
         if(LoseFocusAction == MiniDialogAction.Disabled) {
             return;
         }
