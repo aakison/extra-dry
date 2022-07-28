@@ -92,9 +92,14 @@ public partial class MiniDialog : ComponentBase {
     }
     private int duration = 0;
 
+    /// <summary>
+    /// The state of the dialog box, which cycles when Show() and Hide() are called.
+    /// On Show, typically moves: NotLoaded -> Hidden -> Showing -> Visible.
+    /// On Hide, typically moves: Visible -> Hiding -> Hidden -> NotLoaded.
+    /// The states are also reflected in CSS classes that are rendered except for NotLoaded as no HTML is rendered.
+    /// Also, Show and Hide can interrupt each other so the actual flow might bounce around.
+    /// </summary>
     public DialogState State { get; private set; } = DialogState.NotLoaded;
-
-    public string StateClass => State.ToString().ToLowerInvariant();
 
     public async Task Show()
     {
@@ -179,8 +184,13 @@ public partial class MiniDialog : ComponentBase {
 
     public async Task OnKeyDown(KeyboardEventArgs args)
     {
-        //Console.WriteLine("OnKeyDown");
-        //await EventsAndRefresh();
+        Console.WriteLine(args.Code);
+        if(args.Code == "Escape") {
+            await DoCancel(null);
+        }
+        if(args.Code == "Enter") {
+            await DoSubmit(null);
+        }
     }
 
     private async Task DoSubmit(MouseEventArgs? args)
@@ -207,7 +217,6 @@ public partial class MiniDialog : ComponentBase {
 
     private async Task OnFocusOut(FocusEventArgs args)
     {
-        //Console.WriteLine("OnFocusOut");
         if(LoseFocusAction == MiniDialogAction.Disabled) {
             return;
         }
@@ -221,19 +230,11 @@ public partial class MiniDialog : ComponentBase {
             if(LoseFocusAction == MiniDialogAction.Cancel) {
                 await DoCancel(null);
             }
-            //await EventsAndRefresh();
             shouldCollapse = false;
         }
     }
 
-    //private async Task EventsAndRefresh()
-    //{
-    //    //var args = new SelectMiniDialogChangedEventArgs {
-    //    //    FilterName = Property?.Property?.Name?.ToLowerInvariant() ?? "",
-    //    //    FilterExpression = FilterString,
-    //    //};
-    //    await Task.Delay(10);
-    //}
+    private string StateClass => State.ToString().ToLowerInvariant();
 
     private bool Visible => State != DialogState.NotLoaded;
 

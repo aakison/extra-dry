@@ -19,6 +19,9 @@ section {
         flex-direction: column;
         max-width: 500px;
         max-height: 854px;
+        &:focus-visible {
+            outline: none;
+        }
 
         header {
             flex: 0 0 auto;

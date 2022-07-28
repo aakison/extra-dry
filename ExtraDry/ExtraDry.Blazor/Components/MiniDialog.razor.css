@@ -18,6 +18,9 @@ section > div {
   max-width: 500px;
   max-height: 854px;
 }
+section > div:focus-visible {
+  outline: none;
+}
 section > div header {
   flex: 0 0 auto;
   display: flex;
