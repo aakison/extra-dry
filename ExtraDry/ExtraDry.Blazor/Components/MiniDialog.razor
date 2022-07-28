@@ -3,7 +3,7 @@
 @if(Visible) {
     <section class="mini dialog curtain @StateClass @CssClass">
         @* Tabindex is required so the outer div can get focus, then respond to events *@
-        <div class="mini dialog form @StateClass @CssClass" @onfocusout="OnFocusOut" @onfocusin="OnFocusIn" @onkeydown="OnKeyDown" tabindex="0">
+        <div class="mini dialog form @StateClass @CssClass" @ref="Form" @onfocusout="OnFocusOut" @onfocusin="OnFocusIn" @onkeydown="OnKeyDown" tabindex="0">
             <header>
                 @if(ShowTitle) {
                     <div class="title">
@@ -12,7 +12,7 @@
                 }
                 @if(ShowCancelButton) {
                     <div class="item commands">
-                        <button class="cancel unobtrusive" @onclick="OnCancelClick">@((MarkupString)CancelButtonCaption)</button>
+                        <button class="cancel unobtrusive" @onclick="DoCancel">@((MarkupString)CancelButtonCaption)</button>
                     </div>
                 }
             </header>
@@ -22,9 +22,9 @@
                 </CascadingValue>
             </div>
             <footer>
-                @if(ShowOkButton) {
+                @if(ShowSubmitButton) {
                     <div class="form commands">
-                        <button class="ok primary" @onclick="OnOkClick">@((MarkupString)OkButtonCaption)</button>
+                        <button class="ok primary" @onclick="DoSubmit">@((MarkupString)SubmitButtonCaption)</button>
                     </div>
                 }
             </footer>

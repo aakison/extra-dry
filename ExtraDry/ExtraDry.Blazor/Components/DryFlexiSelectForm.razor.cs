@@ -12,8 +12,8 @@ public partial class DryFlexiSelectForm : ComponentBase {
     [Inject]
     private IJSRuntime JSRuntime { get; set; } = null!;
 
-    [Parameter]
-    public EventCallback<SelectMiniDialogChangedEventArgs> FilterChanged { get; set; }
+    //[Parameter]
+    //public EventCallback<SelectMiniDialogChangedEventArgs> FilterChanged { get; set; }
 
     public async Task ToggleForm()
     {
@@ -34,13 +34,13 @@ public partial class DryFlexiSelectForm : ComponentBase {
 
     private async Task EventsAndRefresh()
     {
-        var args = new SelectMiniDialogChangedEventArgs {
-            FilterName = Property?.Property?.Name?.ToLowerInvariant() ?? "",
-            FilterExpression = FilterString,
-        };
-        args.FilterValues.AddRange(Selection);
-        await FilterChanged.InvokeAsync(args);
-        await Expandable.Collapse();
+        //var args = new SelectMiniDialogChangedEventArgs {
+        //    FilterName = Property?.Property?.Name?.ToLowerInvariant() ?? "",
+        //    FilterExpression = FilterString,
+        //};
+        //args.FilterValues.AddRange(Selection);
+        //await FilterChanged.InvokeAsync(args);
+        //await Expandable.Collapse();
     }
 
     public void OnChange(ChangeEventArgs args, ValueDescription value)

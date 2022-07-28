@@ -36,14 +36,14 @@ public partial class MiniDialog : ComponentBase {
     /// Supports HTML markup, do no place customer content in this string.
     /// </summary>
     [Parameter]
-    public string OkButtonCaption { get; set; } = "Close";
+    public string SubmitButtonCaption { get; set; } = "Close";
 
     /// <summary>
     /// Determines if the OK/Close button should be shown.
     /// Default: true
     /// </summary>
     [Parameter]
-    public bool ShowOkButton { get; set; } = true;
+    public bool ShowSubmitButton { get; set; } = true;
 
     /// <summary>
     /// If the user clicks outside of the dialog and it loses focus, determines what the dialog should do.
@@ -54,6 +54,7 @@ public partial class MiniDialog : ComponentBase {
 
     /// <summary>
     /// The CSS Class for the root div element of the control.
+    /// This is added after the semantic class elements
     /// </summary>
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
@@ -65,14 +66,19 @@ public partial class MiniDialog : ComponentBase {
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 
+    /// <summary>
+    /// Called when the mini-dialog is closed using the Submit button, 
+    /// or when it loses focus and the LoseFocusAction is Save or SaveAndClose.
+    /// </summary>
     [Parameter]
-    public EventCallback<SelectMiniDialogChangedEventArgs> FilterChanged { get; set; }
+    public EventCallback<DialogEventArgs> OnSubmit { get; set; }
 
-    public bool Visible => State != DialogState.NotLoaded;
-
-    public DialogState State { get; private set; } = DialogState.NotLoaded;
-
-    public string StateClass => State.ToString().ToLowerInvariant();
+    /// <summary>
+    /// Called when the mini-dialog is closed using the cancel button,
+    /// or when it loses focus and the LoseFocusAction is Cancel.
+    /// </summary>
+    [Parameter]
+    public EventCallback<DialogEventArgs> OnCancel { get; set; }
 
     /// <summary>
     /// The number of milliseconds to render the showing and hiding states.
@@ -80,11 +86,15 @@ public partial class MiniDialog : ComponentBase {
     /// The user must use CSS to have these style perform the desired animations.
     /// </summary>
     [Parameter]
-    public int AnimationDuration { 
+    public int AnimationDuration {
         get => duration;
-        set => duration = Math.Clamp(value, 0, maximumDuration); 
+        set => duration = Math.Clamp(value, 0, maximumDuration);
     }
     private int duration = 0;
+
+    public DialogState State { get; private set; } = DialogState.NotLoaded;
+
+    public string StateClass => State.ToString().ToLowerInvariant();
 
     public async Task Show()
     {
@@ -105,6 +115,7 @@ public partial class MiniDialog : ComponentBase {
         if(await ChangeState(DialogState.Showing, DialogState.Visible, minimumDuration)) {
             return;
         }
+        await Form.FocusAsync(); // Get focus into visible control so OnFocusOut can fire.
         StateHasChanged();
     }
 
@@ -140,11 +151,11 @@ public partial class MiniDialog : ComponentBase {
         }
     }
 
+    protected ElementReference Form { get; set; }
+
     private async Task<bool> ChangeState(DialogState from, DialogState to, int duration)
     {
-        Console.WriteLine($"Request from {from} to {to}");
         if(State == from) {
-            Console.WriteLine($"Changing from {from} to {to}");
             // UI will load content at this point.
             State = to;
             StateHasChanged();
@@ -156,11 +167,8 @@ public partial class MiniDialog : ComponentBase {
 
     private void CancelAndResetCancellation()
     {
-        Console.WriteLine("Cancel animation");
         stateChangeCancellation.Cancel();
-        //if(!stateChangeCancellation.TryReset()) {
         stateChangeCancellation = new CancellationTokenSource();
-        //}
     }
 
     private Task OnFocusIn(FocusEventArgs args)
@@ -171,26 +179,35 @@ public partial class MiniDialog : ComponentBase {
 
     public async Task OnKeyDown(KeyboardEventArgs args)
     {
-        await EventsAndRefresh();
+        Console.WriteLine("OnKeyDown");
+        //await EventsAndRefresh();
     }
 
-    public void OnClearClick(MouseEventArgs _)
+    private async Task DoSubmit(MouseEventArgs? args)
     {
-        // TODO: Clear Event
+        var eventArgs = new DialogEventArgs {
+            MouseEventArgs = args,
+        };
+        await OnSubmit.InvokeAsync(eventArgs);
+        if(!eventArgs.Cancel) {
+            await Hide();
+        }
     }
 
-    public async Task OnOkClick(MouseEventArgs _)
+    private async Task DoCancel(MouseEventArgs? args)
     {
-        await Hide();
-    }
-
-    public async Task OnCancelClick(MouseEventArgs _)
-    {
-        await Hide();
+        var eventArgs = new DialogEventArgs {
+            MouseEventArgs = args,
+        };
+        await OnCancel.InvokeAsync(eventArgs);
+        if(!eventArgs.Cancel) {
+            await Hide();
+        }
     }
 
     private async Task OnFocusOut(FocusEventArgs args)
     {
+        Console.WriteLine("OnFocusOut");
         if(LoseFocusAction == MiniDialogAction.Disabled) {
             return;
         }
@@ -199,32 +216,33 @@ public partial class MiniDialog : ComponentBase {
         await Task.Delay(1);
         if(shouldCollapse) {
             if(LoseFocusAction == MiniDialogAction.Save || LoseFocusAction == MiniDialogAction.SaveAndClose) {
-                // TODO: Raise save event
+                await DoSubmit(null);
             }
-            if(LoseFocusAction == MiniDialogAction.Close || LoseFocusAction == MiniDialogAction.SaveAndClose) {
-                // TODO: Raise close event
-                await Hide();
+            if(LoseFocusAction == MiniDialogAction.Cancel) {
+                await DoCancel(null);
             }
-            await EventsAndRefresh();
+            //await EventsAndRefresh();
             shouldCollapse = false;
         }
     }
 
-    private async Task EventsAndRefresh()
-    {
-        //var args = new SelectMiniDialogChangedEventArgs {
-        //    FilterName = Property?.Property?.Name?.ToLowerInvariant() ?? "",
-        //    FilterExpression = FilterString,
-        //};
-        await Task.Delay(10);
-    }
+    //private async Task EventsAndRefresh()
+    //{
+    //    //var args = new SelectMiniDialogChangedEventArgs {
+    //    //    FilterName = Property?.Property?.Name?.ToLowerInvariant() ?? "",
+    //    //    FilterExpression = FilterString,
+    //    //};
+    //    await Task.Delay(10);
+    //}
+
+    private bool Visible => State != DialogState.NotLoaded;
 
     private CancellationTokenSource stateChangeCancellation = new();
 
     private bool shouldCollapse = false;
 
     // One frame to allow refresh to happen.
-    private const int minimumDuration = 20;
+    private const int minimumDuration = 1000 / 60;
 
     // Maximum to some logical upper bound that prevents app-destructive behavior.
     private const int maximumDuration = 5000;
@@ -234,7 +252,7 @@ public partial class MiniDialog : ComponentBase {
 public enum MiniDialogAction
 {
     Save,
-    Close,
+    Cancel,
     SaveAndClose,
     Disabled,
 }
@@ -271,13 +289,19 @@ public enum DialogState
 
 }
 
-public class SelectMiniDialogChangedEventArgs : EventArgs {
+/// <summary>
+/// Event args for Ok and Cancel events from a dialog.
+/// </summary>
+public class DialogEventArgs : EventArgs {
 
-    public string FilterName { get; set; } = string.Empty;
+    /// <summary>
+    /// If set in an event handler, cancels the button action from applying.
+    /// </summary>
+    public bool Cancel { get; set; } = false;
 
-    public List<string> FilterValues { get; set; } = new();
-
-    public string FilterExpression { get; set; } = string.Empty;
-
+    /// <summary>
+    /// If a mouse event started processing, the underlying mouse event that triggered the event.
+    /// </summary>
+    public MouseEventArgs? MouseEventArgs { get; init; }
 
 }

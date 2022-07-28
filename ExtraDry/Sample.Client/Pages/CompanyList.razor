@@ -18,7 +18,7 @@
     }
     <div class="Huzzah">
         <button @onclick="@OnClick">Click Me</button>
-        <MiniDialog @ref="MiniDialog" CssClass="@size" AnimationDuration="100" OkButtonCaption="Save &amp; Close">
+        <MiniDialog @ref="MiniDialog" CssClass="@size" AnimationDuration="100" SubmitButtonCaption="Save &amp; Close" OnSubmit="AlertClick">
             @for(int i = 0; i < count; ++i) {
                 <div>Huzzah</div>
             }
@@ -41,6 +41,11 @@
     public async Task OnClick()
     {
         await MiniDialog.Toggle();
+    }
+
+    public void AlertClick(DialogEventArgs _)
+    {
+        Console.WriteLine("Alert Click");
     }
 
     [Parameter]
