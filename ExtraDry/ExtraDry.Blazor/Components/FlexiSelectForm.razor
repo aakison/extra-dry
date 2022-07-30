@@ -1,0 +1,31 @@
+﻿@namespace ExtraDry.Blazor
+@typeparam T
+
+<form class="flexi select form">
+    <header>
+        <div class="controls">
+            <div class="filter">
+                <input @bind-value="Filter" @bind-value:event="oninput" placeholder="@FilterPlaceholder" />
+                <DryIcon Key="search" />
+                <button class="unobtrusive button clearFilter" type="button" @onclick="ClearFilter">&times;</button>
+            </div>
+            <div class="commands">
+                <button class="clearSelected button" type="button">Clear</button>
+            </div>
+        </div>
+    </header>
+    <div class="items">
+        @foreach(var item in DisplayData()) {
+            <label for="@item.Id" class="flexi select item label @item.CssClass @item.FilterClass">
+                <input id="@item.Id" class="@item.CssClass" type="checkbox" @onchange="e => OnChange(e, item.Source)" />
+                @if(ShowImages) {
+                    <img class="flexi select thumbnail" src="@item.Thumbnail" />
+                }
+                <span class="flexi select title @item.CssClass">@item.DisplayText</span>
+                @if(ShowSubtitle) {
+                    <span class="flexi select subtitle @item.CssClass">@item.DisplayText</span>
+                }
+            </label>
+        }
+    </div>
+</form>

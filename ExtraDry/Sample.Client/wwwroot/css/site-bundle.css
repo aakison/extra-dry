@@ -11553,3 +11553,20 @@ button.unobtrusive:active {
 .mini.dialog.form.hidden, .mini.dialog.form.hiding, .mini.dialog.curtain.hidden, .mini.dialog.curtain.hiding {
   opacity: 0%;
 }
+
+.flexi.select.form {
+  background-color: var(--white);
+}
+.flexi.select.form label:hover {
+  background-color: var(--primary-light);
+}
+
+.mini.dialog.form, .mini.dialog.curtain {
+  transition: opacity 0.1s;
+}
+.mini.dialog.form.showing, .mini.dialog.form.visible, .mini.dialog.curtain.showing, .mini.dialog.curtain.visible {
+  opacity: 100%;
+}
+.mini.dialog.form.hidden, .mini.dialog.form.hiding, .mini.dialog.curtain.hidden, .mini.dialog.curtain.hiding {
+  opacity: 0%;
+}

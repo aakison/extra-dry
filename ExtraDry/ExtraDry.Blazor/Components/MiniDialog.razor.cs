@@ -184,7 +184,6 @@ public partial class MiniDialog : ComponentBase {
 
     public async Task OnKeyDown(KeyboardEventArgs args)
     {
-        Console.WriteLine(args.Code);
         if(args.Code == "Escape") {
             await DoCancel(null);
         }

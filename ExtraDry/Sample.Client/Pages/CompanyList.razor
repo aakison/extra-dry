@@ -7,7 +7,7 @@
     <TableMenu TItem="Company" />
 
     @{
-        var count = 2;
+        var count = 100;
         var size = "several";
         if(count < 10) {
             size = "few";
@@ -15,13 +15,15 @@
         if(count > 40) {
             size = "many";
         }
+        var data = new List<string>();
+        @for(int i = 0; i < count; ++i) {
+            data.Add($"Huzzah {i}");
+        }
     }
     <div class="Huzzah">
         <button @onclick="@OnClick">Click Me</button>
-        <MiniDialog @ref="MiniDialog" CssClass="@size" AnimationDuration="100" SubmitButtonCaption="Save &amp; Close" OnSubmit="AlertClick">
-            @for(int i = 0; i < count; ++i) {
-                <div>Huzzah</div>
-            }
+        <MiniDialog @ref="MiniDialog" CssClass="@size" LoseFocusAction="MiniDialogAction.Disabled" AnimationDuration="100" OnSubmit="AlertClick">
+            <FlexiSelectForm Data="@data" />
         </MiniDialog>
     </div>
 
@@ -40,7 +42,7 @@
 @code {
     public async Task OnClick()
     {
-        await MiniDialog.Toggle();
+        await MiniDialog.Show();
     }
 
     public void AlertClick(DialogEventArgs _)

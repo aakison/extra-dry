@@ -26,5 +26,9 @@
   {
     "outputFile": "Components/MiniDialog.razor.css",
     "inputFile": "Components/MiniDialog.razor.scss"
+  },
+  {
+    "outputFile": "Components/FlexiSelectForm.razor.css",
+    "inputFile": "Components/FlexiSelectForm.razor.scss"
   }
 ]
