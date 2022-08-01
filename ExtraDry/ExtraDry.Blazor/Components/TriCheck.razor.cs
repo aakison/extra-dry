@@ -30,7 +30,6 @@ public partial class TriCheck : ComponentBase {
 
     private async Task DoChange(ChangeEventArgs? args)
     {
-        Console.WriteLine($"Checked {Value} to {args?.Value}");
         if(args == null) {
             args = new ChangeEventArgs();
         }

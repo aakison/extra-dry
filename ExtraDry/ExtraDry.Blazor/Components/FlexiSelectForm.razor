@@ -9,16 +9,23 @@
                 <DryIcon Key="search" />
                 <button class="unobtrusive button clearFilter" type="button" @onclick="ClearFilter">&times;</button>
             </div>
-            <div class="commands">
-                <TriCheck Value="@TriCheckValue" Label="Select All" @onchange="SelectAllChange" />
-                <button class="unobtrusive button clearSelected" type="button" @onclick="ClearAll">Clear</button>
-            </div>
+            @if(MultiSelect) {
+                <div class="commands">
+                    <TriCheck Value="@TriCheckValue" Label="Select All" @onchange="SelectAllChange" />
+                    <button class="unobtrusive button clearSelected" type="button" @onclick="ClearAll">Clear</button>
+                </div>
+            }
         </div>
     </header>
     <div class="items">
         @foreach(var item in DisplayData) {
             <label for="@item.Id" class="flexi select item label @item.CssClass @item.FilterClass @item.SelectClass">
-                <input id="@item.Id" class="@item.CssClass" type="checkbox" @onchange="e => OnChange(e, item)" checked="@item.Selected" />
+                @if(MultiSelect) {
+                    <input id="@item.Id" class="@item.CssClass" type="checkbox" @onchange="e => OnChange(e, item)" checked="@item.Selected" />                
+                }
+                else {
+                    <input id="@item.Id" name="@Name" class="@item.CssClass" type="radio" @onchange="e => OnChange(e, item)" checked="@item.Selected" />
+                }
                 @if(ShowImages) {
                     <img class="flexi select thumbnail" src="@item.Thumbnail" />
                 }

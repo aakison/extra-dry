@@ -4,6 +4,11 @@ namespace ExtraDry.Blazor;
 
 public partial class FlexiSelectForm<T> : ComponentBase {
 
+    public FlexiSelectForm()
+    {
+        Name = $"FlexiSingleSelect{++count}";
+    }
+
     //[Parameter]
     //public EventCallback<SelectMiniDialogChangedEventArgs> FilterChanged { get; set; }
 
@@ -26,8 +31,12 @@ public partial class FlexiSelectForm<T> : ComponentBase {
     public string Filter {
         get => filter; 
         set {
+            Console.WriteLine($"Filter: {value}");
             filter = value;
             Filters = filter.Split(' ').Where(e => !string.IsNullOrWhiteSpace(e)).ToArray();
+            foreach(var item in DisplayData) {
+                item.FilterClass = ApplyFilter(item.DisplayText);
+            }
             StateHasChanged();
         } 
     }
@@ -95,7 +104,16 @@ public partial class FlexiSelectForm<T> : ComponentBase {
         if(value == null) {
             return;
         }
-        if(args?.Value?.Equals(true) ?? false) {
+        if(args?.Value?.Equals("on") ?? false) {
+            // Single select change.
+            if(SelectedValue != null) {
+                DisplayData.First(e => e.Source?.Equals(SelectedValue) ?? false).Selected = false;
+            }
+            value.Selected = true;
+            SelectedValue = value.Source;
+            Console.WriteLine($"Set {value.DisplayText}");
+        }
+        else if(args?.Value?.Equals(true) ?? false) {
             if(value.Selected == false) {
                 value.Selected = true;
                 Console.WriteLine($"Added {value.DisplayText}");
@@ -156,7 +174,9 @@ public partial class FlexiSelectForm<T> : ComponentBase {
 
     private List<DisplayItem> DisplayData { get; set; } = new();
 
-    private string PopulatedClass => SelectedValues.Any() ? "active" : "inactive";
+    private string Name { get; set; }
+
+    private static int count = 0;
 
     private class DisplayItem
     {

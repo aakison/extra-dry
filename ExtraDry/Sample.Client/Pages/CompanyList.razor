@@ -23,10 +23,15 @@
     <div class="Huzzah">
         <button @onclick="@OnClick">Click Me</button>
         <MiniDialog @ref="MiniDialog" CssClass="@size" LoseFocusAction="MiniDialogAction.Disabled" AnimationDuration="100" OnSubmit="AlertClick">
-            <FlexiSelectForm Data="@data" />
+            <FlexiSelectForm Data="@data" MultiSelect="false" />
         </MiniDialog>
     </div>
-
+    <div class="Huzzah">
+        <button @onclick="@OnClick2">No, Click Me!</button>
+        <MiniDialog @ref="MiniDialog2" CssClass="@size" LoseFocusAction="MiniDialogAction.Disabled" AnimationDuration="100" OnSubmit="AlertClick">
+            <FlexiSelectForm Data="@data" MultiSelect="true" />
+        </MiniDialog>
+    </div>
 @*    <DryTable TItem="Company" ViewModel="@this" ItemsService="@CompanyService" />
 *@</DryPageQueryView>
 
@@ -43,6 +48,11 @@
     public async Task OnClick()
     {
         await MiniDialog.Show();
+    }
+
+    public async Task OnClick2()
+    {
+        await MiniDialog2.Show();
     }
 
     public void AlertClick(DialogEventArgs _)
@@ -66,5 +76,7 @@
     }
 
     private MiniDialog MiniDialog { get; set; }
+
+    private MiniDialog MiniDialog2 { get; set; }
 
 }
