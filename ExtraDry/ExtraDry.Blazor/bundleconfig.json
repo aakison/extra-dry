@@ -6,7 +6,8 @@
       "wwwroot/unpkg/roosterjs/dist/rooster.js",
       "Components/DryContent.razor.js",
       "wwwroot/js/attribution.js",
-      "Components/DryNavigation.razor.js"
+      "Components/DryNavigation.razor.js",
+      "Components/TriCheck.razor.js"
     ],
     "minify": {
       "enabled": true,

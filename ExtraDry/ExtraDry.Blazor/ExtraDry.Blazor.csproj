@@ -25,10 +25,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<_ContentIncludedByDefault Remove="wwwroot\bundles\blazor-extra-dry.js" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<None Include="..\extradry-logo.png">
 			<Pack>True</Pack>
 			<PackagePath></PackagePath>
@@ -63,16 +59,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Update="wwwroot\background.png">
-			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-		</Content>
-		<Content Update="wwwroot\bundles\blazor-extra-dry.js">
-			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
-		</Content>
-		<Content Update="wwwroot\bundles\blazor-extra-dry.min.js">
-			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
-		</Content>
 		<Content Update="wwwroot\img\layout-doubleweightedleft.png">
 			<CopyToOutputDirectory></CopyToOutputDirectory>
 		</Content>
@@ -88,16 +74,16 @@
 		<Content Update="wwwroot\img\layout-triple.png">
 			<CopyToOutputDirectory></CopyToOutputDirectory>
 		</Content>
-		<Content Update="wwwroot\styles.css">
-			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-		</Content>
 		<Content Update="wwwroot\unpkg\roosterjs\dist\rooster.js">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Content>
 		<Content Update="_Imports.razor">
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="wwwroot\bundles\" />
 	</ItemGroup>
 
 </Project>

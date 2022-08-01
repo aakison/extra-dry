@@ -10,14 +10,15 @@
                 <button class="unobtrusive button clearFilter" type="button" @onclick="ClearFilter">&times;</button>
             </div>
             <div class="commands">
-                <button class="clearSelected button" type="button">Clear</button>
+                <TriCheck Value="@TriCheckValue" />
+                <button class="clearSelected button" type="button" onclick="@ClearAll">Clear</button>
             </div>
         </div>
     </header>
     <div class="items">
         @foreach(var item in DisplayData()) {
             <label for="@item.Id" class="flexi select item label @item.CssClass @item.FilterClass">
-                <input id="@item.Id" class="@item.CssClass" type="checkbox" @onchange="e => OnChange(e, item.Source)" />
+                <input id="@item.Id" class="@item.CssClass" type="checkbox" @onchange="e => OnChange(e, item.Source)" checked="@IsSelected(item)" />
                 @if(ShowImages) {
                     <img class="flexi select thumbnail" src="@item.Thumbnail" />
                 }

@@ -45,6 +45,14 @@ form {
                 line-height: $iconHeight + $padding;
             }
         }
+
+        div.commands {
+            ::deep input {
+                width: $line/2;
+                height: $line/2;
+                margin: $line/4;
+            }
+        }
     }
 
     > div {

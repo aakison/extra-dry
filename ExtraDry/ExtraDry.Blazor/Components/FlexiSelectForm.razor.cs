@@ -87,6 +87,33 @@ public partial class FlexiSelectForm<T> : ComponentBase {
         }
     }
 
+    private TriCheckState TriCheckValue {
+        get {
+            if(!SelectedValues.Any()) {
+                return TriCheckState.Unchecked;
+            }
+            else if(SelectedValues.Count == Data?.Count()) {
+                return TriCheckState.Checked;
+            }
+            else {
+                return TriCheckState.Indeterminate;
+            }
+        }
+    }
+
+    public void ClearAll(MouseEventArgs _)
+    {
+        Console.WriteLine("asdf");
+        SelectedValues.Clear();
+        StateHasChanged();
+    }
+
+    private bool IsSelected(DisplayItem item)
+    {
+        Console.WriteLine($"Checking {item.DisplayText}");
+        return SelectedValues.Contains(item.Source);
+    }
+
     private void ClearFilter(MouseEventArgs _)
     {
         Filter = "";
@@ -137,6 +164,8 @@ public partial class FlexiSelectForm<T> : ComponentBase {
         public string FilterClass { get; set; } = "unfiltered";
 
         public T Source { get; }
+
+        public bool Selected { get; set; }
     }
 
 }

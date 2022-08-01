@@ -35,6 +35,11 @@ form header div.filter button {
   font-size: 24px;
   line-height: 24px;
 }
+form header div.commands ::deep input {
+  width: 20px;
+  height: 20px;
+  margin: 10px;
+}
 form > div {
   flex: 1 1 auto;
   overflow-x: hidden;
