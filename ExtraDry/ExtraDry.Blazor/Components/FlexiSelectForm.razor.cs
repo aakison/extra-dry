@@ -31,7 +31,6 @@ public partial class FlexiSelectForm<T> : ComponentBase {
     public string Filter {
         get => filter; 
         set {
-            Console.WriteLine($"Filter: {value}");
             filter = value;
             Filters = filter.Split(' ').Where(e => !string.IsNullOrWhiteSpace(e)).ToArray();
             foreach(var item in DisplayData) {
