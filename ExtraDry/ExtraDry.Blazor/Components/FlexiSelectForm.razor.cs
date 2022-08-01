@@ -1,7 +1,5 @@
 ﻿#nullable enable
 
-using System.Collections.ObjectModel;
-
 namespace ExtraDry.Blazor;
 
 public partial class FlexiSelectForm<T> : ComponentBase {
@@ -29,7 +27,6 @@ public partial class FlexiSelectForm<T> : ComponentBase {
         get => filter; 
         set {
             filter = value;
-            Console.WriteLine($"Value: {Filter}");
             Filters = filter.Split(' ').Where(e => !string.IsNullOrWhiteSpace(e)).ToArray();
             StateHasChanged();
         } 
@@ -45,7 +42,32 @@ public partial class FlexiSelectForm<T> : ComponentBase {
     [Parameter]
     public T? SelectedValue { get; set; }
 
-    public ObservableCollection<T> SelectedValues { get; private set; } = new();
+    [Parameter]
+    public bool MultiSelect { get; set; }
+
+    public IEnumerable<T> SelectedValues { 
+        get {
+            foreach(var item in DisplayData) {
+                if(item.Selected) {
+                    yield return item.Source;
+                }
+            }
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        int id = 0;
+        if(Data != null && !DisplayData.Any()) {
+            foreach(var item in Data) {
+                if(item != null) {
+                    var displayItem = new DisplayItem(++id, item);
+                    displayItem.FilterClass = ApplyFilter(displayItem.DisplayText);
+                    DisplayData.Add(displayItem);
+                }
+            }
+        }
+    }
 
     private string[] Filters { get; set; } = Array.Empty<string>();
 
@@ -55,11 +77,11 @@ public partial class FlexiSelectForm<T> : ComponentBase {
             return "unfiltered";
         }
         else if(Filters.Count() == 1 && Filters.First().Equals("checked", StringComparison.OrdinalIgnoreCase)) {
-            var match = SelectedValues.Any(e => e.ToString() == value);
+            var match = DisplayData.Any(e => e.DisplayText == value);
             return match ? "unfiltered" : "filtered";
         }
         else if(Filters.Count() == 1 && Filters.First().Equals("unchecked", StringComparison.OrdinalIgnoreCase)) {
-            var match = SelectedValues.Any(e => e.ToString() == value);
+            var match = DisplayData.Any(e => e.ToString() == value);
             return match ? "filtered" : "unfiltered";
         }
         else {
@@ -68,31 +90,31 @@ public partial class FlexiSelectForm<T> : ComponentBase {
         }
     }
 
-    private void OnChange(ChangeEventArgs args, T value)
+    private void OnChange(ChangeEventArgs args, DisplayItem value)
     {
         if(value == null) {
             return;
         }
         if(args?.Value?.Equals(true) ?? false) {
-            if(!SelectedValues.Contains(value)) {
-                SelectedValues.Add(value);
-                Console.WriteLine($"Added {value}");
+            if(value.Selected == false) {
+                value.Selected = true;
+                Console.WriteLine($"Added {value.DisplayText}");
             }
         }
         else {
-            if(SelectedValues.Contains(value)) {
-                SelectedValues.Remove(value);
-                Console.WriteLine($"Removed {value}");
+            if(value.Selected == true) {
+                value.Selected = false;
+                Console.WriteLine($"Removed {value.DisplayText}");
             }
         }
     }
 
     private TriCheckState TriCheckValue {
         get {
-            if(!SelectedValues.Any()) {
+            if(!DisplayData.Any(e => e.Selected)) {
                 return TriCheckState.Unchecked;
             }
-            else if(SelectedValues.Count == Data?.Count()) {
+            else if(DisplayData.All(e => e.Selected)) {
                 return TriCheckState.Checked;
             }
             else {
@@ -101,17 +123,29 @@ public partial class FlexiSelectForm<T> : ComponentBase {
         }
     }
 
-    public void ClearAll(MouseEventArgs _)
+    private void SelectAllChange(ChangeEventArgs args)
     {
-        Console.WriteLine("asdf");
-        SelectedValues.Clear();
-        StateHasChanged();
+        if(args.Value is TriCheckState tri) {
+            if(tri == TriCheckState.Checked) {
+                CheckAll(true);
+            }
+            else if(tri == TriCheckState.Unchecked) {
+                CheckAll(false);
+            }
+        }
     }
 
-    private bool IsSelected(DisplayItem item)
+    public void ClearAll(MouseEventArgs _)
     {
-        Console.WriteLine($"Checking {item.DisplayText}");
-        return SelectedValues.Contains(item.Source);
+        CheckAll(false);
+    }
+
+    private void CheckAll(bool value)
+    {
+        foreach(var item in DisplayData) {
+            item.Selected = value;
+        }
+        StateHasChanged();
     }
 
     private void ClearFilter(MouseEventArgs _)
@@ -120,19 +154,7 @@ public partial class FlexiSelectForm<T> : ComponentBase {
         StateHasChanged();
     }
 
-    private IEnumerable<DisplayItem> DisplayData()
-    {
-        int id = 0;
-        if(Data != null) {
-            foreach(var item in Data) {
-                if(item != null) {
-                    var displayItem = new DisplayItem(++id, item);
-                    displayItem.FilterClass = ApplyFilter(displayItem.DisplayText);
-                    yield return displayItem;
-                }
-            }
-        }
-    }
+    private List<DisplayItem> DisplayData { get; set; } = new();
 
     private string PopulatedClass => SelectedValues.Any() ? "active" : "inactive";
 
@@ -166,6 +188,9 @@ public partial class FlexiSelectForm<T> : ComponentBase {
         public T Source { get; }
 
         public bool Selected { get; set; }
+
+        public string SelectClass => Selected ? "selected" : "";
+
     }
 
 }

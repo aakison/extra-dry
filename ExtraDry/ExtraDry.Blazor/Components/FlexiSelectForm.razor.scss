@@ -46,8 +46,22 @@ form {
             }
         }
 
-        div.commands {
-            ::deep input {
+        ::deep div.commands {
+            display: flex;
+            align-items: center;
+
+            label {
+                display: flex;
+                align-items: center;
+                flex: 1 1 auto;
+            }
+
+            button {
+                text-align: right;
+                height: $line;
+            }
+
+            input {
                 width: $line/2;
                 height: $line/2;
                 margin: $line/4;

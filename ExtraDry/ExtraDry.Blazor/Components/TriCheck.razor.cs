@@ -7,6 +7,7 @@ public partial class TriCheck : ComponentBase {
     public TriCheck()
     {
         Id = $"TriCheck{++maxId}";
+        Label = "label";
     }
 
     [Parameter]
@@ -18,23 +19,32 @@ public partial class TriCheck : ComponentBase {
     [Parameter]
     public string Id { get; set; }
 
-    public event EventHandler<MouseEventArgs>? OnClicked;
+    [Parameter]
+    public string Label { get; set; }
 
-    private void DoClick(MouseEventArgs args)
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClicked { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> OnChange { get; set; }
+
+    private async Task DoChange(ChangeEventArgs? args)
     {
-        OnClicked?.Invoke(this, args);
+        Console.WriteLine($"Checked {Value} to {args?.Value}");
+        if(args == null) {
+            args = new ChangeEventArgs();
+        }
+        else if(args.Value is bool bValue) {
+            Value = bValue ? TriCheckState.Checked : TriCheckState.Unchecked;
+        }
+        args.Value = Value;
+        await OnChange.InvokeAsync(args);
     }
 
     [Inject]
     private IJSRuntime JSRuntime { get; set; } = null!;
 
-    private bool Checked {
-        get => Value == TriCheckState.Checked;
-        set {
-            Console.WriteLine($"Checked {value}");
-            Value = value ? TriCheckState.Checked : TriCheckState.Unchecked;
-        }
-    }
+    private bool Checked => Value == TriCheckState.Checked;
 
     private bool Indeterminate => Value == TriCheckState.Indeterminate;
 
@@ -44,6 +54,7 @@ public partial class TriCheck : ComponentBase {
             // Only do interop if we need to change.
             await JSRuntime.InvokeVoidAsync("extraDry_setIndeterminate", Id, Indeterminate);
             jsIndeterminate = Indeterminate;
+            await DoChange(null);
         }
     }
 

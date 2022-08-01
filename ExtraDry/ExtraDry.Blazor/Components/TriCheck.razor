@@ -1,4 +1,6 @@
 ﻿@namespace ExtraDry.Blazor
 
-<input class="@CssClass" id="@Id" type="checkbox" @bind-value="@Checked" @bind-value:event="oninput" />
-
+<label class="tricheck @CssClass" for="@Id">
+    <input class="tricheck @CssClass" id="@Id" type="checkbox" checked="@Checked" @onchange="DoChange" @onclick="OnClicked" />
+    <span class="tricheck @CssClass">@Label</span>
+</label>
