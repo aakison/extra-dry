@@ -30,5 +30,9 @@
   {
     "outputFile": "Components/Internal/FlexiSelectForm.razor.css",
     "inputFile": "Components/Internal/FlexiSelectForm.razor.scss"
+  },
+  {
+    "outputFile": "Components/MiniCard.razor.css",
+    "inputFile": "Components/MiniCard.razor.scss"
   }
 ]

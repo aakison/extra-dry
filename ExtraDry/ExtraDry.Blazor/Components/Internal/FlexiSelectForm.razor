@@ -1,5 +1,5 @@
 ﻿@namespace ExtraDry.Blazor.Internal
-@typeparam T
+@typeparam TItem
 
 <form class="flexi select form">
     <header>
@@ -26,13 +26,7 @@
                 else {
                     <input id="@item.Id" name="@Name" class="@item.CssClass" type="radio" @onchange="e => OnChange(e, item)" checked="@item.Selected" />
                 }
-                @if(ShowImages) {
-                    <img class="flexi select thumbnail" src="@item.Thumbnail" />
-                }
-                <span class="flexi select title @item.CssClass">@item.DisplayText</span>
-                @if(ShowSubtitle) {
-                    <span class="flexi select subtitle @item.CssClass">@item.DisplayText</span>
-                }
+                <MiniCard Value="@item.Source" />
             </label>
         }
     </div>

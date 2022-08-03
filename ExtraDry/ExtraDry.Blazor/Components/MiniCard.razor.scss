@@ -1,0 +1,45 @@
+﻿$height: 40px; // default to touch friendly
+$padding: 8px;
+
+div {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    height: $height;
+
+    &.thumbnail {
+        grid-template-columns: $height+$padding 1fr;
+        grid-template-areas:
+            "thumbnail title";
+        height: $height+$padding;
+    }
+
+    &.subtitle {
+        grid-template-rows: 6fr 4fr;
+        grid-template-areas:
+            "title" "subtitle";
+    }
+
+    &.thumbnail.subtitle {
+        grid-template-areas:
+            "thumbnail title" "thumbnail subtitle";
+        height: $height+$padding;
+    }
+
+    img {
+        grid-area: thumbnail;
+        border-radius: 0.5*$height;
+        margin-top: 0.5*$padding;
+    }
+
+    span.title {
+        grid-area: title;
+        margin-top: 0.5*$padding;
+    }
+
+    span.subtitle {
+        grid-area: subtitle;
+        font-size: 12px;
+        transform: translateY(-.4*$padding);
+    }
+}

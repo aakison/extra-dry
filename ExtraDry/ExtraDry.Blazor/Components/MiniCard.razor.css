@@ -1,0 +1,33 @@
+﻿div {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  height: 40px;
+}
+div.thumbnail {
+  grid-template-columns: 48px 1fr;
+  grid-template-areas: "thumbnail title";
+  height: 48px;
+}
+div.subtitle {
+  grid-template-rows: 6fr 4fr;
+  grid-template-areas: "title" "subtitle";
+}
+div.thumbnail.subtitle {
+  grid-template-areas: "thumbnail title" "thumbnail subtitle";
+  height: 48px;
+}
+div img {
+  grid-area: thumbnail;
+  border-radius: 20px;
+  margin-top: 4px;
+}
+div span.title {
+  grid-area: title;
+  margin-top: 4px;
+}
+div span.subtitle {
+  grid-area: subtitle;
+  font-size: 12px;
+  transform: translateY(-3.2px);
+}

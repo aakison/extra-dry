@@ -2,7 +2,7 @@
 
 namespace ExtraDry.Blazor.Internal;
 
-public partial class FlexiSelectForm<T> : ComponentBase {
+public partial class FlexiSelectForm<TItem> : ComponentBase {
 
     public FlexiSelectForm()
     {
@@ -42,21 +42,21 @@ public partial class FlexiSelectForm<T> : ComponentBase {
     private string filter = string.Empty;
 
     [Parameter]
-    public IEnumerable<T>? Data { get; set; }
+    public IEnumerable<TItem>? Data { get; set; }
 
     [Parameter]
-    public IEnumerable<T>? Values { get; set; }
+    public IEnumerable<TItem>? Values { get; set; }
 
     [Parameter] 
-    public T? Value { get; set; }
+    public TItem? Value { get; set; }
 
     [Parameter]
     public bool MultiSelect { get; set; }
 
     [Parameter]
-    public EventCallback<T> ValueChanged { get; set; }
+    public EventCallback<TItem> ValueChanged { get; set; }
 
-    public IEnumerable<T> SelectedValues { 
+    public IEnumerable<TItem> SelectedValues { 
         get {
             foreach(var item in DisplayData) {
                 if(item.Selected) {
@@ -188,16 +188,16 @@ public partial class FlexiSelectForm<T> : ComponentBase {
 
     private class DisplayItem
     {
-        public DisplayItem(int id, T item)
+        public DisplayItem(int id, TItem item)
         {
             Id = $"item{id}";
             DisplayText = item?.ToString() ?? "unnamed";
             Source = item;
-            if(item is IFlexiSelectItem flexiValue) {
-                CssClass = flexiValue.CssClass;
-                DisplayText = flexiValue.Title;
-                Subtitle = flexiValue.Subtitle;
-                Thumbnail = flexiValue.Thumbnail;
+            if(item is IMiniCardItem miniCard) {
+                CssClass = miniCard.CssClass ?? String.Empty;
+                DisplayText = miniCard.Title;
+                Subtitle = miniCard.Subtitle;
+                Thumbnail = miniCard.Thumbnail;
             }
         }
 
@@ -213,7 +213,7 @@ public partial class FlexiSelectForm<T> : ComponentBase {
         
         public string FilterClass { get; set; } = "unfiltered";
 
-        public T Source { get; }
+        public TItem Source { get; }
 
         public bool Selected { get; set; }
 

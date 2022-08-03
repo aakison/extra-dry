@@ -8,8 +8,8 @@ namespace ExtraDry.Blazor;
 /// controls on mobile and desktop platforms.  Includes list management and
 /// filtering.
 /// </summary>
-/// <typeparam name="T">The type for items in the select list.</typeparam>
-public partial class FlexiSelect<T> : ComponentBase {
+/// <typeparam name="TItem">The type for items in the select list.</typeparam>
+public partial class FlexiSelect<TItem> : ComponentBase {
 
     /// <inheritdoc cref="MiniDialog.CssClass" />
     [Parameter]
@@ -21,7 +21,7 @@ public partial class FlexiSelect<T> : ComponentBase {
 
     /// <inheritdoc cref="FlexiSelectForm{T}.Data" />
     [Parameter]
-    public IEnumerable<T>? Data { get; set; }
+    public IEnumerable<TItem>? Data { get; set; }
 
     /// <inheritdoc cref="MiniDialog.LoseFocusAction" />
     [Parameter]
@@ -48,10 +48,10 @@ public partial class FlexiSelect<T> : ComponentBase {
     public int AnimationDuration { get; set; } = 100;
 
     [Parameter]
-    public T? Value { get; set; }
+    public TItem? Value { get; set; }
 
     [Parameter]
-    public EventCallback<T?> ValueChanged { get; set; }
+    public EventCallback<TItem?> ValueChanged { get; set; }
 
     private async Task DoClick(MouseEventArgs args)
     {
