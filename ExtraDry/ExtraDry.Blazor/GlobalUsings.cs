@@ -1,4 +1,5 @@
 ﻿global using ExtraDry.Blazor.Models;
+global using ExtraDry.Blazor.Internal;
 global using ExtraDry.Core;
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.AspNetCore.Components.Web;

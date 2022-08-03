@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-namespace ExtraDry.Blazor;
+namespace ExtraDry.Blazor.Internal;
 
 public partial class FlexiSelectForm<T> : ComponentBase {
 
