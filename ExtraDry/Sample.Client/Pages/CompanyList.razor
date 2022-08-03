@@ -20,18 +20,12 @@
             data.Add($"Huzzah {i}");
         }
     }
-    <div class="Huzzah">
-        <button @onclick="@OnClick">Click Me</button>
-        <MiniDialog @ref="MiniDialog" CssClass="@size" LoseFocusAction="MiniDialogAction.Disabled" AnimationDuration="100" OnSubmit="AlertClick">
-            <FlexiSelectForm Data="@data" MultiSelect="false" />
-        </MiniDialog>
-    </div>
-    <div class="Huzzah">
-        <button @onclick="@OnClick2">No, Click Me!</button>
-        <MiniDialog @ref="MiniDialog2" CssClass="@size" LoseFocusAction="MiniDialogAction.Disabled" AnimationDuration="100" OnSubmit="AlertClick">
-            <FlexiSelectForm Data="@data" MultiSelect="true" />
-        </MiniDialog>
-    </div>
+
+    <div>@TestSelect</div>
+
+    <FlexiSelect CssClass="@size" Data="@data" MultiSelect="false" @bind-Value="TestSelect" />
+    <FlexiSelect CssClass="@size" Data="@data" MultiSelect="true" />
+
 @*    <DryTable TItem="Company" ViewModel="@this" ItemsService="@CompanyService" />
 *@</DryPageQueryView>
 
@@ -45,8 +39,11 @@
 }
 
 @code {
+    public string TestSelect { get; set; }
+
     public async Task OnClick()
     {
+        var t = new InputText();
         await MiniDialog.Show();
     }
 

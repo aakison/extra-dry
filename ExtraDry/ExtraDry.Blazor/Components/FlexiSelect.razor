@@ -1,0 +1,12 @@
+﻿@namespace ExtraDry.Blazor
+@typeparam T
+
+<div class="flexi select @CssClass">
+    <div>
+        <span></span>
+        <button @onclick="@DoClick">Click Me</button>
+    </div>
+    <MiniDialog @ref="MiniDialog" CssClass="@CssClass" LoseFocusAction="MiniDialogAction.Disabled" AnimationDuration="@AnimationDuration" OnSubmit="@OnSubmit" OnCancel="@OnCancel">
+        <FlexiSelectForm Data="@Data" MultiSelect="@MultiSelect" Value="@Value" ValueChanged="@ValueChanged" />
+    </MiniDialog>
+</div>
