@@ -50,7 +50,7 @@
 }
 
 @code {
-    public class User : IMiniCardItem {
+    public class User : IPreviewSubject, ITitleSubject {
         public User(string name, string email)
         {
             Title = name;

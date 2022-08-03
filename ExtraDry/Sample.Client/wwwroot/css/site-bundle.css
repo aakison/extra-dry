@@ -11489,68 +11489,68 @@ button.unobtrusive:active {
 }
 
 @media only screen and (min-width: 1200px) {
-  .mini.dialog.curtain {
+  .mini-dialog.curtain {
     width: initial;
     height: initial;
     position: relative;
   }
 }
-.mini.dialog.form {
+.mini-dialog.form {
   background-color: var(--white);
   background: #FFFFFF;
   box-shadow: 0px 1.2px 3.6px rgba(0, 0, 0, 0.1), 0px 6.4px 14.4px rgba(0, 0, 0, 0.13);
   border-radius: 2px;
 }
 @media only screen and (min-width: 1200px) {
-  .mini.dialog.form {
+  .mini-dialog.form {
     position: absolute;
   }
-  .mini.dialog.form.left {
+  .mini-dialog.form.left {
     left: 0;
   }
-  .mini.dialog.form.right {
+  .mini-dialog.form.right {
     right: 0;
   }
 }
-.mini.dialog.form.many {
+.mini-dialog.form.many {
   max-width: 500px;
   max-height: 854px;
 }
-.mini.dialog.form.several {
+.mini-dialog.form.several {
   max-width: 325px;
   max-height: 500px;
 }
-.mini.dialog.form.few {
+.mini-dialog.form.few {
   max-width: 250px;
   max-height: 300px;
 }
-.mini.dialog.form header {
+.mini-dialog.form header {
   background-color: var(--off-white);
 }
 @media only screen and (min-width: 1200px) {
-  .mini.dialog.form header {
+  .mini-dialog.form header {
     display: none;
   }
 }
-.mini.dialog.form header .title h3, .mini.dialog.form header .title .h3 {
+.mini-dialog.form header .title h3, .mini-dialog.form header .title .h3 {
   margin: 0;
   padding: 10px;
   font-size: 18px;
   font-weight: bold;
 }
-.mini.dialog.form footer {
+.mini-dialog.form footer {
   background-color: var(--off-white);
   padding: 10px;
   border-top: solid 1px var(--silver);
 }
 
-.mini.dialog.form, .mini.dialog.curtain {
+.mini-dialog.form, .mini-dialog.curtain {
   transition: opacity 0.1s;
 }
-.mini.dialog.form.showing, .mini.dialog.form.visible, .mini.dialog.curtain.showing, .mini.dialog.curtain.visible {
+.mini-dialog.form.showing, .mini-dialog.form.visible, .mini-dialog.curtain.showing, .mini-dialog.curtain.visible {
   opacity: 100%;
 }
-.mini.dialog.form.hidden, .mini.dialog.form.hiding, .mini.dialog.curtain.hidden, .mini.dialog.curtain.hiding {
+.mini-dialog.form.hidden, .mini-dialog.form.hiding, .mini-dialog.curtain.hidden, .mini-dialog.curtain.hiding {
   opacity: 0%;
 }
 

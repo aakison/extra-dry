@@ -5,8 +5,10 @@
     @if(ShowThumbnail) {
         <img class="thumbnail" src="@Thumbnail" />
     }
-    <span class="title">@Title</span>
-    @if(ShowSubtitle) {
-        <span class="subtitle @CssClass">@Subtitle</span>
-    }
+    <div class="titles">
+        <span class="title @CssClass">@Title</span>
+        @if(ShowSubtitle) {
+            <span class="subtitle @CssClass">@Subtitle</span>
+        }
+    </div>
 </div>

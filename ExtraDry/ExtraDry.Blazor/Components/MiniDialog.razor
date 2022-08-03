@@ -1,9 +1,9 @@
 ﻿@namespace ExtraDry.Blazor
 
 @if(Visible) {
-    <section class="mini dialog curtain @StateClass @CssClass">
+    <section class="mini-dialog curtain @StateClass @CssClass">
         @* Tabindex is required so the outer div can get focus, then respond to events *@
-        <div class="mini dialog form @StateClass @CssClass" @ref="Form" @onfocusout="OnFocusOut" @onfocusin="OnFocusIn" @onkeydown="OnKeyDown" tabindex="0">
+        <div class="mini-dialog form @StateClass @CssClass" @ref="Form" @onfocusout="OnFocusOut" @onfocusin="OnFocusIn" @onkeydown="OnKeyDown" tabindex="0">
             <header>
                 @if(ShowTitle) {
                     <div class="title">

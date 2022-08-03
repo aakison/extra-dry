@@ -193,11 +193,17 @@ public partial class FlexiSelectForm<TItem> : ComponentBase {
             Id = $"item{id}";
             DisplayText = item?.ToString() ?? "unnamed";
             Source = item;
-            if(item is IMiniCardItem miniCard) {
-                CssClass = miniCard.CssClass ?? String.Empty;
-                DisplayText = miniCard.Title;
-                Subtitle = miniCard.Subtitle;
-                Thumbnail = miniCard.Thumbnail;
+            if(item is IPreviewSubject preview) {
+                CssClass = preview.CssClass ?? string.Empty;
+                Thumbnail = preview.Thumbnail;
+            }
+            if(item is INamedSubject named) {
+                DisplayText = named.Title;
+                Subtitle = named.Code;
+            }
+            if(item is ITitleSubject title) {
+                DisplayText = title.Title;
+                Subtitle = title.Subtitle;
             }
         }
 

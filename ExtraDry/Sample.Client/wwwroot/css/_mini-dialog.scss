@@ -2,7 +2,7 @@
 
 // On mobile & tablet, use a curtain and a soverign dialog box.
 // On desktop, pop-up in place.
-.mini.dialog {
+.mini-dialog {
 
     &.curtain {
         // On desktop, curtain becomes a relative placement element instead of a normal curtain.
@@ -75,7 +75,7 @@
 
 // Example of animation using fade-in fade-out
 // Match with Change AnimationDuration on MiniDialog to 100 to see this work.
-.mini.dialog.form, .mini.dialog.curtain {
+.mini-dialog.form, .mini-dialog.curtain {
     transition: opacity 0.1s;
     &.showing, &.visible {
         opacity: 100%;
