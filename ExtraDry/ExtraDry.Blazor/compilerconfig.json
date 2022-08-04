@@ -24,15 +24,15 @@
     "inputFile": "Components/DryExpandable.razor.scss"
   },
   {
-    "outputFile": "Components/MiniDialog.razor.css",
-    "inputFile": "Components/MiniDialog.razor.scss"
+    "outputFile": "Components/Standard/MiniDialog.razor.css",
+    "inputFile": "Components/Standard/MiniDialog.razor.scss"
   },
   {
     "outputFile": "Components/Internal/FlexiSelectForm.razor.css",
     "inputFile": "Components/Internal/FlexiSelectForm.razor.scss"
   },
   {
-    "outputFile": "Components/MiniCard.razor.css",
-    "inputFile": "Components/MiniCard.razor.scss"
+    "outputFile": "Components/Standard/MiniCard.razor.css",
+    "inputFile": "Components/Standard/MiniCard.razor.scss"
   }
 ]

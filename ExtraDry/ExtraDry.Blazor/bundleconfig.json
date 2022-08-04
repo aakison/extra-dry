@@ -7,7 +7,7 @@
       "Components/DryContent.razor.js",
       "wwwroot/js/attribution.js",
       "Components/DryNavigation.razor.js",
-      "Components/TriCheck.razor.js"
+      "Components/Standard/TriCheck.razor.js"
     ],
     "minify": {
       "enabled": true,

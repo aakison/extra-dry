@@ -7,7 +7,7 @@ namespace ExtraDry.Blazor;
 /// <summary>
 /// Represents a gravatar to easily create a image from an e-mail address (if the user uses gravatar).
 /// </summary>
-public partial class DryGravatar : ComponentBase {
+public partial class Gravatar : ComponentBase {
 
     /// <summary>
     /// The e-mail address for this gravatar, also displayed as 'alt' text unles `HideEmail` is enabled.

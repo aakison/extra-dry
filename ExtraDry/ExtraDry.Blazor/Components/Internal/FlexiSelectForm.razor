@@ -1,12 +1,12 @@
 ﻿@namespace ExtraDry.Blazor.Internal
 @typeparam TItem
 
-<form class="flexi select form">
+<form class="flexi-select form">
     <header>
         <div class="controls">
             <div class="filter">
                 <input @bind-value="Filter" @bind-value:event="oninput" placeholder="@FilterPlaceholder" />
-                <DryIcon Key="search" />
+                <Icon Key="search" />
                 <button class="unobtrusive button clearFilter" type="button" @onclick="ClearFilter">&times;</button>
             </div>
             @if(MultiSelect) {
@@ -19,7 +19,7 @@
     </header>
     <div class="items">
         @foreach(var item in DisplayData) {
-            <label for="@item.Id" class="flexi select item label @item.CssClass @item.FilterClass @item.SelectClass">
+            <label for="@item.Id" class="flexi-select item label @item.CssClass @item.FilterClass @item.SelectClass">
                 @if(MultiSelect) {
                     <input id="@item.Id" class="@item.CssClass" type="checkbox" @onchange="e => OnChange(e, item)" checked="@item.Selected" />                
                 }

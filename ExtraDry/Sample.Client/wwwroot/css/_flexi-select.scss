@@ -2,11 +2,11 @@
 
 // On mobile & tablet, use a curtain and a soverign dialog box.
 // On desktop, pop-up in place.
-.flexi.select.form {
+.flexi-select.form {
     background-color: $var-white;
 
-    label {
-        &:hover {
+    div {
+        label:hover {
             background-color: $var-primary-light;
         }
     }
@@ -14,7 +14,7 @@
 
 // Example of animation using fade-in fade-out
 // Match with Change AnimationDuration on MiniDialog to 100 to see this work.
-.mini.dialog.form, .mini.dialog.curtain {
+.mini-dialog.form, .mini-dialog.curtain {
     transition: opacity 0.1s;
     &.showing, &.visible {
         opacity: 100%;

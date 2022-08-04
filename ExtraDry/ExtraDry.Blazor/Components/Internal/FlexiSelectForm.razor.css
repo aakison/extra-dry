@@ -56,11 +56,11 @@ form header ::deep div.commands input {
 form > div {
   flex: 1 1 auto;
   overflow-x: hidden;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 form > div label {
   display: block;
-  height: 40px;
+  min-height: 40px;
   display: flex;
   align-items: center;
   transition: height 0.25s, opacity 0.15s;
