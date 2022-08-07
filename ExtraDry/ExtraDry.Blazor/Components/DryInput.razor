@@ -41,7 +41,7 @@
                             <img class="@valueClassName" src="@source" />
                         }
                         @if(!string.IsNullOrWhiteSpace(Property.CaptionTemplate)) {
-                            var content = string.Format(Property.CaptionTemplate, value.Display);
+                            var content = string.Format(Property.CaptionTemplate, value.Title);
                             <span class="@valueClassName">@content</span>
                         }
                     </button>
@@ -58,7 +58,7 @@
                 <select class="@CssClass" @onchange="HandleChange" >
                     @foreach(var value in Property.GetDiscreteValues()) {
                         var selected = value.Key.ToString() == selectedValue?.ToString(); // force object to enum compare
-                        <option value="@value.Key" selected="@selected">@value.Display</option>
+                        <option value="@value.Key" selected="@selected">@value.Title</option>
                     }
                 </select>
             }

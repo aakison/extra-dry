@@ -1,4 +1,6 @@
-﻿using ExtraDry.Blazor.Internal;
+﻿#nullable enable
+
+using ExtraDry.Blazor.Internal;
 using System.Collections;
 using System.Globalization;
 using System.Reflection;
@@ -25,7 +27,7 @@ public class PropertyDescription {
         if(HasDiscreteValues) {
             var enumValues = Property.PropertyType.GetFields(BindingFlags.Public | BindingFlags.Static);
             foreach(var enumValue in enumValues) {
-                var value = (int)enumValue.GetValue(null);
+                var value = (int)enumValue.GetValue(null)!;
                 var enumDisplay = enumValue.GetCustomAttribute<DisplayAttribute>();
                 discreteDisplayAttributes.Add(value, enumDisplay);
             }
@@ -49,25 +51,25 @@ public class PropertyDescription {
     /// </summary>
     private static int recursionDepth = 0;
 
-    public ViewModelDescription ChildModel { get; private set; }
+    public ViewModelDescription? ChildModel { get; private set; }
 
     public string FieldCaption { get; set; }
 
     public string ColumnCaption { get; set; }
 
-    public DisplayAttribute Display { get; }
+    public DisplayAttribute? Display { get; }
 
-    public DisplayFormatAttribute Format { get; }
+    public DisplayFormatAttribute? Format { get; }
 
-    public RulesAttribute Rules { get; }
+    public RulesAttribute? Rules { get; }
 
-    public FilterAttribute Filter { get; }
+    public FilterAttribute? Filter { get; }
 
-    public MaxLengthAttribute MaxLength { get; }
+    public MaxLengthAttribute? MaxLength { get; }
 
-    public ControlAttribute Control { get; }
+    public ControlAttribute? Control { get; }
 
-    public string Description { get; }
+    public string? Description { get; }
 
     public bool IsRequired { get; }
 
@@ -180,7 +182,7 @@ public class PropertyDescription {
 
     public bool HasArrayValues => typeof(IEnumerable).IsAssignableFrom(Property.PropertyType) && !typeof(string).IsAssignableFrom(Property.PropertyType);
 
-    private readonly Dictionary<int, DisplayAttribute> discreteDisplayAttributes = new();
+    private readonly Dictionary<int, DisplayAttribute?> discreteDisplayAttributes = new();
 
     public bool HasTextRepresentation {
         get {

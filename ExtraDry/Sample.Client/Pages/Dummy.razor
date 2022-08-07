@@ -3,9 +3,79 @@
 <h3>Dummy</h3>
 <div>@Id</div>
 
+@{
+    var count = 100;
+    var size = "several";
+    if(count < 10) {
+        size = "few";
+    }
+    if(count > 40) {
+        size = "many";
+    }
+    var data = new List<string>();
+    @for(int i = 0; i < count; ++i) {
+        data.Add($"Huzzah {i}");
+    }
+
+    Users.Add(new User("Adrian Akison", "adrian.akison@fmiworks.com"));
+    Users.Add(new User("David Wilton", "david.wilton@fmiworks.com"));
+    Users.Add(new User("Shae Griffiths", "shae.griffiths@fmiworks.com"));
+    Users.Add(new User("Sam Camilleri", "sam.camilleri@fmiworks.com"));
+    Users.Add(new User("Hai Vu", "hai.vu@fmiworks.com"));
+    Users.Add(new User("Jaspal Muker", "jaspal.muker@fmiworks.com"));
+    Users.Add(new User("Anthony Pasquale", "antonio.pasquale@fmiworks.com"));
+    Users.Add(new User("Wayne Scott", "wayne.scott@fmiworks.com"));
+    Users.Add(new User("Kevin Thomas", "kevin.thomase@fmiworks.com"));
+
+}
+
+<div>@TestSelect?.Title</div>
+
+<FlexiSelect TItem="User" CssClass="@size" Data="@Users" MultiSelect="false" @bind-Value="TestSelect" />
+<FlexiSelect CssClass="@size" Data="@data" MultiSelect="true" />
+
+<DryFlexiSelect Model="@this" PropertyName="@nameof(Users)" />
+
 @code {
+    
+    public class User : IPreviewSubject, ITitleSubject {
+        public User(string name, string email)
+        {
+            Title = name;
+            Subtitle = email;
+            Thumbnail = Gravatar.ToGravatarUrl(email, 40);
+        }
+        public string CssClass { get; set; } = string.Empty;
+        public string Thumbnail { get; set; } = string.Empty;
+        public string Title { get; set; }
+        public string Subtitle { get; set; }
+    }
+
+    public List<User> Users { get; set; } = new();
+
+    public User TestSelect { get; set; }
+
+    public async Task OnClick()
+    {
+        var t = new InputText();
+        await MiniDialog.Show();
+    }
+
+    public async Task OnClick2()
+    {
+        await MiniDialog2.Show();
+    }
+
+    public void AlertClick(DialogEventArgs _)
+    {
+        Console.WriteLine("Alert Click");
+    }
 
     [Parameter]
     public string Id { get; set; }
+
+    private MiniDialog MiniDialog { get; set; }
+
+    private MiniDialog MiniDialog2 { get; set; }
 
 }
