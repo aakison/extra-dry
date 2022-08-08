@@ -19,13 +19,12 @@ form header div.filter input {
 form header div.filter input:focus-visible {
   outline: none;
 }
-form header div.filter ::deep i {
+form header div.filter ::deep img {
   width: 16px;
   height: 16px;
   position: absolute;
   left: 16px;
-  top: 13.6px;
-  color: gray;
+  top: 16px;
   font-size: 16px;
 }
 form header div.filter button {
@@ -81,4 +80,5 @@ form > div label:hover {
 form > div label.filtered {
   height: 0;
   opacity: 0;
+  min-height: 0;
 }
