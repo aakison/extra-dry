@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace ExtraDry.Blazor;
 
-public class ValueDescription : ITitleSubject, IPreviewSubject {
+public class ValueDescription : ISubjectViewModel {
 
     public ValueDescription(object key, MemberInfo memberInfo)
     {
@@ -22,14 +22,18 @@ public class ValueDescription : ITitleSubject, IPreviewSubject {
 
     public string Title { get; set; }
 
-    public string? Subtitle { get; set; } = string.Empty;
+    public string Subtitle { get; set; } = string.Empty;
 
-    public string? CssClass { get; set; } = string.Empty;
-
-    public string? Thumbnail { get; set; }
+    public string Thumbnail => string.Empty;
 
     /// <summary>
     /// Indicates if the value should be in generated structures such as dropdown filter lists.
     /// </summary>
     public bool AutoGenerate { get; set; }
+
+    public string Code => string.Empty;
+
+    public string Caption => Title;
+
+    public string Description => string.Empty;
 }

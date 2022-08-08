@@ -94,14 +94,15 @@ public partial class FlexiSelectForm<TItem> : ComponentBase {
         if(!Filters.Any()) {
             match = true;
         }
-        else if(Filters.Count() == 1 && Filters.First().Equals("checked", StringComparison.OrdinalIgnoreCase)) {
+        else if(Filters.Length == 1 && Filters.First().Equals("checked", StringComparison.OrdinalIgnoreCase)) {
             match = value.Selected;
         }
-        else if(Filters.Count() == 1 && Filters.First().Equals("unchecked", StringComparison.OrdinalIgnoreCase)) {
+        else if(Filters.Length == 1 && Filters.First().Equals("unchecked", StringComparison.OrdinalIgnoreCase)) {
             match = !value.Selected;
         }
         else {
-            match = Filters.Any(e => value.DisplayText.Contains(e, StringComparison.OrdinalIgnoreCase));
+            match = Filters.Any(e => value.Title.Contains(e, StringComparison.OrdinalIgnoreCase) 
+                || value.Subtitle.Contains(e, StringComparison.OrdinalIgnoreCase));
         }
         value.FilterClass = match ? "unfiltered" : "filtered";
     }
@@ -119,18 +120,18 @@ public partial class FlexiSelectForm<TItem> : ComponentBase {
             value.Selected = true;
             Value = value.Source;
             await ValueChanged.InvokeAsync(Value);
-            Console.WriteLine($"Set {value.DisplayText}");
+            Console.WriteLine($"Set {value.Title}");
         }
         else if(args?.Value?.Equals(true) ?? false) {
             if(value.Selected == false) {
                 value.Selected = true;
-                Console.WriteLine($"Added {value.DisplayText}");
+                Console.WriteLine($"Added {value.Title}");
             }
         }
         else {
             if(value.Selected == true) {
                 value.Selected = false;
-                Console.WriteLine($"Removed {value.DisplayText}");
+                Console.WriteLine($"Removed {value.Title}");
             }
         }
     }
@@ -191,31 +192,22 @@ public partial class FlexiSelectForm<TItem> : ComponentBase {
         public DisplayItem(int id, TItem item)
         {
             Id = $"item{id}";
-            DisplayText = item?.ToString() ?? "unnamed";
+            Title = item?.ToString() ?? "unnamed";
             Source = item;
-            if(item is IPreviewSubject preview) {
-                CssClass = preview.CssClass ?? string.Empty;
-                Thumbnail = preview.Thumbnail;
-            }
-            if(item is INamedSubject named) {
-                DisplayText = named.Title;
-                Subtitle = named.Code;
-            }
-            if(item is ITitleSubject title) {
-                DisplayText = title.Title;
-                Subtitle = title.Subtitle;
+            if(item is ISubjectViewModel subject) {
+                Thumbnail = subject.Thumbnail;
+                Title = subject.Title;
+                Subtitle = subject.Subtitle;
             }
         }
 
         public string Id { get; set; }
 
-        public string CssClass { get; set; } = string.Empty;
+        public string Title { get; set; }
 
-        public string DisplayText { get; set; }
+        public string Subtitle { get; set; } = string.Empty;
 
-        public string? Subtitle { get; set; } = string.Empty;
-
-        public string? Thumbnail { get; set; } = string.Empty;
+        public string Thumbnail { get; set; } = string.Empty;
         
         public string FilterClass { get; set; } = "unfiltered";
 

@@ -40,22 +40,16 @@ public partial class MiniCard<TItem> : ComponentBase {
         typeof(TItem).Name.ToLowerInvariant();
 
     private string Thumbnail => 
-        (Value as IPreviewSubject)?.Thumbnail 
+        (Value as ISubjectViewModel)?.Thumbnail 
         ?? string.Empty;
 
     private string Title => 
-        (Value as ITitleSubject)?.Title 
-        ?? (Value as INamedSubject)?.Title
+        (Value as ISubjectViewModel)?.Title
         ?? Value?.ToString() 
         ?? "null";
 
     private string Subtitle => 
-        (Value as ITitleSubject)?.Subtitle 
-        ?? (Value as INamedSubject)?.Code
-        ?? string.Empty;
-
-    private string CssClass => 
-        (Value as IPreviewSubject)?.CssClass 
+        (Value as ISubjectViewModel)?.Subtitle
         ?? string.Empty;
 
 }

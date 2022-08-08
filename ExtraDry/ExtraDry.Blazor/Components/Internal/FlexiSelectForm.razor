@@ -19,12 +19,12 @@
     </header>
     <div class="items">
         @foreach(var item in DisplayData) {
-            <label for="@item.Id" class="flexi-select item label @item.CssClass @item.FilterClass @item.SelectClass">
+            <label for="@item.Id" class="flexi-select item label @item.FilterClass @item.SelectClass">
                 @if(MultiSelect) {
-                    <input id="@item.Id" class="@item.CssClass" type="checkbox" @onchange="e => OnChange(e, item)" checked="@item.Selected" />                
+                    <input id="@item.Id" type="checkbox" @onchange="e => OnChange(e, item)" checked="@item.Selected" />                
                 }
                 else {
-                    <input id="@item.Id" name="@Name" class="@item.CssClass" type="radio" @onchange="e => OnChange(e, item)" checked="@item.Selected" />
+                    <input id="@item.Id" name="@Name" type="radio" @onchange="e => OnChange(e, item)" checked="@item.Selected" />
                 }
                 <MiniCard Value="@item.Source" />
             </label>

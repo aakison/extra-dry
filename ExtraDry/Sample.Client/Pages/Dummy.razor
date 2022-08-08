@@ -27,33 +27,75 @@
     Users.Add(new User("Wayne Scott", "wayne.scott@fmiworks.com"));
     Users.Add(new User("Kevin Thomas", "kevin.thomase@fmiworks.com"));
 
+    UserViewModels = Users.Select(e => new UserViewModel(e)).ToList();
+
 }
 
 <div>@TestSelect?.Title</div>
 
-<FlexiSelect TItem="User" CssClass="@size" Data="@Users" MultiSelect="false" @bind-Value="TestSelect" />
+<FlexiSelect CssClass="@size" Data="@UserViewModels" MultiSelect="false" @bind-Value="TestSelect" />
 <FlexiSelect CssClass="@size" Data="@data" MultiSelect="true" />
 
 <DryFlexiSelect Model="@this" PropertyName="@nameof(Users)" />
 
 @code {
-    
-    public class User : IPreviewSubject, ITitleSubject {
+
+    public class User {
         public User(string name, string email)
         {
-            Title = name;
-            Subtitle = email;
-            Thumbnail = Gravatar.ToGravatarUrl(email, 40);
+            Name = name;
+            Email = email;
         }
-        public string CssClass { get; set; } = string.Empty;
-        public string Thumbnail { get; set; } = string.Empty;
-        public string Title { get; set; }
-        public string Subtitle { get; set; }
+
+        public string Name { get; set; }
+        public string Email { get; set; }
+    }
+
+    public interface ISubjectViewModel
+    {
+        /// <summary>
+        /// The title for the card.
+        /// </summary>
+        string Code { get; }
+
+        /// <summary>
+        /// The title for the card.
+        /// </summary>
+        string Title { get; }
+
+        /// <summary>
+        /// An optional subtitle to be displayed with a MiniCard.
+        /// </summary>
+        string Subtitle { get; }
+
+        /// <summary>
+        /// An optional subtitle to be displayed with a MiniCard.
+        /// </summary>
+        string Caption { get; }
+
+        /// <summary>
+        /// An optional thumbnail to be presented with each of the cards.
+        /// </summary>
+        string Thumbnail { get; }
+
+    }
+
+    public class UserViewModel : ViewModel<User>
+    {
+        public UserViewModel(User user) : base(user) { }
+
+        public override string Title => Model.Name;
+
+        public override string Subtitle => Model.Email;
+
+        public override string Thumbnail => Gravatar.ToGravatarUrl(Model.Email, 40);
     }
 
     public List<User> Users { get; set; } = new();
 
-    public User TestSelect { get; set; }
+    public List<UserViewModel> UserViewModels { get; set; } = new();
+
+    public UserViewModel TestSelect { get; set; }
 
     public async Task OnClick()
     {

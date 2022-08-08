@@ -1,14 +1,14 @@
 ﻿@namespace ExtraDry.Blazor
 @typeparam TItem
 
-<div class="mini-card @SemanticThumbnail @SemanticSubtitle @CssClass">
+<div class="mini-card @SemanticThumbnail @SemanticSubtitle">
     @if(ShowThumbnail) {
         <img class="thumbnail" src="@Thumbnail" />
     }
     <div class="titles">
-        <span class="title @CssClass">@Title</span>
+        <span class="title">@Title</span>
         @if(ShowSubtitle) {
-            <span class="subtitle @CssClass">@Subtitle</span>
+            <span class="subtitle">@Subtitle</span>
         }
     </div>
 </div>

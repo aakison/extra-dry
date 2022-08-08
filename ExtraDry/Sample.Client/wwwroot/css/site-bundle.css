@@ -11524,21 +11524,21 @@ button.unobtrusive:active {
   max-width: 250px;
   max-height: 300px;
 }
-.mini-dialog.form header {
+.mini-dialog.form > header {
   background-color: var(--off-white);
 }
 @media only screen and (min-width: 1200px) {
-  .mini-dialog.form header {
+  .mini-dialog.form > header {
     display: none;
   }
 }
-.mini-dialog.form header .title h3, .mini-dialog.form header .title .h3 {
+.mini-dialog.form > header .title h3, .mini-dialog.form > header .title .h3 {
   margin: 0;
   padding: 10px;
   font-size: 18px;
   font-weight: bold;
 }
-.mini-dialog.form footer {
+.mini-dialog.form > footer {
   background-color: var(--off-white);
   padding: 10px;
   border-top: solid 1px var(--silver);

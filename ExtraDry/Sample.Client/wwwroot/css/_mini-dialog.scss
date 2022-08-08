@@ -47,7 +47,7 @@
             max-height: 300px;
         }
 
-        header {
+        > header {
             background-color: $var-off-white;
 
             @media #{$desktop-landscape} {
@@ -64,7 +64,7 @@
             }
         }
 
-        footer {
+        > footer {
             background-color: $var-off-white;
             padding: $margin;
             border-top: solid 1px $var-silver;
