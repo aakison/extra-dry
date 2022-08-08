@@ -44,7 +44,7 @@ header article div.account ::deep i {
   color: var(--secondary);
   margin-right: 5px;
 }
-header article ::deep img.icon {
+header article ::deep img.glyph {
   width: 22px;
   height: 22px;
   margin-right: 10px;

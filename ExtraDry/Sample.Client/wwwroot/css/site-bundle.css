@@ -11571,13 +11571,13 @@ button.unobtrusive:active {
   opacity: 0%;
 }
 
-img.icon {
+img.glyph {
   width: 16px;
   height: 16px;
   filter: invert(20%) sepia(94%) saturate(7500%) brightness(114%) contrast(118%) hue-rotate(0deg) saturate(7500%) saturate(40%) brightness(19.5%);
 }
 
-img.glyph {
+img.icon {
   width: 28px;
   height: 28px;
 }
