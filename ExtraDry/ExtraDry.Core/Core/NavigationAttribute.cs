@@ -12,6 +12,10 @@ namespace ExtraDry.Core {
 
         public string Group { get; set; } = string.Empty;
 
+        /// <summary>
+        /// The optional icon to render when creating the navigation link.
+        /// Icon details are looked up in the `Theme` Icons collection.
+        /// </summary>
         public string? Icon { get; set; }
 
         public string? Image { get; set; }

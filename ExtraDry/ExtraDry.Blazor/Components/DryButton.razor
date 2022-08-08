@@ -6,7 +6,7 @@
     <button class="@Command.DisplayClass" name="@Command.Method.Name" @onclick="Click" disabled="@disabled">
         @if (ShowIcon)
         {
-            <i class="@QualifiedIcon"></i>
+            <Icon Key="@Command?.Icon" />
         }
         @if (ShowCaption)
         {

@@ -11570,3 +11570,14 @@ button.unobtrusive:active {
 .mini-dialog.form.hidden, .mini-dialog.form.hiding, .mini-dialog.curtain.hidden, .mini-dialog.curtain.hiding {
   opacity: 0%;
 }
+
+img.icon {
+  width: 16px;
+  height: 16px;
+  filter: invert(20%) sepia(94%) saturate(7500%) brightness(114%) contrast(118%) hue-rotate(0deg) saturate(7500%) saturate(40%) brightness(19.5%);
+}
+
+img.glyph {
+  width: 28px;
+  height: 28px;
+}

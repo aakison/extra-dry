@@ -1,6 +1,6 @@
 ﻿@inherits LayoutComponentBase
 
-<Theme IconPrefix="glyph fas fa-">
+<Theme IconTemplate="" Icons="@Icons">
     <CascadingValue Value="@this">
         <main>
             <Header />
@@ -19,6 +19,10 @@
 </Theme>
 
 @code {
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
 
     public void Expand()
     {
@@ -35,5 +39,21 @@
     public bool ViewExpanded { get; set; }
 
     public string ArticleClass => ViewExpanded ? "expanded" : "compressed";
+
+    public IconInfo[] Icons = new IconInfo[] {
+        // Body icons
+        new IconInfo("search", "/img/icons/magnifying-glass-light.svg", "Search", "icon"),
+        new IconInfo("register", "/img/icons/registered-light.svg", "Register", "icon"),
+        new IconInfo("contents", "/img/icons/file-lines-light.svg", "Contents", "icon"),
+        new IconInfo("companies", "/img/icons/buildings-light.svg", "Companies", "icon"),
+        new IconInfo("company", "/img/icons/building-light.svg", "Company", "icon"),
+        new IconInfo("dummy", "/img/icons/briefcase-light.svg", "Placeholder", "icon"),
+        new IconInfo("sectors", "/img/icons/wrench-light.svg", "Sectors", "icon"),
+
+        // Header icons
+        new IconInfo("modules", "/img/icons/bars-regular.svg", "Select Module", "icon"),
+        new IconInfo("alerts", "/img/icons/bell-regular.svg", "Alerts", "icon"),
+        new IconInfo("newItem", "/img/icons/hexagon-plus-regular.svg", "Add Item", "icon"),
+    };
 
 }

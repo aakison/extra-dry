@@ -44,3 +44,9 @@ header article div.account ::deep i {
   color: var(--secondary);
   margin-right: 5px;
 }
+header article ::deep img.icon {
+  width: 22px;
+  height: 22px;
+  margin-right: 10px;
+  filter: invert(20%) sepia(94%) saturate(7500%) brightness(114%) contrast(118%) hue-rotate(47.5247524752deg) saturate(7500%) saturate(92.2823529412%) brightness(33%);
+}

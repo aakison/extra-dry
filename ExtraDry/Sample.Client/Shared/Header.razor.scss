@@ -54,5 +54,12 @@ header {
                 margin-right: $padding;
             }
         }
+
+        ::deep img.icon {
+            width: 22px;
+            height: 22px;
+            margin-right: $margin;
+            filter: filterToColor($primary);
+        }
     }
 }

@@ -52,7 +52,7 @@
 
 	<ItemGroup>
 		<Folder Include="wwwroot\fonts\" />
-		<Folder Include="wwwroot\img\" />
+		<Folder Include="wwwroot\img\icons\" />
 	</ItemGroup>
 
 </Project>

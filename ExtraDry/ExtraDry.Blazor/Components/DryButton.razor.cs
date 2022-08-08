@@ -62,8 +62,6 @@ namespace ExtraDry.Blazor {
             }
         }
 
-        private string QualifiedIcon => $"{ThemeInfo?.IconPrefix}{Command?.Icon}";
-
         private void SelectionChanged(object? sender, SelectionSetChangedEventArgs args)
         {
             UpdateDisabled();

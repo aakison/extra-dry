@@ -47,6 +47,3 @@ section article ::deep nav ul li.active {
 section article ::deep nav ul li.active:hover {
   background-color: #f7f7f7;
 }
-section article ::deep nav ul li img {
-  display: none;
-}
