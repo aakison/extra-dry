@@ -25,7 +25,7 @@ public partial class FlexiSelect<TItem> : ComponentBase {
 
     /// <inheritdoc cref="MiniDialog.LoseFocusAction" />
     [Parameter]
-    public MiniDialogAction LoseFocusAction { get; set; } = MiniDialogAction.Disabled;
+    public MiniDialogAction LoseFocusAction { get; set; } = MiniDialogAction.SaveAndClose;
 
     /// <summary>
     /// Event that is fired when the button is clicked and the flexi select has
@@ -60,6 +60,5 @@ public partial class FlexiSelect<TItem> : ComponentBase {
     }
 
     private MiniDialog MiniDialog { get; set; } = null!;
-
 
 }

@@ -46,6 +46,22 @@ body {
 }
 
 //
+// Headers not quite so large.
+//
+h3 {
+    font-size: 1.6rem;
+}
+h4 {
+    font-size: 1.4rem;
+}
+h5 {
+    font-size: 1.2rem;
+}
+h6 {
+    font-size: 1rem;
+}
+
+//
 // Gravatars are by default everywhere 40x40 with full circle rounding.
 //
 div.gravatar {
@@ -81,4 +97,27 @@ main {
             flex: 1 0 auto;
         }
     }
+}
+
+//
+// Box in code and give it a slight background.
+//
+pre {
+    background-color: $var-primary-light;
+    padding: $margin;
+    border: solid 1px $var-primary-dark;
+    width: calc(100% - 2*$margin);
+    margin-bottom: $margin;
+}
+code {
+    color: $var-secondary;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+//
+// When section used under article, e.g. for content, space out the margins.
+//
+article > section {
+    padding: $margin;
 }

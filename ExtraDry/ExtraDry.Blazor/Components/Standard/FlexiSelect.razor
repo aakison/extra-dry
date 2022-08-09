@@ -6,7 +6,7 @@
         <span></span>
         <button @onclick="@DoClick">Click Me</button>
     </div>
-    <MiniDialog @ref="MiniDialog" CssClass="@CssClass" LoseFocusAction="MiniDialogAction.Disabled" AnimationDuration="@AnimationDuration" OnSubmit="@OnSubmit" OnCancel="@OnCancel">
+    <MiniDialog @ref="MiniDialog" CssClass="@CssClass" LoseFocusAction="MiniDialogAction.SaveAndClose" AnimationDuration="@AnimationDuration" OnSubmit="@OnSubmit" OnCancel="@OnCancel">
         <FlexiSelectForm Data="@Data" MultiSelect="@MultiSelect" Value="@Value" ValueChanged="@ValueChanged" />
     </MiniDialog>
 </div>

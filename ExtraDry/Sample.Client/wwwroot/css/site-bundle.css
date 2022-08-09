@@ -11188,6 +11188,22 @@ body div#app {
   overflow-y: scroll;
 }
 
+h3, .h3 {
+  font-size: 1.6rem;
+}
+
+h4, .h4 {
+  font-size: 1.4rem;
+}
+
+h5, .h5 {
+  font-size: 1.2rem;
+}
+
+h6, .h6 {
+  font-size: 1rem;
+}
+
 div.gravatar {
   display: inline-block;
 }
@@ -11212,6 +11228,24 @@ main section {
 }
 main section:last-child {
   flex: 1 0 auto;
+}
+
+pre {
+  background-color: var(--primary-light);
+  padding: 10px;
+  border: solid 1px var(--primary-dark);
+  width: calc(100% - 20px);
+  margin-bottom: 10px;
+}
+
+code {
+  color: var(--secondary);
+  font-weight: bold;
+  font-size: 16px;
+}
+
+article > section {
+  padding: 10px;
 }
 
 section article table {
