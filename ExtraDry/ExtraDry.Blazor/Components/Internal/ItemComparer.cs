@@ -40,8 +40,8 @@ namespace ExtraDry.Blazor.Components.Internal {
                 return -1;
             }
             if(propertyIsEnum) {
-                var xValue = Property.GetDiscreteSortOrder(x.Item);
-                var yValue = Property.GetDiscreteSortOrder(y.Item);
+                var xValue = Property.GetDiscreteSortOrder(x!.Item);
+                var yValue = Property.GetDiscreteSortOrder(y!.Item);
                 return scale * xValue.CompareTo(yValue);
             }
             else {

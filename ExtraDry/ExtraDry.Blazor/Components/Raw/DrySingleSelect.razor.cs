@@ -34,8 +34,10 @@ namespace ExtraDry.Blazor.Components.Raw {
 
         protected override void OnParametersSet()
         {
-            SelectedValue = Property?.GetValue(Model);
-            Logger.LogDebug($"DrySingleSelect initialized with {Values?.Count} values");
+            if(Model != null) {
+                SelectedValue = Property?.GetValue(Model);
+                Logger.LogDebug($"DrySingleSelect initialized with {Values?.Count} values");
+            }
         }
 
         private async Task SelectOption(ChangeEventArgs args)
@@ -45,8 +47,10 @@ namespace ExtraDry.Blazor.Components.Raw {
                 return; // selected blank line
             }
             SelectedValue = Values[index];
-            Property?.SetValue(Model, SelectedValue);
-            await InvokeOnChange(args);
+            if(Model != null) {
+                Property?.SetValue(Model, SelectedValue);
+                await InvokeOnChange(args);
+            }
         }
 
         private async Task InvokeOnChange(ChangeEventArgs args)

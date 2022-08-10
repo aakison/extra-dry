@@ -86,10 +86,12 @@ namespace ExtraDry.Blazor.Components.Raw {
             }
             var option = AllOptions[key];
             option.Selected = true;
-            Property?.AddValue(Model, option.Value);
-            await InvokeOnChange(args);
-            await SelectBlankRow();
-            ListCollection();
+            if(Model != null || option.Value != null) {
+                Property?.AddValue(Model, option.Value);
+                await InvokeOnChange(args);
+                await SelectBlankRow();
+                ListCollection();
+            }
         }
 
         private async Task SelectBlankRow()

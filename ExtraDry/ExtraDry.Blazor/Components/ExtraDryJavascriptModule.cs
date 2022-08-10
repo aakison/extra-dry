@@ -20,13 +20,14 @@ public class ExtraDryJavascriptModule : IAsyncDisposable {
         await module!.InvokeVoidAsync(name, args);
     }
 
+    // As IJSObjectReference is IAsyncDisposable so should we, but it practice this is not called.
+    // The underlying module appears to be cleared out and made null regardless, very odd.
     public async ValueTask DisposeAsync()
     {
-        Console.WriteLine("disposing module");
-        //if(module is not null) {
-        //    await module.DisposeAsync();
-        //    module = null;
-        //}
+        if(module is not null) {
+            await module.DisposeAsync();
+            module = null;
+        }
     }
 
     private IJSRuntime Runtime { get; set; }
