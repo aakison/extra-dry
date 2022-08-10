@@ -1,9 +1,5 @@
 ﻿@namespace ExtraDry.Blazor
 
-@if(Normalize) {
-    <pre class="code-block @CssClass"><code class="code-block" lang="@Lang">@MarkupBody</code></pre>
-}
-else {
-    <pre class="code-block @CssClass"><code class="code-block" lang="@Lang">@ChildContent</code></pre>
-}
-
+<div class="code-block" id="@Id">
+    @MarkupBody
+</div>

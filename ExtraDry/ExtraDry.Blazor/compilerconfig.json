@@ -5,34 +5,47 @@
   },
   {
     "outputFile": "Components/DryVideoCapture.razor.css",
-    "inputFile": "Components/DryVideoCapture.razor.scss"
+    "inputFile": "Components/DryVideoCapture.razor.scss",
+    "minify": { "enabled": false }
   },
   {
     "outputFile": "Components/DryContent.razor.css",
-    "inputFile": "Components/DryContent.razor.scss"
+    "inputFile": "Components/DryContent.razor.scss",
+    "minify": { "enabled": false }
   },
   {
     "outputFile": "Components/DryNavigation.razor.css",
-    "inputFile": "Components/DryNavigation.razor.scss"
+    "inputFile": "Components/DryNavigation.razor.scss",
+    "minify": { "enabled": false }
   },
   {
     "outputFile": "Components/DryFilterSelect.razor.css",
-    "inputFile": "Components/DryFilterSelect.razor.scss"
+    "inputFile": "Components/DryFilterSelect.razor.scss",
+    "minify": { "enabled": false }
   },
   {
     "outputFile": "Components/DryExpandable.razor.css",
-    "inputFile": "Components/DryExpandable.razor.scss"
+    "inputFile": "Components/DryExpandable.razor.scss",
+    "minify": { "enabled": false }
   },
   {
     "outputFile": "Components/Standard/MiniDialog.razor.css",
-    "inputFile": "Components/Standard/MiniDialog.razor.scss"
+    "inputFile": "Components/Standard/MiniDialog.razor.scss",
+    "minify": { "enabled": false }
   },
   {
     "outputFile": "Components/Internal/FlexiSelectForm.razor.css",
-    "inputFile": "Components/Internal/FlexiSelectForm.razor.scss"
+    "inputFile": "Components/Internal/FlexiSelectForm.razor.scss",
+    "minify": { "enabled": false }
   },
   {
     "outputFile": "Components/Standard/MiniCard.razor.css",
-    "inputFile": "Components/Standard/MiniCard.razor.scss"
+    "inputFile": "Components/Standard/MiniCard.razor.scss",
+    "minify": { "enabled": false }
+  },
+  {
+    "outputFile": "Components/Standard/CodeBlock.razor.css",
+    "inputFile": "Components/Standard/CodeBlock.razor.scss",
+    "minify": { "enabled": false }
   }
 ]

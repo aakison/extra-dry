@@ -2,6 +2,7 @@ using ExtraDry.Blazor;
 using ExtraDry.Core;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.JSInterop;
 using Sample.Shared;
 using System;
 using System.Net.Http;
@@ -35,6 +36,8 @@ namespace Sample.Client {
                     Scope = BlobScope.Public,
                 }
             );
+
+            builder.Services.AddScoped<ExtraDryJavascriptModule>();
 
             await builder.Build().RunAsync();
         }

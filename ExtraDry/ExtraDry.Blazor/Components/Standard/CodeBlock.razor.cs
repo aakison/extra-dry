@@ -20,16 +20,47 @@ public partial class CodeBlock : ComponentBase {
     [Parameter]
     public bool Normalize { get; set; } = true;
 
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Id = $"extraDryCodeBlock{++instanceCount}";
+    }
+
     protected override void OnParametersSet()
     {
+        Console.WriteLine($"Parameters set on {Id}");
         if(Normalize) {
+            OldBody = Body;
             RenderChildContentToBody();
             var lines = Body.Split('\n').ToList();
             FormatLines(lines);
             Body = string.Join("\n", lines);
+            Body = $"<pre><code lang=\"{Lang}\" class=\"{LangClass}\">{Body}</code></pre>";
         }
-
     }
+
+    protected string LangClass {
+        get {
+            if(Lang.Equals("blazor", StringComparison.InvariantCultureIgnoreCase)) {
+                return "language-typescript";
+            }
+            else {
+                return $"language-{Lang}";
+            }
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(OldBody != Body) {
+            await Module.InvokeVoidAsync("CodeBlock_AfterRender", Id);
+        }
+    }
+
+    protected string Id { get; set; } = string.Empty;
+
+    [Inject]
+    private ExtraDryJavascriptModule Module { get; set; } = null!;
 
     private void FormatLines(List<string> lines)
     {
@@ -53,8 +84,6 @@ public partial class CodeBlock : ComponentBase {
             if(line.Length > globalIndent && char.IsWhiteSpace(line[0])) {
                 lines[i] = line[globalIndent..];
             }
-            // TODO: Future color syntax highlight.
-            //lines[i] = lines[i].Replace("public", "<span style=\"color: blue;\">public</span>");
         }
 
         static int LeadingSpaces(string s) => s.TakeWhile(e => char.IsWhiteSpace(e)).Count();
@@ -78,11 +107,14 @@ public partial class CodeBlock : ComponentBase {
         //        Console.WriteLine(frame.TextContent);
         //    }
         //}
-        Console.WriteLine(Body);
     }
+
+    private string OldBody { get; set; } = string.Empty;
 
     private string Body { get; set; } = string.Empty;
 
     private MarkupString MarkupBody => (MarkupString)Body;
-    
+
+    private static int instanceCount = 0;
+
 }
