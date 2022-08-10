@@ -59,15 +59,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Update="wwwroot\bundle\extra-dry-blazor-module.js">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Update="wwwroot\bundle\extra-dry-blazor-module.min.js">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Update="wwwroot\bundle\highlight-module.min.js">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
 		<Content Update="wwwroot\img\layout-doubleweightedleft.png">
 			<CopyToOutputDirectory></CopyToOutputDirectory>
 		</Content>
@@ -86,10 +77,6 @@
 		<Content Update="_Imports.razor">
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 		</Content>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="wwwroot\bundle\" />
 	</ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 [
   {
-    "outputFileName": "wwwroot/bundle/extra-dry-blazor-module.js",
+    "outputFileName": "wwwroot/js/extra-dry-blazor-module.js",
     "inputFiles": [
       "wwwroot/js/attribution.js",
       //"Components/DryVideoCapture.razor.es5.js",
@@ -15,7 +15,7 @@
     }
   },
   {
-    "outputFileName": "wwwroot/bundle/highlight-module.min.js",
+    "outputFileName": "wwwroot/js/highlight-module.min.js",
     "inputFiles": [
       "wwwroot/lib/highlightjs/highlight.min.js",
       "wwwroot/js/highlightjs.module.js"
