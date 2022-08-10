@@ -17,27 +17,29 @@ namespace Sample.Client {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            var services = builder.Services;
 
-            builder.Services.AddFilteredListService<Sector>("/api/sectors");
-            builder.Services.AddFilteredListService<Company>("/api/companies");
-            builder.Services.AddFilteredListService<Content>("/api/contents");
-            builder.Services.AddFilteredListService<Region>("/api/regions");
+            services.AddExtraDry();
 
-            builder.Services.AddPagedListService<Employee>("/api/employees");
+            services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-            builder.Services.AddCrudService<Sector>("/api/sectors");
-            builder.Services.AddCrudService<Company>("/api/companies");
-            builder.Services.AddCrudService<Content>("/api/contents");
-            builder.Services.AddCrudService<Region>("/api/regions");
+            services.AddFilteredListService<Sector>("/api/sectors");
+            services.AddFilteredListService<Company>("/api/companies");
+            services.AddFilteredListService<Content>("/api/contents");
+            services.AddFilteredListService<Region>("/api/regions");
 
-            builder.Services.AddScoped<IBlobService>(e => 
+            services.AddPagedListService<Employee>("/api/employees");
+
+            services.AddCrudService<Sector>("/api/sectors");
+            services.AddCrudService<Company>("/api/companies");
+            services.AddCrudService<Content>("/api/contents");
+            services.AddCrudService<Region>("/api/regions");
+
+            services.AddScoped<IBlobService>(e => 
                 new DryBlobService(e.GetService<HttpClient>(), "/api/blobs/{0}/{1}") {
                     Scope = BlobScope.Public,
                 }
             );
-
-            builder.Services.AddScoped<ExtraDryJavascriptModule>();
 
             await builder.Build().RunAsync();
         }

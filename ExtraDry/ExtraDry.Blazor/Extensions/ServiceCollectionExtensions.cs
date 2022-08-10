@@ -8,6 +8,15 @@ namespace ExtraDry.Blazor;
 public static class ServiceCollectionExtensions {
 
     /// <summary>
+    /// Add the core Extra Dry services to the Blazor application.
+    /// </summary>
+    public static IServiceCollection AddExtraDry(this IServiceCollection services)
+    {
+        services.AddScoped<ExtraDryJavascriptModule>();
+        return services;
+    }
+
+    /// <summary>
     /// Adds a strongly typed CrudService`T to the service collection.
     /// </summary>
     public static IServiceCollection AddCrudService<T>(this IServiceCollection services, string endpointTemplate)
