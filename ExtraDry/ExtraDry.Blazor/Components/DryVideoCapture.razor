@@ -55,7 +55,7 @@
   protected override async Task OnInitializedAsync()
   {
     Console.WriteLine("About to import bundle");
-    module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./bundles/extra-dry-blazor-module.min.js");
+    module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./bundle/extra-dry-blazor-module.min.js");
     State = FiniteState.Waiting;
   }
 

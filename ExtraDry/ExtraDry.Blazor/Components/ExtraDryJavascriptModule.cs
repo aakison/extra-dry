@@ -34,6 +34,6 @@ public class ExtraDryJavascriptModule : IAsyncDisposable {
 
     private static IJSObjectReference? module;
 
-    private const string filename = "./_content/ExtraDry.Blazor/bundles/extra-dry-blazor-module.min.js";
+    private const string filename = "./_content/ExtraDry.Blazor/bundle/extra-dry-blazor-module.min.js";
 }
 

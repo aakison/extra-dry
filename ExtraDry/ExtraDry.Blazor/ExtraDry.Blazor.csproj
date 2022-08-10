@@ -59,13 +59,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Update="wwwroot\bundles\extra-dry-blazor-module.js">
+		<Content Update="wwwroot\bundle\extra-dry-blazor-module.js">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
-		<Content Update="wwwroot\bundles\extra-dry-blazor-module.min.js">
+		<Content Update="wwwroot\bundle\extra-dry-blazor-module.min.js">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
-		<Content Update="wwwroot\bundles\highlight-module.min.js">
+		<Content Update="wwwroot\bundle\highlight-module.min.js">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Update="wwwroot\img\layout-doubleweightedleft.png">
@@ -89,7 +89,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="wwwroot\bundles\" />
+	  <Folder Include="wwwroot\bundle\" />
 	</ItemGroup>
 
 </Project>
