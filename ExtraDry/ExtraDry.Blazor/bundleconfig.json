@@ -1,16 +1,27 @@
 [
   {
-    "outputFileName": "wwwroot/bundles/blazor-extra-dry.js",
+    "outputFileName": "wwwroot/bundles/extra-dry-blazor-module.js",
     "inputFiles": [
-      "Components/DryVideoCapture.razor.es5.js",
-      "wwwroot/unpkg/roosterjs/dist/rooster.js",
-      "Components/DryContent.razor.js",
       "wwwroot/js/attribution.js",
+      //"Components/DryVideoCapture.razor.es5.js",
+      //"Components/DryContent.razor.js",
       "Components/DryNavigation.razor.js",
-      "Components/Standard/TriCheck.razor.js"
+      "Components/Standard/TriCheck.razor.js",
+      "Components/Standard/CodeBlock.razor.js"
     ],
     "minify": {
       "enabled": true,
+      "gzip": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/bundles/highlight-module.min.js",
+    "inputFiles": [
+      "wwwroot/lib/highlightjs/highlight.min.js",
+      "wwwroot/js/highlightjs.module.js"
+    ],
+    "minify": {
+      "enabled": false, // mostly minified and bundler fails when attempting to re-minify.
       "gzip": true
     }
   }

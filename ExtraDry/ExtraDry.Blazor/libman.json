@@ -1,12 +1,22 @@
 {
   "version": "1.0",
-  "defaultProvider": "unpkg",
+  "defaultProvider": "cdnjs",
   "libraries": [
     {
+      "provider": "unpkg",
       "library": "roosterjs@8.2.6",
-      "destination": "wwwroot/unpkg/roosterjs/",
+      "destination": "wwwroot/lib/roosterjs/",
       "files": [
         "dist/rooster.js"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "highlight.js@11.6.0",
+      "destination": "wwwroot/lib/highlightjs/",
+      "files": [
+        "highlight.min.js",
+        "styles/base16/solarized-light.min.css",
       ]
     }
   ]

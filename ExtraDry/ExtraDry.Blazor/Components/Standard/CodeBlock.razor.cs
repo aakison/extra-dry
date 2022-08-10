@@ -20,6 +20,12 @@ public partial class CodeBlock : ComponentBase {
     [Parameter]
     public bool Normalize { get; set; } = true;
 
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Id = $"extraDryCodeBlock{++instanceCount}";
+    }
+
     protected override void OnParametersSet()
     {
         if(Normalize) {
@@ -28,8 +34,17 @@ public partial class CodeBlock : ComponentBase {
             FormatLines(lines);
             Body = string.Join("\n", lines);
         }
-
     }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await Module.InvokeVoidAsync("CodeBlock_AfterRender", Id);
+    }
+
+    protected string Id { get; set; } = string.Empty;
+
+    [Inject]
+    private ExtraDryJavascriptModule Module { get; set; } = null!;
 
     private void FormatLines(List<string> lines)
     {
@@ -84,5 +99,7 @@ public partial class CodeBlock : ComponentBase {
     private string Body { get; set; } = string.Empty;
 
     private MarkupString MarkupBody => (MarkupString)Body;
-    
+
+    private static int instanceCount = 0;
+
 }

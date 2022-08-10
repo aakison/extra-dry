@@ -1,4 +1,4 @@
-# blazor-extra-dry
+# Extra Dry - Blazor
 Performant blazor client library extending DRY principles.
 
 ### Adding an Item Service
