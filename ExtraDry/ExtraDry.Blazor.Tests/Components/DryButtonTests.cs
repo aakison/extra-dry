@@ -50,12 +50,11 @@ namespace ExtraDry.Blazor.Tests.Components {
 
             var button = fragment.Find("button");
             var span = fragment.Find("span");
-            var icon = fragment.Find("i");
+            var icon = fragment.Find("img");
 
             Assert.Equal(nameof(CommandContext.Primary).ToLowerInvariant(), button.ClassName);
             Assert.Null(button.Attributes["disabled"]);
             Assert.Equal("Click Me", span.TextContent);
-            Assert.Contains("plus", icon.ClassName);
         }
 
         [Command(CommandContext.Primary, Icon = "plus", Name = "Click Me")]
