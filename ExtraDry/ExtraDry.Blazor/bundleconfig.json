@@ -18,7 +18,7 @@
     "outputFileName": "wwwroot/js/highlight-module.min.js",
     "inputFiles": [
       "wwwroot/lib/highlightjs/highlight.min.js",
-      "wwwroot/js/highlightjs.module.js"
+      "wwwroot/js/highlightjs.exports.js"
     ],
     "minify": {
       "enabled": false, // mostly minified and bundler fails when attempting to re-minify.

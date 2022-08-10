@@ -11234,7 +11234,6 @@ pre {
   background-color: var(--primary-light);
   padding: 10px;
   border: solid 1px var(--primary-dark);
-  width: calc(100% - 20px);
   margin-bottom: 10px;
 }
 
@@ -11245,7 +11244,7 @@ code {
 }
 
 article > section {
-  padding: 10px;
+  padding: 10px 20px;
 }
 
 section article table {

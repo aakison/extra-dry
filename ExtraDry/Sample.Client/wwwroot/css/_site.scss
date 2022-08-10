@@ -106,7 +106,6 @@ pre {
     background-color: $var-primary-light;
     padding: $margin;
     border: solid 1px $var-primary-dark;
-    width: calc(100% - 2*$margin);
     margin-bottom: $margin;
 }
 code {
@@ -119,5 +118,5 @@ code {
 // When section used under article, e.g. for content, space out the margins.
 //
 article > section {
-    padding: $margin;
+    padding: $margin 2*$margin;
 }
