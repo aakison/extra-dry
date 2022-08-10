@@ -60,6 +60,7 @@ public class Company : INamedSubject {
     /// </summary>
     [Display(GroupName = "Status")]
     [Rules(RuleAction.Block)]
+    [JsonIgnore]
     public VersionInfo Version { get; set; } = new VersionInfo();
 
     // Not a measure as it's a field and not a property.
