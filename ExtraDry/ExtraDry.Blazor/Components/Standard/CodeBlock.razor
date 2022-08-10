@@ -1,10 +1,5 @@
 ﻿@namespace ExtraDry.Blazor
 
 <div class="code-block" id="@Id">
-    @if(Normalize) {
-        <pre><code lang="@Lang">@MarkupBody</code></pre>
-    }
-    else {
-        <pre><code lang="@Lang">@ChildContent</code></pre>
-    }
+    @MarkupBody
 </div>

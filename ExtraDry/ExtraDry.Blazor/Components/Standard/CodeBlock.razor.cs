@@ -28,17 +28,22 @@ public partial class CodeBlock : ComponentBase {
 
     protected override void OnParametersSet()
     {
+        Console.WriteLine($"Parameters set on {Id}");
         if(Normalize) {
+            OldBody = Body;
             RenderChildContentToBody();
             var lines = Body.Split('\n').ToList();
             FormatLines(lines);
             Body = string.Join("\n", lines);
+            Body = $"<pre><code>{Body}</code></pre>";
         }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await Module.InvokeVoidAsync("CodeBlock_AfterRender", Id);
+        if(OldBody != Body) {
+            await Module.InvokeVoidAsync("CodeBlock_AfterRender", Id);
+        }
     }
 
     protected string Id { get; set; } = string.Empty;
@@ -68,8 +73,6 @@ public partial class CodeBlock : ComponentBase {
             if(line.Length > globalIndent && char.IsWhiteSpace(line[0])) {
                 lines[i] = line[globalIndent..];
             }
-            // TODO: Future color syntax highlight.
-            //lines[i] = lines[i].Replace("public", "<span style=\"color: blue;\">public</span>");
         }
 
         static int LeadingSpaces(string s) => s.TakeWhile(e => char.IsWhiteSpace(e)).Count();
@@ -93,8 +96,9 @@ public partial class CodeBlock : ComponentBase {
         //        Console.WriteLine(frame.TextContent);
         //    }
         //}
-        Console.WriteLine(Body);
     }
+
+    private string OldBody { get; set; } = string.Empty;
 
     private string Body { get; set; } = string.Empty;
 

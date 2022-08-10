@@ -4,24 +4,13 @@
 // As CodeBlocks might never appear, defer the load of the library until the first page that needs it.
 //
 export function CodeBlock_AfterRender(id) {
-    console.log("defer load highlight", id);
     // Defer load of highlight library until actually needed on a page.
-    //pre = document.getElementById(id);
-    //console.log(pre);
-    //import('./highlight-module.min.js').then(
-    //    ({ hljs }) => {
-    //        console.log(hljs);
-    //        var div = document.getElementById(id);
-    //        var pre = div.firstChild;
-    //        var code = pre.firstChild;
-    //        console.log(code);
-    //        hljs.highlightElement(code);
-    //    }
-    //);
-    //import('./Users.js').then(({ default: User, userDetail }) => {
-    //    //This will be the code that depends on the module...
-    //});
-    ////hljs.HighlightAll();
-    //console.log(hljs);
-    //hljs.highlightElement(pre);
+    import('./highlight-module.min.js').then(
+        ({ hljs }) => {
+            var selector = `#${id} pre code`;
+            console.log("highlight.js", selector);
+            var code = document.querySelector(selector);
+            hljs.highlightElement(code);
+        }
+    );
 }
