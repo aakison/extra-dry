@@ -12,7 +12,7 @@ function ilerp(value, from, to) {
     return (value - from) / (to - from);
 }
 
-export function DryHorizontalScrollNav() {
+export function DryNavigation_HorizontalScrollNav() {
     var li = document.querySelector("nav li.active");
     if (li == null) {
         // Nothing is active, typically when first loaded and script is called before navigation rendered.
