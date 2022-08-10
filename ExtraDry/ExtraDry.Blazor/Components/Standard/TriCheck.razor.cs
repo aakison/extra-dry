@@ -40,28 +40,28 @@ public partial class TriCheck : ComponentBase {
         await OnChange.InvokeAsync(args);
     }
 
-    [Inject]
-    private IJSRuntime JSRuntime { get; set; } = null!;
-
-    private bool Checked => Value == TriCheckState.Checked;
-
-    private bool Indeterminate => Value == TriCheckState.Indeterminate;
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if(jsIndeterminate != Indeterminate) {
             // Only do interop if we need to change.
-            await JSRuntime.InvokeVoidAsync("extraDry_setIndeterminate", Id, Indeterminate);
+            await Module.InvokeVoidAsync("TriCheck_SetIndeterminate", Id, Indeterminate);
             jsIndeterminate = Indeterminate;
             await DoChange(null);
         }
     }
+    private bool Checked => Value == TriCheckState.Checked;
+
+    private bool Indeterminate => Value == TriCheckState.Indeterminate;
+
+    [Inject]
+    private ExtraDryJavascriptModule Module { get; set; } = null!;
 
     private bool jsIndeterminate = false;
 
     private static int maxId = 0;
 }
 
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum TriCheckState
 {
     Unchecked,
