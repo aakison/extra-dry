@@ -35,7 +35,18 @@ public partial class CodeBlock : ComponentBase {
             var lines = Body.Split('\n').ToList();
             FormatLines(lines);
             Body = string.Join("\n", lines);
-            Body = $"<pre><code>{Body}</code></pre>";
+            Body = $"<pre><code lang=\"{Lang}\" class=\"{LangClass}\">{Body}</code></pre>";
+        }
+    }
+
+    protected string LangClass {
+        get {
+            if(Lang.Equals("blazor", StringComparison.InvariantCultureIgnoreCase)) {
+                return "language-typescript";
+            }
+            else {
+                return $"language-{Lang}";
+            }
         }
     }
 
