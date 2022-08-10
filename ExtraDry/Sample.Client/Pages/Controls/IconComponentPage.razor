@@ -1,4 +1,4 @@
-﻿@page "/controls/standard/icon"
+﻿@page "/components/standard/icon"
 @inject NavigationManager Navigation;
 
 <section>
@@ -18,18 +18,26 @@
 </section>
 <section>
     <h3>Basic Usage</h3>
-    <pre>
-        <code lang="blazor">&lt;Icon Key="@Key" /&gt;</code>
-    </pre>
+    <CodeBlock Lang="blazor">
+        &lt;Icon Key="@Key" /&gt;
+    </CodeBlock>
     <p>
         <Icon Key="@Key" />
     </p>
-    <pre>
-        <code lang="blazor">&lt;Icon Key="@Key" Alt="Search Site" /&gt;</code>
-    </pre>
+    <CodeBlock Lang="blazor">
+        &lt;Icon Key="@Key" Alt="Search Site" /&gt;
+    </CodeBlock>
     <p>
         <Icon Key="@Key" Alt="Search Site" />
     </p>
+    <h5>Try It Out</h5>
+    <form class="tryitout" onsubmit="return false;">
+        <p>Recognized keys include 'search', 'assets', 'logo', 'companies', 'sectors'.</p>
+        <div>
+            <label>Key:</label>
+            <input type="text" @bind="@Key" />
+        </div>
+    </form>
 </section>
 <section>
     <h3>Configuration</h3>
@@ -37,20 +45,22 @@
         In the main layout file, update the razor component to have an enclosing <code>&lt;Theme&gt;</code> tag. 
         Set the <code>Icons</code> attribute to an enumerable set of Icons such as below.
     </p>
-    <pre><code lang="blazor">@@inherits LayoutComponentBase
+    <CodeBlock Lang="blazor">
+        @@inherits LayoutComponentBase
 
-&lt;Theme Icons="@@Icons">
-    &lt;main>
-        @@Body
-    &lt;/main>
-&lt;/Theme>
+        &lt;Theme Icons="@@Icons">
+            &lt;main>
+                @@Body
+            &lt;/main>
+        &lt;/Theme>
 
-@@code {
-    public IconInfo[] Icons = new IconInfo[] {
-        new IconInfo("search", "/img/glyphs/magnifying-glass-light.svg", "Search", "glyph"),
-        new IconInfo("logo", "/img/icons/logo.svg", "Estra Dry", "icon"),
-    };
-}</code></pre>
+        @@code {
+            public IconInfo[] Icons = new IconInfo[] {
+                new IconInfo("search", "/img/glyphs/magnifying-glass-light.svg", "Search", "glyph"),
+                new IconInfo("logo", "/img/icons/logo.svg", "Estra Dry", "icon"),
+            };
+        }
+    </CodeBlock>
     <p>
         Each <code>IconInfo</code> takes a key, path, alternate text, and optionally CSS classes.  
     </p>
@@ -59,7 +69,7 @@
     </p>
 </section>
 <section>
-    <h3>Good Practices</h3>
+    <h3>Tips &amp; Practices</h3>
     <ul>
         <li>Name the Key for icons using the entity or action that they represent, e.g. search or logo.</li>
         <li>Name the files as descriptions of what is in the image (not the action), e.g. magnifying-glass-strong.svg</li>
@@ -67,6 +77,7 @@
         <li>Skip Alternate text when redundant, if the icon always appears next to context text, then use an empty string.</li>
         <li>Keep Alternate text short, 5-10 words describing the icon when necessary.</li>
         <li>Remember Alternate text context, if the icon changes meaning based on the context it's in, leave text blank and add <code>Alt</code> when using <code>&lt;Icon&gt;</code>.</li>
+        <li>If the key doesn't exist, the <code>img</code> tag will still render with a filename indicating "no-icon-for-{key}", this will in turn create a 404 in the developer console.</li>
     </ul>
 </section>
 <section>
@@ -78,12 +89,6 @@
 </section>
 
 @code {
-
-    [Command(CommandContext.Alternate, Icon = "edit")]
-    public void Edit(Company company)
-    {
-        Navigation.NavigateTo($"/companies/{company.Uuid}");
-    }
 
     private string Key { get; set; } = "search";
 

@@ -1,0 +1,79 @@
+﻿@page "/components/standard/gravatar"
+
+<section>
+    <h2>Gravatar</h2>
+    <p>
+        The <code>&lt;Gravatar&gt;</code> component consistently displays gravatar images from an e-mail address.
+    </p>
+    <p>
+        Using the Globally Recognized Avatar system (Gravatar), converts an e-mail address into a URL that
+        provides access to the avatar of the given size.
+    </p>
+</section>
+<section>
+    <h3>Basic Usage</h3>
+    <CodeBlock Lang="blazor">
+        &lt;Gravatar Email="@Email" /&gt;
+    </CodeBlock>
+    <p>
+        <Gravatar Email="@Email" />
+    </p>
+    <CodeBlock Lang="blazor">
+        &lt;Gravatar Email="@Email" Size="@Size" HideEmail="@Hide" /&gt;
+    </CodeBlock>
+    <p>
+        <Gravatar Email="@Email" Size="@Size" HideEmail="@Hide" />
+    </p>
+    <h5>Try It Out</h5>
+    <form class="tryitout" onsubmit="return false;">
+        <div>
+            <label>Email:</label>
+            <input type="text" @bind="@Email" />
+        </div>
+        <div>
+            <label>Size (px):</label>
+            <input type="number" @bind="@Size" />
+        </div>
+        <div>
+            <label for="hideCheckbox">Hide Email:</label>
+            <input type="checkbox" id="hideCheckbox" @bind="@Hide" />
+        </div>
+    </form>
+</section>
+<section>
+    <h3>Configuration</h3>
+    <p>
+        This is a standalone component, no configuration is required.
+    </p>
+    <h5>Semantic Styles</h5>
+    <p>The control is rendered as an <code>&lt;img&gt;</code> inside a <code>&lt;div&gt;</code>, both have the class "gravatar" designed for styling.</p>
+    <CodeBlock lang="HTML">
+        &lt;div class="gravatar">
+          &lt;img class="gravatar" ...>
+        &lt;/div>
+    </CodeBlock>
+</section>
+<section>
+    <h3>Tips &amp; Practices</h3>
+    <ul>
+        <li>Request a <code>Size</code> that is 2x larger than the <code>&lt;img&gt;</code> style's width and height to be crisp on mobile devices.</li>
+        <li>For screen readers, the user's e-mail address is placed in the <code>alt</code> field.</li>
+        <li><code>HideEmail</code> will prevent the e-mail address from being displayed in the HTML page.  This offers lightweight protection from basic screen scanning agents, it is not a security measure as the e-mail must still be downloaded and run in code.</li>
+        <li>Use "gravatar" style to make the image render as a circle by making the <code>border-radius</code> 1/2 the <code>Size</code>.</li>
+    </ul>
+</section>
+<section>
+    <h3>See Also</h3>
+    <ul>
+        <li><a href="/components/standard/icon">Icon Component</a></li>
+        <li><a href="~"><code>IconInfo</code> Class</a></li>
+    </ul>
+</section>
+
+@code {
+    public string Email { get; set; } = "user@example.com";
+
+    public int? Size { get; set; }
+
+    public bool Hide { get; set; }
+}

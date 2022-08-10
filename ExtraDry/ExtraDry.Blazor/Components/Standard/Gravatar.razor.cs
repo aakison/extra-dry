@@ -12,7 +12,7 @@ public partial class Gravatar : ComponentBase {
     /// <summary>
     /// The e-mail address for this gravatar, also displayed as 'alt' text unles `HideEmail` is enabled.
     /// </summary>
-    [Parameter]
+    [Parameter, EditorRequired]
     public string? Email { get; set; }
 
     /// <summary>

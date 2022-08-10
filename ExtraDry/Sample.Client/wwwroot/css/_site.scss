@@ -62,9 +62,9 @@ h6 {
 }
 
 //
-// Gravatars are by default everywhere 40x40 with full circle rounding.
+// Gravatars are by default 40x40 with full circle rounding when in headers.
 //
-div.gravatar {
+header div.gravatar {
     display: inline-block;
 
     img.gravatar {

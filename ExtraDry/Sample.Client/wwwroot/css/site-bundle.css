@@ -11204,10 +11204,10 @@ h6, .h6 {
   font-size: 1rem;
 }
 
-div.gravatar {
+header div.gravatar {
   display: inline-block;
 }
-div.gravatar img.gravatar {
+header div.gravatar img.gravatar {
   width: 28px;
   height: 28px;
   border-radius: 14px;
@@ -11614,4 +11614,17 @@ img.glyph {
 img.icon {
   width: 28px;
   height: 28px;
+}
+
+form.tryitout div {
+  height: 40px;
+  display: flex;
+  align-items: center;
+}
+form.tryitout div label {
+  min-width: 120px;
+}
+form.tryitout input[type=checkbox] {
+  width: 20px;
+  height: 20px;
 }
