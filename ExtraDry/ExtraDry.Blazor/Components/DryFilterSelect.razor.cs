@@ -10,9 +10,6 @@ public partial class DryFilterSelect : ComponentBase {
 
     private DryExpandable Expandable { get; set; } = null!; // set in page-side partial
 
-    [Inject]
-    private IJSRuntime JSRuntime { get; set; } = null!;
-
     [Parameter]
     public EventCallback<FilterChangedEventArgs> FilterChanged { get; set; }
 
