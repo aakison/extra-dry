@@ -21,10 +21,18 @@ public class Employee
     [Filter(FilterType.StartsWith)]
     public string? LastName { get; set; }
 
+    [MaxLength(120)]
+    [EmailAddress]
+    [Display(Name = "Email Address", ShortName = "Email")]
+    [Filter(FilterType.Contains)]
+    public string? Email { get; set; }
+
     /// <summary>
     /// The version info which informs the audit log.
     /// </summary>
     [JsonIgnore]
     public VersionInfo Version { get; set; } = new VersionInfo();
+
+    public override string ToString() => $"{FirstName} {LastName}";
 
 }

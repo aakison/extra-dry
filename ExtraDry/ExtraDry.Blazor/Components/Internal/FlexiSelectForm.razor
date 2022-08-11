@@ -26,7 +26,7 @@
                 else {
                     <input id="@item.Id" name="@Name" type="radio" @onchange="e => OnChange(e, item)" checked="@item.Selected" />
                 }
-                <MiniCard Value="@item.Source" />
+                <DryMiniCard Model="@item.Source" />
             </label>
         }
     </div>

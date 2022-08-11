@@ -2,6 +2,8 @@
 
 /// <summary>
 /// Represents the interface that defines the names of Subjects.
+/// Models can implement this or ViewModel objects can implement this for models.
+/// Consider ISubjectViewModel`TModel instead to use a ViewModel controller.
 /// </summary>
 public interface ISubjectViewModel {
 
@@ -36,4 +38,29 @@ public interface ISubjectViewModel {
     /// </summary>
     string Description { get; }
 
+}
+
+/// <summary>
+/// A ViewModel controller interface to extract subject information out of models.
+/// </summary>
+/// <typeparam name="TModel">The type of the model.</typeparam>
+public interface ISubjectViewModel<TModel>
+{
+    /// <inheritdoc cref="ISubjectViewModel.Code" />
+    string Code(TModel item);
+
+    /// <inheritdoc cref="ISubjectViewModel.Title" />
+    string Title(TModel item);
+
+    /// <inheritdoc cref="ISubjectViewModel.Subtitle" />
+    string Subtitle(TModel item);
+
+    /// <inheritdoc cref="ISubjectViewModel.Caption" />
+    string Caption(TModel item);
+
+    /// <inheritdoc cref="ISubjectViewModel.Thumbnail" />
+    string Thumbnail(TModel item);
+
+    /// <inheritdoc cref="ISubjectViewModel.Description" />
+    string Description(TModel item);
 }

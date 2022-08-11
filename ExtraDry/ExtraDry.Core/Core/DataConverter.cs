@@ -90,4 +90,9 @@ public class DataConverter {
         return displayAttribute?.Name ?? member.Name;
     }
 
+    public static string JoinNonEmpty(string separator, params string[] args)
+    {
+        return string.Join(separator, args.Where(e => !string.IsNullOrWhiteSpace(e)));
+    }
+
 }

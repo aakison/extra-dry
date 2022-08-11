@@ -41,6 +41,8 @@ namespace Sample.Client {
                 }
             );
 
+            services.AddScoped<ISubjectViewModel<Employee>, EmployeeViewModel>();
+
             await builder.Build().RunAsync();
         }
     }

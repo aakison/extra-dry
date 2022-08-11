@@ -9,6 +9,8 @@ div.thumbnail {
 div img {
   border-radius: 20px;
   margin-right: 8px;
+  max-height: 40px;
+  max-width: 40px;
 }
 div > div {
   display: flex;

@@ -1,7 +1,6 @@
 ﻿@namespace ExtraDry.Blazor
-@typeparam TItem
 
-<div class="mini-card @SemanticThumbnail @SemanticSubtitle">
+<div class="@CssClasses" @attributes="@InputAttributes">
     @if(ShowThumbnail) {
         <img class="thumbnail" src="@Thumbnail" />
     }

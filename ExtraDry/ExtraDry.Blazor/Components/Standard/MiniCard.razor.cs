@@ -2,54 +2,51 @@
 
 namespace ExtraDry.Blazor;
 
-public partial class MiniCard<TItem> : ComponentBase {
+/// <summary>
+/// Represents a consistent display for items in lists which may present as simple title,
+/// or which might also have a thumbnail and a subtitle.
+/// Used for consistency when rendering in dropdown lists, etc.
+/// </summary>
+public partial class MiniCard : ComponentBase {
 
     /// <summary>
-    /// The object to be used to render the card.
+    /// The CSS Class that is merged with semantic classes.
     /// </summary>
     [Parameter]
-    public TItem? Value { get; set; }
+    public string CssClass { get; set; } = string.Empty;
 
     /// <summary>
-    /// Indicates if the thumbnail should be rendered.  If not set, component 
-    /// will check if the `Value` has a Thumbnail image.
+    /// The URL for the thumbnail, null if no thumbnail available.
     /// </summary>
     [Parameter]
-    public bool ShowThumbnail {
-        get => showThumbnail ?? Thumbnail != string.Empty;
-        set => showThumbnail = value; 
-    }
-    private bool? showThumbnail;
+    public string? Thumbnail { get; set; }
 
     /// <summary>
-    /// Indicates if the subtitle should be rendered.  If not set, component
-    /// will check if the `Value` has a Subtitle. 
+    /// The text for the title, required.
     /// </summary>
     [Parameter]
-    public bool ShowSubtitle {
-        get => showThumbnail ?? Subtitle != string.Empty;
-        set => showSubtitle = value;
-    }
-    private bool? showSubtitle;
+    public string Title { get; set; } = "Title";
 
-    private string SemanticThumbnail => ShowThumbnail ? "thumbnail" : string.Empty;
+    /// <summary>
+    /// The subtitle for the card, null if no subtitle should be presented.
+    /// </summary>
+    [Parameter]
+    public string? Subtitle { get; set; }
 
-    private string SemanticSubtitle => ShowSubtitle ? "subtitle" : string.Empty;
+    /// <summary>
+    /// Additional attributes are chained to the root `div` on the control.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? InputAttributes { get; set; }
 
-    private string SemanticType => 
-        typeof(TItem).Name.ToLowerInvariant();
+    private string SemanticThumbnail => Thumbnail == null ? string.Empty : "thumbnail";
 
-    private string Thumbnail => 
-        (Value as ISubjectViewModel)?.Thumbnail 
-        ?? string.Empty;
+    private string SemanticSubtitle => Subtitle == null ? string.Empty : "subtitle";
 
-    private string Title => 
-        (Value as ISubjectViewModel)?.Title
-        ?? Value?.ToString() 
-        ?? "null";
+    private bool ShowThumbnail => Thumbnail != null;
 
-    private string Subtitle => 
-        (Value as ISubjectViewModel)?.Subtitle
-        ?? string.Empty;
+    private bool ShowSubtitle => Subtitle != null;
+
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "mini-card", CssClass, SemanticThumbnail, SemanticSubtitle);
 
 }
