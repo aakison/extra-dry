@@ -7,8 +7,8 @@ namespace ExtraDry.Blazor;
 
 public partial class DryNavigation : ComponentBase, IDisposable {
 
-    [Parameter]
-    public object? ViewModel { get; set; }
+    [Parameter, EditorRequired]
+    public object ViewModel { get; set; } = null!;
 
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? InputAttributes { get; set; }
@@ -48,7 +48,7 @@ public partial class DryNavigation : ComponentBase, IDisposable {
             Logger.LogError("DryForm requires a ViewModel");
             return;
         }
-        if(Description == null) {
+        if(Description == null || Description.ViewModel != ViewModel) {
             Description = new ViewModelDescription(ViewModel);
         }
     }
