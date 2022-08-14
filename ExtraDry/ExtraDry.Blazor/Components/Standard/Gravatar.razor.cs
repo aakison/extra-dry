@@ -9,11 +9,15 @@ namespace ExtraDry.Blazor;
 /// </summary>
 public partial class Gravatar : ComponentBase {
 
+    /// <inheritdoc cref="IComments.CssClass" />
+    [Parameter]
+    public string CssClass { get; set; } = string.Empty;
+
     /// <summary>
     /// The e-mail address for this gravatar, also displayed as 'alt' text unles `HideEmail` is enabled.
     /// </summary>
     [Parameter, EditorRequired]
-    public string? Email { get; set; }
+    public string Email { get; set; } = null!;
 
     /// <summary>
     /// The size of the gravatar requested from the server, if not supplied the system provides default size.
@@ -27,6 +31,8 @@ public partial class Gravatar : ComponentBase {
     /// </summary>
     [Parameter]
     public bool HideEmail { get; set; }
+
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "gravatar", CssClass);
 
     private string DisplayEmail => HideEmail ? "User Gravatar" : Email ?? "";
 
@@ -45,7 +51,7 @@ public partial class Gravatar : ComponentBase {
             return "00000000000000000000000000000000";
         }
         var encoder = new UTF8Encoding();
-        using var md5 = new Internal.MD5();
+        using var md5 = new MD5();
         var hashedBytes = md5.ComputeHash(encoder.GetBytes(email.ToLowerInvariant()));
         var hash = string.Join("", hashedBytes.Select(e => e.ToString("X2")));
         return hash.ToLowerInvariant();
