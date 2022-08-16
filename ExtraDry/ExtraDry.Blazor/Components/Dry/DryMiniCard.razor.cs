@@ -24,45 +24,52 @@ public partial class DryMiniCard<TItem> : ComponentBase {
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
     /// <summary>
-    /// Indicates if the thumbnail should be rendered.  If not set, component 
-    /// will check if the `Value` has a Thumbnail image.
+    /// Indicates if the thumbnail should be rendered.  
+    /// If null, component will check if the `Value` has a Thumbnail image.
     /// </summary>
     [Parameter]
-    public bool ShowThumbnail {
-        get => showThumbnail ?? ViewModelThumbnail != string.Empty;
-        set => showThumbnail = value; 
-    }
-    private bool? showThumbnail;
+    public bool? ShowThumbnail { get; set; }
 
     /// <summary>
     /// Indicates if the subtitle should be rendered.  If not set, component
     /// will check if the `Value` has a Subtitle. 
     /// </summary>
     [Parameter]
-    public bool ShowSubtitle {
-        get => showThumbnail ?? ViewModelSubtitle != string.Empty;
-        set => showSubtitle = value;
-    }
-    private bool? showSubtitle;
+    public bool? ShowSubtitle { get; set; }
 
-    private string SemanticThumbnail => ShowThumbnail ? "thumbnail" : string.Empty;
+    [Inject]
+    private IServiceProvider Services { get; set; } = null!;
 
-    private string SemanticSubtitle => ShowSubtitle ? "subtitle" : string.Empty;
+    private ISubjectViewModel<TItem>? ResolvedViewModel 
+        => ViewModel 
+        ?? Services.GetService(typeof(ISubjectViewModel<TItem>)) as ISubjectViewModel<TItem>;
+
+    private string SemanticThumbnail => DisplayThumbnail == null ? string.Empty : "thumbnail";
+
+    private string SemanticSubtitle => DisplaySubtitle == null ? string.Empty : "subtitle";
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass, typeof(TItem).Name.ToLowerInvariant());
 
-    private string ViewModelTitle => ViewModelHelper.Title(Model, ViewModel, null) 
+    private string ViewModelTitle => ViewModelHelper.Title(Model, ResolvedViewModel, null) 
         ?? Model?.ToString() 
         ?? "null";
 
-    private string ViewModelSubtitle => ViewModelHelper.Subtitle(Model, ViewModel, string.Empty)!;
+    private string? ViewModelSubtitle => ViewModelHelper.Subtitle(Model, ResolvedViewModel, null);
 
-    private string ViewModelThumbnail => ViewModelHelper.Thumbnail(Model, ViewModel, string.Empty)!;
+    private string? ViewModelThumbnail => ViewModelHelper.Thumbnail(Model, ResolvedViewModel, null);
 
     private string DisplayTitle => ViewModelTitle;
 
-    private string? DisplaySubtitle => ShowSubtitle ? ViewModelSubtitle : null;
+    private string? DisplaySubtitle => ShowSubtitle switch {
+        true => ViewModelSubtitle ?? string.Empty,
+        false => null,
+        _ => ViewModelSubtitle,
+    };
 
-    private string? DisplayThumbnail => ShowThumbnail ? ViewModelThumbnail : null;
+    private string? DisplayThumbnail => ShowThumbnail switch {
+        true => ViewModelThumbnail ?? string.Empty,
+        false => null,
+        _ => ViewModelThumbnail,
+    };
 
 }

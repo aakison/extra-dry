@@ -43,7 +43,6 @@ public class DryPropertyComponentBase : ComponentBase
                 Logger.LogError("A property must be specified using either Property or PropertyName on {type}.", GetType());
                 return;
             }
-            var modelType = Model.GetType();
             var propInfo = Model.GetType().GetProperty(PropertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             if(propInfo == null) {
                 Logger.LogError("The {PropertyName} did not specify a valid property on {ModelType} in component {ComponentType}", PropertyName, Model.GetType(), GetType());

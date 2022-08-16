@@ -17,7 +17,7 @@
             private List&lt;Employee&gt; Employees { get; set; } = ...;
         }
     </CodeBlock>
-    <FlexiSelectForm Data="@Data" MultiSelect="@MultiSelect" ShowFilterThreshold="@ShowFilterThreshold" @bind-Value="Value" @bind-Values="Values" />
+    <FlexiSelectForm Data="@Data" MultiSelect="@MultiSelect" FilterPlaceholder="@FilterPlaceholder" ShowFilterThreshold="@ShowFilterThreshold" @bind-Value="Value" @bind-Values="Values" />
     <h5>Bound Values</h5>
     <h6>Value:</h6>
     @if(Value != null) {
@@ -33,11 +33,15 @@
     <form class="tryitout" onsubmit="return false;">
         <div>
             <label>MultiSelect:</label>
-            <input type="checkbox" @bind="@MultiSelect" />
+            <input type="checkbox" @bind="MultiSelect" />
         </div>
         <div>
             <label>ShowFilterThreshold:</label>
-            <input type="number" @bind="@ShowFilterThreshold" />
+            <input type="number" @bind="ShowFilterThreshold" />
+        </div>
+        <div>
+            <label>FilterPlaceholder:</label>
+            <input type="text" @bind="FilterPlaceholder" />
         </div>
     </form>
 </section>
@@ -82,6 +86,8 @@
     private bool MultiSelect { get; set; }
 
     private int ShowFilterThreshold { get; set; } = 10;
+
+    private string FilterPlaceholder { get; set; } = "filter";
 
     private Employee? Value { get; set; }
 

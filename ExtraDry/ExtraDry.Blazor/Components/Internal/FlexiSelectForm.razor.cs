@@ -253,7 +253,7 @@ public partial class FlexiSelectForm<TItem> : ComponentBase, IExtraDryComponent 
 
     private static int count = 0;
 
-    private class DisplayItemViewModel : ISubjectViewModel
+    private class DisplayItemViewModel
     {
         public DisplayItemViewModel(int id, TItem item)
         {
@@ -261,7 +261,6 @@ public partial class FlexiSelectForm<TItem> : ComponentBase, IExtraDryComponent 
             Title = item?.ToString() ?? "unnamed";
             Source = item;
             if(item is ISubjectViewModel subject) {
-                Thumbnail = subject.Thumbnail;
                 Title = subject.Title;
                 Subtitle = subject.Subtitle;
             }
@@ -271,16 +270,8 @@ public partial class FlexiSelectForm<TItem> : ComponentBase, IExtraDryComponent 
 
         public string Title { get; set; }
 
-        public string Code => string.Empty;
-
-        public string Caption => string.Empty;
-        
-        public string Description => string.Empty;
-
         public string Subtitle { get; set; } = string.Empty;
 
-        public string Thumbnail { get; set; } = string.Empty;
-        
         public string FilterClass { get; set; } = "unfiltered";
 
         public TItem Source { get; }
