@@ -3,12 +3,16 @@
 // On mobile & tablet, use a curtain and a soverign dialog box.
 // On desktop, pop-up in place.
 form.flexi-select-form {
-    div.items, div.commands {
+    div.items {
         background-color: $var-white;
 
         label:hover {
             background-color: $var-primary-light;
         }
+    }
+
+    div.controls {
+        background-color: $var-white;
     }
 }
 

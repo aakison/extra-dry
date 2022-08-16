@@ -11587,11 +11587,14 @@ button.unobtrusive:active {
   opacity: 0%;
 }
 
-form.flexi-select-form div.items, form.flexi-select-form div.commands {
+form.flexi-select-form div.items {
   background-color: var(--white);
 }
-form.flexi-select-form div.items label:hover, form.flexi-select-form div.commands label:hover {
+form.flexi-select-form div.items label:hover {
   background-color: var(--primary-light);
+}
+form.flexi-select-form div.controls {
+  background-color: var(--white);
 }
 
 .mini-dialog.form, .mini-dialog.curtain {
