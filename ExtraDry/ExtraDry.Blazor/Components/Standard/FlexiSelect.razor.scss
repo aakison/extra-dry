@@ -1,0 +1,26 @@
+﻿div {
+    > label {
+        display: flex;
+        flex-direction: row;
+        border: solid 1px gray;
+        padding: 0 0 0 4px;
+        align-items: center;
+        height: 100%;
+
+        > span.placeholder-text {
+            flex: 1 1 auto;
+        }
+
+        ::deep > div {
+            flex: 1 1 auto;
+        }
+
+        > div {
+            color: silver;
+        }
+
+        > button {
+            height: 100%;
+        }
+    }
+}

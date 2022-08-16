@@ -9,11 +9,17 @@ namespace ExtraDry.Blazor;
 /// filtering.
 /// </summary>
 /// <typeparam name="TItem">The type for items in the select list.</typeparam>
-public partial class FlexiSelect<TItem> : ComponentBase {
+public partial class FlexiSelect<TItem> : ComponentBase, IExtraDryComponent {
 
-    /// <inheritdoc cref="MiniDialog.CssClass" />
+    public string Id = $"Id{Guid.NewGuid()}";
+
+    /// <inheritdoc cref="IExtraDryComponent.CssClass" />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
+
+    /// <inheritdoc cref="IComments.Placeholder"/>
+    [Parameter]
+    public string Placeholder { get; set; } = "select...";
 
     /// <inheritdoc cref="FlexiSelectForm{T}.MultiSelect" />
     [Parameter]
@@ -52,6 +58,18 @@ public partial class FlexiSelect<TItem> : ComponentBase {
 
     [Parameter]
     public EventCallback<TItem?> ValueChanged { get; set; }
+
+    [Parameter]
+    public IList<TItem?>? Items { get; set; }
+
+    [Parameter]
+    public EventCallback<IList<TItem>>? ItemsChanged { get; set; }
+
+    /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
+
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "flexi-select", CssClass);
 
     private async Task DoClick(MouseEventArgs args)
     {

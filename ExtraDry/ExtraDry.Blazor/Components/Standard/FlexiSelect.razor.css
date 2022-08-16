@@ -1,0 +1,20 @@
+﻿div > label {
+  display: flex;
+  flex-direction: row;
+  border: solid 1px gray;
+  padding: 0 0 0 4px;
+  align-items: center;
+  height: 100%;
+}
+div > label > span.placeholder-text {
+  flex: 1 1 auto;
+}
+div > label ::deep > div {
+  flex: 1 1 auto;
+}
+div > label > div {
+  color: silver;
+}
+div > label > button {
+  height: 100%;
+}

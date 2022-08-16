@@ -87,7 +87,7 @@ public partial class DryFlexiSelect : DryPropertyComponentBase {
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        //Data = Property?.GetDiscreteValues();
+        Data = Property?.GetDiscreteValues();
     }
 
     protected IList<ValueDescription>? Data { get; set; }

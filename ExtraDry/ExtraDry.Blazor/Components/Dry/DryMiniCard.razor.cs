@@ -21,7 +21,7 @@ public partial class DryMiniCard<TItem> : ComponentBase {
     /// Additional attributes are chained to the root `div` on the control.
     /// </summary>
     [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object>? InputAttributes { get; set; }
+    public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
     /// <summary>
     /// Indicates if the thumbnail should be rendered.  If not set, component 

@@ -17,6 +17,7 @@ public partial class DryFilter<TItem> : ComponentBase {
         ViewModelDescription = new ViewModelDescription(typeof(TItem), this);
     }
 
+    /// <inheritdoc cref="IComments.Placeholder"/>
     [Parameter]
     public string Placeholder { get; set; } = "filter by keyword...";
 

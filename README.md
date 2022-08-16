@@ -71,6 +71,79 @@ Add a Razor page component that edits the item (examples assume T is `Item`)
 
      ```
 
+## Components in ExtraDry.Blazor
+The ExtraDry.Blazor assembly contains blazor based components for composing user interfaces.  These
+are broken into three types of components:
+
+  * Standard - Traditional components that take parameters and bind to values.  Can be used without
+    the rest of the framework.
+  * DRY - Framework specific components that link to Models, ViewModels, and Properties.  Provide
+    dynamic features with low-code by using Model annotations.
+  * Internal - Components that are useful for composing other components but aren't intended for use
+    by the end-user.  These are still public as required by the Blazor framework.
+
+### Authoring Standard Components
+When authoring standard components, ensure the following checklist is followed for framework
+consistency:
+
+  * Use a single root HTML element, semantic if possible, `div` otherwise.
+  * Provide class names for the elements, favoring semantic naming:
+    * On the root node, have a class name that is the kebab-case version of the control name (e.g.
+      'tri-check' for TriCheck)
+    * If the component binds to objects, include the kebab-case version of the type, e.g. when
+      binding to a `Company` add a class of 'company'.
+    * If the component has multiple representation states, include a semantic name for each state,
+      e.g. if both single and multiple select options exist on the control, include 'single' or
+      'multiple' classes.
+    * Have `CssClass` property which merges with the base div class, e.g.
+      ```
+      [Parameter]
+      public string CssClass { get; set; } = string.Empty;
+      ```
+    * Use `DataConverter.JoinNonEmpty` helper to consistently join classes in private member
+      `CssClasses`, e.g.
+      ```
+      private string CssClasses => DataConverter.JoinNonEmpty("tri-check", CssClass);
+      ```
+  * For basic styling of components, use CSS Isolation at the component level.  
+    * Prefer the use of SaSS and create the SCSS file with the same name as the component, followed
+      by ".scss"
+    * Create a build rule in compilerconfig.json to build .scss file to .css file.
+    * Avoid using class names to identify elements, use positional elements and semantic tags.
+      Doing so allows consumers to use the class names to override the default styles more easily
+      (e.g. exactly the opposite of the way bootstrap does it.)
+
+### ExtraDry.Analyzers Rules for Components
+
+DRY1501 & DRY1502 - Public `CssClass` in Components.
+
+Use the following pattern for CssClass to comply with these rules:
+
+```Blazor
+<div class="@CssClasses">...</div>
+
+@code {
+    /// <inheritdoc cref="IComments.CssClass" />
+    [Parameter]
+    public string CssClass { get; set; } = string.Empty;
+
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "tag-name", "semantic-name", CssClass);
+}
+```
+
+DRY1503 & DRY1504 - Chain unmatched attribute to nested elements
+
+```Blazor
+<div @attributes="@UnmatchedAttributes">...</div>
+
+@code {
+    /// <inheritdoc cref="IComments.UnmatchedAttributes" />
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
+}
+
+```
+
 #### Code Coverage
 
 The coverlet collector has been added to the unit tests for the manual running of code coverage.  To run, install the following prerequisites.  These are global tools for dotnet core.  See https://github.com/danielpalme/ReportGenerator

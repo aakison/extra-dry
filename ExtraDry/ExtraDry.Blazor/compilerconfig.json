@@ -47,5 +47,10 @@
     "outputFile": "Components/Standard/CodeBlock.razor.css",
     "inputFile": "Components/Standard/CodeBlock.razor.scss",
     "minify": { "enabled": false }
+  },
+  {
+    "outputFile": "Components/Standard/FlexiSelect.razor.css",
+    "inputFile": "Components/Standard/FlexiSelect.razor.scss",
+    "minify": { "enabled": false }
   }
 ]

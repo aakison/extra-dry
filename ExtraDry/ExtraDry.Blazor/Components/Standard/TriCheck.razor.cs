@@ -2,7 +2,7 @@
 
 namespace ExtraDry.Blazor;
 
-public partial class TriCheck : ComponentBase {
+public partial class TriCheck : ComponentBase, IExtraDryComponent {
 
     public TriCheck()
     {
@@ -10,11 +10,15 @@ public partial class TriCheck : ComponentBase {
         Label = "label";
     }
 
+    /// <inheritdoc cref="IExtraDryComponent.CssClass" />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
     [Parameter]
     public TriCheckState Value { get; set; } = TriCheckState.Unchecked;
+
+    [Parameter]
+    public EventCallback<TriCheckState> ValueChanged { get; set; }
 
     [Parameter]
     public string Id { get; set; }
@@ -28,15 +32,25 @@ public partial class TriCheck : ComponentBase {
     [Parameter]
     public EventCallback<ChangeEventArgs> OnChange { get; set; }
 
+    /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
+
     private async Task DoChange(ChangeEventArgs? args)
     {
+        Console.WriteLine("DoChange");
         if(args == null) {
+            Console.WriteLine("  args null");
             args = new ChangeEventArgs();
         }
         else if(args.Value is bool bValue) {
+            Console.WriteLine($"  args bool value {bValue}");
             Value = bValue ? TriCheckState.Checked : TriCheckState.Unchecked;
         }
         args.Value = Value;
+        Console.WriteLine($"  ValueChanged");
+        await ValueChanged.InvokeAsync(Value);
+        Console.WriteLine($"  OnChange");
         await OnChange.InvokeAsync(args);
     }
 
@@ -52,6 +66,8 @@ public partial class TriCheck : ComponentBase {
     private bool Checked => Value == TriCheckState.Checked;
 
     private bool Indeterminate => Value == TriCheckState.Indeterminate;
+
+    private string CssClasses => DataConverter.JoinNonEmpty("tri-check", CssClass);
 
     [Inject]
     private ExtraDryJavascriptModule Module { get; set; } = null!;
@@ -69,3 +85,5 @@ public enum TriCheckState
     Indeterminate,
 }
 
+//[BindElement("TriCheck", "value", "value", "onchange")]
+//public static class BindAttributes { }

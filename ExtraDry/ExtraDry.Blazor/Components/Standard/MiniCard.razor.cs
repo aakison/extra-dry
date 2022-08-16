@@ -7,11 +7,9 @@ namespace ExtraDry.Blazor;
 /// or which might also have a thumbnail and a subtitle.
 /// Used for consistency when rendering in dropdown lists, etc.
 /// </summary>
-public partial class MiniCard : ComponentBase {
+public partial class MiniCard : ComponentBase, IExtraDryComponent {
 
-    /// <summary>
-    /// The CSS Class that is merged with semantic classes.
-    /// </summary>
+    /// <inheritdoc cref="IExtraDryComponent.CssClass "/>
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
@@ -33,11 +31,9 @@ public partial class MiniCard : ComponentBase {
     [Parameter]
     public string? Subtitle { get; set; }
 
-    /// <summary>
-    /// Additional attributes are chained to the root `div` on the control.
-    /// </summary>
+    /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object>? InputAttributes { get; set; }
+    public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
 
     private string SemanticThumbnail => Thumbnail == null ? string.Empty : "thumbnail";
 

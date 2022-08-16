@@ -1,22 +1,26 @@
 ﻿@namespace ExtraDry.Blazor.Internal
 @typeparam TItem
 
-<form class="flexi-select form">
-    <header>
-        <div class="controls">
-            <div class="filter">
-                <input @bind-value="Filter" @bind-value:event="oninput" placeholder="@FilterPlaceholder" />
-                <Icon Key="search" />
-                <button class="unobtrusive button clearFilter" type="button" @onclick="ClearFilter">&times;</button>
+<form class="@CssClasses" @attributes="@UnmatchedAttributes">
+    @if(ShowFilter || MultiSelect) {
+        <header>
+            <div class="controls">
+                @if(ShowFilter) {
+                    <div class="filter">
+                        <input @bind-value="Filter" @bind-value:event="oninput" placeholder="@FilterPlaceholder" />
+                        <Icon Key="search" />
+                        <button class="unobtrusive button clearFilter" type="button" @onclick="ClearFilter">&times;</button>
+                    </div>
+                }
+                @if(MultiSelect) {
+                    <div class="commands">
+                        <TriCheck Value="@TriCheckValue" Label="Select All" @onchange="SelectAllChange" />
+                        <button class="unobtrusive button clearSelected" type="button" @onclick="ClearAll">Clear</button>
+                    </div>
+                }
             </div>
-            @if(MultiSelect) {
-                <div class="commands">
-                    <TriCheck Value="@TriCheckValue" Label="Select All" @onchange="SelectAllChange" />
-                    <button class="unobtrusive button clearSelected" type="button" @onclick="ClearAll">Clear</button>
-                </div>
-            }
-        </div>
-    </header>
+        </header>
+    }
     <div class="items">
         @foreach(var item in DisplayData) {
             <label for="@item.Id" class="flexi-select item label @item.FilterClass @item.SelectClass">
@@ -26,7 +30,7 @@
                 else {
                     <input id="@item.Id" name="@Name" type="radio" @onchange="e => OnChange(e, item)" checked="@item.Selected" />
                 }
-                <DryMiniCard Model="@item.Source" />
+                <DryMiniCard Model="@item" />
             </label>
         }
     </div>

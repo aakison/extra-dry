@@ -2,7 +2,7 @@
 
 namespace ExtraDry.Blazor;
 
-public partial class MiniDialog : ComponentBase {
+public partial class MiniDialog : ComponentBase, IExtraDryComponent {
 
     /// <summary>
     /// The title for the dialog box.
@@ -52,10 +52,7 @@ public partial class MiniDialog : ComponentBase {
     [Parameter]
     public MiniDialogAction LoseFocusAction { get; set; } = MiniDialogAction.SaveAndClose;
 
-    /// <summary>
-    /// The CSS Class for the root div element of the control.
-    /// This is added after the semantic class elements
-    /// </summary>
+    /// <inheritdoc cref="IExtraDryComponent.CssClass" />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
@@ -91,6 +88,10 @@ public partial class MiniDialog : ComponentBase {
         set => duration = Math.Clamp(value, 0, maximumDuration);
     }
     private int duration = 0;
+
+    /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
 
     /// <summary>
     /// The state of the dialog box, which cycles when Show() and Hide() are called.
@@ -157,6 +158,8 @@ public partial class MiniDialog : ComponentBase {
     }
 
     protected ElementReference Form { get; set; }
+
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "mini-dialog", StateClass, CssClass);
 
     private async Task<bool> ChangeState(DialogState from, DialogState to, int duration)
     {

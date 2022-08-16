@@ -33,10 +33,10 @@
 
 <div>@TestSelect?.Title</div>
 
-<FlexiSelect CssClass="@size" Data="@UserViewModels" MultiSelect="false" @bind-Value="TestSelect" />
+<FlexiSelect CssClass="@size" Data="@UserViewModels" MultiSelect="false" @bind-Value="TestSelect" style="height: 50px;" />
 <FlexiSelect CssClass="@size" Data="@data" MultiSelect="true" />
 
-<DryFlexiSelect Model="@this" PropertyName="@nameof(Users)" />
+@*<DryFlexiSelect Model="@this" PropertyName="@nameof(Users)" />*@
 
 @code {
 

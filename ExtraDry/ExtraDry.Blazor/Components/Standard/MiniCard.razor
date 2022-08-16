@@ -1,6 +1,7 @@
 ﻿@namespace ExtraDry.Blazor
+@implements IExtraDryComponent
 
-<div class="@CssClasses" @attributes="@InputAttributes">
+<div class="@CssClasses" @attributes="@UnmatchedAttributes">
     @if(ShowThumbnail) {
         <img class="thumbnail" src="@Thumbnail" />
     }

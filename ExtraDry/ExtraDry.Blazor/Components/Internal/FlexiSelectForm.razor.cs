@@ -2,77 +2,88 @@
 
 namespace ExtraDry.Blazor.Internal;
 
-public partial class FlexiSelectForm<TItem> : ComponentBase {
+public partial class FlexiSelectForm<TItem> : ComponentBase, IExtraDryComponent {
 
-    public FlexiSelectForm()
-    {
-        Name = $"FlexiSingleSelect{++count}";
-    }
-
-    //[Parameter]
-    //public EventCallback<SelectMiniDialogChangedEventArgs> FilterChanged { get; set; }
-
+    /// <inheritdoc cref="IExtraDryComponent.CssClass" />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
+    /// <summary>
+    /// The number of items in `Data` that will trigger the filter to show.
+    /// Use 0 to always show and Int.MaxValue to never show.
+    /// Default is to show after 10 items are in the form.
+    /// </summary>
     [Parameter]
     public int ShowFilterThreshold { get; set; } = 10;
 
+    /// <summary>
+    /// Sets the `ShowSubtitle` property on all child `MiniCard`s.
+    /// </summary>
     [Parameter]
-    public bool ShowSubtitle { get; set; }
+    public bool? ShowSubtitle { get; set; } = null;
 
+    /// <summary>
+    /// Sets the `ShowImages` property on all child `MiniCard`s.
+    /// </summary>
     [Parameter]
-    public bool ShowImages { get; set; }
+    public bool? ShowThumbnail { get; set; }
 
+    /// <summary>
+    /// The text to use as a placeholder for filters when the filter field is shown.
+    /// </summary>
     [Parameter]
     public string FilterPlaceholder { get; set; } = "filter";
 
-    [Parameter]
-    public string Filter {
-        get => filter; 
-        set {
-            filter = value;
-            Filters = filter.Split(' ').Where(e => !string.IsNullOrWhiteSpace(e)).ToArray();
-            foreach(var item in DisplayData) {
-                ApplyFilter(item);
-            }
-            StateHasChanged();
-        } 
-    }
-    private string filter = string.Empty;
-
+    /// <summary>
+    /// The list of all possibly source value to display in the component.
+    /// </summary>
     [Parameter]
     public IEnumerable<TItem>? Data { get; set; }
 
-    [Parameter]
-    public IEnumerable<TItem>? Values { get; set; }
-
-    [Parameter] 
-    public TItem? Value { get; set; }
-
+    /// <summary>
+    /// Indicates if the select control should be single- or multi- select.
+    /// If single, bind to `Value`, if multi, bind to `Values`.
+    /// </summary>
     [Parameter]
     public bool MultiSelect { get; set; }
 
+    /// <summary>
+    /// The selected value when the component is set to single-select mode.
+    /// Use with two-way data binding.
+    /// </summary>
+    [Parameter]
+    public TItem? Value { get; set; }
+
+    /// <summary>
+    /// The changed event for `Value` for use with two-way data binding.
+    /// </summary>
     [Parameter]
     public EventCallback<TItem> ValueChanged { get; set; }
 
-    public IEnumerable<TItem> SelectedValues { 
-        get {
-            foreach(var item in DisplayData) {
-                if(item.Selected) {
-                    yield return item.Source;
-                }
-            }
-        }
-    }
+    /// <summary>
+    /// The selected values when the component is set to multi-select mode.
+    /// Use with two-way data binding.
+    /// </summary>
+    [Parameter]
+    public List<TItem>? Values { get; set; }
 
-    protected override void OnParametersSet()
+    /// <summary>
+    /// The changed event for `Values` for use with two-way data binding.
+    /// </summary>
+    [Parameter]
+    public EventCallback<List<TItem>?> ValuesChanged { get; set; }
+
+    /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
+
+    protected override async void OnParametersSet()
     {
         int id = 0;
         if(Data != null && !DisplayData.Any()) {
             foreach(var item in Data) {
                 if(item != null) {
-                    var displayItem = new DisplayItem(++id, item);
+                    var displayItem = new DisplayItemViewModel(++id, item);
                     ApplyFilter(displayItem);
                     DisplayData.Add(displayItem);
                 }
@@ -84,11 +95,51 @@ public partial class FlexiSelectForm<TItem> : ComponentBase {
                 selected.Selected = true;
             }
         }
+        if(MultiSelect && Values == null) {
+            // Switching to Multi-select
+            Value = default;
+            await ValueChanged.InvokeAsync(Value);
+            Values = new List<TItem>();
+            foreach(var item in DisplayData) {
+                item.Selected = false;
+            }
+            await ValuesChanged.InvokeAsync(Values);
+        }
+        else if(!MultiSelect && Values != null) {
+            // Switching to Single-select
+            Value = default;
+            await ValueChanged.InvokeAsync(Value);
+            Values = null;
+            foreach(var item in DisplayData) {
+                item.Selected = false;
+            }
+            await ValuesChanged.InvokeAsync(Values);
+        }
     }
+
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "flexi-select-form", CssClass);
+
+    private bool ShowFilter => ShowFilterThreshold < Data?.Count();
+
+    /// <summary>
+    /// The filter string for binding to the input filter.
+    /// </summary>
+    private string Filter {
+        get => filter;
+        set {
+            filter = value;
+            Filters = filter.Split(' ').Where(e => !string.IsNullOrWhiteSpace(e)).ToArray();
+            foreach(var item in DisplayData) {
+                ApplyFilter(item);
+            }
+            StateHasChanged();
+        }
+    }
+    private string filter = string.Empty;
 
     private string[] Filters { get; set; } = Array.Empty<string>();
 
-    private void ApplyFilter(DisplayItem value)
+    private void ApplyFilter(DisplayItemViewModel value)
     {
         bool match = true;
         if(!Filters.Any()) {
@@ -107,7 +158,7 @@ public partial class FlexiSelectForm<TItem> : ComponentBase {
         value.FilterClass = match ? "unfiltered" : "filtered";
     }
 
-    private async void OnChange(ChangeEventArgs args, DisplayItem value)
+    private async void OnChange(ChangeEventArgs args, DisplayItemViewModel value)
     {
         if(value == null) {
             return;
@@ -120,18 +171,21 @@ public partial class FlexiSelectForm<TItem> : ComponentBase {
             value.Selected = true;
             Value = value.Source;
             await ValueChanged.InvokeAsync(Value);
-            Console.WriteLine($"Set {value.Title}");
         }
         else if(args?.Value?.Equals(true) ?? false) {
+            // Multi-select add.
             if(value.Selected == false) {
                 value.Selected = true;
-                Console.WriteLine($"Added {value.Title}");
+                Values?.Add(value.Source);
+                await ValuesChanged.InvokeAsync(Values);
             }
         }
         else {
+            // Multi-select remove.
             if(value.Selected == true) {
                 value.Selected = false;
-                Console.WriteLine($"Removed {value.Title}");
+                Values?.Remove(value.Source);
+                await ValuesChanged.InvokeAsync(Values);
             }
         }
     }
@@ -150,29 +204,38 @@ public partial class FlexiSelectForm<TItem> : ComponentBase {
         }
     }
 
-    private void SelectAllChange(ChangeEventArgs args)
+    private async void SelectAllChange(ChangeEventArgs args)
     {
         if(args.Value is TriCheckState tri) {
             if(tri == TriCheckState.Checked) {
-                CheckAll(true);
+                await CheckAll(true);
             }
             else if(tri == TriCheckState.Unchecked) {
-                CheckAll(false);
+                await CheckAll(false);
             }
         }
     }
 
-    public void ClearAll(MouseEventArgs _)
+    private async void ClearAll(MouseEventArgs _)
     {
-        CheckAll(false);
+        await CheckAll(false);
     }
 
-    private void CheckAll(bool value)
+    private async Task CheckAll(bool value)
     {
+        if(Values == null) {
+            // Single select mode, shouldn't happen.
+            return;
+        }
         foreach(var item in DisplayData) {
             item.Selected = value;
         }
+        Values.Clear();
+        if(value == true && Data != null) {
+            Values.AddRange(Data);
+        }
         StateHasChanged();
+        await ValuesChanged.InvokeAsync(Values);
     }
 
     private void ClearFilter(MouseEventArgs _)
@@ -181,15 +244,18 @@ public partial class FlexiSelectForm<TItem> : ComponentBase {
         StateHasChanged();
     }
 
-    private List<DisplayItem> DisplayData { get; set; } = new();
+    private List<DisplayItemViewModel> DisplayData { get; set; } = new();
 
-    private string Name { get; set; }
+    /// <summary>
+    /// Use as name on radio buttons to get HTML to enforce mutually exclusive selections.
+    /// </summary>
+    private string Name { get; set; } = $"FlexiSingleSelect{++count}";
 
     private static int count = 0;
 
-    private class DisplayItem
+    private class DisplayItemViewModel : ISubjectViewModel
     {
-        public DisplayItem(int id, TItem item)
+        public DisplayItemViewModel(int id, TItem item)
         {
             Id = $"item{id}";
             Title = item?.ToString() ?? "unnamed";
@@ -204,6 +270,12 @@ public partial class FlexiSelectForm<TItem> : ComponentBase {
         public string Id { get; set; }
 
         public string Title { get; set; }
+
+        public string Code => string.Empty;
+
+        public string Caption => string.Empty;
+        
+        public string Description => string.Empty;
 
         public string Subtitle { get; set; } = string.Empty;
 
