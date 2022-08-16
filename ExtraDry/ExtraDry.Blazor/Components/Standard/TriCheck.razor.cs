@@ -4,12 +4,6 @@ namespace ExtraDry.Blazor;
 
 public partial class TriCheck : ComponentBase, IExtraDryComponent {
 
-    public TriCheck()
-    {
-        Id = $"TriCheck{++maxId}";
-        Label = "label";
-    }
-
     /// <inheritdoc cref="IExtraDryComponent.CssClass" />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
@@ -21,10 +15,13 @@ public partial class TriCheck : ComponentBase, IExtraDryComponent {
     public EventCallback<TriCheckState> ValueChanged { get; set; }
 
     [Parameter]
-    public string Id { get; set; }
+    public string Id { get; set; } = $"TriCheck{++maxId}";
 
+    /// <summary>
+    /// The string label that is rendered with the TriCheck.
+    /// </summary>
     [Parameter]
-    public string Label { get; set; }
+    public string Label { get; set; } = "label";
 
     [Parameter]
     public EventCallback<MouseEventArgs> OnClicked { get; set; }
@@ -84,6 +81,3 @@ public enum TriCheckState
     Checked,
     Indeterminate,
 }
-
-//[BindElement("TriCheck", "value", "value", "onchange")]
-//public static class BindAttributes { }

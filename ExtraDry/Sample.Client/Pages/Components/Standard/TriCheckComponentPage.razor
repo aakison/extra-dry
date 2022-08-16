@@ -8,24 +8,28 @@
     </p>
     <p>
         Uses the HTML 5 checkbox to control three states.  The indeterminate state in HTML is only accessible
-        via JavaScript and users cannot 'click' into this state.  Useful for aggregate checkboxes when children
+        via JavaScript and users cannot 'click' into this state.  In Blazor, this indeterminate state can 
+        be set using this control with normal data binding.  Useful for aggregate checkboxes when children
         are only partially selected.
     </p>
 </section>
 <section>
     <h3>Basic Usage</h3>
     <CodeBlock Lang="blazor">
-        &lt;TriCheck Value="@@Value" /&gt;
+        &lt;TriCheck @@bind-value="@@Value" /&gt;
+        &lt;div&gt;@@Value&lt;/div&gt;
 
         @@code {
             public TriCheckState Value { get; set; } = TriCheckState.Checked;
         }
     </CodeBlock>
     <p>
-        <TriCheck Value="@Value" />
+        <TriCheck @bind-Value="@Value" />
+        <div>@Value</div>
     </p>
     <CodeBlock Lang="blazor">
         &lt;TriCheck @@bind-value="@@Value" Label="@@Label" /&gt;
+        &lt;div&gt;@@Value&lt;/div&gt;
 
         @@code {
             public TriCheckState Value { get; set; } = TriCheckState.Checked;
@@ -41,13 +45,12 @@
     <form class="tryitout" onsubmit="return false;">
         <div>
             <label>Value:</label>
-            <DryFlexiSelect Model="@this" PropertyName="Value" />
-@*            <select>
-                <option value="@((int)TriCheckState.Checked)">TriCheckState.Checked</option>
-                <option value="@((int)TriCheckState.Checked)">TriCheckState.Checked</option>
-                <option value="@((int)TriCheckState.Checked)">TriCheckState.Checked</option>
+            <select @bind="Value">
+                <option value="@(TriCheckState.Checked)">TriCheckState.Checked</option>
+                <option value="@(TriCheckState.Unchecked)">TriCheckState.Unchecked</option>
+                <option value="@(TriCheckState.Indeterminate)">TriCheckState.Indeterminate</option>
             </select>
-*@        </div>
+        </div>
     </form>
 </section>
 <section>
@@ -56,27 +59,27 @@
         This is a standalone component, no configuration is required.
     </p>
     <h5>Semantic Styles</h5>
-    <p>The control is rendered as an <code>&lt;img&gt;</code> inside a <code>&lt;div&gt;</code>, both have the class "gravatar" designed for styling.</p>
+    <p>
+        The control is rendered as a <code>&lt;label&gt;</code> enclosing an <code>&lt;input&gt;</code> and a <code>&lt;span&gt;</code>.  
+        All have , both have the class "tri-check" for styling.
+    </p>
     <CodeBlock lang="HTML">
-        &lt;div class="gravatar">
-          &lt;img class="gravatar" ...>
-        &lt;/div>
+        &lt;label class="tri-check" for="uniqueId"&gt;
+            &lt;input class="tri-check" id="uniqueId" type="checkbox" /&gt;
+            &lt;span class="tri-check">...&lt;/span&gt;
+        &lt;label>
     </CodeBlock>
 </section>
-<section>
+@*<section>
     <h3>Tips &amp; Practices</h3>
     <ul>
-        <li>Request a <code>Size</code> that is 2x larger than the <code>&lt;img&gt;</code> style's width and height to be crisp on mobile devices.</li>
-        <li>For screen readers, the user's e-mail address is placed in the <code>alt</code> field.</li>
-        <li><code>HideEmail</code> will prevent the e-mail address from being displayed in the HTML page.  This offers lightweight protection from basic screen scanning agents, it is not a security measure as the e-mail must still be downloaded and run in code.</li>
-        <li>Use "gravatar" style to make the image render as a circle by making the <code>border-radius</code> 1/2 the <code>Size</code>.</li>
+        <li></li>
     </ul>
-</section>
+</section>*@
 <section>
     <h3>See Also</h3>
     <ul>
-        <li><a href="/components/standard/icon">Icon Component</a></li>
-        <li><a href="~"><code>IconInfo</code> Class</a></li>
+        <li><a href="/components/standard/flexi-select">FlexiSelect Component</a></li>
     </ul>
 </section>
 
