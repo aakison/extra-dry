@@ -1,23 +1,28 @@
-﻿@page "/components/internal/flexi-select-form"
+﻿@page "/components/standard/flexi-select"
 @implements ISubjectViewModel<Employee>
 
 <section>
-    <h2>FlexiSelectForm</h2>
+    <h2>FlexiSelect</h2>
     <p>
-        The <code>&lt;FlexiSelectForm&gt;</code> component is an internal component for the selecting items, used by FlexiSelect.
+        The <code>&lt;FlexiSelect&gt;</code> component is a dialog-based replacement for a select control.
+    </p>
+    <p>
+        The component presents drop-down/pop-up mini-dialog that displays a list of elements.  This is
+        designed to be styled responsively for mobile and desktop.  It support both single- and multi-
+        select and filtering.
     </p>
 </section>
 <section>
     <h3>Basic Usage</h3>
     <h5>No View Model</h5>
     <CodeBlock Lang="blazor">
-        &lt;FlexiSelectForm Data="@@Employees" MultiSelect="@MultiSelect" ShowFilterThreshold="@ShowFilterThreshold" /&gt;
+        &lt;FlexiSelect Data="@@Employees" MultiSelect="@MultiSelect" FilterPlaceholder="@FilterPlaceholder" ShowFilterThreshold="@ShowFilterThreshold" Title="@FormTitle" ShowTitle="@ShowTitle" /&gt;
 
         @@code {
             private List&lt;Employee&gt; Employees { get; set; } = ...;
         }
     </CodeBlock>
-    <FlexiSelectForm Data="@Data" MultiSelect="@MultiSelect" FilterPlaceholder="@FilterPlaceholder" ShowFilterThreshold="@ShowFilterThreshold" @bind-Value="Value" @bind-Values="Values" />
+    <FlexiSelect Data="@Data" MultiSelect="@MultiSelect" FilterPlaceholder="@FilterPlaceholder" ShowFilterThreshold="@ShowFilterThreshold" Title="@FormTitle" ShowTitle="@ShowTitle" @bind-Value="Value" @bind-Values="Values" />
     <h5>Bound Values</h5>
     <h6>Value:</h6>
     @if(Value != null) {
@@ -31,6 +36,14 @@
     }
     <h5>Try It Out</h5>
     <form class="tryitout" onsubmit="return false;">
+        <div>
+            <label>Title:</label>
+            <input type="text" @bind="FormTitle" />
+        </div>
+        <div>
+            <label>ShowTitle:</label>
+            <input type="checkbox" @bind="ShowTitle" />
+        </div>
         <div>
             <label>MultiSelect:</label>
             <input type="checkbox" @bind="MultiSelect" />
@@ -50,8 +63,21 @@
     <p>
         This is a standalone component, no configuration is required.
     </p>
-    <h5>Semantic Styles</h5>
+</section>
+<section>
+    <h3>Semantic Styles</h3>
     <p>The component wraps the <code>MiniCard</code> component and styles are the same as it.</p>
+    <CodeBlock Lang="blazor">
+        &lt;div class="flexi-select"&gt;
+            &lt;label&gt;
+                &lt;span class="type"&gt;...&lt;/span&gt;
+                &lt;span class="placeholder-text"&gt;...&lt;span&gt;
+                &lt;MiniCard ... />
+                &lt;button class="unobtrusive">&lt;Icon Key="select" />&lt/button>
+            &lt;label>
+            &lt;MiniDialog ... />
+        &lt;/div>
+    </CodeBlock>
 </section>
 <section>
     <h3>Tips &amp; Practices</h3>
@@ -66,6 +92,8 @@
     <h3>See Also</h3>
     <ul>
         <li><a href="/components/standard/mini-card"><code>MiniCard</code> Component</a></li>
+        <li><a href="/components/standard/mini-dialog"><code>MiniDialog</code> Component</a></li>
+        <li><a href="/components/standard/icon"><code>Icon</code> Component</a></li>
     </ul>
 </section>
 
@@ -82,6 +110,10 @@
     public string Thumbnail(Employee employee) => Gravatar.ToGravatarUrl(employee?.Email, 40);
 
     public string Description(Employee _) => string.Empty;
+
+    private string FormTitle { get; set; } = "Select";
+
+    private bool ShowTitle { get; set; } = true;
 
     private bool MultiSelect { get; set; }
 

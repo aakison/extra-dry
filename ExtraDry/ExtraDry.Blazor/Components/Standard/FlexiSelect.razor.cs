@@ -17,9 +17,25 @@ public partial class FlexiSelect<TItem> : ComponentBase, IExtraDryComponent {
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
+    /// <inheritdoc cref="MiniDialog.Title" />
+    [Parameter]
+    public string Title { get; set; } = "Select";
+
+    /// <inheritdoc cref="MiniDialog.ShowTitle" />
+    [Parameter]
+    public bool ShowTitle { get; set; } = true;
+
     /// <inheritdoc cref="IComments.Placeholder"/>
     [Parameter]
     public string Placeholder { get; set; } = "select...";
+
+    /// <inheritdoc cref="FlexiSelectForm{TItem}.ShowFilterThreshold" />
+    [Parameter]
+    public int ShowFilterThreshold { get; set; } = 10;
+
+    /// <inheritdoc cref="FlexiSelectForm{TItem}.FilterPlaceholder" />
+    [Parameter]
+    public string FilterPlaceholder { get; set; } = "filter";
 
     /// <inheritdoc cref="FlexiSelectForm{T}.MultiSelect" />
     [Parameter]
@@ -53,17 +69,21 @@ public partial class FlexiSelect<TItem> : ComponentBase, IExtraDryComponent {
     [Parameter]
     public int AnimationDuration { get; set; } = 100;
 
+    /// <inheritdoc cref="FlexiSelectForm{TItem}.Value" />
     [Parameter]
     public TItem? Value { get; set; }
 
+    /// <inheritdoc cref="FlexiSelectForm{TItem}.ValueChanged" />
     [Parameter]
     public EventCallback<TItem?> ValueChanged { get; set; }
 
+    /// <inheritdoc cref="FlexiSelectForm{TItem}.Values" />
     [Parameter]
-    public IList<TItem?>? Items { get; set; }
+    public List<TItem>? Values { get; set; }
 
+    /// <inheritdoc cref="FlexiSelectForm{TItem}.ValuesChanged" />
     [Parameter]
-    public EventCallback<IList<TItem>>? ItemsChanged { get; set; }
+    public EventCallback<List<TItem>> ValuesChanged { get; set; }
 
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]

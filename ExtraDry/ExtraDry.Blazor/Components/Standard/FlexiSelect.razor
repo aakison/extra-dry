@@ -13,7 +13,12 @@
         }
         <button class="unobtrusive" id="@Id" @onclick="@DoClick" type="button"><Icon Key="select" /></button>
     </label>
-    <MiniDialog @ref="MiniDialog" CssClass="@CssClass" LoseFocusAction="MiniDialogAction.SaveAndClose" AnimationDuration="@AnimationDuration" OnSubmit="@OnSubmit" OnCancel="@OnCancel">
-        <FlexiSelectForm Data="@Data" MultiSelect="@MultiSelect" Value="@Value" ValueChanged="@ValueChanged" />
+    <MiniDialog @ref="MiniDialog" CssClass="@CssClass" LoseFocusAction="MiniDialogAction.SaveAndClose" 
+            AnimationDuration="@AnimationDuration" OnSubmit="@OnSubmit" OnCancel="@OnCancel"
+            Title="@Title" ShowTitle="@ShowTitle">
+        <FlexiSelectForm Data="@Data" MultiSelect="@MultiSelect" Value="@Value" ValueChanged="@ValueChanged" 
+            Values="@Values" ValuesChanged="@ValuesChanged" ShowFilterThreshold="@ShowFilterThreshold" 
+            FilterPlaceholder="@FilterPlaceholder" 
+        />
     </MiniDialog>
 </div>

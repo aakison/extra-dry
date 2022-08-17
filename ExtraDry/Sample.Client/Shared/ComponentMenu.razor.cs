@@ -87,8 +87,8 @@ public sealed partial class ComponentMenu : ComponentBase, IDisposable {
         [Navigation(Icon = "code-block")]
         public string CodeBlock => $"/components/standard/code-block";
 
-        [Navigation(Icon = "mini-dialog")]
-        public string MiniDialog => $"/components/standrar/mini-dialog";
+        [Navigation(Icon = "flexi-select")]
+        public string FlexiSelect => $"/components/standard/flexi-select";
     }
 
     public class DryComponentsMenu

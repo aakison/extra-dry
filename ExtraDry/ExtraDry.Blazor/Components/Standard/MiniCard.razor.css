@@ -18,7 +18,9 @@ div > div {
   align-items: start;
   height: initial;
 }
+div > div span.title {
+  line-height: 16px;
+}
 div > div span.subtitle {
   font-size: 12px;
-  transform: translateY(-3.2px);
 }

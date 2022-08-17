@@ -23,9 +23,12 @@ div {
         align-items: start;
         height: initial;
 
+        span.title {
+            line-height: 16px;
+        }
+
         span.subtitle {
             font-size: 12px;
-            transform: translateY(-.4*$padding);
         }
     }
 }
