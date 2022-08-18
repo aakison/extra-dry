@@ -7,9 +7,9 @@ namespace ExtraDry.Blazor;
 /// <summary>
 /// Represents a gravatar to easily create a image from an e-mail address (if the user uses gravatar).
 /// </summary>
-public partial class Gravatar : ComponentBase {
+public partial class Gravatar : ComponentBase, IExtraDryComponent {
 
-    /// <inheritdoc cref="IComments.CssClass" />
+    /// <inheritdoc cref="IExtraDryComponent.CssClass" />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
@@ -31,6 +31,10 @@ public partial class Gravatar : ComponentBase {
     /// </summary>
     [Parameter]
     public bool HideEmail { get; set; }
+
+    /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "gravatar", CssClass);
 
