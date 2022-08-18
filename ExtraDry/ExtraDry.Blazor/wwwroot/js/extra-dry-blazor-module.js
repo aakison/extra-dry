@@ -60,7 +60,6 @@ export function CodeBlock_AfterRender(id) {
     import('./highlight-module.min.js').then(
         ({ hljs }) => {
             var selector = `#${id} pre code`;
-            console.log("highlight.js", selector);
             var code = document.querySelector(selector);
             hljs.highlightElement(code);
         }

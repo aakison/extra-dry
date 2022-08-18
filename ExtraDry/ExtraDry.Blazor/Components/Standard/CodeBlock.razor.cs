@@ -28,7 +28,6 @@ public partial class CodeBlock : ComponentBase {
 
     protected override void OnParametersSet()
     {
-        Console.WriteLine($"Parameters set on {Id}");
         if(Normalize) {
             OldBody = Body;
             RenderChildContentToBody();

@@ -72,14 +72,14 @@ public sealed partial class ComponentMenu : ComponentBase, IDisposable {
 
     public class StandardComponentsMenu
     {
-        [Navigation(Icon = "icons")]
-        public string Icon => $"/components/standard/icon";
-
         [Navigation(Icon = "gravatar")]
         public string Gravatar => $"/components/standard/gravatar";
 
         [Navigation(Icon = "tri-check")]
         public string TriCheck => $"/components/standard/tri-check";
+
+        [Navigation(Icon = "icons")]
+        public string Icon => $"/components/standard/icon";
 
         [Navigation(Icon = "mini-card")]
         public string MiniCard => $"/components/standard/mini-card";
