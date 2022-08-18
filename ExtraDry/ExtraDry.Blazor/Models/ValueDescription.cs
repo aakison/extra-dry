@@ -1,8 +1,5 @@
 ﻿#nullable enable
 
-using System.ComponentModel.DataAnnotations;
-using System.Reflection;
-
 namespace ExtraDry.Blazor;
 
 public class ValueDescription : ISubjectViewModel {
@@ -36,4 +33,9 @@ public class ValueDescription : ISubjectViewModel {
     public string Caption => Title;
 
     public string Description => string.Empty;
+
+    public override bool Equals(object? obj) => (obj as ValueDescription)?.Key == Key;
+
+    public override int GetHashCode() => Key.GetHashCode();
+
 }

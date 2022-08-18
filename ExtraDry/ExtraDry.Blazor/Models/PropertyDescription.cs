@@ -1,9 +1,7 @@
 ﻿#nullable enable
 
-using ExtraDry.Blazor.Internal;
 using System.Collections;
 using System.Globalization;
-using System.Reflection;
 
 namespace ExtraDry.Blazor;
 
@@ -97,7 +95,7 @@ public class PropertyDescription {
         }
     }
 
-    public object GetValue(object item) => item == null ? null : Property?.GetValue(item);
+    public object? GetValue(object? item) => item == null ? null : Property?.GetValue(item);
 
     public int GetDiscreteSortOrder(object item)
     {
@@ -120,7 +118,7 @@ public class PropertyDescription {
 
     public string CaptionTemplate => Control?.CaptionTemplate ?? "";
 
-    public void SetValue(object item, object value)
+    public void SetValue(object item, object? value)
     {
         if(HasArrayValues) {
             throw new InvalidOperationException("Can only set values to properties that are not collections, use AddValue instead.");
@@ -203,19 +201,21 @@ public class PropertyDescription {
         var values = new List<ValueDescription>();
         var enumValues = Property.PropertyType.GetEnumValues();
         foreach(var value in enumValues) {
-            var memberInfo = Property.PropertyType.GetMember(value.ToString()).First();
-            var valueDescription = new ValueDescription(value, memberInfo);
-            if(valueDescription.AutoGenerate) {
-                values.Add(valueDescription);
+            if(value != null) {
+                var memberInfo = Property.PropertyType.GetMember(value.ToString()!).First();
+                var valueDescription = new ValueDescription(value, memberInfo);
+                if(valueDescription.AutoGenerate) {
+                    values.Add(valueDescription);
+                }
             }
         }
         return values;
     }
 
-    private object Unformat(object value)
+    private object? Unformat(object? value)
     {
         if(Property.PropertyType.IsEnum) {
-            return Enum.Parse(Property.PropertyType, value.ToString());
+            return Enum.Parse(Property.PropertyType, value?.ToString() ?? "");
         }
         else if(Property.PropertyType == typeof(string)) {
             return value?.ToString();

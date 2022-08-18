@@ -165,8 +165,9 @@ public partial class FlexiSelectForm<TItem> : ComponentBase, IExtraDryComponent 
         }
         if(args?.Value?.Equals("on") ?? false) {
             // Single select change.
-            if(Value != null) {
-                DisplayData.First(e => e.Source?.Equals(Value) ?? false).Selected = false;
+            foreach(var item in DisplayData) {
+                // Probably more efficent to set all to not selected than to do half as many complex comparisons.
+                item.Selected = false;
             }
             value.Selected = true;
             Value = value.Source;
