@@ -47,7 +47,10 @@ public sealed partial class ComponentMenu : ComponentBase, IDisposable {
 
     private object CurrentMenu { get; set; } = new object();
 
+#pragma warning disable CA1822 // Mark members as static b/c members are used by reflection menus.
+
     public class MainMenu {
+
         [Navigation(Icon = "register")]
         public string Register => $"/dummy/a";
 
@@ -96,5 +99,7 @@ public sealed partial class ComponentMenu : ComponentBase, IDisposable {
         [Navigation(Icon = "mini-card")]
         public string DryMiniCard => $"/components/dry/dry-mini-card";
     }
+
+#pragma warning restore CA1822 // Mark members as static
 
 }

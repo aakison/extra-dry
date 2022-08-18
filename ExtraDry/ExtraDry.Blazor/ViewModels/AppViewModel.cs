@@ -9,8 +9,7 @@ public class AppViewModel {
 
     public string Copyright { get; set; }
 
-
-    [SuppressMessage("Security", "DRY1304:Properties that might leak PID should be JsonIgnore.", Justification = "Not an auditing verison, the application version.")]
+    [SuppressMessage("Security", "DRY1304:Properties that might leak PID should be JsonIgnore.", Justification = "Not an auditing version, the application version.")]
     public string Version { get; set; }
 
     public Collection<SectionViewModel> Sections { get; } = new Collection<SectionViewModel>();

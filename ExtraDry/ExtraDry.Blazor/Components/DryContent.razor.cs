@@ -195,7 +195,7 @@ namespace ExtraDry.Blazor {
             if(base64Delimiter < 0) {
                 throw new DryException("When posting back an image, send through the imageDataUri from the clipboard.  This must include the content of the image properly base64 encoded.", "Unable to upload image. 0x0F3CEE65");
             }
-            var mimeType = imageDataUrl[6..semicolon];
+            //var mimeType = imageDataUrl[6..semicolon]; Save for later, should add to blob information.
             var base64 = imageDataUrl[(base64Delimiter+7)..];
             var bytes = Convert.FromBase64String(base64);
             if(StaticServiceProvider.GetService(typeof(IBlobService)) is not IBlobService blobService) {
