@@ -41,6 +41,13 @@ public partial class FlexiSelect<TItem> : ComponentBase, IExtraDryComponent {
     [Parameter]
     public bool MultiSelect { get; set; }
 
+    /// <summary>
+    /// Determines if the dialog should auto-close when in single select mode and a selection has 
+    /// been made.  Default true.
+    /// </summary>
+    [Parameter]
+    public bool AutoDismissDialog { get; set; } = true;
+
     /// <inheritdoc cref="FlexiSelectForm{T}.Data" />
     [Parameter]
     public IEnumerable<TItem>? Data { get; set; }
@@ -89,11 +96,24 @@ public partial class FlexiSelect<TItem> : ComponentBase, IExtraDryComponent {
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
 
+    public async void DoValueChanged(TItem item) {
+        Console.WriteLine(item);
+        await ValueChanged.InvokeAsync(item);
+        if(AutoDismissDialog && !MultiSelect && item != null) {
+            await MiniDialog.HideAsync();
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "flexi-select", CssClass);
 
     private async Task DoClick(MouseEventArgs args)
     {
-        await MiniDialog.Show();
+        await MiniDialog.ShowAsync();
         await OnClick.InvokeAsync(args);
     }
 

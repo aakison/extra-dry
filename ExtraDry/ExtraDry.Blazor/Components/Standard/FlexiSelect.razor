@@ -16,7 +16,7 @@
     <MiniDialog @ref="MiniDialog" CssClass="@CssClass" LoseFocusAction="MiniDialogAction.SaveAndClose" 
             AnimationDuration="@AnimationDuration" OnSubmit="@OnSubmit" OnCancel="@OnCancel"
             Title="@Title" ShowTitle="@ShowTitle">
-        <FlexiSelectForm Data="@Data" MultiSelect="@MultiSelect" Value="@Value" ValueChanged="@ValueChanged" 
+        <FlexiSelectForm TItem="TItem" Data="@Data" MultiSelect="@MultiSelect" Value="@Value" ValueChanged="@DoValueChanged"
             Values="@Values" ValuesChanged="@ValuesChanged" ShowFilterThreshold="@ShowFilterThreshold" 
             FilterPlaceholder="@FilterPlaceholder" 
         />

@@ -102,58 +102,58 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent {
     /// </summary>
     public DialogState State { get; private set; } = DialogState.NotLoaded;
 
-    public async Task Show()
+    public async Task ShowAsync()
     {
         CancelAndResetCancellation();
         // No matter what, to show we need to first make sure it's loaded and rendered to DOM.
-        if(await ChangeState(DialogState.NotLoaded, DialogState.Hidden, minimumDuration)) {
+        if(await ChangeStateAsync(DialogState.NotLoaded, DialogState.Hidden, minimumDuration)) {
             return;
         }
         // Start the animation from hidden state to showing state.
-        if(await ChangeState(DialogState.Hidden, DialogState.Showing, AnimationDuration)) {
+        if(await ChangeStateAsync(DialogState.Hidden, DialogState.Showing, AnimationDuration)) {
             return;
         }
         // If we're in a hiding state, then must have interupted the Hide to re-show, get on it...
-        if(await ChangeState(DialogState.Hiding, DialogState.Showing, AnimationDuration)) {
+        if(await ChangeStateAsync(DialogState.Hiding, DialogState.Showing, AnimationDuration)) {
             return;
         }
         // Finish animation, if any, and rest on visible state.
-        if(await ChangeState(DialogState.Showing, DialogState.Visible, minimumDuration)) {
+        if(await ChangeStateAsync(DialogState.Showing, DialogState.Visible, minimumDuration)) {
             return;
         }
         await Form.FocusAsync(); // Get focus into visible control so OnFocusOut can fire.
         StateHasChanged();
     }
 
-    public async Task Hide()
+    public async Task HideAsync()
     {
         CancelAndResetCancellation();
         // When visible, just start hiding.
-        if(await ChangeState(DialogState.Visible, DialogState.Hiding, AnimationDuration)) {
+        if(await ChangeStateAsync(DialogState.Visible, DialogState.Hiding, AnimationDuration)) {
             return;
         }
         // If we're in a showing state, must have been interrupted, get to hiding...
-        if(await ChangeState(DialogState.Showing, DialogState.Hiding, AnimationDuration)) {
+        if(await ChangeStateAsync(DialogState.Showing, DialogState.Hiding, AnimationDuration)) {
             return;
         }
         // Finish animation, if any, then finish into final animation state.
-        if(await ChangeState(DialogState.Hiding, DialogState.Hidden, minimumDuration)) {
+        if(await ChangeStateAsync(DialogState.Hiding, DialogState.Hidden, minimumDuration)) {
             return;
         }
         // Finally, unload the dialog box to conserve resources.
-        if(await ChangeState(DialogState.Hidden, DialogState.NotLoaded, minimumDuration)) {
+        if(await ChangeStateAsync(DialogState.Hidden, DialogState.NotLoaded, minimumDuration)) {
             return;
         }
         StateHasChanged();
     }
 
-    public async Task Toggle()
+    public async Task ToggleAsync()
     {
         if(State == DialogState.NotLoaded || State == DialogState.Hidden || State == DialogState.Hiding) {
-            await Show();
+            await ShowAsync();
         }
         else {
-            await Hide();
+            await HideAsync();
         }
     }
 
@@ -161,13 +161,18 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent {
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "mini-dialog", StateClass, CssClass);
 
-    private async Task<bool> ChangeState(DialogState from, DialogState to, int duration)
+    private async Task<bool> ChangeStateAsync(DialogState from, DialogState to, int duration)
     {
         if(State == from) {
             // UI will load content at this point.
             State = to;
             StateHasChanged();
-            await Task.Delay(duration, stateChangeCancellation.Token);
+            try {
+                await Task.Delay(duration, stateChangeCancellation.Token);
+            }
+            catch(TaskCanceledException) {
+                // Ignore exception as expected result is return value.
+            }
             return stateChangeCancellation.IsCancellationRequested;
         }
         return false;
@@ -202,7 +207,7 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent {
         };
         await OnSubmit.InvokeAsync(eventArgs);
         if(!eventArgs.Cancel) {
-            await Hide();
+            await HideAsync();
         }
     }
 
@@ -213,7 +218,7 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent {
         };
         await OnCancel.InvokeAsync(eventArgs);
         if(!eventArgs.Cancel) {
-            await Hide();
+            await HideAsync();
         }
     }
 
@@ -252,6 +257,7 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent {
 
 }
 
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum MiniDialogAction
 {
     Save,
@@ -263,6 +269,7 @@ public enum MiniDialogAction
 /// <summary>
 /// The states that cycle through as the dialog is moved through states with Show(), Hide(), and Toggle().
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum DialogState
 {
     /// <summary>
