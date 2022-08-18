@@ -24,7 +24,7 @@ public partial class DryFlexiSelect : DryPropertyComponentBase {
     [Parameter]
     public int ShowFilterThreshold { get; set; } = 10;
 
-    /// <inheritdoc cref=FlexiSelect{TItem}.FilterPlaceholder" />
+    /// <inheritdoc cref="FlexiSelect{TItem}.FilterPlaceholder" />
     [Parameter]
     public string FilterPlaceholder { get; set; } = "filter";
 
