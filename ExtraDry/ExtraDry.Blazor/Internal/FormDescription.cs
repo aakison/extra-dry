@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-using ExtraDry.Core;
 using System.Collections;
 using System.Collections.ObjectModel;
 
@@ -59,7 +58,7 @@ internal class FormDescription {
         }
     }
 
-    private void ExtendProperties(Collection<PropertyDescription> properties, string fieldsetName, FormGroupType formGroup, object model, object? parentModel = null)
+    private void ExtendProperties(Collection<PropertyDescription> properties, string fieldsetName, FormGroupType formGroup, object? model, object? parentModel = null)
     {
         foreach(var property in properties) {
             var groupName = property.Display?.GroupName ?? "default";
@@ -94,7 +93,7 @@ internal class FormDescription {
                     }
                 }
             }
-            else {
+            else if(model != null) {
                 ExtendedProperties.Add(new ExtendedProperty(property, model) { 
                     FieldsetTitle = fieldsetName,
                     GroupType = formGroup,

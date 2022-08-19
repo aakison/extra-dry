@@ -13,13 +13,13 @@ namespace Sample.Server.Controllers;
 /// </summary>
 [ApiController]
 [ApiExplorerSettings(GroupName = ApiGroupNames.ReferenceCodes)]
-//[SkipStatusCodePages]
 [ApiExceptionStatusCodes]
 public class SampleDataController {
 
     /// <summary>
     /// Stanard DI Constructor
     /// </summary>
+    [SuppressMessage("Usage", "DRY1012:API Controller Classes should not directly use DbContext.", Justification = "Temporary sample data controller.")]
     public SampleDataController(SampleContext sampleContext)
     {
         context = sampleContext;
