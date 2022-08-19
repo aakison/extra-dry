@@ -17,13 +17,24 @@ public class IconInfo {
     /// <param name="key">The string key to index into the icon, case-insensitive.</param>
     /// <param name="imagePath">The path to the icon, typically an SVG in the /img/ directory.</param>
     /// <param name="alternateText">The alternate text that describes the icon for screen readers.</param>
-    /// <param name="cssClass">An optional additional class to apply to images, such as 'icon' or 'glyph'.</param>
+    /// <param name="cssClass">An optional additional class to apply to `img` tags, such as 'icon' or 'glyph'.</param>
     public IconInfo(string key, string imagePath, string alternateText, string? cssClass = null)
     {
         Key = key;
         ImagePath = imagePath;
         AlternateText = alternateText;
         CssClass = cssClass ?? string.Empty;
+    }
+
+    /// <summary>
+    /// Create a icon indexed by Key with the indicated class for decorating a `i` tag. 
+    /// </summary>
+    /// <param name="key">The string key to index into the icon, case-insensitive.</param>
+    /// <param name="iconClass">A required class to apply to `i` tags, such as 'fas fa-edit'.</param>
+    public IconInfo(string key, string iconClass)
+    {
+        Key = key;
+        CssClass = iconClass;
     }
 
     /// <summary>
@@ -34,12 +45,12 @@ public class IconInfo {
     /// <summary>
     /// The relative URI path to the image for the icon.
     /// </summary>
-    public string ImagePath { get; set; }
+    public string? ImagePath { get; set; }
 
     /// <summary>
     /// The altnerate text applied to the image.
     /// </summary>
-    public string AlternateText { get; set; }
+    public string? AlternateText { get; set; }
 
     /// <summary>
     /// Any additional CSS classes to apply when this icon is used.

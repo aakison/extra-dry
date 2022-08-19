@@ -27,14 +27,14 @@ public sealed partial class TableMenu<TItem> : ComponentBase {
         await Expandable.Toggle();
     }
 
-    [Command(Icon = "expand-alt")]
+    [Command(Icon = "expand")]
     public void Expand()
     {
         Console.WriteLine($"Expanding {Layout}");
         Layout?.Expand();
     }
 
-    [Command(Icon = "compress-alt")]
+    [Command(Icon = "compress")]
     public void Compress()
     {
         Console.WriteLine($"Compress {Layout}");
