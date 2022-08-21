@@ -1,4 +1,4 @@
-﻿@namespace ExtraDry.Blazor
+@namespace ExtraDry.Blazor
 @using ExtraDry.Core.Models
 
 <div class="error @ErrorCss">
@@ -31,7 +31,7 @@
             <div class="errorImagePlaceholder"></div>
             <dl>
                 <dt class="exception">Exception</dt>
-                <dd class="exception">@DataConverter.CamelCaseToTitleCase(Exception.GetType().Name)</dd>
+                <dd class="exception">@DataConverter.CamelCaseToTitleCase(Exception?.GetType().Name ?? string.Empty)</dd>
 
                 <dt class="message">Message</dt>
                 <dd class="message">@Exception?.Message</dd>
