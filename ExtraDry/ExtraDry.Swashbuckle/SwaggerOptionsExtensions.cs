@@ -22,6 +22,7 @@ public static class SwaggerOptionsExtensions {
         openapi.OperationFilter<SignatureImpliesStatusCodes>();
         openapi.OperationFilter<QueryDocumentationOperationFilter>();
         openapi.DocumentFilter<DisplayControllerDocumentFilter>();
+        openapi.SchemaFilter<ExtraDrySchemaFilter>();
     }
 
     public static void AddExtraDry(this SwaggerUIOptions swagger)

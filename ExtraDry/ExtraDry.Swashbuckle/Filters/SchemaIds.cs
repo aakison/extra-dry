@@ -6,7 +6,7 @@
 public static class SchemaIds {
 
     /// <summary>
-    /// Rename interfaces that used to not indicate the obligatory "I" in front of each.
+    /// Rename interfaces that are used to not indicate the obligatory "I" in front of each.
     /// </summary>
     public static string RenameInterfaces(Type type)
     {
