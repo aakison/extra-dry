@@ -11,7 +11,7 @@ public static class SwaggerOptionsExtensions {
         openapi.SwaggerDoc(GroupName, new OpenApiInfo {
             Version = "v1",
             Title = "Sample API Instructions",
-            Description = "This API provides consistent access to services available on this system conforming with Extra DRY principles.",
+            Description = "This API provides consistent access to services available on this system conforming to Extra DRY principles.",
         });
 
         foreach(var docfile in new string[] { "ExtraDry.Core.Xml", "ExtraDry.Swashbuckle.xml" }) {
@@ -30,6 +30,12 @@ public static class SwaggerOptionsExtensions {
         swagger.SwaggerEndpoint($"/swagger/{GroupName}/swagger.json", "Instructions");
         swagger.EnableTryItOutByDefault();
         swagger.DocExpansion(DocExpansion.List);
+    }
+
+    public static IMvcBuilder AddExtraDry(this IMvcBuilder mvcBuilder)
+    {
+        mvcBuilder.AddApplicationPart(typeof(SwaggerOptionsExtensions).Assembly);
+        return mvcBuilder;
     }
 
     public const string GroupName = "instructions";

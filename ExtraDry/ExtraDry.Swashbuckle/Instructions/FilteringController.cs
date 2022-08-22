@@ -1,7 +1,7 @@
 ﻿using ExtraDry.Server;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Sample.Swashbuckle.Instructions;
+namespace ExtraDry.Swashbuckle.Instructions;
 
 /// <summary>
 /// Most API endpoints have the ability to list entities.  When provided, these list methods accept a `filter` query parameter, allowing for filtering results to a subset of entities.

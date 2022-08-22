@@ -1,7 +1,7 @@
 ﻿using ExtraDry.Server;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Sample.Swashbuckle.Instructions;
+namespace ExtraDry.Swashbuckle.Instructions;
 
 /// <summary>
 /// This API is exposed using the OpenAPI 3.0 specification.  This provides a rigorous and discoverable set of APIs which can be easily consumed by humans, as well as by machines that make service access layers for application.
@@ -57,7 +57,7 @@ public class GettingStartedController {
     /// <summary>
     /// Take a step towards gratitude
     /// </summary>
-    [HttpGet("sample-data/transient-affirmation"), Produces("application/json")]
+    [HttpGet("api/sample-data/transient-affirmation"), Produces("application/json")]
     [AllowAnonymous]
     public AffirmationContainer RetrieveAffirmation()
     {

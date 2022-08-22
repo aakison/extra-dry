@@ -4,6 +4,7 @@ using ExtraDry.Core.Models;
 using ExtraDry.Server.DataWarehouse;
 using ExtraDry.Server.EF;
 using ExtraDry.Swashbuckle;
+using ExtraDry.Swashbuckle.Instructions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -39,6 +40,7 @@ namespace Sample.Server {
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews()
+                .AddExtraDry()
                 .AddJsonOptions(j => {
                     j.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                     j.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());

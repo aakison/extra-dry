@@ -1,7 +1,7 @@
 ﻿using ExtraDry.Server;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Sample.Swashbuckle.Instructions;
+namespace ExtraDry.Swashbuckle.Instructions;
 
 /// <summary>
 /// When listing entities, the common query mechanism also allows for sorted output.  These list methods accept a `sort` query parameter, allowing for a field to be selected to order the results.  Additionally, results can either be sorted ascending or descending using the `ascending` query parameter. 

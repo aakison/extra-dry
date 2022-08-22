@@ -1,4 +1,4 @@
-﻿namespace Sample.Swashbuckle.Instructions;
+﻿namespace ExtraDry.Swashbuckle.Instructions;
 
 /// <summary>
 /// A sample class used for demonstrating the common features of APIs.

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Sample.Swashbuckle.Instructions;
+namespace ExtraDry.Swashbuckle.Instructions;
 
 /// <summary>
 /// When listing entities, sometimes the number of entities returned is too large for a single API call.  This could be because of size limits.  It could also be because of user constraints.  Regardless, when APIs may return large sets, they'll usually have a paging mechanism.  

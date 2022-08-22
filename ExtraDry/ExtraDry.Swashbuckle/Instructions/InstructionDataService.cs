@@ -1,6 +1,6 @@
 ﻿using ExtraDry.Server;
 
-namespace Sample.Swashbuckle.Instructions;
+namespace ExtraDry.Swashbuckle.Instructions;
 
 public class InstructionDataService {
 
