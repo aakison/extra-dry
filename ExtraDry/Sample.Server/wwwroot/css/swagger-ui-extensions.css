@@ -181,8 +181,8 @@ body {
     margin: 0 5px;
   }
 
-/* Re-align the operation block to have description (with markdown) below header and control */
 
+/* Re-align the operation block to have description (with markdown) below header and control */
 .swagger-ui .opblock-tag {
   display: grid;
   grid-template-areas:
@@ -224,6 +224,8 @@ body {
 
 .swagger-ui .opblock .opblock-summary-control .opblock-summary-path {
   grid-area: route;
+  max-width: initial; /* Bad wrapping in defaults, remove the cause. */
+  font-size: 16px; /* Stop from dynamically sizing font as original */
 }
 
 .swagger-ui .opblock .opblock-summary-control .opblock-summary-description {
@@ -235,7 +237,6 @@ body {
   grid-area: chevron;
 }
   
-
 
 /* Swap authorized lock and accordian arrow icon positions */
 .swagger-ui .opblock {
@@ -251,7 +252,7 @@ body {
 
   .swagger-ui .authorization__btn {
     position: absolute;
-    right: 30px
+    right: 42px
   }
 
 
