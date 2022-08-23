@@ -2,37 +2,30 @@
 
 namespace ExtraDry.Blazor;
 
-public class ExtraDryJavascriptModule : IAsyncDisposable {
+/// <summary>
+/// Additional abstraction of JavaScript modules for use by Extra DRY, use instead of IJSRuntime.
+/// </summary>
+public class ExtraDryJavascriptModule {
 
+    /// <summary>
+    /// Constructor that expects runtime, for use with dependency injection.
+    /// </summary>
     public ExtraDryJavascriptModule(IJSRuntime runtime)
     {
         Runtime = runtime;
     }
 
-    public async ValueTask Initialize()
-    {
-        module ??= await Runtime.InvokeAsync<IJSObjectReference>("import", filename);
-    }
-
+    /// <summary>
+    /// Invoke a function inside the 'extra-dry-blazor-module' module.
+    /// Usage is same as IJSRuntime, but method must be exposed by Extra DRY module.
+    /// </summary>
     public async ValueTask InvokeVoidAsync(string name, params object?[]? args)
     {
-        await Initialize();
-        await module!.InvokeVoidAsync(name, args);
-    }
-
-    // As IJSObjectReference is IAsyncDisposable so should we, but it practice this is not called.
-    // The underlying module appears to be cleared out and made null regardless, very odd.
-    public async ValueTask DisposeAsync()
-    {
-        if(module is not null) {
-            await module.DisposeAsync();
-            module = null;
-        }
+        await using var module = await Runtime.InvokeAsync<IJSObjectReference>("import", filename);
+        await module.InvokeVoidAsync(name, args);
     }
 
     private IJSRuntime Runtime { get; set; }
-
-    private static IJSObjectReference? module;
 
     private const string filename = "./_content/ExtraDry.Blazor/js/extra-dry-blazor-module.min.js";
 }

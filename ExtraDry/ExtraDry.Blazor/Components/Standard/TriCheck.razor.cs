@@ -8,12 +8,23 @@ public partial class TriCheck : ComponentBase, IExtraDryComponent {
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
+    /// <summary>
+    /// The value of the checkbox, allowing for indeterminate state.
+    /// Use with data binding.
+    /// </summary>
     [Parameter]
     public TriCheckState Value { get; set; } = TriCheckState.Unchecked;
 
+    /// <summary>
+    /// The data-binding event for the `Value`.
+    /// </summary>
     [Parameter]
     public EventCallback<TriCheckState> ValueChanged { get; set; }
 
+    /// <summary>
+    /// The Id for the input element of the control. Must be unique.
+    /// Defaults to a unique Id.
+    /// </summary>
     [Parameter]
     public string Id { get; set; } = $"TriCheck{++maxId}";
 
@@ -23,9 +34,15 @@ public partial class TriCheck : ComponentBase, IExtraDryComponent {
     [Parameter]
     public string Label { get; set; } = "label";
 
+    /// <summary>
+    /// Event callback for clicking on the input, fired on user-input.
+    /// </summary>
     [Parameter]
     public EventCallback<MouseEventArgs> OnClicked { get; set; }
 
+    /// <summary>
+    /// Event callback for change of input.
+    /// </summary>
     [Parameter]
     public EventCallback<ChangeEventArgs> OnChange { get; set; }
 
@@ -60,6 +77,7 @@ public partial class TriCheck : ComponentBase, IExtraDryComponent {
             await DoChange(null);
         }
     }
+
     private bool Checked => Value == TriCheckState.Checked;
 
     private bool Indeterminate => Value == TriCheckState.Indeterminate;
