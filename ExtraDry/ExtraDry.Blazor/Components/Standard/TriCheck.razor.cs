@@ -52,19 +52,14 @@ public partial class TriCheck : ComponentBase, IExtraDryComponent {
 
     private async Task DoChange(ChangeEventArgs? args)
     {
-        Console.WriteLine("DoChange");
         if(args == null) {
-            Console.WriteLine("  args null");
             args = new ChangeEventArgs();
         }
         else if(args.Value is bool bValue) {
-            Console.WriteLine($"  args bool value {bValue}");
             Value = bValue ? TriCheckState.Checked : TriCheckState.Unchecked;
         }
         args.Value = Value;
-        Console.WriteLine($"  ValueChanged");
         await ValueChanged.InvokeAsync(Value);
-        Console.WriteLine($"  OnChange");
         await OnChange.InvokeAsync(args);
     }
 
