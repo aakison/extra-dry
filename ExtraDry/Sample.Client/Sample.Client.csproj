@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
+		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -26,7 +27,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="BuildWebCompiler2022" Version="1.14.8" />
-		<PackageReference Include="ExtraDry.Analyzers" Version="0.3.16-alpha">
+		<PackageReference Include="ExtraDry.Analyzers" Version="0.3.18-alpha">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
@@ -51,6 +52,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Folder Include="ViewModels\Admin\" />
 		<Folder Include="wwwroot\fonts\" />
 	</ItemGroup>
 
