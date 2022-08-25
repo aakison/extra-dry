@@ -41,6 +41,7 @@ public partial class Icon : ComponentBase, IExtraDryComponent {
     private string? ImagePath {
         get {
             if(ThemeInfo == null) {
+                NoThemeError();
                 return $"/img/themeless/{Key}.svg";
             }
             else if(ThemeInfo.Icons.ContainsKey(Key)) {
@@ -50,10 +51,23 @@ public partial class Icon : ComponentBase, IExtraDryComponent {
                 return string.Format(ThemeInfo.IconTemplate, Key);
             }
             else {
+                Logger.LogWarning("Icon '{icon}' not registered, add an entry for icon to the `Icons` attribute of the `Theme` component.", Key);
                 return $"/img/no-icon-for-{Key}.svg";
             }
         }
     }
+    private void NoThemeError()
+    {
+        if(noThemeErrorIssued) {
+            Logger.LogError("Icons must be used within a `Theme` component.  Create a `Theme` component, typically in the MainLayout.blazor component that wraps the site.  Then add a collection of `IconInfo` to the `Icons` property to register the key of the icon with an image or a font glyph.");
+            noThemeErrorIssued = false;
+        }
+    }
+    private static bool noThemeErrorIssued = true;
+
+    [Inject]
+    private ILogger<Icon> Logger { get; set; } = null!;
+
 
 }
 
