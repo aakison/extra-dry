@@ -22,7 +22,7 @@
         &lt;MiniCard Title="@Title" Subtitle="@Subtitle" Thumbnail="@Thumbnail" /&gt;
     </CodeBlock>
     <p>
-        <MiniCard Title="@Title" Subtitle="@Subtitle" Thumbnail="@Thumbnail" />
+        <MiniCard Title="@Title" Subtitle="@Subtitle" Thumbnail="@Thumbnail"  />
     </p>
     <h5>Try It Out</h5>
     <form class="tryitout" onsubmit="return false;">
@@ -86,6 +86,10 @@
 
     private string Subtitle { get; set; } = "this is the subtitle";
 
-    private string Thumbnail { get; set; } = "./img/icons/logo.svg";
+    private string Thumbnail { 
+        get => thumbnail; 
+        set => thumbnail = string.IsNullOrWhiteSpace(value) ? null : value;
+    }
+    private string thumbnail = "./img/icons/logo.svg";
 
 }
