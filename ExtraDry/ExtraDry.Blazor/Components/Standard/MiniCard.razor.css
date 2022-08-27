@@ -18,9 +18,9 @@ div > div {
   align-items: start;
   height: initial;
 }
-div > div span.title {
+div > div span:nth-child(1) {
   line-height: 16px;
 }
-div > div span.subtitle {
+div > div span:nth-child(2) {
   font-size: 12px;
 }

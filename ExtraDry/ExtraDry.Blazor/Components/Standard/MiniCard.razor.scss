@@ -23,11 +23,11 @@ div {
         align-items: start;
         height: initial;
 
-        span.title {
+        span:nth-child(1) {
             line-height: 16px;
         }
 
-        span.subtitle {
+        span:nth-child(2) {
             font-size: 12px;
         }
     }
