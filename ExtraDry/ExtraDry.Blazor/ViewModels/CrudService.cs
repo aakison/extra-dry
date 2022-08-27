@@ -52,6 +52,7 @@ public class CrudService<T> {
         var json = JsonSerializer.Serialize(item);
         using var content = new StringContent(json, Encoding.UTF8, "application/json");
         var endpoint = ApiEndpoint(nameof(CreateAsync), string.Empty, args);
+        logger?.LogInformation("Created '{entity}' at '{endpoint}'", nameof(T), endpoint);
         var response = await http.PostAsync(endpoint, content);
         await response.AssertSuccess();
         logger?.LogDebug("Created '{entity}' on '{endpoint}' with content: {content}", nameof(T), endpoint, json);
