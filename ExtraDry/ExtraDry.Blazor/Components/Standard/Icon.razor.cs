@@ -13,7 +13,8 @@ public partial class Icon : ComponentBase, IExtraDryComponent {
     public string CssClass { get; set; } = string.Empty;
 
     /// <summary>
-    /// A key for the icon.  The key must be registered with an enclosing `Theme` tag.
+    /// A key for the icon.  The key is typically be registered with an enclosing `Theme` tag.
+    /// If the key is a Uri, then the Uri is used directly.
     /// </summary>
     [Parameter, EditorRequired]
     public string Key { get; set; } = null!;
@@ -40,7 +41,10 @@ public partial class Icon : ComponentBase, IExtraDryComponent {
 
     private string? ImagePath {
         get {
-            if(ThemeInfo == null) {
+            if(Key.Contains("/")) {
+                return Key;
+            }
+            else if(ThemeInfo == null) {
                 NoThemeError();
                 return $"/img/themeless/{Key}.svg";
             }
