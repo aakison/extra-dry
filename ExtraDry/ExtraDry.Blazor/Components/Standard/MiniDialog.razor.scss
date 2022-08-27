@@ -8,6 +8,7 @@ section {
     height: 100vh;
     background-color: #00000040;
     display: flex;
+    z-index: 1000;
 
     > div {
         background-color: floralwhite; // Something odd but not terrible, encourage consumers to override styles

@@ -6,6 +6,7 @@
   height: 100vh;
   background-color: #00000040;
   display: flex;
+  z-index: 1000;
 }
 section > div {
   background-color: floralwhite;
