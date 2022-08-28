@@ -94,7 +94,7 @@
 
         public override string Subtitle => Model.Email;
 
-        public override string Thumbnail => Gravatar.ToGravatarUrl(Model.Email, 40);
+        public override string Icon => Gravatar.ToGravatarUrl(Model.Email, 40);
     }
 
     public List<User> Users { get; set; } = new();

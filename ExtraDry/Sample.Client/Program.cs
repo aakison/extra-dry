@@ -3,6 +3,7 @@ using ExtraDry.Core;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
+using Sample.Client.Pages;
 using Sample.Shared;
 using System;
 using System.Net.Http;
@@ -42,6 +43,8 @@ namespace Sample.Client {
             );
 
             services.AddScoped<ISubjectViewModel<Employee>, EmployeeViewModel>();
+
+            services.AddSingleton<AppViewModel>();
 
             await builder.Build().RunAsync();
         }

@@ -1,16 +1,11 @@
 ﻿#nullable enable
 
-using ExtraDry.Core;
-using Microsoft.AspNetCore.Components;
-using System.Reflection;
-using System.Text.RegularExpressions;
-
 namespace ExtraDry.Blazor.Models;
 
 /// <summary>
 /// Represents a property that contains a link or a method that performs a navigation.
 /// </summary>
-public class NavigationDescription {
+public class NavigationDescription : ISubjectViewModel {
 
     /// <summary>
     /// Create a `NavigationDescription` with a reference to the ViewModel it will execute on and the method to call.
@@ -51,25 +46,27 @@ public class NavigationDescription {
     /// </summary>
     public NavigationAttribute? Navigation { get; private set; }
 
+    /// <summary>
+    /// If a group is provided, the name of the group to display the navigation under.
+    /// </summary>
     public string? Group { get; set; }
 
     /// <summary>
-    /// The caption of the command, taken from the `CommandAttribute` if available.
+    /// The caption of the command, taken from the `NavigationAttribute` if available.
     /// If not, this is inferred from the signature of the `Method` by convention.
     /// </summary>
-    public string? Caption { get; set; }
+    public string Title { get; set; } = string.Empty;
 
     /// <summary>
-    /// The optional name of the icon to be displayed on links.
-    /// This is just the stem of the name (e.g. 'plus') which is mixed with the theme to create a final name (e.g. 'fas fa-plus').
+    /// The subtitle of the navigation, taken from the `NavigationAttribute` if available.
     /// </summary>
-    public string? Icon { get; set; }
+    public string Subtitle { get; set; } = string.Empty;
 
     /// <summary>
-    /// The optional name of an image to be displayed with the link.
+    /// The optional Key or Uri of the icon to be displayed on links.
+    /// This is the Key from the IconInfo set in the Theme.
     /// </summary>
-    public string? Image { get; set; }
-
+    public string Icon { get; set; } = string.Empty;
 
     /// <summary>
     /// The optional order of the navigation item, if omitted then the file order is respected.
@@ -83,7 +80,10 @@ public class NavigationDescription {
     /// </summary>
     public object ViewModel { get; set; }
 
-
+    /// <summary>
+    /// A Regex which uses the URI to determine if the current navigation is active or inactive.
+    /// The active state is set using the CSS Class of 'active' or 'inactive'.
+    /// </summary>
     public string? ActiveMatch { get; set; }
 
     /// <summary>
@@ -96,10 +96,19 @@ public class NavigationDescription {
     /// </summary>
     public string Href => Property?.GetValue(ViewModel)?.ToString() ?? "javascript:void(0)";
 
-    public bool HasImage => !string.IsNullOrWhiteSpace(Image);
+    /// <inheritdoc /> 
+    public string Code => string.Empty;
 
-    public bool HasIcon => !string.IsNullOrWhiteSpace(Icon);
+    /// <inheritdoc /> 
+    public string Caption => $"{Title} Navigation";
 
+    /// <inheritdoc /> 
+    public string Description => Subtitle;
+
+    /// <summary>
+    /// Determines if the navigation is currently a match for the current URI based
+    /// on either the entire HREF, or the ActiveMatch Regex.
+    /// </summary>
     public bool UriMatch(NavigationManager navigation)
     {
         var relativeUri = navigation.Uri.Remove(0, navigation.BaseUri.Length);
@@ -139,12 +148,12 @@ public class NavigationDescription {
 
     private void Initialize()
     {
-        Caption = Navigation?.Caption;
-        if(string.IsNullOrWhiteSpace(Caption)) {
-            Caption = DefaultName(Method?.Name ?? Property?.Name ?? "");
+        Title = Navigation?.Title ?? "Title";
+        if(string.IsNullOrWhiteSpace(Title)) {
+            Title = DefaultName(Method?.Name ?? Property?.Name ?? "");
         }
-        Icon = Navigation?.Icon;
-        Image = Navigation?.Image;
+        Icon = Navigation?.Icon ?? string.Empty;
+        Subtitle = Navigation?.Subtitle ?? string.Empty;
         Group = Navigation?.Group;
         Order = Navigation?.Order ?? 0;
         ActiveMatch = Navigation?.ActiveMatch;
@@ -156,7 +165,7 @@ public class NavigationDescription {
     private static string DefaultName(string name)
     {
         name = name.Replace("Async", "");
-        name = Regex.Replace(name, "(?<=[a-z])([A-Z])", " $1", RegexOptions.Compiled).Trim();
+        name = DataConverter.CamelCaseToTitleCase(name);
         return name;
     }
 

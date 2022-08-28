@@ -43,6 +43,14 @@ header {
                 color: $var-secondary;
                 margin-left: $padding;
             }
+
+            ::deep button {
+                padding-left: 0;
+
+                &:hover {
+                    background-color: transparent;
+                }
+            }
         }
 
         div.account {
@@ -59,8 +67,12 @@ header {
         ::deep img.glyph {
             width: 22px;
             height: 22px;
-            margin-right: $margin;
             filter: filterToColor($primary);
+        }
+
+        ::deep div.account img.glyph {
+            margin-right: $margin;
         }
     }
 }
+

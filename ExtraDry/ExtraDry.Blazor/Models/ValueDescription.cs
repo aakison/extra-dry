@@ -21,7 +21,7 @@ public class ValueDescription : ISubjectViewModel {
 
     public string Subtitle { get; set; } = string.Empty;
 
-    public string Thumbnail => string.Empty;
+    public string Icon => string.Empty;
 
     /// <summary>
     /// Indicates if the value should be in generated structures such as dropdown filter lists.

@@ -62,10 +62,10 @@ internal static class ViewModelHelper {
     public static string? Thumbnail<TModel>(TModel model, ISubjectViewModel<TModel>? viewModel, string? _default = null)
     {
         if(viewModel != null) {
-            return viewModel.Thumbnail(model);
+            return viewModel.Icon(model);
         }
         else if(model is ISubjectViewModel subject) {
-            return subject.Thumbnail;
+            return subject.Icon;
         }
         else {
             return _default;

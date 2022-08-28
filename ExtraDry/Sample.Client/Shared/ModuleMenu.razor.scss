@@ -1,0 +1,55 @@
+﻿@import "../wwwroot/css/_constants.scss";
+
+::deep div.module-menu section.mini-dialog div.mini-dialog {
+    width: 375px - 4*$margin;
+    height: initial;
+    padding-top: 0.5*$margin;
+
+    ul {
+        padding: 0;
+
+        li {
+            padding: $margin;
+            margin: $margin 2*$margin;
+            border: solid 1px $var-silver;
+            border-radius: $margin;
+            display: block;
+
+            &.active {
+                border: solid 1px $var-warning;
+            }
+
+            img {
+                margin-right: $margin;
+            }
+
+            a:link, a:visited, a:hover, a:active {
+                text-decoration: none;
+                color: $var-black;
+            }
+
+            span {
+                &.title {
+                    font-size: 18px;
+                    font-weight: 700;
+                }
+
+                &.subtitle {
+                    font-size: 12px;
+                    line-height: 14px;
+                    max-height: 28px;
+                    margin-top: 4px;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    -webkit-line-clamp: 2;
+                    display: -webkit-box;
+                    -webkit-box-orient: vertical;
+                }
+            }
+        }
+    }
+
+    footer {
+        display: none;
+    }
+}

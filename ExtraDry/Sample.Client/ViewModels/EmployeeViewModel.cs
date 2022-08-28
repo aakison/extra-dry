@@ -14,7 +14,7 @@ public class EmployeeViewModel : ISubjectViewModel<Employee> {
 
     public string Subtitle(Employee employee) => employee.Email;
 
-    public string Thumbnail(Employee employee) => Gravatar.ToGravatarUrl(employee.Email, 40);
+    public string Icon(Employee employee) => Gravatar.ToGravatarUrl(employee.Email, 40);
 
     public string Description(Employee _) => string.Empty;
 

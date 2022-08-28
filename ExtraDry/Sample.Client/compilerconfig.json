@@ -51,5 +51,13 @@
     "minify": {
       "enabled": false
     }
+  },
+  {
+    "outputFile": "Shared/ModuleMenu.razor.css",
+    "inputFile": "Shared/ModuleMenu.razor.scss",
+    "minify": {
+      "enabled": false
+    }
   }
+
 ]

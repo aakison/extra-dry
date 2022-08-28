@@ -1,10 +1,12 @@
 ﻿@namespace ExtraDry.Blazor
+@inherits DryViewModelComponentBase
 
-@if(Description == null) {
-    <progress>loading nav</progress>
-}
-else {
-    <nav @attributes="@InputAttributes" @ontouchstart="HandleTouchStart" @ontouchend="HandleTouchEnd">
+<div class="@CssClasses" @attributes="@UnmatchedAttributes">
+    <button class="unobtrusive" @onclick="@DoClick">
+        @ChildContent
+    </button>
+    <MiniDialog @ref="MiniDialog" CssClass="@CssClass" LoseFocusAction="MiniDialogAction.Cancel" 
+            AnimationDuration="@AnimationDuration" ShowCancelButton="false" ShowTitle="false" ShowSubmitButton="false">
         <ul>
             @if(Description.HasNavigationGroups) {
                 @foreach(var group in Description.NavigationGroups) {
@@ -19,9 +21,8 @@ else {
                             @foreach(var item in Description.NavigationsInGroup(group)) {
                                 var active = item.UriMatch(Navigation) ? "active" : "inactive";
                                 <li class="@active">
-                                    <a href="@item.Href" @onclick="@item.ExecuteAsync">
-                                        <Icon Key="@item.Icon" />
-                                        <span>@item.Title</span>
+                                    <a href="@item.Href" @onclick="() => DoItemClick(item)">
+                                        <DryMiniCard Model="@item" />
                                     </a>
                                 </li>
                             }
@@ -33,13 +34,12 @@ else {
                 @foreach(var item in Description.Navigations) {
                     var active = item.UriMatch(Navigation) ? "active" : "inactive";
                     <li class="@active">
-                        <a href="@item.Href" @onclick="@item.ExecuteAsync">
-                            <Icon Key="@item.Icon" />
-                            <span>@item.Title</span>
+                        <a href="@item.Href" @onclick="() => DoItemClick(item)">
+                            <DryMiniCard Model="@item" />
                         </a>
                     </li>
                 }
             }
         </ul>
-    </nav>
-}
+    </MiniDialog>
+</div>

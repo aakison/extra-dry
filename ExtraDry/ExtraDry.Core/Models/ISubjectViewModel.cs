@@ -31,7 +31,7 @@ public interface ISubjectViewModel {
     /// <summary>
     /// When not empty, a URL that indicates where a thumnbail of the subject can be downloaded.
     /// </summary>
-    string Thumbnail { get; }
+    string Icon { get; }
 
     /// <summary>
     /// A Description for the subject to elaborate on details, may also be considered for markdown support.
@@ -58,8 +58,8 @@ public interface ISubjectViewModel<TModel>
     /// <inheritdoc cref="ISubjectViewModel.Caption" />
     string Caption(TModel item);
 
-    /// <inheritdoc cref="ISubjectViewModel.Thumbnail" />
-    string Thumbnail(TModel item);
+    /// <inheritdoc cref="ISubjectViewModel.Icon" />
+    string Icon(TModel item);
 
     /// <inheritdoc cref="ISubjectViewModel.Description" />
     string Description(TModel item);

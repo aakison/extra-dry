@@ -17,7 +17,7 @@ public class ViewModel<T> : ISubjectViewModel
 
     public virtual string Caption => string.IsNullOrWhiteSpace(Code) ? Title : $"{Title} ({Code})";
 
-    public virtual string Thumbnail => string.Empty;
+    public virtual string Icon => string.Empty;
 
     public virtual string Description => string.Empty;
 
