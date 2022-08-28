@@ -9,7 +9,7 @@ namespace ExtraDry.Blazor;
 /// </summary>
 public partial class Gravatar : ComponentBase, IExtraDryComponent {
 
-    /// <inheritdoc cref="IExtraDryComponent.CssClass" />
+    /// <inheritdoc />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
@@ -32,7 +32,7 @@ public partial class Gravatar : ComponentBase, IExtraDryComponent {
     [Parameter]
     public bool HideEmail { get; set; }
 
-    /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
+    /// <inheritdoc />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
 
