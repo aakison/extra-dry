@@ -1,7 +1,6 @@
 ﻿#nullable enable
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace ExtraDry.Blazor;
 
@@ -23,7 +22,7 @@ public static class ServiceCollectionExtensions {
     {
         services.AddScoped(e => {
             var client = e.GetRequiredService<HttpClient>();
-            var logger = e.GetService<ILogger<CrudService<T>>>();
+            var logger = e.GetRequiredService<ILogger<CrudService<T>>>();
             var service = new CrudService<T>(client, endpointTemplate, logger);
             return service;
         });
@@ -37,8 +36,9 @@ public static class ServiceCollectionExtensions {
     public static IServiceCollection AddFilteredListService<T>(this IServiceCollection services, string endpointTemplate)
     {
         services.AddScoped(e => {
-            var client = e.GetService<HttpClient>();
-            var service = new ListService<FilteredCollection<T>, T>(client!, endpointTemplate);
+            var client = e.GetRequiredService<HttpClient>();
+            var logger = e.GetRequiredService<ILogger<ListService<FilteredCollection<T>, T>>>();
+            var service = new ListService<FilteredCollection<T>, T>(client, endpointTemplate, logger);
             return service;
         });
         services.AddScoped(e => {
@@ -59,8 +59,9 @@ public static class ServiceCollectionExtensions {
     public static IServiceCollection AddPagedListService<T>(this IServiceCollection services, string endpointTemplate)
     {
         services.AddScoped(e => {
-            var client = e.GetService<HttpClient>();
-            var service = new ListService<PagedCollection<T>, T>(client!, endpointTemplate);
+            var client = e.GetRequiredService<HttpClient>();
+            var logger = e.GetRequiredService<ILogger<ListService<PagedCollection<T>, T>>>();
+            var service = new ListService<PagedCollection<T>, T>(client, endpointTemplate, logger);
             return service;
         });
         services.AddScoped(e => {

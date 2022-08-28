@@ -1,24 +1,18 @@
 ﻿#nullable enable
 
-using ExtraDry.Core;
 using Microsoft.AspNetCore.Components.Web.Virtualization;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Linq;
-using System.Net.Http;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ExtraDry.Blazor;
 
 public class ListService<TCollection, TItem> : IListService<TItem> {
 
-    public ListService(HttpClient client, string entitiesEndpointTemplate, JsonSerializerOptions? jsonSerializerOptions = null)
+    public ListService(HttpClient client, string entitiesEndpointTemplate, ILogger<ListService<TCollection, TItem>> iLogger, JsonSerializerOptions? jsonSerializerOptions = null)
     {
         http = client;
+        logger = iLogger;
         UriTemplate = entitiesEndpointTemplate;
         // Make default json to ignore case, most non-.NET "RESTful" services use camelCase...
         JsonSerializerOptions = jsonSerializerOptions ?? new JsonSerializerOptions {
@@ -110,9 +104,9 @@ public class ListService<TCollection, TItem> : IListService<TItem> {
     public async ValueTask<ItemsProviderResult<TItem>> GetItemsAsync(string? filter, string? sort, bool? ascending, int? skip, int? take, CancellationToken cancellationToken)
     {
         var endpoint = ListEndpoint(filter, sort, ascending, skip, take);
+        logger.LogInformation("ListService.GetItems from {endpoint}", endpoint);
         var body = await http.GetStringAsync(endpoint, cancellationToken);
-        Console.WriteLine($"Got {body}");
-        Console.WriteLine($"Deserialize into {typeof(TCollection).Name}");
+        logger.LogInformation("ListService.GetItems retrieved {body}", body); 
         var packedResult = JsonSerializer.Deserialize<TCollection>(body, JsonSerializerOptions);
         if(packedResult == null) {
             throw new DryException($"Call to endpoint returned nothing or couldn't be converted to a result.");
@@ -123,5 +117,7 @@ public class ListService<TCollection, TItem> : IListService<TItem> {
     }
 
     private readonly HttpClient http;
+
+    private readonly ILogger<ListService<TCollection, TItem>> logger;
 
 }

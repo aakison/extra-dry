@@ -1,8 +1,6 @@
 ﻿#nullable enable
 
 using Microsoft.AspNetCore.Components.Web.Virtualization;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ExtraDry.Blazor;
 

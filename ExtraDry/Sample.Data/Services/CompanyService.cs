@@ -8,9 +8,9 @@ public class CompanyService {
         rules = ruleEngine;
     }
 
-    public async Task<FilteredCollection<Company>> List(FilterQuery query)
+    public async Task<PagedCollection<Company>> List(PageQuery query)
     {
-        return await database.Companies.QueryWith(query).ToFilteredCollectionAsync();
+        return await database.Companies.QueryWith(query).ToPagedCollectionAsync();
     }
 
     public async Task Create(Company item)

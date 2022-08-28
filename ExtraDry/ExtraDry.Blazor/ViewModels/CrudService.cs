@@ -1,7 +1,6 @@
 ﻿#nullable enable
 
 using ExtraDry.Blazor.Extensions;
-using Microsoft.Extensions.Logging;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;

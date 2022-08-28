@@ -27,7 +27,7 @@ public class CompanyController {
     /// </remarks>
     [HttpGet("api/companies"), Produces("application/json")]
     [AllowAnonymous]
-    public async Task<FilteredCollection<Company>> List([FromQuery] FilterQuery query)
+    public async Task<PagedCollection<Company>> List([FromQuery] PageQuery query)
     {
         return await companies.List(query);
     }
