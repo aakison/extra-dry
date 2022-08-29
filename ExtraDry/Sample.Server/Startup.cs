@@ -134,7 +134,6 @@ namespace Sample.Server {
                 swagger.SwaggerEndpoint($"/swagger/{ApiGroupNames.SampleApi}/swagger.json", "Sample APIs");
                 swagger.SwaggerEndpoint($"/swagger/{ApiGroupNames.ReferenceCodes}/swagger.json", "Reference Codes");
                 swagger.InjectStylesheet("/css/swagger-ui-extensions.css");
-                swagger.InjectJavascript("/js/swagger-ui-extensions.js");
                 swagger.DocumentTitle = "Sample Blazor.ExtraDry APIs";
                 swagger.EnableDeepLinking();
             });
