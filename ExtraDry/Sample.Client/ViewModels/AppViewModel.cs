@@ -12,10 +12,14 @@ public class AppViewModel {
 
 public class ModulesViewModel
 {
-    [Navigation(Icon = "components-module", Subtitle = "Preview and test both standard and DRY components.")]
+    [Navigation(Icon = "components-module", 
+        ActiveMatch = "/components",
+        Subtitle = "Preview and test both standard and DRY components.")]
     public string BlazorComponents => "/components/standard/gravatar";
 
-    [Navigation(Icon = "companies-module", Subtitle = "Administative functionality for a sample app.  With additional information to break the UI and test ellipsis based word wrapping.")]
+    [Navigation(Icon = "companies-module", 
+        ActiveMatch = "/companies",
+        Subtitle = "Administative functionality for a sample app.  With additional information to break the UI and test ellipsis based word wrapping.")]
     public string CompanyModule => "/companies";
 
     public ComponentsModule Components { get; } = new();
