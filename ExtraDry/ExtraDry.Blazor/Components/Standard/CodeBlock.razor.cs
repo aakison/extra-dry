@@ -6,19 +6,37 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace ExtraDry.Blazor;
 
-public partial class CodeBlock : ComponentBase {
+/// <summary>
+/// Provides pretty formatting of code for displaying blocks of codes.
+/// </summary>
+public partial class CodeBlock : ComponentBase, IExtraDryComponent {
 
+    /// <inheritdoc />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
+    /// <summary>
+    /// An optional indicator of the language that is being rendered in the code block.
+    /// </summary>
     [Parameter]
     public string Lang { get; set; } = string.Empty;
 
+    /// <summary>
+    /// The code that is inserted into the code block.
+    /// </summary>
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 
+    /// <summary>
+    /// When set, aligns the code to the left of the block allowing code to be indented
+    /// in .razor file without indent showing on rendered page.
+    /// </summary>
     [Parameter]
     public bool Normalize { get; set; } = true;
+
+    /// <inheritdoc />
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
 
     protected override void OnInitialized()
     {
@@ -58,8 +76,7 @@ public partial class CodeBlock : ComponentBase {
 
     protected string Id { get; set; } = string.Empty;
 
-    [Inject]
-    private ExtraDryJavascriptModule Module { get; set; } = null!;
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "code-block", CssClass);
 
     private void FormatLines(List<string> lines)
     {
@@ -88,6 +105,9 @@ public partial class CodeBlock : ComponentBase {
         static int LeadingSpaces(string s) => s.TakeWhile(e => char.IsWhiteSpace(e)).Count();
     }
 
+    /// <summary>
+    /// Allows more than just static text inside the code block.
+    /// </summary>
     [SuppressMessage("Usage", "BL0006:Do not use RenderTree types", Justification = "Alternative is to write JavaScript post-processing step.")]
     private void RenderChildContentToBody()
     {
@@ -100,12 +120,6 @@ public partial class CodeBlock : ComponentBase {
         Body = string.Join("", frames.Array
             .Where(e => e.FrameType == RenderTreeFrameType.Text || e.FrameType == RenderTreeFrameType.Markup)
             .Select(e => e.TextContent));
-        //foreach(var frame in frames.Array) {
-        //    Console.WriteLine(frame.FrameType);
-        //    if(frame.FrameType == RenderTreeFrameType.Text || frame.FrameType == RenderTreeFrameType.Markup) {
-        //        Console.WriteLine(frame.TextContent);
-        //    }
-        //}
     }
 
     private string OldBody { get; set; } = string.Empty;
@@ -113,6 +127,9 @@ public partial class CodeBlock : ComponentBase {
     private string Body { get; set; } = string.Empty;
 
     private MarkupString MarkupBody => (MarkupString)Body;
+
+    [Inject]
+    private ExtraDryJavascriptModule Module { get; set; } = null!;
 
     private static int instanceCount = 0;
 

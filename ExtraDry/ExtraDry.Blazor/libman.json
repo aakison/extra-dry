@@ -16,7 +16,7 @@
       "destination": "wwwroot/lib/highlightjs/",
       "files": [
         "highlight.min.js",
-        "styles/base16/solarized-light.min.css",
+        "styles/base16/solarized-light.min.css"
       ]
     }
   ]
