@@ -1,10 +1,7 @@
-﻿using System.Linq;
-using System.Text.Json.Serialization;
-
-namespace ExtraDry.Core;
+﻿namespace ExtraDry.Core;
 
 /// <summary>
-/// Represents a generic payload for returning lists of items from an API that need to be fragmented for performance.
+/// Represents a generic payload for returning lists of items from an API that need to be paged for performance.
 /// </summary>
 public class PagedCollection<T> : FilteredCollection<T> {
 
