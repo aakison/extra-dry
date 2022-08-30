@@ -10,7 +10,7 @@ div {
         height: $height+$padding;
     }
 
-    img {
+    ::deep i, ::deep img {
         border-radius: 0.5*$height;
         margin-right: $padding;
         max-height: $height;
