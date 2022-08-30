@@ -41,18 +41,15 @@ public partial class Icon : ComponentBase, IExtraDryComponent {
 
     private string? ImagePath {
         get {
-            if(Key.Contains("/")) {
+            if(Key.Contains('/')) {
                 return Key;
             }
-            else if(ThemeInfo == null) {
+            else if(ThemeInfo == null || !ThemeInfo.Icons.Any()) {
                 NoThemeError();
                 return $"/img/themeless/{Key}.svg";
             }
             else if(ThemeInfo.Icons.ContainsKey(Key)) {
                 return ThemeInfo.Icons[Key].ImagePath;
-            }
-            else if(!string.IsNullOrWhiteSpace(ThemeInfo.IconTemplate)) {
-                return string.Format(ThemeInfo.IconTemplate, Key);
             }
             else {
                 Logger.LogWarning("Icon '{icon}' not registered, add an entry for icon to the `Icons` attribute of the `Theme` component.", Key);

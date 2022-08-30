@@ -145,7 +145,7 @@ namespace ExtraDry.Blazor {
             }
         }
 
-        [Control(ControlType.RadioButtons, IconTemplate = "_content/ExtraDry.Blazor/img/layout-{0}.png")]
+        [Control(ControlType.RadioButtons, Icon = "_content/ExtraDry.Blazor/img/layout-{0}.png")]
         [Display(Name = "Layout")]
         public SectionLayout CurrentSectionLayout {
             get => CurrentSection?.Layout ?? SectionLayout.Single;
@@ -157,7 +157,7 @@ namespace ExtraDry.Blazor {
             }
         }
 
-        [Control(ControlType.RadioButtons, CaptionTemplate = "", IconTemplate = "_content/ExtraDry.Blazor/img/alignment-{0}.png")]
+        [Control(ControlType.RadioButtons, CaptionTemplate = "", Icon = "_content/ExtraDry.Blazor/img/alignment-{0}.png")]
         [Display(Name = "Alignment")]
         public ContentAlignment CurrentContainerAlignment {
             get => CurrentContainer?.Alignment ?? ContentAlignment.TopLeft;
@@ -169,7 +169,7 @@ namespace ExtraDry.Blazor {
             }
         }
 
-        [Control(ControlType.RadioButtons, IconTemplate = "_content/ExtraDry.Blazor/img/padding-{0}.png")]
+        [Control(ControlType.RadioButtons, Icon = "_content/ExtraDry.Blazor/img/padding-{0}.png")]
         [Display(Name = "Padding")]
         public ContentPadding CurrentContainerPadding {
             get => CurrentContainer?.Padding ?? ContentPadding.None;

@@ -36,8 +36,8 @@
                     var valueClassName = value.Key.ToString().ToLower();
                     var selectedClassName = selected ? $"selected {valueClassName}" : $"{valueClassName}";
                     <button class="@selectedClassName" @onclick="@(e => HandleClick(value.Key))">
-                        @if(!string.IsNullOrWhiteSpace(Property.IconTemplate)) {
-                            var source = string.Format(Property.IconTemplate, valueClassName);
+                        @if(!string.IsNullOrWhiteSpace(Property.Icon)) {
+                            var source = string.Format(Property.Icon, valueClassName);
                             <img class="@valueClassName" src="@source" />
                         }
                         @if(!string.IsNullOrWhiteSpace(Property.CaptionTemplate)) {

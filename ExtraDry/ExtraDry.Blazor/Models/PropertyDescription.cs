@@ -114,7 +114,7 @@ public class PropertyDescription {
 
     public ControlType ControlType => Control?.Type ?? ControlType.BestMatch;
 
-    public string IconTemplate => Control?.IconTemplate ?? "";
+    public string Icon => Control?.Icon ?? "";
 
     public string CaptionTemplate => Control?.CaptionTemplate ?? "";
 

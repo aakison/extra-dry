@@ -12,20 +12,8 @@
     [Parameter]
     public IEnumerable<IconInfo> Icons { get; set; }
 
-    [Parameter]
-    public string IconTemplate { 
-        get => ThemeInfo.IconTemplate;
-        set => ThemeInfo.IconTemplate = value;
-    }
-
     [CascadingParameter]
     public ThemeInfo ThemeInfo { get; set; } = new();
-
-    [Parameter]
-    public string IconPrefix {
-        get => ThemeInfo.IconTemplate;
-        set => ThemeInfo.IconTemplate = value;
-    }
 
     [Parameter]
     public Type ErrorComponent {
@@ -36,7 +24,7 @@
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        ThemeInfo.Icons = Icons.ToDictionary(e => e.Key, e => e, StringComparer.InvariantCultureIgnoreCase);
+        ThemeInfo.Icons = Icons?.ToDictionary(e => e.Key, e => e, StringComparer.InvariantCultureIgnoreCase) ?? new();
     }
 
 }
