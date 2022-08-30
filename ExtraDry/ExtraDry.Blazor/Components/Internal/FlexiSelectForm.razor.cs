@@ -2,6 +2,10 @@
 
 namespace ExtraDry.Blazor.Internal;
 
+/// <summary>
+/// The internal form for the Flexi-Select component. 
+/// Do not use directly.
+/// </summary>
 public partial class FlexiSelectForm<TItem> : ComponentBase, IExtraDryComponent {
 
     /// <inheritdoc cref="IExtraDryComponent.CssClass" />
@@ -86,34 +90,36 @@ public partial class FlexiSelectForm<TItem> : ComponentBase, IExtraDryComponent 
                     var displayItem = new DisplayItemViewModel(++id, item);
                     ApplyFilter(displayItem);
                     DisplayData.Add(displayItem);
+                    if(MultiSelect && (Values?.Contains(item) ?? false)) {
+                        displayItem.Selected = true;
+                    }
+                    if(!MultiSelect && item.Equals(Value)) {
+                        displayItem.Selected = true;
+                    }
                 }
             }
         }
-        if(Value != null) {
-            var selected = DisplayData.FirstOrDefault(e => Value.Equals(e.Source));
-            if(selected != null) {
-                selected.Selected = true;
+        if(MultiSelect) {
+            if(Value != null) {
+                Value = default;
+                await ValueChanged.InvokeAsync(Value);
+            }
+            if(Values == null) {
+                Values = new();
+                foreach(var item in DisplayData) {
+                    item.Selected = false;
+                }
+                await ValuesChanged.InvokeAsync(Values);
             }
         }
-        if(MultiSelect && Values == null) {
-            // Switching to Multi-select
-            Value = default;
-            await ValueChanged.InvokeAsync(Value);
-            Values = new List<TItem>();
-            foreach(var item in DisplayData) {
-                item.Selected = false;
+        else {
+            if(Values != null) {
+                Values = null;
+                foreach(var item in DisplayData) {
+                    item.Selected = false;
+                }
+                await ValuesChanged.InvokeAsync(Values);
             }
-            await ValuesChanged.InvokeAsync(Values);
-        }
-        else if(!MultiSelect && Values != null) {
-            // Switching to Single-select
-            Value = default;
-            await ValueChanged.InvokeAsync(Value);
-            Values = null;
-            foreach(var item in DisplayData) {
-                item.Selected = false;
-            }
-            await ValuesChanged.InvokeAsync(Values);
         }
     }
 
