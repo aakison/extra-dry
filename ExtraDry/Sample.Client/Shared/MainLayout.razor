@@ -41,12 +41,10 @@
     public string ArticleClass => ViewExpanded ? "expanded" : "compressed";
 
     public IconInfo[] Icons = new IconInfo[] {
-        // Inherited
-        // TODO: Move to ExtraDry.Blazor as fallback, allow users to override.
-        new IconInfo("select", "/_content/ExtraDry.Blazor/img/glyphs/chevron-down-regular.svg", "Select", "glyph"),
+        // Inherited - Can override default icons.
+        new IconInfo("search", "/img/glyphs/magnifying-glass-light.svg", "Search", "glyph"),
 
         // Body glyphs
-        new IconInfo("search", "/img/glyphs/magnifying-glass-light.svg", "Search", "glyph"),
         new IconInfo("register", "/img/glyphs/registered-light.svg", "Register", "glyph"),
         new IconInfo("contents", "/img/glyphs/file-lines-light.svg", "Contents", "glyph"),
         new IconInfo("companies", "/img/glyphs/buildings-light.svg", "Companies", "glyph"),

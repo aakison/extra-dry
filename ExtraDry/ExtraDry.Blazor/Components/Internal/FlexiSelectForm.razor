@@ -9,7 +9,9 @@
                     <div class="filter">
                         <input @bind-value="Filter" @bind-value:event="oninput" placeholder="@FilterPlaceholder" />
                         <Icon Key="search" />
-                        <button class="unobtrusive button clearFilter" type="button" @onclick="ClearFilter">&times;</button>
+                        <button class="unobtrusive button clearFilter" type="button" @onclick="ClearFilter">
+                            <Icon Key="clear" />
+                        </button>
                     </div>
                 }
                 @if(MultiSelect) {

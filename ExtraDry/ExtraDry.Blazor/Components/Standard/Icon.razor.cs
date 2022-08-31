@@ -35,28 +35,36 @@ public partial class Icon : ComponentBase, IExtraDryComponent {
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass, IconClass);
 
-    private string IconClass => ThemeInfo?.Icons.ContainsKey(Key) ?? false ? ThemeInfo.Icons[Key].CssClass : "";
+    private string IconClass => IconInfo.CssClass;
 
-    private string? IconAlternateText => Alt ?? (ThemeInfo?.Icons.ContainsKey(Key) ?? false ? ThemeInfo.Icons[Key].AlternateText : "");
+    private string? IconAlternateText => Alt ?? IconInfo.AlternateText;
 
-    private string? ImagePath {
+    private IconInfo IconInfo {
         get {
             if(Key.Contains('/')) {
-                return Key;
+                return new IconInfo(Key, "image") { ImagePath = Key, AlternateText = "" };
             }
-            else if(ThemeInfo == null || !ThemeInfo.Icons.Any()) {
-                NoThemeError();
-                return $"/img/themeless/{Key}.svg";
+            else if(ThemeInfo?.Icons?.ContainsKey(Key) ?? false) {
+                return ThemeInfo.Icons[Key];
             }
-            else if(ThemeInfo.Icons.ContainsKey(Key)) {
-                return ThemeInfo.Icons[Key].ImagePath;
+            else if(fallbackIcons.ContainsKey(Key)) {
+                return fallbackIcons[Key];
             }
             else {
-                Logger.LogWarning("Icon '{icon}' not registered, add an entry for icon to the `Icons` attribute of the `Theme` component.", Key);
-                return $"/img/no-icon-for-{Key}.svg";
+                if(ThemeInfo == null) {
+                    NoThemeError();
+                    return new IconInfo(Key, "no-theme") { ImagePath = $"/img/themeless/{Key}.svg", AlternateText = "" };
+                }
+                else {
+                    Logger.LogWarning("Icon '{icon}' not registered, add an entry for icon to the `Icons` attribute of the `Theme` component.", Key);
+                    return new IconInfo(Key, "no-key") { ImagePath = $"/img/no-icon-for-{Key}.svg", AlternateText = "" };
+                }
             }
         }
     }
+
+    private string? ImagePath => IconInfo.ImagePath;
+
     private void NoThemeError()
     {
         if(noThemeErrorIssued) {
@@ -69,6 +77,12 @@ public partial class Icon : ComponentBase, IExtraDryComponent {
     [Inject]
     private ILogger<Icon> Logger { get; set; } = null!;
 
+    private static string glyphPath = "/_content/ExtraDry.Blazor/img/glyphs";
+
+    private static Dictionary<string, IconInfo> fallbackIcons = (new IconInfo[] {
+            new IconInfo("search", $"{glyphPath}/magnifying-glass-regular.svg", "Search", "glyph"),
+            new IconInfo("select", $"{glyphPath}/chevron-down-regular.svg", "Select", "glyph"),
+            new IconInfo("clear", $"{glyphPath}/xmark-regular.svg", "Clear", "glyph"),
+        }).ToDictionary(e => e.Key, e => e);
 
 }
-
