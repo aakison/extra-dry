@@ -27,13 +27,12 @@ form {
                 }
             }
 
-            ::deep img {
+            ::deep > img {
                 width: $iconHeight;
                 height: $iconHeight;
                 position: absolute;
                 left: 2 * $padding;
                 top: 2 * $padding;
-                //filter: ;//filterToColor($grey);
                 font-size: $iconHeight;
             }
 
@@ -43,6 +42,8 @@ form {
                 top: $padding + 1px;
                 font-size: $iconHeight + $padding;
                 line-height: $iconHeight + $padding;
+                display: flex;
+                align-items: center;
             }
         }
 
