@@ -1,0 +1,120 @@
+﻿@page "/components/standard/mini-dialog"
+
+<section>
+    <h2>MiniDialog</h2>
+    <p>
+        The <code>&lt;MiniDialog&gt;</code> component is an component for hosting small dialogs, used by FlexiSelect and other components..
+    </p>
+</section>
+<section>
+    <h3>Basic Usage</h3>
+    <CodeBlock Lang="blazor">
+        &lt;MiniDialog AnimationDuration="@AnimationDuration" ShowTitle="@ShowTitle" Title="@Title" ShowSubmitButton="@ShowSubmit" SubmitButtonCaption="@SubmitCaption" LoseFocusAction="@LoseFocusAction" >
+            &lt;div>Content&lt;/div>
+        &lt;/MiniDialog>
+    </CodeBlock>
+    <div>
+        <button @onclick="DoClick">Click to Show/Hide</button>
+        <MiniDialog @ref="TheDialog" AnimationDuration="@AnimationDuration" ShowTitle="@ShowTitle" Title="@Title" ShowSubmitButton="@ShowSubmit" SubmitButtonCaption="@SubmitCaption" LoseFocusAction="@LoseFocusAction" >
+            <div>Content</div>
+        </MiniDialog>
+    </div>
+    <br />
+    <h5>Try It Out</h5>
+    <form class="tryitout" onsubmit="return false;">
+        <div>
+            <label>AnimationDuration:</label>
+            <input type="number" @bind="AnimationDuration" />
+        </div>
+        <div>
+            <label>ShowTitle:</label>
+            <input type="checkbox" @bind="ShowTitle" />
+        </div>
+        <div>
+            <label>Title:</label>
+            <input type="text" @bind="Title" />
+        </div>
+        <div>
+            <label>ShowSubmitButton:</label>
+            <input type="checkbox" @bind="ShowSubmit" />
+        </div>
+        <div>
+            <label>SubmitCaption:</label>
+            <input type="text" @bind="SubmitCaption" />
+        </div>
+        <div>
+            <label>LoseFocusAction:</label>
+            <select @bind="LoseFocusAction">
+                <option value="@(MiniDialogAction.Cancel)">MiniDialogAction.Cancel</option>
+                <option value="@(MiniDialogAction.Disabled)">MiniDialogAction.Disabled</option>
+                <option value="@(MiniDialogAction.Save)">MiniDialogAction.Save</option>
+                <option value="@(MiniDialogAction.SaveAndClose)">MiniDialogAction.SaveAndClose</option>
+            </select>
+        </div>
+    </form>
+</section>
+<section>
+    <h3>Configuration</h3>
+    <p>
+        This is a standalone component, no configuration is required.
+    </p>
+    <h5>Semantic Styles</h5>
+    The Mini-Dialog is structured with the following HTML and styles.
+    <CodeBlock>
+        &lt;section class="mini-dialog curtain">
+            &lt;div class="mini-dialog form" >
+                &lt;header>
+                    &lt;div class="title">
+                        &lt;h3>...&lt;/h3>
+                    &lt;/div>
+                    &lt;div class="item commands">
+                        &lt;button class="cancel unobtrusive">...&lt;/button>
+                    &lt;/div>
+                &lt;/header>
+                &lt;div class="content">
+                    ...
+                &lt;/div>
+                &lt;footer>
+                    &lt;div class="form commands">
+                        &lt;button class="ok primary">...&lt;/button>
+                    &lt;/div>
+                &lt;/footer>
+            &lt;/div>
+        &lt;/section>
+    </CodeBlock>
+</section>
+<section>
+    <h3>Tips &amp; Practices</h3>
+    <ul>
+        <li>CSS styles are available for skinning and should be mobile responsive.  Use media queries and enclosing div to display mobile and desktop differently.</li>
+        <li>AnimationDuration is a delay for showing the CSS classes 'showing' and 'hiding', use CSS to provide appropriate animations during this window.</li>
+    </ul>
+</section>
+<section>
+    <h3>See Also</h3>
+    <ul>
+        <li><a href="/components/standard/flexi-select"><code>FlexiSelect</code> Component</a></li>
+        <li><a href="/components/dry/dry-menu"><code>DryMenu</code> Component</a></li>
+    </ul>
+</section>
+
+@code {
+    public int AnimationDuration { get; set; } = 1000;
+
+    public bool ShowTitle { get; set; } = true;
+
+    public string Title { get; set; } = "The Title";
+
+    public bool ShowSubmit { get; set; } = true;
+
+    public string SubmitCaption { get; set; } = "Close";
+
+    public MiniDialog TheDialog { get; set; }
+
+    public MiniDialogAction LoseFocusAction { get; set; } = MiniDialogAction.Cancel;
+
+    private async void DoClick(MouseEventArgs _)
+    {
+        await TheDialog.ToggleAsync();
+    }
+}

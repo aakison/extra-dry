@@ -19,6 +19,9 @@ public class StandardComponentsMenu {
     [Navigation(Icon = "code-block")]
     public string CodeBlock => $"/components/standard/code-block";
 
+    [Navigation(Icon = "mini-dialog")]
+    public string MiniDialog => $"/components/standard/mini-dialog";
+
     [Navigation(Icon = "flexi-select")]
     public string FlexiSelect => $"/components/standard/flexi-select";
 
