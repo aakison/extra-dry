@@ -42,11 +42,11 @@ public static class ServiceCollectionExtensions {
             return service;
         });
         services.AddScoped(e => {
-            IListService<T> upcasted = e.GetService<ListService<FilteredCollection<T>, T>>()!;
+            IListService<T> upcasted = e.GetRequiredService<ListService<FilteredCollection<T>, T>>();
             return upcasted;
         });
         services.AddScoped(e => {
-            IOptionProvider<T> upcasted = e.GetService<ListService<FilteredCollection<T>, T>>()!;
+            IOptionProvider<T> upcasted = e.GetRequiredService<ListService<FilteredCollection<T>, T>>();
             return upcasted;
         });
         return services;
@@ -65,11 +65,11 @@ public static class ServiceCollectionExtensions {
             return service;
         });
         services.AddScoped(e => {
-            IListService<T> upcasted = e.GetService<ListService<PagedCollection<T>, T>>()!;
+            IListService<T> upcasted = e.GetRequiredService<ListService<PagedCollection<T>, T>>();
             return upcasted;
         });
         services.AddScoped(e => {
-            IOptionProvider<T> upcasted = e.GetService<ListService<PagedCollection<T>, T>>()!;
+            IOptionProvider<T> upcasted = e.GetRequiredService<ListService<PagedCollection<T>, T>>();
             return upcasted;
         });
         return services;
