@@ -90,6 +90,10 @@ public class DataConverter {
         return displayAttribute?.Name ?? member.Name;
     }
 
+    /// <summary>
+    /// Works like the normal string.join, except any args that are null or only whitespace are ignored.
+    /// Convienent for use when joining lists of things that might have some optional or missing items, e.g. CSS classes.
+    /// </summary>
     public static string JoinNonEmpty(string separator, params string[] args)
     {
         return string.Join(separator, args.Where(e => !string.IsNullOrWhiteSpace(e)));
