@@ -62,7 +62,7 @@ public class PagingController {
     /// <param name="skip">The number of records to skip before returning results.</param>
     /// <param name="take">The requested number of records to take.</param>
     /// <param name="token">The continuation token from the previous response.</param>
-    [HttpGet("sample-data/page-cars"), Produces("application/json")]
+    [HttpGet("api/sample-data/page-cars"), Produces("application/json")]
     [AllowAnonymous]
     [SuppressMessage("Security", "DRY1106:HttpVerbs methods should not take int values", Justification = "Not an ID")]
     public async Task<PagedCollection<Automobile>> ListAsync([FromQuery] int skip, int take, string? token)

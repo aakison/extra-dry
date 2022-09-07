@@ -31,7 +31,7 @@ public class SortingController {
     /// </summary>
     /// <param name="sort">If the request would like sorted results, the name of the property to sort by.</param>
     /// <param name="ascending">Indicates if the results are requested in ascending order by Sort.</param>
-    [HttpGet("sample-data/sort-cars"), Produces("application/json")]
+    [HttpGet("api/sample-data/sort-cars"), Produces("application/json")]
     [AllowAnonymous]
     public async Task<FilteredCollection<Automobile>> ListFilteredAsync([FromQuery] SortField? sort, bool ascending = false)
     {
