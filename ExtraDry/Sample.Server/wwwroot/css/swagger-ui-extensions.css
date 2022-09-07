@@ -710,3 +710,38 @@ body {
     margin-top: 0;
     margin-bottom: 10px;
 }
+
+/*
+    Make 'Example Value' and 'Schema' appear more tab-like.  Colors are matched to panels which are stupid-hard to change.
+    No semantic info on tabs, need to use nth-child positions like a pleb.
+*/
+div.model-example ul.tab {
+    margin-bottom: 0;
+}
+
+  div.model-example ul.tab li.tabitem {
+    margin-left: 3px;
+    padding-right: 0;
+  }
+
+    .swagger-ui .tab li:first-of-type:after {
+        visibility: hidden;
+    }
+
+    div.model-example ul.tab li.tabitem button {
+      padding: 8px;
+      margin-bottom: 0;
+      border-radius: 4px 4px 0 0;
+      width: 120px;
+      text-align: center;
+    }
+
+    div.model-example ul.tab li.tabitem:nth-child(1) button {
+      background-color: #333333;
+      color: white;
+    }
+
+    div.model-example ul.tab li.tabitem:nth-child(2) button {
+      background-color: #dfe0e1;
+      color: #3b4151;
+    }
