@@ -30,7 +30,7 @@ namespace ExtraDry.Swashbuckle.Instructions;
 ///   * Use of HTTP verbs to indicate common actions on entities, i.e.PUT/GET/POST/DELETE for create/retrieve/update/delete.
 ///   * Safe/non-destructive operations for data retrieval
 ///   * Idempotent changes of data - if you send the same change request twice, the final state is the same
-///   * However, the APIs typically don't use 'HATEOAS' and instead uses OpenAPI documentation for discoverability
+///   * APIs use OpenAPI documentation for discoverability (as opposed to HATEOAS defined in REST Maturity Level 3).
 ///   
 /// ### Cross-Cutting Design
 /// In order to make these APIs more approachable, endpoints share some common interface details.  For example, sorting of results from collections of entities is always done with the same query request format, and always produces the same metadata container in the result.These design styles cut-across the entire system and are documented here with these instructions.When you're using other APIs, they will always link back to these instructions for review when needed.
