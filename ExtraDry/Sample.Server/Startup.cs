@@ -128,6 +128,8 @@ namespace Sample.Server {
             }
 
             app.UseHttpsRedirection();
+            app.UseBlazorFrameworkFiles();
+            app.UseStaticFiles();
             app.UseSwagger();
             app.UseSwaggerUI(swagger => {
                 swagger.AddExtraDry();
@@ -137,8 +139,6 @@ namespace Sample.Server {
                 swagger.DocumentTitle = "Sample Blazor.ExtraDry APIs";
                 swagger.EnableDeepLinking();
             });
-            app.UseBlazorFrameworkFiles();
-            app.UseStaticFiles();
 
             app.UseRouting();
             app.UseAuthentication();

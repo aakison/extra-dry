@@ -13,7 +13,7 @@
   --patch-accent: #CC7D00;
   --patch-accent-light: #FFF5E6; 
 
-  --topbar: #253146;
+  --topbar: #fed434;
   --hyperlink-primary: #C25100;
   --hyperlink-primary-hover: #8F3C00;
   --hyperlink-secondary: #4990e2;
@@ -44,9 +44,9 @@ body {
 
 /* Logo */
 .swagger-ui img {
-  content: url(/img/fmi-logo.svg);
-  margin: 0;
-  height: 48px;
+  content: url(/img/yellowjacket-logo.svg);
+  margin: 8px 0;
+  height: 32px;
 }
 
 
@@ -104,6 +104,7 @@ body {
   .swagger-ui .topbar .download-url-wrapper .select-label span {
     font-size: 12px;
     white-space: nowrap;
+    color: var(--button-secondary);
   }
   
     
