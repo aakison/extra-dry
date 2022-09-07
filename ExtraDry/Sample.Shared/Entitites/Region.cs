@@ -32,6 +32,7 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, INamedSubject, IV
     /// </summary>
     [Required, StringLength(32)]
     [Display(ShortName = "Code")]
+    [Filter]
     public string Code { get; set; } = string.Empty;
 
     /// <summary>
@@ -39,6 +40,7 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, INamedSubject, IV
     /// </summary>
     [Required, StringLength(32)]
     [Display(ShortName = "Title")]
+    [Filter]
     public string Title { get; set; } = string.Empty;
 
     /// <summary>

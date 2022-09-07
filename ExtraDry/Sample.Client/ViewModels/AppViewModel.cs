@@ -22,6 +22,11 @@ public class ModulesViewModel
         Subtitle = "Administative functionality for a sample app.  With additional information to break the UI and test ellipsis based word wrapping.")]
     public string CompanyModule => "/companies";
 
+    [Navigation(Title = "Integration APIs", 
+        Icon = "api-module",
+        Subtitle = "A set of APIs for programmatic integration with other applications.")]
+    public string SwaggerModule => "/swagger";
+
     public ComponentsModule Components { get; } = new();
 
     public CompaniesModule Companies { get; } = new();
