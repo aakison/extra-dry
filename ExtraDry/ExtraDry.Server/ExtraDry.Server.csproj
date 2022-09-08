@@ -20,7 +20,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.9.0" />
-		<PackageReference Include="ExtraDry.Analyzers" Version="0.3.18-alpha">
+		<PackageReference Include="ExtraDry.Analyzers" Version="0.3.19-alpha">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>

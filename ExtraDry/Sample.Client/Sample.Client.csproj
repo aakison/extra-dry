@@ -27,7 +27,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="BuildWebCompiler2022" Version="1.14.8" />
-		<PackageReference Include="ExtraDry.Analyzers" Version="0.3.18-alpha">
+		<PackageReference Include="ExtraDry.Analyzers" Version="0.3.19-alpha">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
