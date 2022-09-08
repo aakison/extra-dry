@@ -13,7 +13,7 @@ public class SignatureImpliesStatusCodes : IOperationFilter {
     /// </summary>
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
-        var schema = context.SchemaGenerator.GenerateSchema(typeof(ProblemDetails), context.SchemaRepository);
+        var schema = context.SchemaGenerator.GenerateSchema(typeof(ExtraDry.Core.Models.ProblemDetails), context.SchemaRepository);
 
         var attributes = context.MethodInfo.GetCustomAttributes(true) ?? Array.Empty<object>();
 
@@ -97,9 +97,10 @@ public class SignatureImpliesStatusCodes : IOperationFilter {
         }";
 
     private const string json404 = @"{
-            ""statusCode"": 404,
-            ""description"": ""The requested resource was not found, no entity with indicatd UUID exists."",
-            ""display"": ""Not found, please refresh."",
-            ""displayCode"": ""0x0F0092C1""
+            ""type"": ""t"",
+            ""title"": ""title"", 
+            ""status"": 404,
+            ""detail"": ""The requested resource was not found, no entity with indicated UUID exists."",
+            ""instance"": ""localhost""
         }";
 }
