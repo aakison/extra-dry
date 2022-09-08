@@ -66,7 +66,7 @@ public class BlobController : ControllerBase {
     }
 
     /// <summary>
-    /// "Retrieve a specific blob's information."
+    /// Retrieve a specific blob's information.
     /// </summary>
     /// <param name="uuid"></param>
     /// <returns></returns>
