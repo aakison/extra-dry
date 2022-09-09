@@ -11448,12 +11448,12 @@ div.error div.problemDetails {
 div.error div.problemDetails div.errorImagePlaceholder {
   position: absolute;
   z-index: 10;
+  top: -50px;
 }
 div.error div.problemDetails div.errorImagePlaceholder::before {
   content: url("../img/error-generic.svg");
 }
 div.error div.problemDetails dl {
-  position: absolute;
   z-index: 0;
   margin-left: 50px;
   margin-top: 50px;

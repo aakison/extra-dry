@@ -41,9 +41,14 @@ public class ComponentsModule {
     [Navigation(Icon = "companies")]
     public string DryComponents => "/components/dry/dry-mini-card";
 
+    [Navigation(Icon = "companies")]
+    public string SpecialComponents => "/components/special/theme";
+
     public StandardComponentsMenu Standard { get; } = new();
 
     public DryComponentsMenu Dry { get; } = new();
+
+    public SpecialComponentsMenu Special { get; } = new();
 
 }
 

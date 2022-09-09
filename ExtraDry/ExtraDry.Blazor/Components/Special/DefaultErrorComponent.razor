@@ -1,7 +1,7 @@
 @namespace ExtraDry.Blazor
 @using ExtraDry.Core.Models
 
-<div class="error @ErrorCss">
+<div class="@CssClasses" @attributes="@UnmatchedAttributes">
     <h3>Error Occurred</h3>
 
     @if(ProblemDetails != null) {
@@ -46,17 +46,3 @@
         </div>
     }
 </div>
-
-@code {
-
-    #nullable enable
-
-    [Parameter]
-    public Exception? Exception { get; set; }
-
-    [Parameter]
-    public ProblemDetails? ProblemDetails { get; set; }
-
-    private string ErrorCss => ProblemDetails?.Status == null ? "errorXxx" : $"error{ProblemDetails.Status}";
-
-}

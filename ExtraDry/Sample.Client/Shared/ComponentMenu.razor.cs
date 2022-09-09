@@ -1,8 +1,6 @@
 #nullable enable
 
-using ExtraDry.Core;
 using Microsoft.AspNetCore.Components;
-using System;
 
 namespace Sample.Client.Shared;
 
@@ -31,6 +29,9 @@ public sealed partial class ComponentMenu : ComponentBase, IDisposable {
         }
         else if(location.Contains("components/dry", StringComparison.OrdinalIgnoreCase)) {
             CurrentMenu = new DryComponentsMenu();
+        }
+        else if(location.Contains("components/special", StringComparison.OrdinalIgnoreCase)) {
+            CurrentMenu = new SpecialComponentsMenu();
         }
         else {
             CurrentMenu = new MainMenu();
