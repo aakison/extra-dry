@@ -1,7 +1,4 @@
-﻿#nullable enable
-
-using ExtraDry.Core.Models;
-using Microsoft.Extensions.Logging;
+﻿using ExtraDry.Core.Models;
 using System.Net.Http.Json;
 
 namespace ExtraDry.Blazor.Extensions;

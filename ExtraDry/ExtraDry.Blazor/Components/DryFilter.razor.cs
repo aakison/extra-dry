@@ -1,14 +1,4 @@
-﻿#nullable enable
-
-using ExtraDry.Blazor.Internal;
-using ExtraDry.Core;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace ExtraDry.Blazor;
+﻿namespace ExtraDry.Blazor;
 
 public partial class DryFilter<TItem> : ComponentBase {
 

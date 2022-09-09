@@ -1,17 +1,17 @@
-﻿using System;
+﻿#nullable disable
 
-namespace ExtraDry.Blazor.Components.Internal {
-    public class Grouping {
+namespace ExtraDry.Blazor.Components.Internal;
 
-        public string GroupingColumn { get; set; }
+public class Grouping {
 
-        public int GroupingDepth { get; set; }
+    public string GroupingColumn { get; set; }
 
-        public bool IsGroup { get; set; }
+    public int GroupingDepth { get; set; }
 
-        public bool IsExpanded { get; set; }
+    public bool IsGroup { get; set; }
 
-        public Action Toggle { get; set; }
+    public bool IsExpanded { get; set; }
 
-    }
+    public Action Toggle { get; set; }
+
 }

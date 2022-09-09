@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace ExtraDry.Blazor.Components.Internal;
+﻿namespace ExtraDry.Blazor.Components.Internal;
 
 /// <summary>
 /// Trivial extension to the ErrorBoundary to allow access to the CurrentException.

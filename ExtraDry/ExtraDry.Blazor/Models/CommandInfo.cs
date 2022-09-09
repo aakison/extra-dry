@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System.Collections;
+﻿using System.Collections;
 using System.Reflection;
 using System.Text.RegularExpressions;
 

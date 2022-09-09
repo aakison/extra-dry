@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace ExtraDry.Blazor;
+﻿namespace ExtraDry.Blazor;
 
 public class ThemeInfo {
 

@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using ExtraDry.Blazor.Extensions;
+﻿using ExtraDry.Blazor.Extensions;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;

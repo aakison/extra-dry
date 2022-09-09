@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace ExtraDry.Blazor.Components.Internal;
+﻿namespace ExtraDry.Blazor.Components.Internal;
 
 internal class ItemComparer<T> : IComparer<ListItemInfo<T>> {
 

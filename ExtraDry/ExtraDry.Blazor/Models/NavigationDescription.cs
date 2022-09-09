@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace ExtraDry.Blazor.Models;
+﻿namespace ExtraDry.Blazor.Models;
 
 /// <summary>
 /// Represents a property that contains a link or a method that performs a navigation.

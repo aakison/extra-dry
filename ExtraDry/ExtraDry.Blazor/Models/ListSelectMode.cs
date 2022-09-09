@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace ExtraDry.Blazor;
+﻿namespace ExtraDry.Blazor;
 
 /// <summary>
 /// For a dry table, determines the action on a row selection.

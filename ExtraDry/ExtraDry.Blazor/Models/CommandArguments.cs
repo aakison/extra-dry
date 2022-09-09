@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace ExtraDry.Blazor.Models;
+﻿namespace ExtraDry.Blazor.Models;
 
 /// <summary>
 /// The arguments that are sent to a `CommandInfo` specified command.

@@ -1,7 +1,4 @@
-﻿#nullable enable
-
-
-namespace ExtraDry.Blazor;
+﻿namespace ExtraDry.Blazor;
 
 public partial class DryFilterSelect : ComponentBase {
 

@@ -1,15 +1,13 @@
-﻿#nullable enable
+﻿namespace ExtraDry.Blazor.Internal;
 
-namespace ExtraDry.Blazor.Internal {
-    internal enum FormGroupType {
+internal enum FormGroupType {
 
-        Properties,
+    Properties,
 
-        Object,
+    Object,
 
-        Element,
+    Element,
 
-        Commands,
+    Commands,
 
-    }
 }

@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace ExtraDry.Blazor.Models;
+﻿namespace ExtraDry.Blazor.Models;
 
 /// <summary>
 /// Represents a set of common component functionality for the implementation

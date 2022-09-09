@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace ExtraDry.Blazor.Internal;
+﻿namespace ExtraDry.Blazor.Internal;
 
 /// <summary>
 /// Represents a logical group of lines inside a form.

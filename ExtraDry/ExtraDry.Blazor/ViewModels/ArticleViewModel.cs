@@ -1,10 +1,12 @@
-﻿namespace ExtraDry.Blazor {
+﻿#nullable disable
 
-    public class ArticleViewModel {
+namespace ExtraDry.Blazor;
 
-        public string Name { get; set; }
 
-        public string Path { get; set; }
+public class ArticleViewModel {
 
-    }
+    public string Name { get; set; }
+
+    public string Path { get; set; }
+
 }

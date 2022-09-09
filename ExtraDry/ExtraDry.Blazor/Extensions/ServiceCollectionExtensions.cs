@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace ExtraDry.Blazor;
 

@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace ExtraDry.Blazor.Internal;
+﻿namespace ExtraDry.Blazor.Internal;
 
 /// <summary>
 /// The internal form for the Flexi-Select component. 

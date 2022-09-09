@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace ExtraDry.Blazor;
+﻿namespace ExtraDry.Blazor;
 
 /// <summary>
 /// Additional abstraction of JavaScript modules for use by Extra DRY, use instead of IJSRuntime.

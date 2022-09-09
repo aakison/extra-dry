@@ -1,9 +1,5 @@
-﻿#nullable enable
-
-using ExtraDry.Blazor.Components.Internal;
-using ExtraDry.Blazor.Internal;
+﻿using ExtraDry.Blazor.Components.Internal;
 using Microsoft.AspNetCore.Components.Web.Virtualization;
-using Microsoft.Extensions.Logging;
 
 namespace ExtraDry.Blazor;
 

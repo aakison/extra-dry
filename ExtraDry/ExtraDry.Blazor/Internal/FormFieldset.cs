@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace ExtraDry.Blazor.Internal;
+﻿namespace ExtraDry.Blazor.Internal;
 
 /// <summary>
 /// Represents an HTML fieldset, visually boxing groups of input controls.

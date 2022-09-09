@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using Microsoft.AspNetCore.Components.Web.Virtualization;
+﻿using Microsoft.AspNetCore.Components.Web.Virtualization;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text.Json;

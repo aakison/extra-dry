@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using ExtraDry.Blazor.Components.Internal;
+﻿using ExtraDry.Blazor.Components.Internal;
 
 namespace ExtraDry.Blazor;
 

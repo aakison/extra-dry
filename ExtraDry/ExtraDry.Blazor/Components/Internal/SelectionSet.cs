@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace ExtraDry.Blazor.Components.Internal;
+﻿namespace ExtraDry.Blazor.Components.Internal;
 
 /// <summary>
 /// Represents a list of items that can be selected, supporting both single-select and multi-select lists.
