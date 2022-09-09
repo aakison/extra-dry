@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Server.Tests.Rules;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace ExtraDry.Server.Tests.Rules;
 
 public class RuleEngineDeleteTests {
 
@@ -227,6 +229,7 @@ public class RuleEngineDeleteTests {
         public int UnRuled { get; set; } = 3;
     }
 
+    [SuppressMessage("Usage", "DRY1305:SoftDelete on classes should use nameof for property names.", Justification = "Required for testing.")]
     [SoftDeleteRule("BadName", false, true)]
     public class BadPropertyDeletable
     {

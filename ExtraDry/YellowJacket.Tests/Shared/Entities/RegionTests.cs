@@ -107,7 +107,7 @@ public class RegionTests {
         property.SetValue(request, propertyValue);
         var json = JsonSerializer.Serialize(request);
 
-        Assert.DoesNotContain(propertyValue.ToString(), json);
+        Assert.DoesNotContain(propertyValue.ToString()!, json);
     }
 
     public static Region ValidRegion => new() {

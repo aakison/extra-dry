@@ -70,12 +70,12 @@ public partial class DryMultipleSelect<T> : ComponentBase {
                 Selected = selected,
             });
         }
-        Logger.LogDebug($"DryMultiSelect initialized with {Values?.Count} values");
+        Logger.LogDebug("DryMultiSelect initialized with {Count} values", Values?.Count);
     }
 
     private async Task SelectOption(ChangeEventArgs args)
     {
-        Logger.LogDebug($"DryMultiSelect Add Option by Key '{args.Value}'");
+        Logger.LogDebug("DryMultiSelect Add Option by Key '{Value}'", args.Value);
         var key = args.Value as string;
         if(string.IsNullOrWhiteSpace(key)) {
             return; // selected blank line
@@ -83,7 +83,7 @@ public partial class DryMultipleSelect<T> : ComponentBase {
         var option = AllOptions[key];
         option.Selected = true;
         if(option.Value != null) {
-            Property?.AddValue(Model, option.Value);
+            Property?.AddValue(Model!, option.Value);
             await InvokeOnChange(args);
             await SelectBlankRow();
             ListCollection();
@@ -100,10 +100,12 @@ public partial class DryMultipleSelect<T> : ComponentBase {
 
     private async Task DeselectOption(string key)
     {
-        Logger.LogDebug($"DryMultiSelect Remove Option by Key '{key}'");
+        Logger.LogDebug("DryMultiSelect Remove Option by Key '{key}'", key);
         var option = AllOptions[key];
         option.Selected = false;
-        Property?.RemoveValue(Model, option.Value);
+        if(option.Value != null) {
+            Property?.RemoveValue(Model!, option.Value);
+        }
         await InvokeOnChange(new ChangeEventArgs { Value = key });
         ListCollection();
     }

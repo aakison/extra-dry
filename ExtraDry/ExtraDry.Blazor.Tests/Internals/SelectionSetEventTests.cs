@@ -22,9 +22,10 @@ namespace ExtraDry.Blazor.Tests.Internals {
             Assert.Equal(set, sender);
             Assert.NotNull(args);
             Assert.Equal(SelectionSetChangedType.Cleared, args?.Type);
-            Assert.NotNull(args?.Added);
-            Assert.Empty(args?.Added);
-            Assert.Empty(args?.Removed);
+            Assert.NotNull(args!.Added);
+            Assert.NotNull(args!.Removed);
+            Assert.Empty(args!.Added!);
+            Assert.Empty(args!.Removed!);
         }
 
         [Theory]
@@ -55,9 +56,10 @@ namespace ExtraDry.Blazor.Tests.Internals {
             Assert.Equal(set, sender);
             Assert.NotNull(args);
             Assert.Equal(SelectionSetChangedType.Cleared, args?.Type);
-            Assert.NotNull(args?.Added);
-            Assert.Empty(args?.Added);
-            Assert.Empty(args?.Removed);
+            Assert.NotNull(args!.Added);
+            Assert.NotNull(args!.Removed);
+            Assert.Empty(args!.Added);
+            Assert.Empty(args!.Removed);
         }
 
         [Theory]
@@ -74,10 +76,11 @@ namespace ExtraDry.Blazor.Tests.Internals {
             Assert.Equal(set, sender);
             Assert.NotNull(args);
             Assert.Equal(SelectionSetChangedType.Added, args?.Type);
-            Assert.NotNull(args?.Added);
-            Assert.Single(args?.Added);
+            Assert.NotNull(args!.Added);
+            Assert.NotNull(args!.Removed);
+            Assert.Single(args!.Added);
             Assert.Equal(obj1, args?.Added.First());
-            Assert.Empty(args?.Removed);
+            Assert.Empty(args!.Removed);
         }
 
         [Theory]
@@ -108,11 +111,11 @@ namespace ExtraDry.Blazor.Tests.Internals {
             Assert.Equal(set, sender);
             Assert.NotNull(args);
             Assert.Equal(SelectionSetChangedType.Changed, args?.Type);
-            Assert.NotNull(args?.Added);
-            Assert.Single(args?.Added);
+            Assert.NotNull(args!.Added);
+            Assert.Single(args!.Added);
             Assert.Equal(obj2, args?.Added.First());
-            Assert.NotNull(args?.Removed);
-            Assert.Single(args?.Removed);
+            Assert.NotNull(args!.Removed);
+            Assert.Single(args!.Removed);
             Assert.Equal(obj1, args?.Removed.First());
         }
 
@@ -129,11 +132,11 @@ namespace ExtraDry.Blazor.Tests.Internals {
             Assert.Equal(set, sender);
             Assert.NotNull(args);
             Assert.Equal(SelectionSetChangedType.Added, args?.Type);
-            Assert.NotNull(args?.Added);
-            Assert.Single(args?.Added);
-            Assert.Equal(obj2, args?.Added.First());
-            Assert.NotNull(args?.Removed);
-            Assert.Empty(args?.Removed);
+            Assert.NotNull(args!.Added);
+            Assert.Single(args!.Added);
+            Assert.Equal(obj2, args!.Added.First());
+            Assert.NotNull(args!.Removed);
+            Assert.Empty(args!.Removed);
         }
 
         [Theory]
@@ -151,9 +154,10 @@ namespace ExtraDry.Blazor.Tests.Internals {
             Assert.Equal(set, sender);
             Assert.NotNull(args);
             Assert.Equal(SelectionSetChangedType.Removed, args?.Type);
-            Assert.NotNull(args?.Added);
-            Assert.Empty(args?.Added);
-            Assert.Single(args?.Removed);
+            Assert.NotNull(args!.Added);
+            Assert.NotNull(args!.Removed);
+            Assert.Empty(args!.Added);
+            Assert.Single(args!.Removed);
             Assert.Equal(obj1, args?.Removed.First());
         }
 
@@ -183,9 +187,10 @@ namespace ExtraDry.Blazor.Tests.Internals {
             Assert.Equal(set, sender);
             Assert.NotNull(args);
             Assert.Equal(SelectionSetChangedType.SelectAll, args?.Type);
-            Assert.NotNull(args?.Added);
-            Assert.Empty(args?.Added);
-            Assert.Empty(args?.Removed);
+            Assert.NotNull(args!.Added);
+            Assert.NotNull(args!.Removed);
+            Assert.Empty(args!.Added);
+            Assert.Empty(args!.Removed);
         }
 
         [Fact]
@@ -201,10 +206,12 @@ namespace ExtraDry.Blazor.Tests.Internals {
             Assert.Null(args);
         }
 
-
         private object? sender = null;
+
         private SelectionSetChangedEventArgs? args = null;
-        private readonly object obj1 = new object();
-        private readonly object obj2 = new object();
+
+        private readonly object obj1 = new();
+
+        private readonly object obj2 = new();
     }
 }

@@ -84,6 +84,9 @@ public class PropertyDescription {
         }
         try {
             var value = Property?.GetValue(item);
+            if(value == null) {
+                return "null";
+            }
             if(HasDiscreteValues && discreteDisplayAttributes.ContainsKey((int)value)) {
                 value = discreteDisplayAttributes[(int)value]?.GetName() ?? value;
             }
@@ -99,11 +102,18 @@ public class PropertyDescription {
 
     public int GetDiscreteSortOrder(object item)
     {
+        if(item == null) {
+            return 0;
+        }
         if(HasDiscreteValues) {
-            var value = (int)GetValue(item);
+            var valueObj = GetValue(item);
+            if(valueObj == null) {
+                return 0;
+            }
+            var value = (int)valueObj;
             if(discreteDisplayAttributes.ContainsKey(value)) {
                 var display = discreteDisplayAttributes[value];
-                return display.GetOrder() ?? value;
+                return display?.GetOrder() ?? value;
             }
             return value;
         }
@@ -150,9 +160,10 @@ public class PropertyDescription {
         }
         var propertyList = propertyObject as IList;
         if(propertyList == null) {
+            // TODO: Change to logging, better behavior here?
             Console.WriteLine("Not castable to IList");
         }
-        return propertyList;
+        return propertyList ?? Array.Empty<object>();
     }
 
     public string DisplayClass {
