@@ -16,7 +16,7 @@
         var displayValue = column.DisplayValue(Item.Item);
         if (column.HasDiscreteValues) {
             var enumValue = column.GetValue(Item.Item);
-            cssClass += $" {enumValue.ToString().ToLowerInvariant()}";
+            cssClass += $" {enumValue?.ToString()?.ToLowerInvariant()}";
         }
         <td class="@cssClass" data-label="@column.ColumnCaption">
             @if(column.Property.Name == Grouping?.GroupingColumn) {
