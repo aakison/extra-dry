@@ -11,7 +11,6 @@ div {
     }
 
     ::deep i, ::deep img {
-        border-radius: 0.5*$height;
         margin-right: $padding;
         max-height: $height;
         max-width: $height

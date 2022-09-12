@@ -7,7 +7,6 @@ div.thumbnail {
   height: 48px;
 }
 div ::deep i, div ::deep img {
-  border-radius: 20px;
   margin-right: 8px;
   max-height: 40px;
   max-width: 40px;

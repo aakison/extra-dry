@@ -11521,6 +11521,10 @@ button.unobtrusive:active {
   background-color: rgba(0, 0, 0, 0.15);
 }
 
+.mini-card.employee img {
+  border-radius: 20px;
+}
+
 @media only screen and (min-width: 1200px) {
   .mini-dialog.curtain {
     width: initial;
