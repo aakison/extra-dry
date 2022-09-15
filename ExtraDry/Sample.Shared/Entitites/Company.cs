@@ -6,7 +6,7 @@ namespace Sample.Shared;
 
 [Format(Icon = "building")]
 [FactTable, DimensionTable]
-public class Company : INamedSubject {
+public class Company {
 
     [Key]
     [JsonIgnore]
@@ -20,6 +20,10 @@ public class Company : INamedSubject {
     [Display(GroupName = "Summary")]
     public string Caption => $"Company {Code}";
 
+    /// <summary>
+    /// Official incorporated name of company, as listed in Dun &amp; Bradstreet
+    /// </summary>
+    /// <example>Alphabet, Inc.</example>
     [Display(Name = "Name", ShortName = "Name", GroupName = "Summary")]
     [Filter(FilterType.Contains)]
     [Rules(RuleAction.IgnoreDefaults)]

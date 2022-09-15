@@ -37,7 +37,7 @@ namespace Sample.Client {
             services.AddCrudService<Region>("/api/regions");
 
             services.AddScoped<IBlobService>(e => 
-                new DryBlobService(e.GetService<HttpClient>(), "/api/blobs/{0}/{1}") {
+                new DryBlobService(e.GetRequiredService<HttpClient>(), "/api/blobs/{0}/{1}") {
                     Scope = BlobScope.Public,
                 }
             );

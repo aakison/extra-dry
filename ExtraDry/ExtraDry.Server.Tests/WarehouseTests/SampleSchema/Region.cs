@@ -6,7 +6,7 @@ namespace ExtraDry.Server.Tests.WarehouseTests;
 /// Represents a single geo-political region in a taxonomy of geo-political regions.
 /// </summary>
 [DimensionTable("Geographic Region")]
-public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, INamedSubject {
+public class Region : TaxonomyEntity<Region>, ITaxonomyEntity {
 
     /// <summary>
     /// The principal ID for the region, internal to the database.

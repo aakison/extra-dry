@@ -5,7 +5,7 @@ namespace Sample.Shared;
 /// <summary>
 /// Represents a single geo-political region in a taxonomy of geo-political regions.
 /// </summary>
-public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, INamedSubject, IValidatableObject {
+public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidatableObject {
 
     /// <summary>
     /// The principal ID for the region, internal to the database.

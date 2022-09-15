@@ -1,5 +1,4 @@
 ﻿using ExtraDry.Blazor;
-using ExtraDry.Core;
 using Sample.Shared;
 
 namespace Sample.Client;
@@ -12,7 +11,7 @@ public class EmployeeViewModel : ISubjectViewModel<Employee> {
 
     public string Title(Employee employee) => $"{employee.FirstName} {employee.LastName}";
 
-    public string Subtitle(Employee employee) => employee.Email;
+    public string Subtitle(Employee employee) => employee.Email ?? string.Empty;
 
     public string Icon(Employee employee) => Gravatar.ToGravatarUrl(employee.Email, 40);
 

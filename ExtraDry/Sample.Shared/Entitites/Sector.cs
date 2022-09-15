@@ -8,7 +8,7 @@ namespace Sample.Shared;
 /// </summary>
 [DimensionTable]
 [SoftDeleteRule(nameof(State), SectorState.Inactive, SectorState.Active)]
-public class Sector : INamedSubject {
+public class Sector {
 
     /// <summary>
     /// A locally unique identifier, internal use only.

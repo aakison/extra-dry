@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ExtraDry.Server.Tests.WarehouseTests;
 
 [FactTable, DimensionTable]
-public class Company : INamedSubject {
+public class Company {
 
     [Key]
     [JsonIgnore]
