@@ -1,5 +1,6 @@
 ﻿using ExtraDry.Server;
 using Microsoft.AspNetCore.Authorization;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ExtraDry.Swashbuckle.Instructions;
@@ -19,6 +20,7 @@ public class ProblemDetailsController {
     /// <param name="input">The query parameter to use get the result.</param>
     [HttpGet("api/sample-data/puzzle"), Produces("application/json")]
     [AllowAnonymous]
+    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Standard pattern.")]
     public Response RetrievePuzzleQuestion([FromQuery] string? input)
     {
         if(string.IsNullOrWhiteSpace(input)) {
@@ -43,8 +45,7 @@ public class ProblemDetailsController {
             throw new DryException(System.Net.HttpStatusCode.BadRequest, "JSON Missing Field", $"The input provided '{input}' did not contain a member named 'answer'.");
         }
 
-        int answer;
-        if(!int.TryParse(request.Answer.ToString(), out answer)) {
+        if(!int.TryParse(request.Answer.ToString(), out int answer)) {
             // Failure 4 - Answer isn't a number
             throw new DryException(System.Net.HttpStatusCode.BadRequest, "JSON Field Type Mismatch", $"The answer provided '{request?.Answer}' is not a valid integer.");
         }
