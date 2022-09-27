@@ -10,7 +10,7 @@ internal static class ExceptionResponse {
     public static void RewriteResponse(ExceptionContext context, HttpStatusCode code, string? details = null)
     {
         var kebab = DataConverter.CamelCaseToKebabCase(context.Exception.GetType().Name);
-        var url = $"https://{context.HttpContext.Request.Host}/problem-details/{kebab}";
+        var url = $"https://{context.HttpContext.Request.Host}/problems/{kebab}";
         var uri = context.HttpContext.Request.Path;
         var er = new ProblemDetails {
             Type = url,
