@@ -1,4 +1,5 @@
 ﻿using ExtraDry.Core.Models;
+using System.Net;
 
 namespace ExtraDry.Core;
 
@@ -19,6 +20,13 @@ public sealed class DryException : Exception {
         if(details != null) {
             ProblemDetails = details;
         }
+    }
+
+    public DryException(HttpStatusCode status, string message, string userMessage) : base(message)
+    {
+        ProblemDetails.Status = (int)status;
+        ProblemDetails.Title = message;
+        ProblemDetails.Detail = userMessage;
     }
 
     public DryException(string message) : base(message) {
