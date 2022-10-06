@@ -32,7 +32,7 @@
     </p>
     <h5>Try It Out</h5>
     <form class="tryitout" onsubmit="return false;">
-        <p>Recognized keys include 'search', 'assets', 'logo', 'companies', 'sectors'.</p>
+        <p>Recognized keys include 'search', 'assets', 'logo', 'companies', 'sectors', 'edit', 'filter'.</p>
         <div>
             <label>Key:</label>
             <input type="text" @bind="@Key" />
@@ -58,14 +58,20 @@
             public IconInfo[] Icons = new IconInfo[] {
                 new IconInfo("search", "/img/glyphs/magnifying-glass-light.svg", "Search", "glyph"),
                 new IconInfo("logo", "/img/icons/logo.svg", "Extra Dry", "icon"),
+                new IconInfo("edit", "fas fa-edit"),
             };
         }
     </CodeBlock>
     <p>
-        Each <code>IconInfo</code> takes a key, path, alternate text, and optionally CSS classes.  
+        There are two interchangable mechanisms for <code>IconInfo</code>.  The more flexible 
+        version takes a key, path, alternate text, and optionally CSS classes.  This version 
+        is rendered using an <code>img</code> tag.  Altnerately, support for font based icons
+        such as Font Awesome is also supported by providing the CSS class only.  In this case
+        the icon is rendered using the <code>i</code> tag.
     </p>
     <p>
-        This system works in conjuction with but is separate from the <code>IconTemplate</code> attribute of the <code>&lt;Theme&gt;</code> tag.
+        This system works in conjuction with but is separate from the <code>IconTemplate</code> 
+        attribute of the <code>&lt;Theme&gt;</code> tag.
     </p>
 </section>
 <section>
