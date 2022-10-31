@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Core;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ExtraDry.Core;
 
 /// <summary>
 /// Validates that a string field is a valid WebId, allowing it to be part of a URI path without translation.

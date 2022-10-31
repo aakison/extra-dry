@@ -108,7 +108,7 @@ namespace Sample.Server {
             services.AddScoped<RuleEngine>();
             services.AddScoped<RegionService>();
             
-            services.AddScoped<IEntityResolver<Sector>>(e => e.GetService<SectorService>()!);
+            services.AddScoped<IEntityResolver<Sector>>(e => e.GetRequiredService<SectorService>());
 
         }
 

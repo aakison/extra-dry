@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ExtraDry.Core;
 
@@ -10,7 +8,6 @@ namespace ExtraDry.Core;
 /// <remarks>
 /// Works in conjunction with overloads in the AspectDbContext and VersionInfoAspect.
 /// </remarks>
-[Owned]
 public class VersionInfo {
 
     /// <summary>
@@ -90,7 +87,7 @@ public class VersionInfo {
     /// </summary>
     public const int MaxEmailLength = 80;
 
-    private static string Truncate(string value, int length) => value.Length > length ? value[..length] : value;
+    private static string Truncate(string value, int length) => value.Length > length ? value.Substring(0, length) : value;
 
     /// <summary>
     /// User readable string representation, UI fallback.

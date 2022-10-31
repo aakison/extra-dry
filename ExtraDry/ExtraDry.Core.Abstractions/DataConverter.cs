@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace ExtraDry.Core;

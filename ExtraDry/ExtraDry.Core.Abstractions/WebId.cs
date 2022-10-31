@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System.Text;
+﻿using System.Text;
 
 namespace ExtraDry.Core;
 
@@ -22,14 +20,14 @@ public static class WebId {
         }
         var sb = new StringBuilder(name.Length);
         var okCharacters = @"_"; // "$*+!,'()." are legal, but  ugly, removing them as well.
-        name = name.Replace("&", "and", StringComparison.Ordinal);
+        name = name.Replace("&", "and");
         var hiddenCharacters = ".'"; // exclude to contract abbreviations and possessives.
         name = RemoveCommonNameSuffixes(name);
         foreach(var c in name) {
             if(char.IsLetterOrDigit(c)) {
                 sb.Append(char.ToLowerInvariant(c));
             }
-            else if(okCharacters.Contains(c, StringComparison.OrdinalIgnoreCase)) {
+            else if(okCharacters.Contains(c)) {
                 sb.Append(c);
             }
             else if(!hiddenCharacters.Contains(c)) { // prevent possesives from having a floating space.  E.g. "St. Albert's" -> "st-alberts"
@@ -37,8 +35,8 @@ public static class WebId {
             }
         }
         name = sb.ToString();
-        name = name.Replace("--", "-", StringComparison.Ordinal);
-        name = name.Replace("--", "-", StringComparison.Ordinal);
+        name = name.Replace("--", "-");
+        name = name.Replace("--", "-");
         name = name.TrimEnd('-');
         return name;
     }
@@ -52,7 +50,7 @@ public static class WebId {
     public static string ToWebId(string name, int maxLength)
     {
         var webId = ToWebId(name);
-        return webId.Length > maxLength ? webId[0..maxLength] : webId;
+        return webId.Length > maxLength ? webId.Substring(0, maxLength) : webId;
     }
 
     /// <summary>
@@ -120,7 +118,7 @@ public static class WebId {
     private static string TrimEnd(string value, string end)
     {
         if(value.EndsWith(end, StringComparison.InvariantCultureIgnoreCase)) {
-            return value[..^end.Length].TrimEnd();
+            return value.Substring(0, value.Length - end.Length).TrimEnd();
         }
         else {
             return value;

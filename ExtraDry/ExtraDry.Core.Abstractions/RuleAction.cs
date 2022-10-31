@@ -1,5 +1,6 @@
-﻿namespace ExtraDry.Core;
+﻿using System.Text.Json.Serialization;
 
+namespace ExtraDry.Core;
 
 /// <summary>
 /// Actions that are used by rules to determine how creates and updates should be processed.

@@ -33,17 +33,10 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="BundlerMinifier.Core" Version="3.2.449" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.8" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.8" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.10" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.10" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.175" />
 		<PackageReference Include="System.Net.Http.Json" Version="6.0.0" />
-
-		<!-- Used to fix vulnerability https://github.com/advisories/GHSA-5crp-9r3c-p9vr 
-			 Even though this solution doesn't rely on Newtonsoft.  
-			 Remove this when dependant packages are updated.
-		-->
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-
 	</ItemGroup>
 
 	<ItemGroup>
@@ -51,6 +44,8 @@
 		<ProjectReference Include="..\ExtraDry.Blazor\ExtraDry.Blazor.csproj" />
 		<ProjectReference Include="..\Sample.Shared\Sample.Shared.csproj" />
 	</ItemGroup>
+
+	<Import Project="..\VulnerabilityFixes.targets" />
 
 	<ItemGroup>
 		<Folder Include="ViewModels\Admin\" />

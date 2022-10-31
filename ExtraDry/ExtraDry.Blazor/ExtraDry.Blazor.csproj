@@ -40,19 +40,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="ExtraDry.Analyzers" Version="0.3.19-alpha">
+		<PackageReference Include="ExtraDry.Analyzers" Version="0.3.24-alpha">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="BuildWebCompiler2022" Version="1.14.8" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.8" />
-
-		<!-- Used to fix vulnerability https://github.com/advisories/GHSA-5crp-9r3c-p9vr 
-			 Even though this solution doesn't rely on Newtonsoft.  
-			 Remove this when dependant packages are updated.
-		-->
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-
 	</ItemGroup>
 
 	<ItemGroup>

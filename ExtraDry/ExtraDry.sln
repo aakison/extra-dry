@@ -17,6 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		nuget.config = nuget.config
 		publish-local.ps1 = publish-local.ps1
 		..\README.md = ..\README.md
+		VulnerabilityFixes.targets = VulnerabilityFixes.targets
 	EndProjectSection
 	ProjectSection(FolderGlobals) = preProject
 		C_5_4Users_4Adrian_4Repos_4FmiWorks_4extra-dry_4ExtraDry_4infrastructure_1json__JsonSchema = 
@@ -50,6 +51,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YellowJacket.Tests", "YellowJacket.Tests\YellowJacket.Tests.csproj", "{B3B96AF8-0BAB-403D-BFCE-40A0857FC680}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.WebJobs", "Sample.WebJobs\Sample.WebJobs.csproj", "{FEAFDA36-0C8D-4369-B632-C8A847DD25E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtraDry.Core.Abstractions", "ExtraDry.Core.Abstractions\ExtraDry.Core.Abstractions.csproj", "{D1D750E0-69B4-410D-A6AA-C673C4BC5608}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -109,6 +112,10 @@ Global
 		{FEAFDA36-0C8D-4369-B632-C8A847DD25E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEAFDA36-0C8D-4369-B632-C8A847DD25E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEAFDA36-0C8D-4369-B632-C8A847DD25E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1D750E0-69B4-410D-A6AA-C673C4BC5608}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1D750E0-69B4-410D-A6AA-C673C4BC5608}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1D750E0-69B4-410D-A6AA-C673C4BC5608}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1D750E0-69B4-410D-A6AA-C673C4BC5608}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
