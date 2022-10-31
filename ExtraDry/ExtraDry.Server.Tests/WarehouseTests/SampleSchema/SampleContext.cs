@@ -1,5 +1,4 @@
 ﻿using ExtraDry.Server.EF;
-using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
 namespace ExtraDry.Server.Tests.WarehouseTests;
@@ -24,5 +23,7 @@ public class SampleContext : AspectDbContext {
             e => JsonSerializer.Serialize(e, (JsonSerializerOptions?)null),
             e => JsonSerializer.Deserialize<BankingDetails>(e, (JsonSerializerOptions?)null) ?? new());
 
+        modelBuilder.Entity<Company>().OwnsOne(e => e.Version);
+        modelBuilder.Entity<Employee>().OwnsOne(e => e.Version);
     }
 }

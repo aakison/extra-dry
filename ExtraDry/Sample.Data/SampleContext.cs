@@ -38,5 +38,12 @@ public class SampleContext : AspectDbContext {
             e => JsonSerializer.Deserialize<ContentLayout>(e, (JsonSerializerOptions?)null) ?? new());
 
         //modelBuilder.Entity<Content>().Property(e => e.Layout).HasColumnType()
+
+        modelBuilder.Entity<Company>().OwnsOne(e => e.Version);
+        modelBuilder.Entity<Employee>().OwnsOne(e => e.Version);
+        modelBuilder.Entity<Region>().OwnsOne(e => e.Version);
+        modelBuilder.Entity<Sector>().OwnsOne(e => e.Version);
+        modelBuilder.Entity<Content>().OwnsOne(e => e.Version);
+
     }
 }

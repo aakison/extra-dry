@@ -1,7 +1,6 @@
 ﻿#nullable disable // EF Model Class
 
 using ExtraDry.Core.DataWarehouse;
-using Microsoft.EntityFrameworkCore;
 
 namespace ExtraDry.Server.Tests.WarehouseTests;
 
