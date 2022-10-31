@@ -32,6 +32,7 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
+		<PackageReference Include="Pidgin" Version="3.2.0" />
 		<PackageReference Include="System.Linq.Expressions" Version="4.3.0" />
 
 		<!-- Used to fix vulnerability https://github.com/advisories/GHSA-5crp-9r3c-p9vr 
