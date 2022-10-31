@@ -3,8 +3,6 @@
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 public class SoftDeleteRuleAttribute : Attribute {
 
-    // TODO: analysis rule that nameof(xxx) should point to property on class or base class
-
     public SoftDeleteRuleAttribute(string propertyName, object? deleteValue)
     {
         PropertyName = propertyName;
