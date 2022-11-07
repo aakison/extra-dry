@@ -7,39 +7,32 @@
   background-color: rgba(128, 128, 128, 0.5);
   display: flex;
   flex-direction: column;
-  align-items: center;
-}
-div.curtain div.dialog {
-  position: absolute;
-  width: 100%;
-  height: calc(100vh - 160px);
-  background-color: var(--white);
-}
-div.curtain div.dialog.full {
-  max-width: unset;
-  margin: 0;
-}
-div.curtain div.dialog.window {
-  max-width: 1120px;
-  margin: 80px 60px;
-}
-div.curtain div.dialog div.controls {
-  position: absolute;
-  right: 5px;
-  top: 5px;
-  font-size: 28px;
-  display: flex;
-}
-div.curtain div.dialog div.controls ::deep button {
-  color: var(--gray);
-  border: none;
-  background: none;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-div.curtain div.dialog div.controls ::deep button:hover {
-  background-color: var(--primary-light);
-}
+  align-items: center; }
+  div.curtain div.dialog {
+    position: absolute;
+    width: 100%;
+    height: calc(100vh - 2*$dialog-vertical-margin);
+    background-color: var(--white); }
+    div.curtain div.dialog.full {
+      max-width: unset;
+      margin: 0; }
+    div.curtain div.dialog.window {
+      max-width: 1120px;
+      margin: 80px 60px; }
+    div.curtain div.dialog div.controls {
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      font-size: 28px;
+      display: flex; }
+      div.curtain div.dialog div.controls ::deep button {
+        color: var(--gray);
+        border: none;
+        background: none;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center; }
+        div.curtain div.dialog div.controls ::deep button:hover {
+          background-color: var(--primary-light); }

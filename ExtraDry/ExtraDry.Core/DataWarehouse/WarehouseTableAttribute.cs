@@ -16,6 +16,6 @@ public abstract class WarehouseTableAttribute : Attribute {
 
     public bool MatchesGroup(string? group) => 
         (group == null && Group == null) ||
-        (Group?.Split(",")?.Any(e => string.Equals(e, group, StringComparison.OrdinalIgnoreCase)) ?? true);
+        (Group?.Split(',')?.Any(e => string.Equals(e, group, StringComparison.OrdinalIgnoreCase)) ?? true);
 
 }

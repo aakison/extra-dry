@@ -18,6 +18,10 @@ public partial class DryInput<T> : OwningComponentBase, IDisposable {
     [Parameter]
     public EventCallback<ChangeEventArgs>? OnChange { get; set; }
 
+    /// <inheritdoc cref="IExtraDryComponent.CssClass" />
+    [Parameter]
+    public string CssClass { get; set; } = string.Empty;
+
     [Inject]
     private ILogger<DryInput<T>> Logger { get; set; } = null!;
 
@@ -54,7 +58,7 @@ public partial class DryInput<T> : OwningComponentBase, IDisposable {
 
     private bool valid = true;
 
-    private string CssClass => $"{Property.DisplayClass} {StateCss} {ValidCss}";
+    private string CssClasses => DataConverter.JoinNonEmpty(CssClass, Property.DisplayClass, StateCss, ValidCss);
 
     private string SizeClass => Property.Size.ToString().ToLowerInvariant();
 

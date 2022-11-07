@@ -2,8 +2,8 @@
 @typeparam T
 @inherits OwningComponentBase
 
-<div class="field @CssClass @SizeClass">
-    <label class="@CssClass" @onclick="ToggleDescription" title="@TextDescription">
+<div class="field @CssClasses @SizeClass">
+    <label class="@CssClasses" @onclick="ToggleDescription" title="@TextDescription">
         <span class="caption">@Property.FieldCaption</span>
         @if(Property.HasDescription) {
             <i class="description"></i>
@@ -21,7 +21,7 @@
         }
     </label>
     @if(HasDescription && ShowDescription) {
-        <span class="description @CssClass">@((MarkupString)HtmlDescription)</span>
+        <span class="description @CssClasses">@((MarkupString)HtmlDescription)</span>
     }
     @if(Property.HasBooleanValues) {
         var value = ((bool?)Property.GetValue(Model) ?? false) == true;
@@ -50,12 +50,12 @@
         }
         else { 
             @if(ReadOnly) {
-                <select class="@CssClass readonly" disabled>
+                <select class="@CssClasses readonly" disabled>
                     <option value="@selectedValue.ToString()" selected>@selectedValue.ToString()</option>
                 </select>
             } 
             else { 
-                <select class="@CssClass" @onchange="HandleChange" >
+                <select class="@CssClasses" @onchange="HandleChange" >
                     @foreach(var value in Property.GetDiscreteValues()) {
                         var selected = value.Key.ToString() == selectedValue?.ToString(); // force object to enum compare
                         <option value="@value.Key" selected="@selected">@value.Title</option>
@@ -67,29 +67,29 @@
     else if(Property.HasTextRepresentation) {
         if(Property.MaxLength?.Length > 256) {
             var rows = Math.Min(Property.MaxLength?.Length / 100 ?? 1, 10);
-            <textarea class="@CssClass" rows="@rows" readonly="@ReadOnly" placeholder="@Property.Display?.Prompt" @onchange="HandleChange">@Value</textarea>
+            <textarea class="@CssClasses" rows="@rows" readonly="@ReadOnly" placeholder="@Property.Display?.Prompt" @onchange="HandleChange">@Value</textarea>
         }
         else { 
-            <input class="@CssClass" type="text" value="@Value" readonly="@ReadOnly" placeholder="@Property.Display?.Prompt" @onchange="HandleChange" />
+            <input class="@CssClasses" type="text" value="@Value" readonly="@ReadOnly" placeholder="@Property.Display?.Prompt" @onchange="HandleChange" />
         }
     } 
     else if(LookupProviderOptions != null) {
         var selectedValue = Property.GetValue(Model);
         @if(Property.HasArrayValues) {
-            <DryMultipleSelect CssClass="@CssClass" Model="@Model" Property="@Property" Values="@LookupValues" />
+            <DryMultipleSelect CssClass="@CssClasses" Model="@Model" Property="@Property" Values="@LookupValues" />
         }
         else { 
-            <DrySingleSelect CssClass="@CssClass" Model="@Model" Property="@Property" Values="@LookupValues" />
+            <DrySingleSelect CssClass="@CssClasses" Model="@Model" Property="@Property" Values="@LookupValues" />
         }
     }
     else if(ReadOnly) {
         var selectedValue = Property.GetValue(Model);
-        <span class="@CssClass">@selectedValue.ToString()</span>
+        <span class="@CssClasses">@selectedValue.ToString()</span>
     }
     else { 
         <progress>loading...</progress>
     }
     @if(!valid) {
-        <span class="validation @CssClass">@validationMessage</span>
+        <span class="validation @CssClasses">@validationMessage</span>
     }
 </div>

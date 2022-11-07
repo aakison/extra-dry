@@ -28,6 +28,10 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
     [Parameter]
     public int Height { get; set; } = 40;
 
+    /// <inheritdoc cref="IExtraDryComponent.CssClass" />
+    [Parameter]
+    public string CssClass { get; set; } = string.Empty;
+
     [Inject]
     private ILogger<ViewModelTableRow<T>> Logger { get; set; }
 
@@ -48,7 +52,7 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
 
     private string SelectedClass => IsSelected ? "selected" : "";
 
-    private string CssClass => $"{ClickableClass} {SelectedClass}".Trim();
+    private string CssClasses => DataConverter.JoinNonEmpty(CssClass, ClickableClass, SelectedClass);
 
     private string RadioButtonScope => Description.GetHashCode().ToString();
 
@@ -71,7 +75,7 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
 
     private void CheckChanged(ChangeEventArgs args)
     {
-        Logger.LogInformation($"Checked checkbox/radio with new value '{args?.Value}'");
+        Logger.LogInformation("Checked checkbox/radio with new value '{arg}'", args?.Value);
         //if(IsSelected) {
         //    Select();
         //}

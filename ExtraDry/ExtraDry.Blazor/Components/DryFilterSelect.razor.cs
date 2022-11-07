@@ -10,6 +10,10 @@ public partial class DryFilterSelect : ComponentBase {
     [Parameter]
     public EventCallback<FilterChangedEventArgs> FilterChanged { get; set; }
 
+    /// <inheritdoc cref="IExtraDryComponent.CssClass" />
+    [Parameter]
+    public string CssClass { get; set; } = string.Empty;
+
     public async Task ToggleForm()
     {
         await Expandable.Toggle();
@@ -70,7 +74,7 @@ public partial class DryFilterSelect : ComponentBase {
         await EventsAndRefresh();
     }
 
-    private string CssClass => $"filter {Property?.Property?.Name?.ToLowerInvariant()} {Property?.Property?.PropertyType?.ToString()?.ToLowerInvariant()} {PopulatedClass}";
+    private string CssClasses => DataConverter.JoinNonEmpty("filter", CssClass, Property?.Property?.Name?.ToLowerInvariant(), Property?.Property?.PropertyType?.ToString()?.ToLowerInvariant(), PopulatedClass);
 
     private string PopulatedClass => Selection.Any() ? "active" : "inactive";
 
