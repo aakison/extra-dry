@@ -52,4 +52,8 @@
 		<Folder Include="wwwroot\fonts\" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <PackageReference Update="Newtonsoft.Json" Version="13.0.2" />
+	</ItemGroup>
+
 </Project>

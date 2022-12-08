@@ -38,5 +38,9 @@
 		<AdditionalFiles Include="json2.json" />
 		<AdditionalFiles Include="json1.json" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Update="Newtonsoft.Json" Version="13.0.2" />
+	</ItemGroup>
 	
 </Project>
