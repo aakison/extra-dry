@@ -11,6 +11,7 @@ public class ExtraDryJavascriptModule {
     public ExtraDryJavascriptModule(IJSRuntime runtime)
     {
         Runtime = runtime;
+        Version = GetType().Assembly.GetName()?.Version?.ToString() ?? "1.0";
     }
 
     /// <summary>
@@ -19,12 +20,14 @@ public class ExtraDryJavascriptModule {
     /// </summary>
     public async ValueTask InvokeVoidAsync(string name, params object?[]? args)
     {
-        await using var module = await Runtime.InvokeAsync<IJSObjectReference>("import", filename);
+        await using var module = await Runtime.InvokeAsync<IJSObjectReference>("import", Filename);
         await module.InvokeVoidAsync(name, args);
     }
 
     private IJSRuntime Runtime { get; set; }
 
-    private const string filename = "./_content/ExtraDry.Blazor/js/extra-dry-blazor-module.min.js";
-}
+    private string Filename => $"./_content/ExtraDry.Blazor/js/extra-dry-blazor-module.min.js?v={Version}";
 
+    private string Version { get; set; }
+
+}

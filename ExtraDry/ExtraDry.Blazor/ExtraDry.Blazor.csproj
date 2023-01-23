@@ -19,10 +19,23 @@
 		<EnableNETAnalyzers>True</EnableNETAnalyzers>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<VersionMajor Condition="'$(VersionMajor)' == ''">0</VersionMajor>
+		<VersionMinor Condition="'$(VersionMinor)' == ''">0</VersionMinor>
+		<VersionPatch>$([System.DateTime]::UtcNow.Subtract($([System.DateTime]::new(2001,1,1))).TotalDays.ToString("0"))</VersionPatch>
+		<VersionRevision>$([System.DateTime]::UtcNow.TimeOfDay.TotalMinutes.ToString("0"))</VersionRevision>
+		<Version>$(VersionMajor).$(VersionMinor).$(VersionPatch).$(VersionRevision)</Version>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<Content Remove="bundleconfig.json" />
 		<Content Remove="compilerconfig.json" />
 		<Content Remove="libman.json" />
+		<Content Remove="wwwroot\js\extra-dry-blazor-module.js" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="wwwroot\js\extra-dry-blazor-module.js" />
 	</ItemGroup>
 
 	<ItemGroup>
