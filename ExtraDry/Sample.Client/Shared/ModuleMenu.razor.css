@@ -1,34 +1,43 @@
 ﻿::deep div.module-menu section.mini-dialog div.mini-dialog {
   width: 335px;
   height: initial;
-  padding-top: 5px; }
-  ::deep div.module-menu section.mini-dialog div.mini-dialog ul {
-    padding: 0; }
-    ::deep div.module-menu section.mini-dialog div.mini-dialog ul li {
-      padding: 10px;
-      margin: 10px 20px;
-      border: solid 1px var(--silver);
-      border-radius: 10px;
-      display: block; }
-      ::deep div.module-menu section.mini-dialog div.mini-dialog ul li.active {
-        border: solid 1px var(--warning); }
-      ::deep div.module-menu section.mini-dialog div.mini-dialog ul li img {
-        margin-right: 10px; }
-      ::deep div.module-menu section.mini-dialog div.mini-dialog ul li a:link, ::deep div.module-menu section.mini-dialog div.mini-dialog ul li a:visited, ::deep div.module-menu section.mini-dialog div.mini-dialog ul li a:hover, ::deep div.module-menu section.mini-dialog div.mini-dialog ul li a:active {
-        text-decoration: none;
-        color: var(--black); }
-      ::deep div.module-menu section.mini-dialog div.mini-dialog ul li span.title {
-        font-size: 18px;
-        font-weight: 700; }
-      ::deep div.module-menu section.mini-dialog div.mini-dialog ul li span.subtitle {
-        font-size: 12px;
-        line-height: 14px;
-        max-height: 28px;
-        margin-top: 4px;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        -webkit-line-clamp: 2;
-        display: -webkit-box;
-        -webkit-box-orient: vertical; }
-  ::deep div.module-menu section.mini-dialog div.mini-dialog footer {
-    display: none; }
+  padding-top: 5px;
+}
+::deep div.module-menu section.mini-dialog div.mini-dialog ul {
+  padding: 0;
+}
+::deep div.module-menu section.mini-dialog div.mini-dialog ul li {
+  padding: 10px;
+  margin: 10px 20px;
+  border: solid 1px var(--silver);
+  border-radius: 10px;
+  display: block;
+}
+::deep div.module-menu section.mini-dialog div.mini-dialog ul li.active {
+  border: solid 1px var(--warning);
+}
+::deep div.module-menu section.mini-dialog div.mini-dialog ul li img {
+  margin-right: 10px;
+}
+::deep div.module-menu section.mini-dialog div.mini-dialog ul li a:link, ::deep div.module-menu section.mini-dialog div.mini-dialog ul li a:visited, ::deep div.module-menu section.mini-dialog div.mini-dialog ul li a:hover, ::deep div.module-menu section.mini-dialog div.mini-dialog ul li a:active {
+  text-decoration: none;
+  color: var(--black);
+}
+::deep div.module-menu section.mini-dialog div.mini-dialog ul li span.title {
+  font-size: 18px;
+  font-weight: 700;
+}
+::deep div.module-menu section.mini-dialog div.mini-dialog ul li span.subtitle {
+  font-size: 12px;
+  line-height: 14px;
+  max-height: 28px;
+  margin-top: 4px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+::deep div.module-menu section.mini-dialog div.mini-dialog footer {
+  display: none;
+}
