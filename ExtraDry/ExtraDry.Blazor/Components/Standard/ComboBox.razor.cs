@@ -45,6 +45,14 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     [Parameter]
     public int AnimationDuration { get; set; } = 100;
 
+    /// <summary>
+    /// Determines the sort order of items in the control.  Defaults to sorting by title as this
+    /// is best understood by users.  However, this can be turned off if the incoming collection
+    /// has a implicitly understood sort order (e.g. day of week).
+    /// </summary>
+    [Parameter]
+    public ComboBoxSort Sort { get; set; } = ComboBoxSort.Title;
+
     /// <inheritdoc cref="FlexiSelectForm{TItem}.Value" />
     [Parameter]
     public TItem? Value { get; set; }
@@ -72,13 +80,18 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
 
     protected override void OnParametersSet()
     {
+        Console.WriteLine("OnParametersSet()");
         Id ??= $"combo_{GetHashCode()}";
         Name ??= $"combo_{typeof(TItem).Name}";
         AssertItemsMutualExclusivity();
         
-        if(Items.Any() && !FilteredItems.Any()) {
-            FilteredItems = Items.ToList();
+        if(Sort == ComboBoxSort.Title) {
+            SortedItems = Items.OrderBy(e => DisplayItemTitle(e)).ToList();
         }
+        else {
+            SortedItems = Items.ToList();
+        }
+        FilteredItems = SortedItems.ToList();
         base.OnParametersSet();
     }
 
@@ -87,6 +100,8 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     private TItem? SelectedItem { get; set; }
 
     private int SelectedIndex => FilteredItems.IndexOf(SelectedItem);
+
+    private List<TItem> SortedItems { get; set; } = new();
 
     private List<TItem> FilteredItems { get; set; } = new();
 
@@ -177,13 +192,13 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
             // Filter has left only a single item, select it and lock it in.
             SelectItemIndex(0);
             ShowOptions = false;
-            Filter = selectedItem == null ? Filter : DisplayItemTitle(selectedItem);
+            Filter = DisplayItemTitle(SelectedItem);
         }
         else {
             ShowOptions = true;
         }
-        if(!(Value?.Equals(selectedItem) ?? SelectedItem == null)) {
-            Value = selectedItem;
+        if(!(Value?.Equals(SelectedItem) ?? SelectedItem == null)) {
+            Value = SelectedItem;
             await ValueChanged.InvokeAsync(Value);
         }
     }
@@ -216,6 +231,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         }
         else {
             var newIndex = SelectedIndex + offset;
+            newIndex = Math.Clamp(newIndex, 0, FilteredItems.Count - 1);
             SelectItemIndex(newIndex);
         }
     }
@@ -238,7 +254,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         var showAll = string.IsNullOrWhiteSpace(Filter) || SelectedItem != null;
         if(showAll) {
             if(Items != null) {
-                FilteredItems = Items.ToList();
+                FilteredItems = SortedItems.ToList();
             }
             else {
                 throw new NotImplementedException();
@@ -250,7 +266,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         }
         else {
             if(Items != null) {
-                FilteredItems = Items
+                FilteredItems = SortedItems
                     .Where(e => DisplayItemTitle(e).Contains(Filter, StringComparison.CurrentCultureIgnoreCase))
                     .ToList();
             }
@@ -288,17 +304,22 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         }
     }
 
-    public class ItemInfo {
+}
 
-        public ItemInfo(TItem source, string title) {
-            Item = source;
-            Title = title;
-        }
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum ComboBoxSort
+{
+    /// <summary>
+    /// No sorting is applied, the order items is presented to the component is retained.
+    /// </summary>
+    None,
 
-        public TItem Item { get; set; }
+    /// <summary>
+    /// Sorting is done by the title alphabetically (default).  
+    /// </summary>
+    Title,
 
-        public string Title { get; set; }
 
-    }
-
+    Group,
+    All,
 }

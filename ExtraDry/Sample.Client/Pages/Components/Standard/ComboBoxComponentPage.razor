@@ -21,7 +21,7 @@
             private List&lt;Sector&gt; Sectors { get; set; } = ...;
         }
     </CodeBlock>
-    <ComboBox Items="@Data" Placeholder="@Placeholder" @bind-Value="Value" />
+    <ComboBox Items="@Data" Placeholder="@Placeholder" Sort="@Sort" @bind-Value="Value" />
 
     <select>
         <option></option>
@@ -51,6 +51,15 @@
         <div>
             <label>Placeholder:</label>
             <input type="text" @bind="Placeholder" />
+        </div>
+        <div>
+            <label>Sort:</label>
+            <select @bind="Sort">
+                <option value="@(ComboBoxSort.None)">ComboBoxSort.None</option>
+                <option value="@(ComboBoxSort.Title)">ComboBoxSort.Title</option>
+                <option value="@(ComboBoxSort.Group)">ComboBoxSort.Group</option>
+                <option value="@(ComboBoxSort.All)">ComboBoxSort.All</option>
+            </select>
         </div>
     </form>
 </section>
@@ -102,6 +111,8 @@
     private int AutoDropdownThreshold { get; set; } = 10;
 
     private string Placeholder { get; set; } = "select";
+
+    private ComboBoxSort Sort { get; set; } = ComboBoxSort.Title;
 
     private Sector? Value { get; set; }
 
