@@ -9,7 +9,11 @@
 /// <typeparam name="TItem">The type for items in the select list.</typeparam>
 public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where TItem : notnull {
 
-    public string Id = $"Id{Guid.NewGuid()}";
+    [Parameter]
+    public string Id { get; set; } = null!;
+
+    [Parameter]
+    public string Name { get; set; } = null!;
 
     /// <inheritdoc cref="IExtraDryComponent.CssClass" />
     [Parameter]
@@ -21,7 +25,10 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
 
     /// <inheritdoc cref="FlexiSelectForm{TItem}.Data"/>
     [Parameter]
-    public IEnumerable<TItem> Data { get; set;} = new List<TItem>();
+    public IEnumerable<TItem>? Items { get; set;}
+
+    [Parameter]
+    public IListService<TItem>? ItemsService { get; set; }
 
     [Parameter]
     public IListItemViewModel<TItem>? ViewModel { get; set; }
@@ -65,40 +72,54 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
 
     protected override void OnParametersSet()
     {
-        if(Data.Any() && !Items.Any()) {
-            Items = Data.Select(e => new ItemInfo(e, DisplayTitle(e))).ToList();
+        Id ??= $"combo_{GetHashCode()}";
+        Name ??= $"combo_{typeof(TItem).Name}";
+        AssertItemsMutualExclusivity();
+        
+        if(Items.Any() && !FilteredItems.Any()) {
+            FilteredItems = Items.ToList();
         }
         base.OnParametersSet();
     }
 
     private bool ShowOptions { get; set; }
 
-    private int SelectedIndex { get; set; } = -1;
+    private TItem? SelectedItem { get; set; }
 
-    private ItemInfo? SelectedItem => SelectedIndex < 0 ? null : Items[SelectedIndex];
+    private int SelectedIndex => FilteredItems.IndexOf(SelectedItem);
 
-    private List<ItemInfo> Items { get; set; } = new();
+    private List<TItem> FilteredItems { get; set; } = new();
 
     private string ValueString => Value?.ToString() ?? "null";
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "drop-down", CssClass);
 
-    private Task DoClick(MouseEventArgs _)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(SelectedItem != null && ShowOptions) {
+            await Javascript.InvokeVoidAsync("DropDown_ScrollIntoView", DisplayItemID(SelectedItem));
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    protected Task DoFocusOut(FocusEventArgs _)
+    {
+        CancelInput();
+        return Task.CompletedTask;
+    }
+
+    protected Task DoClick(MouseEventArgs _)
     {
         ShowOptions = !ShowOptions;
         return Task.CompletedTask;
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if(SelectedItem != null && ShowOptions) {
-            await Javascript.InvokeVoidAsync("DropDown_ScrollIntoView", SelectedItem.Uuid.ToString());
-        }
-        await base.OnAfterRenderAsync(firstRender);
-    }
+    private string DisplayItemID(TItem? item) => 
+        $"{Id}_item_{item?.GetHashCode()}";
 
-    private string DisplayTitle(TItem item) =>
-        ViewModel?.Title(item)
+    private string DisplayItemTitle(TItem? item) =>
+        item == null ? "null" : null
+        ?? ViewModel?.Title(item)
         ?? (item as IListItemViewModel)?.Title
         ?? item.ToString()
         ?? "unnamed";
@@ -111,122 +132,130 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         Console.WriteLine(args.Code);
         PreventDefault = false;
         var pageSize = 8; // 9 lines shown so page up/down should be one less so you have one line overlap for context.
-        switch(args.Code) {
-            case "Enter":
-            case "NumpadEnter":
-                await ConfirmAsync(SelectedItem);
-                break;
-            case "PageUp":
-                SelectOffset(-pageSize);
-                PreventDefault = true;
-                break;
-            case "PageDown":
-                SelectOffset(+pageSize);
-                PreventDefault = true;
-                break;
-            case "End":
-                SelectOffset(-1, Data.Count());
-                break;
-            case "Home":
-                SelectOffset(+1, -1);
-                break;
-            case "ArrowUp":
-                SelectOffset(-1);
-                PreventDefault = true;
-                break;
-            case "ArrowDown":
-                SelectOffset(+1);
-                PreventDefault = true;
-                break;
-            case "Escape":
-                CancelInput();
-                break;
-            default:
-                break;
+        if(args.Code == "Enter" || args.Code == "NumpadEnter") {
+            await ConfirmInputAsync(SelectedItem);
         }
-        Console.WriteLine(SelectedIndex.ToString());
+        if(ShowOptions) {
+            switch(args.Code) {
+                case "PageUp":
+                    SelectItemOffset(-pageSize);
+                    PreventDefault = true;
+                    break;
+                case "PageDown":
+                    SelectItemOffset(+pageSize);
+                    PreventDefault = true;
+                    break;
+                case "ArrowUp":
+                    SelectItemOffset(-1);
+                    PreventDefault = true;
+                    break;
+                case "ArrowDown":
+                    SelectItemOffset(+1);
+                    PreventDefault = true;
+                    break;
+                case "Escape":
+                case "Tab":
+                    CancelInput();
+                    break;
+                default:
+                    break;
+            }
+        }
+        Console.WriteLine(DisplayItemTitle(SelectedItem));
     }
 
     private bool PreventDefault = false;
 
-    private async Task ConfirmAsync(ItemInfo? selectedItem)
+    private async Task ConfirmInputAsync(TItem? selectedItem)
     {
         if(selectedItem != null && ShowOptions) {
             // Valid Item selected and want to lock it in
             ShowOptions = false;
-            Filter = selectedItem.Title;
+            Filter = DisplayItemTitle(selectedItem);
         }
-        else if(Items.Count(e => e.Visible) == 1) {
+        else if(FilteredItems.Count == 1) {
             // Filter has left only a single item, select it and lock it in.
-            SelectOffset(+1, -1);
+            SelectItemIndex(0);
             ShowOptions = false;
-            Filter = SelectedItem?.Title ?? Filter;
+            Filter = selectedItem == null ? Filter : DisplayItemTitle(selectedItem);
         }
         else {
             ShowOptions = true;
         }
-        if(SelectedItem != null) {
-            Value = SelectedItem.Item;
+        if(!(Value?.Equals(selectedItem) ?? SelectedItem == null)) {
+            Value = selectedItem;
             await ValueChanged.InvokeAsync(Value);
         }
     }
 
     private void CancelInput()
     {
+        Console.WriteLine("CancelInput");
         ShowOptions = false;
         if(Value == null) {
-            SelectedIndex = -1;
+            SelectedItem = default;
             Filter = string.Empty;
         }
         else {
-            SelectItem(Items.FindIndex(e => e.Item.Equals(Value)));
-            Filter = SelectedItem?.Title ?? Filter;
+            SelectItemIndex(FilteredItems.FindIndex(e => e.Equals(Value)));
+            Filter = SelectedItem == null ? Filter : DisplayItemTitle(SelectedItem);
         }
         ShouldRender();
     }
 
-    private void SelectOffset(int offset, int start = int.MinValue)
+    private void SelectItemOffset(int offset)
     {
-        var step = Math.Sign(offset);
-        var count = Math.Abs(offset);
-        var newIndex = start == int.MinValue ? SelectedIndex : start;
-        if(newIndex == -1) {
-            if(step > 0) {
-                newIndex = 0;
+        Console.WriteLine($"SelectOffset({offset})");
+        if(SelectedItem == null) {
+            if(offset > 0) {
+                SelectItemIndex(0);
             }
             else {
-                newIndex = Items.Count - 1;
+                SelectItemIndex(FilteredItems.Count - 1);
             }
         }
         else {
-            for(int index = newIndex + step; count > 0 && index >= 0 && index < Items.Count; index += step) {
-                if(Items[index].Visible) {
-                    newIndex = index;
-                    --count;
-                }
-            }
-        }
-        SelectItem(newIndex);
-    }
-
-    private void SelectItem(int index)
-    {
-        Console.WriteLine($"Index: {index}");
-        if(SelectedIndex != index) {
-            SelectedIndex = index;
-            ShouldRender();
+            var newIndex = SelectedIndex + offset;
+            SelectItemIndex(newIndex);
         }
     }
 
-    private void ComputeFilter()
+    private void SelectItemIndex(int index)
     {
+        Console.WriteLine($"SelectIndex({index})");
+        if(index < 0 || index >= FilteredItems.Count) {
+            SelectedItem = default;
+        }
+        else {
+            SelectedItem = FilteredItems[index];
+        }
+        ShouldRender();
+    }
+
+    private void ComputeFilter(CancellationToken cancellationToken)
+    {
+        Console.WriteLine("ComputeFilter()");
         var showAll = string.IsNullOrWhiteSpace(Filter) || SelectedItem != null;
-        foreach(var item in Items) {
-            if(showAll || item.Title.Contains(Filter, StringComparison.CurrentCultureIgnoreCase)) {
-                item.Visible = true;
+        if(showAll) {
+            if(Items != null) {
+                FilteredItems = Items.ToList();
             }
             else {
-                item.Visible = false;
+                throw new NotImplementedException();
+                //var results = await ItemsService!.GetItemsAsync(cancellationToken);
+                //if(results.Items.Count() != results.TotalItemCount) {
+                //    throw new NotImplementedException("Add in text to show user how much they are seeing.");
+                //}
+            }
+        }
+        else {
+            if(Items != null) {
+                FilteredItems = Items
+                    .Where(e => DisplayItemTitle(e).Contains(Filter, StringComparison.CurrentCultureIgnoreCase))
+                    .ToList();
+            }
+            else {
+                throw new NotImplementedException();
             }
         }
     }
@@ -236,18 +265,28 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         set {
             Console.WriteLine($"New filter: {value}");
             filter = value;
-            if(!filter.Equals(SelectedItem?.Title, StringComparison.CurrentCultureIgnoreCase)) {
-                SelectedIndex = -1;
+            if(!filter.Equals(DisplayItemTitle(SelectedItem), StringComparison.CurrentCultureIgnoreCase)) {
+                SelectedItem = default;
             }
             if(!string.IsNullOrWhiteSpace(filter) && SelectedItem == null) {
                 ShowOptions = true;
             }
-            ComputeFilter();
+            var src = new CancellationTokenSource();
+            ComputeFilter(src.Token);
             ShouldRender();
         }
     }
     private string filter = string.Empty;
 
+    private void AssertItemsMutualExclusivity()
+    {
+        if(Items != null && ItemsService != null) {
+            throw new DryException("Only one of `Items` and `ItemsService` is allowed to be set");
+        }
+        if(Items == null && ItemsService == null) {
+            throw new DryException("One of `Items` or `ItemsService` must set");
+        }
+    }
 
     public class ItemInfo {
 
@@ -256,13 +295,9 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
             Title = title;
         }
 
-        public Guid Uuid { get; set; } = Guid.NewGuid();
-
         public TItem Item { get; set; }
 
         public string Title { get; set; }
-
-        public bool Visible { get; set; } = true;
 
     }
 

@@ -15,13 +15,13 @@
     <h3>Basic Usage</h3>
     <h5>No View Model</h5>
     <CodeBlock Lang="blazor">
-        &lt;ComboBox Data="@@Sectors" Placeholder="@@Placeholder" /&gt;
+        &lt;ComboBox Items="@@Sectors" Placeholder="@@Placeholder" /&gt;
 
         @@code {
             private List&lt;Sector&gt; Sectors { get; set; } = ...;
         }
     </CodeBlock>
-    <ComboBox Data="@Data" Placeholder="@Placeholder" @bind-Value="Value" />
+    <ComboBox Items="@Data" Placeholder="@Placeholder" @bind-Value="Value" />
 
     <select>
         <option></option>

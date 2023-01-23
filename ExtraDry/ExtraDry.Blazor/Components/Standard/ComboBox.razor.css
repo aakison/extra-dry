@@ -1,7 +1,7 @@
-﻿div.drop-down {
+﻿div {
   position: relative;
 }
-div.drop-down > label {
+div > label {
   display: flex;
   flex-direction: row;
   border: solid 1px gray;
@@ -9,20 +9,20 @@ div.drop-down > label {
   align-items: center;
   height: 100%;
 }
-div.drop-down > label > input {
+div > label > input {
   flex: 100%;
   border: none;
 }
-div.drop-down > label > input:focus-visible {
+div > label > input:focus-visible {
   outline: none;
 }
-div.drop-down > label > div {
+div > label > div {
   color: silver;
 }
-div.drop-down > label > button {
+div > label > button {
   height: 100%;
 }
-div.drop-down > div {
+div ol {
   position: absolute;
   border: solid 1px silver;
   padding: 0;
@@ -34,15 +34,16 @@ div.drop-down > div {
   overflow: scroll;
   overflow-x: clip;
   background-color: white;
+  z-index: 1;
 }
-div.drop-down > div > div {
+div ol li {
   padding: 2px 10px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-div.drop-down > div > div:hover {
+div ol li:hover {
   background-color: #eeeeee;
 }
-div.drop-down > div > div.selected {
+div ol li.selected {
   background-color: silver;
 }

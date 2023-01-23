@@ -1,4 +1,4 @@
-﻿div.drop-down {
+﻿div {
     position: relative;
 
     > label {
@@ -27,7 +27,7 @@
         }
     }
 
-    > div { // the options (not by class so easier for users to override)
+    ol { 
         position: absolute;
         border: solid 1px silver;
         padding: 0;
@@ -39,8 +39,9 @@
         overflow: scroll;
         overflow-x: clip;
         background-color: white;
+        z-index: 1;
 
-        > div { // each option (not by class so easier for users to override)
+        li { 
             padding: 2px 10px;
             text-overflow: ellipsis;
             white-space: nowrap;
