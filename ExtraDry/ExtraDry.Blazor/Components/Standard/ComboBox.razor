@@ -1,0 +1,29 @@
+﻿@namespace ExtraDry.Blazor
+@implements IExtraDryComponent
+@typeparam TItem
+
+<div class="@CssClasses" @attributes="@UnmatchedAttributes" @onkeydown:preventDefault="PreventDefault"
+     @onkeypress:preventDefault="PreventDefault" @onkeyup:preventDefault="PreventDefault" 
+     @onkeydown="DoKeyPress" tabindex="-1">
+    <label for="@Id">
+        <span class="type"></span>
+        <input type="text" placeholder="@Placeholder" @bind-value="Filter" @bind-value:event="oninput" />
+        <button class="unobtrusive" id="@Id" @onclick="DoClick" type="button" tabindex="-1"><Icon Key="select" /></button>
+    </label>
+    @if(ShowOptions) {
+        <div class="options">
+            @{
+                int index = 0;
+                foreach (var item in Items)
+                {
+                    var selected = item == SelectedItem ? "selected" : "";
+                    if(item.Visible) {
+                        int i = index;
+                        <div id="@item.Uuid" class="option @selected" @ondblclick="async e => await ConfirmAsync(item)" @onclick="e => SelectItem(i)">@item.Item.ToString()</div>
+                    }
+                    ++index;
+                }
+            }
+        </div>
+    }
+</div>

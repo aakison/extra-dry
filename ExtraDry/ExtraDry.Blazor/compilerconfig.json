@@ -52,5 +52,10 @@
     "outputFile": "Components/Standard/FlexiSelect.razor.css",
     "inputFile": "Components/Standard/FlexiSelect.razor.scss",
     "minify": { "enabled": false }
+  },
+  {
+    "outputFile": "Components/Standard/ComboBox.razor.css",
+    "inputFile": "Components/Standard/ComboBox.razor.scss",
+    "minify": { "enabled": false }
   }
 ]

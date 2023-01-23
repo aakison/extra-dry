@@ -13,6 +13,9 @@ public class StandardComponentsMenu {
     [Navigation(Icon = "icons")]
     public string Icon => $"/components/standard/icon";
 
+    [Navigation(Icon = "combo-box")]
+    public string ComboBox => $"/components/standard/combo-box";
+
     [Navigation(Icon = "mini-card")]
     public string MiniCard => $"/components/standard/mini-card";
 

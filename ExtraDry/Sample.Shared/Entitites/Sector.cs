@@ -39,6 +39,15 @@ public class Sector {
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
+    /// A group of sectors that logically go together for reporting.
+    /// </summary>
+    /// <example>Fire, Safety &amp; Security</example>
+    [Required, MaxLength(50)]
+    [Display(Name = "Group", ShortName = "Group")]
+    [Filter(FilterType.Contains)]
+    public string Group { get; set; } = string.Empty;
+
+    /// <summary>
     /// The description of the sector.
     /// </summary>
     /// <example>Provides licensed electrical works for commercial facilities.</example>
