@@ -31,7 +31,7 @@ public static class ServiceCollectionExtensions {
     /// Adds a strongly typed ListService`FilteredCollection`T to the service collection.
     /// Also registered the service using the interfaces IListService`T and IOptionProvider`T.
     /// </summary>
-    public static IServiceCollection AddFilteredListService<T>(this IServiceCollection services, string endpointTemplate)
+    public static IServiceCollection AddFilteredListService<T>(this IServiceCollection services, string endpointTemplate) 
     {
         services.AddScoped(e => {
             var client = e.GetRequiredService<HttpClient>();

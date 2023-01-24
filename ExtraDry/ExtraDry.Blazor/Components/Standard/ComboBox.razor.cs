@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Blazor;
+﻿using Microsoft.Extensions.Logging.Abstractions;
+
+namespace ExtraDry.Blazor;
 
 /// <summary>
 /// A flexi alternative to a select control.  Creates a semantic HTML control
@@ -7,7 +9,7 @@
 /// filtering.
 /// </summary>
 /// <typeparam name="TItem">The type for items in the select list.</typeparam>
-public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where TItem : notnull {
+public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where TItem : class {
 
     [Parameter]
     public string Id { get; set; } = null!;
@@ -23,27 +25,22 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     [Parameter]
     public string Placeholder { get; set; } = "select...";
 
-    /// <inheritdoc cref="FlexiSelectForm{TItem}.Data"/>
+    /// <inheritdoc cref="IComments{TItem}.Items"/>
     [Parameter]
     public IEnumerable<TItem>? Items { get; set;}
 
+    /// <inheritdoc cref="IComments{TItem}.ItemsSource" />
     [Parameter]
-    public IListService<TItem>? ItemsService { get; set; }
+    public IListService<TItem>? ItemsSource { get; set; }
 
     [Parameter]
     public IListItemViewModel<TItem>? ViewModel { get; set; }
 
-    /// <inheritdoc cref="MiniDialog.OnSubmit" />
+    /// <summary>
+    /// An optional Icon name displayed inside the control.
+    /// </summary>
     [Parameter]
-    public EventCallback<DialogEventArgs> OnSubmit { get; set; }
-  
-    /// <inheritdoc cref="MiniDialog.OnCancel" />
-    [Parameter]
-    public EventCallback<DialogEventArgs> OnCancel { get; set; }
-
-    /// <inheritdoc cref="MiniDialog.AnimationDuration" />
-    [Parameter]
-    public int AnimationDuration { get; set; } = 100;
+    public string? Icon { get; set; }
 
     /// <summary>
     /// Determines the sort order of items in the control.  Defaults to sorting by title as this
@@ -52,6 +49,12 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// </summary>
     [Parameter]
     public ComboBoxSort Sort { get; set; } = ComboBoxSort.Title;
+
+    /// <summary>
+    /// Indicates if the items in the list are grouped.
+    /// </summary>
+    [Parameter]
+    public ComboBoxGrouping Grouping { get; set; } = ComboBoxGrouping.Auto;
 
     /// <inheritdoc cref="FlexiSelectForm{TItem}.Value" />
     [Parameter]
@@ -78,28 +81,67 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         base.OnInitialized();
     }
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
         Console.WriteLine("OnParametersSet()");
         Id ??= $"combo_{GetHashCode()}";
         Name ??= $"combo_{typeof(TItem).Name}";
         AssertItemsMutualExclusivity();
-        
-        if(Sort == ComboBoxSort.Title) {
-            SortedItems = Items.OrderBy(e => DisplayItemTitle(e)).ToList();
+
+        Grouper = (ViewModel as IGroupingViewModel<TItem>) ?? new NullGroupingViewModel();
+
+        ShowGrouping = Grouping switch {
+            ComboBoxGrouping.On => true,
+            ComboBoxGrouping.Off => false,
+            _ => ViewModel is IGroupingViewModel<TItem>,
+        };
+
+        TryPopulateFromItems();
+        var tokenSource = new CancellationTokenSource();
+        await TryPopulateFromItemsSourceAsync(string.Empty, tokenSource.Token);
+
+        FilteredItems = SortedItems.ToList();
+        await base.OnParametersSetAsync();
+    }
+
+    private void TryPopulateFromItems()
+    {
+        if(Items == null) {
+            return;
+        }
+        if(ShowGrouping) {
+            if(Sort == ComboBoxSort.Title) {
+                SortedItems = Items.OrderBy(e => DisplayItemGroupSort(e)).ThenBy(e => DisplayItemTitle(e)).ToList();
+            }
+            else {
+                SortedItems = Items.OrderBy(e => DisplayItemGroupSort(e)).ToList();
+            }
         }
         else {
-            SortedItems = Items.ToList();
+            if(Sort == ComboBoxSort.Title) {
+                SortedItems = Items.OrderBy(e => DisplayItemTitle(e)).ToList();
+            }
+            else {
+                SortedItems = Items.ToList();
+            }
         }
-        FilteredItems = SortedItems.ToList();
-        base.OnParametersSet();
+    }
+
+    private async Task TryPopulateFromItemsSourceAsync(string filter, CancellationToken cancellationToken)
+    {
+        if(ItemsSource == null) {
+            return;
+        }
+        cancellationToken.ThrowIfCancellationRequested();
+        var items = await ItemsSource.GetItemsAsync(filter, null, null, null, null, cancellationToken);
+        SortedItems = items.Items.OrderBy(e => DisplayItemGroupSort(e)).ToList();
     }
 
     private bool ShowOptions { get; set; }
 
     private TItem? SelectedItem { get; set; }
 
-    private int SelectedIndex => FilteredItems.IndexOf(SelectedItem);
+    private int SelectedIndex => SelectedItem == null ? -1 : FilteredItems.IndexOf(SelectedItem);
 
     private List<TItem> SortedItems { get; set; } = new();
 
@@ -108,6 +150,8 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     private string ValueString => Value?.ToString() ?? "null";
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "drop-down", CssClass);
+
+    private bool ShowGrouping { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -138,6 +182,14 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         ?? (item as IListItemViewModel)?.Title
         ?? item.ToString()
         ?? "unnamed";
+
+    private string DisplayItemGroup(TItem? item) => 
+        item == null ? string.Empty : Grouper.Group(item);
+
+    private string DisplayItemGroupSort(TItem? item) =>
+        item == null ? string.Empty : Grouper.GroupSort(item);
+
+    private IGroupingViewModel<TItem> Grouper { get; set; } = null!; // set in OnParametersSet
 
     /// <summary>
     /// Handle keypresses
@@ -212,7 +264,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
             Filter = string.Empty;
         }
         else {
-            SelectItemIndex(FilteredItems.FindIndex(e => e.Equals(Value)));
+            SelectItemIndex(FilteredItems.FindIndex(e => e?.Equals(Value) ?? false));
             Filter = SelectedItem == null ? Filter : DisplayItemTitle(SelectedItem);
         }
         ShouldRender();
@@ -248,60 +300,83 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         ShouldRender();
     }
 
-    private void ComputeFilter(CancellationToken cancellationToken)
+    /// <summary>
+    /// The current filter displayed the user.  Will be the entire title of the SelectedItem once 
+    /// selection made.
+    /// </summary>
+    private string Filter { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Process set values against the filter asynchronously so that search can be performed.
+    /// </summary>
+    /// <remarks>
+    /// This is done using one of the Blazor "anti-patterns" as binding doesn't work with Blazor 6 
+    /// and the fix designed for .NET 7 "missed the RTM window" a couple of times.  Eventually this
+    /// will be better to use binding with `@bind:after="ProcessFilter"` but that's not ready yet.
+    /// </remarks>
+    private async Task DoFilterInput(ChangeEventArgs args)
+    {
+        Console.WriteLine($"DoFilterInput({args.Value})");
+        Filter = args.Value?.ToString() ?? string.Empty;
+        if(!Filter.Equals(DisplayItemTitle(SelectedItem), StringComparison.CurrentCultureIgnoreCase)) {
+            SelectedItem = default;
+        }
+        if(!string.IsNullOrWhiteSpace(Filter) && SelectedItem == null) {
+            ShowOptions = true;
+        }
+        try {
+            cancelSource?.Cancel();
+            using(cancelSource = new CancellationTokenSource()) {
+                await ComputeFilter(cancelSource.Token);
+            }
+        }
+        catch(OperationCanceledException) {
+            Console.WriteLine("Operation Cancelled");
+        }
+        finally {
+            cancelSource = null;
+        }
+        ShouldRender();
+    }
+
+    private CancellationTokenSource? cancelSource = null;
+
+    private async Task ComputeFilter(CancellationToken cancellationToken)
     {
         Console.WriteLine("ComputeFilter()");
         var showAll = string.IsNullOrWhiteSpace(Filter) || SelectedItem != null;
         if(showAll) {
-            if(Items != null) {
-                FilteredItems = SortedItems.ToList();
+            if(ItemsSource != null) {
+                cancellationToken.ThrowIfCancellationRequested();
+                await TryPopulateFromItemsSourceAsync("", cancellationToken);
             }
-            else {
-                throw new NotImplementedException();
-                //var results = await ItemsService!.GetItemsAsync(cancellationToken);
-                //if(results.Items.Count() != results.TotalItemCount) {
-                //    throw new NotImplementedException("Add in text to show user how much they are seeing.");
-                //}
-            }
+            FilteredItems = SortedItems.ToList();
         }
         else {
-            if(Items != null) {
-                FilteredItems = SortedItems
-                    .Where(e => DisplayItemTitle(e).Contains(Filter, StringComparison.CurrentCultureIgnoreCase))
-                    .ToList();
+            if(ItemsSource != null) {
+                cancellationToken.ThrowIfCancellationRequested();
+                await TryPopulateFromItemsSourceAsync(Filter, cancellationToken);
             }
-            else {
-                throw new NotImplementedException();
-            }
+            FilteredItems = SortedItems
+                .Where(e => DisplayItemTitle(e).Contains(Filter, StringComparison.CurrentCultureIgnoreCase))
+                .ToList();
         }
     }
-
-    private string Filter {
-        get => filter;
-        set {
-            Console.WriteLine($"New filter: {value}");
-            filter = value;
-            if(!filter.Equals(DisplayItemTitle(SelectedItem), StringComparison.CurrentCultureIgnoreCase)) {
-                SelectedItem = default;
-            }
-            if(!string.IsNullOrWhiteSpace(filter) && SelectedItem == null) {
-                ShowOptions = true;
-            }
-            var src = new CancellationTokenSource();
-            ComputeFilter(src.Token);
-            ShouldRender();
-        }
-    }
-    private string filter = string.Empty;
 
     private void AssertItemsMutualExclusivity()
     {
-        if(Items != null && ItemsService != null) {
-            throw new DryException("Only one of `Items` and `ItemsService` is allowed to be set");
+        if(Items != null && ItemsSource != null) {
+            throw new DryException("Only one of `Items` and `ItemsSource` is allowed to be set");
         }
-        if(Items == null && ItemsService == null) {
+        if(Items == null && ItemsSource == null) {
             throw new DryException("One of `Items` or `ItemsService` must set");
         }
+    }
+
+    protected class NullGroupingViewModel : IGroupingViewModel<TItem> {
+        public string Group(TItem item) => string.Empty;
+
+        public string GroupSort(TItem item) => string.Empty;
     }
 
 }
@@ -319,7 +394,23 @@ public enum ComboBoxSort
     /// </summary>
     Title,
 
+}
 
-    Group,
-    All,
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum ComboBoxGrouping
+{
+    /// <summary>
+    /// No groupings are shown.
+    /// </summary>
+    Off,
+
+    /// <summary>
+    /// Groupings for items are shown.
+    /// </summary>
+    On,
+
+    /// <summary>
+    /// Grouping are shown if the `ViewModel` implements IGroupingViewModel`T (default).
+    /// </summary>
+    Auto,
 }

@@ -3,8 +3,6 @@
 using ExtraDry.Blazor;
 using ExtraDry.Blazor.Models;
 using Microsoft.AspNetCore.Components;
-using System;
-using System.Threading.Tasks;
 
 namespace Sample.Client.Shared;
 

@@ -34,7 +34,7 @@ public interface ISubjectViewModel : IListItemViewModel {
 /// A ViewModel controller interface to extract subject information out of models.
 /// </summary>
 /// <typeparam name="TModel">The type of the model.</typeparam>
-public interface ISubjectViewModel<TModel> : IListItemViewModel<TModel>
+public interface ISubjectViewModel<TModel> : IListItemViewModel<TModel> 
 {
     /// <inheritdoc cref="ISubjectViewModel.Code" />
     string Code(TModel item);

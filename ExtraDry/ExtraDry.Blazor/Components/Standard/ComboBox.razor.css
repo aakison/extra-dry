@@ -36,14 +36,20 @@ div ol {
   background-color: white;
   z-index: 1;
 }
-div ol li {
+div ol li.header {
+  padding: 2px 5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: bold;
+}
+div ol li.option {
   padding: 2px 10px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-div ol li:hover {
+div ol li.option:hover {
   background-color: #eeeeee;
 }
-div ol li.selected {
+div ol li.option.selected {
   background-color: silver;
 }

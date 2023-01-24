@@ -83,7 +83,7 @@ public class WarehouseModelBuilder {
 
     }
 
-    public FactTableBuilder<T> Fact<T>() where T : class
+    public FactTableBuilder<T> Fact<T>() 
     {
         try {
             return FactTables[typeof(T)] as FactTableBuilder<T> ?? throw new KeyNotFoundException();
@@ -103,7 +103,7 @@ public class WarehouseModelBuilder {
         }
     }
 
-    public DimensionTableBuilder<T> Dimension<T>() where T : class
+    public DimensionTableBuilder<T> Dimension<T>() 
     {
         try {
             return DimensionTables[typeof(T)] as DimensionTableBuilder<T> ?? throw new KeyNotFoundException();

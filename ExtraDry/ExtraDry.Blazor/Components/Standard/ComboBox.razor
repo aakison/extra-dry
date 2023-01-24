@@ -2,23 +2,34 @@
 @implements IExtraDryComponent
 @typeparam TItem
 
-<div class="@CssClasses" id="@Id" @attributes="@UnmatchedAttributes" 
-    @onfocusout="DoFocusOut"
-    @onkeydown:preventDefault="PreventDefault" @onkeypress:preventDefault="PreventDefault" @onkeyup:preventDefault="PreventDefault" 
-    @onkeydown="DoKeyPress" tabindex="-1">
+<div class="@CssClasses" id="@Id" @attributes="@UnmatchedAttributes"
+     @onfocusout="DoFocusOut"
+     @onkeydown:preventDefault="PreventDefault" @onkeypress:preventDefault="PreventDefault" @onkeyup:preventDefault="PreventDefault"
+     @onkeydown="DoKeyPress" tabindex="-1">
     <label for="@Id">
+        @if(Icon != null) {
+            <Icon Key="@Icon" />
+        }
         <span class="type"></span>
-        <input type="text" name="@Name" placeholder="@Placeholder" @bind-value="Filter" @bind-value:event="oninput" />
+        <input type="text" name="@Name" placeholder="@Placeholder" value="@Filter" @oninput="DoFilterInput" />
         <button class="unobtrusive" id="@Id" @onclick="DoClick" type="button" tabindex="-1"><Icon Key="select" /></button>
     </label>
     @if(ShowOptions) {
         <ol class="options">
             @{
                 int index = 0;
-                foreach (var item in FilteredItems)
-                {
+                var lastGroup = string.Empty;
+                foreach (var item in FilteredItems) {
+                    if(item == null) { 
+                        continue;  
+                    }
                     var selected = item.Equals(SelectedItem) ? "selected" : "";
                     int i = index;
+                    var group = DisplayItemGroup(item);
+                    if(ShowGrouping && !lastGroup.Equals(group, StringComparison.CurrentCultureIgnoreCase)) {
+                        <li class="header">@group</li>
+                        lastGroup = group;
+                    }
                     <li id="@DisplayItemID(item)" class="option @selected" @ondblclick="async e => await ConfirmInputAsync(item)" @onclick="e => SelectItemIndex(i)">@DisplayItemTitle(item)</li>
                     ++index;
                 }

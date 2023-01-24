@@ -30,4 +30,19 @@ public interface IListItemViewModel<TModel>
 
     /// <inheritdoc cref="IListItemViewModel.Description" />
     string Description(TModel item);
+
+}
+
+public interface IGroupingViewModel<TModel>
+{
+    /// <summary>
+    /// If provided, creates groupings for items in the list.
+    /// </summary>
+    string Group(TModel item);
+
+    /// <summary>
+    /// If provided, overrides the sort order for the group. 
+    /// </summary>
+    string GroupSort(TModel item);
+
 }
