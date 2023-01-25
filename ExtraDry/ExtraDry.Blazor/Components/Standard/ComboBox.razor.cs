@@ -133,7 +133,9 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
             return;
         }
         cancellationToken.ThrowIfCancellationRequested();
+        ShowProgress = true;
         var items = await ItemsSource.GetItemsAsync(filter, null, null, null, null, cancellationToken);
+        ShowProgress = false;
         SortedItems = items.Items.OrderBy(e => DisplayItemGroupSort(e)).ToList();
     }
 
@@ -156,6 +158,11 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// </summary>
     /// <remarks>Set in `OnParametersSetAsync`</remarks>
     private bool ShowGrouping { get; set; }
+
+    /// <summary>
+    /// Used to show a loading progress bar when fetching data from the `ItemsSource`.
+    /// </summary>
+    private bool ShowProgress { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

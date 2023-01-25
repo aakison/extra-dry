@@ -12,6 +12,9 @@
         }
         <span class="type"></span>
         <input type="text" name="@Name" placeholder="@Placeholder" value="@Filter" @oninput="DoFilterInput" />
+        @if(ShowProgress) {
+            <progress></progress>
+        }
         <button class="unobtrusive" id="@Id" @onclick="DoClick" type="button" tabindex="-1"><Icon Key="select" /></button>
     </label>
     @if(ShowOptions) {

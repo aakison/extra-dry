@@ -19,6 +19,10 @@ div > label > input:focus-visible {
 div > label > div {
   color: silver;
 }
+div > label > progress {
+  width: 24px;
+  height: 24px;
+}
 div > label > button {
   height: 100%;
 }
