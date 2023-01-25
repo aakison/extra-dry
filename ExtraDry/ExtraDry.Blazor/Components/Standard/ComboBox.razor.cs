@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Blazor;
+﻿using System.Threading;
+
+namespace ExtraDry.Blazor;
 
 /// <summary>
 /// Defines the sort options for the `ComboBox`.
@@ -58,7 +60,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
 
     /// <inheritdoc cref="IComments.Placeholder" />
     [Parameter]
-    public string Placeholder { get; set; } = "select...";
+    public string Placeholder { get; set; } = "find...";
 
     /// <summary>
     /// Determines the sort order of items in the control. Defaults to sorting by title as this is
@@ -122,10 +124,8 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         };
 
         TryPopulateFromItems();
-        var tokenSource = new CancellationTokenSource();
-        await TryPopulateFromItemsSourceAsync(string.Empty, tokenSource.Token);
+        await ComputeFilter();
 
-        FilteredItems = SortedItems.ToList();
         await base.OnParametersSetAsync();
     }
 
@@ -135,7 +135,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// there is no pending request, if not null and a new request comes in then need to cancel
     /// before continuing. Used by `DoFilterInput` when `ItemsSource` is not null.
     /// </summary>
-    private CancellationTokenSource? cancelSource = null;
+    private CancellationTokenSource? computeFilterCancellationSource = null;
 
     private bool PreventDefault = false;
 
@@ -226,25 +226,37 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         ShouldRender();
     }
 
-    private async Task ComputeFilter(CancellationToken cancellationToken)
+    private async Task ComputeFilter()
     {
         Console.WriteLine("ComputeFilter()");
-        var showAll = string.IsNullOrWhiteSpace(Filter) || SelectedItem != null;
-        if(showAll) {
-            if(ItemsSource != null) {
-                cancellationToken.ThrowIfCancellationRequested();
-                await TryPopulateFromItemsSourceAsync("", cancellationToken);
+        try {
+            var showAll = string.IsNullOrWhiteSpace(Filter) || SelectedItem != null;
+            computeFilterCancellationSource?.Cancel();
+            using(computeFilterCancellationSource = new CancellationTokenSource()) {
+                var cancellationToken = computeFilterCancellationSource.Token;
+                if(showAll) {
+                    if(ItemsSource != null) {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        await TryPopulateFromItemsSourceAsync("", cancellationToken);
+                    }
+                    FilteredItems = SortedItems.ToList();
+                }
+                else {
+                    if(ItemsSource != null) {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        await TryPopulateFromItemsSourceAsync(Filter, cancellationToken);
+                    }
+                    FilteredItems = SortedItems
+                        .Where(e => DisplayItemTitle(e).Contains(Filter, StringComparison.CurrentCultureIgnoreCase))
+                        .ToList();
+                }
             }
-            FilteredItems = SortedItems.ToList();
         }
-        else {
-            if(ItemsSource != null) {
-                cancellationToken.ThrowIfCancellationRequested();
-                await TryPopulateFromItemsSourceAsync(Filter, cancellationToken);
-            }
-            FilteredItems = SortedItems
-                .Where(e => DisplayItemTitle(e).Contains(Filter, StringComparison.CurrentCultureIgnoreCase))
-                .ToList();
+        catch(OperationCanceledException) {
+            Console.WriteLine("Operation Cancelled");
+        }
+        finally {
+            computeFilterCancellationSource = null;
         }
     }
 
@@ -323,18 +335,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         if(!string.IsNullOrWhiteSpace(Filter) && SelectedItem == null) {
             ShowOptions = true;
         }
-        try {
-            cancelSource?.Cancel();
-            using(cancelSource = new CancellationTokenSource()) {
-                await ComputeFilter(cancelSource.Token);
-            }
-        }
-        catch(OperationCanceledException) {
-            Console.WriteLine("Operation Cancelled");
-        }
-        finally {
-            cancelSource = null;
-        }
+        await ComputeFilter();
         ShouldRender();
     }
 
