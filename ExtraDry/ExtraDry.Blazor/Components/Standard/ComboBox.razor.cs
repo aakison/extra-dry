@@ -93,7 +93,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         ShowGrouping = Grouping switch {
             ComboBoxGrouping.On => true,
             ComboBoxGrouping.Off => false,
-            _ => ViewModel is IGroupingViewModel<TItem>,
+            _ => ViewModel is IGroupingViewModel<TItem> && ItemsSource == null,
         };
 
         TryPopulateFromItems();
@@ -151,6 +151,10 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "drop-down", CssClass);
 
+    /// <summary>
+    /// Resolves if grouping should be used based on all parameters for the component.
+    /// </summary>
+    /// <remarks>Set in `OnParametersSetAsync`</remarks>
     private bool ShowGrouping { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
