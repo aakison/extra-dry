@@ -5,9 +5,14 @@
         display: flex;
         flex-direction: row;
         border: solid 1px gray;
+        border-radius: 1px;
         padding: 0 0 0 4px;
         align-items: center;
         height: 100%;
+
+        &:focus-within {
+            outline: solid 1px black;
+        }
 
         > img {
             width: 24px;
