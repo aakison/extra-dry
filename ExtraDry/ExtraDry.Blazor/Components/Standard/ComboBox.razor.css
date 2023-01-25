@@ -9,6 +9,10 @@ div > label {
   align-items: center;
   height: 100%;
 }
+div > label > img {
+  width: 24px;
+  height: 24px;
+}
 div > label > input {
   flex: 100%;
   border: none;

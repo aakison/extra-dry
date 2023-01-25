@@ -55,14 +55,14 @@
     <h3>Advanced Usage</h3>
     <h5>No View Model</h5>
     <CodeBlock Lang="blazor">
-        &lt;ComboBox ItemsService="@@Sectors" Icon="Sector" ... /&gt;
+        &lt;ComboBox ItemsService="@@Sectors" Icon="@@Icon" ... /&gt;
 
         @@code {
         [Inject]
         private IListService&lt;Sector&gt; Sectors { get; set; } = null!;
         }
     </CodeBlock>
-    <ComboBox ItemsSource="@SectorService" Placeholder="@Placeholder" Sort="@Sort" Grouping="@Grouping" ViewModel="@this" @bind-Value="Value" />
+    <ComboBox ItemsSource="@SectorService" Icon="@Icon" Placeholder="@Placeholder" Sort="@Sort" ViewModel="@this" @bind-Value="Value" />
     <h5>Bound Values</h5>
     <h6>Value.Title:</h6>
     @if (Value != null)
@@ -88,12 +88,10 @@
             </select>
         </div>
         <div>
-            <label>Grouping:</label>
-            <select @bind="Grouping">
-                <option value="@(ComboBoxGrouping.Off)">ComboBoxGrouping.Off</option>
-                <option value="@(ComboBoxGrouping.Auto)">ComboBoxGrouping.Auto</option>
-            </select>
+            <label>Icon:</label>
+            <input type="text" @bind="Icon" />
         </div>
+
     </form>
 </section>
 <section>
@@ -104,9 +102,9 @@
 </section>
 <section>
     <h3>Semantic Styles</h3>
-    <p>The component wraps the <code>MiniCard</code> component and styles are the same as it.</p>
+    <p>The component TODO.</p>
     <CodeBlock Lang="blazor">
-        &lt;div class="flexi-select"&gt;
+        &lt;div class="drop-down"&gt;
             &lt;label&gt;
                 &lt;span class="type"&gt;...&lt;/span&gt;
                 &lt;span class="placeholder-text"&gt;...&lt;span&gt;
@@ -120,10 +118,9 @@
 <section>
     <h3>Tips &amp; Practices</h3>
     <ul>
-        <li>The component encapsulate the <code>MiniCard</code>, unused attributes are chained to that component.</li>
-        <li>The component automatically detects if Thumbnail and Subtitle are present and displays or hides them accordingly.</li>
-        <li>Use <code>ShowThumbnail</code> property to force always showing or hiding the Thumbnail.</li>
-        <li>Use <code>ShowSubtitle</code> property to force always showing or hiding the Subtitle.</li>
+        <li>One but not both of `Items` or `ItemsSource` is required to provide data.</li>
+        <li>When using `ItemsSource`, `Grouping` is not supported as UI will show confusing, incomplete groups.</li>
+        <li>When fetching from `ItemsSource`, a progress bar is shown while waiting.</li>
     </ul>
 </section>
 <section>
