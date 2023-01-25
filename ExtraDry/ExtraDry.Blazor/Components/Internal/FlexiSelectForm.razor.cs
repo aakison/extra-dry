@@ -49,16 +49,11 @@ public partial class FlexiSelectForm<TItem> : ComponentBase, IExtraDryComponent 
     [Parameter]
     public bool MultiSelect { get; set; }
 
-    /// <summary>
-    /// The selected value when the component is set to single-select mode.
-    /// Use with two-way data binding.
-    /// </summary>
+    /// <inheritdoc cref="IComments{TItem}.Value" />
     [Parameter]
     public TItem? Value { get; set; }
 
-    /// <summary>
-    /// The changed event for `Value` for use with two-way data binding.
-    /// </summary>
+    /// <inheritdoc cref="IComments{TItem}.ValueChanged" />
     [Parameter]
     public EventCallback<TItem> ValueChanged { get; set; }
 

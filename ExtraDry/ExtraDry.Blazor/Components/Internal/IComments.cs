@@ -11,6 +11,12 @@ internal interface IComments {
     /// </summary>
     string Placeholder { get; set; }
 
+    /// <summary>
+    /// A key for an Icon in the component using the global themed Icon system.  Register keys for
+    /// Icons as either fonts or images in the `Theme` component and then reference by key.
+    /// </summary>
+    string? Icon { get; set; }
+
 }
 
 /// <inheritdoc cref="IComments" />
@@ -32,5 +38,24 @@ internal interface IComments<TItem> {
     /// mutually exclusive.
     /// </summary>
     IListService<TItem>? ItemsSource { get; set; }
+
+    /// <summary>
+    /// Provides a ViewModel for the component which is used to provide additional information
+    /// about individual models in the components.  ExtraDry ViewModels are designed to be reused
+    /// across multiple Models, separating logic and reducing memory pressure on the system.
+    /// </summary>
+    IListItemViewModel<TItem>? ViewModel { get; set; }
+
+    /// <summary>
+    /// The selected value of the component.  Use with two-way data binding.
+    /// </summary>
+    TItem? Value { get; set; }
+
+    /// <summary>
+    /// The changed event for `Value`.  Can be used directly, or preferably use indirectly as it
+    /// supports two-way data binding.
+    /// </summary>
+    EventCallback<TItem> ValueChanged { get; set; }
+
 
 }

@@ -6,7 +6,7 @@
      @onfocusout="DoFocusOut"
      @onkeydown:preventDefault="PreventDefault" @onkeypress:preventDefault="PreventDefault" @onkeyup:preventDefault="PreventDefault"
      @onkeydown="DoKeyPress" tabindex="-1">
-    <label for="@Id">
+    <label>
         @if(Icon != null) {
             <Icon Key="@Icon" />
         }
@@ -15,7 +15,7 @@
         @if(ShowProgress) {
             <progress></progress>
         }
-        <button class="unobtrusive" id="@Id" @onclick="DoClick" type="button" tabindex="-1"><Icon Key="select" /></button>
+        <button class="unobtrusive" @onclick="DoClick" type="button" tabindex="-1"><Icon Key="select" /></button>
     </label>
     @if(ShowOptions) {
         <ol class="options">
