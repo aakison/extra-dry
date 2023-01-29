@@ -20,13 +20,19 @@ public partial class ComboBoxComponentPage : ComponentBase, IListItemViewModel<S
 
     private string Icon { get; set; } = "sectors";
 
-    public string Placeholder { get; set; } = "select";
+    public string BasicPlaceholder { get; set; } = "filter...";
 
-    private ComboBoxSort Sort { get; set; } = ComboBoxSort.Title;
+    public string AdvancedPlaceholder { get; set; } = "find...";
+
+    private ComboBoxSort BasicSort { get; set; } = ComboBoxSort.Title;
+
+    private ComboBoxSort AdvancedSort { get; set; } = ComboBoxSort.Title;
 
     private ComboBoxGrouping Grouping { get; set; } = ComboBoxGrouping.Auto;
 
-    private Sector? Value { get; set; }
+    private Sector? BasicValue { get; set; }
+
+    private Sector? AdvancedValue { get; set; }
 
     private List<Sector> Data { get; set; } = new();
 

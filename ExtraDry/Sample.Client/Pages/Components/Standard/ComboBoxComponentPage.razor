@@ -7,38 +7,44 @@
     </p>
     <p>
         The component presents combo-box selection of items using a text-only display to enable type-ahead 
-        functionality.  For more advanced use-cases, consider the FlextSelect component.
+        functionality.  For more advanced use-cases, consider the <code>FlexiSelect</code> component.
     </p>
 </section>
 <section>
     <h3>Basic Usage</h3>
-    <h5>No View Model</h5>
+    <p>
+        Provide a static list of <code>Items</code> that can be optionally sorted. A <code>ViewModel</code>
+        is provided to give access to group names for optional grouping.  Typing into the filter always shows
+        all available items as the entire collection is available.
+    </p>
     <CodeBlock Lang="blazor">
-        &lt;ComboBox Items="@@Sectors" Placeholder="@@Placeholder" /&gt;
+        &lt;ComboBox Items="@@Sectors" Placeholder="@BasicPlaceholder" Sort="@BasicSort" Grouping="@Grouping" ViewModel="@@this" @@bind="Value" /&gt;
 
         @@code {
             private List&lt;Sector&gt; Sectors { get; set; } = ...;
+
+            private Sector Value { get; set; }
         }
     </CodeBlock>
-    <ComboBox Items="@Data" Placeholder="@Placeholder" Sort="@Sort" Grouping="@Grouping" ViewModel="@this" @bind-Value="Value" />
-    <h5>Bound Values</h5>
-    <h6>Value.Title:</h6>
-    @if(Value != null) {
-        <div>@Value.Title</div>
-    }
-    <h6>Value.Description:</h6>
-    @if(Value != null) {
-        <div>@Value.Description</div>
-    }
+    <ComboBox Items="@Data" Placeholder="@BasicPlaceholder" Sort="@BasicSort" Grouping="@Grouping" ViewModel="@this" @bind-Value="BasicValue" />
+    <h5 style="margin-top: 10px;">Bound Value</h5>
+    <h6>
+        @if(BasicValue == null) {
+            <i>not set</i>
+        }
+        else {
+            <b>@BasicValue.Title</b>
+        }
+    </h6>
     <h5>Try It Out</h5>
     <form class="tryitout" onsubmit="return false;">
         <div>
             <label>Placeholder:</label>
-            <input type="text" @bind="Placeholder" />
+            <input type="text" @bind="BasicPlaceholder" />
         </div>
         <div>
             <label>Sort:</label>
-            <select @bind="Sort">
+            <select @bind="BasicSort">
                 <option value="@(ComboBoxSort.None)">ComboBoxSort.None</option>
                 <option value="@(ComboBoxSort.Title)">ComboBoxSort.Title</option>
             </select>
@@ -55,43 +61,45 @@
     <h3>Advanced Usage</h3>
     <h5>No View Model</h5>
     <CodeBlock Lang="blazor">
-        &lt;ComboBox ItemsService="@@Sectors" Icon="@@Icon" ... /&gt;
+        &lt;ComboBox ItemsService="@@Sectors" Icon="@Icon" Placeholder="@AdvancedPlaceholder" Sort="ComboBoxSort.@AdvancedSort" ViewModel="@@this" ... /&gt;
 
         @@code {
-        [Inject]
-        private IListService&lt;Sector&gt; Sectors { get; set; } = null!;
+            [Inject]
+            private IListService&lt;Sector&gt; Sectors { get; set; } = null!;
         }
     </CodeBlock>
-    <ComboBox ItemsSource="@SectorService" Icon="@Icon" Placeholder="@Placeholder" Sort="@Sort" ViewModel="@this" @bind-Value="Value" />
-    <h5>Bound Values</h5>
-    <h6>Value.Title:</h6>
-    @if (Value != null)
-    {
-        <div>@Value.Title</div>
-    }
+    <ComboBox ItemsSource="@SectorService" Icon="@Icon" Placeholder="@AdvancedPlaceholder" Sort="@AdvancedSort" ViewModel="@this" @bind-Value="AdvancedValue" />
+    <h5 style="margin-top: 10px;">Bound Value</h5>
+    <h6>
+        @if(AdvancedValue == null) {
+            <i>not set</i>
+        }
+        else {
+            <b>@AdvancedValue.Title</b>
+        }
+    </h6>
     <h6>Value.Description:</h6>
-    @if (Value != null)
+    @if (BasicValue != null)
     {
-        <div>@Value.Description</div>
+        <div>@BasicValue.Description</div>
     }
     <h5>Try It Out</h5>
     <form class="tryitout" onsubmit="return false;">
         <div>
+            <label>Icon:</label>
+            <input type="text" @bind="Icon" />
+        </div>
+        <div>
             <label>Placeholder:</label>
-            <input type="text" @bind="Placeholder" />
+            <input type="text" @bind="AdvancedPlaceholder" />
         </div>
         <div>
             <label>Sort:</label>
-            <select @bind="Sort">
+            <select @bind="AdvancedSort">
                 <option value="@(ComboBoxSort.None)">ComboBoxSort.None</option>
                 <option value="@(ComboBoxSort.Title)">ComboBoxSort.Title</option>
             </select>
         </div>
-        <div>
-            <label>Icon:</label>
-            <input type="text" @bind="Icon" />
-        </div>
-
     </form>
 </section>
 <section>
