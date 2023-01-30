@@ -7,7 +7,7 @@ div ::deep div.curtain {
   top: 0;
   width: 100%;
   height: 100vh;
-  background-color: #ffffff7f;
+  background-color: rgba(255, 255, 255, 0.4980392157);
 }
 div ::deep div.expandable {
   position: absolute;

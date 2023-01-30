@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
@@ -56,12 +56,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="ExtraDry.Analyzers" Version="0.3.24-alpha">
+		<PackageReference Include="ExtraDry.Analyzers" Version="0.3.25-alpha">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="BuildWebCompiler2022" Version="1.14.8" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.8" />
+		<PackageReference Include="BuildWebCompiler2022" Version="1.14.10" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.2" />
 	</ItemGroup>
 
 	<ItemGroup>

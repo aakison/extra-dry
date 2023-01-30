@@ -97,7 +97,6 @@ div.content-editor .editor section.rooster-selected {
   outline: solid 1.5px #427bbd;
   z-index: 1000;
 }
-div.content-editor .editor section.rooster-selected div.editor-root {
-  /* RoosterJS style */
+div.content-editor .editor section.rooster-selected div.editor-root { /* RoosterJS style */
   outline: solid 1.5px #427bbd;
 }

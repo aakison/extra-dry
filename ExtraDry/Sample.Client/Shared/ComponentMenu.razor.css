@@ -1,5 +1,5 @@
 ﻿section {
-  border-bottom: solid 1px #999999;
+  border-bottom: solid 1px hsl(0deg, 0%, 60%);
   display: flex;
   justify-content: center;
 }
@@ -28,7 +28,7 @@ section article ::deep nav ul li {
   border-bottom: solid 3px transparent;
 }
 section article ::deep nav ul li a {
-  color: #4d4d4d;
+  color: hsl(0deg, 0%, 30%);
   padding: 1px 10px;
   text-decoration: none;
   display: flex;
@@ -36,13 +36,13 @@ section article ::deep nav ul li a {
   gap: 5px;
 }
 section article ::deep nav ul li:hover {
-  border-bottom: solid 3px #fff4cc;
-  background-color: #f7f7f7;
+  border-bottom: solid 3px hsl(47.5247524752deg, 99.0196078431%, 90%);
+  background-color: hsl(0deg, 0%, 97%);
 }
 section article ::deep nav ul li.active {
   border-bottom: solid 3px #FED434;
-  background-color: #e6e6e6;
+  background-color: hsl(0deg, 0%, 90%);
 }
 section article ::deep nav ul li.active:hover {
-  background-color: #f7f7f7;
+  background-color: hsl(0deg, 0%, 97%);
 }
