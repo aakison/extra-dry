@@ -96,14 +96,40 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
 
     protected Task DoClick(MouseEventArgs _)
     {
+        Console.WriteLine("DoClick");
         ShowOptions = !ShowOptions;
         return Task.CompletedTask;
     }
 
-    protected Task DoFocusOut(FocusEventArgs _)
+    /// <summary>
+    /// When the DIV loses focus we want to Cancel Input.  However, the onfocusout event will fire
+    /// multiple times _within_ the DIV without it actually losing focus.  E.g. when switching from
+    /// the button to the input text or scrollbar.  No elegant solution can be found, so when the
+    /// DIV receives OnFocusOut, let all events complete and see if the DIV immediately got a 
+    /// onfocusin event.  If it loses focus and gains focus both in the same event loop then it
+    /// "hasn't actually lost focus" and we don't want to cancel.
+    /// </summary>
+    private bool haveActuallyLostFocus = false;
+
+    /// <summary>
+    /// Just to check if we got focus back and haven't actually lost focus.
+    /// </summary>
+    protected Task DoFocusIn(FocusEventArgs _)
     {
-        CancelInput();
+        haveActuallyLostFocus = false;
         return Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// If we've actually lost focus and if so, cancel the input and revert to the current Value.
+    /// </summary>
+    protected async Task DoFocusOut(FocusEventArgs _)
+    {
+        haveActuallyLostFocus = true;
+        await Task.Delay(1); // process other events, but get right back in queue...
+        if(haveActuallyLostFocus) {
+            CancelInput();
+        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

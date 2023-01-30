@@ -3,7 +3,7 @@
 @typeparam TItem
 
 <div class="@CssClasses" id="@Id" @attributes="@UnmatchedAttributes"
-     @onfocusout="DoFocusOut"
+     @onfocusin="DoFocusIn" @onfocusout="DoFocusOut" 
      @onkeydown:preventDefault="PreventDefault" @onkeypress:preventDefault="PreventDefault" @onkeyup:preventDefault="PreventDefault"
      @onkeydown="DoKeyPress" tabindex="-1">
     <label>
