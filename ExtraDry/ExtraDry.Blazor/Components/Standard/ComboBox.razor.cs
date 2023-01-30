@@ -490,15 +490,15 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         }
         if(ShowGrouping) {
             if(Sort == ComboBoxSort.Title) {
-                SortedItems = Items.OrderBy(e => DisplayItemGroupSort(e)).ThenBy(e => DisplayItemTitle(e)).ToList();
+                SortedItems = Items.OrderBy(DisplayItemGroupSort).ThenBy(DisplayItemTitle).ToList();
             }
             else {
-                SortedItems = Items.OrderBy(e => DisplayItemGroupSort(e)).ToList();
+                SortedItems = Items.OrderBy(DisplayItemGroupSort).ToList();
             }
         }
         else {
             if(Sort == ComboBoxSort.Title) {
-                SortedItems = Items.OrderBy(e => DisplayItemTitle(e)).ToList();
+                SortedItems = Items.OrderBy(DisplayItemTitle).ToList();
             }
             else {
                 SortedItems = Items.ToList();
@@ -514,9 +514,11 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         cancellationToken.ThrowIfCancellationRequested();
         ShowProgress = true;
         var items = await ItemsSource.GetItemsAsync(filter, null, null, null, null, cancellationToken);
+        var sorted = items.Items.OrderBy(DisplayItemGroupSort).ThenBy(DisplayItemTitle).ToList();
         ShowProgress = false;
+        cancellationToken.ThrowIfCancellationRequested();
         MoreCount = items.TotalItemCount - items.Items.Count();
-        SortedItems = items.Items.OrderBy(e => DisplayItemGroupSort(e)).ToList();
+        SortedItems = sorted;
     }
 }
 
