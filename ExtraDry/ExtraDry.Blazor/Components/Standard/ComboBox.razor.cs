@@ -1,6 +1,4 @@
-﻿using System.Threading;
-
-namespace ExtraDry.Blazor;
+﻿namespace ExtraDry.Blazor;
 
 /// <summary>
 /// Defines the sort options for the `ComboBox`.
@@ -85,6 +83,13 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// <inheritdoc cref="IComments{TItem}.ViewModel" />
     [Parameter]
     public IListItemViewModel<TItem>? ViewModel { get; set; }
+
+    /// <summary>
+    /// Template for a non-selectable line that indicates that only a subset of filtered results
+    /// are available. Default "plus {0} more...";
+    /// </summary>
+    [Parameter]
+    public string MoreItemsTemplate { get; set; } = "plus {0} more...";
 
     [Inject]
     protected ExtraDryJavascriptModule Javascript { get; set; } = null!;
@@ -194,6 +199,11 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// </summary>
     /// <remarks>Set and reset before and after async calls to `ItemsSource`.</remarks>
     private bool ShowProgress { get; set; }
+
+    /// <summary>
+    /// Used to show that there are more results than are currently in the list.
+    /// </summary>
+    private int MoreCount { get; set; }
 
     private List<TItem> SortedItems { get; set; } = new();
 
@@ -316,6 +326,11 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         ?? (item as IListItemViewModel)?.Title
         ?? item.ToString()
         ?? "unnamed";
+
+    /// <summary>
+    /// The formatted display text for showing that more items are available.
+    /// </summary>
+    private string DisplayMoreCaption => string.Format(MoreItemsTemplate, MoreCount);
 
     /// <summary>
     /// Process set values against the filter asynchronously so that search can be performed.
@@ -444,6 +459,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
                 SortedItems = Items.ToList();
             }
         }
+        MoreCount = 0;
     }
 
     private async Task TryPopulateFromItemsSourceAsync(string filter, CancellationToken cancellationToken)
@@ -455,6 +471,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         ShowProgress = true;
         var items = await ItemsSource.GetItemsAsync(filter, null, null, null, null, cancellationToken);
         ShowProgress = false;
+        MoreCount = items.TotalItemCount - items.Items.Count();
         SortedItems = items.Items.OrderBy(e => DisplayItemGroupSort(e)).ToList();
     }
 }

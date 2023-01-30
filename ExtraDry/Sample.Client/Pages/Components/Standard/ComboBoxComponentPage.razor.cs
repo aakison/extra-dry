@@ -38,6 +38,8 @@ public partial class ComboBoxComponentPage : ComponentBase, IListItemViewModel<S
 
     private SectorListService SectorService { get; set; } = new();
 
+    private string MoreItemsTemplate = "plus {0} more...";
+
     protected override void OnInitialized()
     {
         Data.Add(new Sector { Title = "Catering", Description = "Give people food.", Group = "Other" });

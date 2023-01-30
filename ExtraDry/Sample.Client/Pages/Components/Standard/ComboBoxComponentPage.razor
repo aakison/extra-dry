@@ -1,4 +1,9 @@
 ﻿@page "/components/standard/combo-box"
+@{
+// Generated Blazor will create the page constructor in a `#nullable disable` block.  This breaks
+// the ability to pass in a collection of not-null objects.
+#pragma warning disable CS8620
+}
 
 <section>
     <h2>ComboBox</h2>
@@ -61,14 +66,16 @@
     <h3>Advanced Usage</h3>
     <h5>No View Model</h5>
     <CodeBlock Lang="blazor">
-        &lt;ComboBox ItemsService="@@Sectors" Icon="@Icon" Placeholder="@AdvancedPlaceholder" Sort="ComboBoxSort.@AdvancedSort" ViewModel="@@this" ... /&gt;
+        &lt;ComboBox ItemsService="@@Sectors" Icon="@Icon" Placeholder="@AdvancedPlaceholder" Sort="ComboBoxSort.@AdvancedSort" ViewModel="@@this" 
+            MoreItemsTemplate="@MoreItemsTemplate" ... /&gt;
 
         @@code {
             [Inject]
             private IListService&lt;Sector&gt; Sectors { get; set; } = null!;
         }
     </CodeBlock>
-    <ComboBox ItemsSource="@SectorService" Icon="@Icon" Placeholder="@AdvancedPlaceholder" Sort="@AdvancedSort" ViewModel="@this" @bind-Value="AdvancedValue" />
+    <ComboBox ItemsSource="@SectorService" Icon="@Icon" Placeholder="@AdvancedPlaceholder" Sort="@AdvancedSort" 
+        ViewModel="@this" MoreItemsTemplate="@MoreItemsTemplate" @bind-Value="AdvancedValue" />
     <h5 style="margin-top: 10px;">Bound Value</h5>
     <h6>
         @if(AdvancedValue == null) {
@@ -99,6 +106,10 @@
                 <option value="@(ComboBoxSort.None)">ComboBoxSort.None</option>
                 <option value="@(ComboBoxSort.Title)">ComboBoxSort.Title</option>
             </select>
+        </div>
+        <div>
+            <label>MoreItemsTemplate:</label>
+            <input type="text" @bind="MoreItemsTemplate" />
         </div>
     </form>
 </section>
