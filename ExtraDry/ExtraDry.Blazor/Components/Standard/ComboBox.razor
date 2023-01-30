@@ -30,14 +30,15 @@
                     int i = index;
                     var group = DisplayItemGroup(item);
                     if(ShowGrouping && !lastGroup.Equals(group, StringComparison.CurrentCultureIgnoreCase)) {
-                        <li class="header">@group</li>
+                        var id = index == 0 ? DisplayFirstHeaderId : "";
+                        <li id="@id" class="header">@group</li>
                         lastGroup = group;
                     }
                     <li id="@DisplayItemID(item)" class="option @selected" @ondblclick="async e => await ConfirmInputAsync(item)" @onclick="e => SelectItemIndex(i)">@DisplayItemTitle(item)</li>
                     ++index;
                 }
                 if(MoreCount > 0) {
-                    <li class="more">@DisplayMoreCaption</li>
+                    <li id="@DisplayMoreCaptionId" class="more">@DisplayMoreCaption</li>
                 }
             }
         </ol>

@@ -135,7 +135,14 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if(SelectedItem != null && ShowOptions) {
-            await Javascript.InvokeVoidAsync("DropDown_ScrollIntoView", DisplayItemID(SelectedItem));
+            var id = DisplayItemID(SelectedItem);
+            if(ShowGrouping && SelectedItem == SortedItems.FirstOrDefault()) {
+                id = DisplayFirstHeaderId;
+            }
+            if(MoreCount > 0 && SelectedItem == SortedItems.LastOrDefault()) {
+                id = DisplayMoreCaptionId;
+            }
+            await Javascript.InvokeVoidAsync("DropDown_ScrollIntoView", id);
         }
         await base.OnAfterRenderAsync(firstRender);
     }
@@ -342,6 +349,17 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// <remarks>ID should be unique for each item and retained between renderings.</remarks>
     private string DisplayItemID(TItem? item) =>
         $"{Id}_item_{item?.GetHashCode()}";
+
+    /// <summary>
+    /// Id for the first header when headers are shown so auto-scoll can target it.
+    /// </summary>
+    private string DisplayFirstHeaderId => $"{Id}_header";
+
+    /// <summary>
+    /// Id for the more footer when more is available so auto-scoll can target it.
+    /// </summary>
+    private string DisplayMoreCaptionId => $"{Id}_more";
+
 
     /// <summary>
     /// Determines the title to display for the item using multiple fallback mechanisms such as the
