@@ -180,7 +180,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         public string GroupSort(TItem item) => string.Empty;
     }
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", "drop-down", CssClass);
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "combo-box", CssClass);
 
     /// <summary>
     /// The current filter displayed the user. Will be the entire title of the SelectedItem once
