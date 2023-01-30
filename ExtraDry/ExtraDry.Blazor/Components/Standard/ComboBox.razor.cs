@@ -270,6 +270,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
             computeFilterCancellationSource?.Cancel();
             using(computeFilterCancellationSource = new CancellationTokenSource()) {
                 var cancellationToken = computeFilterCancellationSource.Token;
+                MoreCount = 0;
                 if(showAll) {
                     if(ItemsSource != null) {
                         cancellationToken.ThrowIfCancellationRequested();
@@ -485,7 +486,6 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
                 SortedItems = Items.ToList();
             }
         }
-        MoreCount = 0;
     }
 
     private async Task TryPopulateFromItemsSourceAsync(string filter, CancellationToken cancellationToken)
