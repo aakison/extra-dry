@@ -271,10 +271,13 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
 
     private async Task ComputeFilter()
     {
-        Console.WriteLine("ComputeFilter()");
+        Console.WriteLine($"ComputeFilter() {computeFilterCancellationSource == null}");
         try {
             var showAll = string.IsNullOrWhiteSpace(Filter) || SelectedItem != null;
-            computeFilterCancellationSource?.Cancel();
+            if(computeFilterCancellationSource != null) {
+                computeFilterCancellationSource.Cancel();
+                await Task.Delay(1); // KLUDGE: From .NET6 to .NET7 need to let some event through to keep this working...
+            }
             using(computeFilterCancellationSource = new CancellationTokenSource()) {
                 var cancellationToken = computeFilterCancellationSource.Token;
                 MoreCount = 0;
@@ -518,7 +521,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         ShowProgress = false;
         cancellationToken.ThrowIfCancellationRequested();
         MoreCount = items.TotalItemCount - items.Items.Count();
-        SortedItems = sorted;
+        SortedItems = items.Items.ToList();
     }
 }
 
