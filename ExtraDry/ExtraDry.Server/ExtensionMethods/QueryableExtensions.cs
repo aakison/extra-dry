@@ -15,11 +15,11 @@ public static class QueryableExtensions {
     /// </summary>
     /// <typeparam name="T">The type of objects in the collection.</typeparam>
     /// <param name="source">The extension source</param>
-    /// <param name="partialQuery">A page query that contains filtering, sorting, and paging information.</param>
+    /// <param name="query">A page query that contains filtering, sorting, and paging information.</param>
     /// <param name="defaultFilter">An expression that provides default filtering support, which can be overridden by `partialQuery`</param>
-    public static IPartialQueryable<T> QueryWith<T>(this IQueryable<T> source, PageQuery partialQuery, Expression<Func<T, bool>>? defaultFilter = null)
+    public static IPartialQueryable<T> QueryWith<T>(this IQueryable<T> source, PageQuery query, Expression<Func<T, bool>>? defaultFilter = null)
     {
-        return new PartialQueryable<T>(source, partialQuery, defaultFilter);
+        return new PartialQueryable<T>(source, query, defaultFilter);
     }
 
     /// <summary>
@@ -27,11 +27,11 @@ public static class QueryableExtensions {
     /// </summary>
     /// <typeparam name="T">The type of objects in the collection.</typeparam>
     /// <param name="source">The extension source</param>
-    /// <param name="filterQuery">A filter query that contains filtering and sorting information.</param>
+    /// <param name="query">A filter query that contains filtering and sorting information.</param>
     /// <param name="defaultFilter">An expression that provides default filtering support, which can be overridden by `filterQuery`</param>
-    public static IPartialQueryable<T> QueryWith<T>(this IQueryable<T> source, FilterQuery filterQuery, Expression<Func<T, bool>>? defaultFilter = null)
+    public static IPartialQueryable<T> QueryWith<T>(this IQueryable<T> source, FilterQuery query, Expression<Func<T, bool>>? defaultFilter = null)
     {
-        return new PartialQueryable<T>(source, filterQuery, defaultFilter);
+        return new PartialQueryable<T>(source, query, defaultFilter);
     }
 
     public static IPartialQueryable<T> ForceStringComparison<T>(this IQueryable<T> source, StringComparison forceStringComparison)
@@ -44,10 +44,10 @@ public static class QueryableExtensions {
     /// </summary>
     /// <typeparam name="T">The type of objects in the collection.</typeparam>
     /// <param name="source">The extension source</param>
-    /// <param name="filterQuery">A filter query that contains filtering and sorting information.</param>
-    public static IQueryable<T> Filter<T>(this IQueryable<T> source, FilterQuery filterQuery)
+    /// <param name="query">A filter query that contains filtering and sorting information.</param>
+    public static IQueryable<T> Filter<T>(this IQueryable<T> source, FilterQuery query)
     {
-        return source.Filter(filterQuery.Filter);
+        return source.Filter(query.Filter);
     }
 
     /// <summary>
@@ -74,11 +74,11 @@ public static class QueryableExtensions {
     /// </summary>
     /// <typeparam name="T">The type of objects in the collection.</typeparam>
     /// <param name="source">The extension source</param>
-    /// <param name="filterQuery">A filter query that contains sorting information.</param>
-    public static IQueryable<T> Sort<T>(this IQueryable<T> source, FilterQuery filterQuery)
+    /// <param name="query">A filter query that contains sorting information.</param>
+    public static IQueryable<T> Sort<T>(this IQueryable<T> source, FilterQuery query)
     {
-        var token = (filterQuery as PageQuery)?.Token; // Only need the token if it's a PageQuery, null if FilterQuery.
-        return source.Sort(filterQuery.Sort, filterQuery.Ascending, token);
+        var token = (query as PageQuery)?.Token; // Only need the token if it's a PageQuery, null if FilterQuery.
+        return source.Sort(query.Sort, query.Ascending, token);
     }
 
     /// <summary>
@@ -116,11 +116,11 @@ public static class QueryableExtensions {
     /// </summary>
     /// <typeparam name="T">The type of objects in the collection.</typeparam>
     /// <param name="source">The extension source</param>
-    /// <param name="pageQuery">A page query that contains paging information.</param>
-    public static IQueryable<T> Page<T>(this IQueryable<T> source, PageQuery pageQuery)
+    /// <param name="query">A page query that contains paging information.</param>
+    public static IQueryable<T> Page<T>(this IQueryable<T> source, PageQuery query)
     {
         // TODO: Implement stabilizer using model meta-data.
-        return source.Page(pageQuery.Skip, pageQuery.Take, pageQuery.Token);
+        return source.Page(query.Skip, query.Take, query.Token);
     }
 
     /// <summary>

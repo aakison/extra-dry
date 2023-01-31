@@ -56,10 +56,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="ExtraDry.Analyzers" Version="0.3.25-alpha">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
 		<PackageReference Include="BuildWebCompiler2022" Version="1.14.10" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.2" />
 	</ItemGroup>
@@ -67,6 +63,8 @@
 	<ItemGroup>
 		<ProjectReference Include="..\ExtraDry.Core\ExtraDry.Core.csproj" />
 	</ItemGroup>
+	
+	<Import Project="..\CommonAnalyzers.targets" />
 
 	<ItemGroup>
 		<Content Update="wwwroot\img\layout-doubleweightedleft.png">

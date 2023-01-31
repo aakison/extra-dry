@@ -18,7 +18,7 @@ public class ServiceBusQueue<T> {
     {
         Options = options ?? new();
         var connectionString = Options.ConnectionString
-            ?? configuration.GetConnectionString(Options.ConnectionStringKey)
+            ?? configuration?.GetConnectionString(Options.ConnectionStringKey)
             ?? throw new InvalidOperationException("Could not resolve a connection string for the service bus.");
         Client = new ServiceBusClient(connectionString);
         Sender = Client.CreateSender(Options.QueueName);

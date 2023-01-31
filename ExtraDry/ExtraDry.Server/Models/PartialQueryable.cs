@@ -31,9 +31,9 @@ public class PartialQueryable<T> : IPartialQueryable<T> {
         pagedQuery = sortedQuery.Page(pageQuery);
     }
 
-    private static IQueryable<T> InitializeMergedFilter(IQueryable<T> queryable, FilterQuery filterQuery, Expression<Func<T, bool>>? defaultFilter)
+    private static IQueryable<T> InitializeMergedFilter(IQueryable<T> queryable, FilterQuery query, Expression<Func<T, bool>>? defaultFilter)
     {
-        if(string.IsNullOrWhiteSpace(filterQuery.Filter)) {
+        if(string.IsNullOrWhiteSpace(query.Filter)) {
             if(defaultFilter == null) {
                 return queryable;
             }
@@ -43,20 +43,20 @@ public class PartialQueryable<T> : IPartialQueryable<T> {
         }
         else {
             if(defaultFilter == null) {
-                return queryable.Filter(filterQuery);
+                return queryable.Filter(query);
             }
             else {
-                var filter = FilterParser.Parse(filterQuery.Filter);
+                var filter = FilterParser.Parse(query.Filter);
                 var visitor = new MemberAccessVisitor(typeof(T));
                 visitor.Visit(defaultFilter);
                 var hasAnyPropertyInCommon = filter.Rules
                     .Any(r => visitor.PropertyNames
                         .Any(p => p.Equals(r.PropertyName, StringComparison.InvariantCultureIgnoreCase)));
                 if(hasAnyPropertyInCommon) {
-                    return queryable.Filter(filterQuery);
+                    return queryable.Filter(query);
                 }
                 else {
-                    return queryable.Where(defaultFilter).Filter(filterQuery);
+                    return queryable.Where(defaultFilter).Filter(query);
                 }
             }
         }
