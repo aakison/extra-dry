@@ -94,11 +94,20 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     [Inject]
     protected ExtraDryJavascriptModule Javascript { get; set; } = null!;
 
-    protected Task DoClick(MouseEventArgs _)
+    protected async Task DoClick(MouseEventArgs _)
     {
         Console.WriteLine("DoClick");
-        ShowOptions = !ShowOptions;
-        return Task.CompletedTask;
+        if(ShowOptions) {
+            CancelInput();
+            ShowOptions = false;
+        }
+        else {
+            // Show UI change while awaiting filtered set if from ItemsSource
+            ShowOptions = true;
+            ShouldRender();
+            await FilterInput("");
+            ShowOptions = true;
+        }
     }
 
     /// <summary>
@@ -266,6 +275,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
             SelectItemIndex(FilteredItems.FindIndex(e => e?.Equals(Value) ?? false));
             Filter = SelectedItem == null ? Filter : DisplayItemTitle(SelectedItem);
         }
+        FilteredItems.Clear();
         ShouldRender();
     }
 
@@ -391,7 +401,11 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     protected async Task DoFilterInput(ChangeEventArgs args)
     {
         Console.WriteLine($"DoFilterInput({args.Value})");
-        Filter = args.Value?.ToString() ?? string.Empty;
+        await FilterInput(args.Value?.ToString() ?? string.Empty);
+    }
+
+    private async Task FilterInput(string filter) { 
+        Filter = filter;
         if(!Filter.Equals(DisplayItemTitle(SelectedItem), StringComparison.CurrentCultureIgnoreCase)) {
             SelectedItem = default;
         }
