@@ -126,7 +126,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     protected async Task DoFocusOut(FocusEventArgs _)
     {
         haveActuallyLostFocus = true;
-        await Task.Delay(1); // process other events, but get right back in queue...
+        await Task.Delay(1); // KLUDGE: process other events, but get right back in queue...
         if(haveActuallyLostFocus) {
             CancelInput();
         }
