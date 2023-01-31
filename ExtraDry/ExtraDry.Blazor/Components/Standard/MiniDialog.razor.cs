@@ -81,11 +81,7 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent {
     /// The user must use CSS to have these style perform the desired animations.
     /// </summary>
     [Parameter]
-    public int AnimationDuration {
-        get => duration;
-        set => duration = Math.Clamp(value, 0, maximumDuration);
-    }
-    private int duration = 0;
+    public int AnimationDuration { get; set; }
 
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
@@ -108,11 +104,11 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent {
             return;
         }
         // Start the animation from hidden state to showing state.
-        if(await ChangeStateAsync(DialogState.Hidden, DialogState.Showing, AnimationDuration)) {
+        if(await ChangeStateAsync(DialogState.Hidden, DialogState.Showing, ActualAnimationDuration)) {
             return;
         }
         // If we're in a hiding state, then must have interupted the Hide to re-show, get on it...
-        if(await ChangeStateAsync(DialogState.Hiding, DialogState.Showing, AnimationDuration)) {
+        if(await ChangeStateAsync(DialogState.Hiding, DialogState.Showing, ActualAnimationDuration)) {
             return;
         }
         // Finish animation, if any, and rest on visible state.
@@ -127,11 +123,11 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent {
     {
         CancelAndResetCancellation();
         // When visible, just start hiding.
-        if(await ChangeStateAsync(DialogState.Visible, DialogState.Hiding, AnimationDuration)) {
+        if(await ChangeStateAsync(DialogState.Visible, DialogState.Hiding, ActualAnimationDuration)) {
             return;
         }
         // If we're in a showing state, must have been interrupted, get to hiding...
-        if(await ChangeStateAsync(DialogState.Showing, DialogState.Hiding, AnimationDuration)) {
+        if(await ChangeStateAsync(DialogState.Showing, DialogState.Hiding, ActualAnimationDuration)) {
             return;
         }
         // Finish animation, if any, then finish into final animation state.
@@ -246,6 +242,8 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent {
     private CancellationTokenSource stateChangeCancellation = new();
 
     private bool shouldCollapse = false;
+
+    private int ActualAnimationDuration => Math.Clamp(AnimationDuration, 0, maximumDuration);
 
     // One frame to allow refresh to happen.
     private const int minimumDuration = 1000 / 60;

@@ -29,15 +29,15 @@ public partial class Theme : ComponentBase {
     /// A custom error component that is applied and used on any DryErrorBoundary instead of the default.
     /// </summary>
     [Parameter]
-    public Type ErrorComponent {
-        get => ThemeInfo.ErrorComponent;
-        set => ThemeInfo.ErrorComponent = value;
-    }
+    public Type? ErrorComponent { get; set; }
 
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
         ThemeInfo.Icons = Icons?.ToDictionary(e => e.Key, e => e, StringComparer.InvariantCultureIgnoreCase) ?? new();
+        if(ErrorComponent != null) {
+            ThemeInfo.ErrorComponent = ErrorComponent;
+        }
     }
 
 }
