@@ -107,6 +107,9 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
             ShouldRender();
             await FilterInput("");
             ShowOptions = true;
+            ShouldRender();
+            await Task.Delay(1);
+            await ScrollIntoView(Id);
         }
     }
 
@@ -151,9 +154,15 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
             if(MoreCount > 0 && SelectedItem == SortedItems.LastOrDefault()) {
                 id = DisplayMoreCaptionId;
             }
-            await Javascript.InvokeVoidAsync("DropDown_ScrollIntoView", id);
+            await ScrollIntoView(id);
         }
         await base.OnAfterRenderAsync(firstRender);
+    }
+
+    private async Task ScrollIntoView(string id)
+    {
+        Console.WriteLine($"ScrollIntoView({id})");
+        await Javascript.InvokeVoidAsync("DropDown_ScrollIntoView", id);
     }
 
     protected override async Task OnParametersSetAsync()

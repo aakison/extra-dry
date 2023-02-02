@@ -34,7 +34,7 @@
                         <li id="@id" class="header">@group</li>
                         lastGroup = group;
                     }
-                    <li id="@DisplayItemID(item)" class="option @selected" @ondblclick="async e => await ConfirmInputAsync(item)" @onclick="e => SelectItemIndex(i)">@DisplayItemTitle(item)</li>
+                    <li id="@DisplayItemID(item)" class="option @selected" @onclick="async e => await ConfirmInputAsync(item)">@DisplayItemTitle(item)</li>
                     ++index;
                 }
                 if(MoreCount > 0) {
