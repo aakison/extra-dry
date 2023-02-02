@@ -15,10 +15,10 @@
         @if(ShowProgress) {
             <progress></progress>
         }
-        <button class="unobtrusive" @onclick="DoClick" type="button" tabindex="-1"><Icon Key="select" /></button>
+        <button class="unobtrusive" @onclick="DoButtonClick" type="button" tabindex="-1"><Icon Key="select" /></button>
     </label>
     @if(ShowOptions) {
-        <ol class="options">
+        <ol class="options" id="@OptionsId">
             @{
                 int index = 0;
                 var lastGroup = string.Empty;
@@ -34,7 +34,7 @@
                         <li id="@id" class="header">@group</li>
                         lastGroup = group;
                     }
-                    <li id="@DisplayItemID(item)" class="option @selected" @onclick="async e => await ConfirmInputAsync(item)">@DisplayItemTitle(item)</li>
+                    <li id="@DisplayItemID(item)" class="option @selected" @onclick="async e => await DoItemClick(item)">@DisplayItemTitle(item)</li>
                     ++index;
                 }
                 if(MoreCount > 0) {

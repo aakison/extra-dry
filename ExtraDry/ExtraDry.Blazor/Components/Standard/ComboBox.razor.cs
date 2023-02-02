@@ -1,23 +1,6 @@
 ﻿namespace ExtraDry.Blazor;
 
 /// <summary>
-/// Defines the sort options for the `ComboBox`.
-/// </summary>
-[JsonConverter(typeof(JsonStringEnumConverter))]
-public enum ComboBoxSort {
-
-    /// <summary>
-    /// No sorting is applied, the order items is presented to the component is retained.
-    /// </summary>
-    None,
-
-    /// <summary>
-    /// Sorting is done by the title alphabetically (default).
-    /// </summary>
-    Title,
-}
-
-/// <summary>
 /// A flexi alternative to a select control. Creates a semantic HTML control with extended
 /// capabilities for generating single and multiple select controls on mobile and desktop
 /// platforms. Includes list management and filtering.
@@ -68,10 +51,6 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     [Parameter]
     public ComboBoxSort Sort { get; set; } = ComboBoxSort.Title;
 
-    /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
-    [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
-
     /// <inheritdoc cref="IComments{TItem}.Value" />
     [Parameter]
     public TItem? Value { get; set; }
@@ -91,10 +70,14 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     [Parameter]
     public string MoreItemsTemplate { get; set; } = "plus {0} more...";
 
+    /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
+
     [Inject]
     protected ExtraDryJavascriptModule Javascript { get; set; } = null!;
 
-    protected async Task DoClick(MouseEventArgs _)
+    protected async Task DoButtonClick(MouseEventArgs _)
     {
         Console.WriteLine("DoClick");
         if(ShowOptions) {
@@ -106,11 +89,16 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
             ShowOptions = true;
             ShouldRender();
             await FilterInput("");
-            ShowOptions = true;
-            ShouldRender();
-            await Task.Delay(1);
-            await ScrollIntoView(Id);
+            SelectedItem = Value;
+            await ScrollIntoView(OptionsId);
         }
+    }
+
+    protected async Task DoItemClick(TItem item)
+    {
+        Console.WriteLine("DoItemClick()");
+        SelectedItem = item;
+        await ConfirmInputAsync(item);
     }
 
     /// <summary>
@@ -169,6 +157,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     {
         Console.WriteLine("OnParametersSet()");
         Id ??= $"combo_{GetHashCode()}";
+        OptionsId ??= $"{Id}_options";
         Name ??= $"combo_{typeof(TItem).Name}";
         AssertItemsMutualExclusivity();
 
@@ -228,6 +217,11 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     private string Id { get; set; } = null!;
 
     /// <summary>
+    /// An Id for the options dropdown when its visible, needed to scroll the window into view.
+    /// </summary>
+    private string OptionsId { get; set; } = null!;
+
+    /// <summary>
     /// The currently 'selected' item which varies from the current Value. The selected item can
     /// change as the user is scrolling through the list of options, but doesn't become the `Value`
     /// until the user confirms the settings.
@@ -281,8 +275,8 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
             Filter = string.Empty;
         }
         else {
-            SelectItemIndex(FilteredItems.FindIndex(e => e?.Equals(Value) ?? false));
-            Filter = SelectedItem == null ? Filter : DisplayItemTitle(SelectedItem);
+            SelectedItem = Value;
+            Filter = DisplayItemTitle(Value);
         }
         FilteredItems.Clear();
         ShouldRender();
@@ -546,6 +540,23 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         MoreCount = items.TotalItemCount - items.Items.Count();
         SortedItems = items.Items.ToList();
     }
+}
+
+/// <summary>
+/// Defines the sort options for the `ComboBox`.
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum ComboBoxSort {
+
+    /// <summary>
+    /// No sorting is applied, the order items is presented to the component is retained.
+    /// </summary>
+    None,
+
+    /// <summary>
+    /// Sorting is done by the title alphabetically (default).
+    /// </summary>
+    Title,
 }
 
 /// <summary>
