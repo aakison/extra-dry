@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Blazor;
+﻿using System.Xml.Linq;
+
+namespace ExtraDry.Blazor;
 
 /// <summary>
 /// A flexi alternative to a select control. Creates a semantic HTML control with extended
@@ -77,6 +79,12 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     [Inject]
     protected ExtraDryJavascriptModule Javascript { get; set; } = null!;
 
+    public ComboBox()
+    {
+        Id = $"combo_{GetHashCode()}";
+        OptionsId = $"{Id}_options";
+    }
+
     protected async Task DoButtonClick(MouseEventArgs _)
     {
         Console.WriteLine("DoClick");
@@ -90,7 +98,6 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
             ShouldRender();
             await FilterInput("");
             SelectedItem = Value;
-            await ScrollIntoView(OptionsId);
         }
     }
 
@@ -132,8 +139,14 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         }
     }
 
+    /// <summary>
+    /// After each render, ensure that the 
+    /// </summary>
+    /// <param name="firstRender"></param>
+    /// <returns></returns>
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        Console.WriteLine($"{Id}::OnAfterRenderAsync({firstRender})");
         if(SelectedItem != null && ShowOptions) {
             var id = DisplayItemID(SelectedItem);
             if(ShowGrouping && SelectedItem == SortedItems.FirstOrDefault()) {
@@ -142,22 +155,20 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
             if(MoreCount > 0 && SelectedItem == SortedItems.LastOrDefault()) {
                 id = DisplayMoreCaptionId;
             }
+            await ScrollIntoView(OptionsId);
             await ScrollIntoView(id);
         }
         await base.OnAfterRenderAsync(firstRender);
-    }
 
-    private async Task ScrollIntoView(string id)
-    {
-        Console.WriteLine($"ScrollIntoView({id})");
-        await Javascript.InvokeVoidAsync("DropDown_ScrollIntoView", id);
+        async Task ScrollIntoView(string id) {
+            Console.WriteLine($"{Id}::ScrollIntoView({id})");
+            await Javascript.InvokeVoidAsync("DropDown_ScrollIntoView", id);
+        }
     }
 
     protected override async Task OnParametersSetAsync()
     {
-        Console.WriteLine("OnParametersSet()");
-        Id ??= $"combo_{GetHashCode()}";
-        OptionsId ??= $"{Id}_options";
+        Console.WriteLine($"{Id}::OnParametersSet()");
         Name ??= $"combo_{typeof(TItem).Name}";
         AssertItemsMutualExclusivity();
 
@@ -169,7 +180,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         };
 
         TryPopulateFromItems();
-        await ComputeFilter();
+        //await ComputeFilter();
 
         await base.OnParametersSetAsync();
     }
@@ -214,12 +225,12 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// An Id for the component attached to the outermost Div and used to help the associated
     /// Javascript identify and support this component when many might be on the same page.
     /// </summary>
-    private string Id { get; set; } = null!;
+    private string Id { get; set; }
 
     /// <summary>
     /// An Id for the options dropdown when its visible, needed to scroll the window into view.
     /// </summary>
-    private string OptionsId { get; set; } = null!;
+    private string OptionsId { get; set; }
 
     /// <summary>
     /// The currently 'selected' item which varies from the current Value. The selected item can
@@ -268,7 +279,8 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// </summary>
     private void CancelInput()
     {
-        Console.WriteLine("CancelInput");
+        Console.WriteLine($"{Id}::CancelInput");
+        Assert(ShowOptions == true, "CancelInput is wasteful if the options aren't shown.");
         ShowOptions = false;
         if(Value == null) {
             SelectedItem = default;
@@ -284,7 +296,8 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
 
     private async Task ComputeFilter()
     {
-        Console.WriteLine($"ComputeFilter() {computeFilterCancellationSource == null}");
+        Console.WriteLine($"{Id}::ComputeFilter() {computeFilterCancellationSource == null}");
+        Assert(ShowOptions == true, "ComputerFilter is wasteful if the options aren't shown.");
         try {
             var showAll = string.IsNullOrWhiteSpace(Filter) || SelectedItem != null;
             if(computeFilterCancellationSource != null) {
@@ -326,7 +339,9 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// </summary>
     private async Task ConfirmInputAsync(TItem? selectedItem)
     {
-        if(selectedItem != null && ShowOptions) {
+        Console.WriteLine($"{Id}::ConfirmInputAsync({DisplayItemTitle(selectedItem)})");
+        Assert(ShowOptions == true, "ConfirmInputAsync expects that the options are shown.");
+        if(selectedItem != null) {
             // Valid Item selected and want to lock it in
             ShowOptions = false;
             Filter = DisplayItemTitle(selectedItem);
@@ -337,12 +352,16 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
             ShowOptions = false;
             Filter = DisplayItemTitle(SelectedItem);
         }
-        else {
-            ShowOptions = true;
-        }
         if(!(Value?.Equals(SelectedItem) ?? SelectedItem == null)) {
             Value = SelectedItem;
             await ValueChanged.InvokeAsync(Value);
+        }
+    }
+
+    private void Assert(bool value, string message)
+    {
+        if(value == false) {
+            Console.WriteLine($"{Id} ERROR - {message}"); 
         }
     }
 
@@ -403,11 +422,12 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// </remarks>
     protected async Task DoFilterInput(ChangeEventArgs args)
     {
-        Console.WriteLine($"DoFilterInput({args.Value})");
+        Console.WriteLine($"{Id}::DoFilterInput({args.Value})");
         await FilterInput(args.Value?.ToString() ?? string.Empty);
     }
 
-    private async Task FilterInput(string filter) { 
+    private async Task FilterInput(string filter) {
+        Console.WriteLine($"{Id}::FilterInput({filter})");
         Filter = filter;
         if(!Filter.Equals(DisplayItemTitle(SelectedItem), StringComparison.CurrentCultureIgnoreCase)) {
             SelectedItem = default;
@@ -425,11 +445,16 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// </summary>
     protected async Task DoKeyPress(KeyboardEventArgs args)
     {
-        Console.WriteLine(args.Code);
+        Console.WriteLine($"{Id}::DoKeyPress({args.Code})");
         PreventDefault = false;
         var pageSize = 8; // 9 lines shown so page up/down should be one less so you have one line overlap for context.
         if(args.Code == "Enter" || args.Code == "NumpadEnter") {
-            await ConfirmInputAsync(SelectedItem);
+            if(ShowOptions) {
+                await ConfirmInputAsync(SelectedItem);
+            }
+            else {
+                await LoadOptions();
+            }
         }
         if(ShowOptions) {
             switch(args.Code) {
@@ -462,7 +487,12 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
                     break;
             }
         }
-        Console.WriteLine(DisplayItemTitle(SelectedItem));
+    }
+
+    private async Task LoadOptions()
+    {
+        ShowOptions = true;
+        await ComputeFilter();
     }
 
     /// <summary>
@@ -470,7 +500,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// </summary>
     private void SelectItemIndex(int index)
     {
-        Console.WriteLine($"SelectIndex({index})");
+        Console.WriteLine($"{Id}::SelectIndex({index})");
         if(index < 0 || index >= FilteredItems.Count) {
             SelectedItem = default;
         }
@@ -486,7 +516,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// </summary>
     private void SelectItemOffset(int offset)
     {
-        Console.WriteLine($"SelectOffset({offset})");
+        Console.WriteLine($"{Id}::SelectOffset({offset})");
         if(SelectedItem == null) {
             if(offset > 0) {
                 SelectItemIndex(0);
@@ -503,8 +533,14 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         }
     }
 
+    /// <summary>
+    /// Populates the `SortedItems` from the `Items` collection that is incoming, arranging by
+    /// grouping and sorting options.  Call when parameters change to affect chagnes to `Items`,
+    /// `Grouping` and `Sort` parameters.
+    /// </summary>
     private void TryPopulateFromItems()
     {
+        Console.WriteLine($"{Id}::TryPopulateFromItems()");
         if(Items == null) {
             return;
         }
@@ -528,6 +564,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
 
     private async Task TryPopulateFromItemsSourceAsync(string filter, CancellationToken cancellationToken)
     {
+        Console.WriteLine($"{Id}::TryPopulateFromItemsSourceAsync({filter})");
         if(ItemsSource == null) {
             return;
         }
