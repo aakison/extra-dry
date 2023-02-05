@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-
-namespace ExtraDry.Blazor;
+﻿namespace ExtraDry.Blazor;
 
 /// <summary>
 /// A flexi alternative to a select control. Creates a semantic HTML control with extended
@@ -83,29 +81,33 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     {
         Id = $"combo_{GetHashCode()}";
         OptionsId = $"{Id}_options";
+        InternalItems = new SortedFilteredCollection<TItem>(DisplayItemGroupSort, DisplayItemTitle, DisplayItemTitle);
     }
 
     protected async Task DoButtonClick(MouseEventArgs _)
     {
-        Console.WriteLine("DoClick");
+        Console.WriteLine($"{Id}::DoClick()");
         if(ShowOptions) {
             CancelInput();
             ShowOptions = false;
         }
         else {
-            // Show UI change while awaiting filtered set if from ItemsSource
-            ShowOptions = true;
-            ShouldRender();
-            await FilterInput("");
-            SelectedItem = Value;
+            await LoadOptionsAsync();
         }
     }
 
     protected async Task DoItemClick(TItem item)
     {
-        Console.WriteLine("DoItemClick()");
-        SelectedItem = item;
+        Console.WriteLine($"{Id}::DoItemClick()");
+        SelectedOption = item;
         await ConfirmInputAsync(item);
+    }
+
+    protected Task DoMouseDown(TItem item)
+    {
+        Console.WriteLine($"{Id}::DoMouseDown()");
+        SelectedOption = item;
+        return Task.CompletedTask;
     }
 
     /// <summary>
@@ -139,33 +141,6 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         }
     }
 
-    /// <summary>
-    /// After each render, ensure that the 
-    /// </summary>
-    /// <param name="firstRender"></param>
-    /// <returns></returns>
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        Console.WriteLine($"{Id}::OnAfterRenderAsync({firstRender})");
-        if(SelectedItem != null && ShowOptions) {
-            var id = DisplayItemID(SelectedItem);
-            if(ShowGrouping && SelectedItem == SortedItems.FirstOrDefault()) {
-                id = DisplayFirstHeaderId;
-            }
-            if(MoreCount > 0 && SelectedItem == SortedItems.LastOrDefault()) {
-                id = DisplayMoreCaptionId;
-            }
-            await ScrollIntoView(OptionsId);
-            await ScrollIntoView(id);
-        }
-        await base.OnAfterRenderAsync(firstRender);
-
-        async Task ScrollIntoView(string id) {
-            Console.WriteLine($"{Id}::ScrollIntoView({id})");
-            await Javascript.InvokeVoidAsync("DropDown_ScrollIntoView", id);
-        }
-    }
-
     protected override async Task OnParametersSetAsync()
     {
         Console.WriteLine($"{Id}::OnParametersSet()");
@@ -174,15 +149,44 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
 
         Grouper = (ViewModel as IGroupingViewModel<TItem>) ?? new NullGroupingViewModel();
 
-        ShowGrouping = Grouping switch {
+        IsGrouped = Grouping switch {
             ComboBoxGrouping.Off => false,
             _ => ViewModel is IGroupingViewModel<TItem> && ItemsSource == null,
         };
+        IsSorted = Sort switch {
+            ComboBoxSort.None => false,
+            _ => true,
+        };
 
-        TryPopulateFromItems();
-        //await ComputeFilter();
+        if(Items != null) {
+            InternalItems.SetItems(Items, IsGrouped, IsSorted, DisplayFilter);
+        }        
 
         await base.OnParametersSetAsync();
+    }
+
+    /// <summary>
+    /// After each render, ensure that the 
+    /// </summary>
+    /// <param name="firstRender"></param>
+    /// <returns></returns>
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        Console.WriteLine($"{Id}::OnAfterRenderAsync({firstRender})");
+        await ScrollIntoView(OptionsId);
+        if(SelectedOption != null && ShowOptions) {
+            var id = DisplayItemID(SelectedOption);
+            if(IsGrouped && SelectedOption == InternalItems.FilteredItems.FirstOrDefault()) {
+                id = DisplayFirstHeaderId;
+            }
+            if(MoreCount > 0 && SelectedOption == InternalItems.FilteredItems.LastOrDefault()) {
+                id = DisplayMoreCaptionId;
+            }
+            await ScrollIntoView(id);
+        }
+        await base.OnAfterRenderAsync(firstRender);
+
+        async Task ScrollIntoView(string id) => await Javascript.InvokeVoidAsync("DropDown_ScrollIntoView", id);
     }
 
     /// <summary>
@@ -208,12 +212,10 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "combo-box", CssClass);
 
     /// <summary>
-    /// The current filter displayed the user. Will be the entire title of the SelectedItem once
-    /// selection made.
+    /// The current filter displayed the user. Will be the entire title of the SelectedOption once
+    /// selection made.  The actual filter might vary and is contained in `InternalItems`.
     /// </summary>
-    private string Filter { get; set; } = string.Empty;
-
-    private List<TItem> FilteredItems { get; set; } = new();
+    private string DisplayFilter { get; set; } = string.Empty;
 
     /// <summary>
     /// The ViewModel that provides grouping information, always exists as either one passed in by
@@ -237,13 +239,15 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// change as the user is scrolling through the list of options, but doesn't become the `Value`
     /// until the user confirms the settings.
     /// </summary>
-    private TItem? SelectedItem { get; set; }
+    private TItem? SelectedOption { get; set; }
 
     /// <summary>
     /// Resolves if grouping should be used based on all parameters for the component.
     /// </summary>
     /// <remarks>Set in `OnParametersSetAsync`</remarks>
-    private bool ShowGrouping { get; set; }
+    private bool IsGrouped { get; set; }
+
+    private bool IsSorted { get; set; }
 
     /// <summary>
     /// Indicates if the options drop-down list is currently being shown.
@@ -261,8 +265,6 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// </summary>
     private int MoreCount { get; set; }
 
-    private List<TItem> SortedItems { get; set; } = new();
-
     private void AssertItemsMutualExclusivity()
     {
         if(Items != null && ItemsSource != null) {
@@ -275,7 +277,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
 
     /// <summary>
     /// Cancels the current input, reverting to the previous `Value` and resetting the
-    /// `SelectedItem`.
+    /// `SelectedOption`.
     /// </summary>
     private void CancelInput()
     {
@@ -283,47 +285,41 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         Assert(ShowOptions == true, "CancelInput is wasteful if the options aren't shown.");
         ShowOptions = false;
         if(Value == null) {
-            SelectedItem = default;
-            Filter = string.Empty;
+            SelectedOption = default;
+            DisplayFilter = string.Empty;
         }
         else {
-            SelectedItem = Value;
-            Filter = DisplayItemTitle(Value);
+            SelectedOption = Value;
+            DisplayFilter = DisplayItemTitle(Value);
         }
-        FilteredItems.Clear();
         ShouldRender();
     }
 
-    private async Task ComputeFilter()
+    private async Task RetrieveFilteredFromItemsSource()
     {
-        Console.WriteLine($"{Id}::ComputeFilter() {computeFilterCancellationSource == null}");
-        Assert(ShowOptions == true, "ComputerFilter is wasteful if the options aren't shown.");
+        Console.WriteLine($"{Id}::RetrieveFilteredFromItemsSource() {computeFilterCancellationSource == null}");
+        Assert(ShowOptions == true, "RetrieveFilteredFromItemsSource is wasteful if the options aren't shown.");
+        Assert(ItemsSource != null, "RetrieveFilteredFromItemsSource is designed for remote collections.");
+        if(ItemsSource == null) {
+            return;
+        }
         try {
-            var showAll = string.IsNullOrWhiteSpace(Filter) || SelectedItem != null;
+            var showAll = string.IsNullOrWhiteSpace(DisplayFilter) || SelectedOption != null;
             if(computeFilterCancellationSource != null) {
                 computeFilterCancellationSource.Cancel();
                 await Task.Delay(1); // KLUDGE: From .NET6 to .NET7 need to let some event through to keep this working...
             }
+            ShowProgress = true;
             using(computeFilterCancellationSource = new CancellationTokenSource()) {
                 var cancellationToken = computeFilterCancellationSource.Token;
-                MoreCount = 0;
-                if(showAll) {
-                    if(ItemsSource != null) {
-                        cancellationToken.ThrowIfCancellationRequested();
-                        await TryPopulateFromItemsSourceAsync("", cancellationToken);
-                    }
-                    FilteredItems = SortedItems.ToList();
-                }
-                else {
-                    if(ItemsSource != null) {
-                        cancellationToken.ThrowIfCancellationRequested();
-                        await TryPopulateFromItemsSourceAsync(Filter, cancellationToken);
-                    }
-                    FilteredItems = SortedItems
-                        .Where(e => DisplayItemTitle(e).Contains(Filter, StringComparison.CurrentCultureIgnoreCase))
-                        .ToList();
-                }
+                //MoreCount = 0;
+                var filter = showAll ? string.Empty : DisplayFilter;
+                cancellationToken.ThrowIfCancellationRequested();
+                var items = await ItemsSource.GetItemsAsync(filter, null, null, null, null, cancellationToken);
+                InternalItems.SetItems(items.Items, IsGrouped, IsSorted, filter);
+                MoreCount = items.TotalItemCount - items.Items.Count();
             }
+            ShowProgress = false;
         }
         catch(OperationCanceledException) {
             Console.WriteLine("Operation Cancelled");
@@ -334,7 +330,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     }
 
     /// <summary>
-    /// Confirms the explicit or implicit `SelectedItem` and makes it the current `Value`. Handles
+    /// Confirms the explicit or implicit `SelectedOption` and makes it the current `Value`. Handles
     /// Enter key and Double Clicks.
     /// </summary>
     private async Task ConfirmInputAsync(TItem? selectedItem)
@@ -344,16 +340,16 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         if(selectedItem != null) {
             // Valid Item selected and want to lock it in
             ShowOptions = false;
-            Filter = DisplayItemTitle(selectedItem);
+            DisplayFilter = DisplayItemTitle(selectedItem);
         }
-        else if(FilteredItems.Count == 1) {
+        else if(InternalItems.FilteredItems.Count == 1) {
             // Filter has left only a single item, select it and lock it in.
-            SelectItemIndex(0);
+            SelectOptionIndex(0);
             ShowOptions = false;
-            Filter = DisplayItemTitle(SelectedItem);
+            DisplayFilter = DisplayItemTitle(SelectedOption);
         }
-        if(!(Value?.Equals(SelectedItem) ?? SelectedItem == null)) {
-            Value = SelectedItem;
+        if(!(Value?.Equals(SelectedOption) ?? SelectedOption == null)) {
+            Value = SelectedOption;
             await ValueChanged.InvokeAsync(Value);
         }
     }
@@ -395,7 +391,6 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// </summary>
     private string DisplayMoreCaptionId => $"{Id}_more";
 
-
     /// <summary>
     /// Determines the title to display for the item using multiple fallback mechanisms such as the
     /// ViewModel.
@@ -413,30 +408,59 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     private string DisplayMoreCaption => string.Format(MoreItemsTemplate, MoreCount);
 
     /// <summary>
+    /// When first opening the options set everything up for user-input.
+    /// </summary>
+    private async Task LoadOptionsAsync()
+    {
+        Console.WriteLine($"{Id}::LoadOptionsAsync()");
+        ShowOptions = true;
+        InternalItems.SetFilter(string.Empty);
+        if(SelectedOption != null) {
+            DisplayFilter = DisplayItemTitle(SelectedOption);
+        }
+        if(ItemsSource != null) {
+            await RetrieveFilteredFromItemsSource();
+        }
+    }
+
+    /// <summary>
     /// Process set values against the filter asynchronously so that search can be performed.
     /// </summary>
     /// <remarks>
     /// This is done using one of the Blazor "anti-patterns" as binding doesn't work with Blazor 6
     /// and the fix designed for .NET 7 "missed the RTM window" a couple of times. Eventually this
-    /// will be better to use binding with `@bind:after="ProcessFilter"` but that's not ready yet.
+    /// will be better to use binding with `@bind:after="SetOptionsFilter"` but that's not 
+    /// ready yet.
     /// </remarks>
     protected async Task DoFilterInput(ChangeEventArgs args)
     {
         Console.WriteLine($"{Id}::DoFilterInput({args.Value})");
-        await FilterInput(args.Value?.ToString() ?? string.Empty);
+        await SetOptionsFilter(args.Value?.ToString() ?? string.Empty);
     }
 
-    private async Task FilterInput(string filter) {
-        Console.WriteLine($"{Id}::FilterInput({filter})");
-        Filter = filter;
-        if(!Filter.Equals(DisplayItemTitle(SelectedItem), StringComparison.CurrentCultureIgnoreCase)) {
-            SelectedItem = default;
+    /// <summary>
+    /// Set the list of options that should be shown based on the current filter and process UI
+    /// side-effects.
+    /// </summary>
+    private async Task SetOptionsFilter(string filter) {
+        Console.WriteLine($"{Id}::SetOptionsFilter({filter})");
+        // change the filter display the user sees
+        DisplayFilter = filter;
+        // And filter the internal list of items.
+        InternalItems.SetFilter(filter);
+        // When filter changes, clear the selected option
+        if(!DisplayFilter.Equals(DisplayItemTitle(SelectedOption), StringComparison.CurrentCultureIgnoreCase)) {
+            SelectedOption = default;
         }
-        if(!string.IsNullOrWhiteSpace(Filter) && SelectedItem == null) {
+        // When filtering from scratch, auto-expand options
+        if(!string.IsNullOrWhiteSpace(DisplayFilter) && SelectedOption == null) {
             ShowOptions = true;
         }
-        await ComputeFilter();
-        ShouldRender();
+        // If using ItemsSource provider, re-fetch items for filter condition
+        if(ItemsSource != null) {
+            await RetrieveFilteredFromItemsSource();
+        }
+        //ShouldRender();
     }
 
     /// <summary>
@@ -447,34 +471,35 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     {
         Console.WriteLine($"{Id}::DoKeyPress({args.Code})");
         PreventDefault = false;
-        var pageSize = 8; // 9 lines shown so page up/down should be one less so you have one line overlap for context.
+        // 9 lines shown so page up/down should be one less so we have one line overlap for context.
+        var pageSize = 8; 
         if(args.Code == "Enter" || args.Code == "NumpadEnter") {
             if(ShowOptions) {
-                await ConfirmInputAsync(SelectedItem);
+                await ConfirmInputAsync(SelectedOption);
             }
             else {
-                await LoadOptions();
+                await LoadOptionsAsync();
             }
         }
         if(ShowOptions) {
             switch(args.Code) {
                 case "PageUp":
-                    SelectItemOffset(-pageSize);
+                    SelectOptionOffset(-pageSize);
                     PreventDefault = true;
                     break;
 
                 case "PageDown":
-                    SelectItemOffset(+pageSize);
+                    SelectOptionOffset(+pageSize);
                     PreventDefault = true;
                     break;
 
                 case "ArrowUp":
-                    SelectItemOffset(-1);
+                    SelectOptionOffset(-1);
                     PreventDefault = true;
                     break;
 
                 case "ArrowDown":
-                    SelectItemOffset(+1);
+                    SelectOptionOffset(+1);
                     PreventDefault = true;
                     break;
 
@@ -489,23 +514,17 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         }
     }
 
-    private async Task LoadOptions()
-    {
-        ShowOptions = true;
-        await ComputeFilter();
-    }
-
     /// <summary>
     /// Given an index (relative to the `FilteredItems`), checks bounds and selects item.
     /// </summary>
-    private void SelectItemIndex(int index)
+    private void SelectOptionIndex(int index)
     {
         Console.WriteLine($"{Id}::SelectIndex({index})");
-        if(index < 0 || index >= FilteredItems.Count) {
-            SelectedItem = default;
+        if(index < 0 || index >= InternalItems.FilteredItems.Count) {
+            SelectedOption = default;
         }
         else {
-            SelectedItem = FilteredItems[index];
+            SelectedOption = InternalItems.FilteredItems[index];
         }
         ShouldRender();
     }
@@ -514,69 +533,94 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// Selects a new item based on the position of the currently selected item. Enables page up,
     /// page down, item up and item down commands.
     /// </summary>
-    private void SelectItemOffset(int offset)
+    private void SelectOptionOffset(int offset)
     {
         Console.WriteLine($"{Id}::SelectOffset({offset})");
-        if(SelectedItem == null) {
+        if(SelectedOption == null) {
             if(offset > 0) {
-                SelectItemIndex(0);
+                SelectOptionIndex(0);
             }
             else {
-                SelectItemIndex(FilteredItems.Count - 1);
+                SelectOptionIndex(InternalItems.FilteredItems.Count - 1);
             }
         }
         else {
-            var SelectedIndex = SelectedItem == null ? -1 : FilteredItems.IndexOf(SelectedItem);
+            var SelectedIndex = SelectedOption == null ? -1 : InternalItems.FilteredItems.IndexOf(SelectedOption);
             var newIndex = SelectedIndex + offset;
-            newIndex = Math.Clamp(newIndex, 0, FilteredItems.Count - 1);
-            SelectItemIndex(newIndex);
+            newIndex = Math.Clamp(newIndex, 0, InternalItems.FilteredItems.Count - 1);
+            SelectOptionIndex(newIndex);
         }
     }
 
-    /// <summary>
-    /// Populates the `SortedItems` from the `Items` collection that is incoming, arranging by
-    /// grouping and sorting options.  Call when parameters change to affect chagnes to `Items`,
-    /// `Grouping` and `Sort` parameters.
-    /// </summary>
-    private void TryPopulateFromItems()
+    private SortedFilteredCollection<TItem> InternalItems { get; set; }
+}
+
+internal class SortedFilteredCollection<T>
+{
+
+    public SortedFilteredCollection(Func<T?, string> group, Func<T?, string> sort, Func<T?, string> display)
     {
-        Console.WriteLine($"{Id}::TryPopulateFromItems()");
-        if(Items == null) {
-            return;
-        }
-        if(ShowGrouping) {
-            if(Sort == ComboBoxSort.Title) {
-                SortedItems = Items.OrderBy(DisplayItemGroupSort).ThenBy(DisplayItemTitle).ToList();
-            }
-            else {
-                SortedItems = Items.OrderBy(DisplayItemGroupSort).ToList();
-            }
-        }
-        else {
-            if(Sort == ComboBoxSort.Title) {
-                SortedItems = Items.OrderBy(DisplayItemTitle).ToList();
-            }
-            else {
-                SortedItems = Items.ToList();
-            }
+        GroupFunc = group;
+        SortFunc = sort;
+        DisplayFunc = display;
+    }
+
+    public IEnumerable<T>? SourceItems { get; private set; }
+
+    public void SetItems(IEnumerable<T> items, bool group = false, bool sort = true, string filter = "")
+    {
+        if(SourceItems != items || group != IsGrouped || sort != IsSorted || Filter != filter) {
+            SourceItems = items;
+            IsGrouped = group;
+            IsSorted = sort;
+            Filter = filter;
+            ApplySort();
+            ApplyFilter();
         }
     }
 
-    private async Task TryPopulateFromItemsSourceAsync(string filter, CancellationToken cancellationToken)
+    public void SetFilter(string filter)
     {
-        Console.WriteLine($"{Id}::TryPopulateFromItemsSourceAsync({filter})");
-        if(ItemsSource == null) {
-            return;
+        if(Filter != filter) {
+            Filter = filter;
+            ApplyFilter();
         }
-        cancellationToken.ThrowIfCancellationRequested();
-        ShowProgress = true;
-        var items = await ItemsSource.GetItemsAsync(filter, null, null, null, null, cancellationToken);
-        var sorted = items.Items.OrderBy(DisplayItemGroupSort).ThenBy(DisplayItemTitle).ToList();
-        ShowProgress = false;
-        cancellationToken.ThrowIfCancellationRequested();
-        MoreCount = items.TotalItemCount - items.Items.Count();
-        SortedItems = items.Items.ToList();
     }
+
+    public Func<T?, string> GroupFunc { get; private set; }
+
+    public Func<T?, string> SortFunc { get; private set; }
+
+    public Func<T?, string> DisplayFunc { get; private set; }
+
+    public bool IsGrouped { get; private set; }
+
+    public bool IsSorted { get; private set; }
+
+    public string Filter { get; private set; } = string.Empty;
+
+    private void ApplySort()
+    {
+        SortedItems = (SourceItems, IsGrouped, IsSorted) switch {
+            (null, _, _) => new(),
+            (_, false, false) => SourceItems.ToList(),
+            (_, true, false) => SourceItems.OrderBy(GroupFunc).ToList(),
+            (_, false, true) => SourceItems.OrderBy(SortFunc).ToList(),
+            (_, true, true) => SourceItems.OrderBy(GroupFunc).ThenBy(SortFunc).ToList(),
+        };
+    }
+
+    private void ApplyFilter()
+    {
+        FilteredItems = string.IsNullOrWhiteSpace(Filter) 
+            ? SortedItems
+            : SortedItems.Where(e => DisplayFunc(e).Contains(Filter, StringComparison.OrdinalIgnoreCase)).ToList();
+    }
+
+    private List<T> SortedItems { get; set; } = new();
+
+    public List<T> FilteredItems { get; private set; } = new();
+
 }
 
 /// <summary>
