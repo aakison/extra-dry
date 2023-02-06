@@ -23,15 +23,17 @@
         all available items as the entire collection is available.
     </p>
     <CodeBlock Lang="blazor">
-        &lt;ComboBox Items="@@Sectors" Placeholder="@BasicPlaceholder" Sort="@BasicSort" Group="@BasicGroup" ViewModel="@@this" @@bind="Value" /&gt;
+        &lt;ComboBox Items="@@Sectors" Placeholder="@BasicPlaceholder" Sort="@BasicSort" Group="@BasicGroup" GroupFunc="@@GroupName" ViewModel="@@this" @@bind="Value" /&gt;
 
         @@code {
             private List&lt;Sector&gt; Sectors { get; set; } = ...;
 
             private Sector Value { get; set; }
+
+            private string GroupName(Sector sector) => sector.Group;
         }
     </CodeBlock>
-    <ComboBox Items="@Data" Placeholder="@BasicPlaceholder" Sort="@BasicSort" Group="@BasicGroup" ViewModel="@this" @bind-Value="BasicValue" />
+    <ComboBox Items="@Data" Placeholder="@BasicPlaceholder" Sort="@BasicSort" Group="@BasicGroup" GroupFunc="@GroupName" ViewModel="@this" @bind-Value="BasicValue" />
     <h5 style="margin-top: 10px;">Bound Value</h5>
     <h6>
         @if(BasicValue == null) {

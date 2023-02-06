@@ -5,18 +5,11 @@ using Sample.Shared;
 
 namespace Sample.Client.Pages.Components.Standard;
 
-public partial class ComboBoxComponentPage : ComponentBase, IListItemViewModel<Sector>, IGroupingViewModel<Sector> {
+public partial class ComboBoxComponentPage : ComponentBase, IListItemViewModel<Sector> {
 
     public string Title(Sector sector) => sector.Title;
 
     public string Description(Sector sector) => sector.Description;
-
-    public string Group(Sector sector) => sector.Group;
-
-    public string GroupSort(Sector sector) =>
-        sector.Group.Equals("Other", StringComparison.CurrentCultureIgnoreCase)
-        ? "ZZZZZ"
-        : sector.Group;
 
     private string Icon { get; set; } = "sectors";
 
@@ -39,6 +32,8 @@ public partial class ComboBoxComponentPage : ComponentBase, IListItemViewModel<S
     private SectorListService SectorService { get; set; } = new();
 
     private string MoreItemsTemplate = "plus {0} more...";
+
+    private static string GroupName(Sector? item) => item?.Group ?? "unnamed";
 
     protected override void OnInitialized()
     {

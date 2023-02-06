@@ -46,7 +46,8 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// <summary>
     /// A func that defines the name of the group that items are in when `Group` is `true`.
     /// </summary>
-    public Func<TItem?, string>? GroupFunc { get; set; } = null!;
+    [Parameter]
+    public Func<TItem?, string>? GroupFunc { get; set; }
 
     /// <summary>
     /// Determines if sorting is applied to the items in the component. Defaults to sorting by
@@ -61,7 +62,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// Defaults to sorting by the title of the item.
     /// </summary>
     [Parameter]
-    public Func<TItem?, string> SortFunc { get; set; } = null!;
+    public Func<TItem?, string>? SortFunc { get; set; }
 
     /// <inheritdoc cref="IComments{TItem}.Value" />
     [Parameter]
@@ -93,7 +94,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     {
         Id = $"combo_{GetHashCode()}";
         OptionsId = $"{Id}_options";
-        InternalItems = new SortedFilteredCollection<TItem>(DisplayItemGroupSort, DisplayItemTitle, DisplayItemTitle);
+        InternalItems = new SortedFilteredCollection<TItem>(DisplayItemGroupSort, DisplayItemSort, DisplayItemTitle);
     }
 
     protected async Task DoButtonClick(MouseEventArgs _)
@@ -157,10 +158,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     {
         Console.WriteLine($"{Id}::OnParametersSet()");
         Name ??= $"combo_{typeof(TItem).Name}";
-        SortFunc ??= DisplayItemTitle;
         AssertItemsMutualExclusivity();
-
-        Grouper = (ViewModel as IGroupingViewModel<TItem>) ?? new NullGroupingViewModel();
 
         if(Items != null) {
             InternalItems.SetItems(Items, Group, Sort, DisplayFilter);
@@ -203,16 +201,6 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
 
     private bool PreventDefault = false;
 
-    /// <summary>
-    /// When IGroupingViewModel provided, provide a default option that turns grouping off.
-    /// </summary>
-    protected class NullGroupingViewModel : IGroupingViewModel<TItem> {
-
-        public string Group(TItem item) => string.Empty;
-
-        public string GroupSort(TItem item) => string.Empty;
-    }
-
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "combo-box", CssClass);
 
     /// <summary>
@@ -220,12 +208,6 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// selection made.  The actual filter might vary and is contained in `InternalItems`.
     /// </summary>
     private string DisplayFilter { get; set; } = string.Empty;
-
-    /// <summary>
-    /// The ViewModel that provides grouping information, always exists as either one passed in by
-    /// the Consumer or a default one that is provided. Set in `OnParametersSetAsync`.
-    /// </summary>
-    private IGroupingViewModel<TItem> Grouper { get; set; } = null!;
 
     /// <summary>
     /// An Id for the component attached to the outermost Div and used to help the associated
@@ -360,15 +342,21 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// <summary>
     /// The display name for a Group that is optionally related to the item.
     /// </summary>
-    private string DisplayItemGroup(TItem? item) =>
-        item == null ? string.Empty : Grouper.Group(item);
+    private string DisplayItemGroup(TItem? item) => 
+        GroupFunc?.Invoke(item) 
+        ?? DisplayItemTitle(item)[0..1].ToUpper(); 
 
     /// <summary>
     /// A string that determines the sort order of group items, typically the same as the Group
     /// name but can be changed by component consumers.
     /// </summary>
     private string DisplayItemGroupSort(TItem? item) =>
-        item == null ? string.Empty : Grouper.GroupSort(item);
+        GroupFunc?.Invoke(item)
+        ?? DisplayItemTitle(item)[0..1].ToUpper();
+
+    private string DisplayItemSort(TItem? item) =>
+        SortFunc?.Invoke(item)
+        ?? DisplayItemTitle(item);
 
     /// <summary>
     /// Determines a unique Id for the item to enable JavaScript UI manipulation.
@@ -376,16 +364,6 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// <remarks>ID should be unique for each item and retained between renderings.</remarks>
     private string DisplayItemID(TItem? item) =>
         $"{Id}_item_{item?.GetHashCode()}";
-
-    /// <summary>
-    /// Id for the first header when headers are shown so auto-scoll can target it.
-    /// </summary>
-    private string DisplayFirstHeaderId => $"{Id}_header";
-
-    /// <summary>
-    /// Id for the more footer when more is available so auto-scoll can target it.
-    /// </summary>
-    private string DisplayMoreCaptionId => $"{Id}_more";
 
     /// <summary>
     /// Determines the title to display for the item using multiple fallback mechanisms such as the
@@ -397,6 +375,16 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         ?? (item as IListItemViewModel)?.Title
         ?? item.ToString()
         ?? "unnamed";
+
+    /// <summary>
+    /// Id for the first header when headers are shown so auto-scoll can target it.
+    /// </summary>
+    private string DisplayFirstHeaderId => $"{Id}_header";
+
+    /// <summary>
+    /// Id for the more footer when more is available so auto-scoll can target it.
+    /// </summary>
+    private string DisplayMoreCaptionId => $"{Id}_more";
 
     /// <summary>
     /// The formatted display text for showing that more items are available.

@@ -32,18 +32,3 @@ public interface IListItemViewModel<TModel>
     string Description(TModel item);
 
 }
-
-public interface IGroupingViewModel<TModel>
-{
-    /// <summary>
-    /// If provided, creates groupings for items in the list.
-    /// </summary>
-    string Group(TModel item);
-
-    /// <summary>
-    /// If provided, overrides the sort order for the group.  Useful for changing the order of
-    /// groups that need to override the alphabetic sort, such as "Other" being the last group.
-    /// </summary>
-    string GroupSort(TModel item);
-
-}
