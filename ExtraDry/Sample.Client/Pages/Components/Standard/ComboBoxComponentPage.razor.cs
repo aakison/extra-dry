@@ -28,7 +28,7 @@ public partial class ComboBoxComponentPage : ComponentBase, IListItemViewModel<S
 
     private bool AdvancedSort { get; set; } = true;
 
-    private ComboBoxGrouping Grouping { get; set; } = ComboBoxGrouping.Auto;
+    private bool BasicGroup { get; set; } = false;
 
     private Sector? BasicValue { get; set; }
 

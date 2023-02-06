@@ -12,14 +12,6 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
-    /// <summary>
-    /// Indicates if the items in the list are grouped. To turn grouping 'on', the items must be
-    /// provided using `Items` (not ItemsSource), a `ViewModel` must be provided which implements
-    /// `IGroupingViewModel`.
-    /// </summary>
-    [Parameter]
-    public ComboBoxGrouping Grouping { get; set; } = ComboBoxGrouping.Auto;
-
     /// <inheritdoc cref="IComments.Icon" />
     [Parameter]
     public string? Icon { get; set; }
@@ -42,6 +34,19 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// <inheritdoc cref="IComments.Placeholder" />
     [Parameter]
     public string Placeholder { get; set; } = "find...";
+
+    /// <summary>
+    /// Indicates if the items in the list are grouped. To turn grouping 'on', the items must be
+    /// provided using `Items` (not ItemsSource). Use with `GroupFunc` to define the name of the
+    /// group that each items should be in.
+    /// </summary>
+    [Parameter]
+    public bool Group { get; set; } = false;
+
+    /// <summary>
+    /// A func that defines the name of the group that items are in when `Group` is `true`.
+    /// </summary>
+    public Func<TItem?, string>? GroupFunc { get; set; } = null!;
 
     /// <summary>
     /// Determines if sorting is applied to the items in the component. Defaults to sorting by
@@ -157,13 +162,8 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
 
         Grouper = (ViewModel as IGroupingViewModel<TItem>) ?? new NullGroupingViewModel();
 
-        IsGrouped = Grouping switch {
-            ComboBoxGrouping.Off => false,
-            _ => ViewModel is IGroupingViewModel<TItem> && ItemsSource == null,
-        };
-
         if(Items != null) {
-            InternalItems.SetItems(Items, IsGrouped, Sort, DisplayFilter);
+            InternalItems.SetItems(Items, Group, Sort, DisplayFilter);
         }
 
         await base.OnParametersSetAsync();
@@ -180,7 +180,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         await ScrollIntoView(OptionsId);
         if(SelectedOption != null && ShowOptions) {
             var id = DisplayItemID(SelectedOption);
-            if(IsGrouped && SelectedOption == InternalItems.FilteredItems.FirstOrDefault()) {
+            if(Group && SelectedOption == InternalItems.FilteredItems.FirstOrDefault()) {
                 id = DisplayFirstHeaderId;
             }
             if(MoreCount > 0 && SelectedOption == InternalItems.FilteredItems.LastOrDefault()) {
@@ -244,12 +244,6 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// until the user confirms the settings.
     /// </summary>
     private TItem? SelectedOption { get; set; }
-
-    /// <summary>
-    /// Resolves if grouping should be used based on all parameters for the component.
-    /// </summary>
-    /// <remarks>Set in `OnParametersSetAsync`</remarks>
-    private bool IsGrouped { get; set; }
 
     /// <summary>
     /// Indicates if the options drop-down list is currently being shown.
@@ -318,7 +312,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
                 var filter = showAll ? string.Empty : DisplayFilter;
                 cancellationToken.ThrowIfCancellationRequested();
                 var items = await ItemsSource.GetItemsAsync(filter, null, null, null, null, cancellationToken);
-                InternalItems.SetItems(items.Items, IsGrouped, Sort, filter);
+                InternalItems.SetItems(items.Items, Group, Sort, filter);
                 MoreCount = items.TotalItemCount - items.Items.Count();
             }
             ShowProgress = false;
@@ -623,21 +617,4 @@ internal class SortedFilteredCollection<T> {
 
     public List<T> FilteredItems { get; private set; } = new();
 
-}
-
-/// <summary>
-/// Defines the grouping options for the `ComboBox`.
-/// </summary>
-[JsonConverter(typeof(JsonStringEnumConverter))]
-public enum ComboBoxGrouping {
-
-    /// <summary>
-    /// No groupings are shown.
-    /// </summary>
-    Off,
-
-    /// <summary>
-    /// Grouping are shown if the `ViewModel` implements IGroupingViewModel`T (default).
-    /// </summary>
-    Auto,
 }

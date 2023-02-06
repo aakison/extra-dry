@@ -23,7 +23,7 @@
         all available items as the entire collection is available.
     </p>
     <CodeBlock Lang="blazor">
-        &lt;ComboBox Items="@@Sectors" Placeholder="@BasicPlaceholder" Sort="@BasicSort" Grouping="@Grouping" ViewModel="@@this" @@bind="Value" /&gt;
+        &lt;ComboBox Items="@@Sectors" Placeholder="@BasicPlaceholder" Sort="@BasicSort" Group="@BasicGroup" ViewModel="@@this" @@bind="Value" /&gt;
 
         @@code {
             private List&lt;Sector&gt; Sectors { get; set; } = ...;
@@ -31,7 +31,7 @@
             private Sector Value { get; set; }
         }
     </CodeBlock>
-    <ComboBox Items="@Data" Placeholder="@BasicPlaceholder" Sort="@BasicSort" Grouping="@Grouping" ViewModel="@this" @bind-Value="BasicValue" />
+    <ComboBox Items="@Data" Placeholder="@BasicPlaceholder" Sort="@BasicSort" Group="@BasicGroup" ViewModel="@this" @bind-Value="BasicValue" />
     <h5 style="margin-top: 10px;">Bound Value</h5>
     <h6>
         @if(BasicValue == null) {
@@ -52,11 +52,8 @@
             <input id="basic-sort" type="checkbox" @bind="BasicSort" />
         </div>
         <div>
-            <label>Grouping:</label>
-            <select @bind="Grouping">
-                <option value="@(ComboBoxGrouping.Off)">ComboBoxGrouping.Off</option>
-                <option value="@(ComboBoxGrouping.Auto)">ComboBoxGrouping.Auto</option>
-            </select>
+            <label for="basic-group">Grouping:</label>
+            <input id="basic-group" type="checkbox" @bind="@BasicGroup" />
         </div>
     </form>
 
