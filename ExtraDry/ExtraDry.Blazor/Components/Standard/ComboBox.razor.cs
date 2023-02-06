@@ -44,12 +44,19 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     public string Placeholder { get; set; } = "find...";
 
     /// <summary>
-    /// Determines the sort order of items in the control. Defaults to sorting by title as this is
-    /// best understood by users. However, this can be turned off if the incoming collection has a
-    /// implicitly understood sort order (e.g. day of week).
+    /// Determines if sorting is applied to the items in the component. Defaults to sorting by
+    /// title as this is best understood by users. However, this can be turned off if the incoming
+    /// collection has a implicitly understood sort order (e.g. day of week). See also `SortFunc`.
     /// </summary>
     [Parameter]
-    public ComboBoxSort Sort { get; set; } = ComboBoxSort.Title;
+    public bool Sort { get; set; }
+
+    /// <summary>
+    /// A func that defines the string that the items are sorted by when `Sort` is `true`. 
+    /// Defaults to sorting by the title of the item.
+    /// </summary>
+    [Parameter]
+    public Func<TItem?, string> SortFunc { get; set; } = null!;
 
     /// <inheritdoc cref="IComments{TItem}.Value" />
     [Parameter]
@@ -145,6 +152,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     {
         Console.WriteLine($"{Id}::OnParametersSet()");
         Name ??= $"combo_{typeof(TItem).Name}";
+        SortFunc ??= DisplayItemTitle;
         AssertItemsMutualExclusivity();
 
         Grouper = (ViewModel as IGroupingViewModel<TItem>) ?? new NullGroupingViewModel();
@@ -153,14 +161,10 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
             ComboBoxGrouping.Off => false,
             _ => ViewModel is IGroupingViewModel<TItem> && ItemsSource == null,
         };
-        IsSorted = Sort switch {
-            ComboBoxSort.None => false,
-            _ => true,
-        };
 
         if(Items != null) {
-            InternalItems.SetItems(Items, IsGrouped, IsSorted, DisplayFilter);
-        }        
+            InternalItems.SetItems(Items, IsGrouped, Sort, DisplayFilter);
+        }
 
         await base.OnParametersSetAsync();
     }
@@ -247,8 +251,6 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// <remarks>Set in `OnParametersSetAsync`</remarks>
     private bool IsGrouped { get; set; }
 
-    private bool IsSorted { get; set; }
-
     /// <summary>
     /// Indicates if the options drop-down list is currently being shown.
     /// </summary>
@@ -316,7 +318,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
                 var filter = showAll ? string.Empty : DisplayFilter;
                 cancellationToken.ThrowIfCancellationRequested();
                 var items = await ItemsSource.GetItemsAsync(filter, null, null, null, null, cancellationToken);
-                InternalItems.SetItems(items.Items, IsGrouped, IsSorted, filter);
+                InternalItems.SetItems(items.Items, IsGrouped, Sort, filter);
                 MoreCount = items.TotalItemCount - items.Items.Count();
             }
             ShowProgress = false;
@@ -357,7 +359,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     private void Assert(bool value, string message)
     {
         if(value == false) {
-            Console.WriteLine($"{Id} ERROR - {message}"); 
+            Console.WriteLine($"{Id} ERROR - {message}");
         }
     }
 
@@ -442,7 +444,8 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// Set the list of options that should be shown based on the current filter and process UI
     /// side-effects.
     /// </summary>
-    private async Task SetOptionsFilter(string filter) {
+    private async Task SetOptionsFilter(string filter)
+    {
         Console.WriteLine($"{Id}::SetOptionsFilter({filter})");
         // change the filter display the user sees
         DisplayFilter = filter;
@@ -472,7 +475,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         Console.WriteLine($"{Id}::DoKeyPress({args.Code})");
         PreventDefault = false;
         // 9 lines shown so page up/down should be one less so we have one line overlap for context.
-        var pageSize = 8; 
+        var pageSize = 8;
         if(args.Code == "Enter" || args.Code == "NumpadEnter") {
             if(ShowOptions) {
                 await ConfirmInputAsync(SelectedOption);
@@ -555,8 +558,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     private SortedFilteredCollection<TItem> InternalItems { get; set; }
 }
 
-internal class SortedFilteredCollection<T>
-{
+internal class SortedFilteredCollection<T> {
 
     public SortedFilteredCollection(Func<T?, string> group, Func<T?, string> sort, Func<T?, string> display)
     {
@@ -569,10 +571,10 @@ internal class SortedFilteredCollection<T>
 
     public void SetItems(IEnumerable<T> items, bool group = false, bool sort = true, string filter = "")
     {
-        if(SourceItems != items || group != IsGrouped || sort != IsSorted || Filter != filter) {
+        if(SourceItems != items || group != Group || sort != Sort || Filter != filter) {
             SourceItems = items;
-            IsGrouped = group;
-            IsSorted = sort;
+            Group = group;
+            Sort = sort;
             Filter = filter;
             ApplySort();
             ApplyFilter();
@@ -593,15 +595,15 @@ internal class SortedFilteredCollection<T>
 
     public Func<T?, string> DisplayFunc { get; private set; }
 
-    public bool IsGrouped { get; private set; }
+    public bool Group { get; private set; }
 
-    public bool IsSorted { get; private set; }
+    public bool Sort { get; private set; }
 
     public string Filter { get; private set; } = string.Empty;
 
     private void ApplySort()
     {
-        SortedItems = (SourceItems, IsGrouped, IsSorted) switch {
+        SortedItems = (SourceItems, Group, Sort) switch {
             (null, _, _) => new(),
             (_, false, false) => SourceItems.ToList(),
             (_, true, false) => SourceItems.OrderBy(GroupFunc).ToList(),
@@ -612,7 +614,7 @@ internal class SortedFilteredCollection<T>
 
     private void ApplyFilter()
     {
-        FilteredItems = string.IsNullOrWhiteSpace(Filter) 
+        FilteredItems = string.IsNullOrWhiteSpace(Filter)
             ? SortedItems
             : SortedItems.Where(e => DisplayFunc(e).Contains(Filter, StringComparison.OrdinalIgnoreCase)).ToList();
     }
@@ -621,23 +623,6 @@ internal class SortedFilteredCollection<T>
 
     public List<T> FilteredItems { get; private set; } = new();
 
-}
-
-/// <summary>
-/// Defines the sort options for the `ComboBox`.
-/// </summary>
-[JsonConverter(typeof(JsonStringEnumConverter))]
-public enum ComboBoxSort {
-
-    /// <summary>
-    /// No sorting is applied, the order items is presented to the component is retained.
-    /// </summary>
-    None,
-
-    /// <summary>
-    /// Sorting is done by the title alphabetically (default).
-    /// </summary>
-    Title,
 }
 
 /// <summary>

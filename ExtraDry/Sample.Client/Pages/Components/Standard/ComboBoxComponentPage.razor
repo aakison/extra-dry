@@ -48,11 +48,8 @@
             <input type="text" @bind="BasicPlaceholder" />
         </div>
         <div>
-            <label>Sort:</label>
-            <select @bind="BasicSort">
-                <option value="@(ComboBoxSort.None)">ComboBoxSort.None</option>
-                <option value="@(ComboBoxSort.Title)">ComboBoxSort.Title</option>
-            </select>
+            <label for="basic-sort">Sort:</label>
+            <input id="basic-sort" type="checkbox" @bind="BasicSort" />
         </div>
         <div>
             <label>Grouping:</label>
@@ -101,11 +98,8 @@
             <input type="text" @bind="AdvancedPlaceholder" />
         </div>
         <div>
-            <label>Sort:</label>
-            <select @bind="AdvancedSort">
-                <option value="@(ComboBoxSort.None)">ComboBoxSort.None</option>
-                <option value="@(ComboBoxSort.Title)">ComboBoxSort.Title</option>
-            </select>
+            <label for="advanced-sort">Sort:</label>
+            <input id="advanced-sort" type="checkbox" @bind="AdvancedSort" />
         </div>
         <div>
             <label>MoreItemsTemplate:</label>

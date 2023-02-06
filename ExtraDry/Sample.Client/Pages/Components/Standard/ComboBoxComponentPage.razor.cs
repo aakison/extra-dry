@@ -24,9 +24,9 @@ public partial class ComboBoxComponentPage : ComponentBase, IListItemViewModel<S
 
     public string AdvancedPlaceholder { get; set; } = "find...";
 
-    private ComboBoxSort BasicSort { get; set; } = ComboBoxSort.Title;
+    private bool BasicSort { get; set; } = true;
 
-    private ComboBoxSort AdvancedSort { get; set; } = ComboBoxSort.Title;
+    private bool AdvancedSort { get; set; } = true;
 
     private ComboBoxGrouping Grouping { get; set; } = ComboBoxGrouping.Auto;
 
