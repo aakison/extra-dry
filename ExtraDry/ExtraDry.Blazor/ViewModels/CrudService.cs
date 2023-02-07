@@ -31,7 +31,7 @@ public class CrudService<T> {
     /// are used with `args` provided to each method to resolve the final endpoint.
     /// This allows for version numbers, tenant names, etc. to be added.
     /// </param>
-    /// <param name="iLogger">An optional logger</param>
+    /// <param name="iLogger">An optional Logger</param>
     public CrudService(HttpClient client, string collectionEndpointTemplate, ILogger<CrudService<T>>? iLogger = null)
     {
         http = client;

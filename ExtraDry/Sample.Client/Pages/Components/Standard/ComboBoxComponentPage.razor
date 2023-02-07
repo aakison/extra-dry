@@ -1,7 +1,7 @@
 ﻿@page "/components/standard/combo-box"
 @{
-// Generated Blazor will create the page constructor in a `#nullable disable` block.  This breaks
-// the ability to pass in a collection of not-null objects.
+// Generated Blazor will create the page constructor in a `#nullable disable` block.  This breaks the ability to pass 
+// in a collection of not-null objects.  Ignore the inevitable conversion warnings in the generated code.
 #pragma warning disable CS8620
 }
 
@@ -11,19 +11,21 @@
         The <code>&lt;ComboBox&gt;</code> component is a type-ahead compatible replacement for a select control.
     </p>
     <p>
-        The component presents combo-box selection of items using a text-only display to enable type-ahead 
+        The component presents a combo-box selection of items using a text-only display to enable type-ahead 
         functionality.  For more advanced use-cases, consider the <code>FlexiSelect</code> component.
     </p>
 </section>
 <section>
     <h3>Basic Usage</h3>
     <p>
-        Provide a static list of <code>Items</code> that can be optionally sorted. A <code>ViewModel</code>
-        is provided to give access to group names for optional grouping.  Typing into the filter always shows
-        all available items as the entire collection is available.
+        Provide a static list of <code>Items</code> that can be optionally sorted. 
+        Sorting and grouping can be turned on/off and default to using the display title.
+        To customize the group name, pass in the `GroupFunc` to determine the name.
+        Typing into the filter always shows all available items as the entire collection is available.
     </p>
     <CodeBlock Lang="blazor">
-        &lt;ComboBox Items="@@Sectors" Placeholder="@BasicPlaceholder" Sort="@BasicSort" Group="@BasicGroup" GroupFunc="@@GroupName" ViewModel="@@this" @@bind="Value" /&gt;
+        &lt;ComboBox Items="@@Sectors" Placeholder="@BasicPlaceholder" Sort="@BasicSort" Group="@BasicGroup" 
+            GroupFunc="@@GroupName" @@bind="Value" /&gt;
 
         @@code {
             private List&lt;Sector&gt; Sectors { get; set; } = ...;
@@ -33,7 +35,8 @@
             private string GroupName(Sector sector) => sector.Group;
         }
     </CodeBlock>
-    <ComboBox Items="@Data" Placeholder="@BasicPlaceholder" Sort="@BasicSort" Group="@BasicGroup" GroupFunc="@GroupName" ViewModel="@this" @bind-Value="BasicValue" />
+    <ComboBox Items="@Data" Placeholder="@BasicPlaceholder" Sort="@BasicSort" Group="@BasicGroup" GroupFunc="@GroupName" 
+        @bind-Value="BasicValue" />
     <h5 style="margin-top: 10px;">Bound Value</h5>
     <h6>
         @if(BasicValue == null) {
@@ -58,11 +61,16 @@
             <input id="basic-group" type="checkbox" @bind="@BasicGroup" />
         </div>
     </form>
-
+    <br />
     <h3>Advanced Usage</h3>
-    <h5>No View Model</h5>
+    <p>
+        Provide a dynamic list of items accessed through <code>ItemsSource</code> that can optionally be sorted. 
+        Typing into the filter <i>may not</i> shows all available items as subsets of data are typically downloaded
+        from the server.  Because of this partial-result mechanism, grouping is discouraged.  It makes it appear to
+        users that more data has been downloaded than has actually been.
+    </p>
     <CodeBlock Lang="blazor">
-        &lt;ComboBox ItemsService="@@Sectors" Icon="@Icon" Placeholder="@AdvancedPlaceholder" Sort="ComboBoxSort.@AdvancedSort" ViewModel="@@this" 
+        &lt;ComboBox ItemsSource="@@Sectors" Icon="@Icon" Placeholder="@AdvancedPlaceholder" Sort="ComboBoxSort.@AdvancedSort" ViewModel="@@this" 
             MoreItemsTemplate="@MoreItemsTemplate" ... /&gt;
 
         @@code {
@@ -71,7 +79,7 @@
         }
     </CodeBlock>
     <ComboBox ItemsSource="@SectorService" Icon="@Icon" Placeholder="@AdvancedPlaceholder" Sort="@AdvancedSort" 
-        ViewModel="@this" MoreItemsTemplate="@MoreItemsTemplate" @bind-Value="AdvancedValue" />
+        MoreItemsTemplate="@MoreItemsTemplate" @bind-Value="AdvancedValue" />
     <h5 style="margin-top: 10px;">Bound Value</h5>
     <h6>
         @if(AdvancedValue == null) {
@@ -114,32 +122,44 @@
 </section>
 <section>
     <h3>Semantic Styles</h3>
-    <p>The component TODO.</p>
+    <p>
+        The component is typically just a label with an optional icon, input text, and button.
+        When ItemsSource is fetching items, it may also present a `progress` tag.  
+        When options are shown an ordered list is shown with the list items representing
+        grouping, options and possibly the more indicator as shown:
+    </p>
     <CodeBlock Lang="blazor">
-        &lt;div class="drop-down"&gt;
+        &lt;div class="combo-box"&gt;
             &lt;label&gt;
-                &lt;span class="type"&gt;...&lt;/span&gt;
-                &lt;span class="placeholder-text"&gt;...&lt;span&gt;
-                &lt;MiniCard ... />
-                &lt;button class="unobtrusive">&lt;Icon Key="select" />&lt/button>
-            &lt;label>
-            &lt;MiniDialog ... />
-        &lt;/div>
+                &lt;span&gt;&lt;Icon .../&gt;&lt;/span&gt;
+                &lt;input type="text" ...&gt;
+                [&lt;progress /&gt;]
+                &lt;button&gt;&lt;Icon .../&gt;&lt;/button&gt;
+            &lt;/label&gt;
+            [
+            &lt;ol&gt;
+                &lt;li class="header"&gt;...&lt;/li&gt;
+                &lt;li class="option [selected]"&gt;...&lt;/li&gt;
+                &lt;li class="more"&gt;...&lt;/li&gt;
+            &lt;/ol&gt;
+            ]
+        &lt;/div&gt;
     </CodeBlock>
 </section>
 <section>
     <h3>Tips &amp; Practices</h3>
     <ul>
         <li>One but not both of `Items` or `ItemsSource` is required to provide data.</li>
-        <li>When using `ItemsSource`, `Grouping` is not supported as UI will show confusing, incomplete groups.</li>
-        <li>When fetching from `ItemsSource`, a progress bar is shown while waiting.</li>
+        <li>When using `ItemsSource`, `Grouping` should not be used as it may show incomplete groups.</li>
+        <li>When fetching from `ItemsSource`, two progress bars are shown while waiting, one in the label and another as the last list item.</li>
+        <li>Set the `SortFunc` to override the sorting behavior of the control.</li>
+        <li>Add a `ViewModel` to change the default text that is displayed for items.</li>
+        <li>If no `ViewModel` is provided, the display text can be provided by the `TItem` if it implements `IListItemViewModel`.</li>
     </ul>
 </section>
 <section>
     <h3>See Also</h3>
     <ul>
-        <li><a href="/components/standard/mini-card"><code>MiniCard</code> Component</a></li>
-        <li><a href="/components/standard/mini-dialog"><code>MiniDialog</code> Component</a></li>
         <li><a href="/components/standard/icon"><code>Icon</code> Component</a></li>
     </ul>
 </section>
