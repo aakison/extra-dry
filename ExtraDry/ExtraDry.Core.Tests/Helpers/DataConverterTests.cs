@@ -16,7 +16,9 @@ public class DataConverterTests {
     [Fact]
     public void NullEnumDisplayException()
     {
+#nullable disable // Test DataConverter on non-nullable aware code.
         Assert.Throws<ArgumentNullException>(() => DataConverter.DisplayEnum(null));
+#nullable restore
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -62,6 +64,16 @@ public class DataConverterTests {
 
         expected = string.Format(expected, current);
         Assert.Equal(expected, display);
+    }
+
+    [Theory]
+    [InlineData("ABC", "abc")]
+    [InlineData("JohnHenry", "john-henry")]
+    public void CamelCaseToKebabCase(string original, string expected)
+    {
+        var actual = DataConverter.CamelCaseToKebabCase(original);
+
+        Assert.Equal(expected, actual);
     }
 
 }

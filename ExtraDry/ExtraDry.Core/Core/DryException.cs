@@ -15,6 +15,9 @@ public sealed class DryException : Exception {
     /// </summary>
     public DryException() { }
 
+    /// <summary>
+    /// Create an exception with the indicated problem details
+    /// </summary>
     public DryException(ProblemDetails? details) : base(details?.Title)
     {
         if(details != null) {
@@ -22,35 +25,40 @@ public sealed class DryException : Exception {
         }
     }
 
-    public DryException(HttpStatusCode status, string message, string userMessage) : base(message)
+    /// <summary>
+    /// Create an exception with information that will populate the inner ProblemDetails.
+    /// </summary>
+    public DryException(HttpStatusCode status, string message, string detail) : base(message)
     {
         ProblemDetails.Status = (int)status;
         ProblemDetails.Title = message;
-        ProblemDetails.Detail = userMessage;
+        ProblemDetails.Detail = detail;
     }
 
+    /// <summary>
+    /// Create a simple exception with a message, prefer the constructor with (status, message,
+    /// detail) over this one.
+    /// </summary>
     public DryException(string message) : base(message) {
         ProblemDetails.Title = message;
     }
 
+    /// <summary>
+    /// Create a simple exception with a message and inner exception, prefer the constructor with
+    /// (status, message, detail) over this one.
+    /// </summary>
     public DryException(string message, Exception inner) : base(message, inner) {
         ProblemDetails.Title = message;
     }
 
-    public DryException(string message, string userMessage) : base(message)
+    /// <summary>
+    /// Create a simple exception with a message and detail, prefer the constructor with (status,
+    /// message, detail) over this one.
+    /// </summary>
+    public DryException(string message, string detail) : base(message)
     {
         ProblemDetails.Title = message;
-        ProblemDetails.Detail = userMessage;
-    }
-
-    /// <summary>
-    /// If available, an exception message that is suitable to show to users.
-    /// E.g. certain validation exceptions can be shown, but null reference cannot.
-    /// </summary>
-    [Obsolete("Use ProblemDetails.Detail instead.")]
-    public string? UserMessage {
-        get => ProblemDetails.Detail;
-        set => ProblemDetails.Detail = value;
+        ProblemDetails.Detail = detail;
     }
 
     /// <summary>
