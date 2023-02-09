@@ -7,15 +7,15 @@ namespace ExtraDry.Core;
 /// <summary>
 /// Helper class to facilitate the maintenance of "Web" Ids that can be used in a URI path without escaping.
 /// </summary>
-public static class WebId {
+public static class Slug {
 
     /// <summary>
-    /// Given a name, with punctuation and mixed case, create a matching WebId.
+    /// Given a name, with punctuation and mixed case, create a matching Slug.
     /// </summary>
     /// <remarks>
-    /// This does not guarantee uniqueness, consider `ToUniqeWebId` instead.
+    /// This does not guarantee uniqueness, consider `ToUniqeSlug` instead.
     /// </remarks>
-    public static string ToWebId(string name)
+    public static string ToSlug(string name)
     {
         if(string.IsNullOrWhiteSpace(name)) {
             return string.Empty;
@@ -44,26 +44,26 @@ public static class WebId {
     }
 
     /// <summary>
-    /// Given a name, with punctuation and mixed case, create a matching WebId, with a maximum length.
+    /// Given a name, with punctuation and mixed case, create a matching Slug, with a maximum length.
     /// </summary>
     /// <remarks>
-    /// This does not guarantee uniqueness, consider `ToUniqeWebId` instead.
+    /// This does not guarantee uniqueness, consider `ToUniqeSlug` instead.
     /// </remarks>
-    public static string ToWebId(string name, int maxLength)
+    public static string ToSlug(string name, int maxLength)
     {
-        var webId = ToWebId(name);
-        return webId.Length > maxLength ? webId[0..maxLength] : webId;
+        var slug = ToSlug(name);
+        return slug.Length > maxLength ? slug[0..maxLength] : slug;
     }
 
     /// <summary>
-    /// Given a name, with punctuation and mixed case, create a matching WebId.
+    /// Given a name, with punctuation and mixed case, create a matching Slug.
     /// </summary>
     /// <remarks>
-    /// The list of `existing` WebIds is checked and on collision, an alternate web ID is created.
+    /// The list of `existing` slugs is checked and on collision, an alternate web ID is created.
     /// </remarks>
-    public static string ToUniqueWebId(string name, int maxLength, IEnumerable<string> existing)
+    public static string ToUniqueSlug(string name, int maxLength, IEnumerable<string> existing)
     {
-        var stem = ToWebId(name, maxLength - 6);
+        var stem = ToSlug(name, maxLength - 6);
         var candidate = stem;
         while(existing.Contains(candidate)) {
             candidate = $"{stem}-{RandomWebString(5)}";
@@ -72,14 +72,14 @@ public static class WebId {
     }
 
     /// <summary>
-    /// Given a name, with punctuation and mixed case, create a matching WebId.
+    /// Given a name, with punctuation and mixed case, create a matching slug.
     /// </summary>
     /// <remarks>
-    /// The `existsAsync` method is used to check if the WebIds already exists, such as in a database.
+    /// The `existsAsync` method is used to check if the slugs already exists, such as in a database.
     /// </remarks>
-    public static async Task<string> ToUniqueWebIdAsync(string name, int maxLength, Func<string, Task<bool>> existsAsync)
+    public static async Task<string> ToUniqueSlugAsync(string name, int maxLength, Func<string, Task<bool>> existsAsync)
     {
-        var stem = ToWebId(name, maxLength - 6);
+        var stem = ToSlug(name, maxLength - 6);
         var candidate = stem;
         while(await existsAsync(candidate)) {
             candidate = $"{stem}-{RandomWebString(5)}";
@@ -88,7 +88,7 @@ public static class WebId {
     }
 
     /// <summary>
-    /// Generates a string of random characters suitable for embedding in a WebId.
+    /// Generates a string of random characters suitable for embedding in a slugs.
     /// </summary>
     public static string RandomWebString(int count)
     {

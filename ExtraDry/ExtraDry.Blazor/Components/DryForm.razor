@@ -10,19 +10,19 @@ else
 {
     <CascadingValue Value="@EditMode">
         <CascadingValue Value="@this">
-            <form class="@ModelNameWebId" onsubmit="return false;" action="/" method="GET">
-                <div class="@ModelNameWebId entity-info">
+            <form class="@ModelNameSlug" onsubmit="return false;" action="/" method="GET">
+                <div class="@ModelNameSlug entity-info">
                     <DryIcon Key="@Description.Icon" />
                     <label>@Description.ModelDisplayName</label>
                 </div>
-                <div class="@ModelNameWebId status-properties">
+                <div class="@ModelNameSlug status-properties">
                     @foreach (var fieldset in FormDescription.Fieldsets.Take(FixedGroups)) {
                         <CascadingValue Value="@fieldset">
                             <DryFormFieldset T="@T" />
                         </CascadingValue>
                     }
                 </div>
-                <div class="@ModelNameWebId description-properties">
+                <div class="@ModelNameSlug description-properties">
                     @foreach(var fieldset in FormDescription.Fieldsets.Skip(FixedGroups)) {
                         <CascadingValue Value="@fieldset">
                             <DryFormFieldset T="@T" />

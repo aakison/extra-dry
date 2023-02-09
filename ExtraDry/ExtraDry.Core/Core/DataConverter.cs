@@ -68,7 +68,7 @@ public class DataConverter {
     /// <summary>
     /// Given a camelCase (or PascalCase) string, converts it to kebab-case.
     /// </summary>
-    public static string CamelCaseToKebabCase(string value) => WebId.ToWebId(CamelCaseToTitleCase(value));
+    public static string CamelCaseToKebabCase(string value) => Slug.ToSlug(CamelCaseToTitleCase(value));
 
     /// <summary>
     /// Gets the DataAnnotation DisplayName attribute for a given enum (for displaying enums values nicely to users)

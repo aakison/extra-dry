@@ -32,7 +32,7 @@ internal class FormDescription {
         foreach(var property in ExtendedProperties) {
             var fieldset = Fieldsets.LastOrDefault(e => string.Equals(e.Legend, property.FieldsetTitle, StringComparison.OrdinalIgnoreCase));
             if(fieldset == null) {
-                fieldset = new FormFieldset(property.FieldsetTitle, WebId.ToWebId(property.FieldsetTitle));
+                fieldset = new FormFieldset(property.FieldsetTitle, Slug.ToSlug(property.FieldsetTitle));
                 Fieldsets.Add(fieldset);
             }
             var group = fieldset.Groups.LastOrDefault(e => e.Type == property.GroupType && e.Target == property.Target);

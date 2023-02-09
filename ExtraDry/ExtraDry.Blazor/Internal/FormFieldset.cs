@@ -11,7 +11,7 @@ internal class FormFieldset {
     {
         Legend = legend;
         Name = name;
-        CssClass = WebId.ToWebId(Name);
+        CssClass = Slug.ToSlug(Name);
     }
 
     public string Name { get; set; }
