@@ -26,7 +26,7 @@ public class ExtraDryJavascriptModule {
 
     private IJSRuntime Runtime { get; set; }
 
-    private string Filename => $"./_content/ExtraDry.Blazor/js/extra-dry-blazor-module.min.js?v={Version}";
+    private string Filename => $"/_content/ExtraDry.Blazor/js/extra-dry-blazor-module.min.js?v={Version}";
 
     private string Version { get; set; }
 
