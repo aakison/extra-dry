@@ -475,6 +475,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
             else {
                 await LoadOptionsAsync();
             }
+            PreventDefault = true;
         }
         if(ShowOptions) {
             switch(args.Code) {
