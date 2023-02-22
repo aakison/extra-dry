@@ -462,20 +462,20 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// Handle keypresses for navigation, preventing default when they're handled in the component
     /// and the key shouldn't be bubbled up to the page.
     /// </summary>
-    protected async Task DoKeyPress(KeyboardEventArgs args)
+    protected async Task DoKeyDown(KeyboardEventArgs args)
     {
-        Logger?.LogDebug("{Id}::DoKeyPress({code})", Id, args.Code);
+        Logger?.LogDebug("{Id}::DoKeyDown({code})", Id, args.Code);
         PreventDefault = false;
         // 9 lines shown so page up/down should be one less so we have one line overlap for context.
         var pageSize = 8;
         if(args.Code == "Enter" || args.Code == "NumpadEnter") {
+            PreventDefault = true; // must occur before await, as needed to prevent button clicks.
             if(ShowOptions) {
                 await ConfirmInputAsync(SelectedOption);
             }
             else {
                 await LoadOptionsAsync();
             }
-            PreventDefault = true;
         }
         if(ShowOptions) {
             switch(args.Code) {
@@ -508,6 +508,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
                     break;
             }
         }
+        //Logger?.LogInformation("  PreventDefault={prevent}", PreventDefault);
     }
 
     /// <summary>

@@ -35,8 +35,12 @@
             private string GroupName(Sector sector) => sector.Group;
         }
     </CodeBlock>
+    <form action="~/index.html">
     <ComboBox Items="@Data" Placeholder="@BasicPlaceholder" Sort="@BasicSort" Group="@BasicGroup" GroupFunc="@GroupName" 
         @bind-Value="BasicValue" />
+    <input />
+    <button type="submit">Submit</button>
+    </form>
     <h5 style="margin-top: 10px;">Bound Value</h5>
     <h6>
         @if(BasicValue == null) {
@@ -78,8 +82,12 @@
             private IListService&lt;Sector&gt; Sectors { get; set; } = null!;
         }
     </CodeBlock>
-    <ComboBox ItemsSource="@SectorService" Icon="@Icon" Placeholder="@AdvancedPlaceholder" Sort="@AdvancedSort" 
-        MoreItemsTemplate="@MoreItemsTemplate" @bind-Value="AdvancedValue" />
+    <form action="~/index.html">
+        <ComboBox ItemsSource="@SectorService" Icon="@Icon" Placeholder="@AdvancedPlaceholder" Sort="@AdvancedSort"
+                  MoreItemsTemplate="@MoreItemsTemplate" @bind-Value="AdvancedValue" />
+        <input />
+        <button type="submit" onclick="console.log('submit'); return false;">Submit</button>
+    </form>
     <h5 style="margin-top: 10px;">Bound Value</h5>
     <h6>
         @if(AdvancedValue == null) {

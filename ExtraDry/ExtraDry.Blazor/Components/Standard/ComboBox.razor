@@ -5,7 +5,7 @@
 <div class="@CssClasses" id="@Id" @attributes="@UnmatchedAttributes"
      @onfocusin="DoFocusIn" @onfocusout="DoFocusOut" 
      @onkeydown:preventDefault="PreventDefault" @onkeypress:preventDefault="PreventDefault" @onkeyup:preventDefault="PreventDefault"
-     @onkeydown="DoKeyPress" tabindex="-1">
+     @onkeydown="DoKeyDown" tabindex="-1">
     <label>
         @if(Icon != null) {
             <Icon Key="@Icon" />
