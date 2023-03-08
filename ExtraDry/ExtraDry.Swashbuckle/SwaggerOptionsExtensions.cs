@@ -10,8 +10,8 @@ public static class SwaggerOptionsExtensions {
     {
         openapi.SwaggerDoc(GroupName, new OpenApiInfo {
             Version = "v1",
-            Title = "Sample API Instructions",
-            Description = "This API provides consistent access to services available on this system conforming to Extra DRY principles.",
+            Title = "API Instructions",
+            Description = "This API provides consistent access to services available on this system conforming to Extra DRY principles.  The following instructions are applied consistently across the entire API set.",
         });
 
         foreach(var docfile in new string[] { "ExtraDry.Core.Xml", "ExtraDry.Swashbuckle.xml" }) {
