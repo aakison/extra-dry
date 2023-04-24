@@ -52,7 +52,7 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
 
     private string SelectedClass => IsSelected ? "selected" : "";
 
-    private string CssClasses => DataConverter.JoinNonEmpty(CssClass, ClickableClass, SelectedClass);
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass, ClickableClass, SelectedClass);
 
     private string RadioButtonScope => Description.GetHashCode().ToString();
 

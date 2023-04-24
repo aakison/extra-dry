@@ -50,6 +50,13 @@ export function TriCheck_SetIndeterminate(id, value) {
     }
 }
 
+export function TriSwitch_SetIndeterminate(id, value) {
+    var checkbox = document.getElementById(id);
+    if (checkbox != null) {
+        checkbox.indeterminate = value;
+    }
+}
+
 //
 // After a CodeBlock is rendered, the text in the <pre><code> block should be highlighted.
 // Quite a bit of work, so use existing JS library instead of doing it in C#.

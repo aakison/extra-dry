@@ -10,6 +10,9 @@ public class StandardComponentsMenu {
     [Navigation(Icon = "tri-check")]
     public string TriCheck => $"/components/standard/tri-check";
 
+    [Navigation]
+    public string TriSwitch => $"/components/standard/tri-Switch";
+
     [Navigation(Icon = "icons")]
     public string Icon => $"/components/standard/icon";
 

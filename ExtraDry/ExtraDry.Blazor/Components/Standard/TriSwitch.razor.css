@@ -1,0 +1,34 @@
+﻿div label {
+  display: flex;
+  align-items: center;
+}
+div label span:first-of-type {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  width: 40px;
+  height: 20px;
+  border: 1px solid #333;
+  border-radius: 12px;
+}
+div label span:first-of-type::after {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  margin: 0 4px;
+  background: #333;
+  border-radius: 100%;
+  transition: 0.3s;
+}
+div input[type=checkbox] {
+  display: none;
+}
+div input[type=checkbox]:checked + label span:first-of-type::after {
+  left: 18px;
+}
+div input[type=checkbox]:indeterminate + label span:first-of-type::after {
+  left: 9px;
+}

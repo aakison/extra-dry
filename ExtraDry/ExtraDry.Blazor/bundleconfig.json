@@ -7,6 +7,7 @@
       //"Components/DryContent.razor.js",
       "Components/DryNavigation.razor.js",
       "Components/Standard/TriCheck.razor.js",
+      "Components/Standard/TriSwitch.razor.js",
       "Components/Standard/CodeBlock.razor.js",
       "Components/Standard/ComboBox.razor.js"
     ],
