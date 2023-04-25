@@ -14,6 +14,7 @@ public class Automobile {
     /// </summary>
     /// <example>Toyota</example>
     [Filter(FilterType.Equals)]
+    [Statistics(Stats.Distribution)]
     public string Make { get; set; } = string.Empty;
 
     /// <summary>
@@ -28,6 +29,7 @@ public class Automobile {
     /// </summary>
     /// <example>2011</example>
     [Filter]
+    [Statistics(Stats.Distribution)]
     public int Year { get; set; }
 
     /// <summary>
@@ -35,6 +37,7 @@ public class Automobile {
     /// </summary>
     /// <example>Japan and Australasia</example>
     [Filter(FilterType.Contains)]
+    [Statistics(Stats.Distribution)]
     public string Market { get; set; } = string.Empty;
 
     /// <summary>

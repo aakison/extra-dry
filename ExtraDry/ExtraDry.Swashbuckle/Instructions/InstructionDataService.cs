@@ -22,6 +22,15 @@ public class InstructionDataService {
             .ToPagedCollectionAsync();
     }
 
+    public async Task<Statistics<Automobile>> RetrieveStatsAsync(FilterQuery query)
+    {
+        return await automobiles
+            .AsQueryable()
+            .ForceStringComparison(StringComparison.OrdinalIgnoreCase)
+            .QueryWith(query)
+            .ToStatisticsAsync();
+    }
+
     public string RandomAffirmation() => affirmations[random.Next(affirmations.Count)];
 
     private readonly Random random = new();
