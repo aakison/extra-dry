@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 
 namespace ExtraDry.Server;
 
+/// <inheritdoc cref="IPartialQueryable{T}" />
 public class PartialQueryable<T> : IPartialQueryable<T> {
 
     public PartialQueryable(IQueryable<T> queryable, StringComparison forceStringComparison) { 
@@ -17,7 +18,16 @@ public class PartialQueryable<T> : IPartialQueryable<T> {
         ForceStringComparison = (queryable as PartialQueryable<T>)?.ForceStringComparison;
         query = filterQuery;
         filteredQuery = InitializeMergedFilter(queryable, filterQuery, defaultFilter);
-        sortedQuery = filteredQuery.Sort(filterQuery);
+        sortedQuery = filteredQuery;
+        pagedQuery = sortedQuery.Page(0, PageQuery.DefaultTake, null);
+    }
+
+    public PartialQueryable(IQueryable<T> queryable, SortQuery sortQuery, Expression<Func<T, bool>>? defaultFilter)
+    {
+        ForceStringComparison = (queryable as PartialQueryable<T>)?.ForceStringComparison;
+        query = sortQuery;
+        filteredQuery = InitializeMergedFilter(queryable, sortQuery, defaultFilter);
+        sortedQuery = filteredQuery.Sort(sortQuery);
         pagedQuery = sortedQuery.Page(0, PageQuery.DefaultTake, null);
     }
 
@@ -80,19 +90,6 @@ public class PartialQueryable<T> : IPartialQueryable<T> {
             return base.VisitMember(node);
         }
 
-        // .NET 5 to .NET 6 changed to VisitMember...
-        //public override Expression Visit(Expression expr)
-        //{
-        //    if(expr.NodeType == ExpressionType.MemberAccess) {
-        //        var memberExpr = (MemberExpression)expr;
-        //        if(memberExpr.Member.DeclaringType == declaringType) {
-        //            PropertyNames.Add(memberExpr.Member.Name);
-        //        }
-        //    }
-
-        //    return base.Visit(expr);
-        //}
-
         private readonly Type declaringType;
     }
 
@@ -110,12 +107,14 @@ public class PartialQueryable<T> : IPartialQueryable<T> {
 
     #endregion
 
+    /// <inheritdoc cref="IPartialQueryable{T}.ToFilteredCollection" />
     public FilteredCollection<T> ToFilteredCollection()
     {
         var items = sortedQuery.ToList();
         return CreateFilteredCollection(items);
     }
 
+    /// <inheritdoc cref="IPartialQueryable{T}.ToFilteredCollectionAsync(CancellationToken)" />
     public async Task<FilteredCollection<T>> ToFilteredCollectionAsync(CancellationToken cancellationToken = default)
     {
         // Logic like EF Core `.ToListAsync` but without taking a dependency on that entire package.
@@ -126,12 +125,9 @@ public class PartialQueryable<T> : IPartialQueryable<T> {
                     items.Add(element);
                 }
             }
-        }
-        else if(sortedQuery is IEnumerable<T> sortedSyncQuery) {
-            items.AddRange(sortedSyncQuery);
-        }
-        else {
-            throw new InvalidOperationException("");
+        } 
+        else { 
+            items.AddRange(sortedQuery);
         }
         return CreateFilteredCollection(items);
     }
@@ -141,16 +137,18 @@ public class PartialQueryable<T> : IPartialQueryable<T> {
         return new FilteredCollection<T> {
             Items = items,
             Filter = query.Filter,
-            Sort = query.Sort,
+            Sort = Sort,
         };
     }
 
+    /// <inheritdoc cref="IPartialQueryable{T}.ToPagedCollection"/>
     public PagedCollection<T> ToPagedCollection()
     {
         var items = pagedQuery.ToList();
         return CreatePartialCollection(items);
     }
 
+    /// <inheritdoc cref="IPartialQueryable{T}.ToPagedCollectionAsync(CancellationToken)" />
     public async Task<PagedCollection<T>> ToPagedCollectionAsync(CancellationToken cancellationToken = default)
     {
         // Logic like EF Core `.ToListAsync` but without taking a dependency on that package into Blazor.
@@ -160,13 +158,63 @@ public class PartialQueryable<T> : IPartialQueryable<T> {
                 items.Add(element);
             }
         }
-        else if(pagedQuery is IEnumerable<T> pagedSyncQuery) {
-            items.AddRange(pagedSyncQuery);
-        }
         else {
-            throw new InvalidOperationException("");
+            items.AddRange(pagedQuery);
         }
         return CreatePartialCollection(items);
+    }
+
+    /// <inheritdoc cref="IPartialQueryable{T}.ToStatistics" />
+    public Statistics<T> ToStatistics()
+    {
+        var stats = new Statistics<T> {
+            Distributions = new List<DataDistribution>(),
+            Filter = query.Filter
+        };
+        var description = new ModelDescription(typeof(T));
+
+        foreach(var statProp in description.StatisticsProperties) {
+            var statsQuery = filteredQuery
+                .GroupBy(statProp)
+                .Select(e => new CountInfo(e.Key, e.Count()));
+
+            // Logic like EF Core `.ToListAsync` but without taking a dependency on that entire package.
+            var items = new List<CountInfo>();
+            items.AddRange(statsQuery);
+            stats.Distributions.Add(new DataDistribution(statProp.Property.Name, items.ToDictionary(e => e.Key, e => e.Count)));
+        }
+        return stats;
+    }
+
+    /// <inheritdoc cref="IPartialQueryable{T}.ToStatisticsAsync(CancellationToken)" />
+    public async Task<Statistics<T>> ToStatisticsAsync(CancellationToken cancellationToken = default) 
+    {
+        var stats = new Statistics<T> {
+            Distributions = new List<DataDistribution>(),
+            Filter = query.Filter
+        };
+        var description = new ModelDescription(typeof(T));
+
+        foreach(var statProp in description.StatisticsProperties) {
+            var statsQuery = filteredQuery
+                .GroupBy(statProp)
+                .Select(e => new CountInfo(e.Key, e.Count()));
+
+            // Logic like EF Core `.ToListAsync` but without taking a dependency on that entire package.
+            var items = new List<CountInfo>();
+            if(statsQuery is IAsyncEnumerable<CountInfo> statsQueryAsync) {
+                await foreach(var element in statsQueryAsync.WithCancellation(cancellationToken)) {
+                    if(element != null) {
+                        items.Add(element);
+                    }
+                }
+            }
+            else {
+                items.AddRange(statsQuery);
+            }
+            stats.Distributions.Add(new DataDistribution(statProp.Property.Name, items.ToDictionary(e => e.Key, e => e.Count)));
+        }
+        return stats;
     }
 
     internal StringComparison? ForceStringComparison { get; private set; }
@@ -175,8 +223,9 @@ public class PartialQueryable<T> : IPartialQueryable<T> {
     {
         var skip = (query as PageQuery)?.Skip ?? 0;
         var take = (query as PageQuery)?.Take ?? PageQuery.DefaultTake;
-            
-        var nextToken = (token ?? new ContinuationToken(query.Filter, query.Sort, query.Ascending, take, take)).Next(skip, take);
+        var ascending = (query as SortQuery)?.Ascending ?? true;
+
+        var nextToken = (token ?? new ContinuationToken(query.Filter, Sort, ascending, take, take)).Next(skip, take);
         var previousTake = ContinuationToken.ActualTake(token, take);
         var previousSkip = ContinuationToken.ActualSkip(token, skip);
         var total = items.Count == previousTake ? filteredQuery.Count() : previousSkip + items.Count;
@@ -189,6 +238,8 @@ public class PartialQueryable<T> : IPartialQueryable<T> {
             ContinuationToken = nextToken.ToString(),
         };
     }
+
+    private string Sort => (query as SortQuery)?.Sort ?? "";
 
     private readonly FilterQuery query;
 

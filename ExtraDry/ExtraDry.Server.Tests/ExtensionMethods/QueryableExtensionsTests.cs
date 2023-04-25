@@ -10,7 +10,7 @@ public class QueryableExtensionsTests {
             new IdConventionKey { Id = 3 },
             new IdConventionKey { Id = 2 },
         };
-        var query = new FilterQuery();
+        var query = new SortQuery();
 
         var sorted = list.AsQueryable()
             .Sort(query)
@@ -29,7 +29,7 @@ public class QueryableExtensionsTests {
             new ClassNameConventionKey { ClassNameConventionKeyId = 3 },
             new ClassNameConventionKey { ClassNameConventionKeyId = 2 },
         };
-        var query = new FilterQuery();
+        var query = new SortQuery();
 
         var sorted = list.AsQueryable().Sort(query).ToList();
 
@@ -46,7 +46,7 @@ public class QueryableExtensionsTests {
             new KeyAttributeEntity { PrimaryKey = 3 },
             new KeyAttributeEntity { PrimaryKey = 2 },
         };
-        var query = new FilterQuery();
+        var query = new SortQuery();
 
         var sorted = list.AsQueryable().Sort(query).ToList();
 
@@ -63,7 +63,7 @@ public class QueryableExtensionsTests {
             new NoImplicitStabilizer { PrimaryKey = 3 },
             new NoImplicitStabilizer { PrimaryKey = 2 },
         };
-        var query = new FilterQuery();
+        var query = new SortQuery();
 
         Assert.Throws<DryException>(() => list.AsQueryable().Sort(query));
     }
@@ -76,7 +76,7 @@ public class QueryableExtensionsTests {
             new CompositeKeyStabilizer { FirstPartKey = 3 },
             new CompositeKeyStabilizer { FirstPartKey = 2 },
         };
-        var query = new FilterQuery();
+        var query = new SortQuery();
 
         Assert.Throws<DryException>(() => list.AsQueryable().Sort(query));
     }

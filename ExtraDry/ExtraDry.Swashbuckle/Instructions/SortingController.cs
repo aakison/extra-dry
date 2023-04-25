@@ -5,7 +5,7 @@ namespace ExtraDry.Swashbuckle.Instructions;
 
 /// <summary>
 /// When listing entities, the common query mechanism also allows for sorted output.  These list 
-/// methods accept a `sort` query parameter, allowing for a field to be selected to order the 
+/// methods accept a `sort` query parameter, allowing for a field to be selected to ascending the 
 /// results.  Additionally, results can either be sorted ascending or descending using the 
 /// `ascending` query parameter. 
 /// 
@@ -14,8 +14,8 @@ namespace ExtraDry.Swashbuckle.Instructions;
 /// tertiary sort criteria, this typically provide little benefit to users and even less to 
 /// machine interfaces.
 /// 
-/// However, there is a significant issue with ties during sort.  When ties occur, the order of 
-/// entities is still deterministic and guaranteed to be repeatable.  That is, the overall order 
+/// However, there is a significant issue with ties during sort.  When ties occur, the ascending of 
+/// entities is still deterministic and guaranteed to be repeatable.  That is, the overall ascending 
 /// of all items returned will be the same for any given combination of `sort` and `ascending`.  
 /// While the stability mechanism is internal and may vary, it is typically the chronological 
 /// date of entity creation.
@@ -42,12 +42,12 @@ public class SortingController {
     /// Sortable list of all cars
     /// </summary>
     /// <param name="sort">If the request would like sorted results, the name of the property to sort by.</param>
-    /// <param name="ascending">Indicates if the results are requested in ascending order by Sort.</param>
+    /// <param name="ascending">Indicates if the results are requested in ascending or descending ascending.</param>
     [HttpGet("api/sample-data/sort-cars"), Produces("application/json")]
     [AllowAnonymous]
-    public async Task<FilteredCollection<Automobile>> ListFilteredAsync([FromQuery] SortField? sort, bool ascending = false)
+    public async Task<FilteredCollection<Automobile>> ListFilteredAsync([FromQuery] SortField? sort, bool? ascending)
     {
-        var query = new FilterQuery { Sort = sort.ToString(), Ascending = ascending };
+        var query = new SortQuery { Sort = sort.ToString(), Ascending = ascending ?? true };
         return await sampleData.ListAsync(query);
     }
 

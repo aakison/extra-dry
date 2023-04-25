@@ -3,7 +3,7 @@
 /// <summary>
 /// Standard payload for list controllers endpoints that return paged results, e.g. using `PartialCollection`.
 /// </summary>
-public class PageQuery : FilterQuery {
+public class PageQuery : SortQuery {
 
     /// <summary>
     /// The number of records to skip before returning results.

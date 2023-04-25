@@ -7,17 +7,10 @@ namespace ExtraDry.Server;
 /// A very lightweight dynamic linq builder, just enough to satisfy needs of filtering, sorting and paging API result sets.
 /// </summary>
 public static class QueryableExtensions {
-    private const string MissingStabilizerErrorMessage = "Sort requires that a single EF key is uniquely defined to stabalize the sort, even if another sort property is present.  Use a single unique key following EF conventions or specify a Stabilizer in the FilterQuery.";
+    private const string MissingStabilizerErrorMessage = "Sort requires that a single EF key is uniquely defined to stabalize the sort, even if another sort property is present.  Use a single unique key following EF conventions";
     private const string SortErrorUserMessage = "Unable to Sort. 0x0F3F241C";
 
-    /// <summary>
-    /// Given a `PageQuery`, dynamically constructs an expression query that applies the indicated filtering, sorting, and paging.
-    /// </summary>
-    /// <typeparam name="T">The type of objects in the collection.</typeparam>
-    /// <param name="source">The extension source</param>
-    /// <param name="query">A page query that contains filtering, sorting, and paging information.</param>
-    /// <param name="defaultFilter">An expression that provides default filtering support, which can be overridden by `partialQuery`</param>
-    public static IPartialQueryable<T> QueryWith<T>(this IQueryable<T> source, PageQuery query, Expression<Func<T, bool>>? defaultFilter = null)
+    public static IPartialQueryable<T> QueryWith<T>(this IQueryable<T> source, FilterQuery query, Expression<Func<T, bool>>? defaultFilter = null)
     {
         return new PartialQueryable<T>(source, query, defaultFilter);
     }
@@ -27,9 +20,21 @@ public static class QueryableExtensions {
     /// </summary>
     /// <typeparam name="T">The type of objects in the collection.</typeparam>
     /// <param name="source">The extension source</param>
-    /// <param name="query">A filter query that contains filtering and sorting information.</param>
+    /// <param name="query">A sort query that contains filtering and sorting information.</param>
     /// <param name="defaultFilter">An expression that provides default filtering support, which can be overridden by `filterQuery`</param>
-    public static IPartialQueryable<T> QueryWith<T>(this IQueryable<T> source, FilterQuery query, Expression<Func<T, bool>>? defaultFilter = null)
+    public static IPartialQueryable<T> QueryWith<T>(this IQueryable<T> source, SortQuery query, Expression<Func<T, bool>>? defaultFilter = null)
+    {
+        return new PartialQueryable<T>(source, query, defaultFilter);
+    }
+
+    /// <summary>
+    /// Given a `PageQuery`, dynamically constructs an expression query that applies the indicated filtering, sorting, and paging.
+    /// </summary>
+    /// <typeparam name="T">The type of objects in the collection.</typeparam>
+    /// <param name="source">The extension source</param>
+    /// <param name="query">A page query that contains filtering, sorting, and paging information.</param>
+    /// <param name="defaultFilter">An expression that provides default filtering support, which can be overridden by `partialQuery`</param>
+    public static IPartialQueryable<T> QueryWith<T>(this IQueryable<T> source, PageQuery query, Expression<Func<T, bool>>? defaultFilter = null)
     {
         return new PartialQueryable<T>(source, query, defaultFilter);
     }
@@ -70,12 +75,12 @@ public static class QueryableExtensions {
     }
 
     /// <summary>
-    /// Given a `FilterQuery`, dynamically constructs an expression query that applies the indicated sorting but not the indicated filtering.
+    /// Given a `SortQuery`, dynamically constructs an expression query that applies the indicated sorting but not the indicated filtering.
     /// </summary>
     /// <typeparam name="T">The type of objects in the collection.</typeparam>
     /// <param name="source">The extension source</param>
     /// <param name="query">A filter query that contains sorting information.</param>
-    public static IQueryable<T> Sort<T>(this IQueryable<T> source, FilterQuery query)
+    public static IQueryable<T> Sort<T>(this IQueryable<T> source, SortQuery query)
     {
         var token = (query as PageQuery)?.Token; // Only need the token if it's a PageQuery, null if FilterQuery.
         return source.Sort(query.Sort, query.Ascending, token);

@@ -8,7 +8,7 @@ public class SectorService : IEntityResolver<Sector> {
         rules = ruleEngine;
     }
 
-    public async Task<FilteredCollection<Sector>> ListAsync(FilterQuery query)
+    public async Task<FilteredCollection<Sector>> ListAsync(SortQuery query)
     {
         return await database.Sectors
             .QueryWith(query, e => e.State == SectorState.Active)
@@ -51,6 +51,13 @@ public class SectorService : IEntityResolver<Sector> {
         await database.SaveChangesAsync();
     }
     
+    public async Task<Statistics<Sector>> StatsAsync(FilterQuery query)
+    {
+        return await database.Sectors
+            .QueryWith(query)
+            .ToStatisticsAsync();
+    }
+
     private readonly SampleContext database;
 
     private readonly RuleEngine rules;

@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Reflection;
 
 namespace ExtraDry.Server.Internal;
@@ -12,9 +10,11 @@ internal class ModelDescription {
         GetReflectedModelProperties(modelType);
     }
 
-    public Collection<FilterProperty> FilterProperties { get; } = new Collection<FilterProperty>();
+    public Collection<FilterProperty> FilterProperties { get; } = new();
 
-    public Collection<SortProperty> SortProperties { get; } = new Collection<SortProperty>();
+    public Collection<SortProperty> SortProperties { get; } = new();
+
+    public Collection<StatisticsProperty> StatisticsProperties { get; } = new();
 
     public SortProperty? StabilizerProperty => multipleStabilizerProperties ? null : stabilizerProperty;
 
@@ -56,6 +56,11 @@ internal class ModelDescription {
 
             if(IsSortable(property)) {
                 SortProperties.Add(new SortProperty(property, externalName));
+            }
+
+            var statistics = property.GetCustomAttribute<StatisticsAttribute>();
+            if(statistics != null) {
+                StatisticsProperties.Add(new StatisticsProperty(property, statistics.Stats));
             }
 
             var keyProperty = property.GetCustomAttribute<KeyAttribute>();

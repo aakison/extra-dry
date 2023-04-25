@@ -24,7 +24,7 @@ public class SectorController {
     /// </summary>
     [HttpGet("api/sectors"), Produces("application/json")]
     [AllowAnonymous]
-    public async Task<FilteredCollection<Sector>> List([FromQuery] FilterQuery query)
+    public async Task<FilteredCollection<Sector>> ListAsync([FromQuery] SortQuery query)
     {
         return await sectors.ListAsync(query);
     }
@@ -34,7 +34,7 @@ public class SectorController {
     /// </summary>
     [HttpPost("api/sectors"), Consumes("application/json")]
     [Authorize(nameof(SectorController))]
-    public async Task Create(Sector value)
+    public async Task CreateAsync(Sector value)
     {
         await sectors.CreateAsync(value);
     }
@@ -44,7 +44,7 @@ public class SectorController {
     /// </summary>
     [HttpGet("api/sectors/{uuid}"), Produces("application/json")]
     [AllowAnonymous]
-    public async Task<Sector> Retrieve(Guid uuid)
+    public async Task<Sector> RetrieveAsync(Guid uuid)
     {
         return await sectors.RetrieveAsync(uuid);
     }
@@ -54,7 +54,7 @@ public class SectorController {
     /// </summary>
     [HttpPut("api/sectors/{sectorId}"), Consumes("application/json")]
     [Authorize(SamplePolicies.SamplePolicy)]
-    public async Task Update(Guid sectorId, Sector value)
+    public async Task UpdateAsync(Guid sectorId, Sector value)
     {
         if(sectorId != value?.Uuid) {
             throw new ArgumentMismatchException("ID in URI must match body.", nameof(sectorId));
@@ -67,9 +67,19 @@ public class SectorController {
     /// </summary>
     [HttpDelete("api/sectors/{sectorId}")]
     [Authorize(SamplePolicies.SamplePolicy)]
-    public async Task Delete(Guid sectorId)
+    public async Task DeleteAsync(Guid sectorId)
     {
         await sectors.DeleteAsync(sectorId);
+    }
+
+    /// <summary>
+    /// Retrieve statistical information about a filters set of Sectors.
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("api/sectors/stats"), Produces("application/json")]
+    [Authorize(SamplePolicies.SamplePolicy)]
+    public async Task<Statistics<Sector>> RetrieveStatsAsync([FromQuery] FilterQuery query) {
+        return await sectors.StatsAsync(query);
     }
 
     private readonly SectorService sectors;

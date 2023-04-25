@@ -36,6 +36,7 @@ public class Sector {
     [Required, MaxLength(50)]
     [Display(Name = "Title", ShortName = "Title")]
     [Filter(FilterType.Contains)]
+    [Statistics(Stats.Distribution)]
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
@@ -44,7 +45,9 @@ public class Sector {
     /// <example>Fire, Safety &amp; Security</example>
     [Required, MaxLength(50)]
     [Display(Name = "Group", ShortName = "Group")]
+    [Column("Grouping")] // Can't name 'Group' in DB as EF fails on GroupBy query.
     [Filter(FilterType.Contains)]
+    [Statistics(Stats.Distribution)]
     public string Group { get; set; } = string.Empty;
 
     /// <summary>
@@ -63,6 +66,7 @@ public class Sector {
     /// The current status of the sector.
     /// </summary>
     [Filter(FilterType.Equals)]
+    [Statistics(Stats.Distribution)]
     public SectorState State { get; set;  }
 
     /// <summary>

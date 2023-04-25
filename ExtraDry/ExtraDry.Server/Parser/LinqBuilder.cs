@@ -1,5 +1,9 @@
+using Microsoft.Azure.Amqp.Framing;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Security.Cryptography;
 
 namespace ExtraDry.Server.Internal;
 
@@ -95,6 +99,20 @@ internal static class LinqBuilder {
         var lambda = Expression.Lambda<Func<T, bool>>(rangeExpression, param);
         
         return source.Where(lambda);
+    }
+
+    public static IQueryable<IGrouping<object, T>> GroupBy<T>(this IQueryable<T> source, StatisticsProperty property)
+    {
+        // Build up the group-by property, which is essentially the lambda `e => (object)e.propertyName`
+        // The cast to object is required for enum support.
+        var paramExpr = Expression.Parameter(typeof(T), "e");
+        var statsProperty = typeof(T).GetProperty(property.Property.Name)
+            ?? throw new DryException("Can't find property on class that defines the property?!?");
+        var propertyExpr = Expression.Property(paramExpr, statsProperty);
+        var objectPropertyExpr = Expression.Convert(propertyExpr, typeof(object));
+        var keySelector = Expression.Lambda<Func<T, object>>(objectPropertyExpr, paramExpr);
+
+        return source.GroupBy(keySelector);
     }
 
     /// <summary>

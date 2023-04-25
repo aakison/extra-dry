@@ -12,21 +12,22 @@ public class QueryDocumentationOperationFilter : IOperationFilter {
     /// </summary>
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
-        var takesFilter = context.MethodInfo.GetParameters()
+        var supportsFiltering = context.MethodInfo.GetParameters()
             .Any(e => typeof(FilterQuery).IsAssignableFrom(e.ParameterType));
-        var takesToken = context.MethodInfo.GetParameters()
+        var supportsSorting = context.MethodInfo.GetParameters()
+            .Any(e => typeof(SortQuery).IsAssignableFrom(e.ParameterType));
+        var supportsPaging = context.MethodInfo.GetParameters()
             .Any(e => typeof(PageQuery).IsAssignableFrom(e.ParameterType));
+
         var returnType = context.MethodInfo.ReturnType;
         // Strip Task, List, ICollection, FilteredCollection, etc.
         while(returnType.IsGenericType) {
             returnType = returnType.GenericTypeArguments.First();
         }
 
-        if(takesFilter) {
-            var modelDescription = new ModelDescription(returnType);
-
+        var modelDescription = new ModelDescription(returnType);
+        if(supportsFiltering) {
             operation.Description += FilterDescription(modelDescription.FilterProperties.ToArray());
-            operation.Description += SortDescription(modelDescription.SortProperties.ToArray());
 
             var filterableQuotedNames = modelDescription.FilterProperties.Select(e => $"`{e.ExternalName}`");
             var filterable = string.Join(", ", filterableQuotedNames);
@@ -34,6 +35,9 @@ public class QueryDocumentationOperationFilter : IOperationFilter {
             if(filterParam != null) {
                 filterParam.Description += $" Filter fields include any of [{filterable}]";
             }
+        }
+        if(supportsSorting) {
+            operation.Description += SortDescription(modelDescription.SortProperties.ToArray());
 
             var sortableQuotedNames = modelDescription.SortProperties.Select(e => $"`{e.ExternalName}`");
             var sortable = string.Join(", ", sortableQuotedNames);
@@ -43,7 +47,7 @@ public class QueryDocumentationOperationFilter : IOperationFilter {
                 sortParam.Schema.Enum = ArrayOfString(modelDescription.SortProperties.Select(e => e.ExternalName));
             }
         }
-        if(takesToken) {
+        if(supportsPaging) {
             operation.Description += PagingDescription();
         }
     }

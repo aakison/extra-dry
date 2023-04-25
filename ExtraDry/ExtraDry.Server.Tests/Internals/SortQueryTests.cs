@@ -1,15 +1,15 @@
 ﻿namespace ExtraDry.Server.Tests.Internals;
 
-public class FilterQueryTests {
+public class SortQueryTests {
 
     [Fact]
     public void DefaultValues()
     {
-        var filterQuery = ValidFilterQuery;
+        var sortQuery = ValidSortQuery;
 
-        Assert.False(filterQuery.Ascending);
-        Assert.Null(filterQuery.Filter);
-        Assert.Null(filterQuery.Sort);
+        Assert.False(sortQuery.Ascending);
+        Assert.Null(sortQuery.Filter);
+        Assert.Null(sortQuery.Sort);
     }
 
     [Theory]
@@ -21,7 +21,7 @@ public class FilterQueryTests {
     [InlineData("Sort", "not")]
     public void RoundtripProperties(string propertyName, object propertyValue)
     {
-        var filter = ValidFilterQuery;
+        var filter = ValidSortQuery;
         var property = filter.GetType().GetProperty(propertyName);
 
         property?.SetValue(filter, propertyValue);
@@ -30,6 +30,6 @@ public class FilterQueryTests {
         Assert.Equal(propertyValue, result);
     }
 
-    private static FilterQuery ValidFilterQuery => new();
+    private static SortQuery ValidSortQuery => new();
 
 }
