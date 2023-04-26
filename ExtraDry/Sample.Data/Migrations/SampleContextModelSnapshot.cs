@@ -237,8 +237,7 @@ namespace Sample.Data.Migrations
                     b.Property<string>("Group")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("Grouping");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("State")
                         .HasColumnType("int");

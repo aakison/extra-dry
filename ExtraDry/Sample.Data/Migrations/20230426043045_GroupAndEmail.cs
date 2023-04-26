@@ -5,13 +5,13 @@
 namespace Sample.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Grouping : Migration
+    public partial class GroupAndEmail : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "Grouping",
+                name: "Group",
                 table: "Sectors",
                 type: "nvarchar(50)",
                 maxLength: 50,
@@ -30,7 +30,7 @@ namespace Sample.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Grouping",
+                name: "Group",
                 table: "Sectors");
 
             migrationBuilder.DropColumn(

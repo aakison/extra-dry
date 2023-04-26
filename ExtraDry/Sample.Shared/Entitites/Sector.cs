@@ -44,7 +44,6 @@ public class Sector {
     /// <example>Fire, Safety &amp; Security</example>
     [Required, MaxLength(50)]
     [Display(Name = "Group", ShortName = "Group")]
-    [Column("Grouping")] // Can't name 'Group' in DB as EF fails on GroupBy query.
     [Filter(FilterType.Contains)]
     [Statistics(Stats.Distribution)]
     public string Group { get; set; } = string.Empty;

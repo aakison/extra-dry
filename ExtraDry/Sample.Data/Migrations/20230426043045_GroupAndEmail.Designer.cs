@@ -12,8 +12,8 @@ using Sample.Data;
 namespace Sample.Data.Migrations
 {
     [DbContext(typeof(SampleContext))]
-    [Migration("20230425035018_Grouping")]
-    partial class Grouping
+    [Migration("20230426043045_GroupAndEmail")]
+    partial class GroupAndEmail
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -240,8 +240,7 @@ namespace Sample.Data.Migrations
                     b.Property<string>("Group")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("Grouping");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("State")
                         .HasColumnType("int");
