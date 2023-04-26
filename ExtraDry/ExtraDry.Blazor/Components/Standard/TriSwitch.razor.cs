@@ -20,13 +20,6 @@ public partial class TriSwitch : ComponentBase, IExtraDryComponent {
     public EventCallback<TriSwitchState> ValueChanged { get; set; }
 
     /// <summary>
-    /// The Id for the input element of the control. Must be unique.
-    /// Defaults to a unique Id.
-    /// </summary>
-    [Parameter]
-    public string Id { get; set; } = $"TriSwitch{++maxId}";
-
-    /// <summary>
     /// The string label that is rendered with the TriSwitch.
     /// </summary>
     [Parameter]
@@ -48,41 +41,26 @@ public partial class TriSwitch : ComponentBase, IExtraDryComponent {
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
 
-    private async Task DoChange(ChangeEventArgs? args)
+    private async Task DoClick(MouseEventArgs args)
     {
-        if(args == null) {
-            args = new ChangeEventArgs();
-        }
-        else if(args.Value is bool bValue) {
-            Value = bValue ? TriSwitchState.On : TriSwitchState.Off;
-        }
-        args.Value = Value;
+        Value = ToggleSwitch;
         await ValueChanged.InvokeAsync(Value);
-        await OnChange.InvokeAsync(args);
+        await OnClicked.InvokeAsync(args);
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    private void OnKeyPressed(KeyboardEventArgs args)
     {
-        if(jsIndeterminate != Indeterminate) {
-            // Only do interop if we need to change.
-            await Module.InvokeVoidAsync("TriSwitch_SetIndeterminate", Id, Indeterminate);
-            jsIndeterminate = Indeterminate;
-            await DoChange(null);
+        if(args.Code == "Space") {
+            Value = ToggleSwitch;
         }
     }
 
-    private bool Switched => Value == TriSwitchState.On;
-
-    private bool Indeterminate => Value == TriSwitchState.Indeterminate;
+    private TriSwitchState ToggleSwitch => Value == TriSwitchState.On ? TriSwitchState.Off : TriSwitchState.On;
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "tri-switch", CssClass);
 
-    [Inject]
-    private ExtraDryJavascriptModule Module { get; set; } = null!;
+    private string CssSwitch => DataConverter.JoinNonEmpty(" ", "switch", Value.ToString().ToLowerInvariant());
 
-    private bool jsIndeterminate = false;
-
-    private static int maxId = 0;
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]

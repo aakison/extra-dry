@@ -1,10 +1,7 @@
 ﻿@namespace ExtraDry.Blazor
 @implements IExtraDryComponent
 
-<div class="@CssClasses" @attributes="@UnmatchedAttributes">
-    <input id="@Id" type="checkbox" checked="@Switched" @onchange="DoChange" @onclick="OnClicked" />
-    <label for="@Id">
-        <span></span>
-        <span>@Label</span>
-    </label>
+<div class="@CssClasses" @attributes="@UnmatchedAttributes" @onchange="OnChange" @onclick="DoClick" @onkeypress="OnKeyPressed">
+    <span tabindex="0" class="@CssSwitch"></span>
+    <label>@Label</label>
 </div>

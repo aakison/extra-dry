@@ -1,8 +1,8 @@
-﻿div label {
+﻿div {
   display: flex;
   align-items: center;
 }
-div label span:first-of-type {
+div span {
   display: inline-flex;
   align-items: center;
   position: relative;
@@ -11,7 +11,7 @@ div label span:first-of-type {
   border: 1px solid #333;
   border-radius: 12px;
 }
-div label span:first-of-type::after {
+div span::after {
   content: "";
   display: block;
   position: absolute;
@@ -19,16 +19,16 @@ div label span:first-of-type::after {
   width: 12px;
   height: 12px;
   margin: 0 4px;
-  background: #333;
+  background: #767676;
   border-radius: 100%;
   transition: 0.3s;
 }
-div input[type=checkbox] {
-  display: none;
+div .on {
+  background: #e9e9ed;
 }
-div input[type=checkbox]:checked + label span:first-of-type::after {
+div .on::after {
   left: 18px;
 }
-div input[type=checkbox]:indeterminate + label span:first-of-type::after {
+div .indeterminate::after {
   left: 9px;
 }
