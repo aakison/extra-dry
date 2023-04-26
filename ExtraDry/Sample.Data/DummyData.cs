@@ -68,6 +68,10 @@ public class DummyData {
                 FirstName = first,
                 LastName = last
             };
+            if(random.Next(0, 100) < 20) {
+                // 20% are no longer employed
+                employee.TerminationDate = DateTime.UtcNow.AddDays(-random.Next(1, 1000));
+            }
             database.Employees.Add(employee);
         }
         database.SaveChanges();

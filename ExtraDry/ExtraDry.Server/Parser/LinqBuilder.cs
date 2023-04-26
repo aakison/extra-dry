@@ -223,23 +223,49 @@ internal static class LinqBuilder {
         if(!propertyInfo.PropertyType.IsValueType) {
             throw new DryException("Filters that specify a range expression may only be used with value types that have comparisons defined.", "Unable to apply filter. 0x0F4DC1B1");
         }
-        var lowerValue = Expression.Constant(ParseToType(propertyInfo.PropertyType, rule.Values[0]));
-        var upperValue = Expression.Constant(ParseToType(propertyInfo.PropertyType, rule.Values[1]));
-        var property = Expression.Property(parameter, propertyInfo);
-        var lowerBound = rule.LowerBound switch {
-            BoundRule.Exclusive => Expression.GreaterThan(property, lowerValue),
-            _ => Expression.GreaterThanOrEqual(property, lowerValue),
-        };
-        var upperBound = rule.UpperBound switch {
-            BoundRule.Inclusive => Expression.LessThanOrEqual(property, upperValue),
-            _ => Expression.LessThan(property, upperValue),
-        };
-        return new Expression[] { lowerBound, upperBound };
+        var type = propertyInfo.PropertyType;
+        var expressions = new List<Expression>();
+        if(!string.IsNullOrWhiteSpace(rule.Values[0])) {
+            var valueExpr = ConstantToExpression(rule.Values[0], type);
+            var propertyExpr = Expression.Property(parameter, propertyInfo);
+            var lowerBoundExpr = rule.LowerBound switch {
+                BoundRule.Exclusive => Expression.GreaterThan(propertyExpr, valueExpr),
+                _ => Expression.GreaterThanOrEqual(propertyExpr, valueExpr),
+            };
+            expressions.Add(lowerBoundExpr);
+        }
+        if(!string.IsNullOrWhiteSpace(rule.Values[1])) {
+            var valueExpr = ConstantToExpression(rule.Values[1], type);
+            var propertyExpr = Expression.Property(parameter, propertyInfo);
+            var upperBoundExpr = rule.UpperBound switch {
+                BoundRule.Inclusive => Expression.LessThanOrEqual(propertyExpr, valueExpr),
+                _ => Expression.LessThan(propertyExpr, valueExpr),
+            };
+            expressions.Add(upperBoundExpr);
+        }
+        if(!expressions.Any()) {
+            throw new DryException("Filters that specify a range, must include at least either a lower bound or an upper bound.", "Unable to apply filter. 0x0F30C48A");
+        }
+        return expressions.ToArray();
+
+        Expression ConstantToExpression(string value, Type type)
+        {
+            var expression = (Expression)Expression.Constant(ParseToType(type, value));
+            if(type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>)) {
+                // If nullable property, need to convert non nullable values from ParseToType into nullable equivalents.
+                expression = Expression.Convert(expression, type);
+            }
+            return expression;
+        }
     }
 
     private static object ParseToType(Type type, string value)
     {
         try {
+            // If nullable type, e.g. DateTime?, then parse the inner type, i.e. DateTime.
+            if(type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>)) {
+                type = type.GetGenericArguments()[0];
+            }
             if(type.IsEnum) {
                 return Enum.Parse(type, value, ignoreCase: true);
             }

@@ -12,8 +12,8 @@ using Sample.Data;
 namespace Sample.Data.Migrations
 {
     [DbContext(typeof(SampleContext))]
-    [Migration("20230426043045_GroupAndEmail")]
-    partial class GroupAndEmail
+    [Migration("20230426104112_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -178,6 +178,9 @@ namespace Sample.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("TerminationDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("Uuid")
                         .HasColumnType("uniqueidentifier");

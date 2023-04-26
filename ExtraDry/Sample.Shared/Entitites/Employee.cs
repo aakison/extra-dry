@@ -28,6 +28,13 @@ public class Employee
     public string? Email { get; set; }
 
     /// <summary>
+    /// The last date the employee worked for the company.
+    /// </summary>
+    /// <remarks>Use for testing nullable dates in Filter conditions.</remarks>
+    [Filter]
+    public DateTime? TerminationDate { get; set; }
+
+    /// <summary>
     /// The version info which informs the audit log.
     /// </summary>
     [JsonIgnore]

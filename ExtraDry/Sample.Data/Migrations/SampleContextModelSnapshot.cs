@@ -176,6 +176,9 @@ namespace Sample.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<DateTime?>("TerminationDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<Guid>("Uuid")
                         .HasColumnType("uniqueidentifier");
 

@@ -1,4 +1,4 @@
-﻿namespace Sample.Data.Services; 
+﻿namespace Sample.Data.Services;
 
 public class SectorService : IEntityResolver<Sector> {
 

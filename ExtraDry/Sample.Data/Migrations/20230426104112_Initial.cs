@@ -5,8 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Sample.Data.Migrations
 {
+    /// <inheritdoc />
     public partial class Initial : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -37,10 +39,10 @@ namespace Sample.Data.Migrations
                     Uuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Layout = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Version_DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Version_UserCreated = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false),
-                    Version_DateModified = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Version_UserModified = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false)
+                    VersionDateCreated = table.Column<DateTime>(name: "Version_DateCreated", type: "datetime2", nullable: false),
+                    VersionUserCreated = table.Column<string>(name: "Version_UserCreated", type: "nvarchar(80)", maxLength: 80, nullable: false),
+                    VersionDateModified = table.Column<DateTime>(name: "Version_DateModified", type: "datetime2", nullable: false),
+                    VersionUserModified = table.Column<string>(name: "Version_UserModified", type: "nvarchar(80)", maxLength: 80, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -56,10 +58,12 @@ namespace Sample.Data.Migrations
                     Uuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Version_DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Version_UserCreated = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false),
-                    Version_DateModified = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Version_UserModified = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false)
+                    Email = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: true),
+                    TerminationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    VersionDateCreated = table.Column<DateTime>(name: "Version_DateCreated", type: "datetime2", nullable: false),
+                    VersionUserCreated = table.Column<string>(name: "Version_UserCreated", type: "nvarchar(80)", maxLength: 80, nullable: false),
+                    VersionDateModified = table.Column<DateTime>(name: "Version_DateModified", type: "datetime2", nullable: false),
+                    VersionUserModified = table.Column<string>(name: "Version_UserModified", type: "nvarchar(80)", maxLength: 80, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -77,10 +81,10 @@ namespace Sample.Data.Migrations
                     Title = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    Version_DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Version_UserCreated = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false),
-                    Version_DateModified = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Version_UserModified = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false)
+                    VersionDateCreated = table.Column<DateTime>(name: "Version_DateCreated", type: "datetime2", nullable: false),
+                    VersionUserCreated = table.Column<string>(name: "Version_UserCreated", type: "nvarchar(80)", maxLength: 80, nullable: false),
+                    VersionDateModified = table.Column<DateTime>(name: "Version_DateModified", type: "datetime2", nullable: false),
+                    VersionUserModified = table.Column<string>(name: "Version_UserModified", type: "nvarchar(80)", maxLength: 80, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -126,10 +130,10 @@ namespace Sample.Data.Migrations
                     SalesMargin = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     IncorporationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     BankingDetails = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Version_DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Version_UserCreated = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false),
-                    Version_DateModified = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Version_UserModified = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false)
+                    VersionDateCreated = table.Column<DateTime>(name: "Version_DateCreated", type: "datetime2", nullable: false),
+                    VersionUserCreated = table.Column<string>(name: "Version_UserCreated", type: "nvarchar(80)", maxLength: 80, nullable: false),
+                    VersionDateModified = table.Column<DateTime>(name: "Version_DateModified", type: "datetime2", nullable: false),
+                    VersionUserModified = table.Column<string>(name: "Version_UserModified", type: "nvarchar(80)", maxLength: 80, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -144,12 +148,13 @@ namespace Sample.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Uuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Group = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
                     State = table.Column<int>(type: "int", nullable: false),
-                    Version_DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Version_UserCreated = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false),
-                    Version_DateModified = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Version_UserModified = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false),
+                    VersionDateCreated = table.Column<DateTime>(name: "Version_DateCreated", type: "datetime2", nullable: false),
+                    VersionUserCreated = table.Column<string>(name: "Version_UserCreated", type: "nvarchar(80)", maxLength: 80, nullable: false),
+                    VersionDateModified = table.Column<DateTime>(name: "Version_DateModified", type: "datetime2", nullable: false),
+                    VersionUserModified = table.Column<string>(name: "Version_UserModified", type: "nvarchar(80)", maxLength: 80, nullable: false),
                     CompanyId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -185,6 +190,7 @@ namespace Sample.Data.Migrations
                 principalColumn: "Id");
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
