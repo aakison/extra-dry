@@ -60,7 +60,7 @@ internal class ModelDescription {
 
             var statistics = property.GetCustomAttribute<StatisticsAttribute>();
             if(statistics != null) {
-                StatisticsProperties.Add(new StatisticsProperty(property, statistics.Stats));
+                StatisticsProperties.Add(new StatisticsProperty(property, externalName, statistics.Stats));
             }
 
             var keyProperty = property.GetCustomAttribute<KeyAttribute>();

@@ -8,13 +8,16 @@ namespace ExtraDry.Server.Internal;
 /// </summary>
 internal class StatisticsProperty {
 
-    public StatisticsProperty(PropertyInfo property, Stats stats)
+    public StatisticsProperty(PropertyInfo property, string externalName, Stats stats)
     {
         Property = property;
         Stats = stats;
+        ExternalName = externalName;
     }
 
     public PropertyInfo Property { get; }
 
     public Stats Stats { get; }
+
+    public string ExternalName { get; }
 }

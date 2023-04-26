@@ -1,4 +1,5 @@
 ﻿using ExtraDry.Server.Internal;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace ExtraDry.Swashbuckle;
 
@@ -20,7 +21,15 @@ public class QueryDocumentationOperationFilter : IOperationFilter {
             .Any(e => typeof(PageQuery).IsAssignableFrom(e.ParameterType));
 
         var returnType = context.MethodInfo.ReturnType;
-        // Strip Task, List, ICollection, FilteredCollection, etc.
+
+        // Strip Task from return type before applying filter.
+        if(returnType.IsGenericType && returnType.GetGenericTypeDefinition() == typeof(Task<>)) {
+            returnType = returnType.GenericTypeArguments.First();
+        }
+
+        var supportsStatistics = returnType.IsGenericType && returnType.GetGenericTypeDefinition() == typeof(Statistics<>);
+
+        // Strip Statistics<>, List<>, ICollection<>, FilteredCollection<>, etc.
         while(returnType.IsGenericType) {
             returnType = returnType.GenericTypeArguments.First();
         }
@@ -46,6 +55,9 @@ public class QueryDocumentationOperationFilter : IOperationFilter {
                 sortParam.Description += $" Sort field is one of [{sortable}]";
                 sortParam.Schema.Enum = ArrayOfString(modelDescription.SortProperties.Select(e => e.ExternalName));
             }
+        }
+        if(supportsStatistics) {
+            operation.Description += StatisticsDescription(modelDescription.StatisticsProperties.ToArray());
         }
         if(supportsPaging) {
             operation.Description += PagingDescription();
@@ -76,12 +88,31 @@ Paging is supported using the [standard paging rules](?urls.primaryName=Instruct
 Sorting is supported using the [standard sorting rules](?urls.primaryName=Instructions).  The sortable fields for this endpoint are [{DisplaySortProps()}]";
 
         if(!sortProps.Any()) {
-            description = "##### This endpoint does not support sorting.  Fix [Sort] attribute on sortable fields.";
+            description = "##### This endpoint does not support sorting.  Add [Sort] attribute to sortable properties.";
         }
 
         return description;
 
         string DisplaySortProps() => string.Join(", ", sortProps.Select(e => $"`{e.ExternalName}`"));
+    }
+
+    private static string StatisticsDescription(StatisticsProperty[] statsProps)
+    {
+        var description = @"
+## Statistics
+Statistics are returned from this endpoint using the [standard statistics format](?urls.primarName=Instructions).  The statistics returned from this endpoint are:
+";
+        foreach(var prop in statsProps) {
+            description += $"  * `{prop.ExternalName}` ";
+            description += prop.Stats switch {
+                Stats.Distribution => "discrete values with frequency distribution\r\n",
+                _ => "."
+            };
+        }
+        if(!statsProps.Any()) {
+            description = "##### This endpoint does not support statistics.  Add [Statistics(...)] attribute on statistics properties.";
+        }
+        return description;
     }
 
     private static string FilterDescription(FilterProperty[] filterProps)

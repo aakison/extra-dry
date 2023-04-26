@@ -36,7 +36,6 @@ public class Sector {
     [Required, MaxLength(50)]
     [Display(Name = "Title", ShortName = "Title")]
     [Filter(FilterType.Contains)]
-    [Statistics(Stats.Distribution)]
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
