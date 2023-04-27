@@ -75,7 +75,7 @@ public partial class TriCheck : ComponentBase, IExtraDryComponent {
 
     private bool Indeterminate => Value == TriCheckState.Indeterminate;
 
-    private string CssClasses => DataConverter.JoinNonEmpty("tri-check", CssClass);
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "tri-check", CssClass);
 
     [Inject]
     private ExtraDryJavascriptModule Module { get; set; } = null!;
