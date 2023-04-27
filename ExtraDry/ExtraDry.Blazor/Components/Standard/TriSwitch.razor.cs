@@ -7,7 +7,7 @@ public partial class TriSwitch : ComponentBase, IExtraDryComponent {
     public string CssClass { get; set; } = string.Empty;
 
     /// <summary>
-    /// The value of the checkbox, allowing for indeterminate state.
+    /// The value of the switch, allowing for indeterminate state.
     /// Use with data binding.
     /// </summary>
     [Parameter]
@@ -44,14 +44,17 @@ public partial class TriSwitch : ComponentBase, IExtraDryComponent {
     private async Task DoClick(MouseEventArgs args)
     {
         Value = ToggleSwitch;
-        await ValueChanged.InvokeAsync(Value);
         await OnClicked.InvokeAsync(args);
+        await OnChange.InvokeAsync(new ChangeEventArgs { Value = Value });
+        await ValueChanged.InvokeAsync(Value);
     }
 
-    private void OnKeyPressed(KeyboardEventArgs args)
+    private async Task OnKeyPressed(KeyboardEventArgs args)
     {
         if(args.Code == "Space") {
             Value = ToggleSwitch;
+            await ValueChanged.InvokeAsync(Value);
+            await OnChange.InvokeAsync(new ChangeEventArgs { Value = Value });
         }
     }
 
