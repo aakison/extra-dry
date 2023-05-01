@@ -1,0 +1,7 @@
+﻿@namespace ExtraDry.Blazor
+@implements IExtraDryComponent
+
+<div class="@CssClasses" @attributes="@UnmatchedAttributes" @onclick="DoClick" @onkeypress="OnKeyPressed">
+    <span tabindex="0" class="@CssSwitch"></span>
+    <label>@Label</label>
+</div>

@@ -57,5 +57,10 @@
     "outputFile": "Components/Standard/ComboBox.razor.css",
     "inputFile": "Components/Standard/ComboBox.razor.scss",
     "minify": { "enabled": false }
+  },
+  {
+    "outputFile": "Components/Standard/TriSwitch.razor.css",
+    "inputFile": "Components/Standard/TriSwitch.razor.scss",
+    "minify": { "enabled": false }
   }
 ]

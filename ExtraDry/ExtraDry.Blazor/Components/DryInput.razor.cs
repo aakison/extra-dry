@@ -58,7 +58,7 @@ public partial class DryInput<T> : OwningComponentBase, IDisposable {
 
     private bool valid = true;
 
-    private string CssClasses => DataConverter.JoinNonEmpty(CssClass, Property.DisplayClass, StateCss, ValidCss);
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass, Property.DisplayClass, StateCss, ValidCss);
 
     private string SizeClass => Property.Size.ToString().ToLowerInvariant();
 
