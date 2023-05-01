@@ -7,6 +7,7 @@ public class Employee
     [JsonIgnore]
     public int Id { get; set; }
 
+    [Rules(RuleAction.Block)]
     public Guid Uuid { get; set; } = Guid.NewGuid();
 
     [Required, MaxLength(50)]

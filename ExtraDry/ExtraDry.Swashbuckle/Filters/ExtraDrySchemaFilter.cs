@@ -17,14 +17,18 @@ namespace ExtraDry.Swashbuckle;
 /// be mistakenly applied to other unchanging fields such as Tenant ID or UUID.
 /// 
 /// If a property is Ignored or Blocked for _both_ Create and Update, then it is by definition
-/// ReadOnly.  Any toher combinations allow for a change sometimes so can't be ReadOnly.
+/// ReadOnly.  Any other combinations allow for a change sometimes so can't be ReadOnly.
+/// 
+/// Aggregated objects in OpenApi need to have their ReadOnly flag marked on the schema, so if the
+/// MemberInfo is null, then check if the type has a Class level RulesAttribute.
 /// </remarks>
 public class ExtraDrySchemaFilter : ISchemaFilter {
 
     /// <inheritdoc cref="ISchemaFilter.Apply(OpenApiSchema, SchemaFilterContext)" />
     public void Apply(OpenApiSchema schema, SchemaFilterContext context)
     {
-        var rule = context?.MemberInfo?.GetCustomAttribute<RulesAttribute>();
+        var rule = context?.MemberInfo?.GetCustomAttribute<RulesAttribute>() 
+            ?? context?.Type?.GetCustomAttribute<RulesAttribute>();
         if((rule?.CreateAction == RuleAction.Ignore || rule?.CreateAction == RuleAction.Block) && 
             (rule?.UpdateAction == RuleAction.Ignore || rule?.UpdateAction == RuleAction.Block)) {
             schema.ReadOnly = true;
