@@ -13,7 +13,7 @@ public static class WebId {
     /// <remarks>
     /// This does not guarantee uniqueness, consider `ToUniqeWebId` instead.
     /// </remarks>
-    public static string ToWebId(string name)
+    public static string ToWebId(string name, bool lowercase = true)
     {
         if(string.IsNullOrWhiteSpace(name)) {
             return string.Empty;
@@ -25,7 +25,7 @@ public static class WebId {
         name = RemoveCommonNameSuffixes(name);
         foreach(var c in name) {
             if(char.IsLetterOrDigit(c)) {
-                sb.Append(char.ToLowerInvariant(c));
+                sb.Append(lowercase ? char.ToLowerInvariant(c) : c);
             }
             else if(okCharacters.Contains(c)) {
                 sb.Append(c);
@@ -47,9 +47,9 @@ public static class WebId {
     /// <remarks>
     /// This does not guarantee uniqueness, consider `ToUniqeWebId` instead.
     /// </remarks>
-    public static string ToWebId(string name, int maxLength)
+    public static string ToWebId(string name, int maxLength, bool lowercase = true)
     {
-        var webId = ToWebId(name);
+        var webId = ToWebId(name, lowercase);
         return webId.Length > maxLength ? webId.Substring(0, maxLength) : webId;
     }
 
