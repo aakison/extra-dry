@@ -5,9 +5,9 @@ namespace ExtraDry.Swashbuckle.Instructions;
 
 /// <summary>
 /// When listing entities, the common query mechanism also allows for sorted output.  These list 
-/// methods accept a `sort` query parameter, allowing for a field to be selected to ascending the 
-/// results.  Additionally, results can either be sorted ascending or descending using the 
-/// `ascending` query parameter. 
+/// methods accept a `sort` query parameter, allowing for a field to be selected to sort the 
+/// results.  Additionally, results can either be sorted ascending or descending using a '+' or '-'
+/// prefix on the parameter. 
 /// 
 /// In the case of ties, there is no secondary sort key.  The primary use-case for sorting is the 
 /// presentation of results to users.  While some interfaces attempt to retain secondary and 
@@ -15,8 +15,8 @@ namespace ExtraDry.Swashbuckle.Instructions;
 /// machine interfaces.
 /// 
 /// However, there is a significant issue with ties during sort.  When ties occur, the ascending of 
-/// entities is still deterministic and guaranteed to be repeatable.  That is, the overall ascending 
-/// of all items returned will be the same for any given combination of `sort` and `ascending`.  
+/// entities is still deterministic and guaranteed to be repeatable.  That is, the overall sort
+/// of all items returned will be the same for any given combination of `sort` property.  
 /// While the stability mechanism is internal and may vary, it is typically the chronological 
 /// date of entity creation.
 /// 
