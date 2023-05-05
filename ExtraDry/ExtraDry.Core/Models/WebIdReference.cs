@@ -5,6 +5,7 @@ namespace ExtraDry.Core;
 /// <summary>
 /// A simple container for holding a Web Identifier (WebID) that is safe for use URI paths, such as returned from a Create method.
 /// </summary>
+[Obsolete("Use ResourceReference instead")]
 public class WebIdReference {
 
     /// <summary>
