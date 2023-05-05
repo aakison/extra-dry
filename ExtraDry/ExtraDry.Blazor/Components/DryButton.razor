@@ -1,16 +1,16 @@
 ﻿@namespace ExtraDry.Blazor
 @implements IDisposable
 
-@if (Command.IsVisible())
+@if (Command?.IsVisible() ?? false)
 {
-    <button class="@CssClasses" name="@Command.Method.Name" @onclick="Click" disabled="@disabled" @attributes="@UnmatchedAttributes">
+    <button class="@CssClasses" name="Command.Method.Name" @onclick="Click" disabled="@disabled" @attributes="@UnmatchedAttributes">
         @if (ShowIcon)
         {
             <Icon Key="@Command?.Icon" />
         }
         @if (ShowCaption)
         {
-            <span>@Command.Caption</span>
+            <span>@Command?.Caption</span>
         }
     </button>
 }

@@ -58,6 +58,7 @@
 	<ItemGroup>
 		<PackageReference Include="BuildWebCompiler2022" Version="1.14.10" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.2" />
+		<PackageReference Include="Microsoft.VisualStudio.VsixColorCompiler" Version="17.0.31709.430" />
 	</ItemGroup>
 
 	<ItemGroup>

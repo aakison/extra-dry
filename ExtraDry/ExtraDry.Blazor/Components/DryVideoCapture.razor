@@ -3,101 +3,31 @@
 @implements IAsyncDisposable
 
 <div class="video-capture" @onclick="StartVideoCapture">
-  <video id="video" playsinline autoplay></video>
-  <canvas id="canvas"></canvas>
-  @if (State == FiniteState.Initializing)
-  {
-    <span>Initializing...</span>
-  }
-  else if (State == FiniteState.Waiting)
-  {
-    <div>
-      @ChildContent
-    </div>
-  }
-  else if (State == FiniteState.Video)
-  {
-    <button @onclick="CaptureVideo">Capture</button>
-  }
-  else if (State == FiniteState.Preview)
-  {
+    <video id="video" playsinline autoplay></video>
+    <canvas id="canvas"></canvas>
+    @if (State == FiniteState.Initializing)
+    {
+        <span>Initializing...</span>
+    }
+    else if (State == FiniteState.Waiting)
+    {
+        <div>
+            @ChildContent
+        </div>
+    }
+    else if (State == FiniteState.Video)
+    {
+        <button @onclick="CaptureVideo">Capture</button>
+    }
+    else if (State == FiniteState.Preview)
+    {
 
-  }
-  else if (State == FiniteState.BadDevice)
-  {
-    <div>
-      <p><span id="errorMsg"></span></p>
-    </div>
-  }
-  <span>@State</span>
+    }
+    else if (State == FiniteState.BadDevice)
+    {
+        <div>
+            <p><span id="errorMsg"></span></p>
+        </div>
+    }
+    <span>@State</span>
 </div>
-
-@code {
-
-  [Parameter]
-  public int Width { get; set; } = 480;
-
-  [Parameter]
-  public int Height { get; set; } = 480;
-
-  [Parameter]
-  public RenderFragment ChildContent { get; set; }
-
-  public string Message { get; set; } = "optional photo";
-
-  private FiniteState State { get; set; } = FiniteState.Initializing;
-
-  private string Pixels(int dimension) => $"{dimension}px";
-
-  // Reference: https://www.meziantou.net/javascript-isolation-in-blazor-components.htm
-  private IJSObjectReference module;
-
-  protected override async Task OnInitializedAsync()
-  {
-    Console.WriteLine("About to import bundle");
-    module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./bundle/extra-dry-blazor-module.min.js");
-    State = FiniteState.Waiting;
-  }
-
-  private async Task StartVideoCapture()
-  {
-    if (State == FiniteState.Waiting)
-    {
-      await module.InvokeVoidAsync("startCamera");
-      State = FiniteState.Video;
-      StateHasChanged();
-    }
-    await Task.Delay(15000);
-    if (State == FiniteState.Video)
-    {
-      await StopVideoCapture();
-      StateHasChanged();
-    }
-  }
-
-  private async Task CaptureVideo()
-  {
-    await module.InvokeVoidAsync("captureImage");
-  }
-
-  private async Task StopVideoCapture()
-  {
-    await module.InvokeVoidAsync("stopCamera");
-    State = FiniteState.Waiting;
-  }
-
-  private enum FiniteState
-  {
-    Initializing, Waiting, Video, Preview, BadDevice
-  }
-
-  public async ValueTask DisposeAsync()
-  {
-    if (module != null)
-    {
-      await module.DisposeAsync();
-      module = null;
-    }
-  }
-
-}
