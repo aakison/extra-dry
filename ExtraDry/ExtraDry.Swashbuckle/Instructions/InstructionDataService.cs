@@ -13,6 +13,15 @@ public class InstructionDataService {
             .ToFilteredCollectionAsync();
     }
 
+    public async Task<FilteredCollection<Automobile>> ListAsync(SortQuery query)
+    {
+        return await automobiles
+            .AsQueryable()
+            .ForceStringComparison(StringComparison.OrdinalIgnoreCase)
+            .QueryWith(query)
+            .ToFilteredCollectionAsync();
+    }
+
     public async Task<PagedCollection<Automobile>> ListAsync(PageQuery query)
     {
         return await automobiles

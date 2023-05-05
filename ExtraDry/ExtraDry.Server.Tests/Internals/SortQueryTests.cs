@@ -7,14 +7,11 @@ public class SortQueryTests {
     {
         var sortQuery = ValidSortQuery;
 
-        Assert.False(sortQuery.Ascending);
         Assert.Null(sortQuery.Filter);
         Assert.Null(sortQuery.Sort);
     }
 
     [Theory]
-    [InlineData("Ascending", true)]
-    [InlineData("Ascending", false)]
     [InlineData("Filter", null)]
     [InlineData("Filter", "not")]
     [InlineData("Sort", null)]

@@ -51,9 +51,10 @@ public class QueryDocumentationOperationFilter : IOperationFilter {
             var sortableQuotedNames = modelDescription.SortProperties.Select(e => $"`{e.ExternalName}`");
             var sortable = string.Join(", ", sortableQuotedNames);
             var sortParam = operation.Parameters.FirstOrDefault(e => e.Name == "Sort");
+            var values = modelDescription.SortProperties.Select(e => $"+{e.ExternalName}").Union(modelDescription.SortProperties.Select(e => $"-{e.ExternalName}"));
             if(sortParam != null) {
                 sortParam.Description += $" Sort field is one of [{sortable}]";
-                sortParam.Schema.Enum = ArrayOfString(modelDescription.SortProperties.Select(e => e.ExternalName));
+                sortParam.Schema.Enum = ArrayOfString(values);
             }
         }
         if(supportsStatistics) {

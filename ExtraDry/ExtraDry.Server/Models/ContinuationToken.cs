@@ -11,11 +11,10 @@ internal class ContinuationToken {
 
     internal ContinuationToken() { }
 
-    public ContinuationToken(string? filter, string? sort, bool ascending, int skip, int take)
+    public ContinuationToken(string? filter, string? sort, int skip, int take)
     {
         Filter = filter ?? string.Empty;
         Sort = sort ?? string.Empty;
-        Ascending = ascending;
         Skip = ActualSkip(null, skip);
         Take = ActualTake(null, take);
     }
@@ -29,15 +28,13 @@ internal class ContinuationToken {
     {
         var actualTake = ActualTake(this, takeOverride);
         var actualSkip = ActualSkip(this, skipOverride) + actualTake;
-        var next = new ContinuationToken(Filter, Sort, Ascending, actualSkip, actualTake);
+        var next = new ContinuationToken(Filter, Sort, actualSkip, actualTake);
         return next;
     }
 
     public string Filter { get; set; } = string.Empty;
 
     public string Sort { get; set; } = string.Empty;
-
-    public bool Ascending { get; set; } = true;
 
     public int Skip { get; set; }
 
@@ -49,7 +46,6 @@ internal class ContinuationToken {
         using var writer = new BinaryWriter(memory); 
         writer.Write(Filter);
         writer.Write(Sort);
-        writer.Write(Ascending);
         writer.Write(Skip);
         writer.Write(Take);
         var bytes = memory.ToArray();
@@ -73,7 +69,6 @@ internal class ContinuationToken {
             var result = new ContinuationToken {
                 Filter = reader.ReadString(),
                 Sort = reader.ReadString(),
-                Ascending = reader.ReadBoolean(),
                 Skip = reader.ReadInt32(),
                 Take = reader.ReadInt32(),
             };

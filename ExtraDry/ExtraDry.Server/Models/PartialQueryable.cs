@@ -223,9 +223,8 @@ public class PartialQueryable<T> : IPartialQueryable<T> {
     {
         var skip = (query as PageQuery)?.Skip ?? 0;
         var take = (query as PageQuery)?.Take ?? PageQuery.DefaultTake;
-        var ascending = (query as SortQuery)?.Ascending ?? true;
 
-        var nextToken = (token ?? new ContinuationToken(query.Filter, Sort, ascending, take, take)).Next(skip, take);
+        var nextToken = (token ?? new ContinuationToken(query.Filter, Sort, take, take)).Next(skip, take);
         var previousTake = ContinuationToken.ActualTake(token, take);
         var previousSkip = ContinuationToken.ActualSkip(token, skip);
         var total = items.Count == previousTake ? filteredQuery.Count() : previousSkip + items.Count;

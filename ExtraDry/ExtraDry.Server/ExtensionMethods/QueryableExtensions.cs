@@ -83,7 +83,7 @@ public static class QueryableExtensions {
     public static IQueryable<T> Sort<T>(this IQueryable<T> source, SortQuery query)
     {
         var token = (query as PageQuery)?.Token; // Only need the token if it's a PageQuery, null if FilterQuery.
-        return source.Sort(query.Sort, query.Ascending, token);
+        return source.Sort(query.Sort, token);
     }
 
     /// <summary>
@@ -95,20 +95,21 @@ public static class QueryableExtensions {
     /// <param name="sort">The name of the property to sort by (optional, case insensitive)</param>
     /// <param name="ascending">Indicates if the order is ascending or not (optional, default true)</param>
     /// <param name="continuationToken">If this is not a new request, the token passed back from the previous request to maintain stability (optional)</param>
-    internal static IQueryable<T> Sort<T>(this IQueryable<T> source, string? sort, bool? ascending, string? continuationToken)
+    internal static IQueryable<T> Sort<T>(this IQueryable<T> source, string? sort, string? continuationToken)
     {
         var token = ContinuationToken.FromString(continuationToken);
-        var actualSort = token?.Sort ?? sort;
-        var actualAscending = token?.Ascending ?? ascending ?? true;
+        var actualSort = token?.Sort ?? sort ?? "";
+        var sortProperty = actualSort.TrimStart('+', '-');
+        var ascending = !actualSort.StartsWith("-");
         var query = source;
         var modelDescription = new ModelDescription(typeof(T));
         if(modelDescription.StabilizerProperty == default) {
             throw new DryException(MissingStabilizerErrorMessage, SortErrorUserMessage);
         }
         if(!string.IsNullOrWhiteSpace(actualSort)) {
-            query = actualAscending ? 
-                query.OrderBy(actualSort).ThenBy(modelDescription.StabilizerProperty.ExternalName) : 
-                query.OrderByDescending(actualSort).ThenByDescending(modelDescription.StabilizerProperty.ExternalName);
+            query = ascending ? 
+                query.OrderBy(sortProperty).ThenBy(modelDescription.StabilizerProperty.ExternalName) : 
+                query.OrderByDescending(sortProperty).ThenByDescending(modelDescription.StabilizerProperty.ExternalName);
         }
         else {
             query = query.OrderBy(modelDescription.StabilizerProperty.ExternalName);

@@ -7,12 +7,8 @@ public class SortQuery : FilterQuery {
 
     /// <summary>
     /// If the request would like sorted results, the name of the property to sort by.
+    /// Prefix with '+' or '-' to order ascending or descending.
     /// </summary>
     public string? Sort { get; set; }
-
-    /// <summary>
-    /// Indicates if the results are requested in ascending order by `Sort`.
-    /// </summary>
-    public bool Ascending { get; set; }
 
 }
