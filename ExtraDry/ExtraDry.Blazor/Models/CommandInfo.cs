@@ -69,6 +69,9 @@ public class CommandInfo {
     /// </summary>
     public string? Icon { get; set; }
 
+    /// <inheritdoc cref="CommandAttribute.PropertyName" />
+    public string? PropertyName { get; set; }
+
     /// <summary>
     /// The view model that this command is defined as being part of.
     /// Used by `ExecuteAsync` to invoke the command on the correct object instance.
@@ -115,6 +118,7 @@ public class CommandInfo {
             Icon = attribute.Icon;
             Context = attribute.Context;
             Category = attribute.Category;
+            PropertyName = attribute.PropertyName;
         }
     }
 

@@ -13,7 +13,7 @@ public class MainMenu {
     public string Contents => $"/contents";
 
     [Navigation(Icon = "companies")]
-    public string Companies => $"/companies";
+    public string Companies => $"/companies/list";
 
     [Navigation(Icon = "sectors")]
     public string Sectors => $"/sectors";

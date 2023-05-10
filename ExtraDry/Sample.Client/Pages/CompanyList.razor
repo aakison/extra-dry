@@ -1,31 +1,17 @@
-﻿@page "/companies"
-@page "/companies/{CompanyUuid:guid}"
-@inject IListService<Company> CompanyService;
+﻿@inject IListService<Company> CompanyService;
 @inject NavigationManager Navigation;
 
 <DryPageQueryView>
     <TableMenu TItem="Company" />
-
     <DryTable TItem="Company" ViewModel="@this" ItemsService="@CompanyService" />
 </DryPageQueryView>
 
-@if (CompanyUuid != Guid.Empty)
-{
-    <DialogBox>
-        <DryErrorBoundary>
-            <CompanyEditDialog Uuid="@CompanyUuid" />
-        </DryErrorBoundary>
-    </DialogBox>
-}
-
 @code {
-    [Parameter]
-    public Guid CompanyUuid { get; set; } = Guid.Empty;
 
-    [Command(CommandContext.Alternate, Icon = "edit")]
+    [Command(CommandContext.Default, Icon = "edit", PropertyName = nameof(Company.Title))]
     public void Edit(Company company)
     {
-        Navigation.NavigateTo($"/companies/{company.Uuid}");
+        Navigation.NavigateTo($"/companies/list/{company.Uuid}");
     }
 
 }

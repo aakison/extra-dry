@@ -58,11 +58,11 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
 
     private bool IsSelected => Selection.Contains(Item.Item);
 
-    private void RowClick(MouseEventArgs _)
+    private async Task RowClick(MouseEventArgs _)
     {
         Logger.LogInformation("Select Row with Row Click");
         if(Description.ListSelectMode == ListSelectMode.Action) {
-            Description.SelectCommand?.ExecuteAsync(Item);
+            await Description.SelectCommand?.ExecuteAsync(Item.Item);
         }
         else if(IsSelected) {
             Deselect();
@@ -70,6 +70,13 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
         else {
             Select();
         }
+        StateHasChanged();
+    }
+
+    private async Task RowDoubleClick(MouseEventArgs _)
+    {
+        Logger.LogInformation("Select Row with Row Double Click");
+        await Description.DefaultCommand?.ExecuteAsync(Item.Item);
         StateHasChanged();
     }
 

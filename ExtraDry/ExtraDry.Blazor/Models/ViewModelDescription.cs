@@ -42,6 +42,10 @@ public class ViewModelDescription {
 
     public CommandInfo? SelectCommand => Commands.FirstOrDefault(e => e.Context == CommandContext.Primary && e.Arguments == CommandArguments.Single);
 
+    public CommandInfo? DefaultCommand => Commands.FirstOrDefault(e => e.Context == CommandContext.Default && e.Arguments == CommandArguments.Single);
+
+    public CommandInfo? DefaultCommandFor(string propertyName) => Commands.FirstOrDefault(e => e.PropertyName == propertyName);
+
     public ReadOnlyCollection<CommandInfo> MenuCommands => new(Commands.Where(e => e.Arguments == CommandArguments.None).ToList());
 
     public ReadOnlyCollection<CommandInfo> ContextCommands => new(Commands.Where(e => e.Arguments == CommandArguments.Single).ToList());

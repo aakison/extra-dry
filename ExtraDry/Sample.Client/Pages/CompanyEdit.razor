@@ -8,7 +8,7 @@
     [Parameter]
     public Guid Uuid { get; set; }
 
-    private Company company;
+    private Company? company;
 
     protected override async Task OnInitializedAsync()
     {
@@ -19,7 +19,7 @@
     public async Task SaveAsync(Company company)
     {
         await Service.UpdateAsync(Uuid, company);
-        Navigation.NavigateTo("/companies");
+        Navigation.NavigateTo("/companies/list");
     }
 
 }

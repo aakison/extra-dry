@@ -1,0 +1,25 @@
+﻿@page "/companies/{View}"
+@page "/companies/{View}/{Uuid:guid}"
+
+@inject NavigationManager Navigation;
+
+@if(View == "list") {
+    <CompanyList />
+}
+@if(Uuid != Guid.Empty)
+{
+    <DialogBox>
+        <DryErrorBoundary>
+            <CompanyEdit Uuid="@Uuid" />
+        </DryErrorBoundary>
+    </DialogBox>
+}
+
+@code {
+    [Parameter]
+    public string View { get; set; } = string.Empty;
+
+    [Parameter]
+    public Guid Uuid { get; set; } = Guid.Empty;
+
+}

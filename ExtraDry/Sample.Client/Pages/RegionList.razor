@@ -7,11 +7,6 @@
     <DryTable TItem="Region" ViewModel="@this" ItemsService="@RegionService" />
 </DryPageQueryView>
 
-@if (CompanyUuid != Guid.Empty)
-{
-    <CompanyEditDialog Uuid="@CompanyUuid" />
-}
-
 @code {
 
     [Command(CommandContext.Alternate, Icon = "edit")]
@@ -22,7 +17,5 @@
         StateHasChanged();
         //Navigation.NavigateTo($"/companies/{company.Uuid}");
     }
-
-    public Guid CompanyUuid { get; set; } = Guid.Empty;
 
 }
