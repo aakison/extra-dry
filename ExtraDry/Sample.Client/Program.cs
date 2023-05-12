@@ -29,6 +29,8 @@ namespace Sample.Client {
             services.AddFilteredListService<Content>("/api/contents");
             services.AddFilteredListService<Region>("/api/regions");
 
+            services.AddStatService<Sector>("/api/sectors/stats");
+
             services.AddPagedListService<Employee>("/api/employees");
 
             services.AddCrudService<Sector>("/api/sectors");

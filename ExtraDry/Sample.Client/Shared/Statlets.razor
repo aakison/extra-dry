@@ -1,5 +1,11 @@
-﻿<section>
+﻿@inject StatService<Sector> SectorStatService;
+
+<section>
     <article>
+        <x-statlet>
+            <label>Active Sectors</label>
+            <div>@ActiveSectors</div>
+        </x-statlet>
         <x-statlet>
             <label>Total Assets</label>
             <div>3,843</div>
@@ -24,5 +30,17 @@
 </section>
 
 @code {
+    private int? ActiveSectors { get; set; } = null;
 
+    protected async override Task OnInitializedAsync()
+    {
+        ActiveSectors = await GetCounter();
+    }
+
+    public async Task<int> GetCounter()
+    {
+        var foo = await SectorStatService.RetrieveAsync(null);
+        var bar = foo?.Distributions?.FirstOrDefault(d => d.PropertyName == "State");
+        return bar?.Counts?.FirstOrDefault(c => c.Key == "Active").Value ?? 0;
+    }
 }
