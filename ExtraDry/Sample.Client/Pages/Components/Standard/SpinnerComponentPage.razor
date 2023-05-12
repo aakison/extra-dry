@@ -16,6 +16,23 @@
     <p>
         <Spinner />
     </p>
+
+    <h5>Try It Out</h5>
+    <form class="tryitout" onsubmit="return false;">
+        <div>
+            <label>Size:</label>
+            <select @bind="Value">
+                <option value="@(SpinnerSize.Standard)">SpinnerSize.Standard</option>
+                <option value="@(SpinnerSize.Small)">SpinnerSize.Small</option>
+                <option value="@(SpinnerSize.Large)">SpinnerSize.Large</option>
+            </select>
+        </div>
+    </form>
+
+    <p>
+        <Spinner Size="@Value" />
+        <div>Spinner Size: @Value</div>
+    </p>
     
 </section>
 <section>
@@ -42,3 +59,7 @@
         }
     </CodeBlock>
 </section>
+
+@code {
+    public SpinnerSize Value { get; set; } = SpinnerSize.Standard;
+}
