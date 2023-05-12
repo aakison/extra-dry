@@ -49,7 +49,3 @@ packages/
 # OS
 Thumbs.db
 .DS_Store
-
-# Generated CSS files
-/ExtraDry/ExtraDry.Blazor/Components/**/*.razor.css
-/ExtraDry/ExtraDry.Blazor/Components/**/*.min.css
