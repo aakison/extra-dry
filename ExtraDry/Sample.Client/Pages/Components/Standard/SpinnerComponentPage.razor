@@ -1,0 +1,44 @@
+﻿@page "/components/standard/spinner"
+@inject NavigationManager Navigation;
+
+<section>
+    <h2>Spinner</h2>
+    <p>
+        The <code>&lt;Spinner&gt;</code> component displays an animated spinning icon to represent a value or item that is loading.
+    </p>
+</section>
+<section>
+    <h3>Basic Usage</h3>
+    <CodeBlock Lang="blazor">
+        &lt;Spinner/&gt;
+    </CodeBlock>
+
+    <p>
+        <Spinner />
+    </p>
+    
+</section>
+<section>
+    <h3>Configuration</h3>
+    <p>
+        Can add custom CSS classes via the <code>CssClass</code> parameter
+    </p>
+</section>
+<section>
+    <h3>Tips &amp; Practices</h3>
+    <ul>
+        <li>Useful for displaying a value that has not yet loaded.</li>
+        <li>Make the value nullable and if null, consider a not-yet-loaded state</li>
+    </ul>
+
+    <CodeBlock Lang="blazor">
+        @@if (Value == null)
+        {
+            &lt;Spinner&gt &lt;/Spinner&gt
+        }
+        else
+        {
+            @@Value
+        }
+    </CodeBlock>
+</section>
