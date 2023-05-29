@@ -28,6 +28,20 @@ public static class ServiceCollectionExtensions {
     }
 
     /// <summary>
+    /// Adds a strongly typed StatService`T to the service collection.
+    /// </summary>
+    public static IServiceCollection AddStatService<T>(this IServiceCollection services, string endpointTemplate)
+    {
+        services.AddScoped(e => {
+            var client = e.GetRequiredService<HttpClient>();
+            var logger = e.GetRequiredService<ILogger<StatService<T>>>();
+            var service = new StatService<T>(client, endpointTemplate, logger);
+            return service;
+        });
+        return services;
+    }
+
+    /// <summary>
     /// Adds a strongly typed ListService`FilteredCollection`T to the service collection.
     /// Also registered the service using the interfaces IListService`T and IOptionProvider`T.
     /// </summary>
