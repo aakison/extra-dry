@@ -62,5 +62,10 @@
     "outputFile": "Components/Standard/TriSwitch.razor.css",
     "inputFile": "Components/Standard/TriSwitch.razor.scss",
     "minify": { "enabled": false }
+  },
+  {
+    "outputFile": "Components/Standard/Spinner.razor.css",
+    "inputFile": "Components/Standard/Spinner.razor.scss",
+    "minify": { "enabled": false }
   }
 ]
