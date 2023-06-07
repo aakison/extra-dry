@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace Sample.Server.Controllers;
 
@@ -69,6 +72,43 @@ public class CompanyController {
             throw new ArgumentMismatchException("ID in URI must match body.", nameof(companyId));
         }
         await companies.Update(value);
+    }
+
+    [HttpPatch("api/companies/{uuid}"), Consumes("application/merge-patch+json")]
+    [Authorize(SamplePolicies.SamplePolicy)]
+    public async Task Merge(Guid uuid, JsonObject patch)
+    {
+        var existing = await companies.RetrieveAsync(uuid);
+        var json = JsonSerializer.Serialize(existing);
+        var nodes = JsonNode.Parse(json) as JsonObject;
+        if(nodes == null) {
+            throw new Exception("");
+        }
+        Merge(patch, nodes);
+        var exemplar = nodes.Deserialize<Company>();
+        if(exemplar == null) {
+            throw new Exception("");
+        }
+        await companies.Update(exemplar);
+    }
+
+    private void Merge(JsonObject patch, JsonObject nodes)
+    {
+        foreach(var node in patch) {
+            var target = nodes[node.Key];
+            if(node.Value is JsonObject p && target is JsonObject n) {
+                Merge(p, n);
+            }
+            else if(node.Value == null && target != null) {
+                nodes.Remove(node.Key);
+            }
+            else {
+                nodes[node.Key] = node.Value;
+            }
+            //else {
+            //    throw new NotImplementedException();
+            //}
+        }
     }
 
     /// <summary>
