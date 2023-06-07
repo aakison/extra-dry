@@ -31,6 +31,14 @@ public partial class FlexiSelect<TItem> : ComponentBase, IExtraDryComponent {
     [Parameter]
     public int ShowFilterThreshold { get; set; } = 10;
 
+    /// <inheritdoc cref="FlexiSelectForm{TItem}.ShowSubtitle" />
+    [Parameter]
+    public bool? ShowSubtitle { get; set; } = null;
+
+    /// <inheritdoc cref="FlexiSelectForm{TItem}.ShowThumbnail" />
+    [Parameter]
+    public bool? ShowThumbnail { get; set; }
+
     /// <inheritdoc cref="FlexiSelectForm{TItem}.FilterPlaceholder" />
     [Parameter]
     public string FilterPlaceholder { get; set; } = "filter";
@@ -88,7 +96,7 @@ public partial class FlexiSelect<TItem> : ComponentBase, IExtraDryComponent {
 
     /// <inheritdoc cref="FlexiSelectForm{TItem}.ValuesChanged" />
     [Parameter]
-    public EventCallback<List<TItem>> ValuesChanged { get; set; }
+    public EventCallback<List<TItem>?> ValuesChanged { get; set; }
 
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]

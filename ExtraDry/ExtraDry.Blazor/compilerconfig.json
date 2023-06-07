@@ -67,5 +67,10 @@
     "outputFile": "Components/Standard/Spinner.razor.css",
     "inputFile": "Components/Standard/Spinner.razor.scss",
     "minify": { "enabled": false }
+  },
+  {
+    "outputFile": "Components/Dry/DryFilterInputText.razor.css",
+    "inputFile": "Components/Dry/DryFilterInputText.razor.scss",
+    "minify": { "enabled": false }
   }
 ]

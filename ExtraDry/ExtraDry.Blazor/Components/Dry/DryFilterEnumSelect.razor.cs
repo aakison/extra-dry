@@ -41,108 +41,40 @@ public partial class DryFilterEnumSelect : ComponentBase, IExtraDryComponent {
                 Filter = new EnumFilterBuilder { FilterName = Property.Property.Name };
                 PageQueryBuilder.Filters.Add(Filter);
             }
+            EnumValues = Property.GetDiscreteValues();
         }
     }
 
-    /// <summary>
-    /// Expands or collapses the dialog box programmatically.
-    /// </summary>
-    public async Task ToggleForm()
+    private Task SyncWithPageQuery()
     {
-        await Expandable.Toggle();
-        StateHasChanged();
-    }
-
-    /// <summary>
-    /// Focus management is done using a div and events, the OnFocusIn simply stores the state
-    /// that the dialog should be shown.
-    /// </summary>
-    protected Task OnFocusIn(FocusEventArgs args)
-    {
-        shouldCollapse = false;
+        Filter?.Values.Clear();
+        if(Values != null) {
+            Filter?.Values?.AddRange(Values.Select(e => e.Title));
+        }
+        PageQueryBuilder?.NotifyChanged();
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Focus management to determine if the dialog should collapse is non-trivial.  The OnFocusOut
-    /// event fires when focus changes from one child of the dialog to another child of the dialog.
-    /// A one-frame delay allows the in/out events to propagate so if the OnFocusOut is called just
-    /// before the OnFocusIn is called
-    /// </summary>
-    protected async Task OnFocusOut(FocusEventArgs args)
-    {
-        shouldCollapse = true;
-        // wait and see if we should ignore the out because we're switching focus within control.
-        await Task.Delay(1);
-        if(shouldCollapse) {
-            SyncPageQueryBuilder();
-            await Expandable.Collapse();
-            shouldCollapse = false;
-        }
-    }
+    private IList<ValueDescription> EnumValues { get; set; } = Array.Empty<ValueDescription>();
 
-    /// <summary>
-    /// When a list item is checked/unchecked chagne the selection set.  However, this is not 
-    /// typically enough to warrent a server roundtrip, wait until losing focus or other major
-    /// event before changing.
-    /// </summary>
-    protected void OnChange(ChangeEventArgs args, ValueDescription value)
-    {
-        var key = value.Key.ToString();
-        if(key == null) {
-            return;
-        }
-        if(args?.Value?.Equals(true) ?? false) {
-            if(!Selection.Contains(key)) {
-                Selection.Add(key);
-            }
-        }
-        else {
-            if(Selection.Contains(key)) {
-                Selection.Remove(key);
-            }
-        }
-    }
+    private ValueDescription? Value { get; set; }
 
-    /// <summary>
-    /// If the user selects Enter while in the dialog, apply the filter immediately.  Allows user
-    /// to use tab/space to edit dialog box and enter to get results without
-    /// </summary>
-    protected Task OnKeyDown(KeyboardEventArgs args)
-    {
-        if(args.Key == "Enter") {
-            SyncPageQueryBuilder();
-        }
-        return Task.CompletedTask;
-    }
+    private List<ValueDescription>? Values { get; set; }
 
-    private bool shouldCollapse = false;
+    //private void SyncPageQueryBuilder()
+    //{
+    //    if(PageQueryBuilder != null) {
+    //        Filter?.Values?.Clear();
+    //        Filter?.Values?.AddRange(Selection);
+    //        PageQueryBuilder.NotifyChanged();
+    //    }
+    //}
 
-    private void SyncPageQueryBuilder()
-    {
-        if(PageQueryBuilder != null) {
-            Filter?.Values?.Clear();
-            Filter?.Values?.AddRange(Selection);
-            PageQueryBuilder.NotifyChanged();
-        }
-    }
-
-    private string PropertyLabel => Property?.Property?.Name ?? "Missing Property Field";
-
-    private DryExpandable Expandable { get; set; } = null!; // set in page-side partial
-
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", "dry-filter", "filter-enum", CssClass, PropertyNameSlug, PropertyTypeSlug, PopulatedClass);
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "filter-enum", CssClass, PropertyNameSlug, PropertyTypeSlug);
 
     private string PropertyNameSlug => Property?.Property?.Name?.Split('.')?.Last()?.ToLowerInvariant() ?? string.Empty;
 
     private string PropertyTypeSlug => Property?.Property?.PropertyType?.Name?.Split('.')?.Last()?.ToLowerInvariant() ?? string.Empty;
-
-    private string PopulatedClass => Selection.Any() ? "active" : "inactive";
-
-    /// <summary>
-    /// The list of currently selected items, updated on every click.
-    /// </summary>
-    private List<string> Selection { get; } = new();
 
     /// <summary>
     /// The filter from the PageQueryBuilder, also contains a list like the Selection property, but
