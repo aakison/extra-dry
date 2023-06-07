@@ -106,6 +106,7 @@ public partial class DryExpandable : ComponentBase {
 
     private string CssClassState => $"expandable {State.ToString().ToLowerInvariant()}";
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum ExpandedState {
         /// <summary>
         /// The expandable is collapsed and the content is not in the DOM.

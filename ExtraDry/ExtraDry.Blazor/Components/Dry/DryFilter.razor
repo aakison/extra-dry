@@ -1,0 +1,10 @@
+﻿@namespace ExtraDry.Blazor
+@typeparam TItem
+
+<div class="@CssClasses" @attributes="@UnmatchedAttributes">
+    <DryFilterInputText Placeholder="@Placeholder" />
+    @foreach (var property in ViewModelDescription.FilterProperties.Where(e => e.HasDiscreteValues))
+    {
+        <DryFilterEnumSelect Property="@property" FilterChanged="FilterChanged" />
+    }
+</div>

@@ -15,7 +15,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
     public IListService<TItem>? ItemsService { get; set; }
 
     [CascadingParameter]
-    public PageQuery? Query { get; set; }
+    internal PageQueryBuilder? PageQueryBuilder { get; set; }
 
     /// <summary>
     /// Optional object that controls how items in the table are grouped.
@@ -54,7 +54,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
 
     private string ModelClass => description.ModelType?.Name?.ToLowerInvariant() ?? "";
 
-    private string FilteredClass => string.IsNullOrWhiteSpace(Query?.Filter) ? "unfiltered" : "filtered";
+    private string FilteredClass => string.IsNullOrWhiteSpace(PageQueryBuilder?.Build()?.Filter) ? "unfiltered" : "filtered";
 
     private string EmptyClass => InternalItems.Any() ? "full" : firstLoadCompleted ? "empty" : "loading";
 
@@ -79,8 +79,8 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
         resolvedSelection = Selection ?? SelectionSet.Lookup(ViewModel) ?? SelectionSet.Register(ViewModel);
         resolvedSelection.MultipleSelect = description.ListSelectMode == ListSelectMode.Multiple;
         resolvedSelection.Changed += ResolvedSelection_Changed;
-        if(Query is NotifyPageQuery notify) {
-            notify.OnChanged += Notify_OnChanged;
+        if(PageQueryBuilder != null) {
+            PageQueryBuilder.OnChanged += Notify_OnChanged;
         }
     }
 
@@ -224,7 +224,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
                 Logger.LogInformation("--Loading initial items from remote service...");
                 var firstPage = PageFor(request.StartIndex);
                 var firstIndex = FirstItemOnPage(firstPage);
-                var items = await ItemsService.GetItemsAsync(Query?.Filter, Sort, SortAscending, firstIndex, ItemsService.FetchSize);
+                var items = await ItemsService.GetItemsAsync(PageQueryBuilder?.Query?.Filter, Sort, SortAscending, firstIndex, ItemsService.FetchSize);
                 var count = items.Items.Count();
                 var total = items.TotalItemCount;
                 InternalItems.AddRange(items.Items.Select(e => new ListItemInfo<TItem> { Item = e, IsLoaded = true }));
@@ -244,7 +244,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
                 for(int pageNumber = firstPage; pageNumber <= lastPage; ++pageNumber) {
                     var firstIndex = FirstItemOnPage(pageNumber);
                     if(!AllItemsCached(firstIndex, ItemsService.FetchSize)) {
-                        var items = await ItemsService.GetItemsAsync(Query?.Filter, Sort, SortAscending, firstIndex, ItemsService.FetchSize);
+                        var items = await ItemsService.GetItemsAsync(PageQueryBuilder?.Query?.Filter, Sort, SortAscending, firstIndex, ItemsService.FetchSize);
                         var count = items.Items.Count();
                         var total = items.TotalItemCount;
                         var index = firstIndex;

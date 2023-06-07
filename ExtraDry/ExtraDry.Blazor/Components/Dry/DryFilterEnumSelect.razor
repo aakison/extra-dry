@@ -1,24 +1,24 @@
 ﻿@namespace ExtraDry.Blazor
 
 @* Tabindex is required so the outer div can get focus, then respond to events *@
-<div class="@CssClasses" @onfocusout="OnFocusOut" @onfocusin="OnFocusIn" @onkeydown="OnKeyDown" tabindex="0">
+<div class="@CssClasses" @onfocusout="OnFocusOut" @onfocusin="OnFocusIn" @onkeydown="OnKeyDown" tabindex="0" @attributes="@UnmatchedAttributes">
     <div class="caption" @onclick="ToggleForm">
-        <label>@Property.Property.Name</label>
+        <label>@PropertyLabel</label>
         <Icon Key="chevron-down" />
     </div>
     <DryExpandable @ref="Expandable" Height="350">
         <div class="form">
             @{
-                var propertyClass = $"enum {Property.Property.Name.ToLowerInvariant()}";
+                var propertyClass = $"enum {PropertyLabel.ToLowerInvariant()}";
             }
             <ul class="@propertyClass">
-                @foreach (var value in Property.GetDiscreteValues())
+                @foreach (var value in Property?.GetDiscreteValues() ?? new List<ValueDescription>())
                 {
-                    var valueClass = $"{propertyClass} {value.Key.ToString().ToLowerInvariant()}";
+                    var valueClass = $"{propertyClass} {value?.Key?.ToString()?.ToLowerInvariant()}";
                     <li class="@valueClass">
                         <label class="@valueClass">
                             <input class="@valueClass" type="checkbox" @onchange="e => OnChange(e, value)" />
-                            <span class="@valueClass">@value.Title</span>
+                            <span class="@valueClass">@value?.Title</span>
                         </label>
                     </li>
                 }

@@ -19,8 +19,8 @@
     "minify": { "enabled": false }
   },
   {
-    "outputFile": "Components/DryFilterSelect.razor.css",
-    "inputFile": "Components/DryFilterSelect.razor.scss",
+    "outputFile": "Components/Dry/DryFilterEnumSelect.razor.css",
+    "inputFile": "Components/Dry/DryFilterEnumSelect.razor.scss",
     "minify": { "enabled": false }
   },
   {

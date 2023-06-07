@@ -15,7 +15,7 @@
 @code {
     private bool collapseNavMenu = true;
 
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : "";
 
     private void ToggleNavMenu()
     {
@@ -23,7 +23,7 @@
     }
 
     [Inject]
-    private NavigationManager Navigation { get; set; }
+    private NavigationManager Navigation { get; set; } = null!;
 
     // Simple navigation example that goes to root, name is inferred from the MethodName.
     // Property used to define the navigation target, use an expression to change URL (e.g. in multi-tenant applications)
