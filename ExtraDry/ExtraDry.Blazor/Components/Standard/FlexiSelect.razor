@@ -1,18 +1,21 @@
 ﻿@namespace ExtraDry.Blazor
-@implements IExtraDryComponent
 @typeparam TItem
 
 <div class="@CssClasses" @attributes="@UnmatchedAttributes">
-    <label for="@Id">
-        <span class="type"></span>
-        @if(Value == null) {
-            <span class="placeholder-text">@Placeholder</span>
+    <Button Caption="@Placeholder" @onclick="@DoClick" Affordance="select" ShowContent="@DisplayContent" ShowCaption="@DisplayPlaceholder">
+        @if(Value != null)
+        {
+            <DryMiniCard CssClass="value only" Model="@Value" />
         }
-        else {
-            <DryMiniCard Model="@Value" />
+        else if(Values?.Any() ?? false)
+        {
+            <DryMiniCard CssClass="value many" Model="@Values.First()" />
+            @if(Values.Count > 1)
+            {
+                <span class="many count">(+@(Values.Count - 1))</span>
+            }
         }
-        <button class="unobtrusive" id="@Id" @onclick="@DoClick" type="button"><Icon Key="select" /></button>
-    </label>
+    </Button>
     <MiniDialog @ref="MiniDialog" CssClass="@CssClass" LoseFocusAction="MiniDialogAction.SaveAndClose" 
             AnimationDuration="@AnimationDuration" OnSubmit="@OnSubmit" OnCancel="@OnCancel"
             Title="@Title" ShowTitle="@ShowTitle">

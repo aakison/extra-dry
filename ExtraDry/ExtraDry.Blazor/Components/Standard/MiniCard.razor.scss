@@ -1,20 +1,13 @@
-﻿$height: 40px; // default to touch friendly
+﻿$height: 20px; // default to touch friendly
 $padding: 8px;
 
+//
+// Mini Card has some well defined layouts which are not designed to change much.
+// However, the size of items won't look right until the user gives them good sizes and gaps.
 div {
     display: flex;
     align-items: center;
-    height: $height;
 
-    &.thumbnail {
-        height: $height+$padding;
-    }
-
-    ::deep i, ::deep img {
-        margin-right: $padding;
-        max-height: $height;
-        max-width: $height
-    }
 
     > div {
         display: flex;
@@ -22,12 +15,5 @@ div {
         align-items: start;
         height: initial;
 
-        span:nth-child(1) {
-            line-height: 16px;
-        }
-
-        span:nth-child(2) {
-            font-size: 12px;
-        }
     }
 }
