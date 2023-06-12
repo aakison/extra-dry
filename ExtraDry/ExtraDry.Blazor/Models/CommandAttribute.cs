@@ -33,6 +33,13 @@ public sealed class CommandAttribute : Attribute {
     public string? Icon { get; set; }
 
     /// <summary>
+    /// The name of an icon that indicates the visual affordance of the button.  This will add an 
+    /// icon to the end of the button to indicate the action of the button. For example a downward
+    /// pointing chevron for a select list, or a calendar page for a date picker.
+    /// </summary>
+    public string? Affordance { get; set; }
+
+    /// <summary>
     /// An optional category used to create filtered subsets of commands.
     /// </summary>
     public string? Category { get; set; }

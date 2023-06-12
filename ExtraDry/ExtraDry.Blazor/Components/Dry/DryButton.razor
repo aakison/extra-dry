@@ -1,0 +1,9 @@
+﻿@namespace ExtraDry.Blazor
+@implements IDisposable
+
+@if (ResolvedCommand?.IsVisible() ?? false)
+{
+    <Button Caption="@ResolvedCommand.Caption" @attributes="@UnmatchedAttributes"
+        Icon="@ResolvedCommand.Icon" Affordance="@ResolvedCommand.Affordance"
+        @onclick="DoClick" />
+}

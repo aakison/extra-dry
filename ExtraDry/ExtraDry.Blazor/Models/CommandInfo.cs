@@ -20,6 +20,14 @@ public class CommandInfo {
         Initialize(method);
     }
 
+    public CommandInfo(object viewModel, string methodName)
+    {
+        ViewModel = viewModel;
+        Method = viewModel.GetType().GetMethod(methodName) 
+            ?? throw new ArgumentException($"No method found named {methodName}");
+        Initialize(Method);
+    }
+
     /// <summary>
     /// Convenience constructor when the method is parameterless.
     /// </summary>
@@ -29,7 +37,6 @@ public class CommandInfo {
         Method = action.Method;
         Initialize(action.Method);
     }
-
 
     /// <summary>
     /// Convenience constructor when the method is async and parameterless.
@@ -64,10 +71,16 @@ public class CommandInfo {
     public string? Caption { get; set; }
 
     /// <summary>
-    /// The optional name of the icon to be displayed on buttons.
-    /// This is just the stem of the name (e.g. 'plus') which is mixed with the theme to create a final name (e.g. 'fas fa-plus').
+    /// The optional key of the icon to be displayed on buttons.
     /// </summary>
     public string? Icon { get; set; }
+
+    /// <summary>
+    /// The optional key of an icon to be displayed on the right of the button indicating what the 
+    /// button will visually do, e.g. "chevron-down" to indicate the result is a drop-down 
+    /// mini-dialog.
+    /// </summary>
+    public string? Affordance { get; set; }
 
     /// <inheritdoc cref="CommandAttribute.PropertyName" />
     public string? PropertyName { get; set; }
@@ -153,7 +166,7 @@ public class CommandInfo {
     private IList GetStrongTypedSubset(object? arg)
     {
         if(arg is not IEnumerable) {
-            throw new ArgumentException("Parameter, while an object, must be of assignedable to type IEnumerable", nameof(arg));
+            throw new ArgumentException("Parameter, while an object, must be of assignable to type IEnumerable", nameof(arg));
         }
 
         var parameterType = Method.GetParameters()[0].ParameterType;
