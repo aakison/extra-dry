@@ -19,8 +19,8 @@
     "minify": { "enabled": false }
   },
   {
-    "outputFile": "Components/DryFilterSelect.razor.css",
-    "inputFile": "Components/DryFilterSelect.razor.scss",
+    "outputFile": "Components/Dry/DryFilterEnumSelect.razor.css",
+    "inputFile": "Components/Dry/DryFilterEnumSelect.razor.scss",
     "minify": { "enabled": false }
   },
   {
@@ -66,6 +66,11 @@
   {
     "outputFile": "Components/Standard/Spinner.razor.css",
     "inputFile": "Components/Standard/Spinner.razor.scss",
+    "minify": { "enabled": false }
+  },
+  {
+    "outputFile": "Components/Dry/DryFilterInputText.razor.css",
+    "inputFile": "Components/Dry/DryFilterInputText.razor.scss",
     "minify": { "enabled": false }
   }
 ]

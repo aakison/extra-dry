@@ -58,6 +58,11 @@ namespace Sample.Server {
                     Title = "Reference Codes",
                     Description = @"A sample API for Blazor.ExtraDry",
                 });
+                openapi.SwaggerDoc(ApiGroupNames.InternalUseOnly, new OpenApiInfo {
+                    Version = "v1",
+                    Title = "Internal Use Only",
+                    Description = @"A Internal Use Only set of APIs for our own interfaces.",
+                });
                 foreach(var docfile in new string[] { "Sample.Shared.xml", "Sample.Server.xml" }) {
                     var webAppXml = Path.Combine(AppContext.BaseDirectory, docfile);
                     openapi.IncludeXmlComments(webAppXml, includeControllerXmlComments: true);

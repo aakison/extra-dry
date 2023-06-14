@@ -31,4 +31,7 @@ public class StandardComponentsMenu {
     [Navigation(Icon = "flexi-select")]
     public string FlexiSelect => $"/components/standard/flexi-select";
 
+    [Navigation(Icon = "button")]
+    public string Button => $"/components/standard/button";
+
 }

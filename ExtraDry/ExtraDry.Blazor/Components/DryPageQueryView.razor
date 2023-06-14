@@ -1,16 +1,20 @@
 ﻿@namespace ExtraDry.Blazor
 @using ExtraDry.Blazor.Internal
 
-<CascadingValue Value="@Query">
+<CascadingValue Value="@PageQueryBuilder">
     @ChildContent
 </CascadingValue>
 
 @code {
 
     [Parameter]
-    public RenderFragment ChildContent { get; set; }
+    public RenderFragment? ChildContent { get; set; }
 
+    /// <summary>
+    /// A page query that encloses this filter and other components.  This filter components will
+    /// update the query based on the user interaction with the filter.
+    /// </summary>
     [CascadingParameter]
-    public PageQuery Query { get; set; } = new NotifyPageQuery();
+    internal PageQueryBuilder PageQueryBuilder { get; set; } = new();
 
 }

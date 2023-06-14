@@ -1,0 +1,38 @@
+﻿@namespace ExtraDry.Blazor
+
+<h1>Control Dope Sheet</h1>
+
+<section>
+    <h2>Buttons</h2>
+    <Button Caption="Click Me" />
+
+    <h2>DRY Buttons</h2>
+    <DryButton ViewModel="@this" MethodName="@nameof(Primary)" />
+    <DryButton ViewModel="@this" MethodName="@nameof(Alternate)" />
+    <DryButton ViewModel="@this" MethodName="@nameof(Danger)" />
+
+
+</section>
+
+@code {
+
+    [Command(CommandContext.Primary)]
+    public void Primary()
+    {
+        ++ClickCount;
+    }
+
+    [Command(CommandContext.Alternate)]
+    public void Alternate()
+    {
+        ++ClickCount;
+    }
+
+    [Command(CommandContext.Danger)]
+    public void Danger()
+    {
+        ++ClickCount;
+    }
+
+    private int ClickCount = 0;
+}

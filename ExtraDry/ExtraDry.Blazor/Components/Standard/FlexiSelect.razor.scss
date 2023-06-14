@@ -1,26 +1,44 @@
-﻿div {
-    > label {
+﻿//
+// The button that is displayed in the flexi-select should align content in a straight flex line.
+// Use gap and padding and no margins for more consistent layout.
+//
+div {
+    ::deep > button {
         display: flex;
         flex-direction: row;
+        gap: 5px;
         border: solid 1px gray;
-        padding: 0 0 0 4px;
+        padding: 0 5px;
+        margin: 0;
         align-items: center;
         height: 100%;
+        width: 100%;
+        background-color: white;
 
-        > span.placeholder-text {
+        > * {
+            margin: 0;
+        }
+
+        > span, > div {
             flex: 1 1 auto;
+            text-align: start;
         }
 
-        ::deep > div {
-            flex: 1 1 auto;
+        > i, > img {
+            flex: 0 0 auto;
         }
+    }
+}
 
-        > div {
-            color: silver;
-        }
-
-        > button {
-            height: 100%;
+//
+// When the placeholder or selected text is too large, prevent from wrapping and render with ellipses
+//
+div {
+    ::deep > button {
+        span.content {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
         }
     }
 }

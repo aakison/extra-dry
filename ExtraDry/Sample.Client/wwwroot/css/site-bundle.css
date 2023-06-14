@@ -11285,3 +11285,17 @@ form.tryitout input[type=checkbox] {
   width: 20px;
   height: 20px;
 }
+
+.dry-filter {
+  display: flex;
+  gap: 10px;
+}
+.dry-filter .filter-text {
+  flex: 0 1 300px;
+}
+.dry-filter .filter-enum {
+  flex: 0 1 150px;
+}
+.dry-filter .filter-greedy {
+  flex: 1 1 1px;
+}

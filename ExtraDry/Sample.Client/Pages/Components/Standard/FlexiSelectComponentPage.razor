@@ -66,15 +66,12 @@
 </section>
 <section>
     <h3>Semantic Styles</h3>
-    <p>The component wraps the <code>MiniCard</code> component and styles are the same as it.</p>
+    <p>The component wraps the <code>Button</code>, <code>MiniCard</code>, and <code>MiniDialog</code> components and styles are the same as it.</p>
     <CodeBlock Lang="blazor">
         &lt;div class="flexi-select"&gt;
-            &lt;label&gt;
-                &lt;span class="type"&gt;...&lt;/span&gt;
-                &lt;span class="placeholder-text"&gt;...&lt;span&gt;
+            &lt;Button &gt;
                 &lt;MiniCard ... />
-                &lt;button class="unobtrusive">&lt;Icon Key="select" />&lt/button>
-            &lt;label>
+            &lt;Button>
             &lt;MiniDialog ... />
         &lt;/div>
     </CodeBlock>
@@ -82,10 +79,7 @@
 <section>
     <h3>Tips &amp; Practices</h3>
     <ul>
-        <li>The component encapsulate the <code>MiniCard</code>, unused attributes are chained to that component.</li>
-        <li>The component automatically detects if Thumbnail and Subtitle are present and displays or hides them accordingly.</li>
-        <li>Use <code>ShowThumbnail</code> property to force always showing or hiding the Thumbnail.</li>
-        <li>Use <code>ShowSubtitle</code> property to force always showing or hiding the Subtitle.</li>
+        <li>The component encapsulates three components, with the <code>Button</code> being visible always, unused attributes are chained to that component.</li>
     </ul>
 </section>
 <section>
@@ -103,7 +97,7 @@
 
     public string Title(Employee employee) => $"{employee?.FirstName} {employee?.LastName}";
 
-    public string Subtitle(Employee employee) => employee?.Email;
+    public string Subtitle(Employee employee) => employee?.Email ?? "no e-mail on file";
 
     public string Caption(Employee employee) => $"{employee?.FirstName} {employee?.LastName} ({employee?.Email})";
 

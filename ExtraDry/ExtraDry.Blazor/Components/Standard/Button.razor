@@ -1,0 +1,20 @@
+﻿@namespace ExtraDry.Blazor
+
+<button type="button" title="@Caption" class="@CssClasses" @attributes="@UnmatchedAttributes" disabled="@Disabled" >
+    @if (DisplayIcon)
+    {
+        <Icon CssClass="icon" Key="@Icon" />
+    }
+    @if (DisplayCaption)
+    {
+        <span class="content">@Caption</span>
+    }
+    @if (DisplayContent)
+    {
+        @ChildContent
+    }
+    @if (DisplayAffordance)
+    {
+        <Icon CssClass="affordance" Key="@Affordance" />
+    }
+</button>

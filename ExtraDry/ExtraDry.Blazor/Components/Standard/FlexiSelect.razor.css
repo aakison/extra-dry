@@ -1,20 +1,28 @@
-﻿div > label {
+﻿div ::deep > button {
   display: flex;
   flex-direction: row;
+  gap: 5px;
   border: solid 1px gray;
-  padding: 0 0 0 4px;
+  padding: 0 5px;
+  margin: 0;
   align-items: center;
   height: 100%;
+  width: 100%;
+  background-color: white;
 }
-div > label > span.placeholder-text {
+div ::deep > button > * {
+  margin: 0;
+}
+div ::deep > button > span, div ::deep > button > div {
   flex: 1 1 auto;
+  text-align: start;
 }
-div > label ::deep > div {
-  flex: 1 1 auto;
+div ::deep > button > i, div ::deep > button > img {
+  flex: 0 0 auto;
 }
-div > label > div {
-  color: silver;
-}
-div > label > button {
-  height: 100%;
+
+div ::deep > button span.content {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }

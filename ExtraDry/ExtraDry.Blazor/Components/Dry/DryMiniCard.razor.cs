@@ -38,15 +38,26 @@ public partial class DryMiniCard<TItem> : ComponentBase {
     [Inject]
     private IServiceProvider Services { get; set; } = null!;
 
-    private ISubjectViewModel<TItem>? ResolvedViewModel 
-        => ViewModel 
+    private ISubjectViewModel<TItem>? ResolvedViewModel
+        => ViewModel
         ?? Services.GetService(typeof(ISubjectViewModel<TItem>)) as ISubjectViewModel<TItem>;
 
     private string SemanticThumbnail => DisplayThumbnail == null ? string.Empty : "thumbnail";
 
     private string SemanticSubtitle => DisplaySubtitle == null ? string.Empty : "subtitle";
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass, typeof(TItem).Name.ToLowerInvariant());
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass, TypeName);
+
+    private string TypeName {
+        get {
+            if(Model is ValueDescription description) {
+                return $"enum {description.Key.ToString()?.ToLowerInvariant()}";
+            }
+            else {
+                return typeof(TItem).Name.ToLowerInvariant();
+            }
+        }
+    }
 
     private string ViewModelTitle => ViewModelHelper.Title(Model, ResolvedViewModel, null) 
         ?? Model?.ToString() 

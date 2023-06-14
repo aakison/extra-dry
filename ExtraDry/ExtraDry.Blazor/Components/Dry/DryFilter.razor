@@ -1,0 +1,16 @@
+﻿@namespace ExtraDry.Blazor
+@typeparam TItem
+
+<div class="@CssClasses" @attributes="@UnmatchedAttributes">
+    @if (DisplayKeywordFilter)
+    {
+        <DryFilterInputText Placeholder="@Placeholder" />
+    }
+    @foreach (var property in DisplayedEnumFilters)
+    {
+        <DryFilterEnumSelect Property="@property" FilterChanged="FilterChanged" />
+    }
+    <FlexiSelect Data="AllFilters" MultiSelect="true" @bind-Values="SelectedFilters" Placeholder="Filters" 
+        OnSubmit="DoFiltersSubmit" OnCancel="DoFiltersCancel" />
+    <div class="filter-greedy" />
+</div>

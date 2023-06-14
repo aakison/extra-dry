@@ -1,10 +1,9 @@
 ﻿namespace ExtraDry.Blazor;
 
 /// <summary>
-/// A flexi alternative to a select control.  Creates a semantic HTML control
-/// with extended capabilities for generating single and multiple select 
-/// controls on mobile and desktop platforms.  Includes list management and
-/// filtering.
+/// A flexi alternative to a select control.  Creates a semantic HTML control with extended 
+/// capabilities for generating single and multiple select controls on mobile and desktop 
+/// platforms.  Includes list management and filtering.
 /// </summary>
 /// <typeparam name="TItem">The type for items in the select list.</typeparam>
 public partial class FlexiSelect<TItem> : ComponentBase, IExtraDryComponent {
@@ -31,6 +30,14 @@ public partial class FlexiSelect<TItem> : ComponentBase, IExtraDryComponent {
     [Parameter]
     public int ShowFilterThreshold { get; set; } = 10;
 
+    /// <inheritdoc cref="FlexiSelectForm{TItem}.ShowSubtitle" />
+    [Parameter]
+    public bool? ShowSubtitle { get; set; } = null;
+
+    /// <inheritdoc cref="FlexiSelectForm{TItem}.ShowThumbnail" />
+    [Parameter]
+    public bool? ShowThumbnail { get; set; }
+
     /// <inheritdoc cref="FlexiSelectForm{TItem}.FilterPlaceholder" />
     [Parameter]
     public string FilterPlaceholder { get; set; } = "filter";
@@ -55,9 +62,8 @@ public partial class FlexiSelect<TItem> : ComponentBase, IExtraDryComponent {
     public MiniDialogAction LoseFocusAction { get; set; } = MiniDialogAction.SaveAndClose;
 
     /// <summary>
-    /// Event that is fired when the button is clicked and the flexi select has
-    /// been displayed.  Will be followed with OnSubmit or OnCancel when user
-    /// is finished with dialog.
+    /// Event that is fired when the button is clicked and the flexi select has been displayed.  
+    /// Will be followed with OnSubmit or OnCancel when user is finished with dialog.
     /// </summary>    
     [Parameter]
     public EventCallback<MouseEventArgs> OnClick { get; set; }
@@ -88,17 +94,16 @@ public partial class FlexiSelect<TItem> : ComponentBase, IExtraDryComponent {
 
     /// <inheritdoc cref="FlexiSelectForm{TItem}.ValuesChanged" />
     [Parameter]
-    public EventCallback<List<TItem>> ValuesChanged { get; set; }
+    public EventCallback<List<TItem>?> ValuesChanged { get; set; }
 
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
 
-    public async void DoValueChanged(TItem item) {
-        Console.WriteLine(item);
+    protected async void DoValueChanged(TItem item) {
         await ValueChanged.InvokeAsync(item);
         if(AutoDismissDialog && !MultiSelect && item != null) {
-            await MiniDialog.HideAsync();
+            await MiniDialog!.HideAsync();
         }
     }
 
@@ -107,14 +112,18 @@ public partial class FlexiSelect<TItem> : ComponentBase, IExtraDryComponent {
         base.OnInitialized();
     }
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", "flexi-select", CssClass);
-
-    private async Task DoClick(MouseEventArgs args)
+    protected async Task DoClick(MouseEventArgs args)
     {
-        await MiniDialog.ShowAsync();
+        await MiniDialog!.ShowAsync();
         await OnClick.InvokeAsync(args);
     }
 
-    private MiniDialog MiniDialog { get; set; } = null!;
+    protected MiniDialog? MiniDialog { get; set; }
+
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "flexi-select", CssClass);
+
+    private bool DisplayContent => Value != null || (Values?.Any() ?? false);
+
+    private bool DisplayPlaceholder => !DisplayContent;
 
 }
