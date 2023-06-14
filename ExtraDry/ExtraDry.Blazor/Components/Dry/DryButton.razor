@@ -3,7 +3,7 @@
 
 @if (ResolvedCommand?.IsVisible() ?? false)
 {
-    <Button Caption="@ResolvedCommand.Caption" @attributes="@UnmatchedAttributes"
+    <Button CssClass="@CssClasses" Caption="@ResolvedCommand.Caption" @attributes="@UnmatchedAttributes"
         Icon="@ResolvedCommand.Icon" Affordance="@ResolvedCommand.Affordance"
         @onclick="DoClick" />
 }
