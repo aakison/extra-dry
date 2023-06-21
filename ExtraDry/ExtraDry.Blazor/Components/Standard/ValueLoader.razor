@@ -1,0 +1,29 @@
+﻿@namespace ExtraDry.Blazor
+
+<div class="@CssClasses" @attributes="@UnmatchedAttributes">
+    @switch(State){
+        case LoadingState.Loading:
+            <div>
+                <Spinner></Spinner>
+            </div>
+            <div>Loading...</div>
+            break;
+        case LoadingState.Error:
+            <div>
+                <Icon Key="loader-error" />
+            </div>
+            <div>@StateMessage</div>
+            break;
+        case LoadingState.Timeout:
+            <div>
+                <Icon Key="loader-timeout" />
+            </div>
+            <div>Timeout, <a href="" @onclick="@Refresh" @onclick:preventDefault>try again</a></div>
+            break;
+        case LoadingState.Complete:
+            <div>@Value</div>
+            break;
+        default:
+            break;
+    }
+</div>
