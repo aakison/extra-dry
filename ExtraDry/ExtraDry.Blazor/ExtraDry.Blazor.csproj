@@ -63,6 +63,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\ExtraDry.Core\ExtraDry.Core.csproj" />
+		<ProjectReference Include="..\ExtraDry.Highlight\ExtraDry.Highlight.csproj" />
 	</ItemGroup>
 	
 	<Import Project="..\CommonAnalyzers.targets" />
@@ -86,11 +87,6 @@
 		<Content Update="_Imports.razor">
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 		</Content>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="wwwroot\lib\highlightjs\styles\" />
-	  <Folder Include="wwwroot\lib\roosterjs\" />
 	</ItemGroup>
 
 </Project>
