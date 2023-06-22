@@ -34,7 +34,7 @@ public partial class ValueLoader : ComponentBase, IExtraDryComponent {
 
     public string StateMessage { get; set; } = string.Empty;    
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass, "value-loader");
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass, "value-loader", State.ToString().ToLower());
 
     protected async override Task OnInitializedAsync()
     {
