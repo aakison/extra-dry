@@ -58,6 +58,8 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
 
     private bool IsSelected => Selection.Contains(Item.Item);
 
+    private string UuidValue => Description.UuidProperty?.GetValue(Item.Item)?.ToString() ?? string.Empty;
+
     private async Task RowClick(MouseEventArgs _)
     {
         Logger.LogInformation("Select Row with Row Click");

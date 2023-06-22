@@ -34,6 +34,8 @@ public class ViewModelDescription {
 
     public Collection<PropertyDescription> FilterProperties { get; } = new();
 
+    public PropertyDescription? UuidProperty { get; private set; }
+
     public ListSelectMode ListSelectMode { get; private set; } = ListSelectMode.None;
 
     public Collection<CommandInfo> Commands { get; } = new();
@@ -85,6 +87,9 @@ public class ViewModelDescription {
             }
             if(col.Filter != null) {
                 FilterProperties.Add(col);
+            }
+            if(UuidProperty == null && property.PropertyType == typeof(Guid)) {
+                UuidProperty = col;
             }
         }
     }

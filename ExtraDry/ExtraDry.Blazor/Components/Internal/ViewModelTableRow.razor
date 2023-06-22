@@ -1,6 +1,6 @@
 ﻿@typeparam T
 
-<tr class="@CssClasses" @onclick="RowClick" @ondblclick="RowDoubleClick" style="height: @($"{Height}px")">
+<tr data-uuid="@UuidValue" class="@CssClasses" @onclick="RowClick" @ondblclick="RowDoubleClick" style="height: @($"{Height}px")">
     @switch(Description.ListSelectMode) {
         case ListSelectMode.Multiple:
             <td class="checkbox"><input type="checkbox" @onchange="CheckChanged" checked="@IsSelected" /></td>
