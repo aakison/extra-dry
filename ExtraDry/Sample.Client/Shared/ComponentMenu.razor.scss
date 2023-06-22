@@ -31,11 +31,20 @@ section {
 
                     a {
                         color: $dark;
-                        padding: 1px $margin;
+                        padding: 1px $margin/2;
                         text-decoration: none;
                         display: flex;
                         align-items: center;
                         gap: 5px;
+
+                        div {
+                            gap: 5px;
+                        }
+
+                        img {
+                            height: 20px;
+                            width: unset;
+                        }
                     }
 
                     &:hover {

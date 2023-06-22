@@ -3,31 +3,34 @@
   height: initial;
   padding-top: 5px;
 }
-::deep div.module-menu section.mini-dialog div.mini-dialog ul {
+::deep div.module-menu section.mini-dialog div.mini-dialog nav ul {
   padding: 0;
+  flex-direction: column;
 }
-::deep div.module-menu section.mini-dialog div.mini-dialog ul li {
+::deep div.module-menu section.mini-dialog div.mini-dialog nav ul li {
   padding: 10px;
   margin: 10px 20px;
   border: solid 1px var(--silver);
   border-radius: 10px;
   display: block;
 }
-::deep div.module-menu section.mini-dialog div.mini-dialog ul li.active {
+::deep div.module-menu section.mini-dialog div.mini-dialog nav ul li.active {
   border: solid 1px var(--warning);
 }
-::deep div.module-menu section.mini-dialog div.mini-dialog ul li img {
+::deep div.module-menu section.mini-dialog div.mini-dialog nav ul li img {
   margin-right: 10px;
+  width: 40px;
+  height: 40px;
 }
-::deep div.module-menu section.mini-dialog div.mini-dialog ul li a:link, ::deep div.module-menu section.mini-dialog div.mini-dialog ul li a:visited, ::deep div.module-menu section.mini-dialog div.mini-dialog ul li a:hover, ::deep div.module-menu section.mini-dialog div.mini-dialog ul li a:active {
+::deep div.module-menu section.mini-dialog div.mini-dialog nav ul li a:link, ::deep div.module-menu section.mini-dialog div.mini-dialog nav ul li a:visited, ::deep div.module-menu section.mini-dialog div.mini-dialog nav ul li a:hover, ::deep div.module-menu section.mini-dialog div.mini-dialog nav ul li a:active {
   text-decoration: none;
   color: var(--black);
 }
-::deep div.module-menu section.mini-dialog div.mini-dialog ul li span.title {
+::deep div.module-menu section.mini-dialog div.mini-dialog nav ul li span.title {
   font-size: 18px;
   font-weight: 700;
 }
-::deep div.module-menu section.mini-dialog div.mini-dialog ul li span.subtitle {
+::deep div.module-menu section.mini-dialog div.mini-dialog nav ul li span.subtitle {
   font-size: 12px;
   line-height: 14px;
   max-height: 28px;

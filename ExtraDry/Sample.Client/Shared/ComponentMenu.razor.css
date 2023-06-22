@@ -29,11 +29,18 @@ section article ::deep nav ul li {
 }
 section article ::deep nav ul li a {
   color: hsl(0deg, 0%, 30%);
-  padding: 1px 10px;
+  padding: 1px 5px;
   text-decoration: none;
   display: flex;
   align-items: center;
   gap: 5px;
+}
+section article ::deep nav ul li a div {
+  gap: 5px;
+}
+section article ::deep nav ul li a img {
+  height: 20px;
+  width: unset;
 }
 section article ::deep nav ul li:hover {
   border-bottom: solid 3px hsl(47.5247524752deg, 99.0196078431%, 90%);

@@ -5,48 +5,55 @@
     height: initial;
     padding-top: 0.5*$margin;
 
-    ul {
-        padding: 0;
+    nav {
 
-        li {
-            padding: $margin;
-            margin: $margin 2*$margin;
-            border: solid 1px $var-silver;
-            border-radius: $margin;
-            display: block;
+        ul {
+            padding: 0;
+            flex-direction: column;
 
-            &.active {
-                border: solid 1px $var-warning;
-            }
+            li {
+                padding: $margin;
+                margin: $margin 2*$margin;
+                border: solid 1px $var-silver;
+                border-radius: $margin;
+                display: block;
 
-            img {
-                margin-right: $margin;
-            }
-
-            a:link, a:visited, a:hover, a:active {
-                text-decoration: none;
-                color: $var-black;
-            }
-
-            span {
-                &.title {
-                    font-size: 18px;
-                    font-weight: 700;
+                &.active {
+                    border: solid 1px $var-warning;
                 }
 
-                &.subtitle {
-                    font-size: 12px;
-                    line-height: 14px;
-                    max-height: 28px;
-                    margin-top: 4px;
-                    text-overflow: ellipsis;
-                    overflow: hidden;
-                    -webkit-line-clamp: 2;
-                    display: -webkit-box;
-                    -webkit-box-orient: vertical;
+                img {
+                    margin-right: $margin;
+                    width: 40px;
+                    height: 40px;
+                }
+
+                a:link, a:visited, a:hover, a:active {
+                    text-decoration: none;
+                    color: $var-black;
+                }
+
+                span {
+                    &.title {
+                        font-size: 18px;
+                        font-weight: 700;
+                    }
+
+                    &.subtitle {
+                        font-size: 12px;
+                        line-height: 14px;
+                        max-height: 28px;
+                        margin-top: 4px;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                        -webkit-line-clamp: 2;
+                        display: -webkit-box;
+                        -webkit-box-orient: vertical;
+                    }
                 }
             }
         }
+
     }
 
     footer {

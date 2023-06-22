@@ -3,6 +3,7 @@
 /// <summary>
 /// Represents a property that contains a link or a method that performs a navigation.
 /// </summary>
+[Obsolete("Use Menu instead.")]
 public class NavigationDescription : ISubjectViewModel {
 
     /// <summary>
@@ -42,6 +43,7 @@ public class NavigationDescription : ISubjectViewModel {
     /// <summary>
     /// The navigation attribute that defines the property/method as being for navigation.
     /// </summary>
+    [Obsolete("Use Menu object instead.")]
     public NavigationAttribute? Navigation { get; private set; }
 
     /// <summary>

@@ -1,10 +1,10 @@
 ﻿<div>
-    <DryMenu class="module-menu" ViewModel="@App.Modules">
-        <Icon Key="modules" />
+    <DryMenu class="module-menu" Menu="App.Menu">
+        <Icon Key="@App.Menu.Icon" />
     </DryMenu>
 </div>
 
 @code {
     [Inject]
-    public AppViewModel App { get; set; }
+    public AppViewModel App { get; set; } = null!;
 }

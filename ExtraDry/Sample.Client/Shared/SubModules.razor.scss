@@ -20,6 +20,49 @@ section {
             height: $icon-size;
         }
 
+        ::deep nav {
+            ul {
+                gap: 10px;
+                padding-left: 0;
+                align-items: center;
+
+                a {
+                    > div {
+                        gap: 5px;
+                    }
+
+                }
+
+                li.active {
+                    order: -1;
+
+                    img {
+                        height: 40px;
+                        width: unset;
+                    }
+
+                    span {
+                        color: black;
+                        font-weight: bold;
+                        font-size: 20px;
+                    }
+                }
+
+                li.inactive {
+                    img {
+                        height: 20px;
+                        width: unset;
+                    }
+
+                    span {
+                        color: #333333;
+                        font-weight: normal;
+                        font-size: 14px;
+                    }
+                }
+            }
+        }
+
         div {
             display: inline-block;
             font-size: $sub-title-size;
