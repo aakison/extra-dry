@@ -85,14 +85,14 @@ public partial class DryButton : ComponentBase, IExtraDryComponent {
 
     protected override void OnParametersSet()
     {
-        if(Command != null) {
-            if(ViewModel != null || MethodName != null) {
+        if(Command is not null) {
+            if(ViewModel is not null || MethodName is not null) {
                 Logger.LogWarning("Command should be used mutually exclusively with ViewModel and MethodName in DryButton.  The Command property takes precedence and the ViewModel and MethodName will be ignored.");
             }
             ResolvedCommand = Command;
         }
-        else if(ViewModel != null || MethodName != null) {
-            if(ViewModel == null || MethodName == null) {
+        else if(ViewModel is not null || MethodName is not null) {
+            if(ViewModel is null || MethodName is null) {
                 Logger.LogError("When using ViewModel and MethodName to define a command, both must be set.  Button command can not be resolved.");
             }
             else {
@@ -106,7 +106,7 @@ public partial class DryButton : ComponentBase, IExtraDryComponent {
 
     protected override void OnInitialized()
     {
-        if(Model == null) {
+        if(Model is null) {
             selection = Selection ?? SelectionSet.Lookup(ResolvedCommand?.ViewModel ?? this);
             if(selection != null) {
                 selection.Changed += SelectionChanged;
@@ -122,10 +122,10 @@ public partial class DryButton : ComponentBase, IExtraDryComponent {
 
     private void UpdateDisabled()
     {
-        if(ResolvedCommand == null) {
+        if(ResolvedCommand is null) {
             SetEnabled(false);
         }
-        else if(selection == null) {
+        else if(selection is null) {
             SetEnabled(true);
         }
         else if(ResolvedCommand.Arguments == CommandArguments.Single) {
@@ -147,7 +147,7 @@ public partial class DryButton : ComponentBase, IExtraDryComponent {
 
     private async Task DoClick(MouseEventArgs args)
     {
-        if(ResolvedCommand == null) {
+        if(ResolvedCommand is null) {
             return;
         }
         if(Model != null) {
