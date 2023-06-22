@@ -4,19 +4,19 @@
     @switch(State){
         case LoadingState.Loading:
             <div>
-                <Spinner></Spinner>
+                <Spinner Size=@Size></Spinner>
             </div>
             <div>Loading...</div>
             break;
         case LoadingState.Error:
             <div>
-                <Icon Key="loader-error" />
+                <Icon CssClass=@Size.ToString().ToLower() Key="loader-error" />
             </div>
             <div>@StateMessage</div>
             break;
         case LoadingState.Timeout:
             <div>
-                <Icon Key="loader-timeout" />
+                <Icon CssClass=@Size.ToString().ToLower() Key="loader-timeout" />
             </div>
             <div>Timeout, <a href="" @onclick="@Refresh" @onclick:preventDefault>try again</a></div>
             break;

@@ -1,5 +1,8 @@
 ﻿namespace ExtraDry.Blazor;
 
+/// <summary>
+/// Alters the size of the spinner
+/// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum SpinnerSize {
     /// <summary>

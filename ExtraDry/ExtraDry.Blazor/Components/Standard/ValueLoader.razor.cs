@@ -25,6 +25,10 @@ public partial class ValueLoader : ComponentBase, IExtraDryComponent {
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
 
+    /// <inheritdoc cref="SpinnerSize" />
+    [Parameter]
+    public SpinnerSize Size { get; set; } = SpinnerSize.Standard;
+
     /// <summary>
     /// The value once loaded
     /// </summary>

@@ -8,7 +8,7 @@ public partial class Spinner : ComponentBase, IExtraDryComponent {
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
-    /// <inheritdoc cref="IExtraDryComponent.CssClass" />
+    /// <inheritdoc cref="SpinnerSize" />
     [Parameter]
     public SpinnerSize Size { get; set; } = SpinnerSize.Standard;
 

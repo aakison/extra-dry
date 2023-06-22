@@ -14,7 +14,7 @@
     </CodeBlock>
 
     <div style="width: 200px;border: solid 1px;margin-bottom: 10px;">
-        <ValueLoader LoadData=@GetData @ref="_childComponent" />
+        <ValueLoader LoadData=@GetData Size=@SpinnerSize @ref="_childComponent" />
     </div>
 
     <h5>Try It Out</h5>
@@ -25,6 +25,15 @@
                 <option value="@(LoadingState.Complete)">Successful run</option>
                 <option value="@(LoadingState.Error)">Failed run</option>
                 <option value="@(LoadingState.Timeout)">Timeout</option>
+            </select>
+        </div>
+
+        <div>
+            <label>Size:</label>
+            <select @bind="SpinnerSize">
+                <option value="@(SpinnerSize.Standard)">SpinnerSize.Standard</option>
+                <option value="@(SpinnerSize.Small)">SpinnerSize.Small</option>
+                <option value="@(SpinnerSize.Large)">SpinnerSize.Large</option>
             </select>
         </div>
     </form>
@@ -39,6 +48,7 @@
 
 @code {
     public LoadingState Value { get; set; } = LoadingState.Complete;
+    public SpinnerSize SpinnerSize { get; set; } = SpinnerSize.Standard;
     private ValueLoader? _childComponent;
 
     async Task OnValueChange(ChangeEventArgs e)
