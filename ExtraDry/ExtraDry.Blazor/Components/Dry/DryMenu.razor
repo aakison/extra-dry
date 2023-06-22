@@ -1,45 +1,12 @@
 ﻿@namespace ExtraDry.Blazor
-@inherits DryViewModelComponentBase
 
 <div class="@CssClasses" @attributes="@UnmatchedAttributes">
     <button class="unobtrusive" @onclick="@DoClick">
         @ChildContent
     </button>
     <MiniDialog @ref="MiniDialog" CssClass="@CssClass" LoseFocusAction="MiniDialogAction.Cancel" 
-            AnimationDuration="@AnimationDuration" ShowCancelButton="false" ShowTitle="false" ShowSubmitButton="false">
-        <ul>
-            @if(Description.HasNavigationGroups) {
-                @foreach(var group in Description.NavigationGroups) {
-                    <li>
-                        @if(string.IsNullOrWhiteSpace(group)) {
-                            <div>&nbsp;</div>
-                        }
-                        else {
-                            <div>@group</div>
-                        }
-                        <ul>
-                            @foreach(var item in Description.NavigationsInGroup(group)) {
-                                var active = item.UriMatch(Navigation) ? "active" : "inactive";
-                                <li class="@active">
-                                    <a href="@item.Href" @onclick="() => DoItemClick(item)">
-                                        <DryMiniCard Model="@item" />
-                                    </a>
-                                </li>
-                            }
-                        </ul>
-                    </li>
-                }
-            }
-            else { 
-                @foreach(var item in Description.Navigations) {
-                    var active = item.UriMatch(Navigation) ? "active" : "inactive";
-                    <li class="@active">
-                        <a href="@item.Href" @onclick="() => DoItemClick(item)">
-                            <DryMiniCard Model="@item" />
-                        </a>
-                    </li>
-                }
-            }
-        </ul>
+            AnimationDuration="@AnimationDuration" ShowCancelButton="false" 
+            ShowTitle="false" ShowSubmitButton="false" >
+        <DryNavigation Menu="@Menu" MenuDepth="@MenuDepth" OnNavigated="@DoNavigation" />
     </MiniDialog>
 </div>

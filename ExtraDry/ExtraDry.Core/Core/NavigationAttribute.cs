@@ -10,6 +10,7 @@ namespace ExtraDry.Core;
 /// the method is executed, allowing any advanced use-case for navigation.
 /// </summary>
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Property)]
+[Obsolete("Use Menu instead")]
 public class NavigationAttribute : Attribute {
 
     /// <summary>

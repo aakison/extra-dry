@@ -96,10 +96,4 @@ public partial class Button : ComponentBase, IExtraDryComponent {
 
     private bool Disabled => !Enabled;
 
-    private Task Click(MouseEventArgs args)
-    {
-        return Task.CompletedTask;
-    }
-
-
 }
