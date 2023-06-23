@@ -1,27 +1,49 @@
-﻿@namespace ExtraDry.Blazor
+﻿@typeparam ValueModel
+@namespace ExtraDry.Blazor
 
 <div class="@CssClasses" @attributes="@UnmatchedAttributes">
     @switch(State){
         case LoadingState.Loading:
-            <div>
-                <Spinner Size=@Size></Spinner>
-            </div>
-            <div>Loading...</div>
+            @if (Loading == null)
+            {
+                <div>
+                    <Spinner Size=@Size></Spinner>
+                </div>
+                <div>Loading...</div>
+            }
+            else
+            {
+                @Loading(new ValueLoaderContext{Size = @Size, Reload=@Refresh})
+            }
             break;
         case LoadingState.Error:
-            <div>
-                <Icon CssClass=@Size.ToString().ToLower() Key="loader-error" />
-            </div>
-            <div>@StateMessage</div>
+            @if (Error == null)
+            {
+                <div>
+                    <Icon CssClass=@Size.ToString().ToLower() Key="loader-error" />
+                </div>
+                <div>An error has occurred</div>
+            }
+            else
+            {
+                @Error(new ValueLoaderContext{Size = @Size, Reload=@Refresh})
+            }
             break;
         case LoadingState.Timeout:
-            <div>
-                <Icon CssClass=@Size.ToString().ToLower() Key="loader-timeout" />
-            </div>
-            <div>Timeout, <a href="" @onclick="@Refresh" @onclick:preventDefault>try again</a></div>
+            @if(Timeout == null)
+            {
+                <div>
+                    <Icon CssClass=@Size.ToString().ToLower() Key="loader-timeout" />
+                </div>
+                <div>Timeout, <a href="" @onclick="@Refresh" @onclick:preventDefault>try again</a></div>
+            }
+            else
+            {
+                @Timeout(new ValueLoaderContext{Size = @Size, Reload=@Refresh})
+            }
             break;
         case LoadingState.Complete:
-            <div>@Value</div>
+            @Display(new ValueLoaderContext{Value = @Value, Size = @Size, Reload=@Refresh})
             break;
         default:
             break;

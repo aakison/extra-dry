@@ -3,18 +3,40 @@
 
 <section>
     <h2>Value Loader</h2>
-    <p>
-        The <code>&lt;ValueLoader&gt;</code> component displays an value after it is loaded with states for Loading, Completed, Error and Timeout.
-    </p>
+    <p>The <code>&lt;ValueLoader&gt;</code> component displays an value after it is loaded with states for Loading, Completed, Error and Timeout.</p>
 </section>
 <section>
     <h3>Basic Usage</h3>
     <CodeBlock Lang="blazor">
-        &lt;ValueLoader LoadData=@@GetData/&gt;
+        &lt;ValueLoader ValueModel="Employee" LoadData=@@LoadEmployee&gt;
+            &lt;Display&gt
+                &lt;div&gtFirst Name: @@context.Value.FirstName&lt;/div&gt
+                &lt;div&gtLast Name: @@context.Value.LastName&lt;/div&gt
+            &lt;/&lt;Display&gt
+        &lt;/ValueLoader&gt;
+
+        @@code {
+            public async Task&lt;Employee?&gt; LoadEmployee()
+            {
+                // Real data loading goes here
+                await Task.Delay(5000);
+                return new Employee
+                {
+                    Uuid = Guid.NewGuid(),
+                    FirstName = "John",
+                    LastName = "Smith"
+                };
+            }
+        }
     </CodeBlock>
 
     <div style="width: 200px;border: solid 1px;margin-bottom: 10px;">
-        <ValueLoader LoadData=@GetData Size=@SpinnerSize @ref="_childComponent" />
+        <ValueLoader ValueModel="Employee" LoadData=@LoadEmployee Size=@SpinnerSize @ref="_childComponent">
+            <Display>
+                <div>First Name: @context.Value.FirstName</div>
+                <div>Last Name: @context.Value.LastName</div>
+            </Display>
+        </ValueLoader>
     </div>
 
     <h5>Try It Out</h5>
@@ -42,14 +64,59 @@
 <section>
     <h3>Configuration</h3>
     <p>
+        The type of the return model is passed via <code>ValueModel="Employee"</code>
+    </p>
+    <p>
+        The method to load the data is passed via <code>LoadData=@@GetData</code>
+    </p>
+    <p>
         Can add custom CSS classes via the <code>CssClass</code> parameter
     </p>
+    <p>
+        Can override the Loading, Error and Timeout states by passing a child fragment called <code>&lt;Loading&gt</code>, <code>&lt;Error&gt</code> or <code>&lt;Timeout&gt</code>.
+    </p>
+    <p>
+        The child fragment will receive a context of the following type:
+        <CodeBlock Lang="C#">
+            /// &lt;summary&gt;
+            /// Context passed through to the child components
+            /// &lt;/summary&gt;
+            public class ValueLoaderContext {
+                /// &lt;summary&gt;
+                /// The loaded data value
+                /// &lt;/summary&gt;
+                public ValueModel? Value { get; set; }
+                /// &lt;summary&gt;
+                /// The size of the loading icon
+                /// &lt;/summary&gt;
+                public SpinnerSize Size { get; set; }
+                /// &lt;summary&gt;
+                /// A callback method to retry the load process
+                /// &lt;/summary&gt;
+                public Func&lt;Task&gt;? Reload { get; set; }
+            }
+        </CodeBlock>
+    </p>
+    <p>
+        An example override of the Timeout view showing how both the <code>Size</code> and <code>Reload</code> method are used from the <code>context</code>:
+        <CodeBlock Lang="Blazor">
+            &lt;Timeout&gt;
+                &lt;div&gt;
+                    &lt;Icon CssClass=@@context.Size.ToString().ToLower() Key="loader-timeout" /&gt;
+                &lt;/div&gt;
+                &lt;div&gt;
+                    Oh! This timed out, &lt;a href="" @@onclick="context?.Reload" @@onclick:preventDefault&gt;try again&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/&lt;Timeout&gt;
+        </CodeBlock>
+    </p>
+
 </section>
 
 @code {
     public LoadingState Value { get; set; } = LoadingState.Complete;
     public SpinnerSize SpinnerSize { get; set; } = SpinnerSize.Standard;
-    private ValueLoader? _childComponent;
+    private ValueLoader<Employee>? _childComponent;
 
     async Task OnValueChange(ChangeEventArgs e)
     {
@@ -61,7 +128,7 @@
         StateHasChanged();
     }
 
-    public async Task<object?> GetData()
+    public async Task<Employee?> LoadEmployee()
     {
         await Task.Delay(2000);
 
@@ -76,6 +143,11 @@
         }
 
         await Task.Delay(3000);
-        return "This is the value";
+        return new Employee
+        {
+            Uuid = Guid.NewGuid(),
+            FirstName = "John",
+            LastName = "Smith"
+        };
     }
 }
