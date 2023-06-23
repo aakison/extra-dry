@@ -18,19 +18,19 @@ public partial class ValueLoader<ValueModel> : ComponentBase, IExtraDryComponent
     /// A default is provided but this can be used to override the display
     /// </summary>
     [Parameter]
-    public RenderFragment<ValueLoaderContext>? Error { get; set; }
+    public RenderFragment<ValueLoaderContext>? ErrorIndicator { get; set; }
     /// <summary>
     /// Render Fragment for when a timeout is encountered during loading.
     /// A default is provided but this can be used to override the display
     /// </summary>
     [Parameter]
-    public RenderFragment<ValueLoaderContext>? Timeout { get; set; }
+    public RenderFragment<ValueLoaderContext>? TimeoutIndicator { get; set; }
     /// <summary>
     /// Render Fragment for when a value is in the process of being loaded.
     /// A default is provided but this can be used to override the display
     /// </summary>
     [Parameter]
-    public RenderFragment<ValueLoaderContext>? Loading { get; set; }
+    public RenderFragment<ValueLoaderContext>? LoadingIndicator { get; set; }
     /// <inheritdoc cref="IExtraDryComponent.CssClass" />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;

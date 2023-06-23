@@ -4,7 +4,7 @@
 <div class="@CssClasses" @attributes="@UnmatchedAttributes">
     @switch(State){
         case LoadingState.Loading:
-            @if (Loading == null)
+            @if (LoadingIndicator == null)
             {
                 <div>
                     <Spinner Size=@Size></Spinner>
@@ -13,11 +13,11 @@
             }
             else
             {
-                @Loading(new ValueLoaderContext{Size = @Size, Reload=@Refresh})
+                @LoadingIndicator(new ValueLoaderContext{Size = @Size, Reload=@Refresh})
             }
             break;
         case LoadingState.Error:
-            @if (Error == null)
+            @if (ErrorIndicator == null)
             {
                 <div>
                     <Icon CssClass=@Size.ToString().ToLower() Key="loader-error" />
@@ -26,11 +26,11 @@
             }
             else
             {
-                @Error(new ValueLoaderContext{Size = @Size, Reload=@Refresh})
+                @ErrorIndicator(new ValueLoaderContext{Size = @Size, Reload=@Refresh})
             }
             break;
         case LoadingState.Timeout:
-            @if(Timeout == null)
+            @if(TimeoutIndicator == null)
             {
                 <div>
                     <Icon CssClass=@Size.ToString().ToLower() Key="loader-timeout" />
@@ -39,7 +39,7 @@
             }
             else
             {
-                @Timeout(new ValueLoaderContext{Size = @Size, Reload=@Refresh})
+                @TimeoutIndicator(new ValueLoaderContext{Size = @Size, Reload=@Refresh})
             }
             break;
         case LoadingState.Complete:

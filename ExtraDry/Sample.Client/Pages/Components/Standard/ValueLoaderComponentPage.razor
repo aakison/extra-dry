@@ -73,7 +73,7 @@
         Can add custom CSS classes via the <code>CssClass</code> parameter
     </p>
     <p>
-        Can override the Loading, Error and Timeout states by passing a child fragment called <code>&lt;Loading&gt</code>, <code>&lt;Error&gt</code> or <code>&lt;Timeout&gt</code>.
+        Can override the Loading, Error and Timeout states by passing a child fragment called <code>&lt;LoadingIndicator&gt</code>, <code>&lt;ErrorIndicator&gt</code> or <code>&lt;TimeoutIndicator&gt</code>.
     </p>
     <p>
         The child fragment will receive a context of the following type:
@@ -98,16 +98,16 @@
         </CodeBlock>
     </p>
     <p>
-        An example override of the Timeout view showing how both the <code>Size</code> and <code>Reload</code> method are used from the <code>context</code>:
+        An example override of the TimeoutIndicator view showing how both the <code>Size</code> and <code>Reload</code> method are used from the <code>context</code>:
         <CodeBlock Lang="Blazor">
-            &lt;Timeout&gt;
+            &lt;TimeoutIndicator&gt;
                 &lt;div&gt;
                     &lt;Icon CssClass=@@context.Size.ToString().ToLower() Key="loader-timeout" /&gt;
                 &lt;/div&gt;
                 &lt;div&gt;
                     Oh! This timed out, &lt;a href="" @@onclick="context?.Reload" @@onclick:preventDefault&gt;try again&lt;/a&gt;
                 &lt;/div&gt;
-            &lt;/&lt;Timeout&gt;
+            &lt;/&lt;TimeoutIndicator&gt;
         </CodeBlock>
     </p>
 
