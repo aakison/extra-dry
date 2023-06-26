@@ -83,8 +83,7 @@ public class BlobService {
     public async Task DeleteAsync(Guid uniqueId)
     {
         var existing = await RetrieveAsync(uniqueId);
-        rules.Delete(existing, () => database.Blobs.Remove(existing));
-        await database.SaveChangesAsync();
+        rules.Delete(existing, () => database.Blobs.Remove(existing), () => database.SaveChangesAsync());
     }
 
     private readonly SampleContext database;

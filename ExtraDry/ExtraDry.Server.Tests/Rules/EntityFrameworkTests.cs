@@ -32,7 +32,7 @@ public class EntityFrameworkTests {
         var rules = new RuleEngine(new ServiceProviderStub());
         var address = database.Addresses.First(e => e.Line == "123 Any Street");
 
-        var result = await rules.DeleteHardAsync(address, () => database.Remove(address), async () => await MockSaveChangesAsync(database));
+        var result = await rules.DeleteAsync(address, () => database.Remove(address), async () => await MockSaveChangesAsync(database));
 
         Assert.Equal(DeleteResult.SoftDeleted, result);
         Assert.Equal(2, database.Addresses.Count());

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace ExtraDry.Server;
 
@@ -68,85 +69,39 @@ public class RuleEngine {
         await UpdatePropertiesAsync(source, destination, MaxRecursionDepth, e => e.UpdateAction);
     }
 
-    /// <inheritdoc cref="DeleteSoftAsync{T}(T, Func{Task}?, Func{Task}?)"/>
-    public DeleteResult Delete<T>(T item, Action? remove = null)
-    {
-        return DeleteSoft(item, remove, null);
-    }
-
-    /// <inheritdoc cref="DeleteSoftAsync{T}(T, Func{Task}?, Func{Task}?)"/>
-    public DeleteResult DeleteSoft<T>(T item, Action? remove, Action? commit)
-    {
-        var task = DeleteSoftAsync(item, WrapAction(remove), WrapAction(commit));
-        CompleteActionMasquardingAsFuncTask(task);
-        return task.Result;
-    }
-
-    /// <inheritdoc cref="DeleteSoftAsync{T}(T, Func{Task}?, Func{Task}?)"/>
-    public async Task<DeleteResult> DeleteSoftAsync<T>(T item, Action remove, Func<Task> commit)
-    {
-        return await DeleteSoftAsync(item, WrapAction(remove), commit);
-    }
-
-    /// <inheritdoc cref="DeleteSoftAsync{T}(T, Func{Task}?, Func{Task}?)"/>
-    public async Task<DeleteResult> DeleteSoftAsync<T>(T item, Func<Task> remove, Action commit)
-    {
-        return await DeleteSoftAsync(item, remove, WrapAction(commit));
-    }
-
     /// <summary>
     /// Processes a delete of an item setting the appropriate fields.
-    /// If any fields have `DeleteValue` set on their `RulesAttribute`, then the item is soft-deleted and the method return true.
-    /// Otherwise, it executes the indicated `hardDeletePrepare` action (typically remove from collection);
-    /// followed by the indicated `hardDeleteCommit` action, if provided.
     /// </summary>
-    /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
-    /// <param name="remove">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
-    /// <param name="commit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
+    /// <param name="item">The item to delete.</param>
     [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Keep as standard service instance style for DI.")]
-    public async Task<DeleteResult> DeleteSoftAsync<T>(T item, Func<Task>? remove, Func<Task>? commit)
+    public DeleteResult DeleteSoft<T>(T item)
     {
         if(item == null) {
             throw new ArgumentNullException(nameof(item));
         }
-        var result = DeleteResult.NotDeleted;
-        if(AttemptSoftDelete(item)) {
-            result = DeleteResult.SoftDeleted;
-        }
-        if(result == DeleteResult.NotDeleted) {
-            if(remove == null) {
-                throw new InvalidOperationException("Item could not be soft-deleted and no hard delete action was provided.");
-            }
-            else {
-                await remove();
-                if(commit != null) {
-                    await commit();
-                }
-                result = DeleteResult.HardDeleted;
-            }
-        }
-        return result;
+
+        return AttemptSoftDelete(item) ? DeleteResult.SoftDeleted : DeleteResult.NotDeleted;
     }
 
-    /// <inheritdoc cref="DeleteHardAsync{T}(T, Func{Task}?, Func{Task}?)" />
-    public DeleteResult DeleteHard<T>(T item, Action remove, Action commit)
+    /// <inheritdoc cref="DeleteAsync{T}(T, Func{Task}, Func{Task}?)" />
+    public DeleteResult Delete<T>(T item, Action remove, Action commit)
     {
         // Bit hinky, map Actions to Func<Task> so that logic flow isn't repeated, then map back to non-async.
-        var task = DeleteHardAsync(item, WrapAction(remove), WrapAction(commit));
+        var task = DeleteAsync(item, WrapAction(remove), WrapAction(commit));
         CompleteActionMasquardingAsFuncTask(task);
         return task.Result;
     }
 
-    /// <inheritdoc cref="DeleteHardAsync{T}(T, Func{Task}?, Func{Task}?)" />
-    public async Task<DeleteResult> DeleteHardAsync<T>(T item, Action remove, Func<Task> commit)
+    /// <inheritdoc cref="DeleteAsync{T}(T, Func{Task}, Func{Task}?)" />
+    public async Task<DeleteResult> DeleteAsync<T>(T item, Action remove, Func<Task> commit)
     {
-        return await DeleteHardAsync(item, WrapAction(remove), commit);
+        return await DeleteAsync(item, WrapAction(remove), commit);
     }
 
-    /// <inheritdoc cref="DeleteHardAsync{T}(T, Func{Task}?, Func{Task}?)" />
-    public async Task<DeleteResult> DeleteHardAsync<T>(T item, Func<Task> remove, Action commit)
+    /// <inheritdoc cref="DeleteAsync{T}(T, Func{Task}, Func{Task}?)" />
+    public async Task<DeleteResult> DeleteAsync<T>(T item, Func<Task> remove, Action commit)
     {
-        return await DeleteHardAsync(item, remove, WrapAction(commit));
+        return await DeleteAsync(item, remove, WrapAction(commit));
     }
 
     /// <summary>
@@ -185,7 +140,7 @@ public class RuleEngine {
     }
 
     /// <summary>
-    /// Processes a hard delete of an item if possible, even if a `DeleteValue` is provided in the `RulesAttribute`.
+    /// Processes a hard delete of an item if possible.
     /// This allows for the database to notify if a hard-delete is not possible by throwing an exception in the commit.
     /// If not possible, then the soft-delete is performed instead.
     /// If neither is possible, an exception is thrown.
@@ -193,15 +148,10 @@ public class RuleEngine {
     /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
     /// <param name="remove">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
     /// <param name="commit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
-    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Keep as standard service instance style for DI.")]
-    public async Task<DeleteResult> DeleteHardAsync<T>(T item, Func<Task>? remove, Func<Task>? commit)
+    public async Task<DeleteResult> DeleteAsync<T>(T item, Func<Task> remove, Func<Task>? commit)
     {
-        if(item == null) {
-            throw new ArgumentNullException(nameof(item));
-        }
-        if(remove == null) {
-            throw new ArgumentNullException(nameof(item), "Must provide an action to prepare hard delete, e.g. remove from collection");
-        }
+        ArgumentNullException.ThrowIfNull(item, nameof(item));
+
         if(commit == null) {
             throw new ArgumentNullException(nameof(item), "Must provide an action to commit hard delete, e.g. save to database");
         }
@@ -210,20 +160,51 @@ public class RuleEngine {
             await commit();
             result = DeleteResult.SoftDeleted;
         }
+
+        var hardDeleteResult = await DeleteHardAsync(item, remove, commit);
+        return hardDeleteResult == DeleteResult.HardDeleted ? hardDeleteResult : result;
+        //return result;
+    }
+
+    public async Task<DeleteResult> DeleteHardAsync<T>(T item, Action remove, Func<Task> commit)
+    {
+        return await DeleteHardAsync(item, WrapAction(remove), commit);
+    }
+
+    /// <inheritdoc cref="DeleteHardAsync{T}(T, Func{Task}?, Func{Task}?)" />
+    public async Task<DeleteResult> DeleteHardAsync<T>(T item, Func<Task> remove, Action commit)
+    {
+        return await DeleteHardAsync(item, remove, WrapAction(commit));
+    }
+
+    /// <summary>
+    /// Processes a hard delete of an item if possible.
+    /// This allows for the database to notify if a hard-delete is not possible by throwing an exception in the commit.
+    /// </summary>
+    /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
+    /// <param name="remove">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
+    /// <param name="commit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
+    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Keep as standard service instance style for DI.")]
+    public async Task<DeleteResult> DeleteHardAsync<T>(T item, Func<Task> remove, Func<Task> commit)
+    {
+        ArgumentNullException.ThrowIfNull(item, nameof(item));
+
+        if(commit == null) {
+            throw new ArgumentNullException(nameof(item), "Must provide an action to commit hard delete, e.g. save to database");
+        }
+        var result = DeleteResult.NotDeleted;
+       
         try {
             await remove();
             await commit();
             result = DeleteResult.HardDeleted;
         }
         catch { // Hmmm, can we be specific about exception type here?
-            if(result == DeleteResult.NotDeleted) {
-                throw new InvalidOperationException("Item could not be hard-deleted and no rules for soft-delete provided.");
-            }
-            // else was soft-deleted and that's OK...
+            return result;
         }
         return result;
     }
-
+    
     private async Task UpdatePropertiesAsync<T>(T source, T destination, int depth, Func<RulesAttribute, RuleAction> selector)
     {
         if(depth == 0) {
@@ -313,7 +294,7 @@ public class RuleEngine {
                 }
                 throw new DryException($"Invalid attempt to change property '{property.Name}'", $"Attempt to change read-only property '{property.Name}'");
             }
-            
+
             // Do not allow property to be set to the value configured in SoftDeleteAttribute.
             if(!same && softDeleteRuleAttribute?.DeleteValue != null && softDeleteRuleAttribute.PropertyName == property.Name && AreEqual(value, softDeleteRuleAttribute.DeleteValue)) {
                 throw new DryException($"Invalid attempt to change property '{property.Name}' to the DeleteValue", "Unable to update, an attempt was made to make the entity appear deleted. Check your values to prevent this or use the dedicated delete functionality if available.");
@@ -389,17 +370,13 @@ public class RuleEngine {
         }
     }
 
-    private static Func<Task>? WrapAction(Action? action)
+    private static Func<Task> WrapAction(Action action)
     {
-        if(action == null) {
-            return null;
-        }
-        else {
-            return () => {
-                action();
-                return Task.CompletedTask;
-            };
-        }
+        return () => {
+            action();
+            return Task.CompletedTask;
+        };
+
     }
 
     private static void CompleteActionMasquardingAsFuncTask(Task task)
@@ -418,13 +395,42 @@ public class RuleEngine {
         }
         var property = type.GetProperty(softDelete.PropertyName, BindingFlags.Instance | BindingFlags.Public);
         if(property == null) {
-            throw new DryException($"Can't complete soft-delete, property '{softDelete.PropertyName}' does not exist as a public instance property of class '{type.Name}'.", "Can't delete item, internal application issue.");
+            return false;
+            //throw new DryException($"Can't complete soft-delete, property '{softDelete.PropertyName}' does not exist as a public instance property of class '{type.Name}'.", "Can't delete item, internal application issue.");
         }
         try {
             property.SetValue(item, softDelete.DeleteValue);
         }
         catch {
-            throw new DryException($"Can't complete soft-delete, value provided is not convertable to type of property '{softDelete.PropertyName}", "Can't delete item, internal application issue.");
+            return false;
+            //throw new DryException($"Can't complete soft-delete, value provided is not convertable to type of property '{softDelete.PropertyName}", "Can't delete item, internal application issue.");
+        }
+        return true;
+    }
+
+    private static bool AttemptSoftDelete(object[] items)
+    {
+        if(items.Any(e => e.GetType().GetCustomAttribute<SoftDeleteRuleAttribute>() == null)) {
+            return false;
+        }
+
+        var properties = items.Select(e => e.GetProperty())
+
+        foreach(object item in items) {
+
+        }
+
+        var property = type.GetProperty(softDelete.PropertyName, BindingFlags.Instance | BindingFlags.Public);
+        if(property == null) {
+            return false;
+            //throw new DryException($"Can't complete soft-delete, property '{softDelete.PropertyName}' does not exist as a public instance property of class '{type.Name}'.", "Can't delete item, internal application issue.");
+        }
+        try {
+            property.SetValue(item, softDelete.DeleteValue);
+        }
+        catch {
+            return false;
+            //throw new DryException($"Can't complete soft-delete, value provided is not convertable to type of property '{softDelete.PropertyName}", "Can't delete item, internal application issue.");
         }
         return true;
     }

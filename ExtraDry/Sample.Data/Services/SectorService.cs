@@ -47,8 +47,7 @@ public class SectorService : IEntityResolver<Sector> {
     public async Task DeleteAsync(Guid uuid)
     {
         var existing = await RetrieveAsync(uuid);
-        rules.Delete(existing, () => database.Sectors.Remove(existing));
-        await database.SaveChangesAsync();
+        rules.Delete(existing, () => database.Sectors.Remove(existing), () => database.SaveChangesAsync());
     }
     
     public async Task<Statistics<Sector>> StatsAsync(FilterQuery query)
