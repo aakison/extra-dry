@@ -1,20 +1,20 @@
 ﻿namespace ExtraDry.Blazor;
 
 /// <summary>
-/// Alters the size of the spinner
+/// Alters the size of the indicator icon
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum SpinnerSize {
+public enum IndicatorSize {
     /// <summary>
-    /// Displays as a small spinner
+    /// Displays as a small indicator icon
     /// </summary>
     Small,
     /// <summary>
-    /// This is  the default spinner size
+    /// This is  the default indicator icon size
     /// </summary>
     Standard,
     /// <summary>
-    /// Displays as a large spinner
+    /// Displays as a large indicator icon
     /// </summary>
     Large
 }

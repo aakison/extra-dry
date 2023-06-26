@@ -4,46 +4,58 @@
 <div class="@CssClasses" @attributes="@UnmatchedAttributes">
     @switch(State){
         case LoadingState.Loading:
-            @if (LoadingIndicator == null)
+            @if (LoadingIndicator != null)
+            {
+                @LoadingIndicator(new ValueLoaderContext{Size = @Size, Reload=@Refresh})
+            }
+            else if (ThemeInfo?.LoadingIndicator != null)
+            {
+                @ThemeInfo?.LoadingIndicator(new ValueLoaderContext{Size = @Size, Reload=@Refresh})
+            }
+            else
             {
                 <div>
                     <Spinner Size=@Size></Spinner>
                 </div>
                 <div>Loading...</div>
             }
-            else
-            {
-                @LoadingIndicator(new ValueLoaderContext{Size = @Size, Reload=@Refresh})
-            }
             break;
         case LoadingState.Error:
-            @if (ErrorIndicator == null)
+            @if (ErrorIndicator != null)
+            {
+                @ErrorIndicator(new ValueLoaderContext{Size = @Size, Reload=@Refresh})
+            }
+            else if (ThemeInfo?.ErrorIndicator != null)
+            {
+                @ThemeInfo?.ErrorIndicator(new ValueLoaderContext{Size = @Size, Reload=@Refresh})
+            }
+            else
             {
                 <div>
                     <Icon CssClass=@Size.ToString().ToLower() Key="loader-error" />
                 </div>
                 <div>An error has occurred</div>
             }
-            else
-            {
-                @ErrorIndicator(new ValueLoaderContext{Size = @Size, Reload=@Refresh})
-            }
             break;
         case LoadingState.Timeout:
-            @if(TimeoutIndicator == null)
+            @if(TimeoutIndicator != null)
+            {
+                @TimeoutIndicator(new ValueLoaderContext{Size = @Size, Reload=@Refresh})
+            }
+            else if (ThemeInfo?.TimeoutIndicator != null)
+            {
+                @ThemeInfo?.TimeoutIndicator(new ValueLoaderContext{Size = @Size, Reload=@Refresh})
+            }
+            else
             {
                 <div>
                     <Icon CssClass=@Size.ToString().ToLower() Key="loader-timeout" />
                 </div>
                 <div>Timeout, <a href="" @onclick="@Refresh" @onclick:preventDefault>try again</a></div>
             }
-            else
-            {
-                @TimeoutIndicator(new ValueLoaderContext{Size = @Size, Reload=@Refresh})
-            }
             break;
         case LoadingState.Complete:
-            @Display(new ValueLoaderContext{Value = @Value, Size = @Size, Reload=@Refresh})
+            @ChildContent(new ValueLoaderContext{Value = @Value, Size = @Size, Reload=@Refresh})
             break;
         default:
             break;

@@ -11,26 +11,26 @@ public partial class ValueLoader<ValueModel> : ComponentBase, IExtraDryComponent
     /// <summary>
     /// Render Fragment for when the value has been loaded. This will govern how the value is displayed
     /// </summary>
-    [Parameter]
-    public RenderFragment<ValueLoaderContext>? Display { get; set; }
+    [Parameter, EditorRequired]
+    public RenderFragment<ValueLoaderContext>? ChildContent { get; set; }
     /// <summary>
     /// Render Fragment for when an error is encountered during loading.
     /// A default is provided but this can be used to override the display
     /// </summary>
     [Parameter]
-    public RenderFragment<ValueLoaderContext>? ErrorIndicator { get; set; }
+    public RenderFragment<IndicatorContext>? ErrorIndicator { get; set; }
     /// <summary>
     /// Render Fragment for when a timeout is encountered during loading.
     /// A default is provided but this can be used to override the display
     /// </summary>
     [Parameter]
-    public RenderFragment<ValueLoaderContext>? TimeoutIndicator { get; set; }
+    public RenderFragment<IndicatorContext>? TimeoutIndicator { get; set; }
     /// <summary>
     /// Render Fragment for when a value is in the process of being loaded.
     /// A default is provided but this can be used to override the display
     /// </summary>
     [Parameter]
-    public RenderFragment<ValueLoaderContext>? LoadingIndicator { get; set; }
+    public RenderFragment<IndicatorContext>? LoadingIndicator { get; set; }
     /// <inheritdoc cref="IExtraDryComponent.CssClass" />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
@@ -43,9 +43,11 @@ public partial class ValueLoader<ValueModel> : ComponentBase, IExtraDryComponent
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
-    /// <inheritdoc cref="SpinnerSize" />
+    /// <inheritdoc cref="IndicatorSize" />
     [Parameter]
-    public SpinnerSize Size { get; set; } = SpinnerSize.Standard;
+    public IndicatorSize Size { get; set; } = IndicatorSize.Standard;
+    [CascadingParameter]
+    protected ThemeInfo? ThemeInfo { get; set; }
 
     /// <summary>
     /// The value once loaded
@@ -98,19 +100,11 @@ public partial class ValueLoader<ValueModel> : ComponentBase, IExtraDryComponent
     /// <summary>
     /// Context passed through to the child components
     /// </summary>
-    public class ValueLoaderContext {
+    public class ValueLoaderContext: IndicatorContext {
         /// <summary>
         /// The loaded data value
         /// </summary>
         public ValueModel? Value { get; set; }
-        /// <summary>
-        /// The size of the loading icon
-        /// </summary>
-        public SpinnerSize Size { get; set; }
-        /// <summary>
-        /// A callback method to retry the load process
-        /// </summary>
-        public Func<Task>? Reload { get; set; }
     }
 }
 

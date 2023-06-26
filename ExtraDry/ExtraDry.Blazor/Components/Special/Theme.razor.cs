@@ -31,6 +31,19 @@ public partial class Theme : ComponentBase {
     [Parameter]
     public Type? ErrorComponent { get; set; }
 
+    /// <inheritdoc cref="ValueLoader{ValueModel}.ErrorIndicator" />
+    /// <see cref="ValueLoader{ValueModel}"/>
+    [Parameter]
+    public RenderFragment<IndicatorContext>? ErrorIndicator { get; set; }
+    /// <inheritdoc cref="ValueLoader{ValueModel}.TimeoutIndicator" />
+    /// <see cref="ValueLoader{ValueModel}"/>
+    [Parameter]
+    public RenderFragment<IndicatorContext>? TimeoutIndicator { get; set; }
+    /// <inheritdoc cref="ValueLoader{ValueModel}.LoadingIndicator" />
+    /// <see cref="ValueLoader{ValueModel}"/>
+    [Parameter]
+    public RenderFragment<IndicatorContext>? LoadingIndicator { get; set; }
+
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
@@ -38,7 +51,18 @@ public partial class Theme : ComponentBase {
         if(ErrorComponent != null) {
             ThemeInfo.ErrorComponent = ErrorComponent;
         }
-    }
 
+        if(ErrorIndicator != null) {
+            ThemeInfo.ErrorIndicator = ErrorIndicator;
+        }
+
+        if(TimeoutIndicator != null) {
+            ThemeInfo.TimeoutIndicator = TimeoutIndicator;
+        }
+
+        if(LoadingIndicator != null) {
+            ThemeInfo.LoadingIndicator = LoadingIndicator;
+        }
+    }
 }
 
