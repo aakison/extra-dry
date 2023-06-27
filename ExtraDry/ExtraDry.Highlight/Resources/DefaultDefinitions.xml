@@ -30,9 +30,12 @@
         <attributeValueStyle foreColor="blue" backColor="transparent"/>
       </font>
     </pattern>
-    <pattern name="CodeSegment" type="word">
+    <pattern name="Directive" type="word">
       <font name="Courier New" size="11" style="regular" foreColor="purple" backColor="transparent"/>
       <word>@code</word>
+      <word>@inherits</word>
+      <word>@inject</word>
+      <word>@implements</word>
     </pattern>
     <pattern name="Namespace" type="word">
       <font name="Courier New" size="11" style="regular" foreColor="blue" backColor="transparent"/>
@@ -68,6 +71,8 @@
       <word>unchecked</word>
       <word>fixed</word>
       <word>lock</word>
+      <word>new</word>
+      <word>var</word>
     </pattern>
     <pattern name="Modifier" type="word">
       <font name="Courier New" size="11" style="regular" foreColor="blue" backColor="transparent"/>
