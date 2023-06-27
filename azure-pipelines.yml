@@ -60,7 +60,7 @@ steps:
         Param([Parameter(ValueFromPipeline)] $line)
         process {
           Write-Host $line
-          if($line.Contains("Moderate") -OR $line.Contains("High")) {
+          if($line.Contains(" Critical ") -OR $line.Contains(" Moderate ") -OR $line.Contains(" High ")) {
             $global:failedLines = $global:failedLines + 1
           }
         }
