@@ -29,7 +29,7 @@
     </CodeBlock>
 
     <div style="width: 200px;border: solid 1px;margin-bottom: 10px;">
-        <Suspense ValueModel="Employee" LoadData=@LoadEmployee Size=@SpinnerSize @ref="_childComponent">
+        <Suspense ValueModel="Employee" LoadData=@LoadEmployee Size=@IndicatorSize @ref="_childComponent">
             <div>First Name: @context.Value.FirstName</div>
             <div>Last Name: @context.Value.LastName</div>
         </Suspense>
@@ -48,10 +48,10 @@
 
         <div>
             <label>Size:</label>
-            <select @bind="SpinnerSize">
-                <option value="@(IndicatorSize.Standard)">SpinnerSize.Standard</option>
-                <option value="@(IndicatorSize.Small)">SpinnerSize.Small</option>
-                <option value="@(IndicatorSize.Large)">SpinnerSize.Large</option>
+            <select @bind="IndicatorSize">
+                <option value="@(IndicatorSize.Standard)">IndicatorSize.Standard</option>
+                <option value="@(IndicatorSize.Small)">IndicatorSize.Small</option>
+                <option value="@(IndicatorSize.Large)">IndicatorSize.Large</option>
             </select>
         </div>
     </form>
@@ -73,7 +73,7 @@
     </CodeBlock>
 
     <div style="width: 200px;border: solid 1px;margin-bottom: 10px;">
-        <Suspense ValueModel="Employee" LoadData=@LoadEmployee Size=@SpinnerSize @ref="_childComponent2">
+        <Suspense ValueModel="Employee" LoadData=@LoadEmployee Size=@IndicatorSize @ref="_childComponent2">
             <ChildContent>
                 <div>First Name: @context.Value.FirstName</div>
                 <div>Last Name: @context.Value.LastName</div>
@@ -146,7 +146,7 @@
 
 @code {
     public LoadingState Value { get; set; } = LoadingState.Complete;
-    public IndicatorSize SpinnerSize { get; set; } = IndicatorSize.Standard;
+    public IndicatorSize IndicatorSize { get; set; } = IndicatorSize.Standard;
     private Suspense<Employee>? _childComponent;
     private Suspense<Employee>? _childComponent2;
 
