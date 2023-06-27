@@ -35,10 +35,12 @@ public partial class Theme : ComponentBase {
     /// <see cref="Suspense{ValueModel}"/>
     [Parameter]
     public RenderFragment<IndicatorContext>? SuspenseErrorIndicator { get; set; }
+
     /// <inheritdoc cref="Suspense{ValueModel}.TimeoutIndicator" />
     /// <see cref="Suspense{ValueModel}"/>
     [Parameter]
     public RenderFragment<IndicatorContext>? SuspenseTimeoutIndicator { get; set; }
+
     /// <inheritdoc cref="Suspense{ValueModel}.LoadingIndicator" />
     /// <see cref="Suspense{ValueModel}"/>
     [Parameter]
