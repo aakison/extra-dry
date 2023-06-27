@@ -4,7 +4,7 @@ namespace ExtraDry.Highlight;
 
 internal static class HtmlEngineHelper
 {
-    public static string CreateCssClassName(string definition, string pattern)
+    public static string CreateCssClassName(string definition, string? pattern)
     {
         var cssClassName = definition
             .Replace("#", "sharp")
@@ -22,7 +22,7 @@ internal static class HtmlEngineHelper
         return CreatePatternStyle(style.Colors, style.Font);
     }
 
-    public static string CreatePatternStyle(ColorPair colors, Font font)
+    public static string CreatePatternStyle(ColorPair? colors, Font font)
     {
         var patternStyle = new StringBuilder();
         if (colors != null) {

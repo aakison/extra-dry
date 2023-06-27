@@ -3,11 +3,11 @@ namespace ExtraDry.Highlight;
 public sealed class MarkupPattern : Pattern
 {
     public bool HighlightAttributes { get; set; }
-    public ColorPair BracketColors { get; set; }
-    public ColorPair AttributeNameColors { get; set; }
-    public ColorPair AttributeValueColors { get; set; }
+    public ColorPair? BracketColors { get; set; }
+    public ColorPair? AttributeNameColors { get; set; }
+    public ColorPair? AttributeValueColors { get; set; }
 
-    public MarkupPattern(string name, Style style, bool highlightAttributes, ColorPair bracketColors, ColorPair attributeNameColors, ColorPair attributeValueColors)
+    public MarkupPattern(string name, Style style, bool highlightAttributes, ColorPair? bracketColors, ColorPair? attributeNameColors, ColorPair? attributeValueColors)
         : base(name, style)
     {
         HighlightAttributes = highlightAttributes;

@@ -1,3 +1,5 @@
+#nullable disable
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,33 +9,19 @@ using System.Xml.XPath;
 
 namespace ExtraDry.Highlight;
 
-public class XmlConfiguration : IConfiguration
+public class XmlConfiguration 
 {
-    private IDictionary<string, Definition> definitions;
-    public IDictionary<string, Definition> Definitions
-    {
-        get { return GetDefinitions(); }
-    }
+    public Dictionary<string, Definition> Definitions { get; set; }
 
     public XDocument XmlDocument { get; protected set; }
 
     public XmlConfiguration(XDocument xmlDocument)
     {
-        XmlDocument = xmlDocument ?? throw new ArgumentNullException("xmlDocument");
-    }
-
-    protected XmlConfiguration()
-    {
-    }
-
-    private IDictionary<string, Definition> GetDefinitions()
-    {
-        definitions ??= XmlDocument
+        XmlDocument = xmlDocument;
+        Definitions = XmlDocument
                 .Descendants("definition")
                 .Select(GetDefinition)
                 .ToDictionary(x => x.Name, StringComparer.InvariantCultureIgnoreCase);
-
-        return definitions;
     }
 
     private Definition GetDefinition(XElement definitionElement)
@@ -73,7 +61,7 @@ public class XmlConfiguration : IConfiguration
         throw new InvalidOperationException(String.Format("Unknown pattern type: {0}", patternType));
     }
 
-    private BlockPattern GetBlockPattern(XElement patternElement)
+    private static BlockPattern GetBlockPattern(XElement patternElement)
     {
         var name = patternElement.GetAttributeValue("name");
         var style = GetPatternStyle(patternElement);
@@ -84,7 +72,7 @@ public class XmlConfiguration : IConfiguration
         return new BlockPattern(name, style, beginsWith, endsWith, escapesWith);
     }
 
-    private MarkupPattern GetMarkupPattern(XElement patternElement)
+    private static MarkupPattern GetMarkupPattern(XElement patternElement)
     {
         var name = patternElement.GetAttributeValue("name");
         var style = GetPatternStyle(patternElement);
@@ -96,7 +84,7 @@ public class XmlConfiguration : IConfiguration
         return new MarkupPattern(name, style, highlightAttributes, bracketColors, attributeNameColors, attributeValueColors);
     }
 
-    private WordPattern GetWordPattern(XElement patternElement)
+    private static WordPattern GetWordPattern(XElement patternElement)
     {
         var name = patternElement.GetAttributeValue("name");
         var style = GetPatternStyle(patternElement);
@@ -105,7 +93,7 @@ public class XmlConfiguration : IConfiguration
         return new WordPattern(name, style, words);
     }
 
-    private IEnumerable<string> GetPatternWords(XContainer patternElement)
+    private static IEnumerable<string> GetPatternWords(XContainer patternElement)
     {
         var words = new List<string>();
         var wordElements = patternElement.Descendants("word");
@@ -116,7 +104,7 @@ public class XmlConfiguration : IConfiguration
         return words;
     }
 
-    private Style GetPatternStyle(XContainer patternElement)
+    private static Style GetPatternStyle(XContainer patternElement)
     {
         var fontElement = patternElement.Descendants("font").Single();
         var colors = GetPatternColors(fontElement);
@@ -125,7 +113,7 @@ public class XmlConfiguration : IConfiguration
         return new Style(colors, font);
     }
 
-    private ColorPair GetPatternColors(XElement fontElement)
+    private static ColorPair GetPatternColors(XElement fontElement)
     {
         var foreColor = Color.FromName(fontElement.GetAttributeValue("foreColor"));
         var backColor = Color.FromName(fontElement.GetAttributeValue("backColor"));
@@ -133,7 +121,7 @@ public class XmlConfiguration : IConfiguration
         return new ColorPair(foreColor, backColor);
     }
 
-    private Font GetPatternFont(XElement fontElement, Font defaultFont = null)
+    private static Font GetPatternFont(XElement fontElement, Font defaultFont = null)
     {
         var fontFamily = fontElement.GetAttributeValue("name");
         if (fontFamily != null) {
@@ -146,38 +134,36 @@ public class XmlConfiguration : IConfiguration
         return defaultFont;
     }
 
-    private ColorPair GetMarkupPatternBracketColors(XContainer patternElement)
+    private static ColorPair GetMarkupPatternBracketColors(XContainer patternElement)
     {
         const string descendantName = "bracketStyle";
         return GetMarkupPatternColors(patternElement, descendantName);
     }
 
-    private ColorPair GetMarkupPatternAttributeNameColors(XContainer patternElement)
+    private static ColorPair GetMarkupPatternAttributeNameColors(XContainer patternElement)
     {
         const string descendantName = "attributeNameStyle";
         return GetMarkupPatternColors(patternElement, descendantName);
     }
 
-    private ColorPair GetMarkupPatternAttributeValueColors(XContainer patternElement)
+    private static ColorPair GetMarkupPatternAttributeValueColors(XContainer patternElement)
     {
         const string descendantName = "attributeValueStyle";
         return GetMarkupPatternColors(patternElement, descendantName);
     }
 
-    private ColorPair GetMarkupPatternColors(XContainer patternElement, XName descendantName)
+    private static ColorPair GetMarkupPatternColors(XContainer patternElement, XName descendantName)
     {
         var fontElement = patternElement.Descendants("font").Single();
         var element = fontElement.Descendants(descendantName).SingleOrDefault();
         if (element != null) {
             var colors = GetPatternColors(element);
-
             return colors;
         }
-
         return null;
     }
 
-    private Style GetDefinitionStyle(XNode definitionElement)
+    private static Style GetDefinitionStyle(XNode definitionElement)
     {
         const string xpath = "default/font";
         var fontElement = definitionElement.XPathSelectElement(xpath);
@@ -187,7 +173,7 @@ public class XmlConfiguration : IConfiguration
         return new Style(colors, font);
     }
 
-    private ColorPair GetDefinitionColors(XElement fontElement)
+    private static ColorPair GetDefinitionColors(XElement fontElement)
     {
         var foreColor = Color.FromName(fontElement.GetAttributeValue("foreColor"));
         var backColor = Color.FromName(fontElement.GetAttributeValue("backColor"));
@@ -195,7 +181,7 @@ public class XmlConfiguration : IConfiguration
         return new ColorPair(foreColor, backColor);
     }
 
-    private Font GetDefinitionFont(XElement fontElement)
+    private static Font GetDefinitionFont(XElement fontElement)
     {
         var fontName = fontElement.GetAttributeValue("name");
         var fontSize = Convert.ToSingle(fontElement.GetAttributeValue("size"));

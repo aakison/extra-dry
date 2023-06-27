@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace ExtraDry.Highlight;
 
-public abstract class Engine : IEngine
+public abstract class Engine
 {
     private const RegexOptions DefaultRegexOptions = RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace;
 

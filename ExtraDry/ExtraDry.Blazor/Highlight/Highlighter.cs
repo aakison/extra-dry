@@ -4,17 +4,17 @@ namespace ExtraDry.Highlight;
 
 public class Highlighter
 {
-    public IEngine Engine { get; set; }
+    public Engine Engine { get; set; }
 
-    public IConfiguration Configuration { get; set; }
+    public XmlConfiguration Configuration { get; set; }
 
-    public Highlighter(IEngine engine, IConfiguration configuration)
+    public Highlighter(Engine engine, XmlConfiguration configuration)
     {
         Engine = engine;
         Configuration = configuration;
     }
 
-    public Highlighter(IEngine engine)
+    public Highlighter(Engine engine)
         : this(engine, new DefaultConfiguration())
     {
     }
@@ -22,7 +22,7 @@ public class Highlighter
     public string Highlight(string definitionName, string input)
     {
         if (definitionName == null) {
-            throw new ArgumentNullException("definitionName");
+            throw new ArgumentNullException(nameof(definitionName));
         }
 
         if (Configuration.Definitions.ContainsKey(definitionName)) {

@@ -2,7 +2,7 @@
 
 public class Font
 {
-    public string Name { get;  set; }
+    public string? Name { get;  set; }
 
     public float Size { get; set; }
 

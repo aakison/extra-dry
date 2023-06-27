@@ -28,19 +28,19 @@ public class Definition
         foreach (var pattern in Patterns.Values) {
             if (pattern is BlockPattern) {
                 if (blockPatterns.Length > 1) {
-                    blockPatterns.Append("|");
+                    blockPatterns.Append('|');
                 }
                 blockPatterns.AppendFormat("(?'{0}'{1})", pattern.Name, pattern.GetRegexPattern());
             }
             else if (pattern is MarkupPattern) {
                 if (markupPatterns.Length > 1) {
-                    markupPatterns.Append("|");
+                    markupPatterns.Append('|');
                 }
                 markupPatterns.AppendFormat("(?'{0}'{1})", pattern.Name, pattern.GetRegexPattern());
             }
             else if (pattern is WordPattern) {
                 if (wordPatterns.Length > 1) {
-                    wordPatterns.Append("|");
+                    wordPatterns.Append('|');
                 }
                 wordPatterns.AppendFormat("(?'{0}'{1})", pattern.Name, pattern.GetRegexPattern());
             }

@@ -28,9 +28,12 @@ public class Color
 
     public static Color Empty => HtmlColors["transparent"];
 
-    public static Color FromName(string name)
+    public static Color FromName(string? name)
     {
-        if(name.StartsWith("#"))
+        if(string.IsNullOrWhiteSpace(name)) {
+            return Empty;
+        }
+        else if(name.StartsWith("#"))
         {
             return new Color(name, name);
         }

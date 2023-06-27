@@ -14,19 +14,11 @@ public class HtmlEngine : Engine
 
     protected override string PreHighlight(Definition definition, string input)
     {
-        if (definition == null) {
-            throw new ArgumentNullException("definition");
-        }
-
         return HttpUtility.HtmlEncode(input);
     }
 
     protected override string PostHighlight(Definition definition, string input)
     {
-        if (definition == null) {
-            throw new ArgumentNullException("definition");
-        }
-
         if (UseCss)
         {
             var cssClassName = HtmlEngineHelper.CreateCssClassName(definition.Name, null);
@@ -57,13 +49,13 @@ public class HtmlEngine : Engine
     protected override string ProcessMarkupPatternMatch(Definition definition, MarkupPattern pattern, Match match)
     {
         if (definition == null) {
-            throw new ArgumentNullException("definition");
+            throw new ArgumentNullException(nameof(definition));
         }
         if (pattern == null) {
-            throw new ArgumentNullException("pattern");
+            throw new ArgumentNullException(nameof(pattern));
         }
         if (match == null) {
-            throw new ArgumentNullException("match");
+            throw new ArgumentNullException(nameof(match));
         }
 
         var result = new StringBuilder();
