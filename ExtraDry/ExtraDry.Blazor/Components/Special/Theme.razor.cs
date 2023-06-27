@@ -31,18 +31,18 @@ public partial class Theme : ComponentBase {
     [Parameter]
     public Type? ErrorComponent { get; set; }
 
-    /// <inheritdoc cref="ValueLoader{ValueModel}.ErrorIndicator" />
-    /// <see cref="ValueLoader{ValueModel}"/>
+    /// <inheritdoc cref="Suspense{ValueModel}.ErrorIndicator" />
+    /// <see cref="Suspense{ValueModel}"/>
     [Parameter]
-    public RenderFragment<IndicatorContext>? ErrorIndicator { get; set; }
-    /// <inheritdoc cref="ValueLoader{ValueModel}.TimeoutIndicator" />
-    /// <see cref="ValueLoader{ValueModel}"/>
+    public RenderFragment<IndicatorContext>? SuspenseErrorIndicator { get; set; }
+    /// <inheritdoc cref="Suspense{ValueModel}.TimeoutIndicator" />
+    /// <see cref="Suspense{ValueModel}"/>
     [Parameter]
-    public RenderFragment<IndicatorContext>? TimeoutIndicator { get; set; }
-    /// <inheritdoc cref="ValueLoader{ValueModel}.LoadingIndicator" />
-    /// <see cref="ValueLoader{ValueModel}"/>
+    public RenderFragment<IndicatorContext>? SuspenseTimeoutIndicator { get; set; }
+    /// <inheritdoc cref="Suspense{ValueModel}.LoadingIndicator" />
+    /// <see cref="Suspense{ValueModel}"/>
     [Parameter]
-    public RenderFragment<IndicatorContext>? LoadingIndicator { get; set; }
+    public RenderFragment<IndicatorContext>? SuspenseLoadingIndicator { get; set; }
 
     protected override void OnParametersSet()
     {
@@ -52,16 +52,16 @@ public partial class Theme : ComponentBase {
             ThemeInfo.ErrorComponent = ErrorComponent;
         }
 
-        if(ErrorIndicator != null) {
-            ThemeInfo.ErrorIndicator = ErrorIndicator;
+        if(SuspenseErrorIndicator != null) {
+            ThemeInfo.SuspenseErrorIndicator = SuspenseErrorIndicator;
         }
 
-        if(TimeoutIndicator != null) {
-            ThemeInfo.TimeoutIndicator = TimeoutIndicator;
+        if(SuspenseTimeoutIndicator != null) {
+            ThemeInfo.SuspenseTimeoutIndicator = SuspenseTimeoutIndicator;
         }
 
-        if(LoadingIndicator != null) {
-            ThemeInfo.LoadingIndicator = LoadingIndicator;
+        if(SuspenseLoadingIndicator != null) {
+            ThemeInfo.SuspenseLoadingIndicator = SuspenseLoadingIndicator;
         }
     }
 }

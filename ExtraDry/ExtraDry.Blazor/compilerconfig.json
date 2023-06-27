@@ -74,8 +74,8 @@
     "minify": { "enabled": false }
   },
   {
-    "outputFile": "Components/Standard/ValueLoader.razor.css",
-    "inputFile": "Components/Standard/ValueLoader.razor.scss",
+    "outputFile": "Components/Standard/Suspense.razor.css",
+    "inputFile": "Components/Standard/Suspense.razor.scss",
     "minify": { "enabled": false }
   }
 ]

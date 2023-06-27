@@ -6,11 +6,11 @@
         case LoadingState.Loading:
             @if (LoadingIndicator != null)
             {
-                @LoadingIndicator(new ValueLoaderContext{Size = @Size, Reload=@Refresh})
+                @LoadingIndicator(new SuspenseContext{Size = @Size, Reload=@Refresh})
             }
-            else if (ThemeInfo?.LoadingIndicator != null)
+            else if (ThemeInfo?.SuspenseLoadingIndicator != null)
             {
-                @ThemeInfo?.LoadingIndicator(new ValueLoaderContext{Size = @Size, Reload=@Refresh})
+                @ThemeInfo?.SuspenseLoadingIndicator(new SuspenseContext{Size = @Size, Reload=@Refresh})
             }
             else
             {
@@ -23,11 +23,11 @@
         case LoadingState.Error:
             @if (ErrorIndicator != null)
             {
-                @ErrorIndicator(new ValueLoaderContext{Size = @Size, Reload=@Refresh})
+                @ErrorIndicator(new SuspenseContext{Size = @Size, Reload=@Refresh})
             }
-            else if (ThemeInfo?.ErrorIndicator != null)
+            else if (ThemeInfo?.SuspenseErrorIndicator != null)
             {
-                @ThemeInfo?.ErrorIndicator(new ValueLoaderContext{Size = @Size, Reload=@Refresh})
+                @ThemeInfo?.SuspenseErrorIndicator(new SuspenseContext{Size = @Size, Reload=@Refresh})
             }
             else
             {
@@ -40,11 +40,11 @@
         case LoadingState.Timeout:
             @if(TimeoutIndicator != null)
             {
-                @TimeoutIndicator(new ValueLoaderContext{Size = @Size, Reload=@Refresh})
+                @TimeoutIndicator(new SuspenseContext{Size = @Size, Reload=@Refresh})
             }
-            else if (ThemeInfo?.TimeoutIndicator != null)
+            else if (ThemeInfo?.SuspenseTimeoutIndicator != null)
             {
-                @ThemeInfo?.TimeoutIndicator(new ValueLoaderContext{Size = @Size, Reload=@Refresh})
+                @ThemeInfo?.SuspenseTimeoutIndicator(new SuspenseContext{Size = @Size, Reload=@Refresh})
             }
             else
             {
@@ -55,7 +55,7 @@
             }
             break;
         case LoadingState.Complete:
-            @ChildContent(new ValueLoaderContext{Value = @Value, Size = @Size, Reload=@Refresh})
+            @ChildContent(new SuspenseContext{Value = @Value, Size = @Size, Reload=@Refresh})
             break;
         default:
             break;

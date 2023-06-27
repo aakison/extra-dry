@@ -7,12 +7,12 @@
 /// - Timeout
 /// - Complete - Loaded with Value
 /// </summary>
-public partial class ValueLoader<ValueModel> : ComponentBase, IExtraDryComponent {
+public partial class Suspense<ValueModel> : ComponentBase, IExtraDryComponent {
     /// <summary>
     /// Render Fragment for when the value has been loaded. This will govern how the value is displayed
     /// </summary>
     [Parameter, EditorRequired]
-    public RenderFragment<ValueLoaderContext>? ChildContent { get; set; }
+    public RenderFragment<SuspenseContext>? ChildContent { get; set; }
     /// <summary>
     /// Render Fragment for when an error is encountered during loading.
     /// A default is provided but this can be used to override the display
@@ -57,7 +57,7 @@ public partial class ValueLoader<ValueModel> : ComponentBase, IExtraDryComponent
     /// <inheritdoc cref="LoadingState" />
     public LoadingState State { get; set; }  
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass, "value-loader", State.ToString().ToLower());
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass, "suspense", State.ToString().ToLower());
 
     protected async override Task OnInitializedAsync()
     {
@@ -100,7 +100,7 @@ public partial class ValueLoader<ValueModel> : ComponentBase, IExtraDryComponent
     /// <summary>
     /// Context passed through to the child components
     /// </summary>
-    public class ValueLoaderContext: IndicatorContext {
+    public class SuspenseContext: IndicatorContext {
         /// <summary>
         /// The loaded data value
         /// </summary>
@@ -109,7 +109,7 @@ public partial class ValueLoader<ValueModel> : ComponentBase, IExtraDryComponent
 }
 
 /// <summary>
-/// Defines the state the ValueLoader is in
+/// Defines the state of the Suspense component
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum LoadingState {
