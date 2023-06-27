@@ -9,7 +9,7 @@ public class RuleEngineDeleteAsyncTests {
         var item = new SoftDeletable();
         var items = new List<SoftDeletable> { item };
 
-        var result = rules.DeleteSoft(item);
+        var result = rules.TrySoftDelete(item);
 
         Assert.NotEmpty(items);
         Assert.False(item.Active);

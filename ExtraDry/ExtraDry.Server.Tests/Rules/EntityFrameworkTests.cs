@@ -8,7 +8,7 @@ public class EntityFrameworkTests {
         var rules = new RuleEngine(new ServiceProviderStub());
         var user = database.Users.First(e => e.Name == "Homeless");
 
-        await rules.DeleteHardAsync(user, () => database.Remove(user), async () => await MockSaveChangesAsync(database));
+        await rules.TryHardDeleteAsync(user, () => database.Remove(user), async () => await MockSaveChangesAsync(database));
 
         Assert.Equal(1, database.Users.Count());
     }
@@ -20,7 +20,7 @@ public class EntityFrameworkTests {
         var rules = new RuleEngine(new ServiceProviderStub());
         var user = database.Users.First(e => e.Name == "Homebody");
 
-        await rules.DeleteHardAsync(user, () => database.Remove(user), async () => await MockSaveChangesAsync(database));
+        await rules.TryHardDeleteAsync(user, () => database.Remove(user), async () => await MockSaveChangesAsync(database));
 
         Assert.Equal(1, database.Users.Count());
     }
@@ -38,15 +38,77 @@ public class EntityFrameworkTests {
         Assert.Equal(2, database.Addresses.Count());
     }
 
+    [Fact]
+    public async Task HardDeleteAddressUsingRegister()
+    {
+        var database = GetPopulatedDatabase();
+        var rules = new RuleEngine(new ServiceProviderStub());
+
+        var address = database.Addresses.First(e => e.Line == "123 Any Street");
+
+        rules.RegisterRemove<Address>(e => database.Remove(address));
+        rules.RegisterCommit(() => MockSaveChangesAsync(database));
+
+        var result = await rules.TryHardDeleteAsync(address);
+
+        Assert.Equal(DeleteResult.NotDeleted, result);
+        Assert.Equal(2, database.Addresses.Count());
+    }
+
+    [Fact]
+    public async Task HardDeleteMutipleEntitiesMissingRemoveThrowsException()
+    {
+        var database = GetPopulatedDatabase();
+        var rules = new RuleEngine(new ServiceProviderStub());
+
+        var address = database.Addresses.First(e => e.Line == "123 Any Street");
+        var user = database.Users.First(e => e.Name == "Homebody");
+
+        rules.RegisterRemove<Address>(e => database.Remove(address));
+        rules.RegisterCommit(() => MockSaveChangesAsync(database));
+
+        await Assert.ThrowsAsync<DryException>(() => rules.TryHardDeleteAsync(user, address));
+    }
+
+
+    [Fact]
+    public async Task HardDeleteMutipleEntities()
+    {
+        var database = GetPopulatedDatabase();
+        var rules = new RuleEngine(new ServiceProviderStub());
+
+        var address = database.Addresses.First(e => e.Line == "123 Any Street");
+        var user = database.Users.First(e => e.Name == "Homebody");
+
+        rules.RegisterRemove<Address>(e => database.Remove(address));
+        rules.RegisterRemove<User>(e => database.Remove(user));
+
+        rules.RegisterCommit(() => MockSaveChangesAsync(database));
+
+        var result = await rules.TryHardDeleteAsync(user, address);
+
+        Assert.Equal(DeleteResult.HardDeleted, result);
+        Assert.Equal(1, database.Addresses.Count());
+    }
 
     private static async Task MockSaveChangesAsync(TestContext database)
     {
-        var removing = database.ChangeTracker.Entries()
+        //Address being removed
+        var removingAddress = database.ChangeTracker.Entries()
             .Where(e => e.Entity is Address && e.State == EntityState.Deleted)
             .Select(e => e.Entity as Address)
             .ToList();
-        var riViolation = database.Users.Any(user => removing.Any(address => user.Address == address));
-        if(riViolation) {
+
+        //User being removed
+        var removingUser = database.ChangeTracker.Entries()
+            .Where(e => e.Entity is User && e.State == EntityState.Deleted)
+            .Select(e => e.Entity as User)
+            .ToList();
+
+        //If Address is being Deleted but not the User throw an Exception
+        var riViolationUser = database.Users.Any(user => removingAddress.Any(address => user.Address == address) && user != removingUser.FirstOrDefault());
+
+        if(riViolationUser) {
             throw new InvalidOperationException("Referential integrity violated, can't delete address when user referencing it.");
         }
         await database.SaveChangesAsync();
