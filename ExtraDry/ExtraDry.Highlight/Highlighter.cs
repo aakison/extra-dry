@@ -5,6 +5,7 @@ namespace ExtraDry.Highlight;
 public class Highlighter
 {
     public IEngine Engine { get; set; }
+
     public IConfiguration Configuration { get; set; }
 
     public Highlighter(IEngine engine, IConfiguration configuration)
