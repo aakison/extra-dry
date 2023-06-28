@@ -175,7 +175,7 @@ public class RuleEngine {
     /// <summary>
     /// Processes a hard delete for multiple items if possible.
     /// If not possible, then soft-delete is performed for all items instead.
-    /// Uses the remove actions from <cref="RegisterRemove{T}(Action{T})" /> and commit action from <cref="RegisterCommit(Func{Task})" />
+    /// Uses the remove actions from <see cref="RegisterRemove{T}(Action{T})" /> and commit action from <see cref="RegisterCommit(Func{Task})" />
     /// </summary>
     /// <param name="items">The list of items to delete.</param>
     public async Task<DeleteResult> DeleteAsync(params object[] items)
@@ -231,7 +231,7 @@ public class RuleEngine {
             result = DeleteResult.HardDeleted;
         }
         catch {
-            //Do not throw exceptions - Just return appropriate result.
+            //Do not throw exceptions on commit- Just return appropriate result.
         }
         return result;
     }
@@ -272,15 +272,15 @@ public class RuleEngine {
             result = DeleteResult.HardDeleted;
         }
         catch{
-            //Do not throw exceptions - Just return appropriate result.
+            //Do not throw exceptions on commit - Just return appropriate result.
         }
-        
+        RemoveFunctors.Clear();
         return result;
     }
 
     /// <summary>
     /// Processes a Hard Delete for multiple items.
-    /// Uses the remove actions from <inheritdoc cref="RegisterRemove{T}(Action{T})" /> and commit action from <inheritdoc cref="RegisterCommit(Func{Task})" />
+    /// Uses the remove actions from <see cref="RegisterRemove{T}(Action{T})"/> and commit action from <see cref="RegisterCommit(Func{Task})"/>.
     /// </summary>
     /// <param name="items">Items to delete</param>
     public async Task<DeleteResult> TryHardDeleteAsync(params object[] items)
@@ -292,7 +292,7 @@ public class RuleEngine {
             foreach(var item in items) {
                 Action<object>? remove;
 
-                //If item is IEnumerable check its RemoveFunctor
+                //If item is an IEnumerable check its RemoveFunctor
                 var enumerableItem = item as IEnumerable;
                 if(enumerableItem != null) {
                     remove = RemoveFunctors[enumerableItem.GetEnumerator().Current.GetType()];
@@ -316,7 +316,6 @@ public class RuleEngine {
             foreach(var item in items) {
                 Action<object>? remove;
 
-                //If item is IEnumerable check its RemoveFunctor
                 var enumerableItem = item as IEnumerable;
                 if(enumerableItem != null) {
                     remove = RemoveFunctors[enumerableItem.GetEnumerator().Current.GetType()];
@@ -333,8 +332,10 @@ public class RuleEngine {
             result = DeleteResult.HardDeleted;
         }
         catch{
-            //Do not throw exceptions - Just return appropriate result.
+            //Do not throw exceptions on commit - Just return appropriate result.
         }
+        RemoveFunctors.Clear();
+
         return result;
     }
 

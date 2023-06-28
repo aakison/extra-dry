@@ -43,7 +43,7 @@ public class RuleEngineDeleteTests {
     {
         var rules = new RuleEngine(new ServiceProviderStub());
 
-        Assert.Throws<ArgumentNullException>(() => rules.TrySoftDelete((object?)null));
+        Assert.Throws<ArgumentNullException>(() => rules.TrySoftDelete((object?)null!));
     }
 
     [Fact]
