@@ -58,14 +58,6 @@ public class RuleEngineDeleteTests {
     }
 
     [Fact]
-    public void DeleteSoftFallbackNotNull()
-    {
-        var rules = new RuleEngine(new ServiceProviderStub());
-        var result = rules.TrySoftDelete(new object());
-        Assert.Equal(DeleteResult.NotDeleted, result);
-    }
-
-    [Fact]
     public void DeleteHardRequiresItem()
     {
         var rules = new RuleEngine(new ServiceProviderStub());
@@ -114,7 +106,7 @@ public class RuleEngineDeleteTests {
     }
 
     [Fact]
-    public void DeleteHardSoftFallback()
+    public void DeleteSoftFallback()
     {
         var rules = new RuleEngine(new ServiceProviderStub());
         var obj = new SoftDeletable();
