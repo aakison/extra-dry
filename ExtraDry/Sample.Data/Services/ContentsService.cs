@@ -54,8 +54,7 @@ namespace Sample.Data.Services {
         public async Task DeleteAsync(Guid uniqueId)
         {
             var existing = await RetrieveAsync(uniqueId);
-            rules.Delete(existing, () => database.Contents.Remove(existing));
-            await database.SaveChangesAsync();
+            rules.Delete(existing, () => database.Contents.Remove(existing), () => database.SaveChangesAsync());
         }
     
         private readonly SampleContext database;

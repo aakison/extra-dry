@@ -61,8 +61,7 @@ public class RegionService {
     public async Task DeleteAsync(string code)
     {
         var existing = await RetrieveAsync(code);
-        rules.Delete(existing, () => database.Regions.Remove(existing));
-        await database.SaveChangesAsync();
+        rules.Delete(existing, () => database.Regions.Remove(existing), () => database.SaveChangesAsync());
     }
 
     private readonly SampleContext database;

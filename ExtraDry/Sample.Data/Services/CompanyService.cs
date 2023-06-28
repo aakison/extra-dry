@@ -46,8 +46,7 @@ public class CompanyService {
     public async Task Delete(Guid uniqueId)
     {
         var existing = await RetrieveAsync(uniqueId);
-        rules.Delete(existing, () => database.Companies.Remove(existing));
-        await database.SaveChangesAsync();
+        rules.Delete(existing, () => database.Companies.Remove(existing), () =>database.SaveChangesAsync());
     }
 
     private readonly SampleContext database;

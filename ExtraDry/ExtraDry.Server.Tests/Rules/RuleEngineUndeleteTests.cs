@@ -21,7 +21,7 @@ public class RuleEngineUndeleteTests {
     {
         var rules = new RuleEngine(new ServiceProviderStub());
         var obj = new SoftDeletable();
-        rules.Delete(obj);
+        rules.TrySoftDelete(obj);
 
         var result = rules.Undelete(obj);
 
@@ -44,7 +44,7 @@ public class RuleEngineUndeleteTests {
     {
         var rules = new RuleEngine(new ServiceProviderStub());
         var obj = new NotUndeletable();
-        rules.Delete(obj);
+        rules.TrySoftDelete(obj);
 
         var result = rules.Undelete(obj);
 
@@ -80,7 +80,7 @@ public class RuleEngineUndeleteTests {
     {
         var rules = new RuleEngine(new ServiceProviderStub());
         var obj = new BadUndeleteValue();
-        rules.Delete(obj);
+        rules.TrySoftDelete(obj);
 
         var lambda = () => {
             rules.Undelete(obj);
@@ -94,7 +94,7 @@ public class RuleEngineUndeleteTests {
     {
         var rules = new RuleEngine(new ServiceProviderStub());
         var obj = new NullUndelete();
-        rules.Delete(obj);
+        rules.TrySoftDelete(obj);
 
         rules.Undelete(obj);
 
