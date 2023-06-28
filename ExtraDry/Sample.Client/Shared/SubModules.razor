@@ -1,6 +1,12 @@
 ﻿<section>
     <article>
-        <Icon Key="assets" />
-        <div>Assets</div>
+        <DryNavigation Menu="@App.Menu" MenuDepth="1" />
     </article>
 </section>
+
+@code {
+
+    [Inject]
+    public AppViewModel App { get; set; } = null!;
+
+}

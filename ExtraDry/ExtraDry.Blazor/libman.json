@@ -9,15 +9,6 @@
       "files": [
         "dist/rooster.js"
       ]
-    },
-    {
-      "provider": "cdnjs",
-      "library": "highlight.js@11.6.0",
-      "destination": "wwwroot/lib/highlightjs/",
-      "files": [
-        "highlight.min.js",
-        "styles/base16/solarized-light.min.css"
-      ]
     }
   ]
 }

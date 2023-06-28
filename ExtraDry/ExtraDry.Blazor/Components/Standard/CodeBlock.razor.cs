@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Rendering;
+﻿using ExtraDry.Highlight;
+using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.RenderTree;
 using System.Diagnostics.CodeAnalysis;
 
@@ -36,47 +37,33 @@ public partial class CodeBlock : ComponentBase, IExtraDryComponent {
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
 
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        Id = $"extraDryCodeBlock{++instanceCount}";
-    }
-
     protected override void OnParametersSet()
     {
+        RenderChildContentToBody();
+        var lines = Body.Split('\n').ToList();
         if(Normalize) {
-            OldBody = Body;
-            RenderChildContentToBody();
-            var lines = Body.Split('\n').ToList();
             FormatLines(lines);
-            Body = string.Join("\n", lines);
-            Body = $"<pre><code lang=\"{Lang}\" class=\"{LangClass}\">{Body}</code></pre>";
         }
+        Body = string.Join("\n", lines);
+        Body = Body.Replace("&lt;", "<");
+        Body = Body.Replace("&gt;", ">");
+        Body = Body.Replace("&amp;", "&");
+        // TODO: Change to CSS for highlighting, but need to rationalize the classes first...
+        var highlightedCode = highlighter.Highlight(Lang, Body);
+        Body = $"<pre><code data-lang=\"{Lang}\" class=\"{LangClass}\">{highlightedCode}</code></pre>";
     }
 
-    protected string LangClass {
-        get {
-            if(Lang.Equals("blazor", StringComparison.InvariantCultureIgnoreCase)) {
-                return "language-typescript";
-            }
-            else {
-                return $"language-{Lang}";
-            }
-        }
-    }
+    /// <summary>
+    /// The code pseudo-syntax highlighter.  Large startup time so use a singleton.
+    /// Not really used anywhere else so not forcing CodeBlock consumers to register in DI.
+    /// </summary>
+    private static readonly Highlighter highlighter = new(new HtmlEngine { UseCss = false });
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if(OldBody != Body) {
-            await Module.InvokeVoidAsync("CodeBlock_AfterRender", Id);
-        }
-    }
-
-    protected string Id { get; set; } = string.Empty;
+    protected string LangClass => $"language-{Lang}";
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "code-block", CssClass);
 
-    private void FormatLines(List<string> lines)
+    private static void FormatLines(List<string> lines)
     {
         while(lines.Any() && string.IsNullOrWhiteSpace(lines.First())) {
             lines.RemoveAt(0);
@@ -92,7 +79,7 @@ public partial class CodeBlock : ComponentBase, IExtraDryComponent {
             return;
         }
         var indentLines = lines.Skip(1).Where(e => !string.IsNullOrWhiteSpace(e));
-        var globalIndent = indentLines.Min(e => LeadingSpaces(e));
+        var globalIndent = indentLines.Min(LeadingSpaces);
         for(int i = 0; i < lines.Count; ++i) {
             var line = lines[i];
             if(line.Length > globalIndent && char.IsWhiteSpace(line[0])) {
@@ -100,7 +87,7 @@ public partial class CodeBlock : ComponentBase, IExtraDryComponent {
             }
         }
 
-        static int LeadingSpaces(string s) => s.TakeWhile(e => char.IsWhiteSpace(e)).Count();
+        static int LeadingSpaces(string s) => s.TakeWhile(char.IsWhiteSpace).Count();
     }
 
     /// <summary>
@@ -120,15 +107,11 @@ public partial class CodeBlock : ComponentBase, IExtraDryComponent {
             .Select(e => e.TextContent));
     }
 
-    private string OldBody { get; set; } = string.Empty;
-
     private string Body { get; set; } = string.Empty;
 
     private MarkupString MarkupBody => (MarkupString)Body;
 
     [Inject]
     private ExtraDryJavascriptModule Module { get; set; } = null!;
-
-    private static int instanceCount = 0;
 
 }

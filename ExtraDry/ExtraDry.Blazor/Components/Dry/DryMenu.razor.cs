@@ -1,12 +1,17 @@
-﻿using Microsoft.AspNetCore.Components.Routing;
-
-namespace ExtraDry.Blazor;
+﻿namespace ExtraDry.Blazor;
 
 /// <summary>
 /// Represents a type of navigation that is controlled using a menu.
-/// Uses same `NavigationAttribute`s as `DryNavigation` but renders inside a MiniDialog.
 /// </summary>
-public partial class DryMenu : DryViewModelComponentBase, IExtraDryComponent, IDisposable {
+public partial class DryMenu : IExtraDryComponent {
+
+    /// <inheritdoc cref="DryNavigation.Menu" />
+    [Parameter, EditorRequired]
+    public Menu Menu { get; set; } = null!;
+
+    /// <inheritdoc cref="DryNavigation.MenuDepth" />
+    [Parameter]
+    public int MenuDepth { get; set; }
 
     /// <inheritdoc cref="IExtraDryComponent.CssClass" />
     [Parameter]
@@ -27,43 +32,18 @@ public partial class DryMenu : DryViewModelComponentBase, IExtraDryComponent, ID
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
 
-    /// <summary>
-    /// Dispose of navigation resources.
-    /// </summary>
-    public void Dispose()
-    {
-        Navigation.LocationChanged -= Navigated;
-    }
-
-    /// <summary>
-    /// Attach to navigation resources.
-    /// </summary>
-    protected override void OnInitialized()
-    {
-        Navigation.LocationChanged += Navigated;
-    }
-
-    private MiniDialog MiniDialog { get; set; } = null!;
+    private MiniDialog? MiniDialog { get; set; }
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "dry-menu", CssClass);
 
     private async void DoClick(MouseEventArgs _)
     {
-        await MiniDialog.ShowAsync();
+        await MiniDialog!.ShowAsync();
     }
 
-    private async void DoItemClick(NavigationDescription item)
+    private async Task DoNavigation(Menu menu)
     {
-        await MiniDialog.HideAsync();
-        await item.ExecuteAsync();
+        await MiniDialog!.HideAsync();
     }
-
-    private void Navigated(object? sender, LocationChangedEventArgs args)
-    {
-        StateHasChanged();
-    }
-
-    [Inject]
-    private NavigationManager Navigation { get; set; } = null!;
 
 }

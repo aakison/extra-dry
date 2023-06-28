@@ -88,9 +88,4 @@
 		</Content>
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="wwwroot\lib\highlightjs\styles\" />
-	  <Folder Include="wwwroot\lib\roosterjs\" />
-	</ItemGroup>
-
 </Project>

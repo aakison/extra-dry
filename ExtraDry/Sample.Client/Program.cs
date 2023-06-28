@@ -46,7 +46,7 @@ namespace Sample.Client {
 
             services.AddScoped<ISubjectViewModel<Employee>, EmployeeViewModel>();
 
-            services.AddSingleton<AppViewModel>();
+            services.AddScoped<AppViewModel>();
 
             await builder.Build().RunAsync();
         }
