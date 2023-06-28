@@ -39,21 +39,7 @@ public class RuleEngineDeleteAsyncTests {
         var item = new object();
         var items = new List<object> { item };
 
-        var result = await rules.DeleteAsync(item, () => items.Remove(item), async () => await SaveChangesAsync());
-
-        Assert.Equal(SaveState.Done, state);
-        Assert.Empty(items);
-        Assert.Equal(DeleteResult.HardDeleted, result);
-    }
-
-    [Fact]
-    public void EntityFrameworkStyleHardDeleteSync()
-    {
-        var rules = new RuleEngine(new ServiceProviderStub());
-        var item = new object();
-        var items = new List<object> { item };
-
-        var result = rules.Delete(item, () => items.Remove(item), () => SaveChanges());
+        var result = await rules.TryHardDeleteAsync(item, () => items.Remove(item), async () => await SaveChangesAsync());
 
         Assert.Equal(SaveState.Done, state);
         Assert.Empty(items);

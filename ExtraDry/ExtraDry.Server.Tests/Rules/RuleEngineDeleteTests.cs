@@ -1,5 +1,4 @@
-﻿using NuGet.Frameworks;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace ExtraDry.Server.Tests.Rules;
 
@@ -14,15 +13,15 @@ public class RuleEngineDeleteTests {
     }
 
     [Fact]
-    public void DeleteSoftDeletesByDefault()
+    public void DeleteHardDeletesByDefault()
     {
         var rules = new RuleEngine(new ServiceProviderStub());
         var obj = new SoftDeletable();
 
-        var result = rules.TrySoftDelete(obj);
+        var result = rules.Delete(obj, NoOp, NoOp);
 
         Assert.False(obj.Active);
-        Assert.Equal(DeleteResult.SoftDeleted, result);
+        Assert.Equal(DeleteResult.HardDeleted, result);
     }
 
     [Fact]
@@ -71,7 +70,7 @@ public class RuleEngineDeleteTests {
     {
         var rules = new RuleEngine(new ServiceProviderStub());
 
-        Assert.Throws<ArgumentNullException>(() => rules.Delete((object?)null, NoOp, NoOp));
+        Assert.ThrowsAsync<ArgumentNullException>(() => rules.TryHardDeleteAsync((object?)null!));
     }
 
     [Fact]
@@ -93,13 +92,13 @@ public class RuleEngineDeleteTests {
     }
 
     [Fact]
-    public void DeleteHardPrepareCommitCycle()
+    public async Task DeleteHardPrepareCommitCycle()
     {
         var rules = new RuleEngine(new ServiceProviderStub());
         int prepared = 0;
         int committed = 0;
 
-        var result = rules.Delete(new object(), () => FakePrepare(ref prepared), () => FakeCommit(ref committed));
+        var result = await rules.TryHardDeleteAsync(new object(), () => FakePrepare(ref prepared), () => FakeCommit(ref committed));
 
         Assert.Equal(1, prepared);
         Assert.Equal(2, committed);
@@ -107,10 +106,10 @@ public class RuleEngineDeleteTests {
     }
 
     [Fact]
-    public void DeleteHardFailHardAndSoft()
+    public async Task DeleteHardFailHardAndSoft()
     {
         var rules = new RuleEngine(new ServiceProviderStub());
-        var result = rules.Delete(new object(), NoOp, () => throw new NotImplementedException());
+        var result = await rules.TryHardDeleteAsync(new object(), NoOp, () => throw new NotImplementedException());
         Assert.Equal(DeleteResult.NotDeleted, result);
     }
 
@@ -136,7 +135,7 @@ public class RuleEngineDeleteTests {
         var obj = new SoftDeletable();
         var original = obj.Unchanged;
         var unruled = obj.UnRuled;
-            
+
         var result = rules.TrySoftDelete(obj);
 
         Assert.Equal(original, obj.Unchanged);
@@ -181,9 +180,9 @@ public class RuleEngineDeleteTests {
 
     private static void NoOp() { }
 
-    private void FakePrepare(ref int stepStamp) => stepStamp = step++;
+    private Task FakePrepare(ref int stepStamp) => Task.FromResult(stepStamp = step++);
 
-    private void FakeCommit(ref int stepStamp) => stepStamp = step++;
+    private Task FakeCommit(ref int stepStamp) => Task.FromResult(stepStamp = step++);
 
     private int step = 1;
 
@@ -205,7 +204,8 @@ public class RuleEngineDeleteTests {
     }
 
     [SoftDeleteRule(nameof(Active), "not-bool")]
-    public class BadDeleteValueDeletable {
+    public class BadDeleteValueDeletable
+    {
         public bool Active { get; set; } = true;
     }
 

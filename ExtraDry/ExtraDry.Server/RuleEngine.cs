@@ -254,6 +254,7 @@ public class RuleEngine {
         CommitFunctor = commit;
     }
 
+    /// <inheritdoc cref="TryHardDeleteAsync(object[])" />
     public async Task<DeleteResult> TryHardDeleteAsync<T>(T item) where T : class
     {
         Action<object> remove;
