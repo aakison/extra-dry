@@ -53,6 +53,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YellowJacket.Tests", "Yello
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.WebJobs", "Sample.WebJobs\Sample.WebJobs.csproj", "{FEAFDA36-0C8D-4369-B632-C8A847DD25E4}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtraDry.Highlight", "ExtraDry.Highlight\ExtraDry.Highlight.csproj", "{96175DFC-BBD4-46C5-9CC7-BE82EBAD10B2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +113,10 @@ Global
 		{FEAFDA36-0C8D-4369-B632-C8A847DD25E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEAFDA36-0C8D-4369-B632-C8A847DD25E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEAFDA36-0C8D-4369-B632-C8A847DD25E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96175DFC-BBD4-46C5-9CC7-BE82EBAD10B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96175DFC-BBD4-46C5-9CC7-BE82EBAD10B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96175DFC-BBD4-46C5-9CC7-BE82EBAD10B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96175DFC-BBD4-46C5-9CC7-BE82EBAD10B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
