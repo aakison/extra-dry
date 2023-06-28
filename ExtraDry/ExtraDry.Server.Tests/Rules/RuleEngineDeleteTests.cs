@@ -13,15 +13,15 @@ public class RuleEngineDeleteTests {
     }
 
     [Fact]
-    public void DeleteHardDeletesByDefault()
+    public void DeleteSoftDeletesByDefault()
     {
         var rules = new RuleEngine(new ServiceProviderStub());
         var obj = new SoftDeletable();
 
-        var result = rules.Delete(obj, NoOp, NoOp);
+        var result = rules.TrySoftDelete(obj);
 
         Assert.False(obj.Active);
-        Assert.Equal(DeleteResult.HardDeleted, result);
+        Assert.Equal(DeleteResult.SoftDeleted, result);
     }
 
     [Fact]

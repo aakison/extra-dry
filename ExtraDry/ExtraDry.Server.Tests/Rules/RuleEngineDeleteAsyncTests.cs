@@ -3,7 +3,7 @@
 public class RuleEngineDeleteAsyncTests {
 
     [Fact]
-    public void EntityFrameworkStyleDeleteExecutesSoft()
+    public void EntityFrameworkStyleDeleteSoftExecutesSoft()
     {
         var rules = new RuleEngine(new ServiceProviderStub());
         var item = new SoftDeletable();
@@ -23,8 +23,6 @@ public class RuleEngineDeleteAsyncTests {
         
         var item = new object();
         var items = new List<object> { item };
-
-
 
         var result = rules.Delete(item, () => items.Remove(item), async () => await SaveChangesAsync());
 
@@ -53,7 +51,7 @@ public class RuleEngineDeleteAsyncTests {
         var item = new object();
         var items = new List<object> { item };
 
-        var result = await rules.DeleteAsync(item, 
+        var result = await rules.TryHardDeleteAsync(item, 
             async () => {
                 await Task.Delay(1);
                 items.Remove(item);
