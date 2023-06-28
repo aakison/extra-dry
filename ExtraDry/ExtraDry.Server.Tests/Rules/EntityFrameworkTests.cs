@@ -39,7 +39,7 @@ public class EntityFrameworkTests {
     }
 
     [Fact]
-    public async Task HardDeleteAddressUsingRegister()
+    public async Task HardDeleteAddressWithLinkedUserDoesNotDelete()
     {
         var database = GetPopulatedDatabase();
         var rules = new RuleEngine(new ServiceProviderStub());
