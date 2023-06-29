@@ -12,7 +12,7 @@ public partial class Suspense<TModel> : ComponentBase, IExtraDryComponent {
     /// Render Fragment for when the value has been loaded. This will govern how the value is displayed
     /// </summary>
     [Parameter, EditorRequired]
-    public RenderFragment<SuspenseContext>? ChildContent { get; set; }
+    public RenderFragment<TModel?>? ChildContent { get; set; }
 
     /// <summary>
     /// Render Fragment for when an error is encountered during loading.
@@ -106,16 +106,6 @@ public partial class Suspense<TModel> : ComponentBase, IExtraDryComponent {
     public async Task Refresh()
     {
         await DoLoadData();
-    }
-
-    /// <summary>
-    /// Context passed through to the child components
-    /// </summary>
-    public class SuspenseContext: IndicatorContext {
-        /// <summary>
-        /// The loaded data value
-        /// </summary>
-        public TModel? Value { get; set; }
     }
 }
 

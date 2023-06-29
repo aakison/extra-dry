@@ -6,11 +6,11 @@
         case LoadingState.Loading:
             @if (Fallback != null)
             {
-                @Fallback(new SuspenseContext{Size = @Size, Reload=@Refresh})
+                @Fallback(new IndicatorContext{Size = @Size, Reload=@Refresh})
             }
             else if (ThemeInfo?.SuspenseFallback != null)
             {
-                @ThemeInfo?.SuspenseFallback(new SuspenseContext{Size = @Size, Reload=@Refresh})
+                @ThemeInfo?.SuspenseFallback(new IndicatorContext{Size = @Size, Reload=@Refresh})
             }
             else
             {
@@ -23,11 +23,11 @@
         case LoadingState.Error:
             @if (Error != null)
             {
-                @Error(new SuspenseContext{Size = @Size, Reload=@Refresh})
+                @Error(new IndicatorContext{Size = @Size, Reload=@Refresh})
             }
             else if (ThemeInfo?.SuspenseError != null)
             {
-                @ThemeInfo?.SuspenseError(new SuspenseContext{Size = @Size, Reload=@Refresh})
+                @ThemeInfo?.SuspenseError(new IndicatorContext{Size = @Size, Reload=@Refresh})
             }
             else
             {
@@ -40,11 +40,11 @@
         case LoadingState.Timeout:
             @if(Timeout != null)
             {
-                @Timeout(new SuspenseContext{Size = @Size, Reload=@Refresh})
+                @Timeout(new IndicatorContext{Size = @Size, Reload=@Refresh})
             }
             else if (ThemeInfo?.SuspenseTimeout != null)
             {
-                @ThemeInfo?.SuspenseTimeout(new SuspenseContext{Size = @Size, Reload=@Refresh})
+                @ThemeInfo?.SuspenseTimeout(new IndicatorContext{Size = @Size, Reload=@Refresh})
             }
             else
             {
@@ -55,7 +55,7 @@
             }
             break;
         case LoadingState.Complete:
-            @ChildContent(new SuspenseContext{Value = @Value, Size = @Size, Reload=@Refresh})
+            @ChildContent!(@Value)
             break;
         default:
             break;

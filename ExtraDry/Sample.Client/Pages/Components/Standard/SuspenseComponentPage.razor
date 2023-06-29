@@ -9,8 +9,8 @@
     <h3>Basic usage all indicators as default</h3>
     <CodeBlock Lang="blazor">
         &lt;Suspense TModel="Employee" ItemProvider=@@LoadEmployee&gt;
-            &lt;div&gtFirst Name: @@context.Value.FirstName&lt;/div&gt
-            &lt;div&gtLast Name: @@context.Value.LastName&lt;/div&gt
+            &lt;div&gtFirst Name: @@context.FirstName&lt;/div&gt
+            &lt;div&gtLast Name: @@context.LastName&lt;/div&gt
         &lt;/Suspense&gt;
 
         @@code {
@@ -30,8 +30,8 @@
 
     <div style="width: 200px;border: solid 1px;margin-bottom: 10px;">
         <Suspense TModel="Employee" ItemProvider=@LoadEmployee Size=@IndicatorSize @ref="_childComponent">
-            <div>First Name: @context.Value.FirstName</div>
-            <div>Last Name: @context.Value.LastName</div>
+            <div>First Name: @context.FirstName</div>
+            <div>Last Name: @context.LastName</div>
         </Suspense>
     </div>
 
@@ -60,8 +60,8 @@
     <CodeBlock Lang="blazor">
         &lt;Suspense TModel="Employee" ItemProvider=@@LoadEmployee&gt;
             &lt;ChildContent&gt;
-                &lt;div&gtFirst Name: @@context.Value.FirstName&lt;/div&gt
-                &lt;div&gtLast Name: @@context.Value.LastName&lt;/div&gt
+                &lt;div&gtFirst Name: @@context.&lt;/div&gt
+                &lt;div&gtLast Name: @@context.LastName&lt;/div&gt
             &lt;/ChildContent&gt;
             &lt;Timeout&gt;
                 &lt;div&gt;
@@ -75,8 +75,8 @@
     <div style="width: 200px;border: solid 1px;margin-bottom: 10px;">
         <Suspense TModel="Employee" ItemProvider=@LoadEmployee Size=@IndicatorSize @ref="_childComponent2">
             <ChildContent>
-                <div>First Name: @context.Value.FirstName</div>
-                <div>Last Name: @context.Value.LastName</div>
+                <div>First Name: @context.FirstName</div>
+                <div>Last Name: @context.LastName</div>
             </ChildContent>
             <Timeout>
                 <div>
@@ -107,8 +107,8 @@
         <CodeBlock Lang="Blazor">
             &lt;Suspense TModel="Employee" ItemProvider=@@LoadEmployee&gt;
                 &lt;ChildContent&gt;
-                    &lt;div&gtFirst Name: @@context.Value.FirstName&lt;/div&gt
-                    &lt;div&gtLast Name: @@context.Value.LastName&lt;/div&gt
+                    &lt;div&gtFirst Name: @@context.FirstName&lt;/div&gt
+                    &lt;div&gtLast Name: @@context.LastName&lt;/div&gt
                 &lt;/ChildContent&gt;
                 &lt;Timeout&gt;
                     &lt;div&gt;
@@ -122,7 +122,10 @@
         </CodeBlock>
     </p>
     <p>
-        The child fragment will receive a context of the following type:
+        The <code>&lt;ChildFragment&gt;</code> will receive a context of type <code>TModel</code>
+    </p>
+    <p>
+        The <code>&lt;Fallback&gt;</code>, <code>&lt;Error&gt;</code> or <code>&lt;Timeout&gt;</code> fragments will receive a context of the following type:
         <CodeBlock Lang="C#">
             /// &lt;summary&gt;
             /// Context passed through to the child components
@@ -156,8 +159,8 @@
         {
             Value = (LoadingState)Enum.Parse(typeof(LoadingState), e.Value.ToString(), true);
         }
-        await _childComponent.Refresh();
-        await _childComponent2.Refresh();
+        await _childComponent!.Refresh();
+        await _childComponent2!.Refresh();
         StateHasChanged();
     }
 
