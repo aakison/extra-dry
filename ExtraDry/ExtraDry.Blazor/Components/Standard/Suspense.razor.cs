@@ -44,7 +44,7 @@ public partial class Suspense<TModel> : ComponentBase, IExtraDryComponent {
     /// Requires a method that is async and returns Task&lt;object?$gt;
     /// </summary>
     [Parameter]    
-    public Func<Task<TModel?>>? LoadData { get; set; }
+    public Func<Task<TModel?>>? ItemProvider { get; set; }
 
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
@@ -76,14 +76,14 @@ public partial class Suspense<TModel> : ComponentBase, IExtraDryComponent {
     {
         State = LoadingState.Loading;
 
-        if(LoadData == null) {
+        if(ItemProvider == null) {
             State = LoadingState.Error;
-            Console.WriteLine("Error: No LoadData method passed");
+            Console.WriteLine("Error: No ItemProvider method passed");
             return;
         }
 
         try {
-            Value = await LoadData();
+            Value = await ItemProvider();
             State = LoadingState.Complete;
         }
         catch(TimeoutException tex) {

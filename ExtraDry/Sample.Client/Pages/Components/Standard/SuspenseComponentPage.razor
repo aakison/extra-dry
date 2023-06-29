@@ -8,7 +8,7 @@
 <section>
     <h3>Basic usage all indicators as default</h3>
     <CodeBlock Lang="blazor">
-        &lt;Suspense TModel="Employee" LoadData=@@LoadEmployee&gt;
+        &lt;Suspense TModel="Employee" ItemProvider=@@LoadEmployee&gt;
             &lt;div&gtFirst Name: @@context.Value.FirstName&lt;/div&gt
             &lt;div&gtLast Name: @@context.Value.LastName&lt;/div&gt
         &lt;/Suspense&gt;
@@ -29,7 +29,7 @@
     </CodeBlock>
 
     <div style="width: 200px;border: solid 1px;margin-bottom: 10px;">
-        <Suspense TModel="Employee" LoadData=@LoadEmployee Size=@IndicatorSize @ref="_childComponent">
+        <Suspense TModel="Employee" ItemProvider=@LoadEmployee Size=@IndicatorSize @ref="_childComponent">
             <div>First Name: @context.Value.FirstName</div>
             <div>Last Name: @context.Value.LastName</div>
         </Suspense>
@@ -58,7 +58,7 @@
 
     <h3>Timeout in component - Other indicators as default</h3>
     <CodeBlock Lang="blazor">
-        &lt;Suspense TModel="Employee" LoadData=@@LoadEmployee&gt;
+        &lt;Suspense TModel="Employee" ItemProvider=@@LoadEmployee&gt;
             &lt;ChildContent&gt;
                 &lt;div&gtFirst Name: @@context.Value.FirstName&lt;/div&gt
                 &lt;div&gtLast Name: @@context.Value.LastName&lt;/div&gt
@@ -73,7 +73,7 @@
     </CodeBlock>
 
     <div style="width: 200px;border: solid 1px;margin-bottom: 10px;">
-        <Suspense TModel="Employee" LoadData=@LoadEmployee Size=@IndicatorSize @ref="_childComponent2">
+        <Suspense TModel="Employee" ItemProvider=@LoadEmployee Size=@IndicatorSize @ref="_childComponent2">
             <ChildContent>
                 <div>First Name: @context.Value.FirstName</div>
                 <div>Last Name: @context.Value.LastName</div>
@@ -94,7 +94,7 @@
         The type of the return model is passed via <code>TModel="Employee"</code>
     </p>
     <p>
-        The method to load the data is passed via <code>LoadData=@@GetData</code>
+        The method to load the data is passed via <code>ItemProvider=@@GetData</code>
     </p>
     <p>
         Can add custom CSS classes via the <code>CssClass</code> parameter
@@ -105,7 +105,7 @@
     <p>
         An example of the code above with Timeout Overridden showing how both the <code>Size</code> and <code>Reload</code> method are used from the <code>context</code>:
         <CodeBlock Lang="Blazor">
-            &lt;Suspense TModel="Employee" LoadData=@@LoadEmployee&gt;
+            &lt;Suspense TModel="Employee" ItemProvider=@@LoadEmployee&gt;
                 &lt;ChildContent&gt;
                     &lt;div&gtFirst Name: @@context.Value.FirstName&lt;/div&gt
                     &lt;div&gtLast Name: @@context.Value.LastName&lt;/div&gt
