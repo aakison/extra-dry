@@ -272,7 +272,6 @@ public class RuleEngine {
         catch {
             //Do not throw exceptions on commit - Just return appropriate result.
         }
-        RemoveFunctors.Clear();
         return result;
     }
 
@@ -293,7 +292,7 @@ public class RuleEngine {
                 //If item is an IEnumerable check its RemoveFunctor
                 var enumerableItem = item as IEnumerable;
                 if(enumerableItem != null) {
-                    remove = RemoveFunctors[enumerableItem.GetEnumerator().Current.GetType()];
+                    remove = RemoveFunctors[enumerableItem.GetType().GetGenericArguments().First()];
                     if(remove == null) {
                         return result;
                     }
@@ -317,7 +316,7 @@ public class RuleEngine {
 
                 var enumerableItem = item as IEnumerable;
                 if(enumerableItem != null) {
-                    remove = RemoveFunctors[enumerableItem.GetEnumerator().Current.GetType()];
+                    remove = RemoveFunctors[enumerableItem.GetType().GetGenericArguments().First()];
                     foreach(var eItem in enumerableItem) {
                         remove(eItem);
                     }
@@ -333,8 +332,6 @@ public class RuleEngine {
         catch {
             //Do not throw exceptions on commit - Just return appropriate result.
         }
-        RemoveFunctors.Clear();
-
         return result;
     }
 
@@ -540,10 +537,6 @@ public class RuleEngine {
 
     private static bool AttemptSoftDelete(object[] items)
     {
-        if(items == null) {
-            throw new ArgumentNullException(nameof(items));
-        }
-
         var data = items
             .Where(e => e != null)
             .Select(e => new SoftDeleteItem {
