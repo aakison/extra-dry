@@ -7,7 +7,7 @@
 /// - Timeout
 /// - Complete - Loaded with Value
 /// </summary>
-public partial class Suspense<ValueModel> : ComponentBase, IExtraDryComponent {
+public partial class Suspense<TModel> : ComponentBase, IExtraDryComponent {
     /// <summary>
     /// Render Fragment for when the value has been loaded. This will govern how the value is displayed
     /// </summary>
@@ -44,7 +44,7 @@ public partial class Suspense<ValueModel> : ComponentBase, IExtraDryComponent {
     /// Requires a method that is async and returns Task&lt;object?$gt;
     /// </summary>
     [Parameter]    
-    public Func<Task<ValueModel?>>? LoadData { get; set; }
+    public Func<Task<TModel?>>? LoadData { get; set; }
 
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
@@ -60,7 +60,7 @@ public partial class Suspense<ValueModel> : ComponentBase, IExtraDryComponent {
     /// <summary>
     /// The value once loaded
     /// </summary>
-    public ValueModel? Value { get; set; }
+    public TModel? Value { get; set; }
 
     /// <inheritdoc cref="LoadingState" />
     public LoadingState State { get; set; }  
@@ -112,7 +112,7 @@ public partial class Suspense<ValueModel> : ComponentBase, IExtraDryComponent {
         /// <summary>
         /// The loaded data value
         /// </summary>
-        public ValueModel? Value { get; set; }
+        public TModel? Value { get; set; }
     }
 }
 

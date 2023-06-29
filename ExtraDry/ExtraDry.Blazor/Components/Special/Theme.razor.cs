@@ -31,18 +31,18 @@ public partial class Theme : ComponentBase {
     [Parameter]
     public Type? ErrorComponent { get; set; }
 
-    /// <inheritdoc cref="Suspense{ValueModel}.ErrorIndicator" />
-    /// <see cref="Suspense{ValueModel}"/>
+    /// <inheritdoc cref="Suspense{TModel}.ErrorIndicator" />
+    /// <see cref="Suspense{TModel}"/>
     [Parameter]
     public RenderFragment<IndicatorContext>? SuspenseErrorIndicator { get; set; }
 
-    /// <inheritdoc cref="Suspense{ValueModel}.TimeoutIndicator" />
-    /// <see cref="Suspense{ValueModel}"/>
+    /// <inheritdoc cref="Suspense{TModel}.TimeoutIndicator" />
+    /// <see cref="Suspense{TModel}"/>
     [Parameter]
     public RenderFragment<IndicatorContext>? SuspenseTimeoutIndicator { get; set; }
 
-    /// <inheritdoc cref="Suspense{ValueModel}.LoadingIndicator" />
-    /// <see cref="Suspense{ValueModel}"/>
+    /// <inheritdoc cref="Suspense{TModel}.LoadingIndicator" />
+    /// <see cref="Suspense{TModel}"/>
     [Parameter]
     public RenderFragment<IndicatorContext>? SuspenseLoadingIndicator { get; set; }
 
