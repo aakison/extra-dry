@@ -4,13 +4,13 @@
 <div class="@CssClasses" @attributes="@UnmatchedAttributes">
     @switch(State){
         case LoadingState.Loading:
-            @if (LoadingIndicator != null)
+            @if (Fallback != null)
             {
-                @LoadingIndicator(new SuspenseContext{Size = @Size, Reload=@Refresh})
+                @Fallback(new SuspenseContext{Size = @Size, Reload=@Refresh})
             }
-            else if (ThemeInfo?.SuspenseLoadingIndicator != null)
+            else if (ThemeInfo?.SuspenseFallback != null)
             {
-                @ThemeInfo?.SuspenseLoadingIndicator(new SuspenseContext{Size = @Size, Reload=@Refresh})
+                @ThemeInfo?.SuspenseFallback(new SuspenseContext{Size = @Size, Reload=@Refresh})
             }
             else
             {
@@ -21,13 +21,13 @@
             }
             break;
         case LoadingState.Error:
-            @if (ErrorIndicator != null)
+            @if (Error != null)
             {
-                @ErrorIndicator(new SuspenseContext{Size = @Size, Reload=@Refresh})
+                @Error(new SuspenseContext{Size = @Size, Reload=@Refresh})
             }
-            else if (ThemeInfo?.SuspenseErrorIndicator != null)
+            else if (ThemeInfo?.SuspenseError != null)
             {
-                @ThemeInfo?.SuspenseErrorIndicator(new SuspenseContext{Size = @Size, Reload=@Refresh})
+                @ThemeInfo?.SuspenseError(new SuspenseContext{Size = @Size, Reload=@Refresh})
             }
             else
             {
@@ -38,13 +38,13 @@
             }
             break;
         case LoadingState.Timeout:
-            @if(TimeoutIndicator != null)
+            @if(Timeout != null)
             {
-                @TimeoutIndicator(new SuspenseContext{Size = @Size, Reload=@Refresh})
+                @Timeout(new SuspenseContext{Size = @Size, Reload=@Refresh})
             }
-            else if (ThemeInfo?.SuspenseTimeoutIndicator != null)
+            else if (ThemeInfo?.SuspenseTimeout != null)
             {
-                @ThemeInfo?.SuspenseTimeoutIndicator(new SuspenseContext{Size = @Size, Reload=@Refresh})
+                @ThemeInfo?.SuspenseTimeout(new SuspenseContext{Size = @Size, Reload=@Refresh})
             }
             else
             {

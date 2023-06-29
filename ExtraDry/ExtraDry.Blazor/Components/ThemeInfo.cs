@@ -6,15 +6,15 @@ public class ThemeInfo {
 
     public Dictionary<string, IconInfo> Icons { get; set; } = new();
 
-    /// <inheritdoc cref="Suspense{TModel}.ErrorIndicator" />
+    /// <inheritdoc cref="Suspense{TModel}.Error" />
     /// <see cref="Suspense{TModel}"/>
-    public RenderFragment<IndicatorContext>? SuspenseErrorIndicator { get; set; }
+    public RenderFragment<IndicatorContext>? SuspenseError { get; set; }
 
-    /// <inheritdoc cref="Suspense{TModel}.TimeoutIndicator" />
+    /// <inheritdoc cref="Suspense{TModel}.Timeout" />
     /// <see cref="Suspense{TModel}"/>
-    public RenderFragment<IndicatorContext>? SuspenseTimeoutIndicator { get; set; }
+    public RenderFragment<IndicatorContext>? SuspenseTimeout { get; set; }
 
-    /// <inheritdoc cref="Suspense{TModel}.LoadingIndicator" />
+    /// <inheritdoc cref="Suspense{TModel}.Fallback" />
     /// <see cref="Suspense{TModel}"/>
-    public RenderFragment<IndicatorContext>? SuspenseLoadingIndicator { get; set; }
+    public RenderFragment<IndicatorContext>? SuspenseFallback { get; set; }
 }

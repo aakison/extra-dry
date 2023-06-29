@@ -31,20 +31,20 @@ public partial class Theme : ComponentBase {
     [Parameter]
     public Type? ErrorComponent { get; set; }
 
-    /// <inheritdoc cref="Suspense{TModel}.ErrorIndicator" />
+    /// <inheritdoc cref="Suspense{TModel}.Error" />
     /// <see cref="Suspense{TModel}"/>
     [Parameter]
-    public RenderFragment<IndicatorContext>? SuspenseErrorIndicator { get; set; }
+    public RenderFragment<IndicatorContext>? SuspenseError { get; set; }
 
-    /// <inheritdoc cref="Suspense{TModel}.TimeoutIndicator" />
+    /// <inheritdoc cref="Suspense{TModel}.Timeout" />
     /// <see cref="Suspense{TModel}"/>
     [Parameter]
-    public RenderFragment<IndicatorContext>? SuspenseTimeoutIndicator { get; set; }
+    public RenderFragment<IndicatorContext>? SuspenseTimeout { get; set; }
 
-    /// <inheritdoc cref="Suspense{TModel}.LoadingIndicator" />
+    /// <inheritdoc cref="Suspense{TModel}.Fallback" />
     /// <see cref="Suspense{TModel}"/>
     [Parameter]
-    public RenderFragment<IndicatorContext>? SuspenseLoadingIndicator { get; set; }
+    public RenderFragment<IndicatorContext>? SuspenseFallback { get; set; }
 
     protected override void OnParametersSet()
     {
@@ -54,16 +54,16 @@ public partial class Theme : ComponentBase {
             ThemeInfo.ErrorComponent = ErrorComponent;
         }
 
-        if(SuspenseErrorIndicator != null) {
-            ThemeInfo.SuspenseErrorIndicator = SuspenseErrorIndicator;
+        if(SuspenseError != null) {
+            ThemeInfo.SuspenseError = SuspenseError;
         }
 
-        if(SuspenseTimeoutIndicator != null) {
-            ThemeInfo.SuspenseTimeoutIndicator = SuspenseTimeoutIndicator;
+        if(SuspenseTimeout != null) {
+            ThemeInfo.SuspenseTimeout = SuspenseTimeout;
         }
 
-        if(SuspenseLoadingIndicator != null) {
-            ThemeInfo.SuspenseLoadingIndicator = SuspenseLoadingIndicator;
+        if(SuspenseFallback != null) {
+            ThemeInfo.SuspenseFallback = SuspenseFallback;
         }
     }
 }

@@ -63,12 +63,12 @@
                 &lt;div&gtFirst Name: @@context.Value.FirstName&lt;/div&gt
                 &lt;div&gtLast Name: @@context.Value.LastName&lt;/div&gt
             &lt;/ChildContent&gt;
-            &lt;TimeoutIndicator&gt;
+            &lt;Timeout&gt;
                 &lt;div&gt;
                     &lt;Icon CssClass=@@context.Size.ToString().ToLower() Key="loader-timeout" /&gt;
                 &lt;/div&gt;
                 &lt;div&gt;Component timeout, &lt;a href="" @@onclick=@@context?.Reload @@onclick:preventDefault&gt;try again&lt;/a&gt;&lt;/div&gt;
-            &lt;/TimeoutIndicator&gt;
+            &lt;/Timeout&gt;
         &lt;/Suspense&gt;
     </CodeBlock>
 
@@ -78,12 +78,12 @@
                 <div>First Name: @context.Value.FirstName</div>
                 <div>Last Name: @context.Value.LastName</div>
             </ChildContent>
-            <TimeoutIndicator>
+            <Timeout>
                 <div>
                     <Icon CssClass=@context.Size.ToString().ToLower() Key="loader-timeout" />
                 </div>
                 <div>Component timeout, <a href="" @onclick=@context?.Reload @onclick:preventDefault>try again</a></div>
-            </TimeoutIndicator>
+            </Timeout>
         </Suspense>
     </div>
     
@@ -100,24 +100,24 @@
         Can add custom CSS classes via the <code>CssClass</code> parameter
     </p>
     <p>
-        Can override the Loading, Error and Timeout states by passing a child fragment called <code>&lt;LoadingIndicator&gt;</code>, <code>&lt;ErrorIndicator&gt;</code> or <code>&lt;TimeoutIndicator&gt;</code> to the <code>Suspense</code> component while wrapping the display content in a <code>&lt;ChildContent&gt;</code>
+        Can override the Loading, Error and Timeout states by passing a child fragment called <code>&lt;Fallback&gt;</code>, <code>&lt;Error&gt;</code> or <code>&lt;Timeout&gt;</code> to the <code>Suspense</code> component while wrapping the display content in a <code>&lt;ChildContent&gt;</code>
     </p>
     <p>
-        An example of the code above with the TimeoutIndicator Overridden showing how both the <code>Size</code> and <code>Reload</code> method are used from the <code>context</code>:
+        An example of the code above with Timeout Overridden showing how both the <code>Size</code> and <code>Reload</code> method are used from the <code>context</code>:
         <CodeBlock Lang="Blazor">
             &lt;Suspense TModel="Employee" LoadData=@@LoadEmployee&gt;
                 &lt;ChildContent&gt;
                     &lt;div&gtFirst Name: @@context.Value.FirstName&lt;/div&gt
                     &lt;div&gtLast Name: @@context.Value.LastName&lt;/div&gt
                 &lt;/ChildContent&gt;
-                &lt;TimeoutIndicator&gt;
+                &lt;Timeout&gt;
                     &lt;div&gt;
                         &lt;Icon CssClass=@@context.Size.ToString().ToLower() Key="loader-timeout" /&gt;
                     &lt;/div&gt;
                     &lt;div&gt;
                         Timeout from component child, &lt;a href="" @@onclick="context?.Reload" @@onclick:preventDefault&gt;try again&lt;/a&gt;
                     &lt;/div&gt;
-                &lt;/TimeoutIndicator&gt;
+                &lt;/Timeout&gt;
             &lt;/Suspense&gt;
         </CodeBlock>
     </p>
@@ -140,7 +140,7 @@
         </CodeBlock>
     </p>
     <p>
-        The indicators can also be overriden in the <code>Theme</code> using the child fragments <code>&lt;SuspenseLoadingIndicator&gt;</code>, <code>&lt;SuspenseErrorIndicator&gt;</code> or <code>&lt;SuspenseTimeoutIndicator&gt;</code>
+        The indicators can also be overriden in the <code>Theme</code> using the child fragments <code>&lt;SuspenseFallback&gt;</code>, <code>&lt;SuspenseError&gt;</code> or <code>&lt;SuspenseTimeout&gt;</code>
     </p>
 </section>
 

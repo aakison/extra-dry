@@ -19,21 +19,21 @@ public partial class Suspense<TModel> : ComponentBase, IExtraDryComponent {
     /// A default is provided but this can be used to override the display
     /// </summary>
     [Parameter]
-    public RenderFragment<IndicatorContext>? ErrorIndicator { get; set; }
+    public RenderFragment<IndicatorContext>? Error { get; set; }
 
     /// <summary>
     /// Render Fragment for when a timeout is encountered during loading.
     /// A default is provided but this can be used to override the display
     /// </summary>
     [Parameter]
-    public RenderFragment<IndicatorContext>? TimeoutIndicator { get; set; }
+    public RenderFragment<IndicatorContext>? Timeout { get; set; }
 
     /// <summary>
     /// Render Fragment for when a value is in the process of being loaded.
     /// A default is provided but this can be used to override the display
     /// </summary>
     [Parameter]
-    public RenderFragment<IndicatorContext>? LoadingIndicator { get; set; }
+    public RenderFragment<IndicatorContext>? Fallback { get; set; }
 
     /// <inheritdoc cref="IExtraDryComponent.CssClass" />
     [Parameter]
