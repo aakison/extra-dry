@@ -57,6 +57,9 @@ public partial class Suspense<TModel> : ComponentBase, IExtraDryComponent {
     [CascadingParameter]
     protected ThemeInfo? ThemeInfo { get; set; }
 
+    [Inject]
+    private ILogger<Suspense<TModel>> Logger { get; set; } = null!;
+
     /// <summary>
     /// The value once loaded
     /// </summary>
@@ -86,17 +89,17 @@ public partial class Suspense<TModel> : ComponentBase, IExtraDryComponent {
             Value = await ItemProvider();
             State = LoadingState.Complete;
         }
-        catch(TimeoutException tex) {
-            State = LoadingState.Timeout;
-            Console.WriteLine(tex.ToString());
-        }
         catch(TaskCanceledException tcex) {
             State = LoadingState.Timeout;
-            Console.WriteLine(tcex.ToString());
+            Logger.LogWarning(tcex, "Timeout caught in Suspense component");
+        }
+        catch(TimeoutException tex) {
+            State = LoadingState.Timeout;
+            Logger.LogWarning(tex, "Timeout caught in Suspense component");
         }
         catch(Exception ex) {
             State = LoadingState.Error;
-            Console.WriteLine(ex.ToString());
+            Logger.LogError(ex, "Error caught in Suspense component");
         }
     }
 
