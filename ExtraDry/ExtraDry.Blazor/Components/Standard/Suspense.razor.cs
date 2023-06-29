@@ -13,39 +13,47 @@ public partial class Suspense<ValueModel> : ComponentBase, IExtraDryComponent {
     /// </summary>
     [Parameter, EditorRequired]
     public RenderFragment<SuspenseContext>? ChildContent { get; set; }
+
     /// <summary>
     /// Render Fragment for when an error is encountered during loading.
     /// A default is provided but this can be used to override the display
     /// </summary>
     [Parameter]
     public RenderFragment<IndicatorContext>? ErrorIndicator { get; set; }
+
     /// <summary>
     /// Render Fragment for when a timeout is encountered during loading.
     /// A default is provided but this can be used to override the display
     /// </summary>
     [Parameter]
     public RenderFragment<IndicatorContext>? TimeoutIndicator { get; set; }
+
     /// <summary>
     /// Render Fragment for when a value is in the process of being loaded.
     /// A default is provided but this can be used to override the display
     /// </summary>
     [Parameter]
     public RenderFragment<IndicatorContext>? LoadingIndicator { get; set; }
+
     /// <inheritdoc cref="IExtraDryComponent.CssClass" />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
+
     /// <summary>
     /// Delegate function for how to retrieve it's Value 
     /// Requires a method that is async and returns Task&lt;object?$gt;
     /// </summary>
     [Parameter]    
     public Func<Task<ValueModel?>>? LoadData { get; set; }
+
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
+
     /// <inheritdoc cref="IndicatorSize" />
     [Parameter]
     public IndicatorSize Size { get; set; } = IndicatorSize.Standard;
+
     [CascadingParameter]
     protected ThemeInfo? ThemeInfo { get; set; }
 
