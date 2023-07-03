@@ -3,5 +3,9 @@
 
 <label class="@CssClasses" for="@Id" @attributes="@UnmatchedAttributes">
     <input class="@CssClasses" id="@Id" type="checkbox" checked="@Checked" @onchange="DoChange" @onclick="OnClicked" />
+    @if (UseIcons)
+    {
+        <Icon Key="@CurrentIcon" />
+    }
     <span class="@CssClasses">@Label</span>
 </label>

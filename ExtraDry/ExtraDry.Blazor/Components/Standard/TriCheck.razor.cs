@@ -44,6 +44,33 @@ public partial class TriCheck : ComponentBase, IExtraDryComponent {
     [Parameter]
     public EventCallback<ChangeEventArgs> OnChange { get; set; }
 
+    /// <summary>
+    /// Indicates if icons are used in addition to the rendered checkbox.
+    /// </summary>
+    [Parameter]
+    public bool UseIcons { get; set; }
+
+    /// <summary>
+    /// If `UseIcons` is true, the icon to display when the item is checked.  This is a key from
+    /// the Icons and defaults to "option-checked".
+    /// </summary>
+    [Parameter]
+    public string CheckedIcon { get; set; } = "option-checked";
+
+    /// <summary>
+    /// If `UseIcons` is true, the icon to display when the item is not checked.  This is a key from
+    /// the Icons and defaults to "option-unchecked".
+    /// </summary>
+    [Parameter]
+    public string UncheckedIcon { get; set; } = "option-unchecked";
+
+    /// <summary>
+    /// If `UseIcons` is true, the icon to display when the item is indeterminate.  This is a key from
+    /// the Icons and defaults to "option-indeterminate".
+    /// </summary>
+    [Parameter]
+    public string IndeterminateIcon { get; set; } = "option-indeterminate";
+
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
@@ -76,6 +103,12 @@ public partial class TriCheck : ComponentBase, IExtraDryComponent {
     private bool Indeterminate => Value == TriCheckState.Indeterminate;
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "tri-check", CssClass);
+
+    private string CurrentIcon => Value switch {
+            TriCheckState.Checked => CheckedIcon,
+            TriCheckState.Unchecked => UncheckedIcon,
+            _ => IndeterminateIcon,
+        };
 
     [Inject]
     private ExtraDryJavascriptModule Module { get; set; } = null!;

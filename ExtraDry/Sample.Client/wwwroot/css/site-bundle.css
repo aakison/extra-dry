@@ -11273,6 +11273,11 @@ img.icon {
   height: 28px;
 }
 
+img.small-icon {
+  width: 20px;
+  height: 20px;
+}
+
 form.tryitout div {
   height: 40px;
   display: flex;

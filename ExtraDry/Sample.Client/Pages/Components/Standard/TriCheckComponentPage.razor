@@ -41,6 +41,30 @@
         <TriCheck @bind-value="@Value" Label="Three Choices!" />
         <div>@Value</div>
     </p>
+    <h3>Advanced Usage</h3>
+    <p> 
+        The control always renders a HTML &lt;input> control and can be configured to use image 
+        instead of or in addition to the input.  To render as an image instead:
+    </p>
+    <CodeBlock Lang="blazor">
+        &lt;TriCheck @@bind-value="@@Value" Label="Ooo, Shiny" UseIcons="true" class="no-checkbox" /&gt;
+        &lt;div&gt;@@Value&lt;/div&gt;
+
+        @@code {
+            public TriCheckState Value { get; set; } = TriCheckState.Checked;
+        }
+    </CodeBlock>
+    <p>with CSS:</p>
+    <CodeBlock Lang="css">
+        ::deep .no-checkbox input {
+            display: none;
+        }
+    </CodeBlock>
+    <p>
+        <TriCheck @bind-value="@Value" Label="Ooo, pretty pictures" UseIcons="true" class="no-checkbox" />
+        <div>@Value</div>
+    </p>
+
     <h5>Try It Out</h5>
     <form class="tryitout" onsubmit="return false;">
         <div>
@@ -66,6 +90,7 @@
     <CodeBlock lang="HTML">
         &lt;label class="tri-check" for="uniqueId"&gt;
             &lt;input class="tri-check" id="uniqueId" type="checkbox" /&gt;
+            [&lt;Icon ...>]
             &lt;span class="tri-check">...&lt;/span&gt;
         &lt;label>
     </CodeBlock>
