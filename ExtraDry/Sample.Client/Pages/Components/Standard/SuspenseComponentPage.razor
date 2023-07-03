@@ -3,21 +3,21 @@
 
 <section>
     <h2>Suspense</h2>
-    <p>The <code>&lt;Suspense&gt;</code> component displays an value after it is loaded with states for Loading, Completed, Error and Timeout.</p>
+    <p>The <code>&lt;Suspense&gt;</code> component displays a value after it is loaded with states for Loading, Completed, Error and Timeout.</p>
 </section>
 <section>
     <h3>Basic usage all indicators as default</h3>
     <CodeBlock Lang="blazor">
         &lt;Suspense TModel="Employee" ItemProvider=@@LoadEmployee&gt;
-            &lt;div&gtFirst Name: @@context.FirstName&lt;/div&gt
+        &lt;div&gtFirst Name: @@context.FirstName&lt;/div&gt
             &lt;div&gtLast Name: @@context.LastName&lt;/div&gt
         &lt;/Suspense&gt;
 
         @@code {
-            public async Task&lt;Employee?&gt; LoadEmployee()
+            public async Task&lt;Employee?&gt; LoadEmployee(CancellationToken cancellationToken)
             {
                 // Real data loading goes here
-                await Task.Delay(5000);
+                await Task.Delay(5000, cancellationToken);
                 return new Employee
                 {
                     Uuid = Guid.NewGuid(),
@@ -58,7 +58,7 @@
 
     <h3>Timeout in component - Other indicators as default</h3>
     <CodeBlock Lang="blazor">
-        &lt;Suspense TModel="Employee" ItemProvider=@@LoadEmployee&gt;
+        &lt;Suspense TModel="Employee" ItemProvider=@@LoadEmployee &gt;
             &lt;ChildContent&gt;
                 &lt;div&gtFirst Name: @@context.&lt;/div&gt
                 &lt;div&gtLast Name: @@context.LastName&lt;/div&gt
@@ -86,6 +86,21 @@
             </Timeout>
         </Suspense>
     </div>
+
+    <h3>Timeout Duration set low to demonstrate timeout</h3>
+    <CodeBlock Lang="blazor">
+        &lt;Suspense TModel="Employee" ItemProvider=@@LoadEmployee TimeoutDuration=500&gt;
+            &lt;div&gtFirst Name: @@context.&lt;/div&gt
+            &lt;div&gtLast Name: @@context.LastName&lt;/div&gt
+        &lt;/Suspense&gt;
+    </CodeBlock>
+
+    <div style="width: 200px;border: solid 1px;margin-bottom: 10px;">
+        <Suspense TModel="Employee" ItemProvider=@LoadEmployee Size=@IndicatorSize TimeoutDuration=500 @ref="_childComponent2">
+            <div>First Name: @context.FirstName</div>
+            <div>Last Name: @context.LastName</div>
+        </Suspense>
+    </div>
     
 </section> 
 <section>
@@ -98,6 +113,9 @@
     </p>
     <p>
         Can add custom CSS classes via the <code>CssClass</code> parameter
+    </p>
+    <p>
+        <code>TimeoutDuration</code> sets the length of time in milliseconds to load before cancelling the call and timing out. It is defaulted to 5 seconds (5000 milliseconds)
     </p>
     <p>
         Can override the Loading, Error and Timeout states by passing a child fragment called <code>&lt;Fallback&gt;</code>, <code>&lt;Error&gt;</code> or <code>&lt;Timeout&gt;</code> to the <code>Suspense</code> component while wrapping the display content in a <code>&lt;ChildContent&gt;</code>
@@ -164,9 +182,9 @@
         StateHasChanged();
     }
 
-    public async Task<Employee?> LoadEmployee()
+    public async Task<Employee?> LoadEmployee(CancellationToken cancellationToken)
     {
-        await Task.Delay(2000);
+        await Task.Delay(3000, cancellationToken);
 
         if(Value == LoadingState.Error)
         {
@@ -178,7 +196,7 @@
             throw new TaskCanceledException();
         }
 
-        await Task.Delay(3000);
+        await Task.Delay(2000);
         return new Employee
         {
             Uuid = Guid.NewGuid(),

@@ -1,4 +1,5 @@
 ﻿namespace ExtraDry.Blazor;
+
 /// <summary>
 /// Represents a value that requires an async operation to populate.
 /// Can be in the following states:
@@ -43,8 +44,8 @@ public partial class Suspense<TModel> : ComponentBase, IExtraDryComponent {
     /// Delegate function for how to retrieve it's Value 
     /// Requires a method that is async and returns Task&lt;object?$gt;
     /// </summary>
-    [Parameter]    
-    public Func<Task<TModel?>>? ItemProvider { get; set; }
+    [Parameter, EditorRequired]    
+    public SuspenseItemsProviderDelegate<TModel>? ItemProvider { get; set; }
 
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
@@ -54,11 +55,25 @@ public partial class Suspense<TModel> : ComponentBase, IExtraDryComponent {
     [Parameter]
     public IndicatorSize Size { get; set; } = IndicatorSize.Standard;
 
+    /// <summary>
+    /// The time span to wait before timing out in milliseconds. Default is 5 seconds
+    /// </summary>
+    [Parameter]
+    public int TimeoutDuration { get; set; } = 5000;
+
     [CascadingParameter]
     protected ThemeInfo? ThemeInfo { get; set; }
 
     [Inject]
     private ILogger<Suspense<TModel>> Logger { get; set; } = null!;
+
+    /// <summary>
+    /// A function that provides the item to the Suspense component
+    /// </summary>
+    /// <typeparam name="TItem">The type of the context the item being loaded.</typeparam>
+    /// <param name="cancellationToken">The <see cref="CancellationToken"/> for the consumer to make use of to handle cancellation events and timeouts.</param>
+    /// <returns>A <see cref="Task"/> whose result is of type <c>TItem</c> upon successful completion.</returns>
+    public delegate Task<TItem> SuspenseItemsProviderDelegate<TItem>(CancellationToken cancellationToken);
 
     /// <summary>
     /// The value once loaded
@@ -86,7 +101,9 @@ public partial class Suspense<TModel> : ComponentBase, IExtraDryComponent {
         }
 
         try {
-            Value = await ItemProvider();
+            var tokenSource = new CancellationTokenSource(TimeoutDuration);
+            
+            Value = await ItemProvider(tokenSource.Token);
             State = LoadingState.Complete;
         }
         catch(TaskCanceledException tcex) {
