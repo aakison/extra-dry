@@ -114,7 +114,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
 
     protected async Task DoButtonClick(MouseEventArgs _)
     {
-        Logger?.LogDebug("{Id}::DoClick()", Id);
+        Logger.LogDebug("{Id}::DoClick()", Id);
         if(ShowOptions) {
             CancelInput();
             ShowOptions = false;
@@ -126,14 +126,14 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
 
     protected async Task DoItemClick(TItem item)
     {
-        Logger?.LogDebug("{Id}::DoItemClick()", Id);
+        Logger.LogDebug("{Id}::DoItemClick()", Id);
         SelectedOption = item;
         await ConfirmInputAsync(item);
     }
 
     protected Task DoMouseDown(TItem item)
     {
-        Logger?.LogDebug("{Id}::DoMouseDown()", Id);
+        Logger.LogDebug("{Id}::DoMouseDown()", Id);
         SelectedOption = item;
         return Task.CompletedTask;
     }
@@ -171,7 +171,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
 
     protected override async Task OnParametersSetAsync()
     {
-        Logger?.LogDebug("{Id}::OnParametersSetAsync()", Id);
+        Logger.LogDebug("{Id}::OnParametersSetAsync()", Id);
         Name ??= $"combo_{typeof(TItem).Name}";
         AssertItemsMutualExclusivity();
 
@@ -190,7 +190,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// <returns></returns>
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        Logger?.LogDebug("{Id}::OnAfterRenderAsync({firstRender})", Id, firstRender);
+        Logger.LogDebug("{Id}::OnAfterRenderAsync({firstRender})", Id, firstRender);
         await ScrollIntoView(OptionsId);
         if(SelectedOption != null && ShowOptions) {
             var id = DisplayItemID(SelectedOption);
@@ -275,7 +275,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// </summary>
     private void CancelInput()
     {
-        Logger?.LogDebug("{Id}::CancelInput()", Id);
+        Logger.LogDebug("{Id}::CancelInput()", Id);
         Assert(ShowOptions == true, "CancelInput is wasteful if the options aren't shown.");
         ShowOptions = false;
         if(Value == null) {
@@ -291,7 +291,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
 
     private async Task RetrieveFilteredFromItemsSource()
     {
-        Logger?.LogDebug("{Id}::RetrieveFilteredFromItemsSource()", Id);
+        Logger.LogDebug("{Id}::RetrieveFilteredFromItemsSource()", Id);
         Assert(ShowOptions == true, "RetrieveFilteredFromItemsSource is wasteful if the options aren't shown.");
         Assert(ItemsSource != null, "RetrieveFilteredFromItemsSource is designed for remote collections.");
         if(ItemsSource == null) {
@@ -329,7 +329,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// </summary>
     private async Task ConfirmInputAsync(TItem? selectedItem)
     {
-        Logger?.LogDebug("{Id}::ConfirmInputAsync({title})", Id, DisplayItemTitle(selectedItem));
+        Logger.LogDebug("{Id}::ConfirmInputAsync({title})", Id, DisplayItemTitle(selectedItem));
         Assert(ShowOptions == true, "ConfirmInputAsync expects that the options are shown.");
         if(selectedItem != null) {
             // Valid Item selected and want to lock it in
@@ -351,7 +351,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     private void Assert(bool value, string message)
     {
         if(value == false) {
-            Logger?.LogWarning("{Id} ERROR - {message}", Id, message);
+            Logger.LogWarning("{Id} ERROR - {message}", Id, message);
         }
     }
 
@@ -415,7 +415,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// </summary>
     private async Task LoadOptionsAsync()
     {
-        Logger?.LogDebug("{Id}::LoadOptionsAsync()", Id);
+        Logger.LogDebug("{Id}::LoadOptionsAsync()", Id);
         ShowOptions = true;
         InternalItems.SetFilter(string.Empty);
         if(SelectedOption != null) {
@@ -437,7 +437,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// </remarks>
     protected async Task DoFilterInput(ChangeEventArgs args)
     {
-        Logger?.LogDebug("{Id}::DoFilterInput({value})", Id, args.Value);
+        Logger.LogDebug("{Id}::DoFilterInput({value})", Id, args.Value);
         await SetOptionsFilter(args.Value?.ToString() ?? string.Empty);
     }
 
@@ -447,7 +447,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// </summary>
     private async Task SetOptionsFilter(string filter)
     {
-        Logger?.LogDebug("{Id}::SetOptionsFilter({filter})", Id, filter);
+        Logger.LogDebug("{Id}::SetOptionsFilter({filter})", Id, filter);
         // change the filter display the user sees
         DisplayFilter = filter;
         // And filter the internal list of items.
@@ -473,7 +473,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// </summary>
     protected async Task DoKeyDown(KeyboardEventArgs args)
     {
-        Logger?.LogDebug("{Id}::DoKeyDown({code})", Id, args.Code);
+        Logger.LogDebug("{Id}::DoKeyDown({code})", Id, args.Code);
         PreventDefault = false;
         // 9 lines shown so page up/down should be one less so we have one line overlap for context.
         var pageSize = 8;
@@ -517,7 +517,6 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
                     break;
             }
         }
-        //Logger?.LogInformation("  PreventDefault={prevent}", PreventDefault);
     }
 
     /// <summary>
@@ -525,7 +524,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// </summary>
     private void SelectOptionIndex(int index)
     {
-        Logger?.LogDebug("{Id}::SelectIndex({index})", Id, index);
+        Logger.LogDebug("{Id}::SelectIndex({index})", Id, index);
         if(index < 0 || index >= InternalItems.FilteredItems.Count) {
             SelectedOption = default;
         }
@@ -541,7 +540,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// </summary>
     private void SelectOptionOffset(int offset)
     {
-        Logger?.LogDebug("{Id}::SelectOffset({offset})", Id, offset);
+        Logger.LogDebug("{Id}::SelectOffset({offset})", Id, offset);
         if(SelectedOption == null) {
             if(offset > 0) {
                 SelectOptionIndex(0);
@@ -561,7 +560,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     private SortedFilteredCollection<TItem> InternalItems { get; set; } = new();
 
     [Inject]
-    private ILogger<ComboBox<TItem>>? Logger { get; set; }
+    private ILogger<ComboBox<TItem>> Logger { get; set; } = null!;
 }
 
 internal class SortedFilteredCollection<T> {

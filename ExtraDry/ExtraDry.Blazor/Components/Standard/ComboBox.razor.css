@@ -34,19 +34,24 @@ div > label > progress {
 div > label > button {
   height: 100%;
 }
-div ol {
+div > div {
   position: absolute;
+  --chromium-workaround: "Setting background color on <ol> directly masks mouse drag on scrollbar.";
+  background-color: white;
+  width: auto;
+  left: 0;
+  right: 0;
+  z-index: 1;
+}
+div ol {
   border: solid 1px silver;
   padding: 0;
-  min-width: 250px;
-  width: 100%;
   line-height: 1.5em;
+  min-width: 250px;
   min-height: calc(4.5em + 14px);
   max-height: calc(13.5em + 38px);
   overflow: scroll;
   overflow-x: clip;
-  background-color: white;
-  z-index: 1;
 }
 div ol li {
   padding: 2px 5px;
