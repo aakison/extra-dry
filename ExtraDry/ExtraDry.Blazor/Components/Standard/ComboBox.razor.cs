@@ -90,6 +90,15 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     [Parameter]
     public string MoreItemsTemplate { get; set; } = "plus {0} more...";
 
+    /// <summary>
+    /// When set, renders the combo box with the list of items always rendered to the document.
+    /// By default, the list is removed from the DOM for performance, but this is harder to style.
+    /// Use of this property is only recommended during development and should not be set 
+    /// in production.
+    /// </summary>
+    [Parameter]
+    public bool DebugCss { get; set; }
+
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;

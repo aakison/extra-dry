@@ -16,8 +16,9 @@
         }
         <button class="unobtrusive" @onclick="DoButtonClick" type="button" tabindex="-1"><Icon Key="select" /></button>
     </label>
-    @if(ShowOptions) {
-        <ol class="options" id="@OptionsId">
+    @if(ShowOptions || DebugCss) {
+        var debugStyle = DebugCss && !ShowOptions ? "display: none;" : "";
+        <ol class="options" id="@OptionsId" style="@debugStyle">
             @{
                 int index = 0;
                 var lastGroup = string.Empty;
