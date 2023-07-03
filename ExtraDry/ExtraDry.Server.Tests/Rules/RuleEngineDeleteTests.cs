@@ -9,7 +9,7 @@ public class RuleEngineDeleteTests {
     {
         var rules = new RuleEngine(new ServiceProviderStub());
 
-        Assert.Throws<ArgumentNullException>(() => rules.Delete((object?)null, NoOp));
+        Assert.Throws<ArgumentNullException>(() => rules.Delete((object?)null, NoOp, NoOp));
     }
 
     [Fact]
@@ -18,7 +18,7 @@ public class RuleEngineDeleteTests {
         var rules = new RuleEngine(new ServiceProviderStub());
         var obj = new SoftDeletable();
 
-        var result = rules.Delete(obj, null);
+        var result = rules.TrySoftDelete(obj);
 
         Assert.False(obj.Active);
         Assert.Equal(DeleteResult.SoftDeleted, result);
@@ -31,7 +31,7 @@ public class RuleEngineDeleteTests {
         var obj = new SoftDeletable();
         var deleted = false;
 
-        var result = rules.Delete(new object(), () => deleted = true);
+        var result = rules.Delete(new object(), () => deleted = true, NoOp);
 
         Assert.True(deleted);
         Assert.Equal(DeleteResult.HardDeleted, result);
@@ -42,7 +42,7 @@ public class RuleEngineDeleteTests {
     {
         var rules = new RuleEngine(new ServiceProviderStub());
 
-        Assert.Throws<ArgumentNullException>(() => rules.DeleteSoft((object?)null, NoOp, NoOp));
+        Assert.Throws<ArgumentNullException>(() => rules.TrySoftDelete((object?)null!));
     }
 
     [Fact]
@@ -51,55 +51,18 @@ public class RuleEngineDeleteTests {
         var rules = new RuleEngine(new ServiceProviderStub());
         var obj = new SoftDeletable();
 
-        var result = rules.DeleteSoft(obj, NoOp, NoOp);
+        var result = rules.TrySoftDelete(obj);
 
         Assert.False(obj.Active);
         Assert.Equal(DeleteResult.SoftDeleted, result);
     }
 
     [Fact]
-    public void DeleteSoftFallbackNotNull()
-    {
-        var rules = new RuleEngine(new ServiceProviderStub());
-
-        Assert.Throws<InvalidOperationException>(
-            () => rules.DeleteSoft(new object(), null, null)
-        );
-    }
-
-    [Fact]
-    public void DeleteSoftFallbackExecutes()
-    {
-        var rules = new RuleEngine(new ServiceProviderStub());
-        var executed = false;
-
-        var result = rules.DeleteSoft(new object(), () => executed = true, null);
-
-        Assert.True(executed);
-        Assert.Equal(DeleteResult.HardDeleted, result);
-    }
-
-    [Fact]
-    public void DeleteSoftFallbackAndCommitExecutes()
-    {
-        var rules = new RuleEngine(new ServiceProviderStub());
-        var executed = false;
-        var committed = false;
-
-        var result = rules.DeleteSoft(new object(), () => executed = true, () => committed = true);
-
-        Assert.True(executed);
-        Assert.True(committed);
-        Assert.Equal(DeleteResult.HardDeleted, result);
-    }
-
-
-    [Fact]
     public void DeleteHardRequiresItem()
     {
         var rules = new RuleEngine(new ServiceProviderStub());
 
-        Assert.Throws<ArgumentNullException>(() => rules.DeleteHard((object?)null, NoOp, NoOp));
+        Assert.ThrowsAsync<ArgumentNullException>(() => rules.TryHardDeleteAsync((object?)null!));
     }
 
     [Fact]
@@ -107,7 +70,7 @@ public class RuleEngineDeleteTests {
     {
         var rules = new RuleEngine(new ServiceProviderStub());
 
-        Assert.Throws<ArgumentNullException>(() => rules.DeleteHard(new object(), null!, NoOp));
+        Assert.ThrowsAsync<ArgumentNullException>(() => rules.TryHardDeleteAsync(new object(), null!, NoOp));
     }
 
     [Fact]
@@ -115,19 +78,19 @@ public class RuleEngineDeleteTests {
     {
         var rules = new RuleEngine(new ServiceProviderStub());
 
-        Assert.Throws<ArgumentNullException>(
-            () => rules.DeleteHard(new object(), NoOp, null!)
+        Assert.ThrowsAsync<ArgumentNullException>(
+            () => rules.TryHardDeleteAsync(new object(), NoOp, null!)
         );
     }
 
     [Fact]
-    public void DeleteHardPrepareCommitCycle()
+    public async Task DeleteHardPrepareCommitCycle()
     {
         var rules = new RuleEngine(new ServiceProviderStub());
         int prepared = 0;
         int committed = 0;
 
-        var result = rules.DeleteHard(new object(), () => FakePrepare(ref prepared), () => FakeCommit(ref committed));
+        var result = await rules.TryHardDeleteAsync(new object(), () => FakePrepare(ref prepared), () => FakeCommit(ref committed));
 
         Assert.Equal(1, prepared);
         Assert.Equal(2, committed);
@@ -135,23 +98,21 @@ public class RuleEngineDeleteTests {
     }
 
     [Fact]
-    public void DeleteHardFailHardAndSoft()
+    public async Task DeleteHardFailHardAndSoft()
     {
         var rules = new RuleEngine(new ServiceProviderStub());
-
-        Assert.Throws<InvalidOperationException>(
-            () => rules.DeleteHard(new object(), NoOp, () => throw new NotImplementedException())
-        );
+        var result = await rules.TryHardDeleteAsync(new object(), NoOp, () => throw new NotImplementedException());
+        Assert.Equal(DeleteResult.NotDeleted, result);
     }
 
     [Fact]
-    public void DeleteHardSoftFallback()
+    public void DeleteSoftFallback()
     {
         var rules = new RuleEngine(new ServiceProviderStub());
         var obj = new SoftDeletable();
         var callCount = 0;
 
-        var result = rules.DeleteHard(obj, NoOp,
+        var result = rules.Delete(obj, NoOp,
             () => { if(callCount++ > 0) { throw new Exception(); } } // exception on hard delete (the second call).
         );
 
@@ -167,7 +128,7 @@ public class RuleEngineDeleteTests {
         var original = obj.Unchanged;
         var unruled = obj.UnRuled;
 
-        var result = rules.DeleteSoft(obj, NoOp, NoOp);
+        var result = rules.TrySoftDelete(obj);
 
         Assert.Equal(original, obj.Unchanged);
         Assert.Equal(unruled, obj.UnRuled);
@@ -175,16 +136,14 @@ public class RuleEngineDeleteTests {
     }
 
     [Fact]
-    public void SoftDeleteOnInvalidPropertyException()
+    public void SoftDeleteOnInvalidProperty()
     {
         var rules = new RuleEngine(new ServiceProviderStub());
         var obj = new BadPropertyDeletable();
 
-        var lambda = () => {
-            _ = rules.DeleteSoft(obj, NoOp, NoOp);
-        };
+        var result = rules.TrySoftDelete(obj);
 
-        Assert.Throws<DryException>(lambda);
+        Assert.Equal(DeleteResult.NotDeleted, result);
     }
 
     [Fact]
@@ -194,7 +153,7 @@ public class RuleEngineDeleteTests {
         var obj = new BadDeleteValueDeletable();
 
         var lambda = () => {
-            _ = rules.DeleteSoft(obj, NoOp, NoOp);
+            _ = rules.TrySoftDelete(obj);
         };
 
         Assert.Throws<DryException>(lambda);
@@ -206,16 +165,16 @@ public class RuleEngineDeleteTests {
         var rules = new RuleEngine(new ServiceProviderStub());
         var obj = new ObjectDeletable();
 
-        rules.Delete(obj);
+        rules.Delete(obj, NoOp, NoOp);
 
         Assert.Null(obj.Status);
     }
 
     private static void NoOp() { }
 
-    private void FakePrepare(ref int stepStamp) => stepStamp = step++;
+    private Task FakePrepare(ref int stepStamp) => Task.FromResult(stepStamp = step++);
 
-    private void FakeCommit(ref int stepStamp) => stepStamp = step++;
+    private Task FakeCommit(ref int stepStamp) => Task.FromResult(stepStamp = step++);
 
     private int step = 1;
 
@@ -237,7 +196,8 @@ public class RuleEngineDeleteTests {
     }
 
     [SoftDeleteRule(nameof(Active), "not-bool")]
-    public class BadDeleteValueDeletable {
+    public class BadDeleteValueDeletable
+    {
         public bool Active { get; set; } = true;
     }
 
