@@ -1,0 +1,17 @@
+.suspense {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+::deep i.small {
+    font-size: 16px;
+}
+
+::deep i.standard{
+    font-size: 20px;
+}
+
+::deep i.large {
+    font-size: 28px;
+}

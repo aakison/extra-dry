@@ -65,10 +65,11 @@ public class ListService<TCollection, TItem> : IListService<TItem> {
                 keys.Add(FilterQueryParam, filter);
             }
             if(!string.IsNullOrWhiteSpace(sort)) {
-                keys.Add(SortQueryParam, sort);
+                char sortchar = '+';
                 if(ascending.HasValue) {
-                    keys.Add("ascending", ascending.Value.ToString());
+                    sortchar = ascending.Value ? '+' : '-';
                 }
+                keys.Add(SortQueryParam, sortchar + sort);
             }
             if(skip.HasValue && skip.Value > 0) {
                 keys.Add(SkipQueryParam, skip.Value.ToString());

@@ -8,18 +8,18 @@ public partial class Spinner : ComponentBase, IExtraDryComponent {
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
-    /// <inheritdoc cref="IExtraDryComponent.CssClass" />
+    /// <inheritdoc cref="IndicatorSize" />
     [Parameter]
-    public SpinnerSize Size { get; set; } = SpinnerSize.Standard;
+    public IndicatorSize Size { get; set; } = IndicatorSize.Standard;
 
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
 
-    public static string GetSpinnerSizeCssClass(SpinnerSize size) => size switch {
-        SpinnerSize.Standard => "",
-        SpinnerSize.Small => "small",
-        SpinnerSize.Large => "large",
+    public static string GetSpinnerSizeCssClass(IndicatorSize size) => size switch {
+        IndicatorSize.Standard => "",
+        IndicatorSize.Small => "small",
+        IndicatorSize.Large => "large",
         _ => throw new NotImplementedException(),
     };
 

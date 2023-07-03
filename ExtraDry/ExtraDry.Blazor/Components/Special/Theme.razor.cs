@@ -31,6 +31,21 @@ public partial class Theme : ComponentBase {
     [Parameter]
     public Type? ErrorComponent { get; set; }
 
+    /// <inheritdoc cref="Suspense{TModel}.Error" />
+    /// <see cref="Suspense{TModel}"/>
+    [Parameter]
+    public RenderFragment<IndicatorContext>? SuspenseError { get; set; }
+
+    /// <inheritdoc cref="Suspense{TModel}.Timeout" />
+    /// <see cref="Suspense{TModel}"/>
+    [Parameter]
+    public RenderFragment<IndicatorContext>? SuspenseTimeout { get; set; }
+
+    /// <inheritdoc cref="Suspense{TModel}.Fallback" />
+    /// <see cref="Suspense{TModel}"/>
+    [Parameter]
+    public RenderFragment<IndicatorContext>? SuspenseFallback { get; set; }
+
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
@@ -38,7 +53,18 @@ public partial class Theme : ComponentBase {
         if(ErrorComponent != null) {
             ThemeInfo.ErrorComponent = ErrorComponent;
         }
-    }
 
+        if(SuspenseError != null) {
+            ThemeInfo.SuspenseError = SuspenseError;
+        }
+
+        if(SuspenseTimeout != null) {
+            ThemeInfo.SuspenseTimeout = SuspenseTimeout;
+        }
+
+        if(SuspenseFallback != null) {
+            ThemeInfo.SuspenseFallback = SuspenseFallback;
+        }
+    }
 }
 
