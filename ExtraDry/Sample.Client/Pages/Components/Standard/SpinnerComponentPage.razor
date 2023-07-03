@@ -22,9 +22,9 @@
         <div>
             <label>Size:</label>
             <select @bind="Value">
-                <option value="@(SpinnerSize.Standard)">SpinnerSize.Standard</option>
-                <option value="@(SpinnerSize.Small)">SpinnerSize.Small</option>
-                <option value="@(SpinnerSize.Large)">SpinnerSize.Large</option>
+                <option value="@(IndicatorSize.Standard)">IndicatorSize.Standard</option>
+                <option value="@(IndicatorSize.Small)">IndicatorSize.Small</option>
+                <option value="@(IndicatorSize.Large)">IndicatorSize.Large</option>
             </select>
         </div>
     </form>
@@ -61,5 +61,5 @@
 </section>
 
 @code {
-    public SpinnerSize Value { get; set; } = SpinnerSize.Standard;
+    public IndicatorSize Value { get; set; } = IndicatorSize.Standard;
 }
