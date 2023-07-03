@@ -108,6 +108,26 @@ public class EntityFrameworkTests {
         Assert.Equal(1, database.Addresses.Count());
     }
 
+    [Fact]
+    public async Task HardDeleteMutipleEntitiesWithNull()
+    {
+        var database = GetPopulatedDatabase();
+        var rules = new RuleEngine(new ServiceProviderStub());
+
+        var address = database.Addresses.First(e => e.Line == "Vacant");
+        var user = database.Users.First(e => e.Name == "Homebody");
+
+        rules.RegisterRemove<Address>(e => database.Remove(e));
+        rules.RegisterRemove<User>(e => database.Remove(e));
+
+        rules.RegisterCommit(() => MockSaveChangesAsync(database));
+
+        var result = await rules.TryHardDeleteAsync(user, null, address);
+
+        Assert.Equal(DeleteResult.HardDeleted, result);
+        Assert.Equal(1, database.Addresses.Count());
+    }
+
     private static async Task MockSaveChangesAsync(TestContext database)
     {
         //Address being removed

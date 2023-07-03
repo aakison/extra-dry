@@ -280,13 +280,13 @@ public class RuleEngine {
     /// Uses the remove actions from <see cref="RegisterRemove{T}(Action{T})"/> and commit action from <see cref="RegisterCommit(Func{Task})"/>.
     /// </summary>
     /// <param name="items">Items to delete</param>
-    public async Task<DeleteResult> TryHardDeleteAsync(params object[] items)
+    public async Task<DeleteResult> TryHardDeleteAsync(params object?[] items)
     {
         var result = DeleteResult.NotDeleted;
 
         //Check all RemoveFunctors are available
         try {
-            foreach(var item in items) {
+            foreach(var item in items.Where(e => e is not null)) {
                 Action<object>? remove;
 
                 //If item is an IEnumerable check its RemoveFunctor
@@ -298,7 +298,7 @@ public class RuleEngine {
                     }
                 }
                 else {
-                    remove = RemoveFunctors[item.GetType()];
+                    remove = RemoveFunctors[item!.GetType()];
                     if(remove == null) {
                         return result;
                     }
@@ -311,7 +311,7 @@ public class RuleEngine {
 
         //Perform the removes & commit
         try {
-            foreach(var item in items) {
+            foreach(var item in items.Where(e => e is not null)) {
                 Action<object>? remove;
 
                 var enumerableItem = item as IEnumerable;
@@ -322,7 +322,7 @@ public class RuleEngine {
                     }
                 }
                 else {
-                    remove = RemoveFunctors[item.GetType()];
+                    remove = RemoveFunctors[item!.GetType()];
                     remove(item);
                 }
             }
