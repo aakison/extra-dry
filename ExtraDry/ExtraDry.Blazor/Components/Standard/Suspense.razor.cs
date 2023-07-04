@@ -68,14 +68,6 @@ public partial class Suspense<TModel> : ComponentBase, IExtraDryComponent {
     private ILogger<Suspense<TModel>> Logger { get; set; } = null!;
 
     /// <summary>
-    /// A function that provides the item to the Suspense component
-    /// </summary>
-    /// <typeparam name="TItem">The type of the context the item being loaded.</typeparam>
-    /// <param name="cancellationToken">The <see cref="CancellationToken"/> for the consumer to make use of to handle cancellation events and timeouts.</param>
-    /// <returns>A <see cref="Task"/> whose result is of type <c>TItem</c> upon successful completion.</returns>
-    public delegate Task<TItem> SuspenseItemsProviderDelegate<TItem>(CancellationToken cancellationToken);
-
-    /// <summary>
     /// The value once loaded
     /// </summary>
     public TModel? Value { get; set; }
@@ -148,3 +140,11 @@ public enum LoadingState {
     /// </summary>
     Complete
 }
+
+/// <summary>
+/// A function that provides the item to the Suspense component
+/// </summary>
+/// <typeparam name="TItem">The type of the context the item being loaded.</typeparam>
+/// <param name="cancellationToken">The <see cref="CancellationToken"/> for the consumer to make use of to handle cancellation events and timeouts.</param>
+/// <returns>A <see cref="Task"/> whose result is of type <c>TItem</c> upon successful completion.</returns>
+public delegate Task<TItem> SuspenseItemsProviderDelegate<TItem>(CancellationToken cancellationToken);
