@@ -6,7 +6,7 @@ namespace Sample.Shared;
 
 [Format(Icon = "building")]
 [FactTable, DimensionTable]
-[SoftDeleteRule(nameof(Status), CompanyStatus.Deleted)]
+[DeleteRule(DeleteAction.Recycle, nameof(Status), CompanyStatus.Deleted, CompanyStatus.Active)]
 public class Company {
 
     [Key]

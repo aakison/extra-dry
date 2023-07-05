@@ -112,35 +112,36 @@ public class RuleEngine {
 
     /// <summary>
     /// Given an item that has previously been deleted, attempts to undelete the item.
-    /// Will check that item can be undeleted based on `SoftDeleteRule` on entity and that the item
+    /// Will check that item can be undeleted based on `DeleteRule` on entity and that the item
     /// is actually in a deleted state.
     /// </summary>
     /// <param name="item">The item to be undeleted</param>
     /// <returns>Status of the undelete action.  If no undelete value exists or this item is not in a deleted state, then will return NoUndeleted.</returns>
-    /// <exception cref="DryException">If the `SoftDeleteRule` attribute has invalid properties or values.</exception>
+    /// <exception cref="DryException">If the `DeleteRule` attribute has invalid properties or values.</exception>
+    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Orthogonal with other members and might need to be made instance level in the future.")]
     public UndeleteResult Undelete<T>(T item)
     {
         if(item == null) {
             throw new ArgumentNullException(nameof(item));
         }
         var type = typeof(T);
-        var softDelete = type.GetCustomAttribute<SoftDeleteRuleAttribute>();
-        if(softDelete == null || softDelete.CanUndelete == false) {
+        var deleteRule = type.GetCustomAttribute<DeleteRuleAttribute>();
+        if(deleteRule == null || deleteRule.CanUndelete == false) {
             return UndeleteResult.NotUndeleted;
         }
-        var property = type.GetProperty(softDelete.PropertyName, BindingFlags.Instance | BindingFlags.Public);
+        var property = type.GetProperty(deleteRule.PropertyName, BindingFlags.Instance | BindingFlags.Public);
         if(property == null) {
-            throw new DryException($"Can't complete undelete, property '{softDelete.PropertyName}' does not exist as a public instance property of class '{type.Name}'.", "Can't undelete item, internal application issue.");
+            throw new DryException($"Can't complete undelete, property '{deleteRule.PropertyName}' does not exist as a public instance property of class '{type.Name}'.", "Can't undelete item, internal application issue.");
         }
         var value = property.GetValue(item);
-        if(!AreEqual(softDelete.DeleteValue, value)) {
+        if(!AreEqual(deleteRule.DeleteValue, value)) {
             return UndeleteResult.NotUndeleted;
         }
         try {
-            property.SetValue(item, softDelete.UndeleteValue);
+            property.SetValue(item, deleteRule.UndeleteValue);
         }
         catch {
-            throw new DryException($"Can't complete undelete, value provided is not convertable to type of property '{softDelete.PropertyName}", "Can't undelete item, internal application issue.");
+            throw new DryException($"Can't complete undelete, value provided is not convertable to type of property '{deleteRule.PropertyName}", "Can't undelete item, internal application issue.");
         }
         return UndeleteResult.Undeleted;
     }
@@ -290,8 +291,7 @@ public class RuleEngine {
                 Action<object>? remove;
 
                 //If item is an IEnumerable check its RemoveFunctor
-                var enumerableItem = item as IEnumerable;
-                if(enumerableItem != null) {
+                if(item is IEnumerable enumerableItem) {
                     remove = RemoveFunctors[enumerableItem.GetType().GetGenericArguments().First()];
                     if(remove == null) {
                         return result;
@@ -314,8 +314,7 @@ public class RuleEngine {
             foreach(var item in items.Where(e => e is not null)) {
                 Action<object>? remove;
 
-                var enumerableItem = item as IEnumerable;
-                if(enumerableItem != null) {
+                if(item is IEnumerable enumerableItem) {
                     remove = RemoveFunctors[enumerableItem.GetType().GetGenericArguments().First()];
                     foreach(var eItem in enumerableItem) {
                         remove(eItem);
@@ -342,7 +341,7 @@ public class RuleEngine {
         }
         var type = typeof(T);
         var properties = type.GetProperties();
-        var softDeleteAttribute = type.GetCustomAttribute<SoftDeleteRuleAttribute>();
+        var deleteRuleAttribute = type.GetCustomAttribute<DeleteRuleAttribute>();
 
         foreach(var property in properties) {
             var ignore = property.GetCustomAttribute<JsonIgnoreAttribute>();
@@ -361,7 +360,7 @@ public class RuleEngine {
                 await ProcessCollectionUpdates(action, property, destination, sourceList);
             }
             else {
-                await ProcessIndividualUpdate(action, property, destination, sourceValue, depth, ignore, selector, softDeleteAttribute);
+                await ProcessIndividualUpdate(action, property, destination, sourceValue, depth, ignore, selector, deleteRuleAttribute);
             }
         }
     }
@@ -394,7 +393,7 @@ public class RuleEngine {
         }
     }
 
-    private async Task ProcessIndividualUpdate<T>(RuleAction action, PropertyInfo property, T destination, object? value, int depth, JsonIgnoreAttribute? ignoreAttribute, Func<RulesAttribute, RuleAction> selector, SoftDeleteRuleAttribute? softDeleteRuleAttribute)
+    private async Task ProcessIndividualUpdate<T>(RuleAction action, PropertyInfo property, T destination, object? value, int depth, JsonIgnoreAttribute? ignoreAttribute, Func<RulesAttribute, RuleAction> selector, DeleteRuleAttribute? deleteRuleAttribute)
     {
         // Check against null for object types and GetDefaultValue for boxed value types.
         if(action == RuleAction.IgnoreDefaults && (value == null || value.Equals(property.PropertyType.GetDefaultValue()))) {
@@ -426,7 +425,7 @@ public class RuleEngine {
             }
 
             // Do not allow property to be set to the value configured in SoftDeleteAttribute.
-            if(!same && softDeleteRuleAttribute?.DeleteValue != null && softDeleteRuleAttribute.PropertyName == property.Name && AreEqual(value, softDeleteRuleAttribute.DeleteValue)) {
+            if(!same && deleteRuleAttribute?.DeleteValue != null && deleteRuleAttribute.PropertyName == property.Name && AreEqual(value, deleteRuleAttribute.DeleteValue)) {
                 throw new DryException($"Invalid attempt to change property '{property.Name}' to the DeleteValue", "Unable to update, an attempt was made to make the entity appear deleted. Check your values to prevent this or use the dedicated delete functionality if available.");
             }
 
@@ -518,7 +517,7 @@ public class RuleEngine {
     private static bool AttemptSoftDelete<T>(T item)
     {
         var type = typeof(T);
-        var softDelete = type.GetCustomAttribute<SoftDeleteRuleAttribute>();
+        var softDelete = type.GetCustomAttribute<DeleteRuleAttribute>();
         if(softDelete == null) {
             return false;
         }
@@ -541,18 +540,18 @@ public class RuleEngine {
             .Where(e => e != null)
             .Select(e => new SoftDeleteItem {
                 Item = e,
-                SoftDeleteRuleAttribute = e.GetType().GetCustomAttribute<SoftDeleteRuleAttribute>(),
+                DeleteRuleAttribute = e.GetType().GetCustomAttribute<DeleteRuleAttribute>(),
                 PropInfo = null
             })
             .ToList();
 
         //Check SoftDeleteRule attribute is set on all items - Fail all if any missing.
-        if(data.Any(e => e.SoftDeleteRuleAttribute == null)) {
+        if(data.Any(e => e.DeleteRuleAttribute == null)) {
             return false;
         }
 
         foreach(var item in data) {
-            item.PropInfo = item.Item.GetType().GetProperty(item.SoftDeleteRuleAttribute!.PropertyName, BindingFlags.Instance | BindingFlags.Public);
+            item.PropInfo = item.Item.GetType().GetProperty((string)item.DeleteRuleAttribute!.PropertyName, BindingFlags.Instance | BindingFlags.Public);
         }
 
         //SoftDeleteRuleAttribute set on Invalid Property
@@ -562,10 +561,10 @@ public class RuleEngine {
 
         foreach(var item in data) {
             try {
-                item.PropInfo!.SetValue(item.Item, item.SoftDeleteRuleAttribute!.DeleteValue);
+                item.PropInfo!.SetValue((object)item.Item, (object?)item.DeleteRuleAttribute!.DeleteValue);
             }
             catch {
-                throw new DryException($"Can't complete soft-delete, value provided is not convertable to type of property '{item.SoftDeleteRuleAttribute!.PropertyName}", "Can't delete item, internal application issue.");
+                throw new DryException($"Can't complete soft-delete, value provided is not convertable to type of property '{item.DeleteRuleAttribute!.PropertyName}", "Can't delete item, internal application issue.");
             }
         }
 
@@ -574,7 +573,7 @@ public class RuleEngine {
 
     private class SoftDeleteItem {
         public required object Item { get; set; }
-        public SoftDeleteRuleAttribute? SoftDeleteRuleAttribute { get; set; }
+        public DeleteRuleAttribute? DeleteRuleAttribute { get; set; }
         public PropertyInfo? PropInfo { get; set; }
 
     }

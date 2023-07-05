@@ -5,6 +5,7 @@ namespace Sample.Shared;
 /// <summary>
 /// Represents a single geo-political region in a taxonomy of geo-political regions.
 /// </summary>
+[DeleteRule(DeleteAction.Recycle, nameof(DeleteStatus), DeleteStatus.Recycled, DeleteStatus.Live)]
 public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidatableObject {
 
     /// <summary>
@@ -59,6 +60,8 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidatableObjec
     [Display(Name = "Status", ShortName = "Status")]
     public RegionStatus Status { get; set; }
 
+    public DeleteStatus IsDeleted { get; set; }
+
     [JsonIgnore]
     public VersionInfo Version { get; set; } = new();
 
@@ -83,4 +86,10 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidatableObjec
     private static readonly Regex DivisionRegex = new(@"^\w{2}-\w{2,4}$", RegexOptions.Compiled);
     private static readonly Regex SubdivisionRegex = new(@"^\w{2}-\w{2,4}-\w{2,20}$", RegexOptions.Compiled);
 
+}
+
+public enum DeleteStatus
+{
+    Live,
+    Recycled, 
 }

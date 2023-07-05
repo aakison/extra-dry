@@ -7,7 +7,7 @@ namespace Sample.Shared;
 /// This is for properties that may appear as Enums, but have additional data associated with them.
 /// </summary>
 [DimensionTable]
-[SoftDeleteRule(nameof(State), SectorState.Inactive, SectorState.Active)]
+[DeleteRule(DeleteAction.Recycle, nameof(State), SectorState.Inactive, SectorState.Active)]
 public class Sector {
 
     /// <summary>

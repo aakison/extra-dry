@@ -1,6 +1,6 @@
 ﻿namespace ExtraDry.Blazor;
 
-public partial class DryMiniCard<TItem> : ComponentBase {
+public partial class DryMiniCard<TItem> : ComponentBase, IExtraDryComponent {
 
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
@@ -19,7 +19,7 @@ public partial class DryMiniCard<TItem> : ComponentBase {
     /// Additional attributes are chained to the root `div` on the control.
     /// </summary>
     [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object>? UnmatchedAttributes { get; set; }
+    public Dictionary<string, object>? UnmatchedAttributes { get; set; } = null!;
 
     /// <summary>
     /// Indicates if the thumbnail should be rendered.  

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Sample.Server.Controllers;
 
@@ -90,10 +91,23 @@ public class RegionController {
     }
 
     /// <summary>
+    /// Undeletes a previously deleted Region if it's still in the Recycle Bin.
+    /// </summary>
+    [HttpPost("api/regions/{code}:undelete")]
+    [Authorize(SamplePolicies.SamplePolicy)]
+    [SuppressMessage("ApiUsage", "DRY1107:HttpPost, HttpPut and HttpPatch methods should have Consumes attribute", Justification = "This is an empty-bodied RPC style call and not a REST Create.")]
+    [SuppressMessage("Usage", "DRY1104:Http Verbs should be named with their CRUD counterparts", Justification = "This is an Undelete RPC call using POST instead of a Create method.")]
+    public async Task UndeleteAsync(string code)
+    {
+        await regions.UndeleteAsync(code);
+    }
+
+    /// <summary>
     /// Populates the set of regions with commonly used regions
     /// </summary>
-    [HttpPost("api/populate/regions")]
+    [HttpPost("api/regions:populate")]
     [AllowAnonymous]
+    [SuppressMessage("ApiUsage", "DRY1107:HttpPost, HttpPut and HttpPatch methods should have Consumes attribute", Justification = "This is an empty-bodied RPC style call and not a REST Create.")]
     public async Task CreateBaseDataAsync()
     {
         var baseRegions = new Region[] {

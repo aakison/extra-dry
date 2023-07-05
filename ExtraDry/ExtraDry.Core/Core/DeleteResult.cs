@@ -12,15 +12,16 @@ public enum DeleteResult {
     NotDeleted,
 
     /// <summary>
-    /// The item was soft-deleted.  The entity had a `SoftDeleteRule` attribute.
-    /// Lambda expressions for `remove` and `commit` actions were _not_ executed.
+    /// The item was recycled/soft-deleted.  The entity had a `DeleteRule` attribute which 
+    /// requested a recycle be performed by updating a property.  Lambda expressions for 
+    /// `remove` and `commit` actions were _not_ executed.
     /// </summary>
     SoftDeleted,
 
     /// <summary>
-    /// The item was hard-deleted.  
-    /// Either a hard delete was requested or the entity had no `SoftDeleteRule` attribute.
-    /// Lambda expressions for `remove` and `commit` actions were executed.
+    /// The item was expunged/hard-deleted.  Either a hard delete was requested or the entity had 
+    /// a `DeleteRule` attribute which explicitly requested that hard delete be used. Lambda 
+    /// expressions for `remove` and `commit` actions were executed.
     /// </summary>
     HardDeleted,
 

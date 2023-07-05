@@ -34,7 +34,7 @@ public partial class DryNavigation : ComponentBase, IExtraDryComponent, IDisposa
 
     /// <inheritdoc />
     [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object>? UnmatchedAttributes { get; set; }
+    public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
 
     public async Task NavigateToPreviousAsync()
     {

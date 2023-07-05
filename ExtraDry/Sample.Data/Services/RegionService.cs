@@ -64,6 +64,13 @@ public class RegionService {
         rules.Delete(existing, () => database.Regions.Remove(existing), () => database.SaveChangesAsync());
     }
 
+    public async Task UndeleteAsync(string code)
+    {
+        var existing = await RetrieveAsync(code);
+        rules.Undelete(existing);
+        await database.SaveChangesAsync();
+    }
+
     private readonly SampleContext database;
 
     private readonly RuleEngine rules;

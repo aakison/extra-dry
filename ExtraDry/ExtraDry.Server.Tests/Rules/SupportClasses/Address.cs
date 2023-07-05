@@ -1,6 +1,6 @@
 ﻿namespace ExtraDry.Server.Tests.Rules;
 
-[SoftDeleteRule(nameof(Active), ActiveType.Deleted, ActiveType.Active)]
+[DeleteRule(DeleteAction.Recycle, nameof(Active), ActiveType.Deleted, ActiveType.Active)]
 public class Address {
 
     [Key]

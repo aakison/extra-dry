@@ -22,7 +22,7 @@ internal static class HtmlEngineHelper
         return CreatePatternStyle(style.Colors, style.Font);
     }
 
-    public static string CreatePatternStyle(ColorPair? colors, Font font)
+    public static string CreatePatternStyle(ColorPair? colors, Font? font)
     {
         var patternStyle = new StringBuilder();
         if (colors != null) {

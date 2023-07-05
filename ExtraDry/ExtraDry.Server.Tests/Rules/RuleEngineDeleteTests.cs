@@ -178,7 +178,7 @@ public class RuleEngineDeleteTests {
 
     private int step = 1;
 
-    [SoftDeleteRule(nameof(Active), false, true)]
+    [DeleteRule(DeleteAction.Recycle, nameof(Active), false, true)]
     public class SoftDeletable {
         public bool Active { get; set; } = true;
 
@@ -188,20 +188,21 @@ public class RuleEngineDeleteTests {
         public int UnRuled { get; set; } = 3;
     }
 
-    [SuppressMessage("Usage", "DRY1305:SoftDelete on classes should use nameof for property names.", Justification = "Required for testing.")]
-    [SoftDeleteRule("BadName", false, true)]
+    //Will need suppression again when DRY1305 is fixed.
+    //[SuppressMessage("Usage", "DRY1305:SoftDelete on classes should use nameof for property names.", Justification = "Required for testing.")]
+    [DeleteRule(DeleteAction.Recycle, "BadName", false, true)]
     public class BadPropertyDeletable
     {
         public bool Active { get; set; } = true;
     }
 
-    [SoftDeleteRule(nameof(Active), "not-bool")]
+    [DeleteRule(DeleteAction.Recycle, nameof(Active), "not-bool")]
     public class BadDeleteValueDeletable
     {
         public bool Active { get; set; } = true;
     }
 
-    [SoftDeleteRule(nameof(Status), null)]
+    [DeleteRule(DeleteAction.Recycle, nameof(Status), null)]
     public class ObjectDeletable
     {
         public object Status { get; set; } = new();

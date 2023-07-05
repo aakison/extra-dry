@@ -101,12 +101,12 @@ public class RuleEngineUndeleteTests {
         Assert.Null(obj.Status);
     }
 
-    [SoftDeleteRule(nameof(Status), "Deleted", null)]
+    [DeleteRule(DeleteAction.Recycle, nameof(Status), "Deleted", null)]
     public class NullUndelete {
         public string Status { get; set; } = "Active";
     }
 
-    [SoftDeleteRule(nameof(State), State.Deleted, State.Active)]
+    [DeleteRule(DeleteAction.Recycle, nameof(State), State.Deleted, State.Active)]
     public class SoftDeletable {
         public State State { get; set; } = State.Inactive;
     }
@@ -115,18 +115,19 @@ public class RuleEngineUndeleteTests {
         public State State { get; set; } = State.Inactive;
     }
 
-    [SoftDeleteRule(nameof(State), State.Deleted)]
+    [DeleteRule(DeleteAction.Recycle, nameof(State), State.Deleted)]
     public class NotUndeletable {
         public State State { get; set; } = State.Inactive;
     }
 
-    [SuppressMessage("Usage", "DRY1305:SoftDelete on classes should use nameof for property names.", Justification = "Required for testing.")]
-    [SoftDeleteRule("BadName", State.Deleted, State.Active)]
+    // Will need again when DRY1305 is fixed
+    //[SuppressMessage("Usage", "DRY1305:SoftDelete on classes should use nameof for property names.", Justification = "Required for testing.")]
+    [DeleteRule(DeleteAction.Recycle, "BadName", State.Deleted, State.Active)]
     public class BadProperty {
         public State State { get; set; } = State.Inactive;
     }
 
-    [SoftDeleteRule(nameof(State), State.Deleted, "BadValue")]
+    [DeleteRule(DeleteAction.Recycle, nameof(State), State.Deleted, "BadValue")]
     public class BadUndeleteValue {
         public State State { get; set; } = State.Inactive;
     }
