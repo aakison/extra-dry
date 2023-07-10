@@ -36,23 +36,32 @@ public partial class CodeBlock : ComponentBase, IExtraDryComponent {
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
 
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Id = $"extraDryCodeBlock{++instanceCount}";
+    }
+
     protected override void OnParametersSet()
     {
+        OldBody = Body;
         RenderChildContentToBody();
         var lines = Body.Split('\n').ToList();
         if(Normalize) {
             FormatLines(lines);
         }
         Body = string.Join("\n", lines);
-        Body = Body.Replace("&lt;", "<");
-        Body = Body.Replace("&gt;", ">");
-        Body = Body.Replace("&amp;", "&");
-        // TODO: Change to CSS for highlighting, but need to rationalize the classes first...
-        //var highlightedCode = highlighter.Highlight(Lang, Body);
-        var highlightedCode = Body;
-        Body = $"<pre><code data-lang=\"{Lang}\" class=\"{LangClass}\">{highlightedCode}</code></pre>";
+        Body = $"<pre><code id=\"{Id}\" data-lang=\"{Lang}\" class=\"{LangClass}\">{Body}</code></pre>";
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(OldBody != Body) {
+            await Module.InvokeVoidAsync("CodeBlock_AfterRender", Id);
+        }
+    }
+
+    protected string Id { get; set; } = string.Empty;
 
     protected string LangClass => $"language-{Lang}";
 
@@ -102,6 +111,8 @@ public partial class CodeBlock : ComponentBase, IExtraDryComponent {
             .Select(e => e.TextContent));
     }
 
+    private string OldBody { get; set; } = string.Empty;
+
     private string Body { get; set; } = string.Empty;
 
     private MarkupString MarkupBody => (MarkupString)Body;
@@ -109,4 +120,5 @@ public partial class CodeBlock : ComponentBase, IExtraDryComponent {
     [Inject]
     private ExtraDryJavascriptModule Module { get; set; } = null!;
 
+    private static int instanceCount = 0;
 }

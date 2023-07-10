@@ -1,14 +1,4 @@
-console.log(`Blazor Extra Dry by @aakison - https://github.com/fmi-works/extra-dry License - https://github.com/fmi-works/extra-dry/blob/main/LICENSE (MIT License)`);
-
-
-export function TriCheck_SetIndeterminate(id, value) {
-    var checkbox = document.getElementById(id);
-    if (checkbox != null) {
-        checkbox.indeterminate = value;
-    }
-}
-
-var loading = false;
+﻿var loading = false;
 var loaded = false;
 
 var deferredIds = [];
@@ -56,12 +46,4 @@ function LoadScriptAndFormat(id) {
 export function CodeBlock_AfterRender(id) {
     LoadScriptAndFormat(id);
     //import * as AutoLoader from "https://unpkg.com/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js";
-}
-
-export function DropDown_ScrollIntoView(id) {
-    var element = document.getElementById(id);
-    var options = { behavior: 'auto', block: 'nearest', inline: 'nearest' };
-    if(element != null) {
-        element.scrollIntoView(options);
-    }
 }
