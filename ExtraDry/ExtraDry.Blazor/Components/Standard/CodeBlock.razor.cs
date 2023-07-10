@@ -1,5 +1,4 @@
-﻿using ExtraDry.Highlight;
-using Microsoft.AspNetCore.Components.Rendering;
+﻿using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.RenderTree;
 using System.Diagnostics.CodeAnalysis;
 
@@ -49,15 +48,11 @@ public partial class CodeBlock : ComponentBase, IExtraDryComponent {
         Body = Body.Replace("&gt;", ">");
         Body = Body.Replace("&amp;", "&");
         // TODO: Change to CSS for highlighting, but need to rationalize the classes first...
-        var highlightedCode = highlighter.Highlight(Lang, Body);
+        //var highlightedCode = highlighter.Highlight(Lang, Body);
+        var highlightedCode = Body;
         Body = $"<pre><code data-lang=\"{Lang}\" class=\"{LangClass}\">{highlightedCode}</code></pre>";
     }
 
-    /// <summary>
-    /// The code pseudo-syntax highlighter.  Large startup time so use a singleton.
-    /// Not really used anywhere else so not forcing CodeBlock consumers to register in DI.
-    /// </summary>
-    private static readonly Highlighter highlighter = new(new HtmlEngine { UseCss = false });
 
     protected string LangClass => $"language-{Lang}";
 
