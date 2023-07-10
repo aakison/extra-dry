@@ -33,18 +33,32 @@ function LoadScriptAndFormat(id) {
         link.href = `${baseUrl}/themes/prism.css`;
         link.rel = 'stylesheet';
         head.appendChild(link);
+
+        var body = document.getElementsByTagName('body')[0];
         // Script is not a module, so load globally...
+
         var script = document.createElement('script');
+        var autoloader = document.createElement('script');
+
         script.type = 'text/javascript';
-        script.src = `${baseUrl}/prism.js`;
+        script.src = `${baseUrl}/components/prism-core.min.js`;
         script.setAttribute("data-manual", "true");
         script.onload = function () {
+            // Load the core script first, since it's async wait to load autoloader so that it has its dependencies.
+            body.appendChild(autoloader);
+        };
+
+        autoloader.type = 'text/javascript';
+        autoloader.src = `${baseUrl}/plugins/autoloader/prism-autoloader.min.js`;
+        autoloader.onload = function () {
             loaded = true;
             for (var i = 0; i < deferredIds.length; ++i) {
                 FormatCode(deferredIds[i]);
             }
         };
-        head.appendChild(script);
+
+        body.appendChild(script);
+
     }
 }
 
@@ -55,7 +69,6 @@ function LoadScriptAndFormat(id) {
 //
 export function CodeBlock_AfterRender(id) {
     LoadScriptAndFormat(id);
-    //import * as AutoLoader from "https://unpkg.com/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js";
 }
 
 export function DropDown_ScrollIntoView(id) {

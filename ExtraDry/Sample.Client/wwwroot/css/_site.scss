@@ -103,10 +103,11 @@ main {
 // Box in code and give it a slight background.
 //
 pre {
-    background-color: $var-primary-light;
-    padding: $margin;
+    // Prism will try to override, but don't want to create full theme.
+    background-color: $var-primary-light !important;
+    padding: $margin !important;
     border: solid 1px $var-primary-dark;
-    margin-bottom: $margin;
+    margin-bottom: $margin !important;
 }
 code {
     color: $var-secondary;
