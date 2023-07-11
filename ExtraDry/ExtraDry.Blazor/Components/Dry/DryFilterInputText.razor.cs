@@ -67,7 +67,7 @@ public partial class DryFilterInputText : ComponentBase, IExtraDryComponent {
 
     private string FreeTextFilter { get; set; } = string.Empty;
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", "dry-filter", "filter-text", "keywords", CssClass);
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "dry-field-filter", "filter-text", "keywords", CssClass);
 
     private bool filterInSync = true;
 

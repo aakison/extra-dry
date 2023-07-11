@@ -70,7 +70,7 @@ public partial class DryFilterEnumSelect : ComponentBase, IExtraDryComponent {
     //    }
     //}
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", "filter-enum", CssClass, PropertyNameSlug, PropertyTypeSlug);
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "dry-field-filter", "filter-enum", CssClass, PropertyNameSlug, PropertyTypeSlug);
 
     private string PropertyNameSlug => Property?.Property?.Name?.Split('.')?.Last()?.ToLowerInvariant() ?? string.Empty;
 
