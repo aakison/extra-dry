@@ -1,19 +1,33 @@
 ﻿namespace ExtraDry.Blazor.Internal;
 
+/// <summary>
+/// Builds a PageQuery for posting back to a server using a set of filters.  This also has change
+/// notifications so that display components can sync to the changing filters.  This is the primary
+/// mechanism by which filter components inform table views of filters and required refreshes.
+/// </summary>
 public class PageQueryBuilder {
 
+    /// <inheritdoc cref="PageQueryBuilder" />
     public PageQueryBuilder() { 
         TextFilter = new TextFilterBuilder() { FilterName = "Keywords" };
         Filters.Add(TextFilter);
     }
 
+    /// <summary>
+    /// Event to subscribe to to be notified when the page query has changed and views should 
+    /// be refreshed.
+    /// </summary>
     public event EventHandler? OnChanged;
 
+    /// <summary>
+    /// Manually rebuilds the query and notifices all observers that changes have been made.
+    /// </summary>
     public void NotifyChanged()
     {
         Query = Build();
         OnChanged?.Invoke(this, EventArgs.Empty);
     }
+
 
     public PageQuery Build()
     {
@@ -31,40 +45,22 @@ public class PageQueryBuilder {
         NotifyChanged();
     }
 
+    /// <summary>
+    /// A list of all filterable items that this page query supports.  These supports any filter
+    /// concept that can be bound to such as free-text, enum select lists, etc.
+    /// </summary>
     public List<FilterBuilder> Filters { get; } = new();
 
+    /// <summary>
+    /// A generic text filter that can be applied.  This is typically just words written by users
+    /// but will technically support any ExtraDry FilterQuery.  
+    /// </summary>
     public TextFilterBuilder TextFilter { get; }
 
+    /// <summary>
+    /// The currently active page query.  Filters will be updated and will notify through OnChanged 
+    /// when a new Query is available.
+    /// </summary>
     public PageQuery Query { get; private set; } = new();
 
-}
-
-public abstract class FilterBuilder
-{
-    public string FilterName { get; set; } = string.Empty;
-
-    public abstract string Build();
-
-    public abstract void Reset();
-}
-
-public class TextFilterBuilder : FilterBuilder {
-    public string Keywords { get; set; } = string.Empty;
-
-    public override string Build() => Keywords.Trim();
-
-    public override void Reset() => Keywords = string.Empty;
-}
-
-public class EnumFilterBuilder : FilterBuilder
-{
-    public List<string> Values { get; } = new();
-
-    public override string Build() => Values.Any() ? $"{FilterName}:{QuotedValues}" : "";
-
-    public override void Reset() => Values.Clear();
-
-    private string QuotedValues => string.Join('|', Values.Where(e => !string.IsNullOrWhiteSpace(e)).Select(QuotedValue));
-
-    private string QuotedValue(string value) => value.Contains(' ') || value.Contains('|') ? $"\"{value}\"" : value;
 }
