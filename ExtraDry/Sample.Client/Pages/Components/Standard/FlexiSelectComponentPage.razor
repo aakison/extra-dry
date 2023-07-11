@@ -22,7 +22,7 @@
             private List&lt;Employee&gt; Employees { get; set; } = ...;
         }
     </CodeBlock>
-    <FlexiSelect Data="@Data" MultiSelect="@MultiSelect" FilterPlaceholder="@FilterPlaceholder" ShowFilterThreshold="@ShowFilterThreshold" Title="@FormTitle" ShowTitle="@ShowTitle" @bind-Value="Value" @bind-Values="Values" />
+    <FlexiSelect DebugCss="true" Data="@Data" MultiSelect="@MultiSelect" FilterPlaceholder="@FilterPlaceholder" ShowFilterThreshold="@ShowFilterThreshold" Title="@FormTitle" ShowTitle="@ShowTitle" @bind-Value="Value" @bind-Values="Values" />
     <h5>Bound Values</h5>
     <h6>Value:</h6>
     @if(Value != null) {

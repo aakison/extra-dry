@@ -83,6 +83,10 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent {
     [Parameter]
     public int AnimationDuration { get; set; }
 
+    /// <inheritdoc cref="ComboBox{TItem}.DebugCss" />
+    [Parameter]
+    public bool DebugCss { get; set; }
+
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;

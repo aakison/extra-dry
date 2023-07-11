@@ -16,7 +16,7 @@
             }
         }
     </Button>
-    <MiniDialog @ref="MiniDialog" CssClass="@CssClass" LoseFocusAction="MiniDialogAction.SaveAndClose" 
+    <MiniDialog @ref="MiniDialog" CssClass="@CssClass" DebugCss="@DebugCss" LoseFocusAction="MiniDialogAction.SaveAndClose" 
             AnimationDuration="@AnimationDuration" OnSubmit="@OnSubmit" OnCancel="@OnCancel"
             Title="@Title" ShowTitle="@ShowTitle">
         <FlexiSelectForm TItem="TItem" Data="@Data" MultiSelect="@MultiSelect" Value="@Value" ValueChanged="@DoValueChanged"

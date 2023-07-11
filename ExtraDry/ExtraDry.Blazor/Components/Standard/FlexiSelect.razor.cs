@@ -96,6 +96,10 @@ public partial class FlexiSelect<TItem> : ComponentBase, IExtraDryComponent {
     [Parameter]
     public EventCallback<List<TItem>?> ValuesChanged { get; set; }
 
+    /// <inheritdoc cref="MiniDialog.DebugCss" />
+    [Parameter]
+    public bool DebugCss { get; set; }
+
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;

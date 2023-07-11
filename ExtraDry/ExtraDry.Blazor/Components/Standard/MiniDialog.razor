@@ -1,8 +1,9 @@
 ﻿@namespace ExtraDry.Blazor
 @implements IExtraDryComponent
 
-@if(Visible) {
-    <section class="@CssClasses curtain" @attributes="@UnmatchedAttributes">
+@if(Visible || DebugCss) {
+    var localStyle = !Visible && DebugCss ? "display: none" : "";
+    <section class="@CssClasses curtain" @attributes="@UnmatchedAttributes" style="@localStyle">
         @* Tabindex is required so the outer div can get focus, then respond to events *@
         <div class="@CssClasses form" @ref="Form" @onfocusout="OnFocusOut" @onfocusin="OnFocusIn" @onkeydown="OnKeyDown" tabindex="0">
             <header>
