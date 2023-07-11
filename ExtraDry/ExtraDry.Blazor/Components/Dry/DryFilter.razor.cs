@@ -26,6 +26,10 @@ public partial class DryFilter<TItem> : ComponentBase, IExtraDryComponent {
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
 
+    /// <inheritdoc cref="DryPageQueryView.PageQueryBuilder" />
+    [CascadingParameter]
+    public PageQueryBuilder? PageQueryBuilder { get; set; }
+
     protected void DoFiltersSubmit(DialogEventArgs _)
     {
         DisplayedFilters = SelectedFilters.ToList();
@@ -34,6 +38,11 @@ public partial class DryFilter<TItem> : ComponentBase, IExtraDryComponent {
     protected void DoFiltersCancel(DialogEventArgs _)
     {
         SelectedFilters = DisplayedFilters.ToList();
+    }
+
+    private void DoFiltersReset(MouseEventArgs _)
+    {
+        PageQueryBuilder?.Reset();
     }
 
     private List<string> AllFilters { get; }

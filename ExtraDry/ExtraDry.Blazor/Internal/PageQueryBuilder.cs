@@ -23,6 +23,14 @@ public class PageQueryBuilder {
         return Query;
     }
 
+    public void Reset()
+    {
+        foreach(var filter in Filters) {
+            filter.Reset();
+        }
+        NotifyChanged();
+    }
+
     public List<FilterBuilder> Filters { get; } = new();
 
     public TextFilterBuilder TextFilter { get; }
@@ -36,12 +44,16 @@ public abstract class FilterBuilder
     public string FilterName { get; set; } = string.Empty;
 
     public abstract string Build();
+
+    public abstract void Reset();
 }
 
 public class TextFilterBuilder : FilterBuilder {
     public string Keywords { get; set; } = string.Empty;
 
     public override string Build() => Keywords.Trim();
+
+    public override void Reset() => Keywords = string.Empty;
 }
 
 public class EnumFilterBuilder : FilterBuilder
@@ -49,6 +61,8 @@ public class EnumFilterBuilder : FilterBuilder
     public List<string> Values { get; } = new();
 
     public override string Build() => Values.Any() ? $"{FilterName}:{QuotedValues}" : "";
+
+    public override void Reset() => Values.Clear();
 
     private string QuotedValues => string.Join('|', Values.Where(e => !string.IsNullOrWhiteSpace(e)).Select(QuotedValue));
 
