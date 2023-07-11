@@ -63,7 +63,7 @@ public partial class CodeBlock : ComponentBase, IExtraDryComponent {
 
     protected string Id { get; set; } = string.Empty;
 
-    protected string LangClass => $"language-{Lang}";
+    protected string LangClass => Lang == "blazor" ? "language-typescript" : $"language-{Lang}";
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "code-block", CssClass);
 
