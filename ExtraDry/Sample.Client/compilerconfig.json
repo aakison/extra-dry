@@ -58,6 +58,12 @@
     "minify": {
       "enabled": false
     }
+  },
+  {
+    "outputFile": "Pages/Components/Advanced/RevealComponentPage.razor.css",
+    "inputFile": "Pages/Components/Advanced/RevealComponentPage.razor.scss",
+    "minify": {
+      "enabled": false
+    }
   }
-
 ]

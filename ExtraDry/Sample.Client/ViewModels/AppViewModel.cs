@@ -89,6 +89,28 @@ public class AppViewModel {
                         },
                     },
                     new Menu {
+                        Icon = "standard-components",
+                        Title = "Advanced Components",
+                        ActiveMatch = "/components/advanced",
+                        NavLink = "/components/advanced/reveal",
+                        Children = new Menu[] {
+                            new Menu {
+                                Icon = "suspense",
+                                Title = "Suspense",
+                                ActiveMatch = "/components/advanced/suspense",
+                                NavLink = "/components/advanced/suspense",
+                                NavAction = () => navigation.NavigateTo("/components/advanced/suspense")
+                            },
+                            new Menu {
+                                Icon = "reveal",
+                                Title = "Reveal",
+                                ActiveMatch = "/components/advanced/reveal",
+                                NavLink = "/components/advanced/reveal",
+                                NavAction = () => navigation.NavigateTo("/components/advanced/reveal")
+                            },
+                        },
+                    },
+                    new Menu {
                         Icon = "dry-components",
                         Title = "DRY Components",
                         ActiveMatch = "/components/dry",

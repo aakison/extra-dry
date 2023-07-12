@@ -14,7 +14,7 @@ public sealed partial class TableMenu<TItem> : ComponentBase {
     public IListService<TItem>? ItemsSource { get; set; }
 
     [Parameter]
-    public DryExpandable Expandable { get; set; } = null!;
+    public Reveal Reveal { get; set; } = null!;
 
     [Command(Icon = "plus")]
     public void AddItem() { }
@@ -22,7 +22,7 @@ public sealed partial class TableMenu<TItem> : ComponentBase {
     [Command(Icon = "filter")]
     public async Task Filter()
     {
-        await Expandable.Toggle();
+        await Reveal.ToggleAsync();
     }
 
     [Command(Icon = "expand")]

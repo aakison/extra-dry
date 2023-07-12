@@ -24,8 +24,8 @@
     "minify": { "enabled": false }
   },
   {
-    "outputFile": "Components/DryExpandable.razor.css",
-    "inputFile": "Components/DryExpandable.razor.scss",
+    "outputFile": "Components/Standard/Reveal.razor.css",
+    "inputFile": "Components/Standard/Reveal.razor.scss",
     "minify": { "enabled": false }
   },
   {
