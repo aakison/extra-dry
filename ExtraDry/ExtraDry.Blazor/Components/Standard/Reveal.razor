@@ -1,6 +1,6 @@
 ﻿@namespace ExtraDry.Blazor
 
-<div class="@CssClasses" @attributes="@UnmatchedAttributes">
+<div class="@CssClasses" @attributes="@UnmatchedAttributes" style="@InlineStyle">
     @if (ShouldRenderChild)
     {
         @ChildContent

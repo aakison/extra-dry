@@ -20,6 +20,13 @@ public partial class Reveal : ComponentBase, IExtraDryComponent {
     public int Duration { get; set; } = 0;
 
     /// <summary>
+    /// When the mode is `Expanding`, the height of the expanded content in pixels.  
+    /// Ignored otherwise.
+    /// </summary>
+    [Parameter]
+    public int Height { get; set; } = 50;
+
+    /// <summary>
     /// Indicates if the child content is retained in the DOM or unloaded after being concealed.
     /// </summary>
     [Parameter]
@@ -28,6 +35,13 @@ public partial class Reveal : ComponentBase, IExtraDryComponent {
     /// <inheritdoc cref="IExtraDryComponent.CssClass" />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The mode use for the Reveal, can be either Expand or Fade for built-in effects, or CssOnly
+    /// to enable custom reveal animations with your own CSS.
+    /// </summary>
+    [Parameter]
+    public RevealMode Mode { get; set; } = RevealMode.Fade;
 
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
@@ -103,7 +117,7 @@ public partial class Reveal : ComponentBase, IExtraDryComponent {
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass, "reveal", StateClass);
 
-    private bool ShouldRenderChild => KeepInDom || State != RevealState.None;
+    private bool ShouldRenderChild => Mode == RevealMode.Fade || KeepInDom || State != RevealState.None;
 
     private string StateClass => State switch {
         RevealState.Revealing => "revealing",
@@ -111,4 +125,29 @@ public partial class Reveal : ComponentBase, IExtraDryComponent {
         RevealState.Revealed => "revealed",
         _ => "concealed",
     };
+
+    private string InlineStyle {
+        get {
+            var style = string.Empty;
+            if(Mode == RevealMode.Fade) {
+                style = $"transition: opacity {AdjustedDuration / 1000f}s;";
+                if(State == RevealState.Concealing || State == RevealState.Concealed || State == RevealState.None) {
+                    style = $"{style} opacity: 0%;";
+                }
+                else {
+                    style = $"{style} opacity: 100%;";
+                }
+            }
+            else if(Mode == RevealMode.Expand) {
+                style = $"transition: height {AdjustedDuration / 1000f}s; overflow: hidden;";
+                if(State == RevealState.Concealing || State == RevealState.Concealed || State == RevealState.None) {
+                    style = $"{style} height: 0;";
+                }
+                else {
+                    style = $"{style} height: {Height}px";
+                }
+            }
+            return style;
+        }
+    }
 }
