@@ -1,13 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using System.Net;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace ExtraDry.Server;
 
 public static class ExtraDryServiceCollectionExtensions {
 
-    public static IServiceCollection AddAuthorizationResponse(this IServiceCollection service, Action<AuthorizationResponseOptions>? options = default)
+    public static IServiceCollection AddExtraDry(this IServiceCollection service, Action<ExtraDryOptions>? options = default)
     {
         options ??= (opts => { });
 
@@ -15,5 +12,3 @@ public static class ExtraDryServiceCollectionExtensions {
         return service;
     }
 }
-
-

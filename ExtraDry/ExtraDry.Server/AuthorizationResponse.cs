@@ -7,9 +7,9 @@ namespace ExtraDry.Server;
 public class AuthorizationResponse {
 
     private readonly RequestDelegate next;
-    private readonly AuthorizationResponseOptions options;
+    private readonly ExtraDryOptions options;
 
-    public AuthorizationResponse(RequestDelegate next, IOptions<AuthorizationResponseOptions> options)
+    public AuthorizationResponse(RequestDelegate next, IOptions<ExtraDryOptions> options)
     {
         this.next = next;
         this.options = options.Value;
