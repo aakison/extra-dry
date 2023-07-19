@@ -16,6 +16,10 @@ public partial class DryFilterEnumSelect : ComponentBase, IExtraDryComponent, ID
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
+    /// <inheritdoc cref="FlexiSelect{TItem}.Placeholder" />
+    [Parameter]
+    public string Placeholder { get; set; } = "Select...";
+
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
@@ -68,7 +72,7 @@ public partial class DryFilterEnumSelect : ComponentBase, IExtraDryComponent, ID
     private bool FiltersMatchValues() {
         // Quick a common check based on count of values...
         var filterCount = Filter?.Values?.Count ?? 0;
-        var valueCount = Values?.Count() ?? 0;
+        var valueCount = Values?.Count ?? 0;
         if(filterCount != valueCount) {
             return false;
         }

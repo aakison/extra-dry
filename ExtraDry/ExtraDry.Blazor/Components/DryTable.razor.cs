@@ -50,13 +50,17 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
 
     private bool HasCommandsColumn => description.ContextCommands.Any();
 
-    private string TableClasses => $"{ModelClass} {FilteredClass} {EmptyClass}";
+    private string TableClasses => $"{ModelClass} {FilteredClass} {StateClass}";
 
     private string ModelClass => description.ModelType?.Name?.ToLowerInvariant() ?? "";
 
     private string FilteredClass => string.IsNullOrWhiteSpace(PageQueryBuilder?.Build()?.Filter) ? "unfiltered" : "filtered";
 
-    private string EmptyClass => InternalItems.Any() ? "full" : firstLoadCompleted ? "empty" : "loading";
+    private string StateClass => 
+        InternalItems.Any() ? "full" 
+        : changing ? "changing"
+        : firstLoadCompleted ? "empty" 
+        : "loading";
 
     private Virtualize<ListItemInfo<TItem>>? VirtualContainer { get; set; }
 
@@ -90,13 +94,18 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
         StateHasChanged();
     }
 
+    private bool changing = false;
+
     private async void Notify_OnChanged(object? sender, EventArgs e)
     {
         Console.WriteLine("Got notification");
+        changing = true;
+        StateHasChanged();
         InternalItems.Clear();
         if(VirtualContainer != null) {
             await VirtualContainer.RefreshDataAsync();
         }
+        changing = false;
         StateHasChanged();
     }
 
@@ -193,10 +202,12 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
         }
         else {
             // Server side sort, can't assume all items, clear them out and re-request.
+            changing = true;
             InternalItems.Clear();
             if(VirtualContainer != null) {
                 await VirtualContainer.RefreshDataAsync();
             }
+            changing = false;
         }
     }
 

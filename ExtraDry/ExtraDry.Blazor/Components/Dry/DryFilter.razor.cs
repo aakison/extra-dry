@@ -19,6 +19,14 @@ public partial class DryFilter<TItem> : ComponentBase, IExtraDryComponent {
     [Parameter]
     public string Placeholder { get; set; } = "filter by keyword...";
 
+    /// <summary>
+    /// The pattern for the placeholder that is applied when a select list is shown.  The pattern
+    /// supports the name of the select field through the use of the string format positional
+    /// operator '{0}'.
+    /// </summary>
+    [Parameter]
+    public string SelectPlaceholderPattern { get; set; } = "Select {0}...";
+
     [Parameter]
     public List<string> VisibleFilters { get; set; } = new();
 
