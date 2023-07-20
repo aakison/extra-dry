@@ -17,28 +17,28 @@ public class ApiExceptionStatusCodesAttribute : ExceptionFilterAttribute {
     {
         base.OnException(context);
         if(context.Exception is ArgumentMismatchException ex) {
-            ExceptionResponse.RewriteResponse(context, HttpStatusCode.BadRequest, ex.UserMessage);
+            ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.BadRequest, ex.UserMessage);
             context.ExceptionHandled = true;
         }
         else if(context.Exception is ArgumentOutOfRangeException) {
-            ExceptionResponse.RewriteResponse(context, HttpStatusCode.NotFound);
+            ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.NotFound);
             context.ExceptionHandled = true;
         }
         else if(context.Exception is ArgumentException || context.Exception is ArgumentNullException) {
-            ExceptionResponse.RewriteResponse(context, HttpStatusCode.BadRequest);
+            ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.BadRequest);
             context.ExceptionHandled = true;
         }
         else if(context.Exception is NotImplementedException) {
-            ExceptionResponse.RewriteResponse(context, HttpStatusCode.NotImplemented);
+            ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.NotImplemented);
             context.ExceptionHandled = true;
         }
         else if(context.Exception is SecurityException) {
-            ExceptionResponse.RewriteResponse(context, HttpStatusCode.Forbidden);
+            ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.Forbidden);
             context.ExceptionHandled = true;
         }
         else if(context.Exception is DryException dryException) {
             // TODO: better handling here...
-            ExceptionResponse.RewriteResponse(context, HttpStatusCode.BadRequest, dryException.ProblemDetails.Detail);
+            ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.BadRequest, dryException.ProblemDetails.Detail);
             context.ExceptionHandled = true;
         }
     }
