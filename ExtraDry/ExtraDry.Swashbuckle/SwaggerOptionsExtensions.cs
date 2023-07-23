@@ -25,7 +25,13 @@ public static class SwaggerOptionsExtensions {
         openapi.SchemaFilter<ExtraDrySchemaFilter>();
     }
 
+    [Obsolete("Use `UseExtraDry` instead.")]
     public static void AddExtraDry(this SwaggerUIOptions swagger)
+    {
+        swagger.UseExtraDry();
+    }
+
+    public static void UseExtraDry(this SwaggerUIOptions swagger)
     {
         swagger.SwaggerEndpoint($"/swagger/{GroupName}/swagger.json", "Instructions");
         swagger.EnableTryItOutByDefault();
