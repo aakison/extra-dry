@@ -10,7 +10,7 @@ public interface IResourceIdentifiers {
     /// A user readable reference to the created resource. Used in the URL to access the new 
     /// resource, but may change.
     /// </summary>
-    /// <example>widget</example>
+    /// <example>acme-widget</example>
     public string Slug { get; set; }
 
     /// <summary>
@@ -18,4 +18,17 @@ public interface IResourceIdentifiers {
     /// </summary>
     /// <example>e8b79f39-3398-4aed-9339-7250166204e5</example>
     public Guid Uuid { get; set; }
+
+    /// <summary>
+    /// The title of the resource that is suitable for displaying to users as a named reference. 
+    /// </summary>
+    /// <remarks>
+    /// While this property is not strictly part of a reference, it massively improves the overall 
+    /// performance of the system.  Resource references are typically listed within a enclosing 
+    /// resource which needs to display this information to users through a UI.  In these cases
+    /// having the information available and preventing potentially dozens of additional API calls
+    /// is worth the trade-off.
+    /// </remarks>
+    /// <example>Acme Widget</example>
+    public string Title { get; set;}
 }

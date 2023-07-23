@@ -9,25 +9,22 @@ public class ResourceReference : IResourceIdentifiers {
     /// <summary>
     /// The type of resource that has been created.
     /// </summary>
-    /// <example>Trade</example>
+    [Obsolete("Not strictly needed, prune from existing code.")]
     public string Type { get; set; } = string.Empty;
 
-    /// <summary>
-    /// A user readable reference to the created resource. Used in the URL to access the new resource, but may change.
-    /// </summary>
-    /// <example>widget</example>
+    /// <inheritdoc cref="IResourceIdentifiers.Slug" />
     public string Slug { get; set; } = string.Empty;
 
-    /// <summary>
-    /// A universally unique identifier for this new resource. It is used in the permalink.
-    /// </summary>
-    /// <example>e8b79f39-3398-4aed-9339-7250166204e5</example>
+    /// <inheritdoc cref="IResourceIdentifiers.Uuid" />
     public Guid Uuid { get; set; } = Guid.Empty;
+
+    /// <inheritdoc cref="IResourceIdentifiers.Title" />
+    public string Title { get; set; } = string.Empty;
 }
 
 /// <summary>
-/// A strongly typed version of an ApiReference to a resource suitable for sending through an API, 
-/// as for example the return value of a Create method.
+/// A strongly typed version of a ResourceReference to a resource suitable for sending through an 
+/// API, as for example the return value of a Create method.
 /// </summary>
 public class ResourceReference<T> : ResourceReference where T : IResourceIdentifiers {
 
@@ -38,7 +35,7 @@ public class ResourceReference<T> : ResourceReference where T : IResourceIdentif
     {
         Slug = entity.Slug;
         Uuid = entity.Uuid;
-        Type = entity.GetType().Name;
+        Title = entity.Title;
     }
 
 }
