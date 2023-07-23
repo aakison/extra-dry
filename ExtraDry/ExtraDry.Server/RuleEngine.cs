@@ -30,8 +30,9 @@ public class RuleEngine {
     public int MaxRecursionDepth { get; set; } = 20;
 
     /// <summary>
-    /// Given an potentially untrusted and unvalidated exemplar of an object, create a new copy of that object with business rules applied.
-    /// Any validation issues or rule violations will throw an exception.
+    /// Given an potentially untrusted and unvalidated exemplar of an object, create a new copy of 
+    /// that object with business rules applied.  Any validation issues or rule violations will 
+    /// throw an exception.
     /// </summary>
     public async Task<T> CreateAsync<T>(T exemplar)
     {
@@ -43,6 +44,12 @@ public class RuleEngine {
         validator.ThrowIfInvalid();
         var destination = Activator.CreateInstance<T>();
         await UpdatePropertiesAsync(exemplar, destination, MaxRecursionDepth, e => e.CreateAction);
+        if(destination is ICreateCallback syncTarget) {
+            syncTarget.OnCreate();
+        }
+        if(destination is ICreateAsyncCallback asyncTarget) {
+            await asyncTarget.OnCreateAsync();
+        }
         return destination;
     }
 
@@ -66,6 +73,12 @@ public class RuleEngine {
         validator.ValidateObject(source);
         validator.ThrowIfInvalid();
         await UpdatePropertiesAsync(source, destination, MaxRecursionDepth, e => e.UpdateAction);
+        if(destination is IUpdateCallback syncTarget) {
+            syncTarget.OnUpdate();
+        }
+        if(destination is IUpdateAsyncCallback asyncTarget) {
+            await asyncTarget.OnUpdateAsync();
+        }
     }
 
     /// <summary>
@@ -165,6 +178,13 @@ public class RuleEngine {
 
         if(await TryHardDeleteAsync(item, remove, commit) == DeleteResult.HardDeleted) {
             result = DeleteResult.HardDeleted;
+        }
+
+        if(item is IDeleteCallback syncTarget) {
+            syncTarget.OnDelete(result);
+        }
+        if(item is IDeleteAsyncCallback asyncTarget) {
+            await asyncTarget.OnDeleteAsync(result);
         }
 
         return result;
