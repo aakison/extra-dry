@@ -23,6 +23,7 @@ public static class SwaggerOptionsExtensions {
         openapi.OperationFilter<QueryDocumentationOperationFilter>();
         openapi.DocumentFilter<DisplayControllerDocumentFilter>();
         openapi.SchemaFilter<ExtraDrySchemaFilter>();
+        openapi.DocumentFilter<ResourceReferenceSchemaFilter>();
     }
 
     [Obsolete("Use `UseExtraDry` instead.")]
