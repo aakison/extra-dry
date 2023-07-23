@@ -7,10 +7,7 @@
 public class ResourceReference {
 
     /// <inheritdoc cref="ResourceReference" />
-    public ResourceReference(string title = "")
-    {
-        Title = title;
-    }
+    public ResourceReference() { }
 
     /// <inheritdoc cref="ResourceReference" />
     public ResourceReference(IResourceIdentifiers target)
