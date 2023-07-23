@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Core;
+﻿using System.ComponentModel;
+
+namespace ExtraDry.Core;
 
 /// <summary>
 /// A reference to a resource suitable for sending through an API, as for example the return value 
@@ -8,24 +10,6 @@ public class ResourceReference {
 
     /// <inheritdoc cref="ResourceReference" />
     public ResourceReference() { }
-
-    /// <inheritdoc cref="ResourceReference" />
-    [JsonConstructor]
-    public ResourceReference(string? type, Guid? uuid, string? slug, string? title) {
-        Type = type ?? string.Empty;
-        Uuid = uuid ?? Guid.Empty;
-        Slug = slug ?? string.Empty;
-        Title = title ?? string.Empty;
-    }
-
-    /// <inheritdoc cref="ResourceReference" />
-    //[JsonConstructor]
-    public ResourceReference(Guid? uuid, string? slug, string? title)
-    {
-        Uuid = uuid ?? Guid.Empty;
-        Slug = slug ?? string.Empty;
-        Title = title ?? string.Empty;
-    }
 
     /// <inheritdoc cref="ResourceReference" />
     public ResourceReference(IResourceIdentifiers target)
@@ -48,8 +32,8 @@ public class ResourceReference {
     public Guid Uuid { get; set; } = Guid.Empty;
 
     /// <inheritdoc cref="IResourceIdentifiers.Title" />
-    /// <remarks>No setter as titles should appear in OpenAPI as readonly.</remarks>
-    public string Title { get; } = string.Empty;
+    [ReadOnly(true)]
+    public string Title { get; set; } = string.Empty;
 }
 
 /// <summary>
@@ -57,6 +41,9 @@ public class ResourceReference {
 /// API, as for example the return value of a Create method.
 /// </summary>
 public class ResourceReference<T> : ResourceReference where T : IResourceIdentifiers {
+
+    /// <inheritdoc cref="ResourceReference" />
+    public ResourceReference() { }
 
     /// <summary>
     /// Create a reference to an entity that implements IWebIdentifier
