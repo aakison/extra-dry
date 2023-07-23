@@ -10,6 +10,14 @@ public class ResourceReference {
     public ResourceReference() { }
 
     /// <inheritdoc cref="ResourceReference" />
+    [JsonConstructor]
+    public ResourceReference(Guid? uuid, string? slug, string? title) {
+        Uuid = uuid ?? Guid.Empty;
+        Slug = slug ?? string.Empty;
+        Title = title ?? string.Empty;
+    }
+
+    /// <inheritdoc cref="ResourceReference" />
     public ResourceReference(IResourceIdentifiers target)
     {
         Slug = target.Slug;
