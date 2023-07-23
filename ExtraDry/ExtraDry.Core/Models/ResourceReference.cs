@@ -4,7 +4,21 @@
 /// A reference to a resource suitable for sending through an API, as for example the return value 
 /// of a Create method.
 /// </summary>
-public class ResourceReference : IResourceIdentifiers {
+public class ResourceReference {
+
+    /// <inheritdoc cref="ResourceReference" />
+    public ResourceReference(string title = "")
+    {
+        Title = title;
+    }
+
+    /// <inheritdoc cref="ResourceReference" />
+    public ResourceReference(IResourceIdentifiers target)
+    {
+        Slug = target.Slug;
+        Uuid = target.Uuid;
+        Title = target.Title;
+    }
 
     /// <summary>
     /// The type of resource that has been created.
@@ -19,7 +33,8 @@ public class ResourceReference : IResourceIdentifiers {
     public Guid Uuid { get; set; } = Guid.Empty;
 
     /// <inheritdoc cref="IResourceIdentifiers.Title" />
-    public string Title { get; set; } = string.Empty;
+    /// <remarks>No setter as titles should appear in OpenAPI as readonly.</remarks>
+    public string Title { get; } = string.Empty;
 }
 
 /// <summary>
@@ -31,11 +46,6 @@ public class ResourceReference<T> : ResourceReference where T : IResourceIdentif
     /// <summary>
     /// Create a reference to an entity that implements IWebIdentifier
     /// </summary>
-    public ResourceReference(T entity)
-    {
-        Slug = entity.Slug;
-        Uuid = entity.Uuid;
-        Title = entity.Title;
-    }
+    public ResourceReference(T entity) : base(entity) { }
 
 }
