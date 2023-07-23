@@ -11,7 +11,17 @@ public class ResourceReference {
 
     /// <inheritdoc cref="ResourceReference" />
     [JsonConstructor]
-    public ResourceReference(Guid? uuid, string? slug, string? title) {
+    public ResourceReference(string? type, Guid? uuid, string? slug, string? title) {
+        Type = type ?? string.Empty;
+        Uuid = uuid ?? Guid.Empty;
+        Slug = slug ?? string.Empty;
+        Title = title ?? string.Empty;
+    }
+
+    /// <inheritdoc cref="ResourceReference" />
+    //[JsonConstructor]
+    public ResourceReference(Guid? uuid, string? slug, string? title)
+    {
         Uuid = uuid ?? Guid.Empty;
         Slug = slug ?? string.Empty;
         Title = title ?? string.Empty;
