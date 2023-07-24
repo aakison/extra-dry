@@ -49,7 +49,7 @@ public partial class Suspense<TModel> : ComponentBase, IExtraDryComponent {
 
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
+    public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
     /// <inheritdoc cref="IndicatorSize" />
     [Parameter]

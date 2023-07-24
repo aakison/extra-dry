@@ -75,7 +75,7 @@
 
     public string Title(Employee employee) => $"{employee?.FirstName} {employee?.LastName}";
 
-    public string Subtitle(Employee employee) => employee?.Email;
+    public string Subtitle(Employee employee) => employee?.Email ?? string.Empty;
 
     public string Caption(Employee employee) => $"{employee?.FirstName} {employee?.LastName} ({employee?.Email})";
 

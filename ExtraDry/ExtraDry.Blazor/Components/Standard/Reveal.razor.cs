@@ -45,7 +45,7 @@ public partial class Reveal : ComponentBase, IExtraDryComponent {
 
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
+    public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
     /// <summary>
     /// Reveals the components children as necessary.  Will start in Concealed state, progress

@@ -12,18 +12,19 @@ else
         <CascadingValue Value="@this">
             <form class="@ModelNameWebId" onsubmit="return false;" action="/" method="GET">
                 <div class="@ModelNameWebId entity-info">
-                    <Icon Key="@Description.Icon" />
-                    <label>@Description.ModelDisplayName</label>
+                    <Icon Key="@Description?.Icon" />
+                    <label>@Description?.ModelDisplayName</label>
                 </div>
                 <div class="@ModelNameWebId status-properties">
-                    @foreach (var fieldset in FormDescription.Fieldsets.Take(FixedGroups)) {
+                    @foreach (var fieldset in FormDescription?.Fieldsets?.Take(FixedGroups) ?? Array.Empty<FormFieldset>()) {
                         <CascadingValue Value="@fieldset">
                             <DryFormFieldset T="@T" />
                         </CascadingValue>
                     }
                 </div>
                 <div class="@ModelNameWebId description-properties">
-                    @foreach(var fieldset in FormDescription.Fieldsets.Skip(FixedGroups)) {
+                    @foreach (var fieldset in FormDescription?.Fieldsets?.Skip(FixedGroups) ?? Array.Empty<FormFieldset>())
+                    {
                         <CascadingValue Value="@fieldset">
                             <DryFormFieldset T="@T" />
                         </CascadingValue>
@@ -39,7 +40,7 @@ else
                     }
                     <div class="line">
                         <div class="field">
-                            <DryButtonBar Commands="@Description.Commands" Target="@Model" />
+                            <DryButtonBar Commands="@Description?.Commands" Target="@Model" />
                         </div>
                     </div>
                 </div>

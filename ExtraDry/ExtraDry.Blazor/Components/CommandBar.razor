@@ -1,27 +1,28 @@
 ﻿@namespace ExtraDry.Blazor
 
 <div class="command-bar">
-    @foreach (var command in description.MenuCommands) {
-        <DryButton Command="@command" />
-    }
-    @if(description.ListSelectMode == ListSelectMode.Multiple) {
-        foreach (var command in description.MultiContextCommands) {
+    @if(description != null) {
+        @foreach (var command in description.MenuCommands) {
             <DryButton Command="@command" />
         }
-    }
-    @if(description.ListSelectMode == ListSelectMode.Single) {
-        @foreach (var command in description.ContextCommands) {
-            <DryButton Command="@command" />
+        @if(description.ListSelectMode == ListSelectMode.Multiple) {
+            foreach (var command in description.MultiContextCommands) {
+                <DryButton Command="@command" />
+            }
+        }
+        @if(description.ListSelectMode == ListSelectMode.Single) {
+            @foreach (var command in description.ContextCommands) {
+                <DryButton Command="@command" />
+            }
         }
     }
 </div>
 
 @code {
+    [Parameter, EditorRequired]
+    public object ViewModel { get; set; } = null!;
 
-    [Parameter]
-    public object ViewModel { get; set; }
-
-    private ViewModelDescription description;
+    private ViewModelDescription? description;
 
     protected override void OnInitialized()
     {

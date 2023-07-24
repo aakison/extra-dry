@@ -29,13 +29,13 @@ public partial class DrySingleSelect<T> : ComponentBase {
     {
         if(Model != null) {
             SelectedValue = Property?.GetValue(Model);
-            Logger.LogDebug($"DrySingleSelect initialized with {Values?.Count} values");
+            Logger.LogDebug("DrySingleSelect initialized with {Count} values", Values?.Count);
         }
     }
 
     private async Task SelectOption(ChangeEventArgs args)
     {
-        Logger.LogDebug($"DrySingleSelect Set Option by Key '{args.Value}'");
+        Logger.LogDebug("DrySingleSelect Set Option by Key '{Value}'", args.Value);
         if(Values == null || !int.TryParse(args.Value as string, out var index)) {
             return; // selected blank line
         }

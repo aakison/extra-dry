@@ -32,7 +32,7 @@ public partial class DryFilter<TItem> : ComponentBase, IExtraDryComponent {
 
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
+    public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
     /// <inheritdoc cref="DryPageQueryView.PageQueryBuilder" />
     [CascadingParameter]

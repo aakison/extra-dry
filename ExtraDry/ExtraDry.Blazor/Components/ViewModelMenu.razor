@@ -1,24 +1,26 @@
 ﻿@namespace ExtraDry.Blazor
 
 <h3>@Title</h3>
-@foreach(var command in description.MenuCommands) {
-    <button class="link" @onclick="command.ExecuteAsync">
-        @if(!string.IsNullOrWhiteSpace(command.Icon)) {
-            <i class="ms-Icon ms-Icon--@command.Icon"></i>
-        }
-        @command.Caption
-    </button>
+@if(description != null) {
+    foreach(var command in description.MenuCommands) {
+        <button class="link" @onclick="command.ExecuteAsync">
+            @if(!string.IsNullOrWhiteSpace(command.Icon)) {
+                <i class="ms-Icon ms-Icon--@command.Icon"></i>
+            }
+            @command.Caption
+        </button>
+    }
 }
 
 @code {
 
     [Parameter]
-    public string Title { get; set; }
+    public string? Title { get; set; }
 
-    [Parameter]
-    public object ViewModel { get; set; }
+    [Parameter, EditorRequired]
+    public object ViewModel { get; set; } = null!;
 
-    private ViewModelDescription description;
+    private ViewModelDescription? description;
 
     protected override void OnInitialized()
     {

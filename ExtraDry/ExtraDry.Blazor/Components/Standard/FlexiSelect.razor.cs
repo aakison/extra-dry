@@ -6,7 +6,7 @@
 /// platforms.  Includes list management and filtering.
 /// </summary>
 /// <typeparam name="TItem">The type for items in the select list.</typeparam>
-public partial class FlexiSelect<TItem> : ComponentBase, IExtraDryComponent {
+public partial class FlexiSelect<TItem> : ComponentBase, IExtraDryComponent where TItem : notnull {
 
     public string Id = $"Id{Guid.NewGuid()}";
 
@@ -102,7 +102,7 @@ public partial class FlexiSelect<TItem> : ComponentBase, IExtraDryComponent {
 
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
+    public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
     protected async void DoValueChanged(TItem item) {
         await ValueChanged.InvokeAsync(item);

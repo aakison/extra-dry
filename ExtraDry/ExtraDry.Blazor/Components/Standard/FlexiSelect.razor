@@ -1,5 +1,5 @@
 ﻿@namespace ExtraDry.Blazor
-@typeparam TItem
+@typeparam TItem where TItem : notnull
 
 <div class="@CssClasses" @attributes="@UnmatchedAttributes">
     <Button Caption="@Placeholder" @onclick="@DoClick" Affordance="select" ShowContent="@DisplayContent" ShowCaption="@DisplayPlaceholder">

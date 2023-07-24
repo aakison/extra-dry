@@ -137,7 +137,7 @@ namespace Sample.Server {
             app.UseStaticFiles();
             app.UseSwagger();
             app.UseSwaggerUI(swagger => {
-                swagger.AddExtraDry();
+                swagger.UseExtraDry();
                 swagger.SwaggerEndpoint($"/swagger/{ApiGroupNames.SampleApi}/swagger.json", "Sample APIs");
                 swagger.SwaggerEndpoint($"/swagger/{ApiGroupNames.ReferenceCodes}/swagger.json", "Reference Codes");
                 swagger.InjectStylesheet("/css/swagger-ui-extensions.css");

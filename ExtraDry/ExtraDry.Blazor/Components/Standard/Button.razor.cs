@@ -82,7 +82,7 @@ public partial class Button : ComponentBase, IExtraDryComponent {
 
     /// <inheritdoc />
     [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
+    public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass);
 

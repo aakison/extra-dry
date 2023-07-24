@@ -101,7 +101,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
 
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
+    public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
     [Inject]
     protected ExtraDryJavascriptModule Javascript { get; set; } = null!;

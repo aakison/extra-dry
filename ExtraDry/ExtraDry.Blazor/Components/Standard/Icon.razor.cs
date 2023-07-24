@@ -26,7 +26,7 @@ public partial class Icon : ComponentBase, IExtraDryComponent {
 
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
+    public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
     [CascadingParameter]
     protected ThemeInfo? ThemeInfo { get; set; }
@@ -75,9 +75,9 @@ public partial class Icon : ComponentBase, IExtraDryComponent {
     [Inject]
     private ILogger<Icon> Logger { get; set; } = null!;
 
-    private static string glyphPath = "/_content/ExtraDry.Blazor/img/glyphs";
+    private static readonly string glyphPath = "/_content/ExtraDry.Blazor/img/glyphs";
 
-    private static Dictionary<string, IconInfo> fallbackIcons = (new IconInfo[] {
+    private static readonly Dictionary<string, IconInfo> fallbackIcons = (new IconInfo[] {
             new IconInfo("search", $"{glyphPath}/magnifying-glass-regular.svg", "Search", "glyph"),
             new IconInfo("select", $"{glyphPath}/chevron-down-regular.svg", "Select", "glyph"),
             new IconInfo("clear", $"{glyphPath}/xmark-regular.svg", "Clear", "glyph"),

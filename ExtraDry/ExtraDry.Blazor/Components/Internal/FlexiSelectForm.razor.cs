@@ -4,7 +4,7 @@
 /// The internal form for the Flexi-Select component. 
 /// Do not use directly.
 /// </summary>
-public partial class FlexiSelectForm<TItem> : ComponentBase, IExtraDryComponent {
+public partial class FlexiSelectForm<TItem> : ComponentBase, IExtraDryComponent where TItem : notnull {
 
     /// <inheritdoc cref="IExtraDryComponent.CssClass" />
     [Parameter]
@@ -72,7 +72,7 @@ public partial class FlexiSelectForm<TItem> : ComponentBase, IExtraDryComponent 
 
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
+    public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
     protected override async void OnParametersSet()
     {

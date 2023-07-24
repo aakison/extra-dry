@@ -2,20 +2,22 @@
 @typeparam T
 
 @if(ReadOnly) {
-  <select class="@CssClass readonly" disabled>
-    <option value="@Values.IndexOf(SelectedValue)" selected>@SelectedValue?.ToString()</option>
-  </select>
+    var value = Values != null && SelectedValue != null ? Values.IndexOf(SelectedValue) : -1;
+    <select class="@CssClass readonly" disabled>
+        <option value="@value" selected>@SelectedValue?.ToString()</option>
+    </select>
 }
 else {
-  <select class="@CssClass" @onchange="SelectOption">
-    @if(SelectedValue == null) {
-      <option value="" disabled selected>@Property.Display?.Prompt</option>
-    }
-    @for(int i = 0; i < Values.Count; ++i) {
-      var value = Values[i];
-      var selected = value?.Equals(SelectedValue) ?? false;
-      var display = value?.ToString() ?? "-empty-";
-      <option value="@i" selected="@selected">@display</option>
-    }
-  </select>
+    <select class="@CssClass" @onchange="SelectOption">
+        @if(SelectedValue == null) {
+            <option value="" disabled selected>@Property?.Display?.Prompt</option>
+        }
+        @for(int i = 0; i < Values?.Count; ++i) {
+            var value = Values[i];
+            var selected = value?.Equals(SelectedValue) ?? false;
+            var display = value?.ToString() ?? "-empty-";
+            <option value="@i" selected="@selected">@display</option>
+        }
+    </select>
 }
+ 

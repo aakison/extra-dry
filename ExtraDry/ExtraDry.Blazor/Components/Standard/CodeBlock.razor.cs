@@ -34,7 +34,7 @@ public partial class CodeBlock : ComponentBase, IExtraDryComponent {
 
     /// <inheritdoc />
     [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
+    public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
     protected override void OnInitialized()
     {

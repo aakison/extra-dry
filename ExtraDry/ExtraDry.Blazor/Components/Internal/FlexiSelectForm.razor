@@ -1,5 +1,5 @@
 ﻿@namespace ExtraDry.Blazor.Internal
-@typeparam TItem
+@typeparam TItem where TItem : notnull
 
 <form class="@CssClasses" @attributes="@UnmatchedAttributes">
     @if(ShowFilter || MultiSelect) {

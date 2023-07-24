@@ -33,9 +33,7 @@ public partial class DryForm<T> : ComponentBase {
             Logger?.LogError("DryForm requires a ViewModel");
             return;
         }
-        if(Description == null) {
-            Description = new ViewModelDescription(typeof(T), ViewModel);
-        }
+        Description ??= new ViewModelDescription(typeof(T), ViewModel);
         if(Model != null) {
             FormDescription = new FormDescription(Description, Model);
         }

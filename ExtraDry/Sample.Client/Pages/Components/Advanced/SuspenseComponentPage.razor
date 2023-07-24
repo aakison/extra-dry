@@ -9,17 +9,15 @@
     <h3>Basic usage all indicators as default</h3>
     <CodeBlock Lang="blazor">
         &lt;Suspense TModel="Employee" ItemProvider=@@LoadEmployee&gt;
-        &lt;div&gtFirst Name: @@context.FirstName&lt;/div&gt
+            &lt;div&gtFirst Name: @@context.FirstName&lt;/div&gt
             &lt;div&gtLast Name: @@context.LastName&lt;/div&gt
         &lt;/Suspense&gt;
 
         @@code {
             public async Task&lt;Employee?&gt; LoadEmployee(CancellationToken cancellationToken)
             {
-                // Real data loading goes here
                 await Task.Delay(5000, cancellationToken);
-                return new Employee
-                {
+                return new Employee {
                     Uuid = Guid.NewGuid(),
                     FirstName = "John",
                     LastName = "Smith"
@@ -82,7 +80,7 @@
                 <div>
                     <Icon CssClass=@context.Size.ToString().ToLower() Key="loader-timeout" />
                 </div>
-                <div>Component timeout, <a href="" @onclick=@context?.Reload @onclick:preventDefault>try again</a></div>
+                <div>Component timeout, <a href="" @onclick=@context.Reload @onclick:preventDefault>try again</a></div>
             </Timeout>
         </Suspense>
     </div>
@@ -175,7 +173,7 @@
     {
         if(e.Value != null)
         {
-            Value = (LoadingState)Enum.Parse(typeof(LoadingState), e.Value.ToString(), true);
+            Value = (LoadingState)Enum.Parse(typeof(LoadingState), e.Value.ToString() ?? string.Empty, true);
         }
         await _childComponent!.Refresh();
         await _childComponent2!.Refresh();

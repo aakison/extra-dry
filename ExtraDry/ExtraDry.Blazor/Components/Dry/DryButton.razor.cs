@@ -67,7 +67,7 @@ public partial class DryButton : ComponentBase, IExtraDryComponent {
 
     /// <inheritdoc />
     [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
+    public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
     [CascadingParameter]
     protected SelectionSet? Selection { get; set; }

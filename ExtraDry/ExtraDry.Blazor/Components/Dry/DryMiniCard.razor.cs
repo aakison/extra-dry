@@ -15,11 +15,9 @@ public partial class DryMiniCard<TItem> : ComponentBase, IExtraDryComponent {
     [Parameter]
     public ISubjectViewModel<TItem>? ViewModel { get; set; }
 
-    /// <summary>
-    /// Additional attributes are chained to the root `div` on the control.
-    /// </summary>
+    /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object>? UnmatchedAttributes { get; set; } = null!;
+    public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
     /// <summary>
     /// Indicates if the thumbnail should be rendered.  

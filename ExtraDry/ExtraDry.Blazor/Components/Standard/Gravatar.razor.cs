@@ -32,7 +32,7 @@ public partial class Gravatar : ComponentBase, IExtraDryComponent {
 
     /// <inheritdoc />
     [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
+    public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "gravatar", CssClass);
 

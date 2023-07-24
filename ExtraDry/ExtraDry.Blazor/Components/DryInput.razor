@@ -33,7 +33,7 @@
             <div class="radio-buttons @Property.DisplayClass">
                 @foreach (var value in Property.GetDiscreteValues()) {
                     var selected = value.Key.ToString() == selectedValue?.ToString(); // force object to enum compare
-                    var valueClassName = value.Key.ToString().ToLower();
+                    var valueClassName = value.Key.ToString()?.ToLower();
                     var selectedClassName = selected ? $"selected {valueClassName}" : $"{valueClassName}";
                     <button class="@selectedClassName" @onclick="@(e => HandleClick(value.Key))">
                         @if(!string.IsNullOrWhiteSpace(Property.Icon)) {
@@ -51,7 +51,7 @@
         else { 
             @if(ReadOnly) {
                 <select class="@CssClasses readonly" disabled>
-                    <option value="@selectedValue.ToString()" selected>@selectedValue.ToString()</option>
+                    <option value="@selectedValue?.ToString()" selected>@selectedValue?.ToString()</option>
                 </select>
             } 
             else { 
@@ -84,7 +84,7 @@
     }
     else if(ReadOnly) {
         var selectedValue = Property.GetValue(Model);
-        <span class="@CssClasses">@selectedValue.ToString()</span>
+        <span class="@CssClasses">@selectedValue?.ToString()</span>
     }
     else { 
         <progress>loading...</progress>

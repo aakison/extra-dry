@@ -142,10 +142,8 @@ public class RuleEngine {
         if(deleteRule == null || deleteRule.CanUndelete == false) {
             return UndeleteResult.NotUndeleted;
         }
-        var property = type.GetProperty(deleteRule.PropertyName, BindingFlags.Instance | BindingFlags.Public);
-        if(property == null) {
-            throw new DryException($"Can't complete undelete, property '{deleteRule.PropertyName}' does not exist as a public instance property of class '{type.Name}'.", "Can't undelete item, internal application issue.");
-        }
+        var property = type.GetProperty(deleteRule.PropertyName, BindingFlags.Instance | BindingFlags.Public) 
+            ?? throw new DryException($"Can't complete undelete, property '{deleteRule.PropertyName}' does not exist as a public instance property of class '{type.Name}'.", "Can't undelete item, internal application issue.");
         var value = property.GetValue(item);
         if(!AreEqual(deleteRule.DeleteValue, value)) {
             return UndeleteResult.NotUndeleted;
@@ -508,10 +506,8 @@ public class RuleEngine {
             return (false, sourceValue);
         }
         else {
-            var method = typedEntityResolver.GetMethod("ResolveAsync");
-            if(method == null) {
-                throw new DryException($"Resolver '{type.Name}' object missing method ResolveAsync");
-            }
+            var method = typedEntityResolver.GetMethod("ResolveAsync") 
+                ?? throw new DryException($"Resolver '{type.Name}' object missing method ResolveAsync");
             // Force not-null return as ResolveAsync above is not-null return.
             dynamic task = method.Invoke(resolver, new object?[] { sourceValue })!;
             var result = (await task) as object;
