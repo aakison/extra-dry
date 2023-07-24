@@ -20,6 +20,13 @@ public partial class DryFilter<TItem> : ComponentBase, IExtraDryComponent {
     public string Placeholder { get; set; } = "filter by keyword...";
 
     /// <summary>
+    /// The optional content that is displayed alongside the filter.  This is useful to augment the
+    /// filter with additional controls that are rendered inside the filter dialog.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
     /// The pattern for the placeholder that is applied when a select list is shown.  The pattern
     /// supports the name of the select field through the use of the string format positional
     /// operator '{0}'.
