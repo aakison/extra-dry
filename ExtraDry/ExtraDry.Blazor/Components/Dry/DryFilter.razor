@@ -11,7 +11,7 @@
         var placeholder = string.Format(SelectPlaceholderPattern, property.Property.Name);
         <DryFilterEnumSelect Property="@property" FilterChanged="FilterChanged" Placeholder="@placeholder" />
     }
-    <FlexiSelect CssClass="filter-selector" Data="AllFilters" MultiSelect="true" @bind-Values="SelectedFilters" Placeholder="Filters" 
+    <FlexiSelect CssClass="filter-selector" Data="AllFilters" MultiSelect="true" @bind-Values="SelectedFilters" Title="Select Filters" Placeholder="Filters" 
         OnSubmit="DoFiltersSubmit" OnCancel="DoFiltersCancel" />
     <div class="filter-greedy" />
     <Button @onclick="DoFiltersReset" Caption="Reset" CssClass="filter-reset unobtrusive" />
