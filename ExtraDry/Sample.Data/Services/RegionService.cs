@@ -33,10 +33,8 @@ public class RegionService {
 
     public async Task<Region> RetrieveAsync(string code)
     {
-        var result = await TryRetrieveAsync(code);
-        if(result == null) {
-            throw new ArgumentOutOfRangeException(nameof(code));
-        }
+        var result = await TryRetrieveAsync(code)
+            ?? throw new ArgumentOutOfRangeException(nameof(code));
         return result;
     }
 
@@ -64,10 +62,10 @@ public class RegionService {
         rules.Delete(existing, () => database.Regions.Remove(existing), () => database.SaveChangesAsync());
     }
 
-    public async Task UndeleteAsync(string code)
+    public async Task RestoreAsync(string code)
     {
         var existing = await RetrieveAsync(code);
-        rules.Undelete(existing);
+        await rules.RestoreAsync(existing);
         await database.SaveChangesAsync();
     }
 

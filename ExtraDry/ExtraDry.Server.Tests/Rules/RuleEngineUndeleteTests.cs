@@ -5,98 +5,98 @@ namespace ExtraDry.Server.Tests.Rules;
 public class RuleEngineUndeleteTests {
 
     [Fact]
-    public void DeleteRequiresItem()
+    public async Task DeleteRequiresItem()
     {
         var rules = new RuleEngine(new ServiceProviderStub());
 
-        var lambda = () => {
-            rules.Undelete((object?)null);
+        var lambda = async () => {
+            await rules.RestoreAsync((object?)null);
         };
 
-        Assert.Throws<ArgumentNullException>(lambda);
+        await Assert.ThrowsAsync<ArgumentNullException>(lambda);
     }
 
     [Fact]
-    public void UndeleteWorksOnEnum()
+    public async Task UndeleteWorksOnEnum()
     {
         var rules = new RuleEngine(new ServiceProviderStub());
         var obj = new SoftDeletable();
         rules.TrySoftDelete(obj);
 
-        var result = rules.Undelete(obj);
+        var result = await rules.RestoreAsync(obj);
 
-        Assert.Equal(UndeleteResult.Undeleted, result);
+        Assert.Equal(RestoreResult.Restored, result);
     }
 
     [Fact]
-    public void NotDeletableDoesNothing()
+    public async Task NotDeletableDoesNothing()
     {
         var rules = new RuleEngine(new ServiceProviderStub());
         var obj = new NotDeletable();
 
-        var result = rules.Undelete(obj);
+        var result = await rules.RestoreAsync(obj);
 
-        Assert.Equal(UndeleteResult.NotUndeleted, result);
+        Assert.Equal(RestoreResult.NotRestored, result);
     }
 
     [Fact]
-    public void NotUndeletableDoesNothing()
+    public async Task NotUndeletableDoesNothing()
     {
         var rules = new RuleEngine(new ServiceProviderStub());
         var obj = new NotUndeletable();
         rules.TrySoftDelete(obj);
 
-        var result = rules.Undelete(obj);
+        var result = await rules.RestoreAsync(obj);
 
-        Assert.Equal(UndeleteResult.NotUndeleted, result);
+        Assert.Equal(RestoreResult.NotRestored, result);
     }
 
     [Fact]
-    public void BadPropertyException()
+    public async Task BadPropertyException()
     {
         var rules = new RuleEngine(new ServiceProviderStub());
         var obj = new BadProperty();
 
-        var lambda = () => {
-            rules.Undelete(obj);
+        var lambda = async () => {
+            await rules.RestoreAsync(obj);
         };
 
-        Assert.Throws<DryException>(lambda);
+        await Assert.ThrowsAsync<DryException>(lambda);
     }
 
     [Fact]
-    public void NotProperlyDeletedDontUndelete()
+    public async Task NotProperlyDeletedDontUndelete()
     {
         var rules = new RuleEngine(new ServiceProviderStub());
         var obj = new SoftDeletable();
 
-        var result = rules.Undelete(obj);
+        var result = await rules.RestoreAsync(obj);
 
-        Assert.Equal(UndeleteResult.NotUndeleted, result);
+        Assert.Equal(RestoreResult.NotRestored, result);
     }
 
     [Fact]
-    public void BadUndeleteValueException()
+    public async Task BadUndeleteValueException()
     {
         var rules = new RuleEngine(new ServiceProviderStub());
         var obj = new BadUndeleteValue();
         rules.TrySoftDelete(obj);
 
-        var lambda = () => {
-            rules.Undelete(obj);
+        var lambda = async () => {
+            await rules.RestoreAsync(obj);
         };
 
-        Assert.Throws<DryException>(lambda);
+        await Assert.ThrowsAsync<DryException>(lambda);
     }
 
     [Fact]
-    public void NullIsValidUndeleteValue()
+    public async Task NullIsValidUndeleteValue()
     {
         var rules = new RuleEngine(new ServiceProviderStub());
         var obj = new NullUndelete();
         rules.TrySoftDelete(obj);
 
-        rules.Undelete(obj);
+        await rules.RestoreAsync(obj);
 
         Assert.Null(obj.Status);
     }

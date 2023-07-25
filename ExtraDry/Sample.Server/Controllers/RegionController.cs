@@ -99,7 +99,7 @@ public class RegionController {
     [SuppressMessage("Usage", "DRY1104:Http Verbs should be named with their CRUD counterparts", Justification = "This is an Undelete RPC call using POST instead of a Create method.")]
     public async Task UndeleteAsync(string code)
     {
-        await regions.UndeleteAsync(code);
+        await regions.RestoreAsync(code);
     }
 
     /// <summary>

@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Http.Features;
 using System.Collections;
+using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
@@ -36,9 +38,7 @@ public class RuleEngine {
     /// </summary>
     public async Task<T> CreateAsync<T>(T exemplar)
     {
-        if(exemplar == null) {
-            throw new ArgumentNullException(nameof(exemplar));
-        }
+        ArgumentNullException.ThrowIfNull(exemplar, nameof(exemplar));
         var validator = new DataValidator();
         validator.ValidateObject(exemplar);
         validator.ThrowIfInvalid();
@@ -63,12 +63,8 @@ public class RuleEngine {
     /// </summary>
     public async Task UpdateAsync<T>(T source, T destination)
     {
-        if(source == null) {
-            throw new ArgumentNullException(nameof(source));
-        }
-        if(destination == null) {
-            throw new ArgumentNullException(nameof(destination));
-        }
+        ArgumentNullException.ThrowIfNull(source, nameof(source));
+        ArgumentNullException.ThrowIfNull(destination, nameof(destination));
         var validator = new DataValidator();
         validator.ValidateObject(source);
         validator.ThrowIfInvalid();
@@ -121,40 +117,6 @@ public class RuleEngine {
     public async Task<DeleteResult> DeleteAsync<T>(T item, Func<Task> remove, Action commit)
     {
         return await DeleteAsync(item, remove, WrapAction(commit));
-    }
-
-    /// <summary>
-    /// Given an item that has previously been deleted, attempts to undelete the item.
-    /// Will check that item can be undeleted based on `DeleteRule` on entity and that the item
-    /// is actually in a deleted state.
-    /// </summary>
-    /// <param name="item">The item to be undeleted</param>
-    /// <returns>Status of the undelete action.  If no undelete value exists or this item is not in a deleted state, then will return NoUndeleted.</returns>
-    /// <exception cref="DryException">If the `DeleteRule` attribute has invalid properties or values.</exception>
-    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Orthogonal with other members and might need to be made instance level in the future.")]
-    public UndeleteResult Undelete<T>(T item)
-    {
-        if(item == null) {
-            throw new ArgumentNullException(nameof(item));
-        }
-        var type = typeof(T);
-        var deleteRule = type.GetCustomAttribute<DeleteRuleAttribute>();
-        if(deleteRule == null || deleteRule.CanUndelete == false) {
-            return UndeleteResult.NotUndeleted;
-        }
-        var property = type.GetProperty(deleteRule.PropertyName, BindingFlags.Instance | BindingFlags.Public) 
-            ?? throw new DryException($"Can't complete undelete, property '{deleteRule.PropertyName}' does not exist as a public instance property of class '{type.Name}'.", "Can't undelete item, internal application issue.");
-        var value = property.GetValue(item);
-        if(!AreEqual(deleteRule.DeleteValue, value)) {
-            return UndeleteResult.NotUndeleted;
-        }
-        try {
-            property.SetValue(item, deleteRule.UndeleteValue);
-        }
-        catch {
-            throw new DryException($"Can't complete undelete, value provided is not convertable to type of property '{deleteRule.PropertyName}", "Can't undelete item, internal application issue.");
-        }
-        return UndeleteResult.Undeleted;
     }
 
     /// <summary>
@@ -250,6 +212,52 @@ public class RuleEngine {
             //Do not throw exceptions on commit- Just return appropriate result.
         }
         return result;
+    }
+
+    /// <summary>
+    /// Given an item that has previously been recycled, attempts to restore the item.  Will check 
+    /// that item can be undeleted based on `DeleteRule` on entity and that the item is actually 
+    /// in a deleted state.
+    /// </summary>
+    /// <param name="item">The item to be undeleted</param>
+    /// <returns>Status of the restore action.  If no restore value exists or this item is not 
+    /// in a recycled state, then will return NotRestored.</returns>
+    /// <exception cref="DryException">If the `DeleteRule` attribute has invalid properties or values.</exception>
+    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Orthogonal with other members and might need to be made instance level in the future.")]
+    public async Task<RestoreResult> RestoreAsync<T>(T item)
+    {
+        if(item == null) {
+            throw new ArgumentNullException(nameof(item));
+        }
+        var type = typeof(T);
+        var deleteRule = type.GetCustomAttribute<DeleteRuleAttribute>();
+        if(deleteRule == null || deleteRule.CanUndelete == false) {
+            return await CallbackAndReturn(RestoreResult.NotRestored);
+        }
+        var property = type.GetProperty(deleteRule.PropertyName, BindingFlags.Instance | BindingFlags.Public)
+            ?? throw new DryException($"Can't complete undelete, property '{deleteRule.PropertyName}' does not exist as a public instance property of class '{type.Name}'.", "Can't undelete item, internal application issue.");
+        var value = property.GetValue(item);
+        if(!AreEqual(deleteRule.DeleteValue, value)) {
+            return await CallbackAndReturn(RestoreResult.NotRestored);
+        }
+        try {
+            property.SetValue(item, deleteRule.UndeleteValue);
+        }
+        catch {
+            throw new DryException($"Can't complete undelete, value provided is not convertable to type of property '{deleteRule.PropertyName}", "Can't undelete item, internal application issue.");
+        }
+        return await CallbackAndReturn(RestoreResult.Restored);
+
+        async Task<RestoreResult> CallbackAndReturn(RestoreResult result)
+        {
+            if(item is IRestoreCallback syncCallback) {
+                syncCallback.OnRestore(result);
+            }
+            if(item is IRestoreAsyncCallback asyncCallback) {
+                await asyncCallback.OnRestoreAsync(result);
+            }
+            return result;
+        }
     }
 
     /// <summary>
