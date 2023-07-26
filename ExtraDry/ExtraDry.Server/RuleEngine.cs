@@ -83,7 +83,7 @@ public class RuleEngine {
     /// <param name="item">The item to delete.</param>
     public DeleteResult TrySoftDelete(object item)
     {
-        ArgumentNullException.ThrowIfNull(item, nameof(item));
+        ArgumentNullException.ThrowIfNull(item);
         var items = new[] { item };
         return TrySoftDelete(items);
     }
@@ -95,7 +95,7 @@ public class RuleEngine {
     [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Keep as standard service instance style for DI.")]
     public DeleteResult TrySoftDelete(object[] items)
     {
-        return AttemptSoftDelete(items) ? DeleteResult.SoftDeleted : DeleteResult.NotDeleted;
+        return AttemptSoftDelete(items) ? DeleteResult.Recycled : DeleteResult.Expunged;
     }
 
     /// <inheritdoc cref="DeleteAsync{T}(T, Func{Task}, Func{Task}?)" />
@@ -120,52 +120,69 @@ public class RuleEngine {
     }
 
     /// <summary>
-    /// Processes a hard delete of an item if possible.
+    /// Processes a delete of an item if possible, using either a soft-delete or a hard-delete 
+    /// pattern.  The chosen option is first checked against the DeleteRuleAttribute on the entity.
+    /// The OnDeleting callback can change the 
     /// If not possible, then soft-delete is performed instead.
     /// </summary>
     /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
     /// <param name="remove">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
-    /// <param name="commit">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
-    public async Task<DeleteResult> DeleteAsync<T>(T item, Func<Task> remove, Func<Task> commit)
+    /// <param name="execute">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
+    public async Task<DeleteResult> DeleteAsync<T>(T item, Func<Task> remove, Func<Task> execute)
     {
-        ArgumentNullException.ThrowIfNull(item, nameof(item));
+        ArgumentNullException.ThrowIfNull(item);
+        ArgumentNullException.ThrowIfNull(remove);
+        ArgumentNullException.ThrowIfNull(execute);
+
         var result = DeleteResult.NotDeleted;
+        var action = typeof(T).GetCustomAttribute<DeleteRuleAttribute>()?.DeleteAction ?? DeleteAction.Expunge;
 
-        if(TrySoftDelete(item) == DeleteResult.SoftDeleted) {
-            await commit();
-            result = DeleteResult.SoftDeleted;
+        if(item is IDeleteCallback syncBefore) {
+            syncBefore.OnDeleting(action);
+        }
+        if(item is IDeleteAsyncCallback asyncBefore) {
+            await asyncBefore.OnDeletingAsync(action);
         }
 
-        if(await TryHardDeleteAsync(item, remove, commit) == DeleteResult.HardDeleted) {
-            result = DeleteResult.HardDeleted;
+        if(action == DeleteAction.Recycle || action == DeleteAction.TryExpunge) {
+            if(TrySoftDelete(item) == DeleteResult.Recycled) {
+                await execute();
+                result = DeleteResult.Recycled;
+            }
+        }
+        if(action == DeleteAction.TryExpunge || action == DeleteAction.Expunge) {
+            if(await TryHardDeleteAsync(item, remove, execute) == DeleteResult.Expunged) {
+                result = DeleteResult.Expunged;
+            }
         }
 
-        if(item is IDeleteCallback syncTarget) {
-            syncTarget.OnDelete(result);
+        if(item is IDeleteCallback syncAfter) {
+            syncAfter.OnDeleted(result);
         }
         if(item is IDeleteAsyncCallback asyncTarget) {
-            await asyncTarget.OnDeleteAsync(result);
+            await asyncTarget.OnDeletedAsync(result);
         }
 
         return result;
     }
 
     /// <summary>
-    /// Processes a hard delete for multiple items if possible.
-    /// If not possible, then soft-delete is performed for all items instead.
-    /// Uses the remove actions from <see cref="RegisterRemove{T}(Action{T})" /> and commit action from <see cref="RegisterCommit(Func{Task})" />
+    /// Processes a hard delete for multiple items if possible. If not possible, then soft-delete 
+    /// is performed for all items instead.  Uses the remove actions from 
+    /// <see cref="RegisterRemove{T}(Action{T})" /> and commit action from 
+    /// <see cref="RegisterCommit(Func{Task})" />
     /// </summary>
     /// <param name="items">The list of items to delete.</param>
     public async Task<DeleteResult> DeleteAsync(params object[] items)
     {
         var result = DeleteResult.NotDeleted;
-        if(TrySoftDelete(items) == DeleteResult.SoftDeleted) {
+        if(TrySoftDelete(items) == DeleteResult.Recycled) {
             await CommitFunctor();
-            result = DeleteResult.SoftDeleted;
+            result = DeleteResult.Recycled;
         }
 
-        if(await TryHardDeleteAsync(items) == DeleteResult.HardDeleted) {
-            result = DeleteResult.HardDeleted;
+        if(await TryHardDeleteAsync(items) == DeleteResult.Expunged) {
+            result = DeleteResult.Expunged;
         }
 
         return result;
@@ -206,7 +223,7 @@ public class RuleEngine {
         try {
             await remove();
             await commit();
-            result = DeleteResult.HardDeleted;
+            result = DeleteResult.Expunged;
         }
         catch {
             //Do not throw exceptions on commit- Just return appropriate result.
@@ -294,7 +311,7 @@ public class RuleEngine {
         try {
             remove(item);
             await CommitFunctor();
-            result = DeleteResult.HardDeleted;
+            result = DeleteResult.Expunged;
         }
         catch {
             //Do not throw exceptions on commit - Just return appropriate result.
@@ -352,7 +369,7 @@ public class RuleEngine {
                 }
             }
             await CommitFunctor();
-            result = DeleteResult.HardDeleted;
+            result = DeleteResult.Expunged;
         }
         catch {
             //Do not throw exceptions on commit - Just return appropriate result.

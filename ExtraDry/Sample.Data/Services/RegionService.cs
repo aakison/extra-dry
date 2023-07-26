@@ -31,18 +31,18 @@ public class RegionService {
         await database.SaveChangesAsync();
     }
 
-    public async Task<Region> RetrieveAsync(string code)
-    {
-        var result = await TryRetrieveAsync(code)
-            ?? throw new ArgumentOutOfRangeException(nameof(code));
-        return result;
-    }
-
     public async Task<Region?> TryRetrieveAsync(string code)
     {
         return await database.Regions
             .Include(e => e.Ancestors)
             .FirstOrDefaultAsync(e => e.Code == code);
+    }
+
+    public async Task<Region> RetrieveAsync(string code)
+    {
+        var result = await TryRetrieveAsync(code)
+            ?? throw new ArgumentOutOfRangeException(nameof(code));
+        return result;
     }
 
     public async Task UpdateAsync(string code, Region item)

@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Core;
 
 /// <summary>
-/// When a `RuleEngine` Undelete method is called, indicates the result of the action.
+/// When a `RuleEngine` DeleteAsync method is called, indicates the result of the action.
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum DeleteResult {
@@ -16,13 +16,19 @@ public enum DeleteResult {
     /// requested a recycle be performed by updating a property.  Lambda expressions for 
     /// `remove` and `commit` actions were _not_ executed.
     /// </summary>
-    SoftDeleted,
+    Recycled,
+
+    [Obsolete("Use Recycled instead.")]
+    SoftDeleted = Recycled,
 
     /// <summary>
     /// The item was expunged/hard-deleted.  Either a hard delete was requested or the entity had 
     /// a `DeleteRule` attribute which explicitly requested that hard delete be used. Lambda 
     /// expressions for `remove` and `commit` actions were executed.
     /// </summary>
-    HardDeleted,
+    Expunged,
+
+    [Obsolete("Use Expunged instead.")]
+    HardDeleted = Expunged,
 
 }
