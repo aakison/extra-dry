@@ -259,7 +259,7 @@ public partial class FlexiSelectForm<TItem> : ComponentBase, IExtraDryComponent 
         {
             Id = $"item{id}";
             Title = item?.ToString() ?? "unnamed";
-            Source = item;
+            Source = item!; // TItem is notnull, not sure why had to override warning here.
             if(item is ISubjectViewModel subject) {
                 Title = subject.Title;
                 Subtitle = subject.Subtitle;

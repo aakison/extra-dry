@@ -21,7 +21,7 @@ public class RuleEngineDeleteTests {
         var result = rules.TrySoftDelete(obj);
 
         Assert.False(obj.Active);
-        Assert.Equal(DeleteResult.SoftDeleted, result);
+        Assert.Equal(DeleteResult.Recycled, result);
     }
 
     [Fact]
@@ -34,7 +34,7 @@ public class RuleEngineDeleteTests {
         var result = rules.Delete(new object(), () => deleted = true, NoOp);
 
         Assert.True(deleted);
-        Assert.Equal(DeleteResult.HardDeleted, result);
+        Assert.Equal(DeleteResult.Expunged, result);
     }
 
     [Fact]
@@ -54,7 +54,7 @@ public class RuleEngineDeleteTests {
         var result = rules.TrySoftDelete(obj);
 
         Assert.False(obj.Active);
-        Assert.Equal(DeleteResult.SoftDeleted, result);
+        Assert.Equal(DeleteResult.Recycled, result);
     }
 
     [Fact]
@@ -94,7 +94,7 @@ public class RuleEngineDeleteTests {
 
         Assert.Equal(1, prepared);
         Assert.Equal(2, committed);
-        Assert.Equal(DeleteResult.HardDeleted, result);
+        Assert.Equal(DeleteResult.Expunged, result);
     }
 
     [Fact]
@@ -117,7 +117,7 @@ public class RuleEngineDeleteTests {
         );
 
         Assert.False(obj.Active);
-        Assert.Equal(DeleteResult.SoftDeleted, result);
+        Assert.Equal(DeleteResult.Recycled, result);
     }
 
     [Fact]
@@ -132,7 +132,7 @@ public class RuleEngineDeleteTests {
 
         Assert.Equal(original, obj.Unchanged);
         Assert.Equal(unruled, obj.UnRuled);
-        Assert.Equal(DeleteResult.SoftDeleted, result);
+        Assert.Equal(DeleteResult.Recycled, result);
     }
 
     [Fact]

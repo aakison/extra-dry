@@ -13,7 +13,7 @@ public class RuleEngineDeleteAsyncTests {
 
         Assert.NotEmpty(items);
         Assert.False(item.Active);
-        Assert.Equal(DeleteResult.SoftDeleted, result);
+        Assert.Equal(DeleteResult.Recycled, result);
     }
 
     [Fact]
@@ -27,7 +27,7 @@ public class RuleEngineDeleteAsyncTests {
         var result = rules.Delete(item, () => items.Remove(item), async () => await SaveChangesAsync());
 
         Assert.Empty(items);
-        Assert.Equal(DeleteResult.HardDeleted, result);
+        Assert.Equal(DeleteResult.Expunged, result);
     }
 
     [Fact]
@@ -41,7 +41,7 @@ public class RuleEngineDeleteAsyncTests {
 
         Assert.Equal(SaveState.Done, state);
         Assert.Empty(items);
-        Assert.Equal(DeleteResult.HardDeleted, result);
+        Assert.Equal(DeleteResult.Expunged, result);
     }
 
     [Fact]
@@ -61,7 +61,7 @@ public class RuleEngineDeleteAsyncTests {
 
         Assert.Equal(SaveState.Done, state);
         Assert.Empty(items);
-        Assert.Equal(DeleteResult.HardDeleted, result);
+        Assert.Equal(DeleteResult.Expunged, result);
     }
 
     private void SaveChanges()

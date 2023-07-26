@@ -18,17 +18,11 @@ public enum DeleteResult {
     /// </summary>
     Recycled,
 
-    [Obsolete("Use Recycled instead.")]
-    SoftDeleted = Recycled,
-
     /// <summary>
     /// The item was expunged/hard-deleted.  Either a hard delete was requested or the entity had 
     /// a `DeleteRule` attribute which explicitly requested that hard delete be used. Lambda 
     /// expressions for `remove` and `commit` actions were executed.
     /// </summary>
     Expunged,
-
-    [Obsolete("Use Expunged instead.")]
-    HardDeleted = Expunged,
 
 }

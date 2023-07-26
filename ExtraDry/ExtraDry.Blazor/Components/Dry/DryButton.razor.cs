@@ -138,12 +138,13 @@ public partial class DryButton : ComponentBase, IExtraDryComponent {
 
     private void SetEnabled(bool enabled)
     {
-        //var newDisabled = !enabled;
-        //if(disabled != newDisabled) {
-        //    disabled = newDisabled;
-        //    StateHasChanged();
-        //}
+        var newDisabled = !enabled;
+        if(disabled != newDisabled) {
+            disabled = newDisabled;
+            StateHasChanged();
+        }
     }
+    private bool disabled;
 
     private async Task DoClick(MouseEventArgs args)
     {

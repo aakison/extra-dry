@@ -34,7 +34,7 @@ public class EntityFrameworkTests {
 
         var result = await rules.DeleteAsync(address, () => database.Remove(address), async () => await MockSaveChangesAsync(database));
 
-        Assert.Equal(DeleteResult.SoftDeleted, result);
+        Assert.Equal(DeleteResult.Recycled, result);
         Assert.Equal(2, database.Addresses.Count());
     }
 
@@ -68,7 +68,7 @@ public class EntityFrameworkTests {
 
         var result = await rules.DeleteAsync(address);
 
-        Assert.Equal(DeleteResult.SoftDeleted, result);
+        Assert.Equal(DeleteResult.Recycled, result);
         Assert.Equal(2, database.Addresses.Count());
     }
 
@@ -104,7 +104,7 @@ public class EntityFrameworkTests {
 
         var result = await rules.TryHardDeleteAsync(user, address);
 
-        Assert.Equal(DeleteResult.HardDeleted, result);
+        Assert.Equal(DeleteResult.Expunged, result);
         Assert.Equal(1, database.Addresses.Count());
     }
 
@@ -124,7 +124,7 @@ public class EntityFrameworkTests {
 
         var result = await rules.TryHardDeleteAsync(user, null, address);
 
-        Assert.Equal(DeleteResult.HardDeleted, result);
+        Assert.Equal(DeleteResult.Expunged, result);
         Assert.Equal(1, database.Addresses.Count());
     }
 

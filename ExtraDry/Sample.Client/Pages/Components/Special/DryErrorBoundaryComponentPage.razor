@@ -39,7 +39,7 @@
             public bool ThrowDryException { get; set; }
         }
     </CodeBlock>
-    <DryErrorBoundary @ref="localBoundary" data-unmatched="huzzah">
+    <DryErrorBoundary @ref="LocalBoundary" data-unmatched="huzzah">
         @DoBadThings()
     </DryErrorBoundary>
 </section>
@@ -102,10 +102,10 @@
     {
         ThrowException = false;
         ThrowDryException = false;
-        localBoundary.Recover();
+        LocalBoundary.Recover();
     }
 
-    private DryErrorBoundary localBoundary;
+    private DryErrorBoundary LocalBoundary { get; set; } = null!;
 
     public bool ThrowException { get; set; }
 
