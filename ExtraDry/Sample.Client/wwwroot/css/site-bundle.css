@@ -11301,6 +11301,8 @@ form.tryitout input[type=checkbox] {
 .dry-filter .filter-enum {
   flex: 0 1 150px;
 }
-.dry-filter .filter-greedy {
+.dry-filter .filter-commands {
   flex: 1 1 1px;
+  display: flex;
+  justify-content: end;
 }

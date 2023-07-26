@@ -15,7 +15,9 @@
         flex: 0 1 150px;
     }
 
-    .filter-greedy {
+    .filter-commands {
         flex: 1 1 1px;
+        display: flex;
+        justify-content: end;
     }
 }
