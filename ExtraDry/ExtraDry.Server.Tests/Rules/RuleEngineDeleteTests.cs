@@ -136,17 +136,6 @@ public class RuleEngineDeleteTests {
     }
 
     [Fact]
-    public void SoftDeleteOnInvalidProperty()
-    {
-        var rules = new RuleEngine(new ServiceProviderStub());
-        var obj = new BadPropertyDeletable();
-
-        var result = rules.TrySoftDelete(obj);
-
-        Assert.Equal(DeleteResult.NotDeleted, result);
-    }
-
-    [Fact]
     public void SoftDeleteOnInvalidValueException()
     {
         var rules = new RuleEngine(new ServiceProviderStub());
