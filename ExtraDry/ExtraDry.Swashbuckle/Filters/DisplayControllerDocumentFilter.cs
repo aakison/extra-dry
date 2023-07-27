@@ -2,6 +2,10 @@
 
 namespace ExtraDry.Swashbuckle;
 
+/// <summary>
+/// Document filter that applies to OpenApiDocuments (swagger) to make the DisplayAttribute work
+/// when it is applied to a ApiController.  Included when AddExtraDry() used on Swagger options.
+/// </summary>
 public class DisplayControllerDocumentFilter : IDocumentFilter {
 
     public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
@@ -52,11 +56,13 @@ public class DisplayControllerDocumentFilter : IDocumentFilter {
     private int TagOrder(string name)
     {
         if(displayAttributes.ContainsKey(name)) {
-            return displayAttributes[name].Order;
+            return displayAttributes[name].GetOrder() ?? DefaultOrder(name);
         }
         else {
-            return 10000 + originalPositions[name];
+            return DefaultOrder(name);
         }
+
+        int DefaultOrder(string name) => 10000 + originalPositions[name];
     }
 
     private void LoadDisplayAttributes()

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Sample.Server.Controllers;
 
@@ -9,6 +10,7 @@ namespace Sample.Server.Controllers;
 [ApiController]
 [ApiExplorerSettings(GroupName = ApiGroupNames.SampleApi)]
 [ApiExceptionStatusCodes]
+[Display(Name = "The Corporations")]
 public class CompanyController {
         
     /// <summary>

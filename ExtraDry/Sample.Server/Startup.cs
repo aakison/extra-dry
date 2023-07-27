@@ -47,7 +47,10 @@ namespace Sample.Server {
                 });
             services.AddRazorPages();
             services.AddSwaggerGen(openapi => {
-                openapi.AddExtraDry();
+                openapi.AddExtraDry(options => {
+                    options.XmlComments.Files.Add("Sample.Shared.xml");
+                    options.XmlComments.Files.Add("Sample.Server.Xml");
+                });
                 openapi.SwaggerDoc(ApiGroupNames.SampleApi, new OpenApiInfo {
                     Version = "v1",
                     Title = "Sample APIs",
@@ -61,12 +64,9 @@ namespace Sample.Server {
                 openapi.SwaggerDoc(ApiGroupNames.InternalUseOnly, new OpenApiInfo {
                     Version = "v1",
                     Title = "Internal Use Only",
-                    Description = @"A Internal Use Only set of APIs for our own interfaces.",
+                    Description = @"An Internal Use Only set of APIs for our own interfaces.",
                 });
-                foreach(var docfile in new string[] { "Sample.Shared.xml", "Sample.Server.xml" }) {
-                    var webAppXml = Path.Combine(AppContext.BaseDirectory, docfile);
-                    openapi.IncludeXmlComments(webAppXml, includeControllerXmlComments: true);
-                }
+
                 openapi.AddSecurityDefinition("http", new OpenApiSecurityScheme {
                     Description = "Basic",
                     Name = "Authorization",

@@ -6,30 +6,49 @@ namespace ExtraDry.Swashbuckle;
 
 public static class SwaggerOptionsExtensions {
 
-    public static void AddExtraDry(this SwaggerGenOptions openapi)
+    /// <summary>
+    /// Configure and add additional features to the generation of OpenAPI documents aligned with 
+    /// features and best practices of Extra Dry.
+    /// </summary>
+    public static void AddExtraDry(this SwaggerGenOptions openapi, Action<ExtraDryGenOptions>? configure = null)
     {
-        openapi.SwaggerDoc(GroupName, new OpenApiInfo {
-            Version = "v1",
-            Title = "API Instructions",
-            Description = "This API provides consistent access to services available on this system conforming to Extra DRY principles.  The following instructions are applied consistently across the entire API set.",
-        });
+        var options = new ExtraDryGenOptions();
+        configure?.Invoke(options);
+        
+        if(options.Instructions.Include) {
+            openapi.SwaggerDoc(GroupName, new OpenApiInfo {
+                Version = options.Instructions.Version,
+                Title = options.Instructions.Title,
+                Description = options.Instructions.Description,
+            });
+        }
 
-        foreach(var docfile in new string[] { "ExtraDry.Core.Xml", "ExtraDry.Swashbuckle.xml" }) {
+        if(options.XmlComments.IncludeExtraDryDocuments) {
+            foreach(var docfile in new string[] { "ExtraDry.Core.Xml", "ExtraDry.Swashbuckle.xml" }) {
+                var webAppXml = Path.Combine(AppContext.BaseDirectory, docfile);
+                openapi.IncludeXmlComments(webAppXml, includeControllerXmlComments: true);
+            }
+        }
+        foreach(var docfile in options.XmlComments.Files) {
             var webAppXml = Path.Combine(AppContext.BaseDirectory, docfile);
             openapi.IncludeXmlComments(webAppXml, includeControllerXmlComments: true);
         }
 
-        openapi.OperationFilter<SignatureImpliesStatusCodes>();
-        openapi.OperationFilter<QueryDocumentationOperationFilter>();
-        openapi.DocumentFilter<DisplayControllerDocumentFilter>();
-        openapi.SchemaFilter<ExtraDrySchemaFilter>();
-        openapi.DocumentFilter<ResourceReferenceSchemaFilter>();
-    }
-
-    [Obsolete("Use `UseExtraDry` instead.")]
-    public static void AddExtraDry(this SwaggerUIOptions swagger)
-    {
-        swagger.UseExtraDry();
+        if(options.Filters.EnableSignatureStatusCodes) {
+            openapi.OperationFilter<SignatureImpliesStatusCodes>();
+        }
+        if(options.Filters.EnableQueryDocumentation) {
+            openapi.OperationFilter<QueryDocumentationOperationFilter>();
+        }
+        if(options.Filters.EnableReadOnlyOnSchema) {
+            openapi.SchemaFilter<ExtraDrySchemaFilter>();
+        }
+        if(options.Filters.EnableResourceReferenceSchemaRewrite) {
+            openapi.DocumentFilter<ResourceReferenceSchemaFilter>();
+        }
+        if(options.Filters.EnableDisplayOnApiControllers) {
+            openapi.DocumentFilter<DisplayControllerDocumentFilter>();
+        }
     }
 
     public static void UseExtraDry(this SwaggerUIOptions swagger)
