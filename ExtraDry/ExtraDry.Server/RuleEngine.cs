@@ -252,7 +252,7 @@ public class RuleEngine {
             return await CallbackAndReturn(RestoreResult.NotRestored);
         }
         var property = type.GetProperty(deleteRule.PropertyName, BindingFlags.Instance | BindingFlags.Public)
-            ?? throw new DryException($"Can't complete undelete, property '{deleteRule.PropertyName}' does not exist as a public instance property of class '{type.Name}'.", "Can't undelete item, internal application issue.");
+            ?? throw new DryException($"Can't complete Restore, property '{deleteRule.PropertyName}' does not exist as a public instance property of class '{type.Name}'.", "Can't undelete item, internal application issue.");
         var value = property.GetValue(item);
         if(!AreEqual(deleteRule.DeleteValue, value)) {
             return await CallbackAndReturn(RestoreResult.NotRestored);
@@ -261,7 +261,7 @@ public class RuleEngine {
             property.SetValue(item, deleteRule.UndeleteValue);
         }
         catch {
-            throw new DryException($"Can't complete undelete, value provided is not convertable to type of property '{deleteRule.PropertyName}", "Can't undelete item, internal application issue.");
+            throw new DryException($"Can't complete Restore, value provided is not convertable to type of property '{deleteRule.PropertyName}", "Can't undelete item, internal application issue.");
         }
         return await CallbackAndReturn(RestoreResult.Restored);
 
@@ -275,6 +275,14 @@ public class RuleEngine {
             }
             return result;
         }
+    }
+
+    /// <summary>
+    /// Expunges an item.
+    /// </summary>
+    public async Task<DeleteResult> ExpungeAsync<T>(T item, Func<Task> remove, Func<Task> commit)
+    {
+        return await TryHardDeleteAsync(item, remove, commit);
     }
 
     /// <summary>
