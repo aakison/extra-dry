@@ -81,6 +81,7 @@ public class RuleEngine {
     /// Processes a delete of an item setting the appropriate fields.
     /// </summary>
     /// <param name="item">The item to delete.</param>
+    [Obsolete("Use AttemptSoftDelete internally, or DeleteAsync externally")]
     public DeleteResult TrySoftDelete(object item)
     {
         ArgumentNullException.ThrowIfNull(item);
@@ -93,12 +94,14 @@ public class RuleEngine {
     /// </summary>
     /// <param name="items">The items to delete.</param>
     [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Keep as standard service instance style for DI.")]
+    [Obsolete("Use AttemptSoftDelete internally, or DeleteAsync externally")]
     public DeleteResult TrySoftDelete(object[] items)
     {
         return AttemptSoftDelete(items) ? DeleteResult.Recycled : DeleteResult.Expunged;
     }
 
     /// <inheritdoc cref="DeleteAsync{T}(T, Func{Task}, Func{Task}?)" />
+    [Obsolete("Use DeleteAsync")]
     public DeleteResult Delete<T>(T item, Action remove, Action commit)
     {
         // Bit hinky, map Actions to Func<Task> so that logic flow isn't repeated, then map back to non-async.
@@ -189,12 +192,14 @@ public class RuleEngine {
     }
 
     /// <inheritdoc cref="TryHardDeleteAsync{T}(T, Func{Task}?, Func{Task}?)" />
+    [Obsolete("Use DeleteAsync (or ExpungeAsync if necessary)")]
     public async Task<DeleteResult> TryHardDeleteAsync<T>(T item, Action remove, Func<Task> commit)
     {
         return await TryHardDeleteAsync(item, WrapAction(remove), commit);
     }
 
     /// <inheritdoc cref="TryHardDeleteAsync{T}(T, Func{Task}?, Func{Task}?)" />
+    [Obsolete("Use DeleteAsync (or ExpungeAsync if necessary)")]
     public async Task<DeleteResult> TryHardDeleteAsync<T>(T item, Func<Task> remove, Action commit)
     {
         return await TryHardDeleteAsync(item, remove, WrapAction(commit));
@@ -207,6 +212,7 @@ public class RuleEngine {
     /// <param name="remove">The action that is executed for a hard-delete.</param>
     /// <param name="commit">The action that is executed to commit hard-delete.</param>
     [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Keep as standard service instance style for DI.")]
+    [Obsolete("Use DeleteAsync (or ExpungeAsync if necessary)")]
     public async Task<DeleteResult> TryHardDeleteAsync<T>(T item, Func<Task> remove, Func<Task> commit)
     {
         ArgumentNullException.ThrowIfNull(item, nameof(item));
