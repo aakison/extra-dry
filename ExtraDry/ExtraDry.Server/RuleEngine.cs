@@ -43,13 +43,12 @@ public class RuleEngine {
         validator.ValidateObject(exemplar);
         validator.ThrowIfInvalid();
         var destination = Activator.CreateInstance<T>();
-        var target = destination as ICreateCallback;
-        if(target is not null) {
-            await target.OnCreatingAsync();
+        if(destination is ICreatingCallback creating) {
+            await creating.OnCreatingAsync();
         }
         await UpdatePropertiesAsync(exemplar, destination, MaxRecursionDepth, e => e.CreateAction);
-        if(target is not null) {
-            await target.OnCreatedAsync();
+        if(destination is ICreatedCallback created) {
+            await created.OnCreatedAsync();
         }
         return destination;
     }
@@ -69,13 +68,12 @@ public class RuleEngine {
         var validator = new DataValidator();
         validator.ValidateObject(source);
         validator.ThrowIfInvalid();
-        var target = destination as IUpdateCallback;
-        if(target is not null) {
-            await target.OnUpdatingAsync();
+        if(destination is IUpdatingCallback updating) {
+            await updating.OnUpdatingAsync();
         }
         await UpdatePropertiesAsync(source, destination, MaxRecursionDepth, e => e.UpdateAction);
-        if(target is not null) {
-            await target.OnUpdatedAsync();
+        if(destination is IUpdatedCallback updated) {
+            await updated.OnUpdatedAsync();
         }
     }
 
@@ -142,9 +140,8 @@ public class RuleEngine {
         var result = DeleteResult.NotDeleted;
         var action = typeof(T).GetCustomAttribute<DeleteRuleAttribute>()?.DeleteAction ?? DeleteAction.Expunge;
 
-        var target = item as IDeleteCallback;
-        if(target is not null) {
-            await target.OnDeletingAsync(ref action);
+        if(item is IDeletingCallback deleting) {
+            await deleting.OnDeletingAsync(ref action);
         }
 
         if(action == DeleteAction.Recycle || action == DeleteAction.TryExpunge) {
@@ -159,8 +156,8 @@ public class RuleEngine {
             }
         }
 
-        if(target is not null) {
-            await target.OnDeletedAsync(result);
+        if(item is IDeletedCallback deleted) {
+            await deleted.OnDeletedAsync(result);
         }
 
         return result;
@@ -250,8 +247,8 @@ public class RuleEngine {
             throw new ArgumentNullException(nameof(item));
         }
         var type = typeof(T);
-        if(item is IRestoreCallback target) {
-            await target.OnRestoringAsync();
+        if(item is IRestoringCallback restoring) {
+            await restoring.OnRestoringAsync();
         }
 
         var deleteRule = type.GetCustomAttribute<DeleteRuleAttribute>();
@@ -274,8 +271,8 @@ public class RuleEngine {
 
         async Task<RestoreResult> CallbackAndReturn(RestoreResult result)
         {
-            if(item is IRestoreCallback syncCallback) {
-                await syncCallback.OnRestoredAsync(result);
+            if(item is IRestoredCallback restored) {
+                await restored.OnRestoredAsync(result);
             }
             return result;
         }
