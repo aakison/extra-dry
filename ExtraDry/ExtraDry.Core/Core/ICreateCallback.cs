@@ -6,25 +6,17 @@
 public interface ICreateCallback {
 
     /// <summary>
-    /// Handling for the item that is done as it is being created for the first time. This is not
-    /// intended to be called by user code and is automatically called by the RuleEngine during the
-    /// CreateAsync method.
+    /// Callback handler for the item that is done as it is being created for the first time. This
+    /// is called just after the object is initialized but before the Rule Engine creates the 
+    /// object from an exemplar.  This is not intended to be called by user code.
     /// </summary>
-    public void OnCreate();
-
-}
-
-/// <summary>
-/// The interface for entities that want to embellish the async behavior when they are created.
-/// </summary>
-public interface ICreateAsyncCallback
-{
+    public Task OnCreatingAsync();
 
     /// <summary>
-    /// Async handling for the item that is done as it is being created for the first time. This is
-    /// not intended to be called by user code and is automatically called by the RuleEngine during 
-    /// the CreateAsync method.
+    /// Callback handler for the item that is done as it is being created for the first time. This
+    /// is called just after the Rule Engine creates the object from an exemplar.  This is not 
+    /// intended to be called by user code.
     /// </summary>
-    public Task OnCreateAsync();
+    public Task OnCreatedAsync();
 
 }

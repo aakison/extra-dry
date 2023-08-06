@@ -6,24 +6,17 @@
 public interface IUpdateCallback {
 
     /// <summary>
-    /// Handling for the item that is done as it is being updated. This is not intended to be 
-    /// called by user code and is automatically called by the RuleEngine during the 
-    /// UpdateAsync method.
+    /// Callback handler for the item that is done as it is being updated. This is called just 
+    /// before the object is updated by the Rule Engine.  This is not intended to be called by 
+    /// user code.
     /// </summary>
-    public void OnUpdate();
-
-}
-
-/// <summary>
-/// The async interface for entities that want to embellish the behavior when they are updated.
-/// </summary>
-public interface IUpdateAsyncCallback {
+    public Task OnUpdatingAsync();
 
     /// <summary>
-    /// Async handling for the item that is done as it is being updated. This is not intended to 
-    /// be called by user code and is automatically called by the RuleEngine during the 
-    /// UpdateAsync method.
+    /// Callback handler for the item that is done as it is being updated. This is called just 
+    /// after the object is updated by the Rule Engine.  This is not intended to be called by 
+    /// user code.
     /// </summary>
-    public Task OnUpdateAsync();
+    public Task OnUpdatedAsync();
 
 }

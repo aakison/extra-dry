@@ -43,12 +43,13 @@ public class RuleEngine {
         validator.ValidateObject(exemplar);
         validator.ThrowIfInvalid();
         var destination = Activator.CreateInstance<T>();
-        await UpdatePropertiesAsync(exemplar, destination, MaxRecursionDepth, e => e.CreateAction);
-        if(destination is ICreateCallback syncTarget) {
-            syncTarget.OnCreate();
+        var target = destination as ICreateCallback;
+        if(target is not null) {
+            await target.OnCreatingAsync();
         }
-        if(destination is ICreateAsyncCallback asyncTarget) {
-            await asyncTarget.OnCreateAsync();
+        await UpdatePropertiesAsync(exemplar, destination, MaxRecursionDepth, e => e.CreateAction);
+        if(target is not null) {
+            await target.OnCreatedAsync();
         }
         return destination;
     }
@@ -68,12 +69,13 @@ public class RuleEngine {
         var validator = new DataValidator();
         validator.ValidateObject(source);
         validator.ThrowIfInvalid();
-        await UpdatePropertiesAsync(source, destination, MaxRecursionDepth, e => e.UpdateAction);
-        if(destination is IUpdateCallback syncTarget) {
-            syncTarget.OnUpdate();
+        var target = destination as IUpdateCallback;
+        if(target is not null) {
+            await target.OnUpdatingAsync();
         }
-        if(destination is IUpdateAsyncCallback asyncTarget) {
-            await asyncTarget.OnUpdateAsync();
+        await UpdatePropertiesAsync(source, destination, MaxRecursionDepth, e => e.UpdateAction);
+        if(target is not null) {
+            await target.OnUpdatedAsync();
         }
     }
 
@@ -140,11 +142,9 @@ public class RuleEngine {
         var result = DeleteResult.NotDeleted;
         var action = typeof(T).GetCustomAttribute<DeleteRuleAttribute>()?.DeleteAction ?? DeleteAction.Expunge;
 
-        if(item is IDeleteCallback syncBefore) {
-            syncBefore.OnDeleting(action);
-        }
-        if(item is IDeleteAsyncCallback asyncBefore) {
-            await asyncBefore.OnDeletingAsync(action);
+        var target = item as IDeleteCallback;
+        if(target is not null) {
+            await target.OnDeletingAsync(ref action);
         }
 
         if(action == DeleteAction.Recycle || action == DeleteAction.TryExpunge) {
@@ -159,11 +159,8 @@ public class RuleEngine {
             }
         }
 
-        if(item is IDeleteCallback syncAfter) {
-            syncAfter.OnDeleted(result);
-        }
-        if(item is IDeleteAsyncCallback asyncTarget) {
-            await asyncTarget.OnDeletedAsync(result);
+        if(target is not null) {
+            await target.OnDeletedAsync(result);
         }
 
         return result;
@@ -253,6 +250,10 @@ public class RuleEngine {
             throw new ArgumentNullException(nameof(item));
         }
         var type = typeof(T);
+        if(item is IRestoreCallback target) {
+            await target.OnRestoringAsync();
+        }
+
         var deleteRule = type.GetCustomAttribute<DeleteRuleAttribute>();
         if(deleteRule == null || deleteRule.CanUndelete == false) {
             return await CallbackAndReturn(RestoreResult.NotRestored);
@@ -274,10 +275,7 @@ public class RuleEngine {
         async Task<RestoreResult> CallbackAndReturn(RestoreResult result)
         {
             if(item is IRestoreCallback syncCallback) {
-                syncCallback.OnRestore(result);
-            }
-            if(item is IRestoreAsyncCallback asyncCallback) {
-                await asyncCallback.OnRestoreAsync(result);
+                await syncCallback.OnRestoredAsync(result);
             }
             return result;
         }
@@ -289,6 +287,12 @@ public class RuleEngine {
     public async Task<DeleteResult> ExpungeAsync<T>(T item, Func<Task> remove, Func<Task> commit)
     {
         return await TryHardDeleteAsync(item, remove, commit);
+    }
+
+    /// <inheritdoc cref="ExpungeAsync{T}(T, Func{Task}?, Func{Task}?)" />
+    public async Task<DeleteResult> ExpungeAsync<T>(T item, Action remove, Func<Task> commit)
+    {
+        return await ExpungeAsync(item, WrapAction(remove), commit);
     }
 
     /// <summary>

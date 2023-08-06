@@ -6,24 +6,17 @@
 public interface IRestoreCallback {
 
     /// <summary>
-    /// Handling for the item that is done as it is being restored. This is not intended to be 
-    /// called by user code and is automatically called by the RuleEngine during the 
-    /// DeleteAsync method.
+    /// Handling for the item that is done as it is being restored.  This is called just 
+    /// before the object is restored by the Rule Engine.  This is not intended to be 
+    /// called by user code.
     /// </summary>
-    public void OnRestore(RestoreResult result);
-
-}
-
-/// <summary>
-/// The async interface for entities that want to embellish the behavior when they are restored.
-/// </summary>
-public interface IRestoreAsyncCallback {
+    public Task OnRestoringAsync();
 
     /// <summary>
-    /// Async handling for the item that is done as it is being restored. This is not intended to 
-    /// be called by user code and is automatically called by the RuleEngine during the 
-    /// DeleteAsync method.
+    /// Handling for the item that is done as it is being restored.  This is called just 
+    /// after the object is deleted by the Rule Engine.  This is not intended to be 
+    /// called by user code.
     /// </summary>
-    public Task OnRestoreAsync(RestoreResult result);
+    public Task OnRestoredAsync(RestoreResult result);
 
 }
