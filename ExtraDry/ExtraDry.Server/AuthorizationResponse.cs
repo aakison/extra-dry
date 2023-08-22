@@ -20,7 +20,7 @@ public class AuthorizationResponse {
         await next(context);
 
         if(context.Response.StatusCode == (int)HttpStatusCode.Forbidden) {
-            ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.Forbidden, options.ForbiddenMessage);
+            ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.Forbidden, options.ForbiddenTitle, options.ForbiddenMessage);
         }
     }
 }
