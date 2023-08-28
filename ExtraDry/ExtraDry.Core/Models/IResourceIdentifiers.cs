@@ -7,17 +7,17 @@
 public interface IResourceIdentifiers {
 
     /// <summary>
+    /// A universally unique identifier for this new resource. It is used in the permalink.
+    /// </summary>
+    /// <example>e8b79f39-3398-4aed-9339-7250166204e5</example>
+    public Guid Uuid { get; set; }
+
+    /// <summary>
     /// A user readable reference to the created resource. Used in the URL to access the new 
     /// resource, but may change.
     /// </summary>
     /// <example>acme-widget</example>
     public string Slug { get; set; }
-
-    /// <summary>
-    /// A universally unique identifier for this new resource. It is used in the permalink.
-    /// </summary>
-    /// <example>e8b79f39-3398-4aed-9339-7250166204e5</example>
-    public Guid Uuid { get; set; }
 
     /// <summary>
     /// The title of the resource that is suitable for displaying to users as a named reference. 
@@ -31,4 +31,5 @@ public interface IResourceIdentifiers {
     /// </remarks>
     /// <example>Acme Widget</example>
     public string Title { get; set;}
+
 }

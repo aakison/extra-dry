@@ -8,7 +8,7 @@ namespace ExtraDry.Core;
 /// A JSON converter that will serialize a resource that implement IResourceIdentifiers into a 
 /// shorter ResourceReference for use as part of a DTO.  On Deserialization, the original 
 /// object is approximated by using default values and Id references. This is suitable for 
-/// propertiest that are treated as RuleAction.Link.
+/// properties that are treated as RuleAction.Link.
 /// </summary>
 public class ResourceReferenceConverter<T> : JsonConverter<T> where T : IResourceIdentifiers {
 

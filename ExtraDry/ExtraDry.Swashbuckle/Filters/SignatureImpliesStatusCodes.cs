@@ -13,7 +13,7 @@ public class SignatureImpliesStatusCodes : IOperationFilter {
     /// </summary>
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
-        var schema = context.SchemaGenerator.GenerateSchema(typeof(ExtraDry.Core.Models.ProblemDetails), context.SchemaRepository);
+        var schema = context.SchemaGenerator.GenerateSchema(typeof(Core.Models.ProblemDetails), context.SchemaRepository);
 
         var attributes = context.MethodInfo.GetCustomAttributes(true) ?? Array.Empty<object>();
 
@@ -70,6 +70,18 @@ public class SignatureImpliesStatusCodes : IOperationFilter {
                         }
                     }
                 });
+            }
+        }
+
+        var deleteAttributes = attributes.OfType<HttpDeleteAttribute>();
+        if(deleteAttributes.Any()) {
+            if(!operation.Responses.ContainsKey("204")) {
+                operation.Responses.Add("204", new OpenApiResponse {
+                    Description = "Success",
+                });
+                if(operation.Responses.ContainsKey("200")) {
+                    operation.Responses.Remove("200");
+                }
             }
         }
 
