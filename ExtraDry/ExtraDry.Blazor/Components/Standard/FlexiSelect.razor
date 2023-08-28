@@ -2,17 +2,16 @@
 @typeparam TItem where TItem : notnull
 
 <div class="@CssClasses" @attributes="@UnmatchedAttributes">
-    <Button Caption="@Placeholder" @onclick="@DoClick" Affordance="select" ShowContent="@DisplayContent" ShowCaption="@DisplayPlaceholder">
-        @if(Value != null)
-        {
-            <DryMiniCard CssClass="value only" Model="@Value" />
-        }
-        else if(Values?.Any() ?? false)
-        {
-            <DryMiniCard CssClass="value many" Model="@Values.First()" />
-            @if(Values.Count > 1)
-            {
-                <span class="many count">(+@(Values.Count - 1))</span>
+    <Button Caption="@Placeholder" @onclick="@DoClick" Icon="@Icon" Affordance="@Affordance" ShowContent="@DisplayContent" ShowCaption="@DisplayPlaceholder">
+        @if(ShowPreview) {
+            if(Values?.Any() ?? false) {
+                <DryMiniCard CssClass="value many" Model="@Values.First()" />
+                @if(Values.Count > 1) {
+                    <span class="many count">(+@(Values.Count - 1))</span>
+                }
+            }
+            else if (Value != null) {
+                <DryMiniCard CssClass="value only" Model="@Value" />
             }
         }
     </Button>

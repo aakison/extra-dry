@@ -22,6 +22,21 @@ public partial class FlexiSelect<TItem> : ComponentBase, IExtraDryComponent wher
     [Parameter]
     public bool ShowTitle { get; set; } = true;
 
+    /// <summary>
+    /// If any values are selected in the FlexiSelect, then show a preview of those items along 
+    /// with an additional count.  Set to false to only display the title regardless of selection.
+    /// </summary>
+    [Parameter]
+    public bool ShowPreview { get; set; } = true;
+
+    /// <inheritdoc cref="Button.Icon" />
+    [Parameter]
+    public string Icon { get; set; } = string.Empty;
+
+    /// <inheritdoc cref="Button.Affordance" />
+    [Parameter]
+    public string Affordance { get; set; } = "select";
+
     /// <inheritdoc cref="IComments.Placeholder"/>
     [Parameter]
     public string Placeholder { get; set; } = "select...";
@@ -126,7 +141,7 @@ public partial class FlexiSelect<TItem> : ComponentBase, IExtraDryComponent wher
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "flexi-select", CssClass);
 
-    private bool DisplayContent => Value != null || (Values?.Any() ?? false);
+    private bool DisplayContent => ShowPreview && (Value != null || (Values?.Any() ?? false));
 
     private bool DisplayPlaceholder => !DisplayContent;
 

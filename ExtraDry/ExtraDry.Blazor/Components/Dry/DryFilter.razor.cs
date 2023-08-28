@@ -15,6 +15,18 @@ public partial class DryFilter<TItem> : ComponentBase, IExtraDryComponent {
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
+    /// <inheritdoc cref="FlexiSelect{TItem}.ShowPreview" />
+    [Parameter]
+    public bool ShowPreview { get; set; } = true;
+
+    /// <inheritdoc cref="FlexiSelect{TItem}.Icon" />
+    [Parameter]
+    public string Icon { get; set; } = string.Empty;
+
+    /// <inheritdoc cref="FlexiSelect{TItem}.Affordance" />
+    [Parameter]
+    public string Affordance { get; set; } = "select";
+
     /// <inheritdoc cref="IComments.Placeholder"/>
     [Parameter]
     public string Placeholder { get; set; } = "filter by keyword...";
