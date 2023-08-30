@@ -8,6 +8,22 @@ namespace ExtraDry.Core;
 public static class WebId {
 
     /// <summary>
+    /// Given a Guid, creates an all lowercase letter version that appears a bit nicer in a URI.
+    /// </summary>
+    public static string ToWebId(Guid uuid)
+    {
+        return string.Join("", uuid.ToString().Select(c => char.IsDigit(c) ? (char)(c - '0' + 'g') : c));
+    }
+
+    /// <summary>
+    /// Given a Guid previously created by `ToWebId`, convert it back to a Guid.
+    /// </summary>
+    public static Guid ToGuid(string webId)
+    {
+        return Guid.Parse(string.Join("", webId.Select(c => c > 'f' ? (char)(c - 'g' + '0') : c)));
+    }
+
+    /// <summary>
     /// Given a name, with punctuation and mixed case, create a matching WebId.
     /// </summary>
     /// <remarks>
