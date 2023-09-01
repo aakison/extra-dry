@@ -25,11 +25,11 @@ public class ResourceReference {
     [Obsolete("Not strictly needed, prune from existing code.")]
     public string Type { get; set; } = string.Empty;
 
-    /// <inheritdoc cref="IResourceIdentifiers.Slug" />
-    public string Slug { get; set; } = string.Empty;
-
     /// <inheritdoc cref="IResourceIdentifiers.Uuid" />
     public Guid Uuid { get; set; } = Guid.Empty;
+
+    /// <inheritdoc cref="IResourceIdentifiers.Slug" />
+    public string Slug { get; set; } = string.Empty;
 
     /// <inheritdoc cref="IResourceIdentifiers.Title" />
     [ReadOnly(true)]

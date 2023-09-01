@@ -59,7 +59,7 @@ public class RegionTests {
     public void ValidCodesForLevel(RegionLevel level, string code)
     {
         var request = ValidRegion;
-        request.Code = code;
+        request.Slug = code;
         request.Level = level;
         var validator = new DataValidator();
 
@@ -87,7 +87,7 @@ public class RegionTests {
     public void InvalidCodesForLevel(RegionLevel level, string code)
     {
         var request = ValidRegion;
-        request.Code = code;
+        request.Slug = code;
         request.Level = level;
         var validator = new DataValidator();
 
@@ -112,11 +112,10 @@ public class RegionTests {
 
     public static Region ValidRegion => new() {
         Id = 1,
-        Code = "AU",
+        Slug = "AU",
         Level = RegionLevel.Country,
         Title = "Australia",
         Description = "Commonwealth of Australia",
-        ParentCode = "",
     };
 
 }

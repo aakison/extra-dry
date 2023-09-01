@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents the addition property required for an entity to support a taxonomy.
 /// </summary>
-public interface ITaxonomyEntity {
+public interface ITaxonomyEntity : IResourceIdentifiers {
 
     /// <summary>
     /// Represents the level of the taxonomy, by convention 0 is the top and each level below that increments by 1.
@@ -17,5 +17,5 @@ public interface ITaxonomyEntity {
     /// A Code that is used to uniquely identify the entity amongst similar typed entities.
     /// Implementations should consider adding a `[StringLength]` of 20 or less.
     /// </summary>
-    public string Code { get; }
+    public string Slug { get; }
 }

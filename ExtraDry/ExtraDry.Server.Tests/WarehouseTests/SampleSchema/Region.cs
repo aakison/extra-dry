@@ -15,6 +15,9 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity {
     [JsonIgnore]
     public int Id { get; set; }
 
+    /// <inheritdoc cref="IResourceIdentifiers.Uuid" />
+    public Guid Uuid { get; set; } = Guid.NewGuid();
+
     /// <summary>
     /// The level for this region inside a taxonomy of regions.
     /// </summary>
@@ -33,7 +36,7 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity {
     /// </summary>
     [Required, StringLength(32)]
     [Display(ShortName = "Code")]
-    public string Code { get; set; } = string.Empty;
+    public string Slug { get; set; } = string.Empty;
 
     /// <summary>
     /// The short name of the country or region, such as 'Australia', or 'USA'.
@@ -53,7 +56,7 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity {
     public string Description { get; set; } = string.Empty;
 
     [NotMapped]
-    public string Caption => $"Region {Code}";
+    public string Caption => $"Region {Slug}";
 
     public string CompoundName { get; set; } = string.Empty;
 

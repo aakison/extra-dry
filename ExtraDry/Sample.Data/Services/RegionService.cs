@@ -19,13 +19,13 @@ public class RegionService {
     public async Task<FilteredCollection<Region>> ListChildrenAsync(string code)
     {
         return await database.Regions
-            .QueryWith(new(), e => e.Ancestors.Any(f => f.Code == code && (int)f.Level + 1 == (int)e.Level))
+            .QueryWith(new(), e => e.Ancestors.Any(f => f.Slug == code && (int)f.Level + 1 == (int)e.Level))
             .ToFilteredCollectionAsync();
     }
 
     public async Task CreateAsync(Region item)
     {
-        var parent = await TryRetrieveAsync(item.ParentCode);
+        var parent = await TryRetrieveAsync(item.Parent.Slug);
         item.SetParent(parent);
         database.Regions.Add(item);
         await database.SaveChangesAsync();
@@ -35,7 +35,7 @@ public class RegionService {
     {
         return await database.Regions
             .Include(e => e.Ancestors)
-            .FirstOrDefaultAsync(e => e.Code == code);
+            .FirstOrDefaultAsync(e => e.Slug == code);
     }
 
     public async Task<Region> RetrieveAsync(string code)
@@ -48,8 +48,8 @@ public class RegionService {
     public async Task UpdateAsync(string code, Region item)
     {
         var existing = await RetrieveAsync(code);
-        if(existing.ParentCode != item.ParentCode) {
-            var parent = await RetrieveAsync(item.ParentCode);
+        if(existing.Parent.Slug != item.Parent.Slug) {
+            var parent = await RetrieveAsync(item.Parent.Slug);
             existing.SetParent(parent);
         }
         await rules.UpdateAsync(item, existing);

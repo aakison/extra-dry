@@ -15,11 +15,18 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidatableObjec
     [JsonIgnore]
     public int Id { get; set; }
 
+    /// <inheritdoc cref="IResourceIdentifiers.Uuid" />
+    public Guid Uuid { get; set; } = Guid.NewGuid();
+
     /// <summary>
     /// The level for this region inside a taxonomy of regions.
     /// </summary>
     [Display(Name = "Level", ShortName = "Level")]
     public RegionLevel Level { get; set; }
+
+    [NotMapped]
+    [JsonConverter(typeof(ResourceReferenceConverter<Region>))]
+    public override Region? Parent { get => base.Parent; set => base.Parent = value; }
 
     /// <summary>
     /// The strata for the entity in the taxonomy, 0 is root, each level adds 1.
@@ -34,7 +41,7 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidatableObjec
     [Required, StringLength(32)]
     [Display(ShortName = "Code")]
     [Filter]
-    public string Code { get; set; } = string.Empty;
+    public string Slug { get; set; } = string.Empty;
 
     /// <summary>
     /// The short name of the country or region, such as 'Australia', or 'USA'.
@@ -54,7 +61,7 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidatableObjec
     public string Description { get; set; } = string.Empty;
 
     [NotMapped]
-    public string Caption => $"Region {Code}";
+    public string Caption => $"Region {Slug}";
 
     [Required]
     [Display(Name = "Status", ShortName = "Status")]
@@ -76,7 +83,7 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidatableObjec
             RegionLevel.Division => DivisionRegex,
             _ => SubdivisionRegex,
         };
-        if(!codeRegex.IsMatch(Code)) {
+        if(!codeRegex.IsMatch(Slug)) {
             results.Add(new ValidationResult("Code must follow ISO-3166 naming scheme, e.g. 'AU', 'AU-QLD', 'AU-QLD-Brisbane'."));
         }
         return results;
