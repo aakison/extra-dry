@@ -25,8 +25,10 @@ public class RegionService {
 
     public async Task CreateAsync(Region item)
     {
-        var parent = await TryRetrieveAsync(item.Parent.Slug);
-        item.SetParent(parent);
+        if(item.Level != RegionLevel.Global) {
+            var parent = await TryRetrieveAsync(item.Parent.Slug);
+            item.SetParent(parent);
+        }
         database.Regions.Add(item);
         await database.SaveChangesAsync();
     }

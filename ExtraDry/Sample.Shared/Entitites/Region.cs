@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sample.Shared;
 
@@ -6,6 +8,7 @@ namespace Sample.Shared;
 /// Represents a single geo-political region in a taxonomy of geo-political regions.
 /// </summary>
 [DeleteRule(DeleteAction.Recycle, nameof(DeleteStatus), DeleteStatus.Recycled, DeleteStatus.Live)]
+[Index(nameof(Uuid), IsUnique = true)]
 public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidatableObject {
 
     /// <summary>
@@ -83,7 +86,7 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidatableObjec
             RegionLevel.Division => DivisionRegex,
             _ => SubdivisionRegex,
         };
-        if(!codeRegex.IsMatch(Slug)) {
+        if(Level != RegionLevel.Global && !codeRegex.IsMatch(Slug)) {
             results.Add(new ValidationResult("Code must follow ISO-3166 naming scheme, e.g. 'AU', 'AU-QLD', 'AU-QLD-Brisbane'."));
         }
         return results;

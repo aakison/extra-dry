@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using Sample.Data.Services;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Sample.Data;
     
@@ -56,6 +57,41 @@ public class DummyData {
             }
         }
         database.SaveChanges();
+    }
+
+    public async Task PopulateRegions(RegionService service)
+    {
+        // Root
+        var global = new Region() { Uuid = Guid.NewGuid(), Slug = "global", Title = "Global", Description = "The World", Level = RegionLevel.Global, Status = RegionStatus.Active, IsDeleted = DeleteStatus.Live };
+        await service.CreateAsync(global);
+
+        // Tier 1
+        var australia = new Region() { Uuid = Guid.NewGuid(), Slug = "AU", Title = "Australia", Description = "Australia", Level = RegionLevel.Country, Status = RegionStatus.Active, IsDeleted = DeleteStatus.Live, Parent = global };
+        var newZealand = new Region() { Uuid = Guid.NewGuid(), Slug = "NZ", Title = "New Zealand", Description = "New Zealand", Level = RegionLevel.Country, Status = RegionStatus.Active, IsDeleted = DeleteStatus.Live, Parent = global };
+        await service.CreateAsync(australia);
+        await service.CreateAsync(newZealand);
+
+        // Tier 2
+        var vic = new Region() { Uuid = Guid.NewGuid(), Slug = "AU-Vic", Title = "Victoria", Description = "Victoria, Australia", Level = RegionLevel.Division, Status = RegionStatus.Active, IsDeleted = DeleteStatus.Live, Parent = australia };
+        var qld = new Region() { Uuid = Guid.NewGuid(), Slug = "AU-Qld", Title = "Queensland", Description = "Queensland, Australia", Level = RegionLevel.Division, Status = RegionStatus.Active, IsDeleted = DeleteStatus.Live, Parent = australia };
+        var nsw = new Region() { Uuid = Guid.NewGuid(), Slug = "AU-NSW", Title = "New South Wales", Description = "NSW, Australia", Level = RegionLevel.Division, Status = RegionStatus.Active, IsDeleted = DeleteStatus.Live, Parent = australia };
+
+        var auckland = new Region() { Uuid = Guid.NewGuid(), Slug = "NZ-AUK", Title = "Auckland", Description = "Auckland, NZ", Level = RegionLevel.Division, Status = RegionStatus.Active, IsDeleted = DeleteStatus.Live, Parent = newZealand };
+        var taranaki = new Region() { Uuid = Guid.NewGuid(), Slug = "NZ-TKI", Title = "Taranaki", Description = "Taranaki, NZ", Level = RegionLevel.Division, Status = RegionStatus.Active, IsDeleted = DeleteStatus.Live, Parent = newZealand };
+
+        await service.CreateAsync(vic);
+        await service.CreateAsync(qld);
+        await service.CreateAsync(nsw);
+
+        await service.CreateAsync(auckland);
+        await service.CreateAsync(taranaki);
+
+        // Tier 3
+        var mel = new Region() { Uuid = Guid.NewGuid(), Slug = "AU-Vic-Mel", Title = "Melbourne City", Description = "Melbourne, Victoria, Australia", Level = RegionLevel.Subdivision, Status = RegionStatus.Active, IsDeleted = DeleteStatus.Live, Parent = vic };
+        var bris = new Region() { Uuid = Guid.NewGuid(), Slug = "AU-Qld-Bris", Title = "Brisbane City", Description = "Brisbane, Queensland, Australia", Level = RegionLevel.Subdivision, Status = RegionStatus.Active, IsDeleted = DeleteStatus.Live, Parent = qld };
+
+        await service.CreateAsync(mel);
+        await service.CreateAsync(bris);
     }
 
     public void PopulateEmployees(SampleContext database, int count)

@@ -39,6 +39,8 @@ public class SampleContext : AspectDbContext {
 
         //modelBuilder.Entity<Content>().Property(e => e.Layout).HasColumnType()
 
+        modelBuilder.Entity<Region>().Property(e => e.Uuid).HasDefaultValueSql("NEWID()");
+
         modelBuilder.Entity<Company>().OwnsOne(e => e.Version);
         modelBuilder.Entity<Employee>().OwnsOne(e => e.Version);
         modelBuilder.Entity<Region>().OwnsOne(e => e.Version);

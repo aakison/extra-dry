@@ -7,7 +7,7 @@ public class RegionTests {
 
     [Theory]
     [InlineData("Id", 2)]
-    [InlineData("Code", "US")]
+    [InlineData("Slug", "US")]
     [InlineData("Level", RegionLevel.Division)]
     [InlineData("Title", "USA")]
     [InlineData("Description", "United States of America")]
@@ -107,7 +107,9 @@ public class RegionTests {
         property.SetValue(request, propertyValue);
         var json = JsonSerializer.Serialize(request);
 
-        Assert.DoesNotContain(propertyValue.ToString()!, json);
+        // Check for the value as a complete json value, else the int or string could appear in the Uuid
+        Assert.DoesNotContain($":{propertyValue}", json);
+        Assert.DoesNotContain($":\"{propertyValue}\"", json);
     }
 
     public static Region ValidRegion => new() {
