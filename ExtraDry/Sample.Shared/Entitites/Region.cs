@@ -60,7 +60,8 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidatableObjec
     /// <remarks>
     /// Limited to 100 characters based on full names of countries which, in English, max at 59 characters per ISO.
     /// </remarks>
-    [Required, StringLength(100)]
+    // [Required]
+    [StringLength(100)]
     public string Description { get; set; } = string.Empty;
 
     [NotMapped]
@@ -68,7 +69,7 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidatableObjec
 
     [Required]
     [Display(Name = "Status", ShortName = "Status")]
-    public RegionStatus Status { get; set; }
+    public RegionStatus Status { get; set; } = RegionStatus.Active;
 
     public DeleteStatus IsDeleted { get; set; }
 

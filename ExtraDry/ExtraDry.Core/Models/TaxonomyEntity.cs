@@ -39,7 +39,7 @@ public abstract class TaxonomyEntity<T> where T : TaxonomyEntity<T>, ITaxonomyEn
     [JsonIgnore] // TODO: derived classes should override this and replace with a JsonConverter to a ResourceReference.
     public virtual T? Parent { 
         get {
-            parent ??= Ancestors?.OrderByDescending(e => e.Strata)?.FirstOrDefault();
+            parent ??= Ancestors?.OrderByDescending(e => e.Strata)?.Skip(1).FirstOrDefault(); // Skip 1 to bypass the self-reference.
             return parent;
         }
         set => parent = value; 
