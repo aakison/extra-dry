@@ -12,8 +12,8 @@ using Sample.Data;
 namespace Sample.Data.Migrations
 {
     [DbContext(typeof(SampleContext))]
-    [Migration("20230901035059_Tests")]
-    partial class Tests
+    [Migration("20230904032628_TaxonomyUpdate")]
+    partial class TaxonomyUpdate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -223,9 +223,14 @@ namespace Sample.Data.Migrations
                         .HasColumnType("nvarchar(32)");
 
                     b.Property<Guid>("Uuid")
-                        .HasColumnType("uniqueidentifier");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Uuid")
+                        .IsUnique();
 
                     b.ToTable("Regions");
                 });
