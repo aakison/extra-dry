@@ -26,6 +26,9 @@ public class RegionService {
     public async Task CreateAsync(Region item)
     {
         if(item.Level != RegionLevel.Global) {
+            if(item.Parent == null) {
+                throw new ArgumentException("A region must have a parent if it is not at the global level.");
+            }
             var parent = await TryRetrieveAsync(item.Parent.Slug);
             item.SetParent(parent);
         }
@@ -61,7 +64,7 @@ public class RegionService {
     public async Task DeleteAsync(string code)
     {
         var existing = await RetrieveAsync(code);
-        rules.Delete(existing, () => database.Regions.Remove(existing), () => database.SaveChangesAsync());
+        await rules.DeleteAsync(existing, () => database.Regions.Remove(existing), () => database.SaveChangesAsync());
     }
 
     public async Task RestoreAsync(string code)

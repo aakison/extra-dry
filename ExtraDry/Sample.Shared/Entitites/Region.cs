@@ -11,9 +11,7 @@ namespace Sample.Shared;
 [Index(nameof(Uuid), IsUnique = true)]
 public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidatableObject {
 
-    /// <summary>
-    /// The principal ID for the region, internal to the database.
-    /// </summary>
+    /// <inheritdoc cref="ITaxonomyEntity.Id"/>
     [Key]
     [JsonIgnore]
     public int Id { get; set; }
@@ -43,6 +41,7 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidatableObjec
     /// </summary>
     [Required, StringLength(32)]
     [Display(ShortName = "Code")]
+    [JsonPropertyName("Code")]
     [Filter]
     public string Slug { get; set; } = string.Empty;
 

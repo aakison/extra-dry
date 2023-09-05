@@ -102,32 +102,5 @@ public class RegionController {
         await regions.RestoreAsync(code);
     }
 
-    /// <summary>
-    /// Populates the set of regions with commonly used regions
-    /// </summary>
-    [HttpPost("api/regions:populate")]
-    [AllowAnonymous]
-    [SuppressMessage("ApiUsage", "DRY1107:HttpPost, HttpPut and HttpPatch methods should have Consumes attribute", Justification = "This is an empty-bodied RPC style call and not a REST Create.")]
-    public async Task CreateBaseDataAsync()
-    {
-        var baseRegions = new Region[] {
-            new Region { Slug = "", Title = "All", Description = "All Regions", Level = RegionLevel.Global },
-            new Region { Slug = "AU", Title = "Australia", Description = "Commonwealth of Australia", Level = RegionLevel.Country },
-            new Region { Parent = new Region{ Slug = "AU" }, Slug = "AU-QLD", Title = "Queensland", Description = "Queensland", Level = RegionLevel.Division },
-            new Region { Parent = new Region{ Slug = "AU" }, Slug = "AU-VIC", Title = "Victoria", Description = "Victoria", Level = RegionLevel.Division },
-            new Region { Parent = new Region{ Slug = "AU" }, Slug = "AU-NSW", Title = "New South Wales", Description = "New South Wales", Level = RegionLevel.Division },
-            new Region { Parent = new Region{ Slug = "AU" }, Slug = "AU-ACT", Title = "Canberra", Description = "Australian Capital Territory", Level = RegionLevel.Division },
-            new Region { Parent = new Region{ Slug = "AU" }, Slug = "AU-TAS", Title = "Tasmania", Description = "Tasmania", Level = RegionLevel.Division },
-            new Region { Parent = new Region{ Slug = "AU" }, Slug = "AU-SA", Title = "South Australia", Description = "South Australia", Level = RegionLevel.Division },
-            new Region { Parent = new Region{ Slug = "AU" }, Slug = "AU-NT", Title = "Northern Territory", Description = "Northern Territory", Level = RegionLevel.Division },
-            new Region { Parent = new Region{ Slug = "AU" }, Slug = "AU-WA", Title = "Western Australia", Description = "Western Australia", Level = RegionLevel.Division },
-            new Region { Parent = new Region{ Slug = "AU-QLD" }, Slug = "AU-QLD-Brisbane", Title = "Brisbane", Description = "Brisbane", Level = RegionLevel.Subdivision },
-            new Region { Parent = new Region{ Slug = "AU-QLD" }, Slug = "AU-QLD-Redlands", Title = "Redlands", Description = "City of Redlands", Level = RegionLevel.Subdivision },
-        };
-        foreach(var region in baseRegions) {
-            await regions.CreateAsync(region);
-        }
-    }
-
     private readonly RegionService regions;
 }

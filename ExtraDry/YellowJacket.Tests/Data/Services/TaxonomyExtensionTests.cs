@@ -62,27 +62,27 @@ public class TaxonomyExtensionTests {
     [Fact(Skip = IgnoreTests)]
     public async Task MoveSubtree()
     {
-        var nsw = await arrangeService.TryRetrieveAsync("AU-Qld");
+        var qld = await arrangeService.TryRetrieveAsync("AU-QLD");
         var nz = await arrangeService.TryRetrieveAsync("NZ");
-        nsw.Parent = nz;
+        qld.Parent = nz;
 
-        await actService.UpdateAsync("AU-Qld", nsw);
+        await actService.UpdateAsync("AU-QLD", qld);
 
-        nsw = await arrangeService.TryRetrieveAsync("AU-Qld");
-        Assert.Equal("NZ", nsw.Parent.Slug);
-        var bris = await arrangeService.TryRetrieveAsync("AU-Qld-Bris");
-        Assert.Contains(bris.Ancestors, e => e.Slug == "AU-Qld");
+        qld = await arrangeService.TryRetrieveAsync("AU-QLD");
+        Assert.Equal("NZ", qld.Parent.Slug);
+        var bris = await arrangeService.TryRetrieveAsync("AU-Qld-Brisbane");
+        Assert.Contains(bris.Ancestors, e => e.Slug == "AU-QLD");
         Assert.Contains(bris.Ancestors, e => e.Slug == "NZ");
     }
 
     [Fact(Skip = IgnoreTests)]
     public async Task MoveSubtreeToDifferentStrata()
     {
-        var nsw = await arrangeService.TryRetrieveAsync("AU-Qld");
+        var qld = await arrangeService.TryRetrieveAsync("AU-QLD");
         var nz = await arrangeService.TryRetrieveAsync("NZ-AUK");
-        nsw.Parent = nz;
+        qld.Parent = nz;
 
-        await Assert.ThrowsAsync<ArgumentException>(async () => await actService.UpdateAsync("AU-Qld", nsw));
+        await Assert.ThrowsAsync<ArgumentException>(async () => await actService.UpdateAsync("AU-QLD", qld));
     }
 
     private void ClearData()

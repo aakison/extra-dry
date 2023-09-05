@@ -34,9 +34,10 @@ public abstract class TaxonomyEntity<T> where T : TaxonomyEntity<T>, ITaxonomyEn
     /// This is usefully for trivially communicating the taxonomy through an API, but is not a 
     /// good pattern for database structures. It requires that the Ancestors are loaded and then 
     /// calculates it on the fly.
+    /// Derived classes should override this and replace with a JsonConverter to a ResourceReference.
     /// </remarks>
     [NotMapped]
-    [JsonIgnore] // TODO: derived classes should override this and replace with a JsonConverter to a ResourceReference.
+    [JsonIgnore]
     public virtual T? Parent { 
         get {
             parent ??= Ancestors?.OrderByDescending(e => e.Strata)?.Skip(1).FirstOrDefault(); // Skip 1 to bypass the self-reference.

@@ -5,6 +5,9 @@
 /// </summary>
 public interface ITaxonomyEntity : IResourceIdentifiers {
 
+    /// <summary>
+    /// The principal ID for the entity, internal to the database.
+    /// </summary>
     int Id { get; set; }
 
     /// <summary>
@@ -15,9 +18,6 @@ public interface ITaxonomyEntity : IResourceIdentifiers {
     /// </summary>
     int Strata { get; }
 
-    /// <summary>
-    /// A Code that is used to uniquely identify the entity amongst similar typed entities.
-    /// Implementations should consider adding a `[StringLength]` of 20 or less.
-    /// </summary>
-    public string Slug { get; }
+    /// <inheritdoc cref="IResourceIdentifiers.Slug"/>
+    public new string Slug { get; }
 }
