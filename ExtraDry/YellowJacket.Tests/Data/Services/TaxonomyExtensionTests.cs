@@ -6,7 +6,6 @@ using System.ComponentModel;
 
 namespace Sample.Tests.Data.Services;
 
-[Category("IntegrationTests")]
 public class TaxonomyExtensionTests {
 
     // This cannot run on an in-memory database becuase it needs to run relational queries for subtree moving
