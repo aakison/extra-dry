@@ -51,8 +51,8 @@ public class RegionService {
     {
         var existing = await RetrieveAsync(code);
         if(existing.Parent != null && item.Parent != null && existing.Parent.Slug != item.Parent.Slug) {
-            var parent = await RetrieveAsync(item.Parent.Slug);
-            await database.MoveSubtree<Region>(existing.Id, parent.Id);
+            var newParent = await RetrieveAsync(item.Parent.Slug);
+            await existing.MoveSubtree(newParent, database);
         }
         await rules.UpdateAsync(item, existing);
         await database.SaveChangesAsync();

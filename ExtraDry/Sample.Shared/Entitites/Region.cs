@@ -60,7 +60,8 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidatableObjec
     /// <remarks>
     /// Limited to 100 characters based on full names of countries which, in English, max at 59 characters per ISO.
     /// </remarks>
-    // [Required]
+    [Required]
+    [DefaultValue("Description")]
     [StringLength(100)]
     public string Description { get; set; } = string.Empty;
 

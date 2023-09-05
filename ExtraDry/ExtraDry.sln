@@ -49,7 +49,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtraDry.Server", "ExtraDry
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtraDry.Server.Tests", "ExtraDry.Server.Tests\ExtraDry.Server.Tests.csproj", "{A4414229-507A-4F50-B573-FEE24071AE73}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YellowJacket.Tests", "YellowJacket.Tests\YellowJacket.Tests.csproj", "{B3B96AF8-0BAB-403D-BFCE-40A0857FC680}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Tests", "YellowJacket.Tests\Sample.Tests.csproj", "{B3B96AF8-0BAB-403D-BFCE-40A0857FC680}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.WebJobs", "Sample.WebJobs\Sample.WebJobs.csproj", "{FEAFDA36-0C8D-4369-B632-C8A847DD25E4}"
 EndProject

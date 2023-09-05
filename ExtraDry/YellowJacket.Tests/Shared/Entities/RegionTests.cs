@@ -1,7 +1,7 @@
 ﻿using ExtraDry.Core;
 using Sample.Shared;
 
-namespace YellowJacket.Tests.Shared.Entities;
+namespace Sample.Tests.Shared.Entities;
 
 public class RegionTests {
 
