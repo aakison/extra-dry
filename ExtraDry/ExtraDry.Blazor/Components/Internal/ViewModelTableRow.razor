@@ -41,7 +41,7 @@
         <td class="commands">
             <div class="contextCommands">
                 @foreach(var command in Description.ContextCommands) {
-                    <DryButton Command="@command" Target="@Item.Item" IconOnly="true" />
+                    <DryButton Command="@command" Model="@Item.Item" IconOnly="true" />
                 }
             </div>
         </td>
