@@ -100,6 +100,7 @@ public class TaxonomyExtensionTests {
         var bris = await arrangeService.TryRetrieveAsync("AU-Qld-Brisbane");
         Assert.Contains(bris.Ancestors, e => e.Slug == "AU-QLD");
         Assert.Contains(bris.Ancestors, e => e.Slug == "NZ");
+        Assert.Equal("TestTitle", qld.Title);
     }
 
     private void ClearData()
