@@ -20,8 +20,7 @@ public abstract class TaxonomyEntity<T> where T : TaxonomyEntity<T>, ITaxonomyEn
             Ancestors.AddRange(parent.Ancestors);
             Ancestors.Add(parent);
         }
-        var self = this as T;
-        if(self != null) {
+        if(this is T self) {
             Ancestors.Add(self);
         }
     }

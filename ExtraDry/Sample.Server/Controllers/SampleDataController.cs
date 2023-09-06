@@ -44,7 +44,7 @@ public class SampleDataController {
             sampleData.PopulateCompanies(context, 50);
             sampleData.PopulateEmployees(context, 5000);
             sampleData.PopulateContents(context);
-            await sampleData.PopulateRegions(regions);
+            await sampleData.PopulateRegionsAsync(regions);
         }
     }
 }

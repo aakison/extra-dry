@@ -59,7 +59,7 @@ public class DummyData {
         database.SaveChanges();
     }
 
-    public async Task PopulateRegions(RegionService service)
+    public async Task PopulateRegionsAsync(RegionService service)
     {
         var baseRegions = new Region[] {
             new Region { Uuid = Guid.NewGuid(), Slug = "all", Title = "All Regions", Description = "The World", Level = RegionLevel.Global},

@@ -84,6 +84,24 @@ public class TaxonomyExtensionTests {
         await Assert.ThrowsAsync<ArgumentException>(async () => await actService.UpdateAsync("AU-QLD", qld));
     }
 
+    [Fact(Skip = IgnoreTests)]
+    public async Task MoveSubtreeWithAdditionalChanges()
+    {
+        var qld = await arrangeService.TryRetrieveAsync("AU-QLD");
+        var nz = await arrangeService.TryRetrieveAsync("NZ");
+        qld.Parent = nz;
+        qld.Title = "TestTitle";
+
+        // Should do the move, then the change and not fail.
+        await actService.UpdateAsync("AU-QLD", qld);
+
+        qld = await arrangeService.TryRetrieveAsync("AU-QLD");
+        Assert.Equal("NZ", qld.Parent.Slug);
+        var bris = await arrangeService.TryRetrieveAsync("AU-Qld-Brisbane");
+        Assert.Contains(bris.Ancestors, e => e.Slug == "AU-QLD");
+        Assert.Contains(bris.Ancestors, e => e.Slug == "NZ");
+    }
+
     private void ClearData()
     {
         context.Database.ExecuteSqlRaw("DELETE FROM [RegionRegion]");
@@ -93,6 +111,6 @@ public class TaxonomyExtensionTests {
     private async Task SeedSampleData(RegionService service)
     {
         var seed = new DummyData();
-        await seed.PopulateRegions(service);
+        await seed.PopulateRegionsAsync(service);
     }
 }
