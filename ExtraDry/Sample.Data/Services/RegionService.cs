@@ -51,14 +51,22 @@ public class RegionService {
     }
 
     public async Task UpdateAsync(string code, Region item)
-    {
+    {        
         var existing = await RetrieveAsync(code);
-        if(existing.Parent != null && item.Parent != null && existing.Parent.Slug != item.Parent.Slug) {
-            var newParent = await RetrieveAsync(item.Parent.Slug);
-            await existing.MoveSubtree(newParent, database);
+        await database.Database.BeginTransactionAsync();
+        try {
+            if(existing.Parent != null && item.Parent != null && existing.Parent.Slug != item.Parent.Slug) {
+                var newParent = await RetrieveAsync(item.Parent.Slug);
+                await existing.MoveSubtree(newParent, database);
+            }
+            await rules.UpdateAsync(item, existing);
+            await database.SaveChangesAsync();
+            await database.Database.CommitTransactionAsync();
         }
-        await rules.UpdateAsync(item, existing);
-        await database.SaveChangesAsync();
+        catch {
+            await database.Database.RollbackTransactionAsync();
+            throw;
+        }
     }
 
     public async Task DeleteAsync(string code)

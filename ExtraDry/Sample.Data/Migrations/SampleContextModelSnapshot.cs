@@ -220,9 +220,7 @@ namespace Sample.Data.Migrations
                         .HasColumnType("nvarchar(32)");
 
                     b.Property<Guid>("Uuid")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 

@@ -41,7 +41,6 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidatableObjec
     /// </summary>
     [Required, StringLength(32)]
     [Display(ShortName = "Code")]
-    [JsonPropertyName("Code")]
     [Filter]
     public string Slug { get; set; } = string.Empty;
 

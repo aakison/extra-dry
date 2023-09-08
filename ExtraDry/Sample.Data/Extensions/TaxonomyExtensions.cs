@@ -26,7 +26,12 @@ namespace Sample.Data {
             // This should align with the name of the closure table due to EF convention. eg. Region -> RegionRegion, Location -> LocationLocation
             var closureTableName = $"[{subtreeRootToMove.GetType().Name}{subtreeRootToMove.GetType().Name}]";
 
-            await context.Database.BeginTransactionAsync();
+            // If there's not an existing transaction to participate in, then we create our own. 
+            // Nested transactions will cause EF to throw an exception or commit too early.
+            var managingOwnTransaction = context.Database.CurrentTransaction == null;
+            if(managingOwnTransaction) {
+                await context.Database.BeginTransactionAsync();
+            }
             try {
                 // Query based off the closure table move-subtree queries as found in the book SQL Antipatterns by Bill Karwin
                 // First step deletes references from the super tree to items within the subtree, retaining the self-reference of the root node.
@@ -42,10 +47,14 @@ FROM {closureTableName} supertree
 WHERE supertree.DescendantsId = {newParent.Id}
 	and subtree.AncestorsId = {subtreeRootToMove.Id}");
 
-                await context.Database.CommitTransactionAsync();
+                if(managingOwnTransaction) {
+                    await context.Database.CommitTransactionAsync();
+                }
             }
             catch {
-                await context.Database.RollbackTransactionAsync();
+                if(managingOwnTransaction) {
+                    await context.Database.RollbackTransactionAsync();
+                }
                 throw;
             }
         }
