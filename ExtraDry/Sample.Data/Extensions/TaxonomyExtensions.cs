@@ -22,41 +22,27 @@ namespace Sample.Data {
             if(context.ChangeTracker.Entries().Any(e => e.State != EntityState.Unchanged)) {
                 throw new ArgumentException("Moving the subtree needs to happen in isolation from all other changes.");
             }
+            if(context.Database.CurrentTransaction == null) {
+                throw new ArgumentException("This method must be called from within a transaction.");
+            }
 
             // This should align with the name of the closure table due to EF convention. eg. Region -> RegionRegion, Location -> LocationLocation
             var closureTableName = $"[{subtreeRootToMove.GetType().Name}{subtreeRootToMove.GetType().Name}]";
 
-            // If there's not an existing transaction to participate in, then we create our own. 
-            // Nested transactions will cause EF to throw an exception or commit too early.
-            var managingOwnTransaction = context.Database.CurrentTransaction == null;
-            if(managingOwnTransaction) {
-                await context.Database.BeginTransactionAsync();
-            }
-            try {
-                // Query based off the closure table move-subtree queries as found in the book SQL Antipatterns by Bill Karwin
-                // First step deletes references from the super tree to items within the subtree, retaining the self-reference of the root node.
-                await context.Database.ExecuteSqlRawAsync($@"DELETE FROM {closureTableName}
+            // Query based off the closure table move-subtree queries as found in the book SQL Antipatterns by Bill Karwin
+            // First step deletes references from the super tree to items within the subtree, retaining the self-reference of the root node.
+            await context.Database.ExecuteSqlRawAsync($@"DELETE FROM {closureTableName}
 WHERE​ DescendantsId ​IN​ (​SELECT DescendantsId FROM​ {closureTableName} WHERE​ AncestorsId = {subtreeRootToMove.Id})
 AND​ AncestorsId ​IN​ (​SELECT​ AncestorsId FROM​ {closureTableName} ​WHERE DescendantsId = {subtreeRootToMove.Id} ​AND​ AncestorsId != DescendantsId );");
 
-                // Then we insert to the new location, adding links from the items in the subtree to the items in the new parent ancestor path.
-                await context.Database.ExecuteSqlRawAsync($@"INSERT INTO {closureTableName} (AncestorsId, DescendantsId)
+            // Then we insert to the new location, adding links from the items in the subtree to the items in the new parent ancestor path.
+            await context.Database.ExecuteSqlRawAsync($@"INSERT INTO {closureTableName} (AncestorsId, DescendantsId)
 SELECT supertree.AncestorsId, subtree.DescendantsId
 FROM {closureTableName} supertree
 	CROSS JOIN {closureTableName} subtree
 WHERE supertree.DescendantsId = {newParent.Id}
 	and subtree.AncestorsId = {subtreeRootToMove.Id}");
 
-                if(managingOwnTransaction) {
-                    await context.Database.CommitTransactionAsync();
-                }
-            }
-            catch {
-                if(managingOwnTransaction) {
-                    await context.Database.RollbackTransactionAsync();
-                }
-                throw;
-            }
         }
     }
 }
