@@ -20,12 +20,14 @@ public class SampleDataController {
     /// Stanard DI Constructor
     /// </summary>
     [SuppressMessage("Usage", "DRY1012:API Controller Classes should not directly use DbContext.", Justification = "Temporary sample data controller.")]
-    public SampleDataController(SampleContext sampleContext)
+    public SampleDataController(SampleContext sampleContext, RegionService regionService)
     {
         context = sampleContext;
+        regions = regionService;
     }
 
     private readonly SampleContext context;
+    private readonly RegionService regions;
 
     /// <summary>
     /// Load the set of sample data, idempotent so allowed to be anonymous.
@@ -42,6 +44,7 @@ public class SampleDataController {
             sampleData.PopulateCompanies(context, 50);
             sampleData.PopulateEmployees(context, 5000);
             sampleData.PopulateContents(context);
+            await sampleData.PopulateRegionsAsync(regions);
         }
     }
 }

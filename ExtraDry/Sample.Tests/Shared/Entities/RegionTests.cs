@@ -1,13 +1,13 @@
 ﻿using ExtraDry.Core;
 using Sample.Shared;
 
-namespace YellowJacket.Tests.Shared.Entities;
+namespace Sample.Tests.Shared.Entities;
 
 public class RegionTests {
 
     [Theory]
     [InlineData("Id", 2)]
-    [InlineData("Code", "US")]
+    [InlineData("Slug", "US")]
     [InlineData("Level", RegionLevel.Division)]
     [InlineData("Title", "USA")]
     [InlineData("Description", "United States of America")]
@@ -59,7 +59,7 @@ public class RegionTests {
     public void ValidCodesForLevel(RegionLevel level, string code)
     {
         var request = ValidRegion;
-        request.Code = code;
+        request.Slug = code;
         request.Level = level;
         var validator = new DataValidator();
 
@@ -87,7 +87,7 @@ public class RegionTests {
     public void InvalidCodesForLevel(RegionLevel level, string code)
     {
         var request = ValidRegion;
-        request.Code = code;
+        request.Slug = code;
         request.Level = level;
         var validator = new DataValidator();
 
@@ -107,16 +107,17 @@ public class RegionTests {
         property.SetValue(request, propertyValue);
         var json = JsonSerializer.Serialize(request);
 
-        Assert.DoesNotContain(propertyValue.ToString()!, json);
+        // Check for the value as a complete json value, else the int or string could appear in the Uuid
+        Assert.DoesNotContain($":{propertyValue}", json);
+        Assert.DoesNotContain($":\"{propertyValue}\"", json);
     }
 
     public static Region ValidRegion => new() {
         Id = 1,
-        Code = "AU",
+        Slug = "AU",
         Level = RegionLevel.Country,
         Title = "Australia",
         Description = "Commonwealth of Australia",
-        ParentCode = "",
     };
 
 }

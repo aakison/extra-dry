@@ -19,14 +19,19 @@ public class RegionService {
     public async Task<FilteredCollection<Region>> ListChildrenAsync(string code)
     {
         return await database.Regions
-            .QueryWith(new(), e => e.Ancestors.Any(f => f.Code == code && (int)f.Level + 1 == (int)e.Level))
+            .QueryWith(new(), e => e.Ancestors.Any(f => f.Slug == code && (int)f.Level + 1 == (int)e.Level))
             .ToFilteredCollectionAsync();
     }
 
     public async Task CreateAsync(Region item)
     {
-        var parent = await TryRetrieveAsync(item.ParentCode);
-        item.SetParent(parent);
+        if(item.Level != RegionLevel.Global) {
+            if(item.Parent == null) {
+                throw new ArgumentException("A region must have a parent if it is not at the global level.");
+            }
+            var parent = await TryRetrieveAsync(item.Parent.Slug);
+            item.SetParent(parent);
+        }
         database.Regions.Add(item);
         await database.SaveChangesAsync();
     }
@@ -35,7 +40,7 @@ public class RegionService {
     {
         return await database.Regions
             .Include(e => e.Ancestors)
-            .FirstOrDefaultAsync(e => e.Code == code);
+            .FirstOrDefaultAsync(e => e.Slug == code);
     }
 
     public async Task<Region> RetrieveAsync(string code)
@@ -46,20 +51,28 @@ public class RegionService {
     }
 
     public async Task UpdateAsync(string code, Region item)
-    {
+    {        
         var existing = await RetrieveAsync(code);
-        if(existing.ParentCode != item.ParentCode) {
-            var parent = await RetrieveAsync(item.ParentCode);
-            existing.SetParent(parent);
+        await database.Database.BeginTransactionAsync();
+        try {
+            if(existing.Parent != null && item.Parent != null && existing.Parent.Slug != item.Parent.Slug) {
+                var newParent = await RetrieveAsync(item.Parent.Slug);
+                await existing.MoveSubtree(newParent, database);
+            }
+            await rules.UpdateAsync(item, existing);
+            await database.SaveChangesAsync();
+            await database.Database.CommitTransactionAsync();
         }
-        await rules.UpdateAsync(item, existing);
-        await database.SaveChangesAsync();
+        catch {
+            await database.Database.RollbackTransactionAsync();
+            throw;
+        }
     }
 
     public async Task DeleteAsync(string code)
     {
         var existing = await RetrieveAsync(code);
-        rules.Delete(existing, () => database.Regions.Remove(existing), () => database.SaveChangesAsync());
+        await rules.DeleteAsync(existing, () => database.Regions.Remove(existing), () => database.SaveChangesAsync());
     }
 
     public async Task RestoreAsync(string code)

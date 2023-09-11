@@ -12,7 +12,7 @@
     [Command(CommandContext.Alternate, Icon = "edit")]
     public void Edit(Region region)
     {
-        Console.WriteLine($"Huzzah {region.Code}");
+        Console.WriteLine($"Huzzah {region.Slug}");
         //CompanyUuid = company.Uuid;
         StateHasChanged();
         //Navigation.NavigateTo($"/companies/{company.Uuid}");

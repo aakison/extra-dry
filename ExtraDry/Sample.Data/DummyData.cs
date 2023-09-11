@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using Sample.Data.Services;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Sample.Data;
     
@@ -56,6 +57,40 @@ public class DummyData {
             }
         }
         database.SaveChanges();
+    }
+
+    public async Task PopulateRegionsAsync(RegionService service)
+    {
+        var baseRegions = new Region[] {
+            new Region { Uuid = Guid.NewGuid(), Slug = "all", Title = "All Regions", Description = "The World", Level = RegionLevel.Global},
+
+            // Tier 1
+            new Region { Parent = new Region { Slug = "all" }, Slug = "AU", Title = "Australia", Description = "Australia", Level = RegionLevel.Country},
+            new Region { Parent = new Region { Slug = "all" }, Slug = "NZ", Title = "New Zealand", Description = "New Zealand", Level = RegionLevel.Country},
+            
+            // Tier 2
+            new Region { Parent = new Region { Slug = "AU" }, Slug = "AU-VIC", Title = "Victoria", Description = "Victoria, Australia", Level = RegionLevel.Division},
+            new Region { Parent = new Region { Slug = "AU" }, Slug = "AU-QLD", Title = "Queensland", Description = "Queensland, Australia", Level = RegionLevel.Division},
+            new Region { Parent = new Region { Slug = "AU" }, Slug = "AU-NSW", Title = "New South Wales", Description = "NSW, Australia", Level = RegionLevel.Division},
+            new Region { Parent = new Region { Slug = "AU" }, Slug = "AU-ACT", Title = "Canberra", Description = "Australian Capital Territory", Level = RegionLevel.Division },
+            new Region { Parent = new Region { Slug = "AU" }, Slug = "AU-TAS", Title = "Tasmania", Description = "Tasmania", Level = RegionLevel.Division },
+            new Region { Parent = new Region { Slug = "AU" }, Slug = "AU-SA", Title = "South Australia", Description = "South Australia", Level = RegionLevel.Division },
+            new Region { Parent = new Region { Slug = "AU" }, Slug = "AU-NT", Title = "Northern Territory", Description = "Northern Territory", Level = RegionLevel.Division },
+            new Region { Parent = new Region { Slug = "AU" }, Slug = "AU-WA", Title = "Western Australia", Description = "Western Australia", Level = RegionLevel.Division },
+            new Region { Parent = new Region { Slug = "NZ" }, Slug = "NZ-AUK", Title = "Auckland", Description = "Auckland, NZ", Level = RegionLevel.Division},
+            new Region { Parent = new Region { Slug = "NZ" }, Slug = "NZ-TKI", Title = "Taranaki", Description = "Taranaki, NZ", Level = RegionLevel.Division},
+
+            // Tier 3
+            new Region { Parent = new Region { Slug = "AU-VIC" }, Slug = "AU-VIC-Melbourne", Title = "Melbourne City", Description = "Melbourne, Victoria, Australia", Level = RegionLevel.Subdivision},
+            new Region { Parent = new Region { Slug = "AU-QLD" }, Slug = "AU-QLD-Brisbane", Title = "Brisbane", Description = "Brisbane", Level = RegionLevel.Subdivision },
+            new Region { Parent = new Region { Slug = "AU-QLD" }, Slug = "AU-QLD-Redlands", Title = "Redlands", Description = "City of Redlands", Level = RegionLevel.Subdivision },
+        };
+
+        foreach(var region in baseRegions) {
+            await service.CreateAsync(region);
+        }
+
+
     }
 
     public void PopulateEmployees(SampleContext database, int count)

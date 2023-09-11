@@ -3,7 +3,12 @@
 /// <summary>
 /// Represents the addition property required for an entity to support a taxonomy.
 /// </summary>
-public interface ITaxonomyEntity {
+public interface ITaxonomyEntity : IResourceIdentifiers {
+
+    /// <summary>
+    /// The principal ID for the entity, internal to the database.
+    /// </summary>
+    int Id { get; set; }
 
     /// <summary>
     /// Represents the level of the taxonomy, by convention 0 is the top and each level below that increments by 1.
@@ -13,9 +18,6 @@ public interface ITaxonomyEntity {
     /// </summary>
     int Strata { get; }
 
-    /// <summary>
-    /// A Code that is used to uniquely identify the entity amongst similar typed entities.
-    /// Implementations should consider adding a `[StringLength]` of 20 or less.
-    /// </summary>
-    public string Code { get; }
+    /// <inheritdoc cref="IResourceIdentifiers.Slug"/>
+    public new string Slug { get; }
 }

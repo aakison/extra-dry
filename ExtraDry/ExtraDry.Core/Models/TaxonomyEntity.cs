@@ -4,7 +4,7 @@
 /// For an entity that exists in a hierarchy, creates extensions for an EF model to model it.
 /// This uses a Closure table that tracks all ancestors and descendents between entities.
 /// </summary>
-public abstract class TaxonomyEntity<T> where T : TaxonomyEntity<T>, ITaxonomyEntity {
+public abstract class TaxonomyEntity<T> where T : TaxonomyEntity<T>, ITaxonomyEntity, IResourceIdentifiers {
 
     /// <summary>
     /// Useful for creating a new `T` which is the direct child of a parent `T`.
@@ -20,24 +20,31 @@ public abstract class TaxonomyEntity<T> where T : TaxonomyEntity<T>, ITaxonomyEn
             Ancestors.AddRange(parent.Ancestors);
             Ancestors.Add(parent);
         }
+        if(this is T self) {
+            Ancestors.Add(self);
+        }
     }
 
     /// <summary>
-    /// The code of the immediate parent for this entity in the taxonomy.
-    /// Use to infer the tree structure from multiple entities, and to re-parent an entity during an `Update`.
+    /// The immediate parent for this entity in the taxonomy.  Use to infer the tree structure 
+    /// from multiple entities, and to re-parent an entity during an `Update`.
     /// </summary>
     /// <remarks>
-    /// This is usefully for trivially communicating the taxonomy through an API, but is not a good pattern for database structures.
-    /// It requires that the Ancestors are loaded and then calculates it on the fly.
+    /// This is usefully for trivially communicating the taxonomy through an API, but is not a 
+    /// good pattern for database structures. It requires that the Ancestors are loaded and then 
+    /// calculates it on the fly.
+    /// Derived classes should override this and replace with a JsonConverter to a ResourceReference.
     /// </remarks>
     [NotMapped]
-    public string ParentCode {
-        get => parentCode ?? LookupParentCode();
-        set => parentCode = value;
+    [JsonIgnore]
+    public virtual T? Parent { 
+        get {
+            parent ??= Ancestors?.OrderByDescending(e => e.Strata)?.Skip(1).FirstOrDefault(); // Skip 1 to bypass the self-reference.
+            return parent;
+        }
+        set => parent = value; 
     }
-    private string? parentCode;
-
-    private string LookupParentCode() => Ancestors?.OrderByDescending(e => e.Strata)?.FirstOrDefault()?.Code ?? string.Empty;
+    private T? parent;
 
     /// <summary>
     /// The set of all ancestors for this entity (does not include current entity).

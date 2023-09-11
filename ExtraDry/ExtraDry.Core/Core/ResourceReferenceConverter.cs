@@ -37,7 +37,7 @@ public class ResourceReferenceConverter<T> : JsonConverter<T> where T : IResourc
         if(!string.IsNullOrEmpty(reference.Title)) {
             obj.Title = reference.Title;
         }
-        var validator = new ExtraDry.Core.DataValidator();
+        var validator = new DataValidator();
         var valid = validator.ValidateObject(obj);
         if(!valid) {
             var errorMessage = string.Join("\r\n", validator.Errors.Select(e => $"  * {e.ErrorMessage}"));
