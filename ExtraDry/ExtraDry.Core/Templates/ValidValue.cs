@@ -8,7 +8,7 @@ public class ValidValue {
     /// The actual value that is stored in the database represents this valid value.
     /// </summary>
 
-    public string Value { get; set; }
+    public string Value { get; set; } = string.Empty;
 
     /// <summary>
     /// The relative order of this value when being presented alongside other values (in descending order).
@@ -26,9 +26,4 @@ public class ValidValue {
 
     public string Icon { get; set; }
 
-    /// <summary>
-    /// The description of this value, a visual display for things like dropdown boxes.
-    /// </summary>
-
-    public string Description { get; set; }
 }

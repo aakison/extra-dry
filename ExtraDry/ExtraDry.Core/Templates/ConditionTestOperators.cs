@@ -1,7 +1,9 @@
-﻿namespace ExtraDry.Core; 
+﻿namespace ExtraDry.Core;
+
 /// <summary>
 /// List of operators that can be used in a <see cref="ConditionTest"/>.
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ConditionTestOperators
 {
     EqualTo,
