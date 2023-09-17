@@ -58,6 +58,11 @@ public class RegionService {
             if(existing.Parent != null && item.Parent != null && existing.Parent.Slug != item.Parent.Slug) {
                 var newParent = await RetrieveAsync(item.Parent.Slug);
                 await existing.MoveSubtree(newParent, database);
+                database.Entry(existing).State = EntityState.Detached; // Detach the fucker.
+                existing = await RetrieveAsync(code);
+                //foreach(var loc in existing.Ancestors) {
+                //    database.Entry(loc).Reload();
+                //}
             }
             await rules.UpdateAsync(item, existing);
             await database.SaveChangesAsync();

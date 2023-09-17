@@ -11,7 +11,7 @@ public class TaxonomyExtensionTests {
     // This cannot run on an in-memory database becuase it needs to run relational queries for subtree moving
     // As a result we ignore unles it's specifically asked for
     // To have these tests run again, set this constant to null;
-    const string IgnoreTests = "Destructive tests disabled";
+    const string IgnoreTests = null;//"Destructive tests disabled";
 
     // 2 services. This is a workaround so the context in one doesn't actively influence the other through tracking.
     // The alternative is to fetch items as no tracking, but that would influence the production system for a non-realistic situation.
@@ -23,7 +23,7 @@ public class TaxonomyExtensionTests {
     public TaxonomyExtensionTests()
     {
         var builder = new DbContextOptionsBuilder<SampleContext>()
-            .UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ExtraDryIntegrationTests;Trusted_Connection=True;").Options;
+            .UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ExtraDrySample;Trusted_Connection=True").Options;
         var arrangeContext = new SampleContext(builder);
         context = new SampleContext(builder);
 
@@ -36,6 +36,14 @@ public class TaxonomyExtensionTests {
     }
 
     [Fact(Skip = IgnoreTests)]
+    public async Task AncestorsCountIsCorrect()
+    {
+        var mel = await arrangeService.TryRetrieveAsync("AU-VIC-Melbourne");
+
+        Assert.Equal(4, mel.Ancestors.Count);
+    }
+
+    [Fact(Skip = IgnoreTests)]
     public async Task MoveLeafNode()
     {
         var nsw = await arrangeService.TryRetrieveAsync("AU-NSW");
@@ -44,8 +52,10 @@ public class TaxonomyExtensionTests {
 
         await actService.UpdateAsync("AU-NSW", nsw);
 
-        nsw = await arrangeService.TryRetrieveAsync("AU-NSW");
+        nsw = await actService.TryRetrieveAsync("AU-NSW");
+        Assert.Equal(3, nsw.Ancestors.Count); // Self, NZ, Global
         Assert.Equal("NZ", nsw.Parent.Slug);
+        Assert.DoesNotContain(nsw.Ancestors, a => a.Slug == "AU");
     }
 
     [Fact(Skip = IgnoreTests)]
@@ -67,8 +77,8 @@ public class TaxonomyExtensionTests {
 
         await actService.UpdateAsync("AU-QLD", qld);
 
-        qld = await arrangeService.TryRetrieveAsync("AU-QLD");
-        Assert.Equal("NZ", qld.Parent.Slug);
+        var qld2 = await arrangeService.TryRetrieveAsync("AU-QLD");
+        Assert.Equal("NZ", qld2.Parent.Slug);
         var bris = await arrangeService.TryRetrieveAsync("AU-Qld-Brisbane");
         Assert.Contains(bris.Ancestors, e => e.Slug == "AU-QLD");
         Assert.Contains(bris.Ancestors, e => e.Slug == "NZ");

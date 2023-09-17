@@ -17,7 +17,7 @@ public abstract class TaxonomyEntity<T> where T : TaxonomyEntity<T>, ITaxonomyEn
                 throw new InvalidOperationException("Parent must be at a higher level than current entity.");
             }
             Ancestors.Clear();
-            Ancestors.AddRange(parent.Ancestors);
+            Ancestors.AddRange(parent.Ancestors.Where(a => a.Uuid != parent.Uuid));
             Ancestors.Add(parent);
         }
         if(this is T self) {
@@ -47,7 +47,7 @@ public abstract class TaxonomyEntity<T> where T : TaxonomyEntity<T>, ITaxonomyEn
     private T? parent;
 
     /// <summary>
-    /// The set of all ancestors for this entity (does not include current entity).
+    /// The set of all ancestors for this entity.
     /// </summary>
     /// <remarks>
     /// This works with `Descendants` and auto-creation of join tables in EF to create a tree Closure table.
@@ -56,7 +56,7 @@ public abstract class TaxonomyEntity<T> where T : TaxonomyEntity<T>, ITaxonomyEn
     public List<T> Ancestors { get; set; } = new();
 
     /// <summary>
-    /// The set of all descendants for this entity (does not include current entity).
+    /// The set of all descendants for this entity.
     /// </summary>
     /// <remarks>
     /// This works with `Ancestors` and auto-creation of join tables in EF to create a tree Closure table.
