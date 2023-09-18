@@ -29,7 +29,7 @@ public class SampleDbContextFactory : IDesignTimeDbContextFactory<SampleContext>
     {
         var builder = new DbContextOptionsBuilder<SampleContext>();
         var connectionString = Configuration.GetConnectionString("SampleContext") ??
-            @"Server=(localdb)\\mssqllocaldb;Database=ExtraDryIntegrationTests;Trusted_Connection=True;";
+            @"Server=(localdb)\mssqllocaldb;Database=ExtraDrySample;Trusted_Connection=True;";
         builder.UseSqlServer(connectionString);
         return new SampleContext(builder.Options);
     }
