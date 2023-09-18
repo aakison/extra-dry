@@ -20,6 +20,12 @@ public class ResourceReferenceSchemaFilter : IDocumentFilter {
 
     private void RewriteResourceReferenceTypes(OpenApiDocument swaggerDoc, DocumentFilterContext context)
     {
+        /*
+         *  Loop through the schemas rewriting property types to a corresponding resource reference 
+         *  type where needed. When adding a resource reference type generate a schema for it, if it 
+         *  doesn't already exist. The `GenerateSchema` method adds the schema to the collection by 
+         *  default, using a `for` loop will avoid any errors due to the collection being changed.
+         */
         for(int i = 0; i < swaggerDoc.Components.Schemas.Count; i++) {
             var schema = swaggerDoc.Components.Schemas.ElementAtOrDefault(i);
             foreach(var property in schema.Value.Properties) {
