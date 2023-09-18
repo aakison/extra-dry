@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net;
 using System.Security;
 
@@ -20,7 +19,7 @@ public class ApiExceptionStatusCodesAttribute : ExceptionFilterAttribute {
             ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.BadRequest, ex.UserMessage);
             context.ExceptionHandled = true;
         }
-        else if(context.Exception is ArgumentOutOfRangeException) {
+        else if(context.Exception is ArgumentOutOfRangeException || context.Exception is KeyNotFoundException) {
             ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.NotFound);
             context.ExceptionHandled = true;
         }
@@ -41,8 +40,10 @@ public class ApiExceptionStatusCodesAttribute : ExceptionFilterAttribute {
             ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.BadRequest, dryException.ProblemDetails.Detail);
             context.ExceptionHandled = true;
         }
+        else {
+            ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.InternalServerError);
+            context.ExceptionHandled = true;
+        }
     }
-
-
 
 }
