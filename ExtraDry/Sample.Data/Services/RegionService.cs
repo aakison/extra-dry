@@ -50,19 +50,26 @@ public class RegionService {
         return result;
     }
 
-    public async Task UpdateAsync(string code, Region item)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="slug">The slug that is used to identify the region to update</param>
+    /// <param name="item">The item to update</param>
+    /// <param name="allowMove">If false (default), any parent changes will be ignored. If true, will attempt to reparent the provided item to the provided parent. Afterwards, will clear the changetracker. </param>
+    /// <returns></returns>
+    public async Task UpdateAsync(string slug, Region item, bool allowMove = false)
     {        
-        var existing = await RetrieveAsync(code);
+        var existing = await RetrieveAsync(slug);
         await database.Database.BeginTransactionAsync();
         try {
-            if(existing.Parent != null && item.Parent != null && existing.Parent.Slug != item.Parent.Slug) {
+            if(allowMove && existing.Parent != null && item.Parent != null && existing.Parent.Slug != item.Parent.Slug) {
                 var newParent = await RetrieveAsync(item.Parent.Slug);
                 await existing.MoveSubtree(newParent, database);
-                database.Entry(existing).State = EntityState.Detached; // Detach the fucker.
-                existing = await RetrieveAsync(code);
-                //foreach(var loc in existing.Ancestors) {
-                //    database.Entry(loc).Reload();
-                //}
+
+                // Clear the changetracker. Moving the subtree is destructive and outside EFs wheelhouse
+                // We detach all Regions so that future fetches have these changes.
+                database.ChangeTracker.Clear();
+                existing = await RetrieveAsync(slug);
             }
             await rules.UpdateAsync(item, existing);
             await database.SaveChangesAsync();

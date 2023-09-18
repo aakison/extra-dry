@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Text;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Sample.Data {
     public static class TaxonomyExtensions {
@@ -42,7 +43,6 @@ FROM {closureTableName} supertree
 	CROSS JOIN {closureTableName} subtree
 WHERE supertree.DescendantsId = {newParent.Id}
 	and subtree.AncestorsId = {subtreeRootToMove.Id}");
-
         }
     }
 }
