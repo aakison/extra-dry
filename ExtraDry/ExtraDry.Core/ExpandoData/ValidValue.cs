@@ -24,6 +24,6 @@ public class ValidValue {
     /// If the name is not know in the app, then the app will display the Field.DefaultIcon.
     /// </summary>
 
-    public string Icon { get; set; }
+    public string Icon { get; set; } = string.Empty;
 
 }

@@ -51,8 +51,10 @@ public enum ExpandoDataType {
     Boolean = 16, // e.g. for checkboxes
 
     // Link concepts??? TODO: Consider...
-    User = 20,
-    Asset = 21,
+    Number = 20,
+    User = 21,
+    Asset = 22,
     WorkOrder = 22,
-    Number = 23,
+    PlannedMaintenance = 23,
+    
 }

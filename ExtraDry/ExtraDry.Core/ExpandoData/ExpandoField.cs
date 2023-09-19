@@ -1,12 +1,19 @@
 ﻿namespace ExtraDry.Core;
 
 /// <summary>
-/// Represents a Field of a Template, this defines the name, data type, etc. for Values that are assigned Tags.
+/// Represents a Field in a Custom Schema, this defines the name, data type, etc. for Values.
 /// </summary>
 public class ExpandoField {
 
-    public Guid Uuid { get; set; } = Guid.NewGuid();
+    /// <summary>
+    /// A unique slug for the field that is auto-generated on create.
+    /// </summary>
+    /// <example>external-id</example>
+    public string Slug { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Display Label
+    /// </summary>
     public string Label { get; set; } = "label";
 
     /// <summary>
@@ -24,13 +31,24 @@ public class ExpandoField {
     /// The default value for the field, to be populated by the client when a form is loaded.
     /// If the form is "cancelled", then the default should be reverted.
     /// </summary>
-    public object? Value { get; set; }
+    public object? DefaultValue { get; set; }
 
     public string Icon { get; set; } = string.Empty;
 
     public string Placeholder { get; set; } = string.Empty;
 
-    public List<Constraint> Constraints { get; set; } = new();
+    [Display(Name = "Required")]
+    public bool IsRequired { get; set; }
+
+    [Display(Name ="Max Text Length")]
+    public int MaxLength { get; set; }
+
+    [Display(Name = "Valid Values")]
+    public List<string> ValidValues { get; set; } = new();
+
+    public string RangeMinimum { get; set; } = string.Empty;
+
+    public string RangeMaximum { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets a value indicating how the Data Warehouse should interpret this value.
