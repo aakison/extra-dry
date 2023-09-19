@@ -51,7 +51,7 @@ public class RegionService {
     }
 
     /// <summary>
-    /// 
+    /// Updates the provided Region. If allowMove is set to true it also allows this Region to be reparented.
     /// </summary>
     /// <param name="slug">The slug that is used to identify the region to update</param>
     /// <param name="item">The item to update</param>
