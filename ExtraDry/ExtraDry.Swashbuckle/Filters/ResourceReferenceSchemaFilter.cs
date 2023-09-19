@@ -24,10 +24,11 @@ public class ResourceReferenceSchemaFilter : IDocumentFilter {
          *  Loop through the schemas rewriting property types to a corresponding resource reference 
          *  type where needed. When adding a resource reference type generate a schema for it, if it 
          *  doesn't already exist. The `GenerateSchema` method adds the schema to the collection by 
-         *  default, using a `for` loop will avoid any errors due to the collection being changed.
+         *  default, using a clone of the collection will avoid any errors due to the collection 
+         *  being changed.
          */
-        for(int i = 0; i < swaggerDoc.Components.Schemas.Count; i++) {
-            var schema = swaggerDoc.Components.Schemas.ElementAtOrDefault(i);
+        var existingSchemas = swaggerDoc.Components.Schemas.ToList();
+        foreach (var schema in existingSchemas) { 
             foreach(var property in schema.Value.Properties) {
                 var qualifiedName = $"{schema.Key}.{property.Key}";
                 if(typeRewrites.TryGetValue(qualifiedName, out var rewriteType)) {
@@ -80,7 +81,7 @@ public class ResourceReferenceSchemaFilter : IDocumentFilter {
             }
         }
     }
-
+    
     /// <summary>
     /// This method is borrowed from Swashbuckle.AspNetCore.SwaggerGen to 
     /// ensure that the reference names we use are the same as the one's 
