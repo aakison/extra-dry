@@ -77,7 +77,7 @@ public class RegionController {
     [Authorize(SamplePolicies.SamplePolicy)]
     public async Task UpdateAsync(string code, Region item)
     {
-        await regions.UpdateAsync(code, item);
+        await regions.UpdateAsync(code, item, allowMove: true);
     }
 
     /// <summary>
