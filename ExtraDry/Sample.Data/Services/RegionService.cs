@@ -25,13 +25,14 @@ public class RegionService {
 
     public async Task CreateAsync(Region item)
     {
+        Region? parent = null;
         if(item.Level != RegionLevel.Global) {
             if(item.Parent == null) {
                 throw new ArgumentException("A region must have a parent if it is not at the global level.");
             }
-            var parent = await TryRetrieveAsync(item.Parent.Slug);
-            item.SetParent(parent);
+            parent = await TryRetrieveAsync(item.Parent.Slug);
         }
+        item.SetParent(parent);
         database.Regions.Add(item);
         await database.SaveChangesAsync();
     }

@@ -17,8 +17,7 @@ public abstract class TaxonomyEntity<T> where T : TaxonomyEntity<T>, ITaxonomyEn
                 throw new InvalidOperationException("Parent must be at a higher level than current entity.");
             }
             Ancestors.Clear();
-            Ancestors.AddRange(parent.Ancestors.Where(a => a.Uuid != parent.Uuid));
-            Ancestors.Add(parent);
+            Ancestors.AddRange(parent.Ancestors);
         }
         if(this is T self) {
             Ancestors.Add(self);
