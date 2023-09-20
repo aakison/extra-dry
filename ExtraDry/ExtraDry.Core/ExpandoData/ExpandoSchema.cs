@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Core;
 
 /// <summary>
-/// Represents the structure of custom fields that can be added to a Subject.
+/// Represents the structure of user defined fields that can be added to a Subject.
 /// </summary>
 public class ExpandoSchema : IValidatableObject {
 

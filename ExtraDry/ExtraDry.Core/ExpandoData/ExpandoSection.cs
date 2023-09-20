@@ -1,13 +1,13 @@
 ﻿namespace ExtraDry.Core;
 
 /// <summary>
-/// An Expando Section is used to divide custom fields into manageable parts.
+/// An Expando Section is used to seprate custom fields into logical parts.
 /// </summary>
 public class ExpandoSection {
     /// <summary>
     /// Title of the section for user display.
     /// </summary>
-    public string Title { get; set; } = "Custom Fields";
+    public string Title { get; set; } = "User Defined Fields";
 
     /// <summary>
     /// A list of fields contained in the section.

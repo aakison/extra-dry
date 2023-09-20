@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Core;
 
 /// <summary>
-/// Represents a Field in a Custom Schema, this defines the name, data type, etc. for Values.
+/// Represents a Field in a User Defined Schema, this defines the name, data type, ordering etc.
 /// </summary>
 public class ExpandoField {
 

@@ -1,6 +1,5 @@
 ﻿namespace ExtraDry.Core;
 
-// TODO: Refine this list
 public enum ExpandoDataType {
 
     //
@@ -50,11 +49,6 @@ public enum ExpandoDataType {
 
     Boolean = 16, // e.g. for checkboxes
 
-    // Link concepts??? TODO: Consider...
-    Number = 20,
-    User = 21,
-    Asset = 22,
-    WorkOrder = 22,
-    PlannedMaintenance = 23,
+    Number = 17,
     
 }
