@@ -7,7 +7,9 @@ namespace Sample.Data;
 
 public class SampleContext : AspectDbContext {
 
-    public SampleContext(DbContextOptions<SampleContext> options) : base(options) { }
+    public SampleContext(DbContextOptions<SampleContext> options) : base(options)
+    {
+    }
 
     public DbSet<Sector> Sectors { get; set; } = null!;
 
@@ -29,6 +31,10 @@ public class SampleContext : AspectDbContext {
             e => JsonSerializer.Serialize(e, (JsonSerializerOptions?)null),
             e => JsonSerializer.Deserialize<BankingDetails>(e, (JsonSerializerOptions?)null) ?? new());
 
+        modelBuilder.Entity<Company>().Property(e => e.CustomFields).HasConversion(
+            e => JsonSerializer.Serialize(e, (JsonSerializerOptions?)null),
+            e => JsonSerializer.Deserialize<ExpandoValues>(e, (JsonSerializerOptions?)null) ?? new());
+
         //modelBuilder.Entity<Company>().Property(e => e.Videos).HasConversion(
         //    e => JsonSerializer.Serialize(e, null),
         //    e => JsonSerializer.Deserialize<Collection<Video>>(e, null));
@@ -44,6 +50,5 @@ public class SampleContext : AspectDbContext {
         modelBuilder.Entity<Region>().OwnsOne(e => e.Version);
         modelBuilder.Entity<Sector>().OwnsOne(e => e.Version);
         modelBuilder.Entity<Content>().OwnsOne(e => e.Version);
-
     }
 }
