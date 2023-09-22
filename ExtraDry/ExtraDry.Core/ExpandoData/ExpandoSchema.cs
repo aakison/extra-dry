@@ -9,6 +9,7 @@ public class ExpandoSchema : IValidatableObject {
     /// The target type of the class that the <see cref="ExpandoSchema"/> provides custom fields for.
     /// </summary>
     [Required]
+    [Rules(UpdateAction = RuleAction.Block)]
     public string TargetType { get; set; } = string.Empty;
 
     public List<ExpandoSection> Sections { get; set;} = new();
