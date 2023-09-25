@@ -135,7 +135,8 @@ namespace Sample.Data.Migrations
                     VersionDateCreated = table.Column<DateTime>(name: "Version_DateCreated", type: "datetime2", nullable: false),
                     VersionUserCreated = table.Column<string>(name: "Version_UserCreated", type: "nvarchar(80)", maxLength: 80, nullable: false),
                     VersionDateModified = table.Column<DateTime>(name: "Version_DateModified", type: "datetime2", nullable: false),
-                    VersionUserModified = table.Column<string>(name: "Version_UserModified", type: "nvarchar(80)", maxLength: 80, nullable: false)
+                    VersionUserModified = table.Column<string>(name: "Version_UserModified", type: "nvarchar(80)", maxLength: 80, nullable: false),
+                    CustomFields = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
