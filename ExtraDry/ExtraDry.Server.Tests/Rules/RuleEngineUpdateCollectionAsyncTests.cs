@@ -58,7 +58,7 @@ public class RuleEngineUpdateCollectionAsyncTests {
         var databaseMatch = new Child { Uuid = guid, Name = "InDatabase" };
         services.ChildResolver.AddChild(databaseMatch);
         var source = new Parent { Child = new Child { Uuid = guid, Name = "IgnoreMe" } };
-        var destination = new Parent { Child = new Child { Uuid = Guid.NewGuid() } };
+        var destination = new Parent { Child = new Child { Uuid = Guid.NewGuid(), Name = "IgnoreMe" } };
 
         await rules.UpdateAsync(source, destination);
 
@@ -463,7 +463,7 @@ public class RuleEngineUpdateCollectionAsyncTests {
 
     }
 
-    public class Parent {
+    public class Parent : IValidatableObject {
 
         [Rules(RuleAction.Block)]
         [JsonIgnore]
@@ -482,6 +482,12 @@ public class RuleEngineUpdateCollectionAsyncTests {
         [Rules(RuleAction.Block)]
         public List<Child>? BlockedChildren { get; set; }
 
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if(Child?.Name == "IgnoreMe") {
+                yield return new ValidationResult($"The {nameof(Child)} is not valid.", new[] { nameof(Child) });
+            }
+        }
     }
 
     public class ChildEntityResolver : IEntityResolver<Child> {
