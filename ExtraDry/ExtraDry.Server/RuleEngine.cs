@@ -47,6 +47,15 @@ public class RuleEngine {
             await creating.OnCreatingAsync();
         }
         await UpdatePropertiesAsync(exemplar, destination, MaxRecursionDepth, e => e.CreateAction);
+        if(destination != null) {
+            /*
+             *  Validation is run after the update on the destination to allow for 
+             *  validation that includes linked or resolvable entities.
+             */
+            validator = new DataValidator();
+            validator.ValidateObject(destination);
+            validator.ThrowIfInvalid();
+        }
         if(destination is ICreatedCallback created) {
             await created.OnCreatedAsync();
         }
