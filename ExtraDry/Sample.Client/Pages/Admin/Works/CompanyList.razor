@@ -3,11 +3,13 @@
 
 <h1>Companies</h1>
 
-<DryPageQueryView>
-    @*<TableMenu TItem="Company" />*@
-    <DryFilter TItem="Company" Affordance="" Icon="theme" ShowPreview="false" />
-    <DryTable TItem="Company" ViewModel="@this" ItemsService="@CompanyService" />
-</DryPageQueryView>
+<DryErrorBoundary>
+    <DryPageQueryView>
+        @*<TableMenu TItem="Company" />*@
+        <DryFilter TItem="Company" Affordance="" Icon="theme" ShowPreview="false" />
+        <DryTable TItem="Company" ViewModel="@this" ItemsService="@CompanyService" />
+    </DryPageQueryView>
+</DryErrorBoundary>
 
 @code {
 

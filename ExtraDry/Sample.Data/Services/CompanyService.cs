@@ -10,7 +10,7 @@ public class CompanyService {
 
     public async Task<PagedCollection<Company>> List(PageQuery query)
     {
-        return await database.Companies.QueryWith(query).ToPagedCollectionAsync();
+        return await database.Companies.Include(e => e.PrimarySector).QueryWith(query).ToPagedCollectionAsync();
     }
 
     public async Task Create(Company item)
