@@ -65,12 +65,12 @@ public class RuleEngine {
     {
         ArgumentNullException.ThrowIfNull(source, nameof(source));
         ArgumentNullException.ThrowIfNull(destination, nameof(destination));
-        if(destination is IUpdatingCallback updating) {
-            await updating.OnUpdatingAsync();
-        }
         var validator = new DataValidator();
         validator.ValidateObject(source);
         validator.ThrowIfInvalid();
+        if(destination is IUpdatingCallback updating) {
+            await updating.OnUpdatingAsync();
+        }
         await UpdatePropertiesAsync(source, destination, MaxRecursionDepth, e => e.UpdateAction);
         /*
          *  Validation is run after the update on the destination to allow for 
