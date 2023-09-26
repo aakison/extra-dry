@@ -58,7 +58,7 @@ public class RuleEngineUpdateCollectionAsyncTests {
         var databaseMatch = new Child { Uuid = guid, Name = "InDatabase" };
         services.ChildResolver.AddChild(databaseMatch);
         var source = new Parent { Child = new Child { Uuid = guid, Name = "IgnoreMe" } };
-        var destination = new Parent { Child = new Child { Uuid = Guid.NewGuid(), Name = "IgnoreMe" } };
+        var destination = new Parent { Child = new Child { Uuid = Guid.NewGuid(), Name = "PreviousChild" } };
 
         await rules.UpdateAsync(source, destination);
 
@@ -461,6 +461,11 @@ public class RuleEngineUpdateCollectionAsyncTests {
 
         public override int GetHashCode() => Uuid.GetHashCode();
 
+        // This is used to determine if this was created from the
+        // ResourceReferenceConverter by comparing the default property values.
+        // This can then be used to determine if validation can be run against it.
+        internal bool CreatedFromResourceReference => Name == "Child";
+
     }
 
     public class Parent : IValidatableObject {
@@ -484,7 +489,7 @@ public class RuleEngineUpdateCollectionAsyncTests {
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if(Child?.Name == "IgnoreMe") {
+            if(Child != default && !Child.CreatedFromResourceReference && Child.Name == "PreviousChild") {
                 yield return new ValidationResult($"The {nameof(Child)} is not valid.", new[] { nameof(Child) });
             }
         }
