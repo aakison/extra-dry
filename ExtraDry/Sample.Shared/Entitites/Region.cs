@@ -11,6 +11,8 @@ namespace Sample.Shared;
 [Index(nameof(Uuid), IsUnique = true)]
 public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidatableObject {
 
+    protected Region() { }
+
     /// <inheritdoc cref="ITaxonomyEntity.Id"/>
     [Key]
     [JsonIgnore]
@@ -26,7 +28,6 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidatableObjec
     public RegionLevel Level { get; set; }
 
     [NotMapped]
-    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonConverter(typeof(ResourceReferenceConverter<Region>))]
     public override Region? Parent { get => base.Parent; set => base.Parent = value; }
 
