@@ -2,7 +2,6 @@
 
 namespace ExtraDry.Core; 
 
-[JsonConverter(typeof(ExpandoValuesConverter))]
 public class ExpandoValues : IValidatableObject {
 
     public Dictionary<string, object> Values { get; set; } = new();

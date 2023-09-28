@@ -23,4 +23,17 @@ public class ExpandoSchema : IValidatableObject {
             yield return new ValidationResult("Duplicate Slugs found.", new[] { nameof(ExpandoField.Slug) });
         }
     }
+
+    public IEnumerable<ValidationResult> ValidateValues(ExpandoValues values)
+    {
+        var results = new List<ValidationResult>();
+        var fields = Sections.SelectMany(e => e.Fields);
+
+        foreach(var schemaField in fields) {
+            values.Values.TryGetValue(schemaField.Slug, out var fieldValue);
+            results.AddRange(schemaField.ValidateValue(fieldValue));
+        }
+
+        return results;
+    }
 }

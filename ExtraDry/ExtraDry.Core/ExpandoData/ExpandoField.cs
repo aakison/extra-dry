@@ -59,5 +59,53 @@ public class ExpandoField {
 
     public ExpandoState State { get; set; } = ExpandoState.Draft;
 
+    public IEnumerable<ValidationResult> ValidateValue(object? value)
+    {
+        var results = new List<ValidationResult>();
+
+        if(IsRequired) {
+            if(value == null) {
+                results.Add(new ValidationResult($"{Label} is required.", new[] { Label }));
+            }
+        }
+
+        var stringVal = value?.ToString();
+        if(stringVal != null) {
+            if(MaxLength > 0 && stringVal.Length > MaxLength) {
+                results.Add(new ValidationResult($"{Label} exceeds Maxlength.", new[] { Label }));
+            }
+
+            if(ValidValues.Any() && !ValidValues.Contains(stringVal)) {
+                results.Add(new ValidationResult($"{Label} does not exist in list of ValidValues.", new[] { Label }));
+            }
+        }
+
+        if(int.TryParse(stringVal, out int intVal)) {
+            if(int.TryParse(RangeMinimum, out int intRangeMin) && intVal < intRangeMin) {
+                results.Add(new ValidationResult($"{Label} does not meet RangeMinimum set.", new[] { Label }));
+            }
+
+            if(int.TryParse(RangeMaximum, out int intRangeMax) && intVal > intRangeMax) {
+                results.Add(new ValidationResult($"{Label} exceeds RangeMaximum set.", new[] { Label }));
+            }
+
+            var intValidValues = ValidValues.ConvertAll(s => int.TryParse(s, out int x) ? x : 0);
+            if(ValidValues.Any() && !intValidValues.Contains(intVal)) {
+                results.Add(new ValidationResult($"{Label} does not exist in list of ValidValues.", new[] { Label }));
+            }
+        }
+
+        if(DateTime.TryParse(stringVal, out DateTime dateTimeVal)) {
+            if(DateTime.TryParse(RangeMinimum, out DateTime dtRangeMin) && dateTimeVal < dtRangeMin) {
+                results.Add(new ValidationResult($"{Label} does not meet RangeMinimum set.", new[] { Label }));
+            }
+
+            if(DateTime.TryParse(RangeMaximum, out DateTime dtRangeMax) && dateTimeVal > dtRangeMax) {
+                results.Add(new ValidationResult($"{Label} exceeds RangeMaximum set.", new[] { Label }));
+            }
+        }
+
+        return results;
+    }
 }
 
