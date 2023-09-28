@@ -11,8 +11,6 @@ namespace Sample.Shared;
 [Index(nameof(Uuid), IsUnique = true)]
 public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidatableObject {
 
-    protected Region() { }
-
     /// <inheritdoc cref="ITaxonomyEntity.Id"/>
     [Key]
     [JsonIgnore]
