@@ -62,14 +62,14 @@ public class ExpandoField {
     public List<string>? ValidValues { get; set; }
 
     /// <summary>
-    /// A Minimum value for Integer or Date data types.
+    /// A Minimum value for Integer data type.
     /// </summary>
-    public string? RangeMinimum { get; set; }
+    public int? RangeMinimum { get; set; }
 
     /// <summary>
-    /// A Maximum value for Integer or Date data types.
+    /// A Maximum value for Integer data type.
     /// </summary>
-    public string? RangeMaximum { get; set; }
+    public int? RangeMaximum { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating how the Data Warehouse should interpret this value.
@@ -120,12 +120,8 @@ public class ExpandoField {
                 break;
             case ExpandoDataType.DateTime:
             case ExpandoDataType.Date:
-            case ExpandoDataType.Time:
-                if(!DateTime.TryParse(value.ToString(), out var dateTime)) {
+                if(!DateTime.TryParse(value.ToString(), out var _)) {
                     results.Add(new ValidationResult($"{Label} does not match the DataType set.", new[] { Label }));
-                }
-                else {
-                    ValidateDate(dateTime, ref results);
                 }
                 break;
             case ExpandoDataType.Number:
@@ -139,24 +135,13 @@ public class ExpandoField {
         }
     }
 
-    private void ValidateDate(DateTime dateTimeVal, ref List<ValidationResult> results)
-    {
-        if(DateTime.TryParse(RangeMinimum, out DateTime dtRangeMin) && dateTimeVal < dtRangeMin) {
-            results.Add(new ValidationResult($"{Label} does not meet RangeMinimum set.", new[] { Label }));
-        }
-
-        if(DateTime.TryParse(RangeMaximum, out DateTime dtRangeMax) && dateTimeVal > dtRangeMax) {
-            results.Add(new ValidationResult($"{Label} exceeds RangeMaximum set.", new[] { Label }));
-        }
-    }
-
     private void ValidateNumber(double number, ref List<ValidationResult> results)
     {
-        if(double.TryParse(RangeMinimum, out double intRangeMin) && number < intRangeMin) {
+        if(RangeMinimum.HasValue && double.TryParse(RangeMinimum.ToString(), out double intRangeMin) && number < intRangeMin) {
             results.Add(new ValidationResult($"{Label} does not meet RangeMinimum set.", new[] { Label }));
         }
 
-        if(double.TryParse(RangeMaximum, out double intRangeMax) && number > intRangeMax) {
+        if(RangeMaximum.HasValue && double.TryParse(RangeMaximum.ToString(), out double intRangeMax) && number > intRangeMax) {
             results.Add(new ValidationResult($"{Label} exceeds RangeMaximum set.", new[] { Label }));
         }
 

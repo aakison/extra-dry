@@ -12,38 +12,28 @@ public enum ExpandoDataType {
     Date = 2,
 
     /// <summary>
-    /// Represents a time value.
-    /// </summary>
-    Time = 3,
-
-    /// <summary>
-    /// Represents a continuous time during which an object exists.
-    /// </summary>
-    Duration = 4,
-
-    /// <summary>
     /// Represents a phone number value.
     /// </summary>
-    PhoneNumber = 5,
+    PhoneNumber = 3,
 
     /// <summary>
     /// Represents a currency value.
     /// </summary>
-    Currency = 6, // EUR 45.50
+    Currency = 4,
 
     /// <summary>
     /// Represents text that is displayed.
     /// </summary>
-    Text = 7,
+    Text = 5,
 
     /// <summary>
     /// Represents True/False
     /// </summary>
-    Boolean = 8,
+    Boolean = 6,
 
     /// <summary>
     /// Represents a Number.
     /// </summary>
-    Number = 9,
+    Number = 7,
     
 }
