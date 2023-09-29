@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ExtraDry.Core;
+using Microsoft.EntityFrameworkCore;
 using Sample.Shared.Converters;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -47,9 +48,9 @@ public class Company {
     [Rules(RuleAction.IgnoreDefaults)]
     public string Description { get; set; } = string.Empty;
 
-    [Display]
+    [Display(Name = "Primary Sector", ShortName = "Sector")]
     [Rules(RuleAction.Link)]
-    [JsonConverter(typeof(SectorInfoJsonConverter))]
+    [JsonConverter(typeof(ResourceReferenceConverter<Sector>))]
     public Sector? PrimarySector { get; set; }
 
     [Display]

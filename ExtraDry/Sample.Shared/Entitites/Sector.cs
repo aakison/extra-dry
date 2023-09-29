@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sample.Shared;
 
@@ -8,7 +9,9 @@ namespace Sample.Shared;
 /// </summary>
 [DimensionTable]
 [DeleteRule(DeleteAction.Recycle, nameof(State), SectorState.Inactive, SectorState.Active)]
-public class Sector {
+public class Sector : IResourceIdentifiers {
+
+    private const string DefaultGroup = "Not a group";
 
     /// <summary>
     /// A locally unique identifier, internal use only.
@@ -46,6 +49,7 @@ public class Sector {
     [Display(Name = "Group", ShortName = "Group")]
     [Filter(FilterType.Contains)]
     [Statistics(Stats.Distribution)]
+    [DefaultValue(DefaultGroup)]
     public string Group { get; set; } = string.Empty;
 
     /// <summary>
@@ -72,6 +76,9 @@ public class Sector {
     /// </summary>
     [JsonIgnore]
     public VersionInfo Version { get; set; } = new VersionInfo();
+
+    [NotMapped]
+    public string Slug { get => Title.ToLower().Replace(' ', '-'); set { } }
 
     /// <summary>
     /// Display title for the sector.

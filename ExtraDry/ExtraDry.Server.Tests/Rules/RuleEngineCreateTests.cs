@@ -113,6 +113,25 @@ public class RuleEngineCreateTests {
     }
 
     [Fact]
+    public async Task CreateValidatableWithReferenceTypeByCreateDescendants()
+    {
+        var rules = new RuleEngine(new ServiceProviderStub());
+        var exemplar = new ValidatableEntity {
+            DesendantsTestObject = new() {
+                TestObject = new() { PropertyOne = "IgnoreThis" }
+            }
+        };
+
+        var entity = await rules.CreateAsync(exemplar);
+
+        Assert.NotNull(entity);
+        Assert.NotNull(entity.DesendantsTestObject);
+        Assert.NotEqual(exemplar.DesendantsTestObject, entity.DesendantsTestObject);
+        Assert.NotNull(entity.DesendantsTestObject?.TestObject);
+        Assert.NotEqual(exemplar.DesendantsTestObject.TestObject, entity.DesendantsTestObject?.TestObject);
+    }
+
+    [Fact]
     public async Task CreateWithIgnore()
     {
         var rules = new RuleEngine(new ServiceProviderStub());
@@ -288,6 +307,19 @@ public class Entity {
     public ChildEntity? JsonIgnoredChild { get; set; }
 }
 
+public class ValidatableEntity : IValidatableObject {
+
+    [Rules(CreateAction = RuleAction.Allow)]
+    public ChildEntity? DesendantsTestObject { get; set; }
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if(DesendantsTestObject != null && !DesendantsTestObject.CreatedFromResourceReference && DesendantsTestObject.PropertyOne == "IgnoreThis") {
+            yield return new ValidationResult($"The {nameof(DesendantsTestObject)} is not valid.", new[] { nameof(DesendantsTestObject) });
+        }
+    }
+}
+
 
 public class BlockedPropertiesEntity {
 
@@ -307,6 +339,8 @@ public class ChildEntity {
     public string? PropertyTwo { get; set; }
     public string? PropertyThree { get; set; }
     public ChildEntity? TestObject { get; set; }
+
+    internal bool CreatedFromResourceReference => string.IsNullOrEmpty(PropertyTwo);
 }
 
 public class ChildEntityNoDefaultContructor {

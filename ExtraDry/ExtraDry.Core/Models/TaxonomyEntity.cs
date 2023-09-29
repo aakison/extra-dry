@@ -18,7 +18,6 @@ public abstract class TaxonomyEntity<T> where T : TaxonomyEntity<T>, ITaxonomyEn
             }
             Ancestors.Clear();
             Ancestors.AddRange(parent.Ancestors);
-            Ancestors.Add(parent);
         }
         if(this is T self) {
             Ancestors.Add(self);
@@ -47,7 +46,7 @@ public abstract class TaxonomyEntity<T> where T : TaxonomyEntity<T>, ITaxonomyEn
     private T? parent;
 
     /// <summary>
-    /// The set of all ancestors for this entity (does not include current entity).
+    /// The set of all ancestors for this entity.
     /// </summary>
     /// <remarks>
     /// This works with `Descendants` and auto-creation of join tables in EF to create a tree Closure table.
@@ -56,7 +55,7 @@ public abstract class TaxonomyEntity<T> where T : TaxonomyEntity<T>, ITaxonomyEn
     public List<T> Ancestors { get; set; } = new();
 
     /// <summary>
-    /// The set of all descendants for this entity (does not include current entity).
+    /// The set of all descendants for this entity.
     /// </summary>
     /// <remarks>
     /// This works with `Ancestors` and auto-creation of join tables in EF to create a tree Closure table.

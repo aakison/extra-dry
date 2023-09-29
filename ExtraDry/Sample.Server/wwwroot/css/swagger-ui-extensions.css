@@ -642,12 +642,22 @@ body {
 
 /* Put some space between fields to logically group them. */
 .swagger-ui table.model tr.property-row td {
-  padding-bottom: 10px;
+  padding-bottom: 20px;
+}
+
+  .swagger-ui table.model .model-toggle {
+    top: 3px;
+    height: 14px;
+    font-size: 16px;
+  }
+
+.swagger-ui table.model .model-toggle:after {
+  height:14px;
 }
 
   /* Remove 'description' caption that looks like a json field */
   .swagger-ui table.model tr.property-row td:first-child {
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .swagger-ui table.model tr.property-row .star {

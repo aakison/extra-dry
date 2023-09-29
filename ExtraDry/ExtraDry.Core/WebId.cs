@@ -27,7 +27,7 @@ public static class WebId {
     /// Given a name, with punctuation and mixed case, create a matching WebId.
     /// </summary>
     /// <remarks>
-    /// This does not guarantee uniqueness, consider `ToUniqeWebId` instead.
+    /// This does not guarantee uniqueness, consider `ToUniqueWebId` instead.
     /// </remarks>
     public static string ToWebId(string name, bool lowercase = true)
     {
@@ -61,7 +61,7 @@ public static class WebId {
     /// Given a name, with punctuation and mixed case, create a matching WebId, with a maximum length.
     /// </summary>
     /// <remarks>
-    /// This does not guarantee uniqueness, consider `ToUniqeWebId` instead.
+    /// This does not guarantee uniqueness, consider `ToUniqueWebId` instead.
     /// </remarks>
     public static string ToWebId(string name, int maxLength, bool lowercase = true)
     {

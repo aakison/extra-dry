@@ -36,16 +36,41 @@ public class TaxonomyExtensionTests {
     }
 
     [Fact(Skip = IgnoreTests)]
+    public async Task AncestorsCountIsCorrect()
+    {
+        var mel = await arrangeService.TryRetrieveAsync("AU-VIC-Melbourne");
+
+        Assert.Equal(4, mel.Ancestors.Count); // Self, Victoria, Australia, Global
+    }
+
+    [Fact(Skip = IgnoreTests)]
     public async Task MoveLeafNode()
     {
         var nsw = await arrangeService.TryRetrieveAsync("AU-NSW");
         var nz = await arrangeService.TryRetrieveAsync("NZ");
         nsw.Parent = nz;
 
+        await actService.UpdateAsync("AU-NSW", nsw, true);
+
+        nsw = await actService.TryRetrieveAsync("AU-NSW");
+        Assert.Equal("NZ", nsw.Parent.Slug);
+        Assert.DoesNotContain(nsw.Ancestors, a => a.Slug == "AU");
+    }
+
+    [Fact(Skip = IgnoreTests)]
+    public async Task MoveLeafNodeIgnoredWithParameter()
+    {
+        var nsw = await arrangeService.TryRetrieveAsync("AU-NSW");
+        var nz = await arrangeService.TryRetrieveAsync("NZ");
+        nsw.Parent = nz;
+        nsw.Description = "Value Changed";
+
         await actService.UpdateAsync("AU-NSW", nsw);
 
-        nsw = await arrangeService.TryRetrieveAsync("AU-NSW");
-        Assert.Equal("NZ", nsw.Parent.Slug);
+        nsw = await actService.TryRetrieveAsync("AU-NSW");
+        Assert.Equal("AU", nsw.Parent.Slug);
+        Assert.Equal("Value Changed", nsw.Description);
+        Assert.DoesNotContain(nsw.Ancestors, a => a.Slug == "NZ");
     }
 
     [Fact(Skip = IgnoreTests)]
@@ -55,7 +80,7 @@ public class TaxonomyExtensionTests {
         var auk = await arrangeService.TryRetrieveAsync("NZ-AUK");
         nsw.Parent = auk;
 
-        await Assert.ThrowsAsync<ArgumentException>(async () => await actService.UpdateAsync("AU-NSW", nsw));
+        await Assert.ThrowsAsync<ArgumentException>(async () => await actService.UpdateAsync("AU-NSW", nsw, true));
     }
 
     [Fact(Skip = IgnoreTests)]
@@ -65,10 +90,10 @@ public class TaxonomyExtensionTests {
         var nz = await arrangeService.TryRetrieveAsync("NZ");
         qld.Parent = nz;
 
-        await actService.UpdateAsync("AU-QLD", qld);
+        await actService.UpdateAsync("AU-QLD", qld, true);
 
-        qld = await arrangeService.TryRetrieveAsync("AU-QLD");
-        Assert.Equal("NZ", qld.Parent.Slug);
+        var qld2 = await arrangeService.TryRetrieveAsync("AU-QLD");
+        Assert.Equal("NZ", qld2.Parent.Slug);
         var bris = await arrangeService.TryRetrieveAsync("AU-Qld-Brisbane");
         Assert.Contains(bris.Ancestors, e => e.Slug == "AU-QLD");
         Assert.Contains(bris.Ancestors, e => e.Slug == "NZ");
@@ -81,7 +106,7 @@ public class TaxonomyExtensionTests {
         var nz = await arrangeService.TryRetrieveAsync("NZ-AUK");
         qld.Parent = nz;
 
-        await Assert.ThrowsAsync<ArgumentException>(async () => await actService.UpdateAsync("AU-QLD", qld));
+        await Assert.ThrowsAsync<ArgumentException>(async () => await actService.UpdateAsync("AU-QLD", qld, true));
     }
 
     [Fact(Skip = IgnoreTests)]
@@ -93,7 +118,7 @@ public class TaxonomyExtensionTests {
         qld.Title = "TestTitle";
 
         // Should do the move, then the change and not fail.
-        await actService.UpdateAsync("AU-QLD", qld);
+        await actService.UpdateAsync("AU-QLD", qld, true);
 
         qld = await arrangeService.TryRetrieveAsync("AU-QLD");
         Assert.Equal("NZ", qld.Parent.Slug);
