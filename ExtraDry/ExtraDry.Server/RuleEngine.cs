@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Http.Features;
 using System.Collections;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
@@ -433,6 +432,10 @@ public class RuleEngine {
                 var sourceList = sourceValue as IList;
                 await ProcessCollectionUpdates(action, property, destination, sourceList);
             }
+            else if(typeof(IDictionary).IsAssignableFrom(property.PropertyType)) {
+                var sourceDict = sourceValue as IDictionary;
+                ProcessDictionaryUpdates(action, property, destination, sourceDict);
+            }
             else {
                 await ProcessIndividualUpdate(action, property, destination, sourceValue, depth, ignore, selector, deleteRuleAttribute);
             }
@@ -508,6 +511,56 @@ public class RuleEngine {
     }
 
     private static bool AreEqual(object? result, object? destinationValue) => (result == null && destinationValue == null) || (result?.Equals(destinationValue) ?? false);
+
+    private void ProcessDictionaryUpdates<T>(RuleAction action, PropertyInfo property, T destination, IDictionary? sourceDict)
+    {
+        // How to process dictionary?
+        // 1. Recurse like any other entity through the objects?
+        // 2. Treat values as value-types only (string, decimal, int, double, etc.)
+        // 3. What keys are allowed? Just strings?
+        // Start with simplest case <string, value-type>, expand later if needed.
+        // 4. How to manage sets, key:key => update
+        // 5. key:null => create
+        // 6. null:key => ignore (use key with null value to delete)
+        var destinationValue = property.GetValue(destination);
+        var destinationDict = destinationValue as IDictionary;
+        if(sourceDict == null) {
+            return;
+        }
+        if(destinationDict == null) {
+            destinationDict = Activator.CreateInstance(property.PropertyType) as IDictionary;
+            if(destinationDict == null) {
+                throw new DryException("Unable to create an instance of destination dictionary.");
+            }
+            property.SetValue(destination, destinationDict);
+        }
+        if(action == RuleAction.Ignore && sourceDict.Count == 0) {
+            // Don't modify destination, source is in default state.
+            return;
+        }
+        foreach(var key in sourceDict.Keys) {
+            var value = sourceDict[key];
+            //if(value is IEnumerable && value is not string) {
+            //    throw new DryException("Dictionary values do no support arrays.");
+            //}
+            if(!(value?.GetType()?.IsPrimitive ?? true) && value is not string) {
+                throw new DryException("Dictionary values do no support reference types or arrays.");
+            }
+            if(value == null) {
+                if(destinationDict.Contains(key)) {
+                    destinationDict.Remove(key);
+                }
+            }
+            else {
+                if(destinationDict.Contains(key)) {
+                    destinationDict[key] = value;
+                }
+                else {
+                    destinationDict.Add(key, value);
+                }
+            }
+        }
+    }
 
     private async Task ProcessCollectionUpdates<T>(RuleAction action, PropertyInfo property, T destination, IList? sourceList)
     {
