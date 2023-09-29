@@ -33,40 +33,65 @@ public class ExpandoField {
     /// </summary>
     public object? DefaultValue { get; set; }
 
-    public string Icon { get; set; } = string.Empty;
+    /// <summary>
+    /// The optional key of the icon to be displayed.
+    /// </summary>
+    public string? Icon { get; set; }
 
-    public string Placeholder { get; set; } = string.Empty;
+    /// <summary>
+    /// Specifies a short hint that describes the expected value of an input field.
+    /// </summary>
+    public string? Placeholder { get; set; }
 
+    /// <summary>
+    /// Indicates if the value for the field is required.
+    /// </summary>
     [Display(Name = "Required")]
     public bool IsRequired { get; set; }
 
-    [Display(Name ="Max Text Length")]
+    /// <summary>
+    /// Specifies the maximum number of characters that can be entered.
+    /// </summary>
+    [Display(Name = "Max Text Length")]
     public int MaxLength { get; set; }
 
+    /// <summary>
+    /// The available valid values for the field.
+    /// </summary>
     [Display(Name = "Valid Values")]
-    public List<string> ValidValues { get; set; } = new();
+    public List<string>? ValidValues { get; set; }
 
-    public string RangeMinimum { get; set; } = string.Empty;
+    /// <summary>
+    /// A Minimum value for Integer or Date data types.
+    /// </summary>
+    public string? RangeMinimum { get; set; }
 
-    public string RangeMaximum { get; set; } = string.Empty;
+    /// <summary>
+    /// A Maximum value for Integer or Date data types.
+    /// </summary>
+    public string? RangeMaximum { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating how the Data Warehouse should interpret this value.
     /// </summary>
     public WarehouseBehavior WarehouseBehavior { get; set; }
 
+    /// <summary>
+    /// Order of the field for display purposes.
+    /// </summary>
     public int Order { get; set; }
 
+    /// <inheritdoc cref="ExpandoState"/>
     public ExpandoState State { get; set; } = ExpandoState.Draft;
 
     public IEnumerable<ValidationResult> ValidateValue(object? value)
     {
         var results = new List<ValidationResult>();
 
-        if(IsRequired) {
-            if(value == null) {
-                results.Add(new ValidationResult($"{Label} is required.", new[] { Label }));
-            }
+        ValidateDataType(value, ref results);
+
+        if(IsRequired && value == null) {
+            results.Add(new ValidationResult($"{Label} is required.", new[] { Label }));
         }
 
         var stringVal = value?.ToString();
@@ -75,37 +100,73 @@ public class ExpandoField {
                 results.Add(new ValidationResult($"{Label} exceeds Maxlength.", new[] { Label }));
             }
 
-            if(ValidValues.Any() && !ValidValues.Contains(stringVal)) {
+            if(ValidValues != null && ValidValues.Any() && !ValidValues!.Contains(stringVal)) {
                 results.Add(new ValidationResult($"{Label} does not exist in list of ValidValues.", new[] { Label }));
-            }
-        }
-
-        if(int.TryParse(stringVal, out int intVal)) {
-            if(int.TryParse(RangeMinimum, out int intRangeMin) && intVal < intRangeMin) {
-                results.Add(new ValidationResult($"{Label} does not meet RangeMinimum set.", new[] { Label }));
-            }
-
-            if(int.TryParse(RangeMaximum, out int intRangeMax) && intVal > intRangeMax) {
-                results.Add(new ValidationResult($"{Label} exceeds RangeMaximum set.", new[] { Label }));
-            }
-
-            var intValidValues = ValidValues.ConvertAll(s => int.TryParse(s, out int x) ? x : 0);
-            if(ValidValues.Any() && !intValidValues.Contains(intVal)) {
-                results.Add(new ValidationResult($"{Label} does not exist in list of ValidValues.", new[] { Label }));
-            }
-        }
-
-        if(DateTime.TryParse(stringVal, out DateTime dateTimeVal)) {
-            if(DateTime.TryParse(RangeMinimum, out DateTime dtRangeMin) && dateTimeVal < dtRangeMin) {
-                results.Add(new ValidationResult($"{Label} does not meet RangeMinimum set.", new[] { Label }));
-            }
-
-            if(DateTime.TryParse(RangeMaximum, out DateTime dtRangeMax) && dateTimeVal > dtRangeMax) {
-                results.Add(new ValidationResult($"{Label} exceeds RangeMaximum set.", new[] { Label }));
             }
         }
 
         return results;
+    }
+
+    private void ValidateDataType(object? value, ref List<ValidationResult> results)
+    {
+        if(value == null) return;
+
+        switch(DataType) {
+            case ExpandoDataType.Boolean:
+                if(!bool.TryParse(value.ToString(), out var _)) {
+                    results.Add(new ValidationResult($"{Label} does not match the DataType set.", new[] { Label }));
+                }
+                break;
+            case ExpandoDataType.DateTime:
+            case ExpandoDataType.Date:
+            case ExpandoDataType.Time:
+                if(!DateTime.TryParse(value.ToString(), out var dateTime)) {
+                    results.Add(new ValidationResult($"{Label} does not match the DataType set.", new[] { Label }));
+                }
+                else {
+                    ValidateDate(dateTime, ref results);
+                }
+                break;
+            case ExpandoDataType.Number:
+                if(!double.TryParse(value.ToString(), out var number)) {
+                    results.Add(new ValidationResult($"{Label} does not match the DataType set.", new[] { Label }));
+                }
+                else {
+                    ValidateNumber(number, ref results);
+                }
+                break;
+        }
+    }
+
+    private void ValidateDate(DateTime dateTimeVal, ref List<ValidationResult> results)
+    {
+        if(DateTime.TryParse(RangeMinimum, out DateTime dtRangeMin) && dateTimeVal < dtRangeMin) {
+            results.Add(new ValidationResult($"{Label} does not meet RangeMinimum set.", new[] { Label }));
+        }
+
+        if(DateTime.TryParse(RangeMaximum, out DateTime dtRangeMax) && dateTimeVal > dtRangeMax) {
+            results.Add(new ValidationResult($"{Label} exceeds RangeMaximum set.", new[] { Label }));
+        }
+    }
+
+    private void ValidateNumber(double number, ref List<ValidationResult> results)
+    {
+        if(double.TryParse(RangeMinimum, out double intRangeMin) && number < intRangeMin) {
+            results.Add(new ValidationResult($"{Label} does not meet RangeMinimum set.", new[] { Label }));
+        }
+
+        if(double.TryParse(RangeMaximum, out double intRangeMax) && number > intRangeMax) {
+            results.Add(new ValidationResult($"{Label} exceeds RangeMaximum set.", new[] { Label }));
+        }
+
+        if(ValidValues != null && ValidValues.Any()) {
+            var intValidValues = ValidValues.ConvertAll(s => double.TryParse(s, out double x) ? x : 0);
+            if(!intValidValues.Contains(number)) {
+                results.Add(new ValidationResult($"{Label} does not exist in list of ValidValues.", new[] { Label }));
+            }
+        }
+        
     }
 }
 

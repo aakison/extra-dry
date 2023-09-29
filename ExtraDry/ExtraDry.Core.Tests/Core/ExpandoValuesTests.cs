@@ -57,6 +57,7 @@ namespace ExtraDry.Core.Tests.Core {
             }
 
             Assert.NotEmpty(result);
+            Assert.Equal(4, result.Count());
         }
     }
 
@@ -106,6 +107,12 @@ namespace ExtraDry.Core.Tests.Core {
                             { "external_id_with_valid_values", "EXTERNAL-01" },
                             { "building_construction_date", "" },
                             { "property_code", 100 }
+                        }
+                    }
+                    ,
+                    new ExpandoValues {
+                         Values = {
+                            { "property_code", "ABC123" }
                         }
                     }
                 }

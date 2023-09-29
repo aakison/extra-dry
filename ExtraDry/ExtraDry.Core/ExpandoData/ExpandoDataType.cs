@@ -1,54 +1,49 @@
 ﻿namespace ExtraDry.Core;
 
 public enum ExpandoDataType {
-
-    //
-    // Summary:
-    //     Represents an instant in time, expressed as a date and time of day.
+    /// <summary>
+    /// Represents an instant in time, expressed as a date and time of day.
+    /// </summary>
     DateTime = 1,
-    //
-    // Summary:
-    //     Represents a date value.
+
+    /// <summary>
+    /// Represents a date value.
+    /// </summary>
     Date = 2,
-    //
-    // Summary:
-    //     Represents a time value.
+
+    /// <summary>
+    /// Represents a time value.
+    /// </summary>
     Time = 3,
-    //
-    // Summary:
-    //     Represents a continuous time during which an object exists.
+
+    /// <summary>
+    /// Represents a continuous time during which an object exists.
+    /// </summary>
     Duration = 4,
-    //
-    // Summary:
-    //     Represents a phone number value.
+
+    /// <summary>
+    /// Represents a phone number value.
+    /// </summary>
     PhoneNumber = 5,
-    //
-    // Summary:
-    //     Represents a currency value.
-    Currency = 6,
-    //
-    // Summary:
-    //     Represents text that is displayed.
+
+    /// <summary>
+    /// Represents a currency value.
+    /// </summary>
+    Currency = 6, // EUR 45.50
+
+    /// <summary>
+    /// Represents text that is displayed.
+    /// </summary>
     Text = 7,
-    //
-    // Summary:
-    //     Represents an email address.
-    EmailAddress = 10,
-    //
-    // Summary:
-    //     Represents a URL value.
-    Url = 12,
-    //
-    // Summary:
-    //     Represents a URL to an image.
-    ImageUrl = 13,
-    //
-    // Summary:
-    //     Represents a postal code.
-    PostalCode = 15,
 
-    Boolean = 16, // e.g. for checkboxes
+    /// <summary>
+    /// Represents True/False
+    /// </summary>
+    Boolean = 8,
 
-    Number = 17,
+    /// <summary>
+    /// Represents a Number.
+    /// </summary>
+    Number = 9,
     
 }
