@@ -27,6 +27,9 @@ internal class ModelDescription {
             // EF convention for Key
             ignore = true;
         }
+        if(prop.PropertyType == typeof(Guid)) {
+            ignore = true;
+        }
         if(!ignore && !prop.PropertyType.IsValueType && prop.PropertyType != typeof(string)) {
             ignore = true;
         }
