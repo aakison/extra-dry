@@ -31,6 +31,10 @@ internal class ModelDescription {
     /// </remarks>
     public static bool IsSortable(PropertyInfo prop)
     {
+        if(prop.GetCustomAttribute<SortAttribute>() is SortAttribute sa) {
+            // override rules, use the explicity behavior.
+            return sa.Type == SortType.Sortable;
+        }
         // Note attributes are by name to avoid having to take dependency on EF.
         var disqualifyingAttributes = new string[] { "JsonIgnoreAttribute", "NotMappedAttribute", "KeyAttribute" };
         var ignore = prop.GetCustomAttributes().Any(e => disqualifyingAttributes.Any(f => f == e.GetType().Name));
