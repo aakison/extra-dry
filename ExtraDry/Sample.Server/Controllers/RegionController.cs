@@ -35,7 +35,7 @@ public class RegionController {
     /// </summary>
     [HttpGet("api/regions"), Produces("application/json")]
     [AllowAnonymous]
-    public async Task<FilteredCollection<Region>> ListAsync([FromQuery] FilterQuery query)
+    public async Task<FilteredCollection<Region>> ListAsync([FromQuery] SortQuery query)
     {
         return await regions.ListAsync(query);
     }
