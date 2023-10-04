@@ -17,6 +17,7 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidatableObjec
     public int Id { get; set; }
 
     /// <inheritdoc cref="IResourceIdentifiers.Uuid" />
+    [Sort(SortType.Sortable)] // test a normally excempt rule being included in the sort.
     public Guid Uuid { get; set; } = Guid.NewGuid();
 
     /// <summary>
@@ -70,6 +71,7 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidatableObjec
     [Display(Name = "Status", ShortName = "Status")]
     public RegionStatus Status { get; set; } = RegionStatus.Active;
 
+    [Sort(SortType.NotSortable)] // test for a valid field being suppressed from sorting.
     public DeleteStatus IsDeleted { get; set; }
 
     [JsonIgnore]

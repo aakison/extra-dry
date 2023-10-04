@@ -18,16 +18,38 @@ internal class ModelDescription {
 
     public SortProperty? StabilizerProperty => multipleStabilizerProperties ? null : stabilizerProperty;
 
+    /// <summary>
+    /// Determines if a given property is treated as sortable. This applies to the constructions 
+    /// of expressions as well as to Swagger documention.
+    /// </summary>
+    /// <remarks>
+    /// 1. Ignore properties with specific attributes.
+    /// 2. Ignore properties that are comples objects (not value types or strings)
+    /// 3. Ignore GUIDs
+    /// 4. Ignore EF key properties
+    /// 5. Ignore properties that don't have a setter.
+    /// </remarks>
     public static bool IsSortable(PropertyInfo prop)
     {
-        // By name to avoid having to take dependency on EF.
+        if(prop.GetCustomAttribute<SortAttribute>() is SortAttribute sa) {
+            // override rules, use the explicity behavior.
+            return sa.Type == SortType.Sortable;
+        }
+        // Note attributes are by name to avoid having to take dependency on EF.
         var disqualifyingAttributes = new string[] { "JsonIgnoreAttribute", "NotMappedAttribute", "KeyAttribute" };
         var ignore = prop.GetCustomAttributes().Any(e => disqualifyingAttributes.Any(f => f == e.GetType().Name));
         if(prop.Name == "Id" || prop.Name == $"{prop.DeclaringType?.Name}Id") {
             // EF convention for Key
             ignore = true;
         }
+        if(prop.PropertyType == typeof(Guid)) {
+            ignore = true;
+        }
         if(!ignore && !prop.PropertyType.IsValueType && prop.PropertyType != typeof(string)) {
+            ignore = true;
+        }
+        // Ignore properties that don't have a setter, they aren't in the database.
+        if(prop.SetMethod == null) {
             ignore = true;
         }
         return !ignore;

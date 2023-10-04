@@ -19,7 +19,7 @@ public class ResourceReferenceConverter<T> : JsonConverter<T> where T : IResourc
         if(reference == null) {
             return default;
         }
-        var obj = Activator.CreateInstance<T>() ?? throw new DryException(System.Net.HttpStatusCode.InternalServerError,
+        var obj = (T)Activator.CreateInstance(typeof(T), true) ?? throw new DryException(System.Net.HttpStatusCode.InternalServerError,
                 "An internal error has occurred and can only be resolved through a support request.",
                 $"Unable to create instance of resource '{typeof(T).Name}' from its resource reference.  Ensure the class has a default constructor.");
         foreach(var property in typeof(T).GetProperties()) {
