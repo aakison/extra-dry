@@ -23,6 +23,8 @@ public class SampleContext : AspectDbContext {
 
     public DbSet<Region> Regions { get; set; } = null!;
 
+    public DbSet<Template> Templates { get; set; } = null!;
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -50,5 +52,10 @@ public class SampleContext : AspectDbContext {
         modelBuilder.Entity<Region>().OwnsOne(e => e.Version);
         modelBuilder.Entity<Sector>().OwnsOne(e => e.Version);
         modelBuilder.Entity<Content>().OwnsOne(e => e.Version);
+        modelBuilder.Entity<Template>().OwnsOne(e => e.Version);
+
+        modelBuilder.Entity<Template>().Property(e => e.Schema).HasConversion(
+            e => JsonSerializer.Serialize(e, (JsonSerializerOptions?)null),
+            e => JsonSerializer.Deserialize<ExpandoSchema>(e, (JsonSerializerOptions?)null) ?? new());
     }
 }

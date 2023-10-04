@@ -1,7 +1,4 @@
-﻿using ExtraDry.Core;
-using System.Collections;
-
-namespace ExtraDry.Core.Tests.Core {
+﻿namespace ExtraDry.Core.Tests.Core {
 
     public class ExpandoValuesTests {
         private ExpandoSchema Schema { get; set; }
@@ -47,10 +44,9 @@ namespace ExtraDry.Core.Tests.Core {
 
         public static IEnumerable<object[]> ValidExpandoData =>
             new List<object[]> {
-                new object[]     { new ExpandoValues { Values = new Dictionary<string, object>() { { "external_id", "EX01" }, { "external_id_with_valid_values", "EX03" }, { "building_construction_date", "23-05-1980" }, { "property_code", 10 } } }  },
-                new object[]    { new ExpandoValues { Values = new Dictionary<string, object>() { { "external_id", "10" }, { "external_id_with_valid_values", "EX02" }, { "building_construction_date", DateTime.Now.AddYears(-5) }, { "property_code", 15 } } } }
+                new object[] { new ExpandoValues { Values = new Dictionary<string, object>() { { "external_id", "EX01" }, { "external_id_with_valid_values", "EX03" }, { "building_construction_date", "23-05-1980" }, { "property_code", 10 } } }  },
+                new object[] { new ExpandoValues { Values = new Dictionary<string, object>() { { "external_id", "10" }, { "external_id_with_valid_values", "EX02" }, { "building_construction_date", DateTime.Now.AddYears(-5) }, { "property_code", 15 } } } }
                 };
-
 
         public static IEnumerable<object[]> InValidExpandoData =>
             new List<object[]> {

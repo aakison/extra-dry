@@ -73,6 +73,7 @@ public class RuleEngine {
     {
         ArgumentNullException.ThrowIfNull(source, nameof(source));
         ArgumentNullException.ThrowIfNull(destination, nameof(destination));
+        await AttachSchemaAsync(source);
         var validator = new DataValidator();
         validator.ValidateObject(source);
         validator.ThrowIfInvalid();
@@ -89,6 +90,20 @@ public class RuleEngine {
         validator.ThrowIfInvalid();
         if(destination is IUpdatedCallback updated) {
             await updated.OnUpdatedAsync();
+        }
+    }
+
+    private async Task AttachSchemaAsync<T>(T source)
+    {
+        var expandoProperty = typeof(T).GetProperties().Where(e => e.PropertyType == typeof(ExpandoValues)).FirstOrDefault();
+        if(expandoProperty != null) {
+            var val = await ResolveEntityValue(typeof(ExpandoSchema), new ExpandoSchema { TargetType = typeof(T).Name });
+            if(val.Item1) {
+                var prop = (ExpandoValues?)expandoProperty.GetValue(source);
+                if(prop != null) {
+                    prop.Schema = (ExpandoSchema?)val.Item2;
+                }
+            }
         }
     }
 
