@@ -12,7 +12,7 @@ using Sample.Data;
 namespace Sample.Data.Migrations
 {
     [DbContext(typeof(SampleContext))]
-    [Migration("20230925041138_Initial")]
+    [Migration("20231004095658_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -276,6 +276,34 @@ namespace Sample.Data.Migrations
                     b.ToTable("Sectors");
                 });
 
+            modelBuilder.Entity("Sample.Shared.Template", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Schema")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("State")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid>("Uuid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Templates");
+                });
+
             modelBuilder.Entity("RegionRegion", b =>
                 {
                     b.HasOne("Sample.Shared.Region", null)
@@ -470,6 +498,41 @@ namespace Sample.Data.Migrations
 
                             b1.WithOwner()
                                 .HasForeignKey("SectorId");
+                        });
+
+                    b.Navigation("Version")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Sample.Shared.Template", b =>
+                {
+                    b.OwnsOne("ExtraDry.Core.VersionInfo", "Version", b1 =>
+                        {
+                            b1.Property<int>("TemplateId")
+                                .HasColumnType("int");
+
+                            b1.Property<DateTime>("DateCreated")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<DateTime>("DateModified")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<string>("UserCreated")
+                                .IsRequired()
+                                .HasMaxLength(80)
+                                .HasColumnType("nvarchar(80)");
+
+                            b1.Property<string>("UserModified")
+                                .IsRequired()
+                                .HasMaxLength(80)
+                                .HasColumnType("nvarchar(80)");
+
+                            b1.HasKey("TemplateId");
+
+                            b1.ToTable("Templates");
+
+                            b1.WithOwner()
+                                .HasForeignKey("TemplateId");
                         });
 
                     b.Navigation("Version")
