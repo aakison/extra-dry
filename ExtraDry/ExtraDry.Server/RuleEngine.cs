@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Reflection;
 
 namespace ExtraDry.Server;
@@ -558,6 +559,7 @@ public class RuleEngine {
             //if(value is IEnumerable && value is not string) {
             //    throw new DryException("Dictionary values do no support arrays.");
             //}
+            UnpackJsonElement(ref value);
             if(!(value?.GetType()?.IsPrimitive ?? true) && value is not string) {
                 throw new DryException("Dictionary values do no support reference types or arrays.");
             }
@@ -574,6 +576,24 @@ public class RuleEngine {
                     destinationDict.Add(key, value);
                 }
             }
+        }
+    }
+
+    private void UnpackJsonElement(ref object? item)
+    {
+        if(item is JsonElement element) {
+            item = element.ValueKind switch {
+                JsonValueKind.Array => throw new DryException("Custom dictionaries do not support arrays."),
+                JsonValueKind.Object => throw new DryException("Custom dictionaries to not support objects."),
+                JsonValueKind.String => element.GetString(),
+                JsonValueKind.Number when element.TryGetInt32(out int intValue) => intValue,
+                JsonValueKind.Number when element.TryGetDouble(out double doubleValue) => doubleValue,
+                JsonValueKind.Null => null,
+                JsonValueKind.Undefined => null,
+                JsonValueKind.True => true,
+                JsonValueKind.False => false,
+                _ => throw new DryException("Unable to deserialize JsonElement.")
+            };
         }
     }
 
