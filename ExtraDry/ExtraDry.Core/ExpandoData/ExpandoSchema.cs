@@ -30,7 +30,7 @@ public class ExpandoSchema : IValidatableObject {
         var results = new List<ValidationResult>();
         
         foreach(var field in Fields) {
-            values.Values.TryGetValue(field.Slug, out var fieldValue);
+            values.TryGetValue(field.Slug, out var fieldValue);
             results.AddRange(field.ValidateValue(fieldValue));
         }
 

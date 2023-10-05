@@ -75,10 +75,8 @@ public class DummyData {
                 };
                 //Randomly populate fields.
                 if(company.PrimarySector.Id == 3 ) {
-                    company.CustomFields = new ExpandoValues {
-                        Values = new Dictionary<string, object>() {
-                            {"asx_code", WebId.RandomWebString(3).ToUpper() }
-                        }
+                    company.CustomFields = new ExpandoValues { 
+                        { "asx_code", WebId.RandomWebString(3).ToUpper() }
                     };
                 }
                 //company.Videos.Add(new Video { Title = "Huzzah 1", Uri = "https://www.example.com/huzzah1" });
