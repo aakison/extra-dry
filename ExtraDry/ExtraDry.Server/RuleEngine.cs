@@ -98,11 +98,11 @@ public class RuleEngine {
     {
         var expandoProperty = typeof(T).GetProperties().Where(e => e.PropertyType == typeof(ExpandoValues)).FirstOrDefault();
         if(expandoProperty != null) {
-            var val = await ResolveEntityValue(typeof(ExpandoSchema), new ExpandoSchema { TargetType = typeof(T).Name });
-            if(val.Item1) {
+            var resolve = await ResolveEntityValue(typeof(ExpandoSchema), new ExpandoSchema { TargetType = typeof(T).Name });
+            if(resolve.Item1) {
                 var prop = (ExpandoValues?)expandoProperty.GetValue(source);
                 if(prop != null) {
-                    prop.Schema = (ExpandoSchema?)val.Item2;
+                    prop.Schema = (ExpandoSchema?)resolve.Item2;
                 }
             }
         }

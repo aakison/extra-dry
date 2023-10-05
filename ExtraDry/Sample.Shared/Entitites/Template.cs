@@ -1,11 +1,9 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sample.Shared;
 
 /// <summary>
-/// Represents a service that a company may provide.
-/// This is for properties that may appear as Enums, but have additional data associated with them.
+/// Represents a Template for user defined fields.
 /// </summary>
 [DimensionTable]
 [DeleteRule(DeleteAction.Recycle, nameof(State), TemplateState.Inactive, TemplateState.Active)]
@@ -28,7 +26,7 @@ public class Template : IResourceIdentifiers {
     /// <summary>
     /// The Target Type of the template
     /// </summary>
-    /// <example>CompanyTemplate</example>
+    /// <example>Company</example>
     [Required, MaxLength(50)]
     [Display(Name = "Title", ShortName = "Title")]
     [Filter(FilterType.Contains)]
@@ -48,6 +46,6 @@ public class Template : IResourceIdentifiers {
     [NotMapped]
     public string Slug { get => Title.ToLower(); set { } }
 
+    /// <inheritdoc cref="ExpandoSchema"/>
     public ExpandoSchema Schema { get; set; } = new();
-
 }

@@ -57,7 +57,7 @@ public class TemplateController {
     public async Task UpdateAsync(string title, Template value)
     {
         if(title != value?.Title) {
-            throw new ArgumentMismatchException("ID in URI must match body.", nameof(title));
+            throw new ArgumentMismatchException("Title in URI must match body.", nameof(title));
         }
         await template.UpdateAsync(value);
     }
