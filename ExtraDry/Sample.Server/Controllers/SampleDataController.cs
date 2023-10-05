@@ -40,6 +40,7 @@ public class SampleDataController {
         var shouldLoadSamples = !await context.Sectors.AnyAsync();
         var sampleData = new DummyData();
         if(shouldLoadSamples) {
+            sampleData.PopulateTemplates(context);
             sampleData.PopulateServices(context);
             sampleData.PopulateCompanies(context, 50);
             sampleData.PopulateEmployees(context, 5000);

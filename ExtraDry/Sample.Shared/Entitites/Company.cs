@@ -81,5 +81,6 @@ public class Company {
     [JsonIgnore]
     public VersionInfo Version { get; set; } = new VersionInfo();
 
+    [JsonPropertyName("fields")]
     public ExpandoValues CustomFields { get; set; } = new();
 }

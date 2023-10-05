@@ -17,6 +17,11 @@ public class ExpandoField {
     public string Label { get; set; } = "label";
 
     /// <summary>
+    /// Logical grouping of fields
+    /// </summary>
+    public string Section { get; set; } = string.Empty;
+
+    /// <summary>
     /// A description for the field that can present more information than the name.
     /// This may be presented to users in the form of a tooltip or similar.
     /// </summary>
