@@ -35,7 +35,7 @@
 
         public static IEnumerable<object[]> ValidExpandoData =>
             new List<object[]> {
-                new object[] { new ExpandoValues { Values = new Dictionary<string, object>() { { "external_id", "EX01" }, { "external_id_with_valid_values", "EX03" }, { "building_construction_date", "23-05-1980" }, { "property_code", 10 } } }  },
+                new object[] { new ExpandoValues { Values = new Dictionary<string, object>() { { "external_id", "EX01" }, { "external_id_with_valid_values", "EX03" }, { "building_construction_date", "1980-01-05" }, { "property_code", 10 } } }  },
                 new object[] { new ExpandoValues { Values = new Dictionary<string, object>() { { "external_id", "10" }, { "external_id_with_valid_values", "EX02" }, { "building_construction_date", DateTime.Now.AddYears(-5) }, { "property_code", 15 } } } }
                 };
 
