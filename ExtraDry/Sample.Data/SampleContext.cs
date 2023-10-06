@@ -33,13 +33,7 @@ public class SampleContext : AspectDbContext {
             e => JsonSerializer.Serialize(e, (JsonSerializerOptions?)null),
             e => JsonSerializer.Deserialize<BankingDetails>(e, (JsonSerializerOptions?)null) ?? new());
 
-        modelBuilder.Entity<Company>().Property(e => e.CustomFields).HasConversion(
-            e => JsonSerializer.Serialize(e, (JsonSerializerOptions?)null),
-            e => JsonSerializer.Deserialize<ExpandoValues>(e, (JsonSerializerOptions?)null) ?? new());
-
-        //modelBuilder.Entity<Company>().Property(e => e.Videos).HasConversion(
-        //    e => JsonSerializer.Serialize(e, null),
-        //    e => JsonSerializer.Deserialize<Collection<Video>>(e, null));
+        modelBuilder.Entity<Company>().Property(e => e.CustomFields).HasJsonConversion();
 
         modelBuilder.Entity<Content>().Property(e => e.Layout).HasConversion(
             e => JsonSerializer.Serialize(e, (JsonSerializerOptions?)null),

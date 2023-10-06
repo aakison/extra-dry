@@ -1,7 +1,7 @@
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Reflection;
 
 namespace ExtraDry.Server;
@@ -98,11 +98,11 @@ public class RuleEngine {
     {
         var expandoProperty = typeof(T).GetProperties().Where(e => e.PropertyType == typeof(ExpandoValues)).FirstOrDefault();
         if(expandoProperty != null) {
-            var resolve = await ResolveEntityValue(typeof(ExpandoSchema), new ExpandoSchema { TargetType = typeof(T).Name });
-            if(resolve.Item1) {
+            var schema = await ResolveExpandoSchema(source);
+            if(schema != null) {
                 var prop = (ExpandoValues?)expandoProperty.GetValue(source);
                 if(prop != null) {
-                    prop.Schema = (ExpandoSchema?)resolve.Item2;
+                    prop.Schema = schema;
                 }
             }
         }
@@ -656,6 +656,17 @@ public class RuleEngine {
             dynamic task = method.Invoke(resolver, new object?[] { sourceValue })!;
             var result = (await task) as object;
             return (true, result);
+        }
+    }
+
+    private async Task<ExpandoSchema?> ResolveExpandoSchema(object? target)
+    {
+        var resolver = services.GetService<IExpandoSchemaResolver>();
+        if(target == null || resolver == null) {
+            return null;
+        }
+        else {
+            return await resolver.ResolveAsync(target);
         }
     }
 

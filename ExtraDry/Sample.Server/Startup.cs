@@ -114,8 +114,8 @@ namespace Sample.Server {
             services.AddScoped<RegionService>();
             services.AddScoped<TemplateService>();
 
-            services.AddScoped<IEntityResolver<Sector>>(e => e.GetRequiredService<SectorService>());
-            services.AddScoped<IEntityResolver<ExpandoSchema>>(e => e.GetRequiredService<TemplateService>());
+            services.AddScoped<IEntityResolver<Sector>, SectorService>();
+            services.AddScoped<IExpandoSchemaResolver, TemplateService>();
         }
 
         /// <summary>
