@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
+using System.ComponentModel;
 using System.Net;
 using System.Security;
 
@@ -17,33 +18,31 @@ public class ApiExceptionStatusCodesAttribute : ExceptionFilterAttribute {
         base.OnException(context);
         if(context.Exception is ArgumentMismatchException ex) {
             ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.BadRequest, ex.UserMessage);
-            context.ExceptionHandled = true;
         }
         else if(context.Exception is ArgumentOutOfRangeException || context.Exception is KeyNotFoundException) {
             ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.NotFound);
-            context.ExceptionHandled = true;
         }
         else if(context.Exception is ArgumentException || context.Exception is ArgumentNullException) {
             ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.BadRequest);
-            context.ExceptionHandled = true;
+        }
+        else if(context.Exception is ValidationException ve) {
+            ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.BadRequest, "One or more validation errors occurred.", ve.Message);
         }
         else if(context.Exception is NotImplementedException) {
             ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.NotImplemented);
-            context.ExceptionHandled = true;
         }
         else if(context.Exception is SecurityException) {
             ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.Forbidden);
-            context.ExceptionHandled = true;
         }
         else if(context.Exception is DryException dryException) {
             // TODO: better handling here...
-            ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.BadRequest, dryException.ProblemDetails.Detail);
-            context.ExceptionHandled = true;
+            ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.BadRequest, 
+                dryException.ProblemDetails.Title, dryException.ProblemDetails.Detail);
         }
         else {
             ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.InternalServerError);
-            context.ExceptionHandled = true;
         }
+        context.ExceptionHandled = true;
     }
 
 }

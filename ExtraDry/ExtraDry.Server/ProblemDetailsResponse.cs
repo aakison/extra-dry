@@ -8,9 +8,9 @@ namespace ExtraDry.Server;
 
 public static class ProblemDetailsResponse {
 
-    internal static void RewriteResponse(ExceptionContext context, HttpStatusCode httpStatusCode, string? details = null)
+    internal static void RewriteResponse(ExceptionContext context, HttpStatusCode httpStatusCode, string? title = null, string? details = null)
     {
-        RewriteResponse(context.HttpContext, context.Exception.GetType().Name, (int)httpStatusCode, context.Exception.Message, details);
+        RewriteResponse(context.HttpContext, context.Exception.GetType().Name, (int)httpStatusCode, title ?? context.Exception.Message, details);
     }
 
     internal static void RewriteResponse(HttpContext httpContext, HttpStatusCode httpStatusCode, string? title = null, string? details = null)
@@ -44,22 +44,7 @@ public static class ProblemDetailsResponse {
             Instance = httpContext.Request.Path
         };
 
-        AddTraceId(httpContext, problemDetails);
-
         return problemDetails;
     }
 
-    private static void AddTraceId(HttpContext httpContext, ProblemDetails problemDetails)
-    {
-        /*
-         *  Adapted from DefaultProblemDetailsFactory (https://github.com/dotnet/aspnetcore/blob/2cb12687b20bc708d48f61a030682e8d5f12683f/src/Mvc/Mvc.Core/src/Infrastructure/DefaultProblemDetailsFactory.cs#L92C76-L92C76).
-         *  ProblemDetails can't be shared between server and blazor therefore
-         *  the ProblemDetailsFactory can't be used, which would usually populate
-         *  the traceId. Given this the logic has been reproduced here.
-         */
-        var traceId = Activity.Current?.Id ?? httpContext?.TraceIdentifier;
-        if(traceId != null) {
-            problemDetails.Extensions["traceId"] = traceId;
-        }
-    }
 }
