@@ -39,6 +39,7 @@ public class RuleEngine {
     public async Task<T> CreateAsync<T>(T exemplar)
     {
         ArgumentNullException.ThrowIfNull(exemplar, nameof(exemplar));
+        await AttachSchemaAsync(exemplar);
         var validator = new DataValidator();
         validator.ValidateObject(exemplar);
         validator.ThrowIfInvalid();

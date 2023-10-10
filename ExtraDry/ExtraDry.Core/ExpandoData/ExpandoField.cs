@@ -8,7 +8,9 @@ public class ExpandoField {
     /// <summary>
     /// A unique slug for the field that is auto-generated on create.
     /// </summary>
-    /// <example>external-id</example>
+    /// <example>external_id</example>
+    [Required]
+    [ValidIdentifier]
     public string Slug { get; set; } = string.Empty;
 
     /// <summary>
