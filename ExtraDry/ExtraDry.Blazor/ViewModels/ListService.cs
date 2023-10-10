@@ -106,10 +106,8 @@ public class ListService<TCollection, TItem> : IListService<TItem> {
         logger.LogInformation("ListService.GetItems from {endpoint}", endpoint);
         var body = await http.GetStringAsync(endpoint, cancellationToken);
         logger.LogInformation("ListService.GetItems retrieved {body}", body); 
-        var packedResult = JsonSerializer.Deserialize<TCollection>(body, JsonSerializerOptions);
-        if(packedResult == null) {
-            throw new DryException($"Call to endpoint returned nothing or couldn't be converted to a result.");
-        }
+        var packedResult = JsonSerializer.Deserialize<TCollection>(body, JsonSerializerOptions) 
+            ?? throw new DryException($"Call to endpoint returned nothing or couldn't be converted to a result.");
         var items = Unpacker(packedResult);
         var total = Counter(packedResult);
         return new ItemsProviderResult<TItem>(items, total);

@@ -8,7 +8,7 @@ namespace ExtraDry.Blazor.Models;
 /// Represents a command which wraps a method call and additional information about how to present
 /// the command using the method's signature and, optionally, the DisplayAttribute on the method.
 /// </summary>
-public class CommandInfo {
+public partial class CommandInfo {
 
     /// <summary>
     /// Create a `CommandInfo` with a reference to the ViewModel it will execute on and the method to call.
@@ -141,9 +141,13 @@ public class CommandInfo {
     private static string DefaultName(string name)
     {
         name = name.Replace("Async", "");
-        name = Regex.Replace(name, "(?<=[a-z])([A-Z])", " $1", RegexOptions.Compiled).Trim();
+        name = DefaultNameFormatter().Replace(name, " $1").Trim();
+        //name = Regex.Replace(name, "(?<=[a-z])([A-Z])", " $1", RegexOptions.Compiled).Trim();
         return name;
     }
+
+    [GeneratedRegex(@"(?<=[a-z])([A-Z])", RegexOptions.Compiled)]
+    private static partial Regex DefaultNameFormatter();
 
     private static CommandArguments GetArgumentsType(MethodInfo method)
     {
@@ -173,10 +177,8 @@ public class CommandInfo {
         var type = parameterType.GenericTypeArguments[0];
         var listType = typeof(List<>);
         var constructedListType = listType.MakeGenericType(type);
-        var typedCollection = Activator.CreateInstance(constructedListType);
-        if(typedCollection == null) {
-            throw new InvalidOperationException($"Could not create type List<{type}> for CommandInfo");
-        }
+        var typedCollection = Activator.CreateInstance(constructedListType) 
+            ?? throw new InvalidOperationException($"Could not create type List<{type}> for CommandInfo");
         var collection = (IList)typedCollection;
         var enumerable = (IEnumerable)arg;
         foreach(object item in enumerable) {

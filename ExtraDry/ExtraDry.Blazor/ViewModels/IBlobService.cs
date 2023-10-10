@@ -38,10 +38,8 @@ public class DryBlobService : IBlobService {
         try {
             var response = await http.PostAsync(endpoint, contentToUpload);
             await response.AssertSuccess();
-            var item = await response.Content.ReadFromJsonAsync<BlobInfo>();
-            if(item == null) {
-                throw new DryException("Blob created endpoint did not return a Blob.", "Unable to upload image. 0x0F2D6C00");
-            }
+            var item = await response.Content.ReadFromJsonAsync<BlobInfo>() 
+                ?? throw new DryException("Blob created endpoint did not return a Blob.", "Unable to upload image. 0x0F2D6C00");
             return item;
         }
         catch(Exception ex) {

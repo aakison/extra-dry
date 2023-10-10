@@ -13,9 +13,9 @@ internal class ItemCollection<T> : List<ListItemInfo<T>> {
         }
     }
 
-    public void SortBy(PropertyDescription property)
-    {
+    //public void SortBy(PropertyDescription property)
+    //{
             
-    }
+    //}
 
 }

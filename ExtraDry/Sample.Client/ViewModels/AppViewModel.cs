@@ -17,7 +17,7 @@ public class AppViewModel {
     }
     private Menu? menu;
 
-    private Menu CreateMenu() => new Menu { 
+    private Menu CreateMenu() => new() { 
         Icon = "modules",
         Title = "Yellow Jacket",
         Children = new Menu[] {

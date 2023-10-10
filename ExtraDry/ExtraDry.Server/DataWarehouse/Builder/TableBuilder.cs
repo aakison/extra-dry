@@ -33,10 +33,7 @@ public abstract class TableBuilder {
         var keyProperty = properties.FirstOrDefault(e => e.GetCustomAttribute<KeyAttribute>() != null) ??
             properties.FirstOrDefault(e => string.Compare(e.Name, "Id", StringComparison.OrdinalIgnoreCase) == 0) ??
             properties.FirstOrDefault(e => string.Compare(e.Name, $"{TableEntityType.Name}Id", StringComparison.OrdinalIgnoreCase) == 0);
-        if(keyProperty == null) {
-            throw new DryException($"Missing primary key on {TableName}. Fact and Dimension tables must have primary keys.");
-        }
-        return keyProperty;
+        return keyProperty ?? throw new DryException("Missing primary key", $"On {TableName}, Fact and Dimension tables must have primary keys.");
     }
 
     internal abstract bool HasColumnNamed(string name);
