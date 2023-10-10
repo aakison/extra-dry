@@ -93,7 +93,7 @@ public class ExpandoField {
 
     public IEnumerable<ValidationResult> ValidateValue(object? value)
     {
-        var results = new List<ValidationResult>();
+        var results = new List<ValidationResult>(); 
 
         ValidateDataType(value, ref results);
 

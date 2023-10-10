@@ -1,12 +1,13 @@
 ﻿using System.Text.Json;
 
-namespace ExtraDry.Core; 
+namespace ExtraDry.Core;
 
 /// <summary>
 /// Represents values stored as part of expansion data which can optionally be validated against 
 /// an Expando Schema.
 /// </summary>
-public class ExpandoValues : Dictionary<string, object>, IValidatableObject {
+[JsonConverter(typeof(ExpandoValuesConverter))]
+public class ExpandoValues : Dictionary<string, object?>, IValidatableObject {
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ExpandoValues"/> class with the default 
@@ -24,13 +25,13 @@ public class ExpandoValues : Dictionary<string, object>, IValidatableObject {
     /// Initializes a new instance of the <see cref="ExpandoValues"/> class with the default
     /// equality comparer that is initialized with the provided dictionary.
     /// </summary>
-    public ExpandoValues(IDictionary<string, object> dictionary) : base(dictionary) { }
+    public ExpandoValues(IDictionary<string, object?> dictionary) : base(dictionary) { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ExpandoValues"/> class with the specified
     /// equality comparer that is initialized with the provided dictionary.
     /// </summary>
-    public ExpandoValues(IDictionary<string, object> dictionary, IEqualityComparer<string> comparer) 
+    public ExpandoValues(IDictionary<string, object?> dictionary, IEqualityComparer<string> comparer) 
         : base(dictionary, comparer) { }
 
     /// <summary>

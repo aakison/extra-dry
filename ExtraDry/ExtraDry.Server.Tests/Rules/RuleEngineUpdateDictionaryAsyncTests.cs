@@ -238,10 +238,6 @@ public class RuleEngineUpdateDictionaryAsyncTests {
 
     }
 
-    public class ExpandoValues : Dictionary<string, object> 
-    {
-    }
-
     public class ServiceProviderStub : IServiceProvider {
         public object? GetService(Type serviceType) => null;
     }

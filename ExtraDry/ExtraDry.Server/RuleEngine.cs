@@ -499,10 +499,6 @@ public class RuleEngine {
         }
         foreach(var key in sourceDict.Keys) {
             var value = sourceDict[key];
-            //if(value is IEnumerable && value is not string) {
-            //    throw new DryException("Dictionary values do no support arrays.");
-            //}
-            UnpackJsonElement(ref value);
             if(!(value?.GetType()?.IsPrimitive ?? true) && value is not string) {
                 throw new DryException("Dictionary values do no support reference types or arrays.");
             }
@@ -519,24 +515,6 @@ public class RuleEngine {
                     destinationDict.Add(key, value);
                 }
             }
-        }
-    }
-
-    private static void UnpackJsonElement(ref object? item)
-    {
-        if(item is JsonElement element) {
-            item = element.ValueKind switch {
-                JsonValueKind.Array => throw new DryException("Custom dictionaries do not support arrays."),
-                JsonValueKind.Object => throw new DryException("Custom dictionaries to not support objects."),
-                JsonValueKind.String when element.TryGetDateTime(out DateTime dateValue) => dateValue,
-                JsonValueKind.String => element.GetString(),
-                JsonValueKind.Number => element.GetDouble(),
-                JsonValueKind.Null => null,
-                JsonValueKind.Undefined => null,
-                JsonValueKind.True => true,
-                JsonValueKind.False => false,
-                _ => throw new DryException("Unable to deserialize JsonElement.")
-            };
         }
     }
 
