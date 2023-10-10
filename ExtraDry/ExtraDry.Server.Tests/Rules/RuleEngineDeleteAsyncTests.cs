@@ -3,13 +3,13 @@
 public class RuleEngineDeleteAsyncTests {
 
     [Fact]
-    public void EntityFrameworkStyleDeleteSoftExecutesSoft()
+    public async Task EntityFrameworkStyleDeleteSoftExecutesSoft()
     {
         var rules = new RuleEngine(new ServiceProviderStub());
         var item = new SoftDeletable();
         var items = new List<SoftDeletable> { item };
 
-        var result = rules.TrySoftDelete(item);
+        var result = await rules.DeleteAsync(item, () => items.Remove(item), () => Task.CompletedTask);
 
         Assert.NotEmpty(items);
         Assert.False(item.Active);
@@ -17,14 +17,14 @@ public class RuleEngineDeleteAsyncTests {
     }
 
     [Fact]
-    public void EntityFrameworkStyleDeleteExecutesHard()
+    public async Task EntityFrameworkStyleDeleteExecutesHard()
     {
         var rules = new RuleEngine(new ServiceProviderStub());
         
         var item = new object();
         var items = new List<object> { item };
 
-        var result = rules.Delete(item, () => items.Remove(item), async () => await SaveChangesAsync());
+        var result = await rules.DeleteAsync(item, () => items.Remove(item), SaveChangesAsync);
 
         Assert.Empty(items);
         Assert.Equal(DeleteResult.Expunged, result);
@@ -37,7 +37,7 @@ public class RuleEngineDeleteAsyncTests {
         var item = new object();
         var items = new List<object> { item };
 
-        var result = await rules.TryHardDeleteAsync(item, () => items.Remove(item), async () => await SaveChangesAsync());
+        var result = await rules.ExpungeAsync(item, () => items.Remove(item), SaveChangesAsync);
 
         Assert.Equal(SaveState.Done, state);
         Assert.Empty(items);
@@ -51,23 +51,17 @@ public class RuleEngineDeleteAsyncTests {
         var item = new object();
         var items = new List<object> { item };
 
-        var result = await rules.TryHardDeleteAsync(item, 
+        var result = await rules.ExpungeAsync(item, 
             async () => {
                 await Task.Delay(1);
                 items.Remove(item);
             }, 
-            () => SaveChanges()
+            SaveChangesAsync
         );
 
         Assert.Equal(SaveState.Done, state);
         Assert.Empty(items);
         Assert.Equal(DeleteResult.Expunged, result);
-    }
-
-    private void SaveChanges()
-    {
-        state = SaveState.Processing;
-        state = SaveState.Done;
     }
 
     private async Task SaveChangesAsync()

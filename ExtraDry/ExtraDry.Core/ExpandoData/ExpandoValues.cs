@@ -45,11 +45,11 @@ public class ExpandoValues : Dictionary<string, object>, IValidatableObject {
     /// </summary>
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        if(Values.Any(e => e is JsonElement && ((JsonElement)e).ValueKind == JsonValueKind.Array)) {
+        if(Values.Any(e => e is JsonElement element && element.ValueKind == JsonValueKind.Array)) {
             yield return new ValidationResult("Arrays are not allowed as custom values.");
         }
 
-        if(Values.Any(e => e is JsonElement && ((JsonElement)e).ValueKind == JsonValueKind.Object)) {
+        if(Values.Any(e => e is JsonElement element && element.ValueKind == JsonValueKind.Object)) {
             yield return new ValidationResult("Complex Objects are not allowed as custom values.");
         }
 

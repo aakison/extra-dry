@@ -1,11 +1,5 @@
 ﻿#nullable enable
 
-using Sample.Shared;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Threading.Tasks;
-using ExtraDry.Server;
-using ExtraDry.Core;
 
 namespace Sample.Data.Services {
     public class EmployeeService {
@@ -29,10 +23,7 @@ namespace Sample.Data.Services {
 
         public async Task<Employee> RetrieveAsync(Guid uniqueId)
         {
-            var result = await TryRetrieveAsync(uniqueId);
-            if(result == null) {
-                throw new ArgumentOutOfRangeException(nameof(uniqueId));
-            }
+            var result = await TryRetrieveAsync(uniqueId) ?? throw new ArgumentOutOfRangeException(nameof(uniqueId));
             return result;
         }
 
@@ -51,7 +42,7 @@ namespace Sample.Data.Services {
         public async Task Delete(Guid uniqueId)
         {
             var existing = await RetrieveAsync(uniqueId);
-            rules.Delete(existing, () => database.Employees.Remove(existing), () => database.SaveChangesAsync());
+            await rules.DeleteAsync(existing, () => database.Employees.Remove(existing), async () => await database.SaveChangesAsync());
         }
     
         private readonly SampleContext database;

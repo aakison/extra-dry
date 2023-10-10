@@ -109,56 +109,17 @@ public class RuleEngine {
         }
     }
 
-    /// <summary>
-    /// Processes a delete of an item setting the appropriate fields.
-    /// </summary>
-    /// <param name="item">The item to delete.</param>
-    [Obsolete("Use AttemptSoftDelete internally, or DeleteAsync externally")]
-    public DeleteResult TrySoftDelete(object item)
-    {
-        ArgumentNullException.ThrowIfNull(item);
-        var items = new[] { item };
-        return TrySoftDelete(items);
-    }
-
-    /// <summary>
-    /// Processes deletes for multiple items setting the appropriate fields.
-    /// </summary>
-    /// <param name="items">The items to delete.</param>
-    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Keep as standard service instance style for DI.")]
-    [Obsolete("Use AttemptSoftDelete internally, or DeleteAsync externally")]
-    public DeleteResult TrySoftDelete(object[] items)
-    {
-        return AttemptSoftDelete(items) ? DeleteResult.Recycled : DeleteResult.Expunged;
-    }
-
-    /// <inheritdoc cref="DeleteAsync{T}(T, Func{Task}, Func{Task}?)" />
-    [Obsolete("Use DeleteAsync")]
-    public DeleteResult Delete<T>(T item, Action remove, Action commit)
-    {
-        // Bit hinky, map Actions to Func<Task> so that logic flow isn't repeated, then map back to non-async.
-        var task = DeleteAsync(item, WrapAction(remove), WrapAction(commit));
-        CompleteActionMasquardingAsFuncTask(task);
-        return task.Result;
-    }
-
     /// <inheritdoc cref="DeleteAsync{T}(T, Func{Task}, Func{Task}?)" />
     public async Task<DeleteResult> DeleteAsync<T>(T item, Action remove, Func<Task> commit)
     {
         return await DeleteAsync(item, WrapAction(remove), commit);
     }
 
-    /// <inheritdoc cref="DeleteAsync{T}(T, Func{Task}, Func{Task}?)" />
-    public async Task<DeleteResult> DeleteAsync<T>(T item, Func<Task> remove, Action commit)
-    {
-        return await DeleteAsync(item, remove, WrapAction(commit));
-    }
-
     /// <summary>
     /// Processes a delete of an item if possible, using either a soft-delete or a hard-delete 
     /// pattern.  The chosen option is first checked against the DeleteRuleAttribute on the entity.
-    /// The OnDeleting callback can change the 
-    /// If not possible, then soft-delete is performed instead.
+    /// The OnDeleting callback can change the requested action.  If not possible, then 
+    /// soft-delete is performed instead.
     /// </summary>
     /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
     /// <param name="remove">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
@@ -177,13 +138,16 @@ public class RuleEngine {
         }
 
         if(action == DeleteAction.Recycle || action == DeleteAction.TryExpunge) {
-            if(TrySoftDelete(item) == DeleteResult.Recycled) {
+            if(AttemptRecycle(item) == DeleteResult.Recycled) {
                 await execute();
                 result = DeleteResult.Recycled;
             }
+            else if(action == DeleteAction.Recycle) {
+                throw new DryException("Unable to recycle item.");
+            }
         }
         if(action == DeleteAction.TryExpunge || action == DeleteAction.Expunge) {
-            if(await TryHardDeleteAsync(item, remove, execute) == DeleteResult.Expunged) {
+            if(await ExpungeAsync(item, remove, execute) == DeleteResult.Expunged) {
                 result = DeleteResult.Expunged;
             }
         }
@@ -205,41 +169,26 @@ public class RuleEngine {
     public async Task<DeleteResult> DeleteAsync(params object[] items)
     {
         var result = DeleteResult.NotDeleted;
-        if(TrySoftDelete(items) == DeleteResult.Recycled) {
+        if(AttemptRecycle(items) == DeleteResult.Recycled) {
             await CommitFunctor();
             result = DeleteResult.Recycled;
         }
 
-        if(await TryHardDeleteAsync(items) == DeleteResult.Expunged) {
+        if(await ExpungeManyAsync(items) == DeleteResult.Expunged) {
             result = DeleteResult.Expunged;
         }
 
         return result;
     }
 
-    /// <inheritdoc cref="TryHardDeleteAsync{T}(T, Func{Task}?, Func{Task}?)" />
-    [Obsolete("Use DeleteAsync (or ExpungeAsync if necessary)")]
-    public async Task<DeleteResult> TryHardDeleteAsync<T>(T item, Action remove, Func<Task> commit)
-    {
-        return await TryHardDeleteAsync(item, WrapAction(remove), commit);
-    }
-
-    /// <inheritdoc cref="TryHardDeleteAsync{T}(T, Func{Task}?, Func{Task}?)" />
-    [Obsolete("Use DeleteAsync (or ExpungeAsync if necessary)")]
-    public async Task<DeleteResult> TryHardDeleteAsync<T>(T item, Func<Task> remove, Action commit)
-    {
-        return await TryHardDeleteAsync(item, remove, WrapAction(commit));
-    }
-
     /// <summary>
-    /// Processes a hard delete of an item.
+    /// Expunges an item.
     /// </summary>
     /// <param name="item">The item to delete.</param>
-    /// <param name="remove">The action that is executed for a hard-delete.</param>
-    /// <param name="commit">The action that is executed to commit hard-delete.</param>
-    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Keep as standard service instance style for DI.")]
-    [Obsolete("Use DeleteAsync (or ExpungeAsync if necessary)")]
-    public async Task<DeleteResult> TryHardDeleteAsync<T>(T item, Func<Task> remove, Func<Task> commit)
+    /// <param name="remove">The action that is executed for an expunge.</param>
+    /// <param name="commit">The action that is executed to commit the expunge.</param>
+    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "<Pending>")]
+    public async Task<DeleteResult> ExpungeAsync<T>(T item, Func<Task> remove, Func<Task> commit)
     {
         ArgumentNullException.ThrowIfNull(item, nameof(item));
 
@@ -257,10 +206,10 @@ public class RuleEngine {
             await commit();
             result = DeleteResult.Expunged;
         }
-        catch {
+        catch { 
             //Do not throw exceptions on commit- Just return appropriate result.
         }
-        return result;
+        return result; 
     }
 
     /// <summary>
@@ -310,14 +259,6 @@ public class RuleEngine {
         }
     }
 
-    /// <summary>
-    /// Expunges an item.
-    /// </summary>
-    public async Task<DeleteResult> ExpungeAsync<T>(T item, Func<Task> remove, Func<Task> commit)
-    {
-        return await TryHardDeleteAsync(item, remove, commit);
-    }
-
     /// <inheritdoc cref="ExpungeAsync{T}(T, Func{Task}?, Func{Task}?)" />
     public async Task<DeleteResult> ExpungeAsync<T>(T item, Action remove, Func<Task> commit)
     {
@@ -342,8 +283,8 @@ public class RuleEngine {
         CommitFunctor = commit;
     }
 
-    /// <inheritdoc cref="TryHardDeleteAsync(object[])" />
-    public async Task<DeleteResult> TryHardDeleteAsync<T>(T item) where T : class
+    /// <inheritdoc cref="ExpungeAsync(object[])" />
+    public async Task<DeleteResult> ExpungeAsync<T>(T item) where T : class
     {
         Action<object> remove;
         try {
@@ -368,10 +309,11 @@ public class RuleEngine {
 
     /// <summary>
     /// Processes a Hard Delete for multiple items.
-    /// Uses the remove actions from <see cref="RegisterRemove{T}(Action{T})"/> and commit action from <see cref="RegisterCommit(Func{Task})"/>.
+    /// Uses the remove actions from <see cref="RegisterRemove{T}(Action{T})"/> and commit action from 
+    /// <see cref="RegisterCommit(Func{Task})"/>.
     /// </summary>
     /// <param name="items">Items to delete</param>
-    public async Task<DeleteResult> TryHardDeleteAsync(params object?[] items)
+    public async Task<DeleteResult> ExpungeManyAsync(params object?[] items)
     {
         var result = DeleteResult.NotDeleted;
 
@@ -529,7 +471,7 @@ public class RuleEngine {
 
     private static bool AreEqual(object? result, object? destinationValue) => (result == null && destinationValue == null) || (result?.Equals(destinationValue) ?? false);
 
-    private void ProcessDictionaryUpdates<T>(RuleAction action, PropertyInfo property, T destination, IDictionary? sourceDict)
+    private static void ProcessDictionaryUpdates<T>(RuleAction action, PropertyInfo property, T destination, IDictionary? sourceDict)
     {
         // How to process dictionary?
         // 1. Recurse like any other entity through the objects?
@@ -580,7 +522,7 @@ public class RuleEngine {
         }
     }
 
-    private void UnpackJsonElement(ref object? item)
+    private static void UnpackJsonElement(ref object? item)
     {
         if(item is JsonElement element) {
             item = element.ValueKind switch {
@@ -686,27 +628,27 @@ public class RuleEngine {
         }
     }
 
-    private static bool AttemptSoftDelete<T>(T item)
+    private static DeleteResult AttemptRecycle<T>(T item)
     {
         var type = typeof(T);
         var softDelete = type.GetCustomAttribute<DeleteRuleAttribute>();
         if(softDelete == null) {
-            return false;
+            return DeleteResult.NotDeleted;
         }
         var property = type.GetProperty(softDelete.PropertyName, BindingFlags.Instance | BindingFlags.Public);
         if(property == null) {
-            return false;
+            return DeleteResult.NotDeleted;
         }
         try {
             property.SetValue(item, softDelete.DeleteValue);
         }
         catch {
-            return false;
+            return DeleteResult.NotDeleted;
         }
-        return true;
+        return DeleteResult.Recycled;
     }
 
-    private static bool AttemptSoftDelete(object[] items)
+    private static DeleteResult AttemptRecycle(object[] items)
     {
         var data = items
             .Where(e => e != null)
@@ -719,16 +661,16 @@ public class RuleEngine {
 
         //Check SoftDeleteRule attribute is set on all items - Fail all if any missing.
         if(data.Any(e => e.DeleteRuleAttribute == null)) {
-            return false;
+            return DeleteResult.NotDeleted;
         }
 
         foreach(var item in data) {
-            item.PropInfo = item.Item.GetType().GetProperty((string)item.DeleteRuleAttribute!.PropertyName, BindingFlags.Instance | BindingFlags.Public);
+            item.PropInfo = item.Item.GetType().GetProperty(item.DeleteRuleAttribute!.PropertyName, BindingFlags.Instance | BindingFlags.Public);
         }
 
         //SoftDeleteRuleAttribute set on Invalid Property
         if(data.Any(e => e.PropInfo == null)) {
-            return false;
+            return DeleteResult.NotDeleted;
         }
 
         foreach(var item in data) {
@@ -740,7 +682,7 @@ public class RuleEngine {
             }
         }
 
-        return true;
+        return DeleteResult.Recycled;
     }
 
     private class SoftDeleteItem {

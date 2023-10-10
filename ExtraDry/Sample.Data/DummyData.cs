@@ -87,6 +87,7 @@ public class DummyData {
         database.SaveChanges();
     }
 
+    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Might need instance in future.")]
     public async Task PopulateRegionsAsync(RegionService service)
     {
         var baseRegions = new Region[] {

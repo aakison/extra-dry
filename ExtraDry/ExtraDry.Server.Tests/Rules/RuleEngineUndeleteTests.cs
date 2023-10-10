@@ -21,7 +21,7 @@ public class RuleEngineUndeleteTests {
     {
         var rules = new RuleEngine(new ServiceProviderStub());
         var obj = new SoftDeletable();
-        rules.TrySoftDelete(obj);
+        await rules.DeleteAsync(obj, () => { }, () => Task.CompletedTask);
 
         var result = await rules.RestoreAsync(obj);
 
@@ -44,7 +44,7 @@ public class RuleEngineUndeleteTests {
     {
         var rules = new RuleEngine(new ServiceProviderStub());
         var obj = new NotUndeletable();
-        rules.TrySoftDelete(obj);
+        await rules.DeleteAsync(obj, () => { }, () => Task.CompletedTask);
 
         var result = await rules.RestoreAsync(obj);
 
@@ -80,7 +80,7 @@ public class RuleEngineUndeleteTests {
     {
         var rules = new RuleEngine(new ServiceProviderStub());
         var obj = new BadUndeleteValue();
-        rules.TrySoftDelete(obj);
+        await rules.DeleteAsync(obj, () => { }, () => Task.CompletedTask);
 
         var lambda = async () => {
             await rules.RestoreAsync(obj);
@@ -94,7 +94,7 @@ public class RuleEngineUndeleteTests {
     {
         var rules = new RuleEngine(new ServiceProviderStub());
         var obj = new NullUndelete();
-        rules.TrySoftDelete(obj);
+        await rules.DeleteAsync(obj, () => { }, () => Task.CompletedTask);
 
         await rules.RestoreAsync(obj);
 

@@ -3,30 +3,30 @@
 public class EntityFrameworkTests {
 
     [Fact]
-    public async Task HardDeleteUserWithoutAddress() {
+    public async Task ExpungeUserWithoutAddress() {
         var database = GetPopulatedDatabase();
         var rules = new RuleEngine(new ServiceProviderStub());
         var user = database.Users.First(e => e.Name == "Homeless");
 
-        await rules.TryHardDeleteAsync(user, () => database.Remove(user), async () => await MockSaveChangesAsync(database));
+        await rules.ExpungeAsync(user, () => database.Remove(user), async () => await MockSaveChangesAsync(database));
 
         Assert.Equal(1, database.Users.Count());
     }
 
     [Fact]
-    public async Task HardDeleteUserWithAddress()
+    public async Task ExpungeUserWithAddress()
     {
         var database = GetPopulatedDatabase();
         var rules = new RuleEngine(new ServiceProviderStub());
         var user = database.Users.First(e => e.Name == "Homebody");
 
-        await rules.TryHardDeleteAsync(user, () => database.Remove(user), async () => await MockSaveChangesAsync(database));
+        await rules.ExpungeAsync(user, () => database.Remove(user), async () => await MockSaveChangesAsync(database));
 
         Assert.Equal(1, database.Users.Count());
     }
 
     [Fact]
-    public async Task HardDeleteAddressUserSoftDelete()
+    public async Task DeleteWithRecycleAddress()
     {
         var database = GetPopulatedDatabase();
         var rules = new RuleEngine(new ServiceProviderStub());
@@ -49,7 +49,7 @@ public class EntityFrameworkTests {
         rules.RegisterRemove<Address>(e => database.Remove(e));
         rules.RegisterCommit(() => MockSaveChangesAsync(database));
 
-        var result = await rules.TryHardDeleteAsync(address);
+        var result = await rules.ExpungeAsync(address);
 
         Assert.Equal(DeleteResult.NotDeleted, result);
         Assert.Equal(2, database.Addresses.Count());
@@ -84,7 +84,7 @@ public class EntityFrameworkTests {
         rules.RegisterRemove<Address>(e => database.Remove(e));
         rules.RegisterCommit(() => MockSaveChangesAsync(database));
 
-        await Assert.ThrowsAsync<DryException>(() => rules.TryHardDeleteAsync(user, address));
+        await Assert.ThrowsAsync<DryException>(() => rules.ExpungeManyAsync(user, address));
     }
 
 
@@ -102,7 +102,7 @@ public class EntityFrameworkTests {
 
         rules.RegisterCommit(() => MockSaveChangesAsync(database));
 
-        var result = await rules.TryHardDeleteAsync(user, address);
+        var result = await rules.ExpungeManyAsync(user, address);
 
         Assert.Equal(DeleteResult.Expunged, result);
         Assert.Equal(1, database.Addresses.Count());
@@ -122,7 +122,7 @@ public class EntityFrameworkTests {
 
         rules.RegisterCommit(() => MockSaveChangesAsync(database));
 
-        var result = await rules.TryHardDeleteAsync(user, null, address);
+        var result = await rules.ExpungeManyAsync(user, null, address);
 
         Assert.Equal(DeleteResult.Expunged, result);
         Assert.Equal(1, database.Addresses.Count());

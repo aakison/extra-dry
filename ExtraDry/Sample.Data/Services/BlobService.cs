@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 
 namespace Sample.Data.Services;
@@ -19,8 +20,7 @@ public class BlobService {
 
     public async Task<BlobInfo> UploadAsync(BlobInfo item, byte[] content)
     {
-        using var sha256Hash = SHA256.Create();
-        var hash = sha256Hash.ComputeHash(content);
+        var hash = SHA256.HashData(content);
         var hashString = string.Join("", hash.Select(e => e.ToString("X2")));
 
         var existing = await database.Blobs.FirstOrDefaultAsync(e => e.ShaHash == hashString && e.Scope == BlobScope.Public);
@@ -48,6 +48,7 @@ public class BlobService {
         return item;
     }
 
+    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "When not faked, will require instance.")]
     public async Task<byte[]> DownloadAsync(BlobInfo item)
     {
         if(fakeBlobStorage.TryGetValue(item.UniqueId, out var content)) {
@@ -61,10 +62,7 @@ public class BlobService {
 
     public async Task<BlobInfo> RetrieveAsync(Guid uniqueId)
     {
-        var result = await TryRetrieveAsync(uniqueId);
-        if(result == null) {
-            throw new ArgumentOutOfRangeException(nameof(uniqueId));
-        }
+        var result = await TryRetrieveAsync(uniqueId) ?? throw new ArgumentOutOfRangeException(nameof(uniqueId));
         return result;
     }
 
@@ -83,7 +81,7 @@ public class BlobService {
     public async Task DeleteAsync(Guid uniqueId)
     {
         var existing = await RetrieveAsync(uniqueId);
-        rules.Delete(existing, () => database.Blobs.Remove(existing), () => database.SaveChangesAsync());
+        await rules.DeleteAsync(existing, () => database.Blobs.Remove(existing), async () => await database.SaveChangesAsync());
     }
 
     private readonly SampleContext database;

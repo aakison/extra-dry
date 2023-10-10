@@ -21,10 +21,7 @@ public class CompanyService {
 
     public async Task<Company> RetrieveAsync(Guid companyId)
     {
-        var result = await TryRetrieveAsync(companyId);
-        if(result == null) {
-            throw new ArgumentOutOfRangeException(nameof(companyId));
-        }
+        var result = await TryRetrieveAsync(companyId) ?? throw new ArgumentOutOfRangeException(nameof(companyId));
         return result;
     }
 
@@ -46,7 +43,7 @@ public class CompanyService {
     public async Task Delete(Guid uniqueId)
     {
         var existing = await RetrieveAsync(uniqueId);
-        rules.Delete(existing, () => database.Companies.Remove(existing), () =>database.SaveChangesAsync());
+        await rules.DeleteAsync(existing, () => database.Companies.Remove(existing), async () => await database.SaveChangesAsync());
     }
 
     private readonly SampleContext database;
