@@ -498,12 +498,8 @@ public class RuleEngineUpdateCollectionAsyncTests {
     public class ChildEntityResolver : IEntityResolver<Child> {
         public Task<Child?> ResolveAsync(Child exemplar)
         {
-            if(database.ContainsKey(exemplar.Uuid)) {
-                return Task.FromResult((Child?)database[exemplar.Uuid]);
-            }
-            else {
-                return Task.FromResult<Child?>(null);
-            }
+            database.TryGetValue(exemplar.Uuid, out var child);
+            return Task.FromResult(child);
         }
 
         public void AddChild(Child item)

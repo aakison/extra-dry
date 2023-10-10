@@ -38,8 +38,8 @@ public class ResourceReferenceSchemaFilter : IDocumentFilter {
                             Type = ReferenceType.Schema,
                         },
                     };
-                    if(typeSchema.ContainsKey(rewriteType) && !context.SchemaRepository.Schemas.ContainsKey(rewriteType)) {
-                        context.SchemaGenerator.GenerateSchema(typeSchema[rewriteType], context.SchemaRepository);
+                    if(typeSchema.TryGetValue(rewriteType, out var rewrite) && !context.SchemaRepository.Schemas.ContainsKey(rewriteType)) {
+                        context.SchemaGenerator.GenerateSchema(rewrite, context.SchemaRepository);
                     }
                 }
             }

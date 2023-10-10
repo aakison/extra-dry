@@ -1,9 +1,6 @@
-﻿#nullable enable
+﻿namespace Sample.Shared;
 
-using System.ComponentModel.DataAnnotations;
-
-namespace Sample.Shared;
-
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum Priority {
     
     [Display(ShortName = "P1", Name = "P1 (could cause physical harm)", Order = 1)]

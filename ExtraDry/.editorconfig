@@ -18,6 +18,8 @@ csharp_space_after_keywords_in_control_flow_statements = false
 # .NET Core conventions are to use local text as key, so migrating is much easier if/when i18n is added.
 dotnet_diagnostic.CA1303.severity = none
 dotnet_diagnostic.CS1591.severity = none #temp until other issues fixed...
+# Wish this worked, but with different rule sets it just has too many false-positives...
+dotnet_diagnostic.IDE0079.severity = none
 
 [*.{cshtml,xml,html,css}]
 indent_style = space

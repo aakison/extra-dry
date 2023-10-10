@@ -38,7 +38,7 @@ public class MetadataController {
         return code switch {
             400 => throw new ArgumentMismatchException("Bad Request", nameof(code)),
             403 => throw new SecurityException("Not Authorized"),
-            404 => throw new ArgumentOutOfRangeException("Not Found"),
+            404 => throw new ArgumentOutOfRangeException(nameof(code), "Not Found"),
             500 => throw new Exception("Internal Server Error"),
             501 => throw new NotImplementedException("Not Implemented"),
             _ => new MessagePayload { Message = "Unrecognized error code, no exception thrown." }

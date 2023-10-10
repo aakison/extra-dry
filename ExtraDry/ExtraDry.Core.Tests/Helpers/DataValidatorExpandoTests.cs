@@ -66,7 +66,7 @@ public class DataValidatorExpandoTests {
 
     }
 
-    public ExpandoSchema Schema => new() {
+    public static ExpandoSchema Schema => new() {
         TargetType = typeof(Sample).Name,
         Fields = new List<ExpandoField> {
             new() { DataType = ExpandoDataType.Text, Slug = "ABN", MaxLength = 10, IsRequired = true },
@@ -77,7 +77,7 @@ public class DataValidatorExpandoTests {
         }
     };
 
-    public Sample SchemaSample {
+    public static Sample SchemaSample {
         get {
             var sample = new Sample();
             sample.Values.Schema = Schema;

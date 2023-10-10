@@ -79,9 +79,7 @@ public class SignatureImpliesStatusCodes : IOperationFilter {
                 operation.Responses.Add("204", new OpenApiResponse {
                     Description = "Success",
                 });
-                if(operation.Responses.ContainsKey("200")) {
-                    operation.Responses.Remove("200");
-                }
+                operation.Responses.Remove("200");
             }
         }
 

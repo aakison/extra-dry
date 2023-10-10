@@ -166,7 +166,7 @@ public class RuleEngine {
     /// <see cref="RegisterCommit(Func{Task})" />
     /// </summary>
     /// <param name="items">The list of items to delete.</param>
-    public async Task<DeleteResult> DeleteAsync(params object[] items)
+    public async Task<DeleteResult> DeleteAsync(params object?[] items)
     {
         var result = DeleteResult.NotDeleted;
         if(AttemptRecycle(items) == DeleteResult.Recycled) {
@@ -648,13 +648,13 @@ public class RuleEngine {
         return DeleteResult.Recycled;
     }
 
-    private static DeleteResult AttemptRecycle(object[] items)
+    private static DeleteResult AttemptRecycle(object?[] items)
     {
         var data = items
-            .Where(e => e != null)
+            .Where(e => e is not null)
             .Select(e => new SoftDeleteItem {
-                Item = e,
-                DeleteRuleAttribute = e.GetType().GetCustomAttribute<DeleteRuleAttribute>(),
+                Item = e!,
+                DeleteRuleAttribute = e!.GetType().GetCustomAttribute<DeleteRuleAttribute>(),
                 PropInfo = null
             })
             .ToList();
@@ -675,7 +675,7 @@ public class RuleEngine {
 
         foreach(var item in data) {
             try {
-                item.PropInfo!.SetValue((object)item.Item, (object?)item.DeleteRuleAttribute!.DeleteValue);
+                item.PropInfo!.SetValue(item.Item, item.DeleteRuleAttribute!.DeleteValue);
             }
             catch {
                 throw new DryException($"Can't complete soft-delete, value provided is not convertable to type of property '{item.DeleteRuleAttribute!.PropertyName}", "Can't delete item, internal application issue.");

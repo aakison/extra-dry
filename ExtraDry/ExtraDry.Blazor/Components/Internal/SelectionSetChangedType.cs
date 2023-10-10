@@ -3,6 +3,7 @@
 /// <summary>
 /// Used with `SelectionSetChangedEventArgs` to indicate the type of the change for the event.
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum SelectionSetChangedType {
 
     /// <summary>

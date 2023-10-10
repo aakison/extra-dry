@@ -173,12 +173,3 @@ public class ExpandoField {
     }
 
 }
-
-public enum SubDataType
-{
-    Integer,  // for Number
-    Real,     // for Number
-    Currency, // for Number
-    PhoneNumber, // for Text
-
-}

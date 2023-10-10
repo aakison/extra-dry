@@ -1,12 +1,12 @@
-﻿namespace ExtraDry.Core {
+﻿namespace ExtraDry.Core;
 
-    public enum ControlType {
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum ControlType {
 
-        BestMatch,
+    BestMatch,
 
-        SelectList,
+    SelectList,
 
-        RadioButtons,
+    RadioButtons,
 
-    }
 }

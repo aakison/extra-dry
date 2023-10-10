@@ -4,6 +4,7 @@
 /// The base data type for an expansion field.  Closely follows the JSON data types, but adds
 /// DateTime as a primitive type that is not present in JSON.
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ExpandoDataType {
 
     /// <summary>

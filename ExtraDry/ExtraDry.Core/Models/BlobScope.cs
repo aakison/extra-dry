@@ -1,21 +1,19 @@
-﻿#nullable enable
+﻿namespace ExtraDry.Core;
 
-namespace ExtraDry.Core {
+/// <summary>
+/// Determines the scope for blob, which affects which container it's in and there for the security level.
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum BlobScope {
 
     /// <summary>
-    /// Determines the scope for blob, which affects which container it's in and there for the security level.
+    /// Private scope, a SAS token will be required.
     /// </summary>
-    public enum BlobScope {
+    Private = 0,
 
-        /// <summary>
-        /// Private scope, a SAS token will be required.
-        /// </summary>
-        Private = 0,
+    /// <summary>
+    /// Public scope, unsecured, e.g. logos
+    /// </summary>
+    Public = 1,
 
-        /// <summary>
-        /// Public scope, unsecured, e.g. logos
-        /// </summary>
-        Public = 1,
-
-    }
 }

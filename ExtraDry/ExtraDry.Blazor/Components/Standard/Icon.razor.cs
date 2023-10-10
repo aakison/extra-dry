@@ -42,11 +42,11 @@ public partial class Icon : ComponentBase, IExtraDryComponent {
             if(Key.Contains('/')) {
                 return new IconInfo(Key, "image") { ImagePath = Key, AlternateText = "" };
             }
-            else if(ThemeInfo?.Icons?.ContainsKey(Key) ?? false) {
-                return ThemeInfo.Icons[Key];
+            else if(ThemeInfo?.Icons?.TryGetValue(Key, out var themeIcon) ?? false) {
+                return themeIcon;
             }
-            else if(fallbackIcons.ContainsKey(Key)) {
-                return fallbackIcons[Key];
+            else if(fallbackIcons.TryGetValue(Key, out var icon)) {
+                return icon;
             }
             else {
                 if(ThemeInfo == null) {

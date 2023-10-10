@@ -40,6 +40,7 @@ public partial class DryFilterInputText : ComponentBase, IExtraDryComponent, IDi
 
     public void Dispose()
     {
+        GC.SuppressFinalize(this);
         if(PageQueryBuilder != null) {
             PageQueryBuilder.OnChanged -= PageQueryBuilder_OnChanged;
         }

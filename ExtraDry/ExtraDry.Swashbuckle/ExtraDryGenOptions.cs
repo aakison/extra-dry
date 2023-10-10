@@ -22,9 +22,10 @@ public class ExtraDryGenOptions
     public FilterOptions Filters { get; } = new();
 
     public class InstructionPageOptions {
-        public bool Include { get; set; } = true;
-        [SuppressMessage("Security", "DRY1304:Properties that might leak PID should be JsonIgnore.", Justification = "Just a version Id")]
 
+        public bool Include { get; set; } = true;
+
+        [SuppressMessage("Security", "DRY1304:Properties that might leak PID should be JsonIgnore.", Justification = "Just a version Id")]
         public string Version { get; set; } = "v1";
 
         public string Title { get; set; } = "API Instructions";

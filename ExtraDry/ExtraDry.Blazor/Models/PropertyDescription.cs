@@ -85,8 +85,8 @@ public class PropertyDescription {
             if(value == null) {
                 return "null";
             }
-            if(HasDiscreteValues && discreteDisplayAttributes.ContainsKey((int)value)) {
-                value = discreteDisplayAttributes[(int)value]?.GetName() ?? value;
+            if(HasDiscreteValues && discreteDisplayAttributes.TryGetValue((int)value, out var display)) {
+                value = display?.GetName() ?? value;
             }
             var format = Format?.DataFormatString ?? "{0}";
             return string.Format(CultureInfo.InvariantCulture, format, value);
@@ -109,8 +109,7 @@ public class PropertyDescription {
                 return 0;
             }
             var value = (int)valueObj;
-            if(discreteDisplayAttributes.ContainsKey(value)) {
-                var display = discreteDisplayAttributes[value];
+            if(discreteDisplayAttributes.TryGetValue(value, out var display)) {
                 return display?.GetOrder() ?? value;
             }
             return value;

@@ -9,7 +9,7 @@ namespace Sample.Shared;
 /// </summary>
 [DeleteRule(DeleteAction.Recycle, nameof(DeleteStatus), DeleteStatus.Recycled, DeleteStatus.Live)]
 [Index(nameof(Uuid), IsUnique = true)]
-public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidatableObject {
+public partial class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidatableObject {
 
     /// <inheritdoc cref="ITaxonomyEntity.Id"/>
     [Key]
@@ -84,9 +84,9 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidatableObjec
     {
         var results = new List<ValidationResult>();
         var codeRegex = Level switch {
-            RegionLevel.Country => CountryRegex,
-            RegionLevel.Division => DivisionRegex,
-            _ => SubdivisionRegex,
+            RegionLevel.Country => CountryRegex(),
+            RegionLevel.Division => DivisionRegex(),
+            _ => SubdivisionRegex(),
         };
         if(Level != RegionLevel.Global && !codeRegex.IsMatch(Slug)) {
             results.Add(new ValidationResult("Code must follow ISO-3166 naming scheme, e.g. 'AU', 'AU-QLD', 'AU-QLD-Brisbane'."));
@@ -94,12 +94,18 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidatableObjec
         return results;
     }
 
-    private static readonly Regex CountryRegex = new(@"^\w{2}$", RegexOptions.Compiled);
-    private static readonly Regex DivisionRegex = new(@"^\w{2}-\w{2,4}$", RegexOptions.Compiled);
-    private static readonly Regex SubdivisionRegex = new(@"^\w{2}-\w{2,4}-\w{2,20}$", RegexOptions.Compiled);
+    [GeneratedRegex(@"^\w{2}$", RegexOptions.Compiled)]
+    private partial Regex CountryRegex();
+
+    [GeneratedRegex(@"^\w{2}-\w{2,4}$", RegexOptions.Compiled)]
+    private partial Regex DivisionRegex();
+
+    [GeneratedRegex(@"^\w{2}-\w{2,4}-\w{2,20}$", RegexOptions.Compiled)]
+    private partial Regex SubdivisionRegex();
 
 }
 
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum DeleteStatus
 {
     Live,

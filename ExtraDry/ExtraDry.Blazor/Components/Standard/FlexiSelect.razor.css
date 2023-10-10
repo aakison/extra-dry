@@ -8,21 +8,16 @@
   align-items: center;
   height: 100%;
   width: 100%;
-  background-color: white;
-}
-div ::deep > button > * {
-  margin: 0;
-}
-div ::deep > button > span, div ::deep > button > div {
-  flex: 1 1 auto;
-  text-align: start;
-}
-div ::deep > button > i, div ::deep > button > img {
-  flex: 0 0 auto;
-}
+  background-color: white; }
+  div ::deep > button > * {
+    margin: 0; }
+  div ::deep > button > span, div ::deep > button > div {
+    flex: 1 1 auto;
+    text-align: start; }
+  div ::deep > button > i, div ::deep > button > img {
+    flex: 0 0 auto; }
 
 div ::deep > button span.content {
   text-overflow: ellipsis;
   overflow: hidden;
-  white-space: nowrap;
-}
+  white-space: nowrap; }

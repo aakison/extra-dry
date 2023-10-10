@@ -115,7 +115,7 @@ public class SelectionSet {
 
     private readonly List<object> items = new();
 
-    public static SelectionSet? Lookup(object key) => key == null ? null : registered.ContainsKey(key) ? registered[key] : null;
+    public static SelectionSet? Lookup(object key) => key == null ? null : registered.TryGetValue(key, out var value) ? value : null;
 
     public static SelectionSet Register(object key) {
         if(!registered.ContainsKey(key)) {

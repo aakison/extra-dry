@@ -5,6 +5,7 @@
 /// The plurality of the arguments determines the contexts in which the command is available.
 /// E.g. a command that takes a single model as a parameter cannot be used when multiple models are selected.
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum CommandArguments {
 
     /// <summary>

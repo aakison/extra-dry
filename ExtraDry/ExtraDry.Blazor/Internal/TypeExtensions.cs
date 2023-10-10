@@ -18,10 +18,8 @@ internal static class TypeExtensions {
         if(!type.HasDefaultConstructor()) {
             throw new DryException("Generic type was expected to have a default constructor.", "Bad Type, please contact support. 0x0FA7CBDE");
         }
-        var item = Activator.CreateInstance(type);
-        if(item == null) {
-            throw new DryException("Generic type failed to instantiate.", "Bad Type, please contact support. 0x0F21D0C2");
-        }
+        var item = Activator.CreateInstance(type) 
+            ?? throw new DryException("Generic type failed to instantiate.", "Bad Type, please contact support. 0x0F21D0C2");
         return item;
     }
 

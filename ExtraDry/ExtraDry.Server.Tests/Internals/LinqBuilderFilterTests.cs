@@ -171,6 +171,7 @@ public class LinqBuilderFilterTests {
         public DatumType Status { get; set; }
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum DatumType
     {
         Active,

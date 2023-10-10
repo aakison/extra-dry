@@ -55,14 +55,8 @@ public class DisplayControllerDocumentFilter : IDocumentFilter {
 
     private int TagOrder(string name)
     {
-        if(displayAttributes.ContainsKey(name)) {
-            return displayAttributes[name].GetOrder() ?? DefaultOrder(name);
-        }
-        else {
-            return DefaultOrder(name);
-        }
-
-        int DefaultOrder(string name) => 10000 + originalPositions[name];
+        displayAttributes.TryGetValue(name, out var display);
+        return display?.GetOrder() ?? 10000 + originalPositions[name];
     }
 
     private void LoadDisplayAttributes()

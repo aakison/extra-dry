@@ -15,7 +15,7 @@ public partial class DryVideoCapture : ComponentBase {
 
     private FiniteState State { get; set; } = FiniteState.Initializing;
 
-    private string Pixels(int dimension) => $"{dimension}px";
+    //private string Pixels(int dimension) => $"{dimension}px";
 
     // Reference: https://www.meziantou.net/javascript-isolation-in-blazor-components.htm
     private IJSObjectReference? module;
@@ -64,6 +64,7 @@ public partial class DryVideoCapture : ComponentBase {
 
     public async ValueTask DisposeAsync()
     {
+        GC.SuppressFinalize(this);
         if(module != null) {
             await module.DisposeAsync();
             module = null;

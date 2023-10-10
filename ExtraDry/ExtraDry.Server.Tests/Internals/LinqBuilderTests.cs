@@ -130,8 +130,8 @@ public class LinqBuilderTests {
 
     private static FilterProperty GetFilterProperty(string propertyName)
     {
-        var property = typeof(Datum).GetProperty(propertyName) ?? throw new ArgumentException(nameof(propertyName));
-        var filter = property.GetCustomAttribute<FilterAttribute>() ?? throw new ArgumentException(nameof(propertyName));
+        var property = typeof(Datum).GetProperty(propertyName) ?? throw new ArgumentException("Bad argument", nameof(propertyName));
+        var filter = property.GetCustomAttribute<FilterAttribute>() ?? throw new ArgumentException("Bad argument", nameof(propertyName));
         return new FilterProperty(property, filter);
     }
 

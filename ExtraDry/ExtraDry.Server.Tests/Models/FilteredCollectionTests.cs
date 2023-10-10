@@ -23,7 +23,8 @@ public class FilteredCollectionTests {
     public void RoundtripProperties(string propertyName, object propertyValue)
     {
         var target = new FilteredCollection<object>();
-        var property = target.GetType().GetProperty(propertyName) ?? throw new ArgumentException(nameof(propertyValue));
+        var property = target.GetType().GetProperty(propertyName) 
+            ?? throw new ArgumentException("Bad argument", nameof(propertyValue));
 
         property.SetValue(target, propertyValue);
         var result = property.GetValue(target);

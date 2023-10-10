@@ -248,7 +248,7 @@ internal static class LinqBuilder {
         }
         return expressions.ToArray();
 
-        Expression ConstantToExpression(string value, Type type)
+        static Expression ConstantToExpression(string value, Type type)
         {
             var expression = (Expression)Expression.Constant(ParseToType(type, value));
             if(type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>)) {
@@ -270,10 +270,8 @@ internal static class LinqBuilder {
                 return Enum.Parse(type, value, ignoreCase: true);
             }
             else {
-                var methodInfo = type.GetMethod("Parse", new Type[] { typeof(string) });
-                if(methodInfo == null) {
-                    throw new DryException($"Can only filter on types that contain a Parse method, type '{type.Name}'.");
-                }
+                var methodInfo = type.GetMethod("Parse", new Type[] { typeof(string) }) 
+                    ?? throw new DryException($"Can only filter on types that contain a Parse method, type '{type.Name}'.");
                 // Parse contract will have a result and not nullable
                 var result = methodInfo.Invoke(null, new object[] { value })!;
                 return result;

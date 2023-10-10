@@ -1,9 +1,6 @@
-﻿#nullable enable
+﻿namespace Sample.Shared;
 
-using System.ComponentModel.DataAnnotations;
-
-namespace Sample.Shared;
-
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum Sensitivity {
     
     [Display(ShortName = "Low", Name = "Low", Order = 0)]

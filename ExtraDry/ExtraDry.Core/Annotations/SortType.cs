@@ -4,6 +4,7 @@
 /// The processing rule to be applied to a property when a `SortQuery` or `PageQuery` has a 
 /// `Filter` provided.
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum SortType {
 
     /// <summary>

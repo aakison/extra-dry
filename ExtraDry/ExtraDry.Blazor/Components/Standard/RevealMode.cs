@@ -3,6 +3,7 @@
 /// <summary>
 /// The mode that a Reveal component can be used in.
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum RevealMode
 {
     /// <summary>

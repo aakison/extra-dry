@@ -315,6 +315,7 @@ public class Model {
     public string Notes { get; set; } = string.Empty;
 }
 
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ModelType {
     Phonetic,
     Greek,

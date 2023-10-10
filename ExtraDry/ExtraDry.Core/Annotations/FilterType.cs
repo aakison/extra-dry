@@ -1,8 +1,9 @@
-﻿namespace ExtraDry.Core; 
+﻿namespace ExtraDry.Core;
 
 /// <summary>
 /// The processing rule to be applied to a property when a `FilterQuery` or `PageQuery` has a `Filter` provided.
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum FilterType {
 
     /// <summary>

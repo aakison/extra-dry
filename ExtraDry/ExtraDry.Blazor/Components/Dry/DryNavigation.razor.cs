@@ -60,6 +60,7 @@ public partial class DryNavigation : ComponentBase, IExtraDryComponent, IDisposa
 
     public void Dispose()
     {
+        GC.SuppressFinalize(this);
         Navigation.LocationChanged -= Navigated;
     }
 
