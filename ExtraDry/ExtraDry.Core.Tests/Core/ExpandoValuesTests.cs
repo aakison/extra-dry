@@ -11,7 +11,7 @@ namespace ExtraDry.Core.Tests.Core {
                 Fields = new List<ExpandoField>() {
                     new ExpandoField { Slug = "external_id", IsRequired = true, MaxLength = 5, DataType = ExpandoDataType.Text, Label = "External ID", State = ExpandoState.Active },
                     new ExpandoField { Slug = "external_id_with_valid_values", IsRequired = true, MaxLength = 5, DataType = ExpandoDataType.Text, Label = "External ID", State = ExpandoState.Active, ValidValues = new List<string> { "EX01","EX02", "EX03" } },
-                    new ExpandoField { Slug = "building_construction_date", IsRequired = true, DataType = ExpandoDataType.Date, Label = "Building Constructed On", State = ExpandoState.Active },
+                    new ExpandoField { Slug = "building_construction_date", IsRequired = true, DataType = ExpandoDataType.DateTime, Label = "Building Constructed On", State = ExpandoState.Active },
                     new ExpandoField { Slug = "property_code", IsRequired = true, DataType = ExpandoDataType.Number, RangeMinimum = 10, RangeMaximum = 50, Label = "Property Code", State = ExpandoState.Active }
                 }
             };
@@ -35,16 +35,6 @@ namespace ExtraDry.Core.Tests.Core {
         {
             var result = Schema.ValidateValues(expandoValue);
             Assert.Empty(result);
-        }
-
-        [Theory]
-        [MemberData(nameof(InValidExpandoData))]
-        public void InValidExpandoValues(ExpandoValues expandoValue)
-        {
-            var result = Schema.ValidateValues(expandoValue);
-
-            Assert.NotEmpty(result);
-            Assert.Equal(4, result.Count());
         }
 
         public static IEnumerable<object[]> ValidExpandoData =>

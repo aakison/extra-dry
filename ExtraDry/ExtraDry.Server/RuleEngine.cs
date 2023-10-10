@@ -585,9 +585,9 @@ public class RuleEngine {
             item = element.ValueKind switch {
                 JsonValueKind.Array => throw new DryException("Custom dictionaries do not support arrays."),
                 JsonValueKind.Object => throw new DryException("Custom dictionaries to not support objects."),
+                JsonValueKind.String when element.TryGetDateTime(out DateTime dateValue) => dateValue,
                 JsonValueKind.String => element.GetString(),
-                JsonValueKind.Number when element.TryGetInt32(out int intValue) => intValue,
-                JsonValueKind.Number when element.TryGetDouble(out double doubleValue) => doubleValue,
+                JsonValueKind.Number => element.GetDouble(),
                 JsonValueKind.Null => null,
                 JsonValueKind.Undefined => null,
                 JsonValueKind.True => true,

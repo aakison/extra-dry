@@ -184,7 +184,7 @@ public class RuleEngineUpdateDictionaryAsyncTests {
     [Theory]
     [InlineData(@"""value""", "value")] // string
     [InlineData("123.45", 123.45)] // double as Numeric
-    [InlineData("123", 123)] // int as Numeric
+    [InlineData("123", 123.0)] // int as Numeric
     [InlineData("true", true)] // bool as True
     [InlineData("false", false)] // bool as False
     //[InlineData("null", null)] // null as null

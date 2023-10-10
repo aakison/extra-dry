@@ -54,7 +54,7 @@ public class DataValidator {
         foreach(var propertyName in propertyNames) {
             validationContext.MemberName = propertyName;
             try {
-                var value = target?.GetType()?.GetProperty(propertyName)?.GetValue(target);
+                var value = target.GetType().GetProperty(propertyName)?.GetValue(target);
                 Validator.TryValidateProperty(value, validationContext, Errors);
                 var missing = string.IsNullOrWhiteSpace(value as string);
                 if(missing && forceRequired) {

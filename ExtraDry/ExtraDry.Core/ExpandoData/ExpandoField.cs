@@ -95,8 +95,13 @@ public class ExpandoField {
 
         ValidateDataType(value, ref results);
 
-        if(IsRequired && value == null) {
-            results.Add(new ValidationResult($"{Label} is required.", new[] { Label }));
+        if(IsRequired) {
+            if(value == null) {
+                results.Add(new ValidationResult($"{Label} is required, can't remove from fields.", new[] { Label }));
+            }
+            else if(value is string str && str == string.Empty) {
+                results.Add(new ValidationResult($"{Label} is required, can't be empty.", new[] { Label }));
+            }
         }
 
         var stringVal = value?.ToString();
@@ -119,22 +124,29 @@ public class ExpandoField {
 
         switch(DataType) {
             case ExpandoDataType.Boolean:
-                if(!bool.TryParse(value.ToString(), out var _)) {
-                    results.Add(new ValidationResult($"{Label} does not match the DataType set.", new[] { Label }));
+                if(value is not bool) {
+                    results.Add(new ValidationResult($"{Label} does not match the DataType, expected 'true' or 'false'.", new[] { Label }));
                 }
                 break;
             case ExpandoDataType.DateTime:
-            case ExpandoDataType.Date:
                 if(!DateTime.TryParse(value.ToString(), out var _)) {
                     results.Add(new ValidationResult($"{Label} does not match the DataType set.", new[] { Label }));
                 }
                 break;
             case ExpandoDataType.Number:
-                if(!double.TryParse(value.ToString(), out var number)) {
-                    results.Add(new ValidationResult($"{Label} does not match the DataType set.", new[] { Label }));
+                if(value is int iNumber) {
+                    ValidateNumber(iNumber, ref results);
+                }
+                else if(value is double dNumber) {
+                    ValidateNumber(dNumber, ref results);
                 }
                 else {
-                    ValidateNumber(number, ref results);
+                    results.Add(new ValidationResult($"{Label} does not match the DataType, expected number.", new[] { Label }));
+                }
+                break;
+            case ExpandoDataType.Text:
+                if(value is not string) {
+                    results.Add(new ValidationResult($"{Label} does not match the DataType, expected string literal.", new[] { Label }));
                 }
                 break;
         }
@@ -156,7 +168,15 @@ public class ExpandoField {
                 results.Add(new ValidationResult($"{Label} does not exist in list of ValidValues.", new[] { Label }));
             }
         }
-        
     }
+
 }
 
+public enum SubDataType
+{
+    Integer,  // for Number
+    Real,     // for Number
+    Currency, // for Number
+    PhoneNumber, // for Text
+
+}
