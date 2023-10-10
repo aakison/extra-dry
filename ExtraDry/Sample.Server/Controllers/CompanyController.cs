@@ -63,7 +63,7 @@ public class CompanyController {
     /// <remarks>
     /// Update the company at the URI, the uniqueId in the URI must match the Id in the payload.
     /// </remarks>
-    [HttpPut("api/companies/{uuid}"), Consumes("application/json")]
+    [HttpPut("api/companies/{uuid:guid}"), Consumes("application/json")]
     [Authorize(SamplePolicies.SamplePolicy)]
     public async Task Update(Guid uuid, Company value)
     {

@@ -14,6 +14,15 @@ public class DataValidator {
         var validationContext = new ValidationContext(target, null, null);
         int previousCount = Errors.Count;
         Validator.TryValidateObject(target, validationContext, Errors, validateAllProperties: true);
+        var validatableComplexProperties = target.GetType().GetProperties()
+            .Where(e => e.PropertyType.GetInterface(nameof(IValidatableObject)) != null);
+        foreach(var property in validatableComplexProperties) {
+            var value = property.GetValue(target);
+            if(value != null) {
+                var innerContext = new ValidationContext(value, null, null);
+                Validator.TryValidateObject(value, innerContext, Errors, validateAllProperties: true);
+            }
+        }
         int currentCount = Errors.Count;
         return previousCount == currentCount;
     }
@@ -45,7 +54,7 @@ public class DataValidator {
         foreach(var propertyName in propertyNames) {
             validationContext.MemberName = propertyName;
             try {
-                var value = target?.GetType()?.GetProperty(propertyName)?.GetValue(target);
+                var value = target.GetType().GetProperty(propertyName)?.GetValue(target);
                 Validator.TryValidateProperty(value, validationContext, Errors);
                 var missing = string.IsNullOrWhiteSpace(value as string);
                 if(missing && forceRequired) {

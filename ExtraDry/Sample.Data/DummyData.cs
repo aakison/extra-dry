@@ -31,6 +31,27 @@ public class DummyData {
         database.SaveChanges();
     }
 
+    public void PopulateTemplates(SampleContext database)
+    {
+        database.Templates.Add(
+            new Template {
+                Uuid = PseudoRandomGuid(),
+                Schema = new ExpandoSchema {
+                    TargetType = "Company",
+                    Fields = { 
+                        new ExpandoField { 
+                            DataType = ExpandoDataType.Text, 
+                            Label = "Stock Code", 
+                            Slug = "asx_code",  
+                            IsRequired = true, 
+                            MaxLength = 10, 
+                            State = ExpandoState.Active 
+                        },
+                    }
+                }
+            });
+    }
+
     public void PopulateCompanies(SampleContext database, int count)
     {
         var trademarks = new List<string>();
@@ -50,7 +71,14 @@ public class DummyData {
                     AnnualRevenue = random.Next(1_000_000, 3_000_000),
                     SalesMargin = random.Next(100_000, 300_000),
                     IncorporationDate = new DateTime(random.Next(2020, 2021), random.Next(1, 12), random.Next(1, 28)),
+                    
                 };
+                //Randomly populate fields.
+                if(company.PrimarySector.Id == 3 ) {
+                    company.CustomFields = new ExpandoValues { 
+                        { "asx_code", WebId.RandomWebString(3).ToUpper() }
+                    };
+                }
                 //company.Videos.Add(new Video { Title = "Huzzah 1", Uri = "https://www.example.com/huzzah1" });
                 //company.Videos.Add(new Video { Title = "Huzzah 2", Uri = "https://www.example.com/huzzah2" });
                 database.Companies.Add(company);

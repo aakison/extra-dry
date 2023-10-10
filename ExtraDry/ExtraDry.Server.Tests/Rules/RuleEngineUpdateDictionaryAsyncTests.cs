@@ -1,4 +1,7 @@
-﻿namespace ExtraDry.Core.Tests.Rules;
+﻿using System.Runtime.CompilerServices;
+using System.Text.Json;
+
+namespace ExtraDry.Core.Tests.Rules;
 
 public class RuleEngineUpdateDictionaryAsyncTests {
 
@@ -23,11 +26,11 @@ public class RuleEngineUpdateDictionaryAsyncTests {
         var rules = new RuleEngine(services);
         var source = new Target();
         var destination = new Target();
-        Assert.Null(source.NullableValues.Values);
+        Assert.Null(source.NullableValues);
 
         await rules.UpdateAsync(source, destination);
 
-        Assert.Null(destination.NullableValues.Values);
+        Assert.Null(destination.NullableValues);
     }
 
     [Fact]
@@ -37,11 +40,11 @@ public class RuleEngineUpdateDictionaryAsyncTests {
         var rules = new RuleEngine(services);
         var source = new Target();
         var destination = new Target();
-        source.NullableValues.Values = new();
+        source.NullableValues = new();
 
         await rules.UpdateAsync(source, destination);
 
-        Assert.NotNull(destination.NullableValues.Values);
+        Assert.NotNull(destination.NullableValues);
     }
 
     [Theory]
@@ -57,12 +60,12 @@ public class RuleEngineUpdateDictionaryAsyncTests {
         var rules = new RuleEngine(services);
         var source = new Target();
         var destination = new Target();
-        source.Values.Values.Add("key", value);
+        source.Values.Add("key", value);
 
         await rules.UpdateAsync(source, destination);
 
         Assert.NotNull(destination.Values.Values);
-        Assert.Equal(value, destination.Values.Values["key"]);
+        Assert.Equal(value, destination.Values["key"]);
     }
 
     [Fact]
@@ -72,13 +75,13 @@ public class RuleEngineUpdateDictionaryAsyncTests {
         var rules = new RuleEngine(services);
         var source = new Target();
         var destination = new Target();
-        source.Values.Values.Add("key", "value");
-        destination.Values.Values.Add("key", "old-value");
+        source.Values.Add("key", "value");
+        destination.Values.Add("key", "old-value");
 
         await rules.UpdateAsync(source, destination);
 
-        Assert.NotNull(destination.Values.Values);
-        Assert.Equal("value", destination.Values.Values["key"]);
+        Assert.NotNull(destination.Values);
+        Assert.Equal("value", destination.Values["key"]);
     }
 
     [Fact]
@@ -88,12 +91,12 @@ public class RuleEngineUpdateDictionaryAsyncTests {
         var rules = new RuleEngine(services);
         var source = new Target();
         var destination = new Target();
-        destination.Values.Values.Add("key", "old-value");
+        destination.Values.Add("key", "old-value");
 
         await rules.UpdateAsync(source, destination);
 
-        Assert.NotNull(destination.Values.Values);
-        Assert.Equal("old-value", destination.Values.Values["key"]);
+        Assert.NotNull(destination.Values);
+        Assert.Equal("old-value", destination.Values["key"]);
     }
 
 #pragma warning disable CS8625 
@@ -104,12 +107,12 @@ public class RuleEngineUpdateDictionaryAsyncTests {
         var rules = new RuleEngine(services);
         var source = new Target();
         var destination = new Target();
-        source.Values.Values.Add("key", null);
+        source.Values.Add("key", null);
 
         await rules.UpdateAsync(source, destination);
 
-        Assert.NotNull(destination.Values.Values);
-        Assert.False(destination.Values.Values.ContainsKey("key"));
+        Assert.NotNull(destination.Values);
+        Assert.False(destination.Values.ContainsKey("key"));
     }
 #pragma warning restore CS8625
 
@@ -122,13 +125,13 @@ public class RuleEngineUpdateDictionaryAsyncTests {
         var rules = new RuleEngine(services);
         var source = new Target();
         var destination = new Target();
-        source.Values.Values.Add("key", null);
-        destination.Values.Values.Add("key", "old-value");
+        source.Values.Add("key", null);
+        destination.Values.Add("key", "old-value");
 
         await rules.UpdateAsync(source, destination);
 
-        Assert.NotNull(destination.Values.Values);
-        Assert.False(destination.Values.Values.ContainsKey("key"));
+        Assert.NotNull(destination.Values);
+        Assert.False(destination.Values.ContainsKey("key"));
     }
 #pragma warning restore CS8625
 
@@ -139,13 +142,13 @@ public class RuleEngineUpdateDictionaryAsyncTests {
         var rules = new RuleEngine(services);
         var source = new Target();
         var destination = new Target();
-        source.IgnoredValues.Values.Add("key", "value");
-        destination.IgnoredValues.Values.Add("key", "old-value");
+        source.IgnoredValues.Add("key", "value");
+        destination.IgnoredValues.Add("key", "old-value");
 
         await rules.UpdateAsync(source, destination);
 
         Assert.NotNull(destination.IgnoredValues.Values);
-        Assert.Equal("old-value", destination.IgnoredValues.Values["key"]);
+        Assert.Equal("old-value", destination.IgnoredValues["key"]);
     }
 
     [Fact]
@@ -156,7 +159,7 @@ public class RuleEngineUpdateDictionaryAsyncTests {
         var source = new Target();
         var destination = new Target();
         var list = new List<string> { "value1", "value2" };
-        source.Values.Values.Add("key", list);
+        source.Values.Add("key", list);
 
         await Assert.ThrowsAsync<DryException>(
             async () => await rules.UpdateAsync(source, destination)
@@ -171,11 +174,48 @@ public class RuleEngineUpdateDictionaryAsyncTests {
         var source = new Target();
         var destination = new Target();
         var obj = new { subKey = "value1", anotherKey = "value2" };
-        source.Values.Values.Add("key", obj);
+        source.Values.Add("key", obj);
 
         await Assert.ThrowsAsync<DryException>(
             async () => await rules.UpdateAsync(source, destination)
         );
+    }
+
+    [Theory]
+    [InlineData(@"""value""", "value")] // string
+    [InlineData("123.45", 123.45)] // double as Numeric
+    [InlineData("123", 123.0)] // int as Numeric
+    [InlineData("true", true)] // bool as True
+    [InlineData("false", false)] // bool as False
+    //[InlineData("null", null)] // null as null
+    //[InlineData("undefined", null)] // undefined as null
+    public async Task JsonObjectTypeMapping(string element, object expected)
+    {
+        var services = new ServiceProviderStub();
+        var rules = new RuleEngine(services);
+        var json = $"{{ \"Values\" : {{ \"key\" : {element} }} }}";
+        var source = JsonSerializer.Deserialize<Target>(json);
+        var destination = new Target();
+
+        await rules.UpdateAsync(source, destination);
+
+        Assert.NotNull(destination.Values);
+        Assert.Equal(expected, destination.Values["key"]);
+    }
+
+    [Fact]
+    public async Task JsonObjectNullTypeMapping()
+    {
+        var services = new ServiceProviderStub();
+        var rules = new RuleEngine(services);
+        var json = "{ \"Values\" : { \"key\" : null } }";
+        var source = JsonSerializer.Deserialize<Target>(json);
+        var destination = new Target();
+
+        await rules.UpdateAsync(source, destination);
+
+        Assert.NotNull(destination.Values);
+        Assert.False(destination.Values.ContainsKey("key"));
     }
 
     public class Target {
@@ -191,25 +231,15 @@ public class RuleEngineUpdateDictionaryAsyncTests {
 
         public ExpandoValues Values { get; set; } = new();
 
-        public NullableExpandoValues NullableValues { get; set; } = new();
+        public ExpandoValues? NullableValues { get; set; }
 
-        public IgnoredExpandoValues IgnoredValues { get; set; } = new();
-
-    }
-
-    public class ExpandoValues {
-        public Dictionary<string, object> Values { get; set; } = new();
-    }
-
-    public class NullableExpandoValues
-    {
-        public Dictionary<string, object>? Values { get; set; }
-    }
-
-    public class IgnoredExpandoValues
-    {
         [Rules(RuleAction.Ignore)]
-        public Dictionary<string, object> Values { get; set; } = new();
+        public ExpandoValues IgnoredValues { get; set; } = new();
+
+    }
+
+    public class ExpandoValues : Dictionary<string, object> 
+    {
     }
 
     public class ServiceProviderStub : IServiceProvider {

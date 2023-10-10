@@ -7,7 +7,9 @@ namespace Sample.Data;
 
 public class SampleContext : AspectDbContext {
 
-    public SampleContext(DbContextOptions<SampleContext> options) : base(options) { }
+    public SampleContext(DbContextOptions<SampleContext> options) : base(options)
+    {
+    }
 
     public DbSet<Sector> Sectors { get; set; } = null!;
 
@@ -21,6 +23,8 @@ public class SampleContext : AspectDbContext {
 
     public DbSet<Region> Regions { get; set; } = null!;
 
+    public DbSet<Template> Templates { get; set; } = null!;
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -29,9 +33,7 @@ public class SampleContext : AspectDbContext {
             e => JsonSerializer.Serialize(e, (JsonSerializerOptions?)null),
             e => JsonSerializer.Deserialize<BankingDetails>(e, (JsonSerializerOptions?)null) ?? new());
 
-        //modelBuilder.Entity<Company>().Property(e => e.Videos).HasConversion(
-        //    e => JsonSerializer.Serialize(e, null),
-        //    e => JsonSerializer.Deserialize<Collection<Video>>(e, null));
+        modelBuilder.Entity<Company>().Property(e => e.CustomFields).HasJsonConversion();
 
         modelBuilder.Entity<Content>().Property(e => e.Layout).HasConversion(
             e => JsonSerializer.Serialize(e, (JsonSerializerOptions?)null),
@@ -44,6 +46,10 @@ public class SampleContext : AspectDbContext {
         modelBuilder.Entity<Region>().OwnsOne(e => e.Version);
         modelBuilder.Entity<Sector>().OwnsOne(e => e.Version);
         modelBuilder.Entity<Content>().OwnsOne(e => e.Version);
+        modelBuilder.Entity<Template>().OwnsOne(e => e.Version);
 
+        modelBuilder.Entity<Template>().Property(e => e.Schema).HasConversion(
+            e => JsonSerializer.Serialize(e, (JsonSerializerOptions?)null),
+            e => JsonSerializer.Deserialize<ExpandoSchema>(e, (JsonSerializerOptions?)null) ?? new());
     }
 }

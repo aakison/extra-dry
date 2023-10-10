@@ -97,6 +97,10 @@ namespace Sample.Data.Migrations
                         .HasMaxLength(24)
                         .HasColumnType("nvarchar(24)");
 
+                    b.Property<string>("CustomFields")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(1000)
@@ -267,6 +271,34 @@ namespace Sample.Data.Migrations
                     b.HasIndex("CompanyId");
 
                     b.ToTable("Sectors");
+                });
+
+            modelBuilder.Entity("Sample.Shared.Template", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Schema")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("State")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid>("Uuid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Templates");
                 });
 
             modelBuilder.Entity("RegionRegion", b =>
@@ -463,6 +495,41 @@ namespace Sample.Data.Migrations
 
                             b1.WithOwner()
                                 .HasForeignKey("SectorId");
+                        });
+
+                    b.Navigation("Version")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Sample.Shared.Template", b =>
+                {
+                    b.OwnsOne("ExtraDry.Core.VersionInfo", "Version", b1 =>
+                        {
+                            b1.Property<int>("TemplateId")
+                                .HasColumnType("int");
+
+                            b1.Property<DateTime>("DateCreated")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<DateTime>("DateModified")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<string>("UserCreated")
+                                .IsRequired()
+                                .HasMaxLength(80)
+                                .HasColumnType("nvarchar(80)");
+
+                            b1.Property<string>("UserModified")
+                                .IsRequired()
+                                .HasMaxLength(80)
+                                .HasColumnType("nvarchar(80)");
+
+                            b1.HasKey("TemplateId");
+
+                            b1.ToTable("Templates");
+
+                            b1.WithOwner()
+                                .HasForeignKey("TemplateId");
                         });
 
                     b.Navigation("Version")

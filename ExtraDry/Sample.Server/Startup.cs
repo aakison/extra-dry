@@ -112,9 +112,10 @@ namespace Sample.Server {
             services.AddScoped<BlobService>();
             services.AddScoped<RuleEngine>();
             services.AddScoped<RegionService>();
-            
-            services.AddScoped<IEntityResolver<Sector>>(e => e.GetRequiredService<SectorService>());
+            services.AddScoped<TemplateService>();
 
+            services.AddScoped<IEntityResolver<Sector>, SectorService>();
+            services.AddScoped<IExpandoSchemaResolver, TemplateService>();
         }
 
         /// <summary>

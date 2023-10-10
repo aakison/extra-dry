@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
@@ -38,6 +39,7 @@ public class RuleEngine {
     public async Task<T> CreateAsync<T>(T exemplar)
     {
         ArgumentNullException.ThrowIfNull(exemplar, nameof(exemplar));
+        await AttachSchemaAsync(exemplar);
         var validator = new DataValidator();
         validator.ValidateObject(exemplar);
         validator.ThrowIfInvalid();
@@ -73,6 +75,7 @@ public class RuleEngine {
     {
         ArgumentNullException.ThrowIfNull(source, nameof(source));
         ArgumentNullException.ThrowIfNull(destination, nameof(destination));
+        await AttachSchemaAsync(source);
         var validator = new DataValidator();
         validator.ValidateObject(source);
         validator.ThrowIfInvalid();
@@ -89,6 +92,20 @@ public class RuleEngine {
         validator.ThrowIfInvalid();
         if(destination is IUpdatedCallback updated) {
             await updated.OnUpdatedAsync();
+        }
+    }
+
+    private async Task AttachSchemaAsync<T>(T source)
+    {
+        var expandoProperty = typeof(T).GetProperties().Where(e => e.PropertyType == typeof(ExpandoValues)).FirstOrDefault();
+        if(expandoProperty != null) {
+            var schema = await ResolveExpandoSchema(source);
+            if(schema != null) {
+                var prop = (ExpandoValues?)expandoProperty.GetValue(source);
+                if(prop != null) {
+                    prop.Schema = schema;
+                }
+            }
         }
     }
 
@@ -543,6 +560,7 @@ public class RuleEngine {
             //if(value is IEnumerable && value is not string) {
             //    throw new DryException("Dictionary values do no support arrays.");
             //}
+            UnpackJsonElement(ref value);
             if(!(value?.GetType()?.IsPrimitive ?? true) && value is not string) {
                 throw new DryException("Dictionary values do no support reference types or arrays.");
             }
@@ -559,6 +577,24 @@ public class RuleEngine {
                     destinationDict.Add(key, value);
                 }
             }
+        }
+    }
+
+    private void UnpackJsonElement(ref object? item)
+    {
+        if(item is JsonElement element) {
+            item = element.ValueKind switch {
+                JsonValueKind.Array => throw new DryException("Custom dictionaries do not support arrays."),
+                JsonValueKind.Object => throw new DryException("Custom dictionaries to not support objects."),
+                JsonValueKind.String when element.TryGetDateTime(out DateTime dateValue) => dateValue,
+                JsonValueKind.String => element.GetString(),
+                JsonValueKind.Number => element.GetDouble(),
+                JsonValueKind.Null => null,
+                JsonValueKind.Undefined => null,
+                JsonValueKind.True => true,
+                JsonValueKind.False => false,
+                _ => throw new DryException("Unable to deserialize JsonElement.")
+            };
         }
     }
 
@@ -621,6 +657,17 @@ public class RuleEngine {
             dynamic task = method.Invoke(resolver, new object?[] { sourceValue })!;
             var result = (await task) as object;
             return (true, result);
+        }
+    }
+
+    private async Task<ExpandoSchema?> ResolveExpandoSchema(object? target)
+    {
+        var resolver = services.GetService<IExpandoSchemaResolver>();
+        if(target == null || resolver == null) {
+            return null;
+        }
+        else {
+            return await resolver.ResolveAsync(target);
         }
     }
 
