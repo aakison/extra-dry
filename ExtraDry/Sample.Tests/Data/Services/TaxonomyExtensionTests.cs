@@ -40,6 +40,7 @@ public class TaxonomyExtensionTests {
     {
         var mel = await arrangeService.TryRetrieveAsync("AU-VIC-Melbourne");
 
+        Assert.NotNull(mel);
         Assert.Equal(4, mel.Ancestors.Count); // Self, Victoria, Australia, Global
     }
 
@@ -48,11 +49,14 @@ public class TaxonomyExtensionTests {
     {
         var nsw = await arrangeService.TryRetrieveAsync("AU-NSW");
         var nz = await arrangeService.TryRetrieveAsync("NZ");
+        Assert.NotNull(nsw);
         nsw.Parent = nz;
 
         await actService.UpdateAsync("AU-NSW", nsw, true);
 
         nsw = await actService.TryRetrieveAsync("AU-NSW");
+        Assert.NotNull(nsw);
+        Assert.NotNull(nsw.Parent);
         Assert.Equal("NZ", nsw.Parent.Slug);
         Assert.DoesNotContain(nsw.Ancestors, a => a.Slug == "AU");
     }
@@ -62,12 +66,15 @@ public class TaxonomyExtensionTests {
     {
         var nsw = await arrangeService.TryRetrieveAsync("AU-NSW");
         var nz = await arrangeService.TryRetrieveAsync("NZ");
+        Assert.NotNull(nsw);
         nsw.Parent = nz;
         nsw.Description = "Value Changed";
 
         await actService.UpdateAsync("AU-NSW", nsw);
 
         nsw = await actService.TryRetrieveAsync("AU-NSW");
+        Assert.NotNull(nsw);
+        Assert.NotNull(nsw.Parent);
         Assert.Equal("AU", nsw.Parent.Slug);
         Assert.Equal("Value Changed", nsw.Description);
         Assert.DoesNotContain(nsw.Ancestors, a => a.Slug == "NZ");
@@ -78,8 +85,9 @@ public class TaxonomyExtensionTests {
     {
         var nsw = await arrangeService.TryRetrieveAsync("AU-NSW");
         var auk = await arrangeService.TryRetrieveAsync("NZ-AUK");
+        Assert.NotNull(nsw);
         nsw.Parent = auk;
-
+        
         await Assert.ThrowsAsync<ArgumentException>(async () => await actService.UpdateAsync("AU-NSW", nsw, true));
     }
 
@@ -88,13 +96,17 @@ public class TaxonomyExtensionTests {
     {
         var qld = await arrangeService.TryRetrieveAsync("AU-QLD");
         var nz = await arrangeService.TryRetrieveAsync("NZ");
+        Assert.NotNull(qld);
         qld.Parent = nz;
 
         await actService.UpdateAsync("AU-QLD", qld, true);
 
         var qld2 = await arrangeService.TryRetrieveAsync("AU-QLD");
+        Assert.NotNull(qld2);
+        Assert.NotNull(qld2.Parent);
         Assert.Equal("NZ", qld2.Parent.Slug);
         var bris = await arrangeService.TryRetrieveAsync("AU-Qld-Brisbane");
+        Assert.NotNull(bris);
         Assert.Contains(bris.Ancestors, e => e.Slug == "AU-QLD");
         Assert.Contains(bris.Ancestors, e => e.Slug == "NZ");
     }
@@ -104,6 +116,7 @@ public class TaxonomyExtensionTests {
     {
         var qld = await arrangeService.TryRetrieveAsync("AU-QLD");
         var nz = await arrangeService.TryRetrieveAsync("NZ-AUK");
+        Assert.NotNull(qld);
         qld.Parent = nz;
 
         await Assert.ThrowsAsync<ArgumentException>(async () => await actService.UpdateAsync("AU-QLD", qld, true));
@@ -114,6 +127,7 @@ public class TaxonomyExtensionTests {
     {
         var qld = await arrangeService.TryRetrieveAsync("AU-QLD");
         var nz = await arrangeService.TryRetrieveAsync("NZ");
+        Assert.NotNull(qld);
         qld.Parent = nz;
         qld.Title = "TestTitle";
 
@@ -121,8 +135,11 @@ public class TaxonomyExtensionTests {
         await actService.UpdateAsync("AU-QLD", qld, true);
 
         qld = await arrangeService.TryRetrieveAsync("AU-QLD");
+        Assert.NotNull(qld);
+        Assert.NotNull(qld.Parent);
         Assert.Equal("NZ", qld.Parent.Slug);
         var bris = await arrangeService.TryRetrieveAsync("AU-Qld-Brisbane");
+        Assert.NotNull(bris);
         Assert.Contains(bris.Ancestors, e => e.Slug == "AU-QLD");
         Assert.Contains(bris.Ancestors, e => e.Slug == "NZ");
         Assert.Equal("TestTitle", qld.Title);
