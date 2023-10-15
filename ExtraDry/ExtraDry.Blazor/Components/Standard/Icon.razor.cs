@@ -63,6 +63,10 @@ public partial class Icon : ComponentBase, IExtraDryComponent {
 
     private string? ImagePath => IconInfo.ImagePath;
 
+    private bool RenderSvg => !string.IsNullOrEmpty(IconInfo.SvgDatabaseBody);
+
+    private MarkupString Svg => (MarkupString)IconInfo.SvgReferenceBody;
+
     private void NoThemeError()
     {
         if(noThemeErrorIssued) {

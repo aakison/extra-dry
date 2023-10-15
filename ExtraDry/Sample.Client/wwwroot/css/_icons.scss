@@ -1,17 +1,17 @@
 ﻿@import "_constants.scss";
 
-img.glyph {
-    width: 16px;
-    height: 16px;
-    filter: filterToColor($dark);
+img.glyph, svg.glyph {
+    width: $glyph-size;
+    height: $glyph-size;
+    fill: $var-dark;
 }
 
-img.icon {
-    width: 28px;
-    height: 28px;
+img.icon, svg.icon {
+    width: $icon-size;
+    height: $icon-size;
 }
 
-img.small-icon {
-    width: 20px;
-    height: 20px;
+img.small-icon, svg.small-icon {
+    width: $glyph-size;
+    height: $glyph-size;
 }

@@ -11,24 +11,19 @@ header article {
   flex: 0 1 1240px;
   display: flex;
   align-items: center;
+  gap: 8px;
 }
-header article div.logo {
-  flex: 1 1 auto;
-  display: flex;
-  align-items: center;
+header article div.waffle {
+  padding: 0;
 }
-header article div.logo div.waffle {
-  display: inline-block;
-  margin-right: 5px;
-}
-header article div.logo div.waffle ::deep i {
+header article div.waffle ::deep svg {
   color: var(--secondary);
 }
-header article div.logo img {
+header article div.logo ::deep img, header article div.logo ::deep svg {
   width: 40px;
   height: 40px;
 }
-header article div.logo div.title {
+header article div.title {
   display: inline-block;
   font-weight: 600;
   font-size: 26px;
@@ -36,25 +31,13 @@ header article div.logo div.title {
   color: var(--secondary);
   margin-left: 5px;
 }
-header article div.logo ::deep button {
-  padding-left: 0;
+header article div.search {
+  flex: 1 1 auto;
 }
-header article div.logo ::deep button:hover {
-  background-color: transparent;
-}
-header article div.account {
-  flex: 0 1 auto;
-  display: flex;
-  align-items: center;
-}
-header article div.account ::deep i {
-  color: var(--secondary);
-  margin-right: 5px;
-}
-header article ::deep img.glyph {
-  width: 22px;
-  height: 22px;
-  filter: invert(20%) sepia(94%) saturate(7500%) brightness(114%) contrast(118%) hue-rotate(47.5247524752deg) saturate(7500%) saturate(92.2823529412%) brightness(33%);
+header article ::deep img.glyph, header article ::deep svg.glyph {
+  width: 28px;
+  height: 28px;
+  fill: var(--secondary);
 }
 header article ::deep div.account img.glyph {
   margin-right: 10px;

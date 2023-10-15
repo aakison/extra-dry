@@ -15,59 +15,39 @@ header {
         flex: 0 1 $max-article-width;
         display: flex;
         align-items: center;
+        gap: $small-spacing;
+
+        div.waffle {
+            padding: 0;
+            ::deep svg {
+                color: $var-secondary;
+            }
+        }
 
         div.logo {
-            flex: 1 1 auto;
-            display: flex;
-            align-items: center;
-
-            div.waffle {
-                display: inline-block;
-                margin-right: $padding;
-
-                ::deep i {
-                    color: $var-secondary;
-                }
-            }
-
-            img {
+            ::deep img, ::deep svg {
                 width: $logo-size;
                 height: $logo-size;
             }
-
-            div.title {
-                display: inline-block;
-                font-weight: 600;
-                font-size: $title-size;
-                line-height: $title-size;
-                color: $var-secondary;
-                margin-left: $padding;
-            }
-
-            ::deep button {
-                padding-left: 0;
-
-                &:hover {
-                    background-color: transparent;
-                }
-            }
         }
 
-        div.account {
-            flex: 0 1 auto;
-            display: flex;
-            align-items: center;
-
-            ::deep i {
-                color: $var-secondary;
-                margin-right: $padding;
-            }
+        div.title {
+            display: inline-block;
+            font-weight: 600;
+            font-size: $title-size;
+            line-height: $title-size;
+            color: $var-secondary;
+            margin-left: $padding;
         }
 
-        ::deep img.glyph {
-            width: 22px;
-            height: 22px;
-            filter: filterToColor($primary);
+        div.search {
+            flex: 1 1 auto;
+        }
+
+        ::deep img.glyph, ::deep svg.glyph {
+            width: $icon-size;
+            height: $icon-size;
+            fill: $var-secondary;
         }
 
         ::deep div.account img.glyph {

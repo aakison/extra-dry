@@ -81,6 +81,10 @@ $header-height: $logo-size+2*$margin;
 $dialog-horizontal-margin: 6*$margin;
 $dialog-vertical-margin: 8*$margin;
 
+$small-spacing: 8px;
+$medium-spacing: 2*$small-spacing;
+$large-spacing: 3*$small-spacing;
+
 //
 // Responsive sizes declared using sass.
 // Note: no $phone-portrait as that is the default for mobile-first.
@@ -89,16 +93,6 @@ $phone-landscape: "only screen and (min-width: 600px)";
 $tablet-portrait: "only screen and (min-width: 750px)";
 $tablet-landscape: "only screen and (min-width: 1000px)";
 $desktop-landscape: "only screen and (min-width: 1200px)";
-
-//
-// Create an image filter that can approximately change a black image to the indicated color.
-// First steps adjust black to be pure red (0deg on the color wheel and full brighness).
-// Then, adjust the hue and apply saturation and lightness.  
-// Adjustments are approximations as SaSS and CSS filters don't work identically.
-//
-@function filterToColor($color) {
-    @return invert(20%) sepia(94%) saturate(7500%) brightness(114%) contrast(118%) hue-rotate(hue($color)) saturate(7500%) saturate(0.528*saturation($color)+40) brightness(0.45*lightness($color)+6);
-}
 
 @mixin depth-small {
     // Copied from Figma...

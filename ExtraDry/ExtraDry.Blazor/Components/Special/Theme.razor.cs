@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Blazor;
+﻿using System.Text.RegularExpressions;
+
+namespace ExtraDry.Blazor;
 
 /// <summary>
 /// Provides a cascading theme mechanism to configure portions of ExtraDry.
@@ -46,10 +48,11 @@ public partial class Theme : ComponentBase {
     [Parameter]
     public RenderFragment<IndicatorContext>? SuspenseFallback { get; set; }
 
-    protected override void OnParametersSet()
+    protected async override Task OnParametersSetAsync()
     {
-        base.OnParametersSet();
-        ThemeInfo.Icons = Icons?.ToDictionary(e => e.Key, e => e, StringComparer.InvariantCultureIgnoreCase) ?? new();
+        await base.OnParametersSetAsync();
+        Icons ??= Array.Empty<IconInfo>();
+        ThemeInfo.Icons = Icons.ToDictionary(e => e.Key, e => e, StringComparer.InvariantCultureIgnoreCase);
         if(ErrorComponent != null) {
             ThemeInfo.ErrorComponent = ErrorComponent;
         }
@@ -65,6 +68,35 @@ public partial class Theme : ComponentBase {
         if(SuspenseFallback != null) {
             ThemeInfo.SuspenseFallback = SuspenseFallback;
         }
+
+        foreach(var icon in Icons) {
+            try {
+                if(icon == null || icon.ImagePath == null || !icon.ImagePath.EndsWith(".svg", StringComparison.InvariantCultureIgnoreCase)) {
+                    continue;
+                }
+                var content = await Http.GetStringAsync(icon.ImagePath);
+                var svgTag = SvgTagRegex.Match(content).Value;
+                var viewBox = ViewBoxRegex.Match(svgTag).Value;
+                var svgBody = SvgTagRegex.Replace(content, "").Replace("</svg>", "");
+                var symbol = $@"<symbol id=""{icon.Key}"" {viewBox}>{svgBody}</symbol>";
+                icon.SvgDatabaseBody = symbol;
+                icon.SvgReferenceBody = $@"<svg class=""{icon.CssClass}""><use href=""#{icon.Key}""></use></svg>";
+            }
+            catch(Exception ex) {
+                Console.WriteLine($"Failed to load icon {icon.Key} from {icon.ImagePath}: {ex.Message}");
+            }
+        }
     }
+
+    [Inject]
+    private HttpClient Http { get; set; } = null!;
+
+    private Regex SvgTagRegex => new Regex(@"<svg[^>]*>");
+
+    private Regex ViewBoxRegex => new Regex(@"viewBox=""[\d\s.]*""");
+
+    private IEnumerable<IconInfo> SvgIcons => Icons
+        ?.Where(e => !string.IsNullOrEmpty(e.SvgDatabaseBody))
+        ?? Array.Empty<IconInfo>();
 }
 

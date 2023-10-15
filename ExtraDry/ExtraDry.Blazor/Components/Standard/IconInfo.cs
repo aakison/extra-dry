@@ -55,4 +55,20 @@ public class IconInfo {
     /// </summary>
     public string CssClass { get; set; } = string.Empty;
 
+    /// <summary>
+    /// If the icon is an SVG, this is the body of the SVG as it would appear inside the `svg` tag
+    /// of the database.  The outer tag is therefore `subject` and not `svg`.
+    /// </summary>
+    /// <remarks>
+    /// This is not defined by the user when creating a IconInfo.  Instead when the theme is loaded
+    /// all the SVG files are identified, loaded and this property is populated.
+    /// </remarks>
+    internal string SvgDatabaseBody { get; set; } = string.Empty;
+
+    /// <summary>
+    /// If the icon is an SVG, this is the reformatted SVG body to insert into the page that uses a
+    /// reference to the database version of the SVG.
+    /// </summary>
+    internal string SvgReferenceBody { get; set; } = string.Empty;
+
 }
