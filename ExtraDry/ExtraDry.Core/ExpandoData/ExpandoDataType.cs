@@ -14,7 +14,7 @@ public enum ExpandoDataType {
     /// Extracted from JSON iff Text and exactly matches "yyyy-mm-ddThh:mm:ss[.fffffff]Z".
     /// Base for date related subtypes such as Date, Time, DateTime, DateTimeOffset
     /// </remarks>
-    DateTime = 1,
+    DateTime,
 
     /// <summary>
     /// Represents text that is displayed.
@@ -22,12 +22,12 @@ public enum ExpandoDataType {
     /// <remarks>
     /// Base for text related sub types, such as PhoneNumber, Email, Url, etc.
     /// </remarks>
-    Text = 5, 
+    Text, 
 
     /// <summary>
     /// Represents True/False
     /// </summary>
-    Boolean = 6,
+    Boolean,
 
     /// <summary>
     /// Represents a Number.
@@ -35,6 +35,6 @@ public enum ExpandoDataType {
     /// <remarks>
     /// Base for number related sub types, such as Integer, Real, Currency, etc.
     /// </remarks>
-    Number = 7, 
+    Number, 
     
 }
