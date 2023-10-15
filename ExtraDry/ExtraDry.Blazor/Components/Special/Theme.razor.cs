@@ -51,8 +51,7 @@ public partial class Theme : ComponentBase {
     protected async override Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
-        Icons ??= Array.Empty<IconInfo>();
-        ThemeInfo.Icons = Icons.ToDictionary(e => e.Key, e => e, StringComparer.InvariantCultureIgnoreCase);
+
         if(ErrorComponent != null) {
             ThemeInfo.ErrorComponent = ErrorComponent;
         }
@@ -69,16 +68,31 @@ public partial class Theme : ComponentBase {
             ThemeInfo.SuspenseFallback = SuspenseFallback;
         }
 
+        await LoadSvgDatabaseAsync();
+        ThemeInfo.Icons = CachedIcons;
+    }
+
+    private async Task LoadSvgDatabaseAsync()
+    {
+        if(loaded) {
+            return;
+        }
+        Icons ??= Array.Empty<IconInfo>();
         if(Http == null) {
             Logger.LogError("Theme requires an HttpClient to load SVG icons, please register one in DI.");
             return;
         }
         foreach(var icon in Icons) {
+            if(CachedIcons.ContainsKey(icon.Key)) {
+                Logger.LogWarning("Theme already contains an icon with key {icon.Key}, skipping.  Remove duplicate IconInfo from Theme's Icon collection.", icon.Key);
+                continue;
+            }
+            CachedIcons.Add(icon.Key, icon);
             try {
                 if(icon == null || icon.ImagePath == null || !icon.ImagePath.EndsWith(".svg", StringComparison.InvariantCultureIgnoreCase)) {
                     continue;
                 }
-                Logger.LogInformation("Loading SVG Icon {icon.Key} from {icon.ImagePath}", icon.Key, icon.ImagePath);
+                Logger.LogDebug("Loading SVG Icon {icon.Key} from {icon.ImagePath}", icon.Key, icon.ImagePath);
                 var content = await Http.GetStringAsync(icon.ImagePath);
                 var svgTag = SvgTagRegex.Match(content).Value;
                 var viewBox = ViewBoxRegex.Match(svgTag).Value;
@@ -91,7 +105,12 @@ public partial class Theme : ComponentBase {
                 Logger.LogError("Failed to load icon {icon.Key} from {icon.ImagePath}: {ex.Message}", icon?.Key, icon?.ImagePath, ex.Message);
             }
         }
+        loaded = true;
     }
+
+    private static bool loaded = false;
+
+    private static Dictionary<string, IconInfo> CachedIcons = new();
 
     [Inject]
     private HttpClient Http { get; set; } = null!;
