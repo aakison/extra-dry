@@ -54,8 +54,13 @@ public partial class Icon : ComponentBase, IExtraDryComponent {
                     return new IconInfo(Key, "no-theme") { ImagePath = $"/img/themeless/{Key}.svg", AlternateText = "" };
                 }
                 else {
-                    Logger.LogWarning("Icon '{icon}' not registered, add an entry for icon to the `Icons` attribute of the `Theme` component.", Key);
-                    return new IconInfo(Key, "no-key") { ImagePath = $"/img/no-icon-for-{Key}.svg", AlternateText = "" };
+                    if(ThemeInfo.Loading) {
+                        return placeholderIcon;
+                    }
+                    else {
+                        Logger.LogWarning("Icon '{icon}' not registered, add an entry for icon to the `Icons` attribute of the `Theme` component.", Key);
+                        return new IconInfo(Key, "no-key") { ImagePath = $"/img/no-icon-for-{Key}.svg", AlternateText = "" };
+                    }
                 }
             }
         }
@@ -87,4 +92,5 @@ public partial class Icon : ComponentBase, IExtraDryComponent {
             new IconInfo("clear", $"{glyphPath}/xmark-regular.svg", "Clear", "glyph"),
         }).ToDictionary(e => e.Key, e => e);
 
+    private static readonly IconInfo placeholderIcon = new("placeholder", $"{glyphPath}/loading-placeholder.svg", "Placeholder", "glyph");
 }
