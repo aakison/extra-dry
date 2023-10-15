@@ -69,11 +69,16 @@ public partial class Theme : ComponentBase {
             ThemeInfo.SuspenseFallback = SuspenseFallback;
         }
 
+        if(Http == null) {
+            Logger.LogError("Theme requires an HttpClient to load SVG icons, please register one in DI.");
+            return;
+        }
         foreach(var icon in Icons) {
             try {
                 if(icon == null || icon.ImagePath == null || !icon.ImagePath.EndsWith(".svg", StringComparison.InvariantCultureIgnoreCase)) {
                     continue;
                 }
+                Logger.LogInformation("Loading SVG Icon {icon.Key} from {icon.ImagePath}", icon.Key, icon.ImagePath);
                 var content = await Http.GetStringAsync(icon.ImagePath);
                 var svgTag = SvgTagRegex.Match(content).Value;
                 var viewBox = ViewBoxRegex.Match(svgTag).Value;
@@ -83,13 +88,16 @@ public partial class Theme : ComponentBase {
                 icon.SvgReferenceBody = $@"<svg class=""{icon.CssClass}""><use href=""#{icon.Key}""></use></svg>";
             }
             catch(Exception ex) {
-                Console.WriteLine($"Failed to load icon {icon.Key} from {icon.ImagePath}: {ex.Message}");
+                Logger.LogError("Failed to load icon {icon.Key} from {icon.ImagePath}: {ex.Message}", icon?.Key, icon?.ImagePath, ex.Message);
             }
         }
     }
 
     [Inject]
     private HttpClient Http { get; set; } = null!;
+
+    [Inject]
+    private ILogger<Theme> Logger { get; set; } = null!;
 
     private Regex SvgTagRegex => new Regex(@"<svg[^>]*>");
 

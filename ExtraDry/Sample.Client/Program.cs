@@ -1,54 +1,46 @@
 using ExtraDry.Blazor;
-using ExtraDry.Core;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.JSInterop;
-using Sample.Client.Pages;
 using Sample.Shared;
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
 
-namespace Sample.Client {
+namespace Sample.Client;
 
-    public class Program
+public class Program
+{
+    public static async Task Main(string[] args)
     {
-        public static async Task Main(string[] args)
-        {
-            var builder = WebAssemblyHostBuilder.CreateDefault(args);
-            builder.RootComponents.Add<App>("#app");
+        var builder = WebAssemblyHostBuilder.CreateDefault(args);
+        builder.RootComponents.Add<App>("#app");
 
-            var services = builder.Services;
+        var services = builder.Services;
 
-            services.AddExtraDry();
+        services.AddExtraDry();
 
-            services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+        services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-            services.AddFilteredListService<Sector>("/api/sectors");
-            services.AddFilteredListService<Company>("/api/companies");
-            services.AddFilteredListService<Content>("/api/contents");
-            services.AddFilteredListService<Region>("/api/regions");
+        services.AddFilteredListService<Sector>("/api/sectors");
+        services.AddFilteredListService<Company>("/api/companies");
+        services.AddFilteredListService<Content>("/api/contents");
+        services.AddFilteredListService<Region>("/api/regions");
 
-            services.AddStatService<Sector>("/api/sectors/stats");
+        services.AddStatService<Sector>("/api/sectors/stats");
 
-            services.AddPagedListService<Employee>("/api/employees");
+        services.AddPagedListService<Employee>("/api/employees");
 
-            services.AddCrudService<Sector>("/api/sectors");
-            services.AddCrudService<Company>("/api/companies");
-            services.AddCrudService<Content>("/api/contents");
-            services.AddCrudService<Region>("/api/regions");
+        services.AddCrudService<Sector>("/api/sectors");
+        services.AddCrudService<Company>("/api/companies");
+        services.AddCrudService<Content>("/api/contents");
+        services.AddCrudService<Region>("/api/regions");
 
-            services.AddScoped<IBlobService>(e => 
-                new DryBlobService(e.GetRequiredService<HttpClient>(), "/api/blobs/{0}/{1}") {
-                    Scope = BlobScope.Public,
-                }
-            );
+        services.AddScoped<IBlobService>(e => 
+            new DryBlobService(e.GetRequiredService<HttpClient>(), "/api/blobs/{0}/{1}") {
+                Scope = BlobScope.Public,
+            }
+        );
 
-            services.AddScoped<ISubjectViewModel<Employee>, EmployeeViewModel>();
+        services.AddScoped<ISubjectViewModel<Employee>, EmployeeViewModel>();
 
-            services.AddScoped<AppViewModel>();
+        services.AddScoped<AppViewModel>();
 
-            await builder.Build().RunAsync();
-        }
+        await builder.Build().RunAsync();
     }
 }
