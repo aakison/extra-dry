@@ -83,6 +83,7 @@ public static class Slug {
 
     /// <summary>
     /// Given a name, with punctuation and mixed case, create a matching TitleSlug.
+    /// A TitleSlug contains only lowercase letters, digits and hyphens
     /// </summary>
     /// <remarks>
     /// The list of `existing` Slugs is checked and on collision, an alternate TitleSlug is created.
@@ -95,6 +96,7 @@ public static class Slug {
 
     /// <summary>
     /// Given a name, with punctuation and mixed case, create a matching TitleSlug.
+    /// A TitleSlug contains only lowercase letters, digits and hyphens
     /// </summary>
     /// <remarks>
     /// The `existsAsync` method is used to check if the TitleSlugs already exists, such as in a database.
@@ -134,6 +136,7 @@ public static class Slug {
 
     /// <summary>
     /// Given a name, with punctuation and mixed case, create a matching CodeSlug.
+    /// A CodeSlug contains upper or lowercase letters, digits and hyphens
     /// </summary>
     /// <remarks>
     /// The list of `existing` Slugs is checked and on collision, an alternate CodeSlug is created.
@@ -146,6 +149,7 @@ public static class Slug {
 
     /// <summary>
     /// Given a name, with punctuation and mixed case, create a matching CodeSlug.
+    /// A CodeSlug contains upper or lowercase letters, digits and hyphens
     /// </summary>
     /// <remarks>
     /// The `existsAsync` method is used to check if the CodeSlugs already exists, such as in a database.
