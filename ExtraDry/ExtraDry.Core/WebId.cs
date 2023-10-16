@@ -5,6 +5,7 @@ namespace ExtraDry.Core;
 /// <summary>
 /// Helper class to facilitate the maintenance of "Web" Ids that can be used in a URI path without escaping.
 /// </summary>
+[Obsolete("Use Slug instead")]
 public static class WebId {
 
     /// <summary>
