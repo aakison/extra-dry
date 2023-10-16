@@ -39,7 +39,7 @@ public partial class DryForm<T> : ComponentBase {
         }
     }
 
-    internal string ModelNameWebId => WebId.ToWebId(FormDescription?.ViewModelDescription?.ModelDisplayName ?? "");
+    internal string ModelNameWebId => Slug.ToSlug(FormDescription?.ViewModelDescription?.ModelDisplayName ?? "");
 
     internal ViewModelDescription? Description { get; set; }
 
