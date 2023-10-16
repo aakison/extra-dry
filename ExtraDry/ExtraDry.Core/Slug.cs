@@ -6,7 +6,7 @@ namespace ExtraDry.Core;
 /// Helper class to facilitate the maintenance of Slugs that can be used in a URI path without escaping.
 /// </summary>
 public static class Slug {
-    #region ToSlug Methods
+    #region Slug Methods
     /// <summary>
     /// Given a name, with punctuation and mixed case, create a matching Slug.
     /// </summary>
@@ -15,7 +15,7 @@ public static class Slug {
     /// </remarks>
     public static string ToSlug(string name, bool lowercase = true)
     {
-        return ToSlug(name, lowercase, default);
+        return ToSlugInternal(name, lowercase);
     }
 
     /// <summary>
@@ -31,58 +31,6 @@ public static class Slug {
     }
 
     /// <summary>
-    /// Given a name, with punctuation and mixed case, create a matching TitleSlug.
-    /// A TitleSlug contains only lowercase letters, digits and hyphens
-    /// </summary>
-    /// <remarks>
-    /// This does not guarantee uniqueness, consider `ToUniqueTitleSlug` instead.
-    /// </remarks>
-    public static string ToTitleSlug(string name)
-    {
-        return ToSlug(name, true, string.Empty);
-    }
-
-    /// <summary>
-    /// Given a name, with punctuation and mixed case, create a matching TitleSlug, with a maximum length.
-    /// A TitleSlug contains only lowercase letters, digits and hyphens
-    /// </summary>
-    /// <remarks>
-    /// This does not guarantee uniqueness, consider `ToUniqueTitleSlug` instead.
-    /// </remarks>
-    public static string ToTitleSlug(string name, int maxLength)
-    {
-        var slug = ToSlug(name, true, string.Empty);
-        return slug.Length > maxLength ? slug.Substring(0, maxLength) : slug;
-    }
-
-    /// <summary>
-    /// Given a name, with punctuation and mixed case, create a matching CodeSlug.
-    /// A CodeSlug contains upper or lowercase letters, digits and hyphens
-    /// </summary>
-    /// <remarks>
-    /// This does not guarantee uniqueness, consider `ToUniqueCodeSlug` instead.
-    /// </remarks>
-    public static string ToCodeSlug(string name)
-    {
-        return ToSlug(name, false, string.Empty);
-    }
-
-    /// <summary>
-    /// Given a name, with punctuation and mixed case, create a matching CodeSlug, with a maximum length.
-    /// A CodeSlug contains only lowercase letters, digits and hyphens
-    /// </summary>
-    /// <remarks>
-    /// This does not guarantee uniqueness, consider `ToUniqueCodeSlug` instead.
-    /// </remarks>
-    public static string ToCodeSlug(string name, int maxLength)
-    {
-        var slug = ToSlug(name, false, string.Empty);
-        return slug.Length > maxLength ? slug.Substring(0, maxLength) : slug;
-    }
-    #endregion
-
-    #region ToUniqueSlug Methods
-    /// <summary>
     /// Given a name, with punctuation and mixed case, create a matching Slug.
     /// </summary>
     /// <remarks>
@@ -91,11 +39,7 @@ public static class Slug {
     public static string ToUniqueSlug(string name, int maxLength, IEnumerable<string> existing)
     {
         var stem = ToSlug(name, maxLength - 6);
-        var candidate = stem;
-        while(existing.Contains(candidate)) {
-            candidate = $"{stem}-{RandomWebString(5)}";
-        }
-        return candidate;
+        return ToUnique(existing, stem);
     }
 
     /// <summary>
@@ -107,11 +51,34 @@ public static class Slug {
     public static async Task<string> ToUniqueSlugAsync(string name, int maxLength, Func<string, Task<bool>> existsAsync)
     {
         var stem = ToSlug(name, maxLength - 6);
-        var candidate = stem;
-        while(await existsAsync(candidate)) {
-            candidate = $"{stem}-{RandomWebString(5)}";
-        }
-        return candidate;
+        return await ToUniqueAsync(existsAsync, stem);
+    }
+    #endregion
+
+    #region TitleSlug Methods
+    /// <summary>
+    /// Given a name, with punctuation and mixed case, create a matching TitleSlug.
+    /// A TitleSlug contains only lowercase letters, digits and hyphens
+    /// </summary>
+    /// <remarks>
+    /// This does not guarantee uniqueness, consider `ToUniqueTitleSlug` instead.
+    /// </remarks>
+    public static string ToTitleSlug(string name)
+    {
+        return ToSlugInternal(name, true, string.Empty);
+    }
+
+    /// <summary>
+    /// Given a name, with punctuation and mixed case, create a matching TitleSlug, with a maximum length.
+    /// A TitleSlug contains only lowercase letters, digits and hyphens
+    /// </summary>
+    /// <remarks>
+    /// This does not guarantee uniqueness, consider `ToUniqueTitleSlug` instead.
+    /// </remarks>
+    public static string ToTitleSlug(string name, int maxLength)
+    {
+        var slug = ToSlugInternal(name, true, string.Empty);
+        return slug.Length > maxLength ? slug.Substring(0, maxLength) : slug;
     }
 
     /// <summary>
@@ -123,11 +90,7 @@ public static class Slug {
     public static string ToUniqueTitleSlug(string name, int maxLength, IEnumerable<string> existing)
     {
         var stem = ToTitleSlug(name, maxLength - 6);
-        var candidate = stem;
-        while(existing.Contains(candidate)) {
-            candidate = $"{stem}-{RandomWebString(5)}";
-        }
-        return candidate;
+        return ToUnique(existing, stem);
     }
 
     /// <summary>
@@ -139,11 +102,34 @@ public static class Slug {
     public static async Task<string> ToUniqueTitleSlugAsync(string name, int maxLength, Func<string, Task<bool>> existsAsync)
     {
         var stem = ToTitleSlug(name, maxLength - 6);
-        var candidate = stem;
-        while(await existsAsync(candidate)) {
-            candidate = $"{stem}-{RandomWebString(5)}";
-        }
-        return candidate;
+        return await ToUniqueAsync(existsAsync, stem);
+    }
+    #endregion
+
+    #region CodeSlug Methods
+    /// <summary>
+    /// Given a name, with punctuation and mixed case, create a matching CodeSlug.
+    /// A CodeSlug contains upper or lowercase letters, digits and hyphens
+    /// </summary>
+    /// <remarks>
+    /// This does not guarantee uniqueness, consider `ToUniqueCodeSlug` instead.
+    /// </remarks>
+    public static string ToCodeSlug(string name)
+    {
+        return ToSlugInternal(name, false, string.Empty);
+    }
+
+    /// <summary>
+    /// Given a name, with punctuation and mixed case, create a matching CodeSlug, with a maximum length.
+    /// A CodeSlug contains only lowercase letters, digits and hyphens
+    /// </summary>
+    /// <remarks>
+    /// This does not guarantee uniqueness, consider `ToUniqueCodeSlug` instead.
+    /// </remarks>
+    public static string ToCodeSlug(string name, int maxLength)
+    {
+        var slug = ToSlugInternal(name, false, string.Empty);
+        return slug.Length > maxLength ? slug.Substring(0, maxLength) : slug;
     }
 
     /// <summary>
@@ -154,12 +140,8 @@ public static class Slug {
     /// </remarks>
     public static string ToUniqueCodeSlug(string name, int maxLength, IEnumerable<string> existing)
     {
-        var stem = ToTitleSlug(name, maxLength - 6);
-        var candidate = stem;
-        while(existing.Contains(candidate)) {
-            candidate = $"{stem}-{RandomWebString(5)}";
-        }
-        return candidate;
+        var stem = ToCodeSlug(name, maxLength - 6);
+        return ToUnique(existing, stem);
     }
 
     /// <summary>
@@ -171,24 +153,27 @@ public static class Slug {
     public static async Task<string> ToUniqueCodeSlugAsync(string name, int maxLength, Func<string, Task<bool>> existsAsync)
     {
         var stem = ToCodeSlug(name, maxLength - 6);
-        var candidate = stem;
-        while(await existsAsync(candidate)) {
-            candidate = $"{stem}-{RandomWebString(5)}";
-        }
-        return candidate;
+        return await ToUniqueAsync(existsAsync, stem);
     }
     #endregion
 
+    /// <summary>
+    /// Generates a string of random characters suitable for embedding in a Slug.
+    /// </summary>
+    public static string RandomWebString(int count)
+    {
+        const string characters = "abcdefghijklmnopqrstuvwxyz";
+        return RandomCharacters(count, characters);
+    }
 
-    private static string ToSlug(string name, bool lowercase = true, string? hiddenCharacters = ".'")
+    private static string ToSlugInternal(string name, bool lowercase = true, string okCharacters = @"_")
     {
         if(string.IsNullOrWhiteSpace(name)) {
             return string.Empty;
         }
         var sb = new StringBuilder(name.Length);
-        var okCharacters = @"_"; // "$*+!,'()." are legal, but  ugly, removing them as well.
         name = name.Replace("&", "and");
-        ; // exclude to contract abbreviations and possessives.
+        var hiddenCharacters = ".'"; // exclude to contract abbreviations and possessives.
         name = RemoveCommonNameSuffixes(name);
         foreach(var c in name) {
             if(char.IsLetterOrDigit(c)) {
@@ -208,15 +193,22 @@ public static class Slug {
         return name;
     }
 
-    
-
-    /// <summary>
-    /// Generates a string of random characters suitable for embedding in a Slug.
-    /// </summary>
-    public static string RandomWebString(int count)
+    private static string ToUnique(IEnumerable<string> existing, string stem)
     {
-        const string characters = "abcdefghijklmnopqrstuvwxyz";
-        return RandomCharacters(count, characters);
+        var candidate = stem;
+        while(existing.Contains(candidate)) {
+            candidate = $"{stem}-{RandomWebString(5)}";
+        }
+        return candidate;
+    }
+
+    private static async Task<string> ToUniqueAsync(Func<string, Task<bool>> existsAsync, string stem)
+    {
+        var candidate = stem;
+        while(await existsAsync(candidate)) {
+            candidate = $"{stem}-{RandomWebString(5)}";
+        }
+        return candidate;
     }
 
     private static string RandomCharacters(int count, string characters)
