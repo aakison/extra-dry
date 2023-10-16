@@ -16,12 +16,14 @@ public class IconInfo {
     /// <param name="imagePath">The path to the icon, typically an SVG in the /img/ directory.</param>
     /// <param name="alternateText">The alternate text that describes the icon for screen readers.</param>
     /// <param name="cssClass">An optional additional class to apply to `img` tags, such as 'icon' or 'glyph'.</param>
-    public IconInfo(string key, string imagePath, string alternateText, string? cssClass = null)
+    /// <param name="svgRenderType">An optional instruction on how to render SVG images.</param>
+    public IconInfo(string key, string imagePath, string alternateText, string? cssClass = null, SvgRenderType svgRenderType = SvgRenderType.SymbolDatabase)
     {
         Key = key;
         ImagePath = imagePath;
         AlternateText = alternateText;
         CssClass = cssClass ?? string.Empty;
+        SvgRenderType = svgRenderType;
     }
 
     /// <summary>
@@ -56,6 +58,11 @@ public class IconInfo {
     public string CssClass { get; set; } = string.Empty;
 
     /// <summary>
+    /// If the icon is an SVG, the type of rendering to use.
+    /// </summary>
+    public SvgRenderType SvgRenderType { get; set; } = SvgRenderType.SymbolDatabase;
+
+    /// <summary>
     /// If the icon is an SVG, this is the body of the SVG as it would appear inside the `svg` tag
     /// of the database.  The outer tag is therefore `subject` and not `svg`.
     /// </summary>
@@ -69,6 +76,6 @@ public class IconInfo {
     /// If the icon is an SVG, this is the reformatted SVG body to insert into the page that uses a
     /// reference to the database version of the SVG.
     /// </summary>
-    internal string SvgReferenceBody { get; set; } = string.Empty;
+    internal string SvgInlineBody { get; set; } = string.Empty;
 
 }

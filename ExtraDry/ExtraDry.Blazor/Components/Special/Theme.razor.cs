@@ -107,17 +107,21 @@ public partial class Theme : ComponentBase {
             return;
         }
         try {
-            if(icon == null || icon.ImagePath == null || !icon.ImagePath.EndsWith(".svg", StringComparison.InvariantCultureIgnoreCase)) {
+            if(icon == null || icon.ImagePath == null || icon.SvgRenderType == SvgRenderType.ImgReference 
+                || !icon.ImagePath.EndsWith(".svg", StringComparison.InvariantCultureIgnoreCase)) {
                 return;
             }
             Logger.LogDebug("Loading SVG Icon {icon.Key} from {icon.ImagePath}", icon.Key, icon.ImagePath);
             var content = await Http.GetStringAsync(icon.ImagePath);
-            var svgTag = SvgTagRegex().Match(content).Value;
-            var viewBox = ViewBoxRegex().Match(svgTag).Value;
-            var svgBody = SvgTagRegex().Replace(content, "").Replace("</svg>", "");
-            var symbol = $@"<symbol id=""{icon.Key}"" {viewBox}>{svgBody}</symbol>";
-            icon.SvgDatabaseBody = symbol;
-            icon.SvgReferenceBody = $@"<svg class=""{icon.CssClass}""><use href=""#{icon.Key}""></use></svg>";
+            icon.SvgInlineBody = content;
+            if(icon.SvgRenderType == SvgRenderType.SymbolDatabase) {
+                var svgTag = SvgTagRegex().Match(content).Value;
+                var viewBox = ViewBoxRegex().Match(svgTag).Value;
+                var svgBody = SvgTagRegex().Replace(content, "").Replace("</svg>", "");
+                var symbol = $@"<symbol id=""{icon.Key}"" {viewBox}>{svgBody}</symbol>";
+                icon.SvgDatabaseBody = symbol;
+                icon.SvgInlineBody = $@"<svg class=""{icon.CssClass}""><use href=""#{icon.Key}""></use></svg>";
+            }
         }
         catch(Exception ex) {
             Logger.LogError("Failed to load icon {icon.Key} from {icon.ImagePath}: {ex.Message}", icon?.Key, icon?.ImagePath, ex.Message);
