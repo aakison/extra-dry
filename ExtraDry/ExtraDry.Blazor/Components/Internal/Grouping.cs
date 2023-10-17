@@ -2,6 +2,7 @@
 
 namespace ExtraDry.Blazor.Components.Internal;
 
+[Obsolete("Properties have been moved to ListItemInfo<T>, or so I believe!")]
 public class Grouping {
 
     public string GroupingColumn { get; set; }

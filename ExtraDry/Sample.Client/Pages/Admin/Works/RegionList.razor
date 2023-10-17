@@ -1,0 +1,33 @@
+﻿@inject IListService<Region> RegionService;
+@inject NavigationManager Navigation;
+
+<DryPageQueryView>
+    <TableMenu TItem="Region" />
+    <DryTable TItem="Region" ViewModel="@this" ItemsService="@RegionService" GroupProvider="TheGroupProvider" />
+    <DryTable TItem="Region" ViewModel="@this" ItemsService="@RegionService" GroupFunc="GetParent" GroupColumn="Code" />
+</DryPageQueryView>
+
+@code {
+
+    [Command(CommandContext.Alternate, Icon = "edit")]
+    public void Edit(Region region)
+    {
+        Console.WriteLine($"Huzzah {region.Slug}");
+        //CompanyUuid = company.Uuid;
+        StateHasChanged();
+        //Navigation.NavigateTo($"/companies/{company.Uuid}");
+    }
+
+    private RegionGroupProvider TheGroupProvider { get; set; } = new();
+
+    private Region? GetParent(Region region) => region.Parent;
+
+    public class RegionGroupProvider : IGroupProvider<Region>
+    {
+        public string GroupColumn => nameof(Region.Slug);
+
+        public Region? GetGroup(Region item) => item.Parent;
+
+    }
+
+}
