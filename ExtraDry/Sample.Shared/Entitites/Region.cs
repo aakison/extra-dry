@@ -103,6 +103,11 @@ public partial class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidata
     [GeneratedRegex(@"^\w{2}-\w{2,4}-\w{2,20}$", RegexOptions.Compiled)]
     private partial Regex SubdivisionRegex();
 
+    public override bool Equals(object? obj)
+    {
+        var obj1 = obj as Region;
+        return obj1?.Slug == Slug;
+    }
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]

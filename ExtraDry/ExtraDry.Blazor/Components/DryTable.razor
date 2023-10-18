@@ -54,7 +54,7 @@ else
     <tbody>
       <Virtualize ItemsProvider="GetItemsAsync" ItemSize="45" @ref="VirtualContainer">
         <ItemContent>
-          <ViewModelTableRow Item="@context" Description="@description" Selection="@resolvedSelection" Height="45" />
+                    <ViewModelTableRow Item="@context" Description="@description" Selection="@resolvedSelection" Height="45" GroupColumn="@GroupColumn" />
         </ItemContent>
       </Virtualize>
     </tbody>

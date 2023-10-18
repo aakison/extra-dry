@@ -10929,6 +10929,18 @@ span.enum.status.deleted::before {
   color: var(--danger);
 }
 
+span.level1 {
+  margin-left: 25px;
+}
+
+span.level2 {
+  margin-left: 50px;
+}
+
+span.level3 {
+  margin-left: 75px;
+}
+
 table thead {
   background-color: var(--off-white);
 }
