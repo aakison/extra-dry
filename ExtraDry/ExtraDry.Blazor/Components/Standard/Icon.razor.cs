@@ -68,7 +68,7 @@ public partial class Icon : ComponentBase, IExtraDryComponent {
 
     private string? ImagePath => IconInfo.ImagePath;
 
-    private bool RenderSvg => IconInfo.SvgRenderType != SvgRenderType.ImgReference && !string.IsNullOrEmpty(IconInfo.SvgInlineBody);
+    private bool RenderSvg => IconInfo.SvgRenderType != SvgRenderType.Reference && !string.IsNullOrEmpty(IconInfo.SvgInlineBody);
 
     private MarkupString Svg => (MarkupString)IconInfo.SvgInlineBody;
 

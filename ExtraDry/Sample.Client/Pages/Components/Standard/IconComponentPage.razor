@@ -30,6 +30,26 @@
     <p>
         <Icon Key="@Key" Alt="Search Site" />
     </p>
+    <h3>Rendering Options</h3>
+    <p>For SVG file, Extra DRY support three rendering options:
+        <ul>
+            <li><b>Document</b> - Loads the SVG out of the source file and creates a SVG symbol in 
+                the document.  Images are then displayed as SVG tags with a <code>use</code> tag.<br />
+                E.g. <code>&lt;svg class="classname">&lt;use href="#symbol-name">&lt;/use>&lt;/svg></code>
+                <Icon Key="overdue" style="display: inline-block" />
+            </li>
+            <li><b>Inline</b> - Loads the SVG out of the source file and creates a SVG tag inline with
+                all of the SVG expanded<br />
+                E.g. <code>&lt;svg class="classname">&lt;path d="M27.7996 23.251..."/>&lt/svg></code>
+                <Icon Key="standard-components" style="display: inline-block" />
+            </li>
+            <li><b>Reference</b> - Does not load the image and just creates an IMG tag with reference
+                to the SVG file.<br />
+                E.g. <code>&lt;img class="classname" src="/img/icon/logo.svg" /></code>
+                <Icon Key="logo" style="display: inline-block" />
+            </li>
+        </ul>
+    </p>
     <h5>Try It Out</h5>
     <form class="tryitout" onsubmit="return false;">
         <p>Recognized keys include 'search', 'assets', 'logo', 'companies', 'sectors', 'edit', 'filter'.</p>

@@ -17,7 +17,7 @@ public class IconInfo {
     /// <param name="alternateText">The alternate text that describes the icon for screen readers.</param>
     /// <param name="cssClass">An optional additional class to apply to `img` tags, such as 'icon' or 'glyph'.</param>
     /// <param name="svgRenderType">An optional instruction on how to render SVG images.</param>
-    public IconInfo(string key, string imagePath, string alternateText, string? cssClass = null, SvgRenderType svgRenderType = SvgRenderType.SymbolDatabase)
+    public IconInfo(string key, string imagePath, string alternateText, string? cssClass = null, SvgRenderType svgRenderType = SvgRenderType.Document)
     {
         Key = key;
         ImagePath = imagePath;
@@ -60,7 +60,7 @@ public class IconInfo {
     /// <summary>
     /// If the icon is an SVG, the type of rendering to use.
     /// </summary>
-    public SvgRenderType SvgRenderType { get; set; } = SvgRenderType.SymbolDatabase;
+    public SvgRenderType SvgRenderType { get; set; } = SvgRenderType.Document;
 
     /// <summary>
     /// If the icon is an SVG, this is the body of the SVG as it would appear inside the `svg` tag

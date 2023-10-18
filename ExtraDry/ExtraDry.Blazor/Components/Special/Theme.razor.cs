@@ -107,20 +107,26 @@ public partial class Theme : ComponentBase {
             return;
         }
         try {
-            if(icon == null || icon.ImagePath == null || icon.SvgRenderType == SvgRenderType.ImgReference 
+            if(icon == null || icon.ImagePath == null || icon.SvgRenderType == SvgRenderType.Reference 
                 || !icon.ImagePath.EndsWith(".svg", StringComparison.InvariantCultureIgnoreCase)) {
                 return;
             }
             Logger.LogDebug("Loading SVG Icon {icon.Key} from {icon.ImagePath}", icon.Key, icon.ImagePath);
             var content = await Http.GetStringAsync(icon.ImagePath);
             icon.SvgInlineBody = content;
-            if(icon.SvgRenderType == SvgRenderType.SymbolDatabase) {
+            if(icon.SvgRenderType == SvgRenderType.Document) {
                 var svgTag = SvgTagRegex().Match(content).Value;
                 var viewBox = ViewBoxRegex().Match(svgTag).Value;
                 var svgBody = SvgTagRegex().Replace(content, "").Replace("</svg>", "");
                 var symbol = $@"<symbol id=""{icon.Key}"" {viewBox}>{svgBody}</symbol>";
+                var defs = DefsRegex().Match(svgBody).Value;
+                if(!string.IsNullOrWhiteSpace(defs)) {
+                    // defs included in the SVG, typically for gradient fills and the like.  
+                    // Need to keep these defs inline and not in the symbol.
+                    symbol = symbol.Replace(defs, "");
+                }
                 icon.SvgDatabaseBody = symbol;
-                icon.SvgInlineBody = $@"<svg class=""{icon.CssClass}""><use href=""#{icon.Key}""></use></svg>";
+                icon.SvgInlineBody = $@"<svg class=""{icon.CssClass}""><use href=""#{icon.Key}""></use>{defs}</svg>";
             }
         }
         catch(Exception ex) {
@@ -143,6 +149,9 @@ public partial class Theme : ComponentBase {
 
     [GeneratedRegex(@"viewBox=""[\d\s.]*""")]
     private partial Regex ViewBoxRegex();
+
+    [GeneratedRegex(@"<defs.*</defs>", RegexOptions.Singleline)]
+    private partial Regex DefsRegex();
 
     private IEnumerable<IconInfo> SvgIcons => Icons
         ?.Where(e => !string.IsNullOrEmpty(e.SvgDatabaseBody))
