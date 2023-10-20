@@ -16,8 +16,11 @@ public partial class Theme : ComponentBase {
     public RenderFragment ChildContent { get; set; } = null!;
 
     /// <summary>
-    /// The collection of icons that are used for this theme.
-    /// See IconInfo for details on creating the icons, then register them here.
+    /// The collection of icons that are used for this theme.  See IconInfo for details on 
+    /// creating the icons, then register them here.  The icons must always be available and should
+    /// be stored in a static backing field to ensure they are available, especially when the site
+    /// navigates to a missing page and back.  It is recommended they are part of the AppViewModel
+    /// registered as a Singleton.
     /// </summary>
     [Parameter]
     public IEnumerable<IconInfo>? Icons { get; set; }
@@ -88,7 +91,7 @@ public partial class Theme : ComponentBase {
             await LoadIconConcurrentAsync(icon);
         }
         // Above loop can be done concurrently as follows.  However, in practice it appears to be
-        // worse for the user experience.  By blocking all fetch thread, some javascript is
+        // worse for the user experience.  By blocking all fetch threads, some javascript is
         // deferred causing the entire page to stay blank longer.  Leaving as it might change...
         //var loadTasks = Icons.Select(LoadIconConcurrentAsync);
         //await Task.WhenAll(loadTasks);
