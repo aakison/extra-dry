@@ -1,16 +1,16 @@
-﻿@page "/admin/works/companies/{View}"
-@page "/admin/works/companies/{View}/{Uuid:guid}"
+﻿@page "/admin/works/sectors/{View}"
+@page "/admin/works/sectors/{View}/{Uuid:guid}"
 
 @inject NavigationManager Navigation;
 
 @if(View == "list") {
-    <CompanyList />
+    <SectorList />
 }
 @if(Uuid != Guid.Empty)
 {
     <DialogBox CloseUrl="@CloseDialogUrl">
         <DryErrorBoundary>
-            <CompanyEdit Uuid="@Uuid" />
+            <SectorEdit Uuid="@Uuid" />
         </DryErrorBoundary>
     </DialogBox>
 }
@@ -23,6 +23,6 @@
     [Parameter]
     public Guid Uuid { get; set; } = Guid.Empty;
 
-    private string CloseDialogUrl => "/admin/works/companies/{View}";
+    private string CloseDialogUrl => $"/admin/works/sectors/{View}";
 
 }

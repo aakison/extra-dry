@@ -16,7 +16,7 @@
     [Command(CommandContext.Default, Icon = "edit", PropertyName = nameof(Company.Title))]
     public void Edit(Company company)
     {
-        Navigation.NavigateTo($"/companies/list/{company.Uuid}");
+        Navigation.NavigateTo($"/admin/works/companies/list/{company.Uuid}");
     }
 
 }

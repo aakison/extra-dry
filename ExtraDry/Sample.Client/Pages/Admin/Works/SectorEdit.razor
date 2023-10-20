@@ -1,5 +1,4 @@
-﻿@page "/admin/works/sectors/{uniqueId:guid}"
-@inject CrudService<Sector> Service
+﻿@inject CrudService<Sector> Service
 @inject NavigationManager Navigation
 
 <h3>Sector</h3>
@@ -9,20 +8,20 @@
 @code {
 
     [Parameter]
-    public Guid UniqueId { get; set; }
+    public Guid Uuid { get; set; }
 
     private Sector? sector;
 
     protected override async Task OnInitializedAsync()
     {
-        sector = await Service.RetrieveAsync(UniqueId);
+        sector = await Service.RetrieveAsync(Uuid);
     }
 
     [Command(CommandContext.Primary, Name = "Save & Close")]
     public async Task SaveAsync(Sector sector)
     {
-        await Service.UpdateAsync(UniqueId, sector);
-        Navigation.NavigateTo("/sectors");
+        await Service.UpdateAsync(Uuid, sector);
+        Navigation.NavigateTo("/admin/works/sectors/list");
     }
 
 }

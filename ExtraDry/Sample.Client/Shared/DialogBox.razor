@@ -23,12 +23,15 @@
     [Parameter]
     public bool FullScreen { get; set; }
 
+    [Parameter, EditorRequired]
+    public string CloseUrl { get; set; } = string.Empty;
+
     public string CssClass => FullScreen ? "full" : "window";
 
     [Command(Icon = "times")]
     public void CloseDialog()
     {
-        Navigation.NavigateTo($"/companies");
+        Navigation.NavigateTo(CloseUrl);
     }
     public CommandInfo CloseDialogCommand => new(this, CloseDialog);
 
