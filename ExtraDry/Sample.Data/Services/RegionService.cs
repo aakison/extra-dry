@@ -35,12 +35,11 @@ public class RegionService {
         }
         item.SetParent(parent);
 
-        var basePath = parent?.AncestorList ?? HierarchyId.GetRoot();
-        var hierarchy = $"{basePath}{item.Id}/";
-        item.AncestorList = HierarchyId.Parse(hierarchy);
-
         database.Regions.Add(item);
+
         await database.SaveChangesAsync();
+
+        await database.Database.ExecuteSqlRawAsync(string.Format(AddToEndOfChildren, parent?.Id.ToString() ?? "null", item.Id ));
     }
 
     public async Task<Region?> TryRetrieveAsync(string code)
@@ -104,5 +103,15 @@ public class RegionService {
     private readonly SampleContext database;
 
     private readonly RuleEngine rules;
+
+    const string AddToEndOfChildren =
+    @"update regions
+set AncestorList =
+	coalesce(
+	(select top 1 AncestorList from Regions where Id = {0}).GetDescendant(
+		nullif((select top 1 AncestorList from Regions where parentid = {0} order by AncestorList desc), CAST('/' as hierarchyid))
+		, NULL
+	), CAST('/' as hierarchyid))
+ where id = {1}";
 
 }
