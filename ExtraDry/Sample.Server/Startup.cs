@@ -84,22 +84,22 @@ namespace Sample.Server {
 
             services.AddHttpContextAccessor();
 
-            services.AddServiceBusQueue<EntityMessage>(options => {
-                options.ConnectionStringKey = "WebAppServiceBus";
-                options.QueueName = "warehouse-update";
-            });
+            //services.AddServiceBusQueue<EntityMessage>(options => {
+            //    options.ConnectionStringKey = "WebAppServiceBus";
+            //    options.QueueName = "warehouse-update";
+            //});
 
             services.AddScoped(services => {
                 var connectionString = Configuration.GetConnectionString("WebAppOltpDatabase");
-                var dbOptionsBuilder = new DbContextOptionsBuilder<SampleContext>().UseSqlServer(connectionString);
+                var dbOptionsBuilder = new DbContextOptionsBuilder<SampleContext>().UseSqlServer(connectionString, config => config.UseHierarchyId());
                 var context = new SampleContext(dbOptionsBuilder.Options);
 
                 var accessor = services.GetRequiredService<IHttpContextAccessor>();
                 _ = new VersionInfoAspect(context, accessor);
 
-                var logger = services.GetService<ILogger<DataWarehouseAspect>>();
-                var queue = services.GetRequiredService<ServiceBusQueue<EntityMessage>>();
-                _ = new DataWarehouseAspect(context, queue, logger);
+                //var logger = services.GetService<ILogger<DataWarehouseAspect>>();
+                //var queue = services.GetRequiredService<ServiceBusQueue<EntityMessage>>();
+                //_ = new DataWarehouseAspect(context, queue, logger);
 
                 //_ = new SearchIndexAspect(context, services.GetService<SearchService>());
                 return context;

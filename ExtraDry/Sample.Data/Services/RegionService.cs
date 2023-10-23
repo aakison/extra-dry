@@ -11,16 +11,17 @@ public class RegionService {
     public async Task<FilteredCollection<Region>> ListAsync(FilterQuery query)
     {
         return await database.Regions
-            .Include(e => e.Ancestors)
+            .Include(e => e.Parent)
             .QueryWith(query)
             .ToFilteredCollectionAsync();
     }
 
     public async Task<FilteredCollection<Region>> ListChildrenAsync(string code)
     {
-        return await database.Regions
-            .QueryWith(new(), e => e.Ancestors.Any(f => f.Slug == code && (int)f.Level + 1 == (int)e.Level))
-            .ToFilteredCollectionAsync();
+        throw new NotImplementedException();
+        //return await database.Regions
+        //    .QueryWith(new(), e => e.Ancestors.Any(f => f.Slug == code && (int)f.Level + 1 == (int)e.Level))
+        //    .ToFilteredCollectionAsync();
     }
 
     public async Task CreateAsync(Region item)
@@ -33,6 +34,11 @@ public class RegionService {
             parent = await TryRetrieveAsync(item.Parent.Slug);
         }
         item.SetParent(parent);
+
+        var basePath = parent?.AncestorList ?? HierarchyId.GetRoot();
+        var hierarchy = $"{basePath}{item.Id}/";
+        item.AncestorList = HierarchyId.Parse(hierarchy);
+
         database.Regions.Add(item);
         await database.SaveChangesAsync();
     }
@@ -40,7 +46,7 @@ public class RegionService {
     public async Task<Region?> TryRetrieveAsync(string code)
     {
         return await database.Regions
-            .Include(e => e.Ancestors)
+            .Include(e => e.Parent)
             .FirstOrDefaultAsync(e => e.Slug == code);
     }
 

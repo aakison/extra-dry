@@ -90,7 +90,7 @@ public class DummyData {
     [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Might need instance in future.")]
     public async Task PopulateRegionsAsync(RegionService service)
     {
-        var baseRegions = new Region[] {
+        var baseRegions = new List<Region> {
             new Region { Uuid = Guid.NewGuid(), Slug = "all", Title = "All Regions", Description = "The World", Level = RegionLevel.Global},
 
             // Tier 1
@@ -118,7 +118,6 @@ public class DummyData {
         foreach(var region in baseRegions) {
             await service.CreateAsync(region);
         }
-
 
     }
 

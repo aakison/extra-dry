@@ -16,12 +16,8 @@ public abstract class TaxonomyEntity<T> where T : TaxonomyEntity<T>, ITaxonomyEn
             if(parent.Strata >= ((ITaxonomyEntity)this).Strata) {
                 throw new InvalidOperationException("Parent must be at a higher level than current entity.");
             }
-            Ancestors.Clear();
-            Ancestors.AddRange(parent.Ancestors);
         }
-        if(this is T self) {
-            Ancestors.Add(self);
-        }
+        Parent = parent;
     }
 
     /// <summary>
@@ -29,38 +25,31 @@ public abstract class TaxonomyEntity<T> where T : TaxonomyEntity<T>, ITaxonomyEn
     /// from multiple entities, and to re-parent an entity during an `Update`.
     /// </summary>
     /// <remarks>
-    /// This is usefully for trivially communicating the taxonomy through an API, but is not a 
-    /// good pattern for database structures. It requires that the Ancestors are loaded and then 
-    /// calculates it on the fly.
     /// Derived classes should override this and replace with a JsonConverter to a ResourceReference.
     /// </remarks>
-    [NotMapped]
     [JsonIgnore]
-    public virtual T? Parent { 
-        get {
-            parent ??= Ancestors?.OrderByDescending(e => e.Strata)?.Skip(1).FirstOrDefault(); // Skip 1 to bypass the self-reference.
-            return parent;
-        }
-        set => parent = value; 
-    }
-    private T? parent;
+    public virtual T? Parent { get; set; }
 
-    /// <summary>
-    /// The set of all ancestors for this entity.
-    /// </summary>
-    /// <remarks>
-    /// This works with `Descendants` and auto-creation of join tables in EF to create a tree Closure table.
-    /// </remarks>
-    [JsonIgnore]
-    public List<T> Ancestors { get; set; } = new();
+    // TODO - SG: Remove?
 
-    /// <summary>
-    /// The set of all descendants for this entity.
-    /// </summary>
-    /// <remarks>
-    /// This works with `Ancestors` and auto-creation of join tables in EF to create a tree Closure table.
-    /// </remarks>
-    [JsonIgnore]
-    public List<T> Descendants { get; set; } = new();
+    ///// <summary>
+    ///// The set of all ancestors for this entity.
+    ///// </summary>
+    ///// <remarks>
+    ///// Derived classes should use their data provider of choice to populate this list.
+    ///// </remarks>
+    //[JsonIgnore]
+    //[NotMapped]
+    //public virtual List<T> Ancestors { get; set; }
+
+    ///// <summary>
+    ///// The set of all descendants for this entity.
+    ///// </summary>
+    ///// <remarks>
+    ///// Derived classes should use their data provider of choice to populate this list.
+    ///// </remarks>
+    //[JsonIgnore]
+    //[NotMapped]
+    //public virtual List<T> Descendants { get; set; }
 
 }
