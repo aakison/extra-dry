@@ -84,10 +84,10 @@ namespace Sample.Server {
 
             services.AddHttpContextAccessor();
 
-            //services.AddServiceBusQueue<EntityMessage>(options => {
-            //    options.ConnectionStringKey = "WebAppServiceBus";
-            //    options.QueueName = "warehouse-update";
-            //});
+            services.AddServiceBusQueue<EntityMessage>(options => {
+                options.ConnectionStringKey = "WebAppServiceBus";
+                options.QueueName = "warehouse-update";
+            });
 
             services.AddScoped(services => {
                 var connectionString = Configuration.GetConnectionString("WebAppOltpDatabase");
@@ -97,9 +97,9 @@ namespace Sample.Server {
                 var accessor = services.GetRequiredService<IHttpContextAccessor>();
                 _ = new VersionInfoAspect(context, accessor);
 
-                //var logger = services.GetService<ILogger<DataWarehouseAspect>>();
-                //var queue = services.GetRequiredService<ServiceBusQueue<EntityMessage>>();
-                //_ = new DataWarehouseAspect(context, queue, logger);
+                var logger = services.GetService<ILogger<DataWarehouseAspect>>();
+                var queue = services.GetRequiredService<ServiceBusQueue<EntityMessage>>();
+                _ = new DataWarehouseAspect(context, queue, logger);
 
                 //_ = new SearchIndexAspect(context, services.GetService<SearchService>());
                 return context;
@@ -155,7 +155,7 @@ namespace Sample.Server {
                 endpoints.MapControllers();
 
                 // Calls to API endpoints shouldn't fallback to Blazor
-                endpoints.Map("api/{**slug}", context => { 
+                endpoints.Map("api/{**slug}", context => {
                     context.Response.StatusCode = StatusCodes.Status404NotFound;
                     return Task.CompletedTask;
                 });
