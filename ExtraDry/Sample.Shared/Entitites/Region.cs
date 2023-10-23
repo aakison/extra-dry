@@ -31,7 +31,7 @@ public partial class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidata
     public override Region? Parent { get => base.Parent; set => base.Parent = value; }
 
     [JsonIgnore]
-    public HierarchyId AncestorList { get; set; } = HierarchyId.GetRoot();
+    public HierarchyId? AncestorList { get; set; }
 
     /// <summary>
     /// The strata for the entity in the taxonomy, 0 is root, each level adds 1.
