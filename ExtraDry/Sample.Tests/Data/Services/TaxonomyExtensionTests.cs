@@ -11,7 +11,7 @@ public class TaxonomyExtensionTests {
     // This cannot run on an in-memory database becuase it needs to run relational queries for subtree moving
     // As a result we ignore unles it's specifically asked for
     // To have these tests run again, set this constant to null;
-    const string IgnoreTests = "Destructive tests disabled";
+    const string IgnoreTests = null;//"Destructive tests disabled";
 
     // 2 services. This is a workaround so the context in one doesn't actively influence the other through tracking.
     // The alternative is to fetch items as no tracking, but that would influence the production system for a non-realistic situation.
@@ -23,7 +23,7 @@ public class TaxonomyExtensionTests {
     public TaxonomyExtensionTests()
     {
         var builder = new DbContextOptionsBuilder<SampleContext>()
-            .UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ExtraDryIntegrationTests;Trusted_Connection=True;").Options;
+            .UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ExtraDryIntegrationTests;Trusted_Connection=True;", opt => opt.UseHierarchyId()).Options;
         var arrangeContext = new SampleContext(builder);
         context = new SampleContext(builder);
 
@@ -130,7 +130,6 @@ public class TaxonomyExtensionTests {
 
     private void ClearData()
     {
-        context.Database.ExecuteSqlRaw("DELETE FROM [RegionRegion]");
         context.Database.ExecuteSqlRaw("DELETE FROM [Regions]");
     }
 
