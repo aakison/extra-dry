@@ -58,6 +58,7 @@ namespace Sample.Data.Migrations
                 "Where c2.Uuid = Regions.Uuid " +
                 "AND Regions.AncestorList IS NULL");
 
+            migrationBuilder.Sql("SELECT * INTO RegionRegion_Backup From RegionRegion");
 
             migrationBuilder.DropTable(
                name: "RegionRegion");
@@ -125,6 +126,11 @@ namespace Sample.Data.Migrations
                         principalTable: "Regions",
                         principalColumn: "Id");
                 });
+
+            migrationBuilder.Sql("INSERT INTO RegionRegion SELECT * FROM RegionRegion_Backup");
+
+            migrationBuilder.DropTable(
+              name: "RegionRegion_Backup");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RegionRegion_DescendantsId",
