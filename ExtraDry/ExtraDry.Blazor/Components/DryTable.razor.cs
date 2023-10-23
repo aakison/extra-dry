@@ -17,12 +17,18 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
     [CascadingParameter]
     internal PageQueryBuilder? PageQueryBuilder { get; set; }
 
-    /// <summary>
-    /// Optional object that controls how items in the table are grouped.
-    /// A typical use is to group children under their parents.
-    /// </summary>
+    ///// <summary>
+    ///// Optional object that controls how items in the table are grouped.
+    ///// A typical use is to group children under their parents.
+    ///// </summary>
+    //[Parameter]
+    //public IGroupProvider<TItem>? GroupProvider { get; set; }
+
     [Parameter]
-    public IGroupProvider<TItem>? GroupProvider { get; set; }
+    public Func<TItem, TItem>? GroupFunc { get; set; }
+
+    [Parameter]
+    public string? GroupColumn { get; set; }
 
     /// <summary>
     /// Optional name of a property to sort the table by.
@@ -133,7 +139,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
 
     private void CalculateGroupDepth()
     {
-        if(GroupProvider != null) {
+        if(GroupFunc != null) {
             foreach(var item in InternalItems) {
                 FindGroup(item);
             }
@@ -143,20 +149,23 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
 
     private void FindGroup(ListItemInfo<TItem> item)
     {
-        if(GroupProvider == null) {
+        if(GroupFunc == null) {
             return;
         }
-        var group = GroupProvider.GetGroup(item.Item);
+        var group = GroupFunc(item.Item);
         if(group == null) {
             return;
         }
-        var wrapper = InternalItems.First(e => e.Item?.Equals(group) ?? false);
-        if(wrapper.Group == null) {
-            FindGroup(wrapper);
+
+        var wrapper = InternalItems.FirstOrDefault(e => e.Item?.Equals(group) ?? false);
+        if(wrapper != null) {
+            if(wrapper.Group == null) {
+                FindGroup(wrapper);
+            }
+            item.Group = wrapper;
+            wrapper.IsGroup = true;
+            item.GroupDepth = (wrapper?.GroupDepth ?? 0) + 1;
         }
-        item.Group = wrapper;
-        wrapper.IsGroup = true;
-        item.GroupDepth = (wrapper?.GroupDepth ?? 0) + 1;
     }
 
     private void GroupBy()
@@ -192,10 +201,10 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
             Sort = property.Property.Name;
             SortAscending = true;
         }
-        if(Items != null) {
+        if(InternalItems != null) {
             // Client side sort, we've got all items.
             IComparer<ListItemInfo<TItem>> comparer = new ItemComparer<TItem>(property, SortAscending);
-            if(GroupProvider != null) {
+            if(GroupFunc != null) {
                 comparer = new GroupComparer<TItem>(comparer);
             }
             InternalItems.Sort(comparer);
@@ -238,6 +247,8 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
                 var items = await ItemsService.GetItemsAsync(PageQueryBuilder?.Query?.Filter, Sort, SortAscending, firstIndex, ItemsService.FetchSize);
                 var count = items.Items.Count();
                 var total = items.TotalItemCount;
+                                
+
                 InternalItems.AddRange(items.Items.Select(e => new ListItemInfo<TItem> { Item = e, IsLoaded = true }));
                 InternalItems.AddRange(Enumerable.Range(0, total - count).Select(e => new ListItemInfo<TItem>()));
                 Logger.LogInformation(@"DryTable: --Loaded items #0 to #{count} of {total}.", count, total);
@@ -246,6 +257,8 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
                 Logger.LogInformation("--Returning cached results");
                 var count = Math.Min(request.Count, InternalItems.Count);
                 var items = InternalItems.GetRange(request.StartIndex, count);
+                await PerformInitialSort();
+
                 return new ItemsProviderResult<ListItemInfo<TItem>>(items, InternalItems.Count);
             }
             else {
@@ -272,6 +285,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
             if(InternalItems.Any()) {
                 var count = Math.Min(request.Count, InternalItems.Count);
                 var items = InternalItems.GetRange(request.StartIndex, count);
+                await PerformInitialSort();
                 return new ItemsProviderResult<ListItemInfo<TItem>>(items, InternalItems.Count);
             }
             else {
@@ -290,6 +304,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
             firstLoadCompleted = true;
             StateHasChanged(); // update classes affected by InternalItems
         }
+        
 
         bool AllItemsCached(int start, int count) => InternalItems.Skip(start).Take(count).All(e => e.IsLoaded);
 

@@ -3,9 +3,6 @@
 
 <DryPageQueryView>
     <TableMenu TItem="Region" />
-    @*Option 1*@
-    <DryTable TItem="Region" ViewModel="@this" ItemsService="@RegionService" GroupProvider="TheGroupProvider" />
-    @*Option 2*@
     <DryTable TItem="Region" ViewModel="@this" ItemsService="@RegionService" GroupFunc="@GetParent" GroupColumn="Code" />
 </DryPageQueryView>
 
@@ -20,16 +17,6 @@
         //Navigation.NavigateTo($"/companies/{company.Uuid}");
     }
 
-
-    // Option 1:
-    private RegionGroupProvider TheGroupProvider { get; set; } = new();
-    public class RegionGroupProvider : IGroupProvider<Region>
-    {
-        public string GroupColumn => nameof(Region.Slug);
-        public Region? GetGroup(Region item) => item.Parent;
-    }
-
-    // Option 2:
     private Region? GetParent(Region region) => region.Parent;
 
 }

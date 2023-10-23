@@ -38,4 +38,6 @@ public class ListItemInfo<T> {
 
     public bool IsShown => (Group?.IsExpanded ?? true) && (Group?.IsShown ?? true);
 
+    public Action Toggle { get; set; }
+
 }

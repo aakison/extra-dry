@@ -26,6 +26,7 @@ public partial class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidata
     [Display(Name = "Level", ShortName = "Level")]
     public RegionLevel Level { get; set; }
 
+    [NotMapped]
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonConverter(typeof(ResourceReferenceConverter<Region>))]
     public override Region? Parent { get => base.Parent; set => base.Parent = value; }
@@ -105,6 +106,11 @@ public partial class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidata
     [GeneratedRegex(@"^\w{2}-\w{2,4}-\w{2,20}$", RegexOptions.Compiled)]
     private partial Regex SubdivisionRegex();
 
+    public override bool Equals(object? obj)
+    {
+        var obj1 = obj as Region;
+        return obj1?.Slug == Slug;
+    }
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
