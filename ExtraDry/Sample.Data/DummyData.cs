@@ -106,8 +106,8 @@ public class DummyData {
         var ntRegion = new Region { Parent = auRegion, Slug = "AU-NT", Title = "Northern Territory", Description = "Northern Territory", Level = RegionLevel.Division };
         var waRegion = new Region { Parent = auRegion, Slug = "AU-WA", Title = "Western Australia", Description = "Western Australia", Level = RegionLevel.Division };
 
-        var aukRegion = new Region { Parent = auRegion, Slug = "NZ-AUK", Title = "Auckland", Description = "Auckland, NZ", Level = RegionLevel.Division };
-        var tkiRegion = new Region { Parent = auRegion, Slug = "NZ-TKI", Title = "Taranaki", Description = "Taranaki, NZ", Level = RegionLevel.Division };
+        var aukRegion = new Region { Parent = nzRegion, Slug = "NZ-AUK", Title = "Auckland", Description = "Auckland, NZ", Level = RegionLevel.Division };
+        var tkiRegion = new Region { Parent = nzRegion, Slug = "NZ-TKI", Title = "Taranaki", Description = "Taranaki, NZ", Level = RegionLevel.Division };
 
         // Tier 3
         var melbRegion = new Region { Parent = vicRegion, Slug = "AU-VIC-Melbourne", Title = "Melbourne City", Description = "Melbourne, Victoria, Australia", Level = RegionLevel.Subdivision };

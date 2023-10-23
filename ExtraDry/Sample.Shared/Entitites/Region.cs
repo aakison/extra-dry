@@ -24,8 +24,10 @@ public partial class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidata
     /// The level for this region inside a taxonomy of regions.
     /// </summary>
     [Display(Name = "Level", ShortName = "Level")]
+    [Filter]
     public RegionLevel Level { get; set; }
 
+    [Filter]
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonConverter(typeof(ResourceReferenceConverter<Region>))]
     public override Region? Parent { get => base.Parent; set => base.Parent = value; }
