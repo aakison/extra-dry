@@ -11,14 +11,11 @@ namespace Sample.Data.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "RegionRegion");
-
             migrationBuilder.AddColumn<HierarchyId>(
                 name: "AncestorList",
                 table: "Regions",
                 type: "hierarchyid",
-                nullable: false);
+                nullable: true);
 
             migrationBuilder.AddColumn<int>(
                 name: "ParentId",
@@ -34,6 +31,36 @@ namespace Sample.Data.Migrations
                 defaultValueSql: "'{}'",
                 oldClrType: typeof(string),
                 oldType: "nvarchar(max)");
+            
+            //Update ParentId
+            migrationBuilder.Sql("Update Child Set " +
+               "Child.ParentId = Parent.Id " +
+               "From Regions child " +
+               "LEFT JOIN RegionRegion ON DescendantsId = child.Id " +
+               "LEFT JOIN Regions Parent on AncestorsId = Parent.Id " +
+               "Where Parent.Level = child.Level - 1 " +
+               "AND child.ParentId IS NULL");
+
+            // Update AncestorList
+            migrationBuilder.Sql("with c2 as ( " +
+                "select base.*, cast(base.Id as varchar(max)) as Lineage " +
+                "from Regions base " +
+                "where base.Level = 0 " +
+                "union all " +
+                "select " +
+                "child.*, " +
+                "c2.Lineage + '/' + cast(child.Id as varchar(max)) as Lineage " +
+                "from " +
+                "c2 join Regions child on c2.Id = child.ParentId ) " +
+                "Update Regions " +
+                "Set AncestorList = '/' + c2.Lineage + '/' " +
+                "from c2 " +
+                "Where c2.Uuid = Regions.Uuid " +
+                "AND Regions.AncestorList IS NULL");
+
+
+            migrationBuilder.DropTable(
+               name: "RegionRegion");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Regions_ParentId",
