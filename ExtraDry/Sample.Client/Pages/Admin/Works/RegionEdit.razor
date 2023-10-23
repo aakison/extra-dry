@@ -1,11 +1,13 @@
-﻿@page "/admin/works/regions"
-@inject IListService<Region> RegionService;
+﻿@inject CrudService<Region> RegionService;
 @inject NavigationManager Navigation;
 
-<DryPageQueryView>
+@*<DryPageQueryView>
     <TableMenu TItem="Region" />
     <DryTable TItem="Region" ViewModel="@this" ItemsService="@RegionService" />
 </DryPageQueryView>
+*@
+
+<h3>To Be Implemented</h3>
 
 @code {
 
@@ -13,9 +15,7 @@
     public void Edit(Region region)
     {
         Console.WriteLine($"Huzzah {region.Slug}");
-        //CompanyUuid = company.Uuid;
         StateHasChanged();
-        //Navigation.NavigateTo($"/companies/{company.Uuid}");
     }
 
 }

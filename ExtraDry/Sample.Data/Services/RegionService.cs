@@ -11,7 +11,7 @@ public class RegionService {
     public async Task<FilteredCollection<Region>> ListAsync(FilterQuery query)
     {
         return await database.Regions
-            .Include(e => e.Parent)
+            .OrderBy(e => e.AncestorList)
             .QueryWith(query)
             .ToFilteredCollectionAsync();
     }
