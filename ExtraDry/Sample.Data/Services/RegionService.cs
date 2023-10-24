@@ -33,13 +33,20 @@ public class RegionService {
             }
             parent = await TryRetrieveAsync(item.Parent.Slug);
         }
+
+        if(parent == null) {
+            throw new ArgumentException("Invalid parent");
+        }
+
         item.SetParent(parent);
+
+        var lastRegionHierarchy = await database.Regions.Where(e => e.AncestorList!.IsDescendantOf(parent.AncestorList)).MaxAsync(c => c.AncestorList);
+        var newHierarchy = parent.AncestorList?.GetDescendant(lastRegionHierarchy, null);
+        item.AncestorList = newHierarchy;
 
         database.Regions.Add(item);
 
         await database.SaveChangesAsync();
-
-        await database.Database.ExecuteSqlRawAsync(string.Format(AddToEndOfChildren, parent?.Id.ToString() ?? "null", item.Id ));
     }
 
     public async Task<Region?> TryRetrieveAsync(string code)
@@ -102,15 +109,5 @@ public class RegionService {
     private readonly SampleContext database;
 
     private readonly RuleEngine rules;
-
-    const string AddToEndOfChildren =
-    @"update regions
-set AncestorList =
-	coalesce(
-	(select top 1 AncestorList from Regions where Id = {0}).GetDescendant(
-		nullif((select top 1 AncestorList from Regions where parentid = {0} order by AncestorList desc), CAST('/' as hierarchyid))
-		, NULL
-	), CAST('/' as hierarchyid))
- where id = {1}";
 
 }
