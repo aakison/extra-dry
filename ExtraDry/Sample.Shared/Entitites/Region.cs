@@ -17,7 +17,7 @@ public partial class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidata
     public int Id { get; set; }
 
     /// <inheritdoc cref="IResourceIdentifiers.Uuid" />
-    [Sort(SortType.Sortable)] // test a normally excempt rule being included in the sort.
+    [Sort(SortType.Sortable)] 
     public Guid Uuid { get; set; } = Guid.NewGuid();
 
     /// <summary>
@@ -33,7 +33,7 @@ public partial class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidata
     public override Region? Parent { get => base.Parent; set => base.Parent = value; }
 
     [JsonIgnore]
-    public HierarchyId? AncestorList { get; set; } = HierarchyId.GetRoot();
+    public HierarchyId Lineage { get; set; } = HierarchyId.GetRoot();
 
     /// <summary>
     /// The strata for the entity in the taxonomy, 0 is root, each level adds 1.

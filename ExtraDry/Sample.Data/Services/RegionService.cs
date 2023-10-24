@@ -1,4 +1,6 @@
-﻿namespace Sample.Data.Services;
+﻿using System.Data.SqlTypes;
+
+namespace Sample.Data.Services;
 
 public class RegionService {
 
@@ -11,7 +13,7 @@ public class RegionService {
     public async Task<FilteredCollection<Region>> ListAsync(FilterQuery query)
     {
         return await database.Regions
-            .OrderBy(e => e.AncestorList)
+            .OrderBy(e => e.Lineage)
             .QueryWith(query)
             .ToFilteredCollectionAsync();
     }
@@ -23,7 +25,7 @@ public class RegionService {
             throw new ArgumentException("Invalid region code.");
         }
 
-        return await database.Regions.Where(e => e.AncestorList.GetAncestor(1) == region.AncestorList).ToListAsync();
+        return await database.Regions.Where(e => e.Lineage.GetAncestor(1) == region.Lineage).ToListAsync();
     }
 
     public async Task CreateAsync(Region item)
@@ -40,11 +42,7 @@ public class RegionService {
             throw new ArgumentException("Invalid parent");
         }
 
-        item.SetParent(parent);
-
-        var maxHierarchy = await database.Regions.Where(e => e.AncestorList!.IsDescendantOf(parent.AncestorList)).MaxAsync(c => c.AncestorList);
-        var newHierarchy = parent.AncestorList?.GetDescendant(maxHierarchy, null);
-        item.AncestorList = newHierarchy;
+        await SetParent(item, parent);
 
         database.Regions.Add(item);
 
@@ -81,11 +79,12 @@ public class RegionService {
                 var newParent = await RetrieveAsync(item.Parent.Slug);
                 existing.Parent = newParent;
 
+                if(item.Parent != existing.Parent) {
+                    await SetParent(existing, existing.Parent);
+                }
             }
             await rules.UpdateAsync(item, existing);
             await database.SaveChangesAsync();
-
-            existing.SetParent(existing.Parent);
 
             await database.Database.CommitTransactionAsync();
         }
@@ -106,6 +105,25 @@ public class RegionService {
         var existing = await RetrieveAsync(code);
         await rules.RestoreAsync(existing);
         await database.SaveChangesAsync();
+    }
+
+    public async Task SetParent(Region child, Region? parent)
+    {
+        if(parent == null) { return; }
+
+        if(database.Regions.Any(e => e.Uuid == child.Uuid && e.Lineage.IsDescendantOf(parent.Lineage))) {
+            // Already a child of this entity in the DB, so lets not set it again, it'll make the lineage numbers climb.
+            return;
+        }
+
+        if(parent.Strata >= child.Strata) {
+            throw new InvalidOperationException("Parent must be at a higher level than current entity.");
+        }
+        child.Parent = parent;
+
+        var maxHierarchy = await database.Regions.Where(e => e.Lineage!.IsDescendantOf(parent.Lineage)).MaxAsync(c => c.Lineage);
+        var newHierarchy = parent.Lineage?.GetDescendant(maxHierarchy, null);
+        child.Lineage = newHierarchy;
     }
 
     private readonly SampleContext database;
