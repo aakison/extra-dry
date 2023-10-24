@@ -25,7 +25,7 @@ public class RegionService {
             throw new ArgumentException("Invalid region code.");
         }
 
-        return await database.Regions.Where(e => e.Lineage.GetAncestor(1) == region.Lineage).ToListAsync();
+        return await database.Regions.Where(e => e.AncestorList!.IsDescendantOf(region.AncestorList) && e.AncestorList.GetLevel() == region.AncestorList.GetLevel() + 1).Include(e => e.Parent).ToListAsync();
     }
 
     public async Task CreateAsync(Region item)
