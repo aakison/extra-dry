@@ -55,7 +55,7 @@ public class RegionController {
     /// </summary>
     [HttpGet("api/regions/{code}/children"), Produces("application/json")]
     [AllowAnonymous]
-    public async Task<FilteredCollection<Region>> ListChildrenAsync(string code)
+    public async Task<List<Region>> ListChildrenAsync(string code)
     {
         return await regions.ListChildrenAsync(code);
     }

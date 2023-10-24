@@ -15,13 +15,15 @@ public class RegionService {
             .QueryWith(query)
             .ToFilteredCollectionAsync();
     }
-
-    public async Task<FilteredCollection<Region>> ListChildrenAsync(string code)
+    
+    public async Task<List<Region>> ListChildrenAsync(string code)
     {
-        throw new NotImplementedException();
-        //return await database.Regions
-        //    .QueryWith(new(), e => e.Ancestors.Any(f => f.Slug == code && (int)f.Level + 1 == (int)e.Level))
-        //    .ToFilteredCollectionAsync();
+        var region = await TryRetrieveAsync(code);
+        if(region == null) {
+            throw new ArgumentException("Invalid region code.");
+        }
+
+        return await database.Regions.Where(e => e.AncestorList.GetAncestor(1) == region.AncestorList).ToListAsync();
     }
 
     public async Task CreateAsync(Region item)
