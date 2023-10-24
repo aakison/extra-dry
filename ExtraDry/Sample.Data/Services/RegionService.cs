@@ -25,7 +25,7 @@ public class RegionService {
             throw new ArgumentException("Invalid region code.");
         }
 
-        return await database.Regions.Where(e => e.AncestorList!.IsDescendantOf(region.AncestorList) && e.AncestorList.GetLevel() == region.AncestorList.GetLevel() + 1).Include(e => e.Parent).ToListAsync();
+        return await database.Regions.Where(e => e.Lineage!.IsDescendantOf(region.Lineage) && e.Lineage.GetLevel() == region.Lineage.GetLevel() + 1).Include(e => e.Parent).ToListAsync();
     }
 
     public async Task CreateAsync(Region item)
@@ -106,7 +106,7 @@ public class RegionService {
         await database.SaveChangesAsync();
     }
 
-    public async Task SetParent(Region child, Region? parent)
+    private async Task SetParent(Region child, Region? parent)
     {
         if(parent == null) { return; }
 
