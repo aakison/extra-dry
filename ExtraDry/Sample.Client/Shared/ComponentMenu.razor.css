@@ -1,55 +1,44 @@
 ﻿section {
-  border-bottom: solid 1px hsl(0deg, 0%, 60%);
+  border-bottom: solid 1px #999999;
   display: flex;
-  justify-content: center;
-}
-section article {
-  display: flex;
-  background-color: var(--white);
-  margin: 0;
-  padding: 0;
-  align-items: flex-end;
-  justify-content: flex-start;
-  width: 100%;
-  max-width: 1240px;
-}
-section article ::deep nav {
-  margin-bottom: 0;
-  background-color: #FFFFFF;
-}
-section article ::deep nav ul {
-  padding: 0;
-  margin-bottom: 0;
-}
-section article ::deep nav ul li {
-  list-style-type: none;
-  padding: 5px;
-  border-radius: 3px 3px 0 0;
-  border-bottom: solid 3px transparent;
-}
-section article ::deep nav ul li a {
-  color: hsl(0deg, 0%, 30%);
-  padding: 1px 5px;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-section article ::deep nav ul li a div {
-  gap: 5px;
-}
-section article ::deep nav ul li a img {
-  height: 20px;
-  width: unset;
-}
-section article ::deep nav ul li:hover {
-  border-bottom: solid 3px hsl(47.5247524752deg, 99.0196078431%, 90%);
-  background-color: hsl(0deg, 0%, 97%);
-}
-section article ::deep nav ul li.active {
-  border-bottom: solid 3px #FED434;
-  background-color: hsl(0deg, 0%, 90%);
-}
-section article ::deep nav ul li.active:hover {
-  background-color: hsl(0deg, 0%, 97%);
-}
+  justify-content: center; }
+  section article {
+    display: flex;
+    background-color: var(--white);
+    margin: 0;
+    padding: 0;
+    align-items: flex-end;
+    justify-content: flex-start;
+    width: 100%;
+    max-width: 1240px; }
+    section article ::deep nav {
+      margin-bottom: 0;
+      background-color: #FFFFFF; }
+      section article ::deep nav ul {
+        padding: 0;
+        margin-bottom: 0; }
+        section article ::deep nav ul li {
+          list-style-type: none;
+          padding: 5px;
+          border-radius: 3px 3px 0 0;
+          border-bottom: solid 3px transparent; }
+          section article ::deep nav ul li a {
+            color: #4d4c4c;
+            padding: 1px 5px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px; }
+            section article ::deep nav ul li a div {
+              gap: 5px; }
+            section article ::deep nav ul li a img {
+              height: 20px;
+              width: unset; }
+          section article ::deep nav ul li:hover {
+            border-bottom: solid 3px #fff4cc;
+            background-color: #f7f7f7; }
+          section article ::deep nav ul li.active {
+            border-bottom: solid 3px #FED434;
+            background-color: #e6e5e5; }
+            section article ::deep nav ul li.active:hover {
+              background-color: #f7f7f7; }

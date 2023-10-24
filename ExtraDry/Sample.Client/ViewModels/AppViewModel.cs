@@ -51,6 +51,8 @@ public class AppViewModel {
         new IconInfo("compress", "fas fa-compress-alt"),
         new IconInfo("chevron-down", "fas fa-chevron-down"),
 
+        // Buttcons and affordances:
+        new IconInfo("close-dialog", "/img/glyphs/xmark-light.svg", "Close", "glyph"),
         new IconInfo("option-checked", "/img/glyphs/square-check-solid.svg", "Checked", "small-icon"),
         new IconInfo("option-unchecked", "/img/glyphs/square-regular.svg", "Unchecked", "small-icon"),
         new IconInfo("option-indeterminate", "/img/glyphs/square-minus-duotone.svg", "Indeterminate", "small-icon"),
