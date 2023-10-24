@@ -40,8 +40,8 @@ public class RegionService {
 
         item.SetParent(parent);
 
-        var lastRegionHierarchy = await database.Regions.Where(e => e.AncestorList!.IsDescendantOf(parent.AncestorList)).MaxAsync(c => c.AncestorList);
-        var newHierarchy = parent.AncestorList?.GetDescendant(lastRegionHierarchy, null);
+        var maxHierarchy = await database.Regions.Where(e => e.AncestorList!.IsDescendantOf(parent.AncestorList)).MaxAsync(c => c.AncestorList);
+        var newHierarchy = parent.AncestorList?.GetDescendant(maxHierarchy, null);
         item.AncestorList = newHierarchy;
 
         database.Regions.Add(item);
