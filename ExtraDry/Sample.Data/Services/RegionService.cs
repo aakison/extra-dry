@@ -1,4 +1,4 @@
-﻿using System.Data.SqlTypes;
+﻿using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Sample.Data.Services;
 
@@ -13,9 +13,25 @@ public class RegionService {
     public async Task<FilteredCollection<Region>> ListAsync(FilterQuery query)
     {
         return await database.Regions
-            .OrderBy(e => e.Lineage)
+            .Include(e => e.Parent)
+            .OrderBy(e => e.AncestorList)
             .QueryWith(query)
             .ToFilteredCollectionAsync();
+    }
+
+    public async Task<List<Region>> ListHierarchyAsync(HierarchyQuery query)
+    {
+        var expandSubQuery = database.Regions.Where(e => query.ExpandedNodes.Contains(e.Slug)).Select(e => e.AncestorList).ToListAsync();
+
+        var dbQuery = database.Regions
+            .Include(e => e.Parent)
+            .Where(e => e.AncestorList.GetLevel() == query.Level)
+            .OrderBy(e => e.AncestorList)
+            .ToListAsync();
+
+        return await dbQuery;
+        
+            
     }
     
     public async Task<List<Region>> ListChildrenAsync(string code)
@@ -25,7 +41,7 @@ public class RegionService {
             throw new ArgumentException("Invalid region code.");
         }
 
-        return await database.Regions.Where(e => e.Lineage!.IsDescendantOf(region.Lineage) && e.Lineage.GetLevel() == region.Lineage.GetLevel() + 1).Include(e => e.Parent).ToListAsync();
+        return await database.Regions.Where(e => e.AncestorList!.IsDescendantOf(region.AncestorList) && e.AncestorList.GetLevel() == region.AncestorList.GetLevel() + 1).Include(e => e.Parent).ToListAsync();
     }
 
     public async Task CreateAsync(Region item)
@@ -110,7 +126,7 @@ public class RegionService {
     {
         if(parent == null) { return; }
 
-        if(database.Regions.Any(e => e.Uuid == child.Uuid && e.Lineage.IsDescendantOf(parent.Lineage))) {
+        if(database.Regions.Any(e => e.Uuid == child.Uuid && e.AncestorList.IsDescendantOf(parent.AncestorList))) {
             // Already a child of this entity in the DB, so lets not set it again, it'll make the lineage numbers climb.
             return;
         }
@@ -120,9 +136,9 @@ public class RegionService {
         }
         child.Parent = parent;
 
-        var maxHierarchy = await database.Regions.Where(e => e.Lineage!.IsDescendantOf(parent.Lineage)).MaxAsync(c => c.Lineage);
-        var newHierarchy = parent.Lineage?.GetDescendant(maxHierarchy, null);
-        child.Lineage = newHierarchy;
+        var maxHierarchy = await database.Regions.Where(e => e.AncestorList!.IsDescendantOf(parent.AncestorList)).MaxAsync(c => c.AncestorList);
+        var newHierarchy = parent.AncestorList?.GetDescendant(maxHierarchy, null);
+        child.AncestorList = newHierarchy;
     }
 
     private readonly SampleContext database;
