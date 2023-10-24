@@ -79,9 +79,8 @@ public class RegionService {
                 var newParent = await RetrieveAsync(item.Parent.Slug);
                 existing.Parent = newParent;
 
-                if(item.Parent != existing.Parent) {
-                    await SetParent(existing, existing.Parent);
-                }
+                await SetParent(existing, existing.Parent);
+                
             }
             await rules.UpdateAsync(item, existing);
             await database.SaveChangesAsync();
