@@ -82,7 +82,11 @@ public class RegionService {
         var existing = await RetrieveAsync(slug);
         await database.Database.BeginTransactionAsync();
         try {
-            if(allowMove && existing.Parent != null && item.Parent != null && existing.Parent.Slug != item.Parent.Slug) {
+            if(!allowMove) {
+                // if we're not allowing a parent change, ensure they're not bypassing the parent update by explicitly resetting it.
+                item.Parent = existing.Parent;
+            }
+            else if(allowMove && existing.Parent != null && item.Parent != null && existing.Parent.Slug != item.Parent.Slug) {
                 var newParent = await RetrieveAsync(item.Parent.Slug);
                 existing.Parent = newParent;
 

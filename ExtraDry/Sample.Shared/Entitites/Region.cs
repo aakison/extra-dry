@@ -30,6 +30,7 @@ public partial class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidata
     [Filter]
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonConverter(typeof(ResourceReferenceConverter<Region>))]
+    [Rules(RuleAction.Link)]
     public override Region? Parent { get => base.Parent; set => base.Parent = value; }
 
     [JsonIgnore]

@@ -15,8 +15,7 @@ public class TaxonomyExtensionTests {
 
     // 2 services. This is a workaround so the context in one doesn't actively influence the other through tracking.
     // The alternative is to fetch items as no tracking, but that would influence the production system for a non-realistic situation.
-    private RegionService arrangeService;
-    private RegionService actService;
+    private RegionService regions;
 
     private SampleContext context;
 
@@ -29,10 +28,10 @@ public class TaxonomyExtensionTests {
 
         var rules = new RuleEngine(new ServiceProviderStub());
 
-        arrangeService = new RegionService(arrangeContext, rules);
-        actService = new RegionService(context, rules);
+        regions = new RegionService(arrangeContext, rules);
+        regions = new RegionService(context, rules);
         ClearData();
-        SeedSampleData(arrangeService).Wait();
+        SeedSampleData(regions).Wait();
     }
 
     //[Fact(Skip = IgnoreTests)]
@@ -60,14 +59,15 @@ public class TaxonomyExtensionTests {
     [Fact(Skip = IgnoreTests)]
     public async Task MoveLeafNodeIgnoredWithParameter()
     {
-        var nsw = await arrangeService.TryRetrieveAsync("AU-NSW");
-        var nz = await arrangeService.TryRetrieveAsync("NZ");
+        var nsw = await regions.TryRetrieveAsync("AU-NSW");
+        var nz = await regions.TryRetrieveAsync("NZ");
         nsw.Parent = nz;
         nsw.Description = "Value Changed";
+        context.ChangeTracker.Clear(); // so that changes aren't tracked and we can emulate a call coming from the API.
 
-        await actService.UpdateAsync("AU-NSW", nsw);
+        await regions.UpdateAsync("AU-NSW", nsw);
 
-        nsw = await actService.TryRetrieveAsync("AU-NSW");
+        nsw = await regions.TryRetrieveAsync("AU-NSW");
         Assert.Equal("AU", nsw.Parent.Slug);
         Assert.Equal("Value Changed", nsw.Description);
         //Assert.DoesNotContain(nsw.Ancestors, a => a.Slug == "NZ");
@@ -76,25 +76,27 @@ public class TaxonomyExtensionTests {
     [Fact(Skip = IgnoreTests)]
     public async Task MoveLeafNodeToDifferentStrata()
     {
-        var nsw = await arrangeService.TryRetrieveAsync("AU-NSW");
-        var auk = await arrangeService.TryRetrieveAsync("NZ-AUK");
+        var nsw = await regions.TryRetrieveAsync("AU-NSW");
+        var cnt = nsw.Parent;
+        context.ChangeTracker.Clear(); // so that changes aren't tracked and we can emulate a call coming from the API.
+        var auk = await regions.TryRetrieveAsync("NZ-AUK");
         nsw.Parent = auk;
 
-        await Assert.ThrowsAsync<ArgumentException>(async () => await actService.UpdateAsync("AU-NSW", nsw, true));
+        await Assert.ThrowsAsync<ArgumentException>(async () => await regions.UpdateAsync("AU-NSW", nsw, true));
     }
 
     [Fact(Skip = IgnoreTests)]
     public async Task MoveSubtree()
     {
-        var qld = await arrangeService.TryRetrieveAsync("AU-QLD");
-        var nz = await arrangeService.TryRetrieveAsync("NZ");
+        var qld = await regions.TryRetrieveAsync("AU-QLD");
+        var nz = await regions.TryRetrieveAsync("NZ");
         qld.Parent = nz;
 
-        await actService.UpdateAsync("AU-QLD", qld, true);
+        await regions.UpdateAsync("AU-QLD", qld, true);
 
-        var qld2 = await arrangeService.TryRetrieveAsync("AU-QLD");
+        var qld2 = await regions.TryRetrieveAsync("AU-QLD");
         Assert.Equal("NZ", qld2.Parent.Slug);
-        var bris = await arrangeService.TryRetrieveAsync("AU-Qld-Brisbane");
+        var bris = await regions.TryRetrieveAsync("AU-Qld-Brisbane");
         //Assert.Contains(bris.Ancestors, e => e.Slug == "AU-QLD");
         //Assert.Contains(bris.Ancestors, e => e.Slug == "NZ");
     }
@@ -102,27 +104,28 @@ public class TaxonomyExtensionTests {
     [Fact(Skip = IgnoreTests)]
     public async Task MoveSubtreeToDifferentStrata()
     {
-        var qld = await arrangeService.TryRetrieveAsync("AU-QLD");
-        var nz = await arrangeService.TryRetrieveAsync("NZ-AUK");
+        var qld = await regions.TryRetrieveAsync("AU-QLD");
+        var nz = await regions.TryRetrieveAsync("NZ-AUK");
         qld.Parent = nz;
+        context.ChangeTracker.Clear(); // so that changes aren't tracked and we can emulate a call coming from the API.
 
-        await Assert.ThrowsAsync<ArgumentException>(async () => await actService.UpdateAsync("AU-QLD", qld, true));
+        await Assert.ThrowsAsync<ArgumentException>(async () => await regions.UpdateAsync("AU-QLD", qld, true));
     }
 
     [Fact(Skip = IgnoreTests)]
     public async Task MoveSubtreeWithAdditionalChanges()
     {
-        var qld = await arrangeService.TryRetrieveAsync("AU-QLD");
-        var nz = await arrangeService.TryRetrieveAsync("NZ");
+        var qld = await regions.TryRetrieveAsync("AU-QLD");
+        var nz = await regions.TryRetrieveAsync("NZ");
         qld.Parent = nz;
         qld.Title = "TestTitle";
 
         // Should do the move, then the change and not fail.
-        await actService.UpdateAsync("AU-QLD", qld, true);
+        await regions.UpdateAsync("AU-QLD", qld, true);
 
-        qld = await arrangeService.TryRetrieveAsync("AU-QLD");
+        qld = await regions.TryRetrieveAsync("AU-QLD");
         Assert.Equal("NZ", qld.Parent.Slug);
-        var bris = await arrangeService.TryRetrieveAsync("AU-Qld-Brisbane");
+        var bris = await regions.TryRetrieveAsync("AU-Qld-Brisbane");
         //Assert.Contains(bris.Ancestors, e => e.Slug == "AU-QLD");
         //Assert.Contains(bris.Ancestors, e => e.Slug == "NZ");
         Assert.Equal("TestTitle", qld.Title);
