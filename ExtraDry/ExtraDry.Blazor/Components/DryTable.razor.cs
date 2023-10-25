@@ -201,7 +201,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
             Sort = property.Property.Name;
             SortAscending = true;
         }
-        if(InternalItems != null) {
+        if(Items != null) {
             // Client side sort, we've got all items.
             IComparer<ListItemInfo<TItem>> comparer = new ItemComparer<TItem>(property, SortAscending);
             if(GroupFunc != null) {

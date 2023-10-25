@@ -46,6 +46,7 @@ public class SampleDataController {
             sampleData.PopulateEmployees(context, 5000);
             sampleData.PopulateContents(context);
             await sampleData.PopulateRegionsAsync(regions);
+            //await sampleData.PopulateArbitaryRegions(regions, 5, 10, 10);
         }
     }
 }

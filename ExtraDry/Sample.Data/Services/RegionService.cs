@@ -1,6 +1,4 @@
-﻿using System.Data.SqlTypes;
-
-namespace Sample.Data.Services;
+﻿namespace Sample.Data.Services;
 
 public class RegionService {
 
@@ -10,14 +8,25 @@ public class RegionService {
         rules = ruleEngine;
     }
 
-    public async Task<FilteredCollection<Region>> ListAsync(FilterQuery query)
+    public async Task<PagedCollection<Region>> ListAsync(FilterQuery query)
     {
         return await database.Regions
+            .Include(e => e.Parent)
             .OrderBy(e => e.Lineage)
             .QueryWith(query)
-            .ToFilteredCollectionAsync();
+            .ToPagedCollectionAsync();
     }
-    
+
+    public async Task<List<Region>> ListHierarchyAsync(HierarchyQuery query)
+    {
+        var level = database.Regions.Where(e => e.Lineage.GetLevel() <= query.Level);
+        var expansions = ChildrenOf(query.Level, query.ExpandedNodes);
+        var collapses = DescendantOf(query.CollapsedNodes);
+        var all = level.Union(expansions).Except(collapses).OrderBy(e => e.Lineage);
+
+        return await all.ToListAsync();
+    }
+
     public async Task<List<Region>> ListChildrenAsync(string code)
     {
         var region = await TryRetrieveAsync(code);
@@ -69,7 +78,7 @@ public class RegionService {
     /// <param name="allowMove">If false (default), any parent changes will be ignored. If true, will attempt to reparent the provided item to the provided parent.</param>
     /// <returns></returns>
     public async Task UpdateAsync(string slug, Region item, bool allowMove = false)
-    {        
+    {
         var existing = await RetrieveAsync(slug);
         await database.Database.BeginTransactionAsync();
         try {
@@ -78,7 +87,6 @@ public class RegionService {
                 existing.Parent = newParent;
 
                 await SetParent(existing, existing.Parent);
-                
             }
             await rules.UpdateAsync(item, existing);
             await database.SaveChangesAsync();
@@ -127,8 +135,32 @@ public class RegionService {
         child.Lineage = newLineage;
     }
 
+    private IQueryable<Region> ChildrenOf(int level, IEnumerable<string> parentSlugs)
+    {
+        var children = database.Regions.SelectMany(parent => database.Regions
+                .Where(child => child.Lineage.IsDescendantOf(parent.Lineage)
+                            && child.Lineage.GetLevel() == parent.Lineage.GetLevel() + 1
+                            && parentSlugs.Contains(parent.Slug)),
+                (parent, child) => child);
+
+        //Get missing parents for children.
+        foreach(var child in children.ToList()) {
+            if(child.Parent == null) {
+                var parent = database.Regions.Where(e => child.Lineage.IsDescendantOf(e.Lineage));
+                children = children.Union(parent);
+            }
+        }
+        return children;
+    }
+
+    private IQueryable<Region> DescendantOf(IEnumerable<string> parentSlugs) =>
+        database.Regions.SelectMany(parent => database.Regions
+            .Where(child => child.Lineage.IsDescendantOf(parent.Lineage)
+                        && child.Lineage.GetLevel() > parent.Lineage.GetLevel()
+                        && parentSlugs.Contains(parent.Slug)),
+            (parent, child) => child);
+
     private readonly SampleContext database;
 
     private readonly RuleEngine rules;
-
 }
