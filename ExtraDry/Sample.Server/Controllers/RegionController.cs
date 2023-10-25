@@ -40,7 +40,7 @@ public class RegionController {
         return await regions.ListAsync(query);
     }
 
-    [HttpGet("api/regions/hieararchy"), Produces("application/json")]
+    [HttpGet("api/regions/hierarchy"), Produces("application/json")]
     [AllowAnonymous]
     public async Task<List<Region>> ListHierarchyAsync([FromQuery] HierarchyQuery query)
     {
