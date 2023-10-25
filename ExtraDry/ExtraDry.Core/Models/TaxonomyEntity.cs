@@ -15,26 +15,4 @@ public abstract class TaxonomyEntity<T> where T : TaxonomyEntity<T>, ITaxonomyEn
     [JsonIgnore]
     public virtual T? Parent { get; set; }
 
-    // TODO - SG: Remove?
-
-    ///// <summary>
-    ///// The set of all ancestors for this entity.
-    ///// </summary>
-    ///// <remarks>
-    ///// Derived classes should use their data provider of choice to populate this list.
-    ///// </remarks>
-    //[JsonIgnore]
-    //[NotMapped]
-    //public virtual List<T> Ancestors { get; set; }
-
-    ///// <summary>
-    ///// The set of all descendants for this entity.
-    ///// </summary>
-    ///// <remarks>
-    ///// Derived classes should use their data provider of choice to populate this list.
-    ///// </remarks>
-    //[JsonIgnore]
-    //[NotMapped]
-    //public virtual List<T> Descendants { get; set; }
-
 }

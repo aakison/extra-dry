@@ -36,16 +36,14 @@ public class RegionService {
                 throw new ArgumentException("A region must have a parent if it is not at the global level.");
             }
             parent = await TryRetrieveAsync(item.Parent.Slug);
-        }
 
-        if(parent == null) {
-            throw new ArgumentException("Invalid parent");
+            if(parent == null) {
+                throw new ArgumentException("Invalid parent");
+            }
         }
 
         await SetParent(item, parent);
-
         database.Regions.Add(item);
-
         await database.SaveChangesAsync();
     }
 
@@ -111,7 +109,7 @@ public class RegionService {
         if(parent == null) { return; }
 
         if(database.Regions.Any(e => e.Uuid == child.Uuid && e.Lineage.IsDescendantOf(parent.Lineage))) {
-            // Already a child of this entity in the DB, so lets not set it again, it'll make the lineage numbers climb.
+            // Already a child of this entity in the DB, so lets not set it again, it'll change the sort and make the lineage numbers climb.
             return;
         }
 
@@ -120,9 +118,13 @@ public class RegionService {
         }
         child.Parent = parent;
 
-        var maxHierarchy = await database.Regions.Where(e => e.Lineage!.IsDescendantOf(parent.Lineage)).MaxAsync(c => c.Lineage);
-        var newHierarchy = parent.Lineage?.GetDescendant(maxHierarchy, null);
-        child.Lineage = newHierarchy;
+        var maxChildLineage = await database.Regions.Where(e => e.Lineage!.IsDescendantOf(parent.Lineage)).MaxAsync(c => c.Lineage);
+        if(maxChildLineage == HierarchyId.GetRoot() || maxChildLineage == parent.Lineage) {
+            // If this is the first child of the parent, pass null as the first param for GetDescendant
+            maxChildLineage = null;
+        }
+        var newLineage = parent.Lineage?.GetDescendant(maxChildLineage, null);
+        child.Lineage = newLineage;
     }
 
     private readonly SampleContext database;
