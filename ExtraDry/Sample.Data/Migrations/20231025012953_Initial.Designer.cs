@@ -12,8 +12,8 @@ using Sample.Data;
 namespace Sample.Data.Migrations
 {
     [DbContext(typeof(SampleContext))]
-    [Migration("20231020063746_Hierarchy")]
-    partial class Hierarchy
+    [Migration("20231025012953_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -190,10 +190,6 @@ namespace Sample.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<HierarchyId>("AncestorList")
-                        .IsRequired()
-                        .HasColumnType("hierarchyid");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -204,6 +200,10 @@ namespace Sample.Data.Migrations
 
                     b.Property<int>("Level")
                         .HasColumnType("int");
+
+                    b.Property<HierarchyId>("Lineage")
+                        .IsRequired()
+                        .HasColumnType("hierarchyid");
 
                     b.Property<int?>("ParentId")
                         .HasColumnType("int");

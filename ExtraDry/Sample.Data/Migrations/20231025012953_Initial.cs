@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -78,6 +79,8 @@ namespace Sample.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Uuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Level = table.Column<int>(type: "int", nullable: false),
+                    ParentId = table.Column<int>(type: "int", nullable: true),
+                    Lineage = table.Column<HierarchyId>(type: "hierarchyid", nullable: false),
                     Slug = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
                     Title = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
@@ -91,6 +94,11 @@ namespace Sample.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Regions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Regions_Regions_ParentId",
+                        column: x => x.ParentId,
+                        principalTable: "Regions",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -114,29 +122,6 @@ namespace Sample.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RegionRegion",
-                columns: table => new
-                {
-                    AncestorsId = table.Column<int>(type: "int", nullable: false),
-                    DescendantsId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RegionRegion", x => new { x.AncestorsId, x.DescendantsId });
-                    table.ForeignKey(
-                        name: "FK_RegionRegion_Regions_AncestorsId",
-                        column: x => x.AncestorsId,
-                        principalTable: "Regions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_RegionRegion_Regions_DescendantsId",
-                        column: x => x.DescendantsId,
-                        principalTable: "Regions",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Companies",
                 columns: table => new
                 {
@@ -156,7 +141,7 @@ namespace Sample.Data.Migrations
                     VersionUserCreated = table.Column<string>(name: "Version_UserCreated", type: "nvarchar(80)", maxLength: 80, nullable: false),
                     VersionDateModified = table.Column<DateTime>(name: "Version_DateModified", type: "datetime2", nullable: false),
                     VersionUserModified = table.Column<string>(name: "Version_UserModified", type: "nvarchar(80)", maxLength: 80, nullable: false),
-                    CustomFields = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    CustomFields = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValueSql: "'{}'")
                 },
                 constraints: table =>
                 {
@@ -196,9 +181,9 @@ namespace Sample.Data.Migrations
                 column: "PrimarySectorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RegionRegion_DescendantsId",
-                table: "RegionRegion",
-                column: "DescendantsId");
+                name: "IX_Regions_ParentId",
+                table: "Regions",
+                column: "ParentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Regions_Uuid",
@@ -236,13 +221,10 @@ namespace Sample.Data.Migrations
                 name: "Employees");
 
             migrationBuilder.DropTable(
-                name: "RegionRegion");
+                name: "Regions");
 
             migrationBuilder.DropTable(
                 name: "Templates");
-
-            migrationBuilder.DropTable(
-                name: "Regions");
 
             migrationBuilder.DropTable(
                 name: "Sectors");
