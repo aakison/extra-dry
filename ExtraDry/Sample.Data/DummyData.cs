@@ -122,6 +122,32 @@ public class DummyData {
 
     }
 
+    public async Task PopulateArbitaryRegions(RegionService service, int countryCount, int divisionCount, int subdivisionCount)
+    {
+        var allRegions = new List<Region>();
+
+        var topRegion = new Region { Uuid = Guid.NewGuid(), Slug = "global", Title = "Global", Description = "Top", Level = RegionLevel.Global };
+        await service.CreateAsync(topRegion);
+
+        for(int i = 0; i < countryCount; i++) {
+            var country = new Region { Uuid = Guid.NewGuid(), Parent = topRegion, Slug = $"country-{i}", Title = $"Country {i}", Level = RegionLevel.Country };
+            allRegions.Add(country);
+
+            for(int j = 0; j < divisionCount; j++) {
+                var division = new Region { Uuid = Guid.NewGuid(), Parent = country, Slug = $"div-{j}-country-{i}", Title = $"Division {j} Country {i}", Level = RegionLevel.Division };
+                allRegions.Add(division);
+
+                for(int k = 0; k < subdivisionCount; k++) {
+                    var subdivision = new Region { Uuid = Guid.NewGuid(), Parent = division, Slug = $"subdiv-{k}-div-{j}-country-{i}", Title = $"SubDiv {k} Div {j} Country {i}", Level = RegionLevel.Subdivision };
+                    allRegions.Add(subdivision);
+                }
+            }
+        }
+        foreach(var region in allRegions.OrderBy(e => e.Slug)) {
+            await service.CreateAsync(region);
+        }
+    }
+
     public void PopulateEmployees(SampleContext database, int count)
     {
         for(int i = 0; i < count; ++i) {
