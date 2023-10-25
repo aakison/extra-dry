@@ -33,7 +33,6 @@ public partial class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidata
     public override Region? Parent { get => base.Parent; set => base.Parent = value; }
 
     [JsonIgnore]
-    [DefaultValue("/")]
     public HierarchyId Lineage { get; set; } = HierarchyId.GetRoot();
 
     /// <summary>
