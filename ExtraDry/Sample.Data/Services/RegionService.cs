@@ -114,7 +114,7 @@ public class RegionService {
         }
 
         if(parent.Strata >= child.Strata) {
-            throw new InvalidOperationException("Parent must be at a higher level than current entity.");
+            throw new ArgumentException("Parent must be at a higher level than current entity.");
         }
         child.Parent = parent;
 
