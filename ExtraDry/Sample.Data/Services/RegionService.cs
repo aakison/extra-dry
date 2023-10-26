@@ -1,4 +1,6 @@
-﻿namespace Sample.Data.Services;
+﻿using System.Globalization;
+
+namespace Sample.Data.Services;
 
 public class RegionService : IEntityResolver<Region> {
 
@@ -19,12 +21,15 @@ public class RegionService : IEntityResolver<Region> {
 
     public async Task<List<Region>> ListHierarchyAsync(HierarchyQuery query)
     {
-        var level = database.Regions.Where(e => e.Lineage.GetLevel() <= query.Level).QueryWith(query);
+        var level = string.IsNullOrEmpty(query.Filter)
+            ? database.Regions.Where(e => e.Lineage.GetLevel() <= query.Level)
+            : database.Regions;
+        var filtered = level.QueryWith(query);
+        var ancestors = AncestorOf(filtered);
         var expansions = ChildrenOf(query.ExpandedNodes);
-
         var collapses = DescendantOf(query.CollapsedNodes);
-
-        var all = level.Union(expansions).Except(collapses).OrderBy(e => e.Lineage);
+        //var all = filtered.Union(expansions).Union(ancestors).Except(collapses).OrderBy(e => e.Lineage);
+        var all = filtered;
 
         return await all.ToListAsync();
 
@@ -42,7 +47,11 @@ public class RegionService : IEntityResolver<Region> {
                     && parentSlugs.Contains(parent.Slug)),
                 (parent, child) => child);
 
-
+        IQueryable<Region> AncestorOf(IQueryable<Region> filteredSubset) =>
+            database.Regions.SelectMany(descendant => filteredSubset
+                .Where(ancestor => descendant.Lineage.IsDescendantOf(ancestor.Lineage)
+                    && descendant.Lineage.GetLevel() != ancestor.Lineage.GetLevel()),
+                (descendant, ancestor) => ancestor);
     }
 
     public async Task<List<Region>> ListChildrenAsync(string code)
