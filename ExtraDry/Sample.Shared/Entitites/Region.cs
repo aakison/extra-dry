@@ -27,6 +27,10 @@ public partial class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidata
     [Filter]
     public RegionLevel Level { get; set; }
 
+    /// <summary>
+    /// The hierarchial parent item for this region
+    /// </summary>
+    /// <remarks>Do not set directly, use SetParent on the service.</remarks>
     [Filter]
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonConverter(typeof(ResourceReferenceConverter<Region>))]

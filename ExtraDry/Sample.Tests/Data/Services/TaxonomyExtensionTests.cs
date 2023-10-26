@@ -11,10 +11,8 @@ public class TaxonomyExtensionTests {
     // This cannot run on an in-memory database becuase it needs to run relational queries for subtree moving
     // As a result we ignore unles it's specifically asked for
     // To have these tests run again, set this constant to null;
-    const string IgnoreTests = null;//"Destructive tests disabled";
+    const string IgnoreTests = "Destructive tests disabled";
 
-    // 2 services. This is a workaround so the context in one doesn't actively influence the other through tracking.
-    // The alternative is to fetch items as no tracking, but that would influence the production system for a non-realistic situation.
     private RegionService regions;
 
     private SampleContext context;
@@ -61,24 +59,26 @@ public class TaxonomyExtensionTests {
     {
         var nsw = await regions.TryRetrieveAsync("AU-NSW");
         var nz = await regions.TryRetrieveAsync("NZ");
+        Assert.NotNull(nsw);
         nsw.Parent = nz;
         nsw.Description = "Value Changed";
-        context.ChangeTracker.Clear(); // so that changes aren't tracked and we can emulate a call coming from the API.
+        context.ChangeTracker.Clear(); // so that changes aren't tracked and we can emulate a call coming from the API. Otherwise it passes because of the EF cache
 
         await regions.UpdateAsync("AU-NSW", nsw);
 
         nsw = await regions.TryRetrieveAsync("AU-NSW");
+        Assert.NotNull(nsw?.Parent);
         Assert.Equal("AU", nsw.Parent.Slug);
         Assert.Equal("Value Changed", nsw.Description);
-        //Assert.DoesNotContain(nsw.Ancestors, a => a.Slug == "NZ");
     }
 
     [Fact(Skip = IgnoreTests)]
     public async Task MoveLeafNodeToDifferentStrata()
     {
         var nsw = await regions.TryRetrieveAsync("AU-NSW");
+        Assert.NotNull(nsw?.Parent);
         var cnt = nsw.Parent;
-        context.ChangeTracker.Clear(); // so that changes aren't tracked and we can emulate a call coming from the API.
+        context.ChangeTracker.Clear(); // so that changes aren't tracked and we can emulate a call coming from the API. Otherwise it passes because of the EF cache
         var auk = await regions.TryRetrieveAsync("NZ-AUK");
         nsw.Parent = auk;
 
@@ -90,15 +90,17 @@ public class TaxonomyExtensionTests {
     {
         var qld = await regions.TryRetrieveAsync("AU-QLD");
         var nz = await regions.TryRetrieveAsync("NZ");
+        Assert.NotNull(qld?.Parent);
         qld.Parent = nz;
 
         await regions.UpdateAsync("AU-QLD", qld, true);
 
         var qld2 = await regions.TryRetrieveAsync("AU-QLD");
+        Assert.NotNull(qld2?.Parent);
         Assert.Equal("NZ", qld2.Parent.Slug);
         var bris = await regions.TryRetrieveAsync("AU-Qld-Brisbane");
-        //Assert.Contains(bris.Ancestors, e => e.Slug == "AU-QLD");
-        //Assert.Contains(bris.Ancestors, e => e.Slug == "NZ");
+        Assert.NotNull(bris?.Parent);
+        Assert.Equal("AU-QLD", bris.Parent.Slug);
     }
 
     [Fact(Skip = IgnoreTests)]
@@ -106,6 +108,7 @@ public class TaxonomyExtensionTests {
     {
         var qld = await regions.TryRetrieveAsync("AU-QLD");
         var nz = await regions.TryRetrieveAsync("NZ-AUK");
+        Assert.NotNull(qld);
         qld.Parent = nz;
         context.ChangeTracker.Clear(); // so that changes aren't tracked and we can emulate a call coming from the API.
 
@@ -117,6 +120,7 @@ public class TaxonomyExtensionTests {
     {
         var qld = await regions.TryRetrieveAsync("AU-QLD");
         var nz = await regions.TryRetrieveAsync("NZ");
+        Assert.NotNull(qld);
         qld.Parent = nz;
         qld.Title = "TestTitle";
 
@@ -124,10 +128,11 @@ public class TaxonomyExtensionTests {
         await regions.UpdateAsync("AU-QLD", qld, true);
 
         qld = await regions.TryRetrieveAsync("AU-QLD");
+        Assert.NotNull(qld?.Parent);
         Assert.Equal("NZ", qld.Parent.Slug);
         var bris = await regions.TryRetrieveAsync("AU-Qld-Brisbane");
-        //Assert.Contains(bris.Ancestors, e => e.Slug == "AU-QLD");
-        //Assert.Contains(bris.Ancestors, e => e.Slug == "NZ");
+        Assert.NotNull(bris?.Parent);
+        Assert.Equal("AU-QLD", bris.Parent.Slug);
         Assert.Equal("TestTitle", qld.Title);
     }
 

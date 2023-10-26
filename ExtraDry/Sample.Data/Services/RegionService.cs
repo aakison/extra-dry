@@ -80,27 +80,18 @@ public class RegionService {
     public async Task UpdateAsync(string slug, Region item, bool allowMove = false)
     {
         var existing = await RetrieveAsync(slug);
-        await database.Database.BeginTransactionAsync();
-        try {
-            if(!allowMove) {
-                // if we're not allowing a parent change, ensure they're not bypassing the parent update by explicitly resetting it.
-                item.Parent = existing.Parent;
-            }
-            else if(allowMove && existing.Parent != null && item.Parent != null && existing.Parent.Slug != item.Parent.Slug) {
-                var newParent = await RetrieveAsync(item.Parent.Slug);
-                existing.Parent = newParent;
-
-                await SetParent(existing, existing.Parent);
-            }
-            await rules.UpdateAsync(item, existing);
-            await database.SaveChangesAsync();
-
-            await database.Database.CommitTransactionAsync();
+        if(!allowMove) {
+            // if we're not allowing a parent change, ensure they're not bypassing the parent update by explicitly resetting it.
+            item.Parent = existing.Parent;
         }
-        catch {
-            await database.Database.RollbackTransactionAsync();
-            throw;
+        else if(allowMove && existing.Parent != null && item.Parent != null && existing.Parent.Slug != item.Parent.Slug) {
+            var newParent = await RetrieveAsync(item.Parent.Slug);
+            existing.Parent = newParent;
+
+            await SetParent(existing, existing.Parent);
         }
+        await rules.UpdateAsync(item, existing);
+        await database.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(string code)
@@ -136,7 +127,7 @@ public class RegionService {
             maxChildLineage = null;
         }
         var newLineage = parent.Lineage?.GetDescendant(maxChildLineage, null);
-        child.Lineage = newLineage;
+        child.Lineage = newLineage ?? HierarchyId.GetRoot();
     }
 
     private IQueryable<Region> ChildrenOf(int level, IEnumerable<string> parentSlugs)
