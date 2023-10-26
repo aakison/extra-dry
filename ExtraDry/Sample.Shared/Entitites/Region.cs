@@ -31,7 +31,6 @@ public partial class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidata
     /// The hierarchial parent item for this region
     /// </summary>
     /// <remarks>Do not set directly, use SetParent on the service.</remarks>
-    [Filter]
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonConverter(typeof(ResourceReferenceConverter<Region>))]
     [Rules(RuleAction.Link)]
@@ -64,7 +63,7 @@ public partial class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidata
     /// </summary>
     [Required, StringLength(32)]
     [Display(ShortName = "Title")]
-    [Filter]
+    [Filter(FilterType.Contains)]
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
