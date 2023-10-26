@@ -1,6 +1,6 @@
 ﻿namespace Sample.Data.Services;
 
-public class RegionService {
+public class RegionService : IEntityResolver<Region> {
 
     public RegionService(SampleContext sampleContext, RuleEngine ruleEngine)
     {
@@ -19,12 +19,30 @@ public class RegionService {
 
     public async Task<List<Region>> ListHierarchyAsync(HierarchyQuery query)
     {
-        var level = database.Regions.Where(e => e.Lineage.GetLevel() <= query.Level);
-        var expansions = ChildrenOf(query.Level, query.ExpandedNodes);
+        var level = database.Regions.Where(e => e.Lineage.GetLevel() <= query.Level).QueryWith(query);
+        var expansions = ChildrenOf(query.ExpandedNodes);
+
         var collapses = DescendantOf(query.CollapsedNodes);
+
         var all = level.Union(expansions).Except(collapses).OrderBy(e => e.Lineage);
 
         return await all.ToListAsync();
+
+        IQueryable<Region> ChildrenOf(IEnumerable<string> parentSlugs) =>
+            database.Regions.SelectMany(parent => database.Regions
+                .Where(child => child.Lineage.IsDescendantOf(parent.Lineage)
+                            && child.Lineage.GetLevel() == parent.Lineage.GetLevel() + 1
+                            && parentSlugs.Contains(parent.Slug)),
+                (parent, child) => child);
+
+        IQueryable<Region> DescendantOf(IEnumerable<string> parentSlugs) =>
+            database.Regions.SelectMany(parent => database.Regions
+                .Where(child => child.Lineage.IsDescendantOf(parent.Lineage)
+                    && child.Lineage.GetLevel() > parent.Lineage.GetLevel()
+                    && parentSlugs.Contains(parent.Slug)),
+                (parent, child) => child);
+
+
     }
 
     public async Task<List<Region>> ListChildrenAsync(string code)
@@ -139,30 +157,10 @@ public class RegionService {
         child.Lineage = newLineage;
     }
 
-    private IQueryable<Region> ChildrenOf(int level, IEnumerable<string> parentSlugs)
+    public async Task<Region?> ResolveAsync(Region exemplar)
     {
-        var children = database.Regions.SelectMany(parent => database.Regions
-                .Where(child => child.Lineage.IsDescendantOf(parent.Lineage)
-                            && child.Lineage.GetLevel() == parent.Lineage.GetLevel() + 1
-                            && parentSlugs.Contains(parent.Slug)),
-                (parent, child) => child);
-
-        //Get missing parents for children.
-        foreach(var child in children.ToList()) {
-            if(child.Parent == null) {
-                var parent = database.Regions.Where(e => child.Lineage.IsDescendantOf(e.Lineage));
-                children = children.Union(parent);
-            }
-        }
-        return children;
+        return await TryRetrieveAsync(exemplar.Slug);
     }
-
-    private IQueryable<Region> DescendantOf(IEnumerable<string> parentSlugs) =>
-        database.Regions.SelectMany(parent => database.Regions
-            .Where(child => child.Lineage.IsDescendantOf(parent.Lineage)
-                        && child.Lineage.GetLevel() > parent.Lineage.GetLevel()
-                        && parentSlugs.Contains(parent.Slug)),
-            (parent, child) => child);
 
     private readonly SampleContext database;
 
