@@ -28,9 +28,10 @@ public class RegionService : IEntityResolver<Region> {
         var ancestors = AncestorOf(filtered);
         var expansions = ChildrenOf(query.ExpandedNodes);
         var collapses = DescendantOf(query.CollapsedNodes);
-        //var all = filtered.Union(expansions).Union(ancestors).Except(collapses).OrderBy(e => e.Lineage);
-        var all = filtered;
-
+        
+        //var all = filtered.Union(ancestors);
+        var all = filtered.Union(expansions).Union(ancestors).Except(collapses).OrderBy(e => e.Lineage);
+        
         return await all.ToListAsync();
 
         IQueryable<Region> ChildrenOf(IEnumerable<string> parentSlugs) =>
@@ -48,10 +49,10 @@ public class RegionService : IEntityResolver<Region> {
                 (parent, child) => child);
 
         IQueryable<Region> AncestorOf(IQueryable<Region> filteredSubset) =>
-            database.Regions.SelectMany(descendant => filteredSubset
-                .Where(ancestor => descendant.Lineage.IsDescendantOf(ancestor.Lineage)
+            database.Regions.SelectMany(ancestor => filteredSubset
+                .Where(descendant => descendant.Lineage.IsDescendantOf(ancestor.Lineage)
                     && descendant.Lineage.GetLevel() != ancestor.Lineage.GetLevel()),
-                (descendant, ancestor) => ancestor);
+                (ancestor, descendant) => ancestor);
     }
 
     public async Task<List<Region>> ListChildrenAsync(string code)
