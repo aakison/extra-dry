@@ -32,6 +32,10 @@ public partial class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidata
     [Rules(RuleAction.Link)]
     public override Region? Parent { get => base.Parent; set => base.Parent = value; }
 
+    /// <summary>
+    /// While this would be great to put in the parent class, to share reparenting and hierarchy logic, it's a SQL specific implementation
+    /// It is in the Microsoft.EntityFrameworkCore.SqlServer.Abstractions package in EF 8. If it ever enters System, we can promote it.
+    /// </summary>
     [JsonIgnore]
     public HierarchyId Lineage { get; set; } = HierarchyId.GetRoot();
 
