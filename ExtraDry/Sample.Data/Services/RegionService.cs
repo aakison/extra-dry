@@ -14,7 +14,7 @@ public class RegionService : IEntityResolver<Region> {
     {
         return await database.Regions
             .Include(e => e.Parent)
-            .OrderBy(e => e.Ancestry)
+            .OrderBy(e => e.Lineage)
             .QueryWith(query)
             .ToPagedCollectionAsync();
     }
@@ -22,7 +22,7 @@ public class RegionService : IEntityResolver<Region> {
     public async Task<List<Region>> ListHierarchyAsync(HierarchyQuery query)
     {
         var level = string.IsNullOrEmpty(query.Filter)
-            ? database.Regions.Where(e => e.Ancestry.GetLevel() <= query.Level)
+            ? database.Regions.Where(e => e.Lineage.GetLevel() <= query.Level)
             : database.Regions;
         var filtered = level.QueryWith(query);
         var ancestors = AncestorOf(filtered);
@@ -30,35 +30,35 @@ public class RegionService : IEntityResolver<Region> {
         var collapses = DescendantOf(query.Collapse);
         
         //var all = filtered.Union(ancestors);
-        var all = filtered.Union(expansions).Union(ancestors).Except(collapses).OrderBy(e => e.Ancestry);
+        var all = filtered.Union(expansions).Union(ancestors).Except(collapses).OrderBy(e => e.Lineage);
         
         return await all.ToListAsync();
 
         IQueryable<Region> ChildrenOf(IEnumerable<string> parentSlugs) =>
             database.Regions.SelectMany(parent => database.Regions
-                .Where(child => child.Ancestry.IsDescendantOf(parent.Ancestry)
-                            && child.Ancestry.GetLevel() == parent.Ancestry.GetLevel() + 1
+                .Where(child => child.Lineage.IsDescendantOf(parent.Lineage)
+                            && child.Lineage.GetLevel() == parent.Lineage.GetLevel() + 1
                             && parentSlugs.Contains(parent.Slug)),
                 (parent, child) => child);
 
         IQueryable<Region> DescendantOf(IEnumerable<string> parentSlugs) =>
             database.Regions.SelectMany(parent => database.Regions
-                .Where(child => child.Ancestry.IsDescendantOf(parent.Ancestry)
-                    && child.Ancestry.GetLevel() > parent.Ancestry.GetLevel()
+                .Where(child => child.Lineage.IsDescendantOf(parent.Lineage)
+                    && child.Lineage.GetLevel() > parent.Lineage.GetLevel()
                     && parentSlugs.Contains(parent.Slug)),
                 (parent, child) => child);
 
         IQueryable<Region> AncestorOf(IQueryable<Region> filteredSubset) =>
             database.Regions.SelectMany(ancestor => filteredSubset
-                .Where(descendant => descendant.Ancestry.IsDescendantOf(ancestor.Ancestry)
-                    && descendant.Ancestry.GetLevel() != ancestor.Ancestry.GetLevel()),
+                .Where(descendant => descendant.Lineage.IsDescendantOf(ancestor.Lineage)
+                    && descendant.Lineage.GetLevel() != ancestor.Lineage.GetLevel()),
                 (ancestor, descendant) => ancestor);
     }
 
     public async Task<List<Region>> ListChildrenAsync(string code)
     {
         var region = await RetrieveAsync(code);
-        return await database.Regions.Where(e => e.Ancestry!.IsDescendantOf(region.Ancestry) && e.Ancestry.GetLevel() == region.Ancestry.GetLevel() + 1).Include(e => e.Parent).ToListAsync();
+        return await database.Regions.Where(e => e.Lineage!.IsDescendantOf(region.Lineage) && e.Lineage.GetLevel() == region.Lineage.GetLevel() + 1).Include(e => e.Parent).ToListAsync();
     }
 
     public async Task CreateAsync(Region item)
@@ -135,7 +135,7 @@ public class RegionService : IEntityResolver<Region> {
     {
         if(parent == null) { return; }
 
-        if(database.Regions.Any(e => e.Uuid == child.Uuid && e.Ancestry.IsDescendantOf(parent.Ancestry))) {
+        if(database.Regions.Any(e => e.Uuid == child.Uuid && e.Lineage.IsDescendantOf(parent.Lineage))) {
             // Already a child of this entity in the DB, so lets not set it again, it'll change the sort and make the lineage numbers climb.
             return;
         }
@@ -145,13 +145,13 @@ public class RegionService : IEntityResolver<Region> {
         }
         child.Parent = parent;
 
-        var maxChildLineage = await database.Regions.Where(e => e.Ancestry!.IsDescendantOf(parent.Ancestry)).MaxAsync(c => c.Ancestry);
-        if(maxChildLineage == HierarchyId.GetRoot() || maxChildLineage == parent.Ancestry) {
+        var maxChildLineage = await database.Regions.Where(e => e.Lineage!.IsDescendantOf(parent.Lineage)).MaxAsync(c => c.Lineage);
+        if(maxChildLineage == HierarchyId.GetRoot() || maxChildLineage == parent.Lineage) {
             // If this is the first child of the parent, pass null as the first param for GetDescendant
             maxChildLineage = null;
         }
-        var newLineage = parent.Ancestry?.GetDescendant(maxChildLineage, null);
-        child.Ancestry = newLineage ?? HierarchyId.GetRoot();
+        var newLineage = parent.Lineage?.GetDescendant(maxChildLineage, null);
+        child.Lineage = newLineage ?? HierarchyId.GetRoot();
     }
 
     public async Task<Region?> ResolveAsync(Region exemplar)

@@ -80,7 +80,7 @@ namespace Sample.Data.Migrations
                     Uuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Level = table.Column<int>(type: "int", nullable: false),
                     ParentId = table.Column<int>(type: "int", nullable: true),
-                    Ancestry = table.Column<HierarchyId>(type: "hierarchyid", nullable: false),
+                    Lineage = table.Column<HierarchyId>(type: "hierarchyid", nullable: false),
                     Slug = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
                     Title = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),

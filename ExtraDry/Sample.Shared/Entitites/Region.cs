@@ -48,14 +48,14 @@ public partial class Region : IHierarchyEntity<Region>, IResourceIdentifiers, IV
     /// System, we can promote it.
     /// </remarks>
     [JsonIgnore]
-    public HierarchyId Ancestry { get; set; } = HierarchyId.GetRoot();
+    public HierarchyId Lineage { get; set; } = HierarchyId.GetRoot();
 
     /// <summary>
-    /// The lineage of this entity, providing a string representation of entire ancestry in a 
-    /// string format.
+    /// The order in the ancestry tree using path seperated numeric placeholders.
     /// </summary>
-    [NotMapped]
-    public Lineage Lineage => new(Ancestry.ToString());
+    /// <example>/1/3/10/</example>
+    [JsonPropertyName("lineage")]
+    public string Ancestry => Lineage.ToString();
 
     /// <summary>
     /// The strata for the entity in the taxonomy, 0 is root, each level adds 1.
