@@ -10,9 +10,9 @@ public static class QueryableExtensions {
     private const string MissingStabilizerErrorMessage = "Sort requires that a single EF key is uniquely defined to stabalize the sort, even if another sort property is present.  Use a single unique key following EF conventions";
     private const string SortErrorUserMessage = "Unable to Sort. 0x0F3F241C";
 
-    public static IPartialQueryable<T> QueryWith<T>(this IQueryable<T> source, FilterQuery query, Expression<Func<T, bool>>? defaultFilter = null)
+    public static IFilteredQueryable<T> QueryWith<T>(this IQueryable<T> source, FilterQuery query, Expression<Func<T, bool>>? defaultFilter = null)
     {
-        return new PartialQueryable<T>(source, query, defaultFilter);
+        return new FilteredListQueryable<T>(source, query, defaultFilter);
     }
 
     /// <summary>
@@ -22,9 +22,9 @@ public static class QueryableExtensions {
     /// <param name="source">The extension source</param>
     /// <param name="query">A sort query that contains filtering and sorting information.</param>
     /// <param name="defaultFilter">An expression that provides default filtering support, which can be overridden by `filterQuery`</param>
-    public static IPartialQueryable<T> QueryWith<T>(this IQueryable<T> source, SortQuery query, Expression<Func<T, bool>>? defaultFilter = null)
+    public static IFilteredQueryable<T> QueryWith<T>(this IQueryable<T> source, SortQuery query, Expression<Func<T, bool>>? defaultFilter = null)
     {
-        return new PartialQueryable<T>(source, query, defaultFilter);
+        return new FilteredListQueryable<T>(source, query, defaultFilter);
     }
 
     /// <summary>
@@ -34,14 +34,14 @@ public static class QueryableExtensions {
     /// <param name="source">The extension source</param>
     /// <param name="query">A page query that contains filtering, sorting, and paging information.</param>
     /// <param name="defaultFilter">An expression that provides default filtering support, which can be overridden by `partialQuery`</param>
-    public static IPartialQueryable<T> QueryWith<T>(this IQueryable<T> source, PageQuery query, Expression<Func<T, bool>>? defaultFilter = null)
+    public static IFilteredQueryable<T> QueryWith<T>(this IQueryable<T> source, PageQuery query, Expression<Func<T, bool>>? defaultFilter = null)
     {
-        return new PartialQueryable<T>(source, query, defaultFilter);
+        return new FilteredListQueryable<T>(source, query, defaultFilter);
     }
 
-    public static IPartialQueryable<T> ForceStringComparison<T>(this IQueryable<T> source, StringComparison forceStringComparison)
+    public static IFilteredQueryable<T> ForceStringComparison<T>(this IQueryable<T> source, StringComparison forceStringComparison)
     {
-        return new PartialQueryable<T>(source, forceStringComparison);
+        return new FilteredListQueryable<T>(source, forceStringComparison);
     }
 
     /// <summary>
@@ -70,7 +70,7 @@ public static class QueryableExtensions {
         if(!description.FilterProperties.Any()) {
             return source;
         }
-        var comparison = (source as PartialQueryable<T>)?.ForceStringComparison;
+        var comparison = (source as FilteredListQueryable<T>)?.ForceStringComparison;
         return source.WhereFilterConditions(description.FilterProperties.ToArray(), filter, comparison);
     }
 

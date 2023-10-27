@@ -8,7 +8,6 @@ public class FilterQuery
     /// <summary>
     /// The entity specific text filter for the collection.
     /// </summary>
-    /// <example>make: toyota</example>
     public string? Filter { get; set; }
 
 }

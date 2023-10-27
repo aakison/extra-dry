@@ -9,7 +9,6 @@ public class SortQuery : FilterQuery {
     /// If the request would like sorted results, the name of the property to sort by.
     /// Prefix with '+' or '-' to order ascending or descending.
     /// </summary>
-    /// <example>+model</example>
     public string? Sort { get; set; }
 
 }

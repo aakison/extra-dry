@@ -7,7 +7,7 @@
 /// to return paged or filtered subsets, as well as general statistics.
 /// </summary>
 /// <typeparam name="T"></typeparam>
-public interface IPartialQueryable<T> : IQueryable<T> {
+public interface IFilteredQueryable<T> : IQueryable<T> {
 
     /// <summary>
     /// Return a Paged Collection suitable for serialization that represents a single page of the
@@ -31,7 +31,7 @@ public interface IPartialQueryable<T> : IQueryable<T> {
 
     /// <summary>
     /// Returns a set of statistics about an entity after a filter has been applied.  Statistics
-    /// returned are determined by the [Statistics] attributes on the entity's properties.
+    /// returned are determined by the <see cref="StatisticsAttribute" /> on the entity's properties.
     /// </summary>
     /// <returns>The statistics.</returns>
     Statistics<T> ToStatistics();
