@@ -9,7 +9,7 @@ namespace Sample.Shared;
 /// </summary>
 [DeleteRule(DeleteAction.Recycle, nameof(DeleteStatus), DeleteStatus.Recycled, DeleteStatus.Live)]
 [Index(nameof(Uuid), IsUnique = true)]
-public partial class Region : IHierarchyEntity<Region>, IResourceIdentifiers, IValidatableObject {
+public partial class Region : IHierarchyEntity<Region>, IResourceIdentifiers, IValidatableObject, IEquatable<Region> {
 
     /// <summary>
     /// The database primary key for the entity.
@@ -55,7 +55,7 @@ public partial class Region : IHierarchyEntity<Region>, IResourceIdentifiers, IV
     /// string format.
     /// </summary>
     [NotMapped]
-    public Lineage Lineage => new Lineage(Ancestry.ToString());
+    public Lineage Lineage => new(Ancestry.ToString());
 
     /// <summary>
     /// The strata for the entity in the taxonomy, 0 is root, each level adds 1.
@@ -119,6 +119,11 @@ public partial class Region : IHierarchyEntity<Region>, IResourceIdentifiers, IV
         }
         return results;
     }
+    public bool Equals(Region? other) => Slug == other?.Slug;
+
+    public override bool Equals(object? obj) => Equals(obj as Region);
+
+    public override int GetHashCode() => Slug.GetHashCode();
 
     [GeneratedRegex(@"^\w{2}$", RegexOptions.Compiled)]
     private partial Regex CountryRegex();
@@ -129,11 +134,6 @@ public partial class Region : IHierarchyEntity<Region>, IResourceIdentifiers, IV
     [GeneratedRegex(@"^\w{2}-\w{2,4}-\w{2,20}$", RegexOptions.Compiled)]
     private partial Regex SubdivisionRegex();
 
-    public override bool Equals(object? obj)
-    {
-        var obj1 = obj as Region;
-        return obj1?.Slug == Slug;
-    }
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]

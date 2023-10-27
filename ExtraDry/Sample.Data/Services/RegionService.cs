@@ -26,8 +26,8 @@ public class RegionService : IEntityResolver<Region> {
             : database.Regions;
         var filtered = level.QueryWith(query);
         var ancestors = AncestorOf(filtered);
-        var expansions = ChildrenOf(query.ExpandedNodes);
-        var collapses = DescendantOf(query.CollapsedNodes);
+        var expansions = ChildrenOf(query.Expand);
+        var collapses = DescendantOf(query.Collapse);
         
         //var all = filtered.Union(ancestors);
         var all = filtered.Union(expansions).Union(ancestors).Except(collapses).OrderBy(e => e.Ancestry);
@@ -57,11 +57,7 @@ public class RegionService : IEntityResolver<Region> {
 
     public async Task<List<Region>> ListChildrenAsync(string code)
     {
-        var region = await TryRetrieveAsync(code);
-        if(region == null) {
-            throw new ArgumentException("Invalid region code.");
-        }
-
+        var region = await RetrieveAsync(code);
         return await database.Regions.Where(e => e.Ancestry!.IsDescendantOf(region.Ancestry) && e.Ancestry.GetLevel() == region.Ancestry.GetLevel() + 1).Include(e => e.Parent).ToListAsync();
     }
 

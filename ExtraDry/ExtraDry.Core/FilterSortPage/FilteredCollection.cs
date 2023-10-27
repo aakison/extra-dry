@@ -32,7 +32,7 @@ public class FilteredCollection<T> {
     public int Count => Items.Count;
 
     /// <summary>
-    /// The actual collecton of items.  Within the full collection, these are in the position offset by `Start`.
+    /// The actual collection of items.
     /// </summary>
     public IList<T> Items { get; set; } = new List<T>();
 

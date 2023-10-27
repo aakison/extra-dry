@@ -1,13 +1,14 @@
 ﻿namespace ExtraDry.Core;
 
 /// <summary>
-/// Represents a basic query to filter against a list of items.
+/// Represents a basic query to filter against a list or hierarchy of items.
 /// </summary>
 public class FilterQuery
 {
     /// <summary>
     /// The entity specific text filter for the collection.
     /// </summary>
+    /// <example>make: toyota</example>
     public string? Filter { get; set; }
 
 }
