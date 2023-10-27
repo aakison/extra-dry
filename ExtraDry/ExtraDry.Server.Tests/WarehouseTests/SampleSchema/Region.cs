@@ -6,7 +6,7 @@ namespace ExtraDry.Server.Tests.WarehouseTests;
 /// Represents a single geo-political region in a taxonomy of geo-political regions.
 /// </summary>
 [DimensionTable("Geographic Region")]
-public class Region : TaxonomyEntity<Region>, ITaxonomyEntity {
+public class Region : IHierarchyEntity<Region> { 
 
     /// <summary>
     /// The principal ID for the region, internal to the database.
@@ -45,6 +45,10 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity {
     [Display(ShortName = "Title")]
     [Attribute("The Title")]
     public string Title { get; set; } = string.Empty;
+
+    public Region? Parent { get; set; }
+
+    public Lineage Lineage { get; set; } = new();
 
     /// <summary>
     /// The full name of the country or region, such as 'Commonwealth of Australia', or 'United States of America'.

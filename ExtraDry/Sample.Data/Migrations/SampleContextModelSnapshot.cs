@@ -187,6 +187,10 @@ namespace Sample.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<HierarchyId>("Ancestry")
+                        .IsRequired()
+                        .HasColumnType("hierarchyid");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -197,10 +201,6 @@ namespace Sample.Data.Migrations
 
                     b.Property<int>("Level")
                         .HasColumnType("int");
-
-                    b.Property<HierarchyId>("Lineage")
-                        .IsRequired()
-                        .HasColumnType("hierarchyid");
 
                     b.Property<int?>("ParentId")
                         .HasColumnType("int");

@@ -9,9 +9,11 @@ namespace Sample.Shared;
 /// </summary>
 [DeleteRule(DeleteAction.Recycle, nameof(DeleteStatus), DeleteStatus.Recycled, DeleteStatus.Live)]
 [Index(nameof(Uuid), IsUnique = true)]
-public partial class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidatableObject {
+public partial class Region : IHierarchyEntity<Region>, IResourceIdentifiers, IValidatableObject {
 
-    /// <inheritdoc cref="ITaxonomyEntity.Id"/>
+    /// <summary>
+    /// The database primary key for the entity.
+    /// </summary>
     [Key]
     [JsonIgnore]
     public int Id { get; set; }
@@ -28,20 +30,32 @@ public partial class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidata
     public RegionLevel Level { get; set; }
 
     /// <summary>
-    /// The hierarchial parent item for this region
+    /// The hierarchical parent item for this region
     /// </summary>
     /// <remarks>Do not set directly, use SetParent on the service.</remarks>
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonConverter(typeof(ResourceReferenceConverter<Region>))]
     [Rules(RuleAction.Link)]
-    public override Region? Parent { get => base.Parent; set => base.Parent = value; }
+    public Region? Parent { get; set; }
 
     /// <summary>
-    /// While this would be great to put in the parent class, to share reparenting and hierarchy logic, it's a SQL specific implementation
-    /// It is in the Microsoft.EntityFrameworkCore.SqlServer.Abstractions package in EF 8. If it ever enters System, we can promote it.
+    /// The hierarchy of this entity using the database-specific HierarchyId type.
     /// </summary>
+    /// <remarks>
+    /// While this would be great to put in the parent class, to share reparenting and hierarchy 
+    /// logic, it's a SQL specific implementation. It is in the 
+    /// Microsoft.EntityFrameworkCore.SqlServer.Abstractions package in EF 8. If it ever enters 
+    /// System, we can promote it.
+    /// </remarks>
     [JsonIgnore]
-    public HierarchyId Lineage { get; set; } = HierarchyId.GetRoot();
+    public HierarchyId Ancestry { get; set; } = HierarchyId.GetRoot();
+
+    /// <summary>
+    /// The lineage of this entity, providing a string representation of entire ancestry in a 
+    /// string format.
+    /// </summary>
+    [NotMapped]
+    public Lineage Lineage => new Lineage(Ancestry.ToString());
 
     /// <summary>
     /// The strata for the entity in the taxonomy, 0 is root, each level adds 1.
