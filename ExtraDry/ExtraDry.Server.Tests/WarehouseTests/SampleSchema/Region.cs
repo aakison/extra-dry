@@ -48,7 +48,7 @@ public class Region : IHierarchyEntity<Region> {
 
     public Region? Parent { get; set; }
 
-    public Lineage Lineage { get; set; } = new();
+    public HierarchyId Lineage { get; set; } = HierarchyId.GetRoot();
 
     /// <summary>
     /// The full name of the country or region, such as 'Commonwealth of Australia', or 'United States of America'.

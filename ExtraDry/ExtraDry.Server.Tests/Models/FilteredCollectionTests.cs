@@ -14,12 +14,12 @@ public class FilteredCollectionTests {
         Assert.True(DateTime.UtcNow >= collection.Created);
         Assert.True(DateTime.UtcNow.AddSeconds(-1) < collection.Created);
         Assert.Null(collection.Filter);
-        Assert.Null(collection.Sort);
+        // TODO: Assert.Null(collection.Sort);
     }
 
     [Theory]
     [InlineData(nameof(FilteredCollection<object>.Filter), "Any")]
-    [InlineData(nameof(FilteredCollection<object>.Sort), "Any")]
+    // TODO: [InlineData(nameof(FilteredCollection<object>.Sort), "Any")]
     public void RoundtripProperties(string propertyName, object propertyValue)
     {
         var target = new FilteredCollection<object>();
@@ -35,7 +35,7 @@ public class FilteredCollectionTests {
     [Fact]
     public void JsonSerializable()
     {
-        var target = new FilteredCollection<Payload>() {
+        var target = new SortedCollection<Payload>() {
             Filter = "filter",
             Sort = "sort",
         };
@@ -43,7 +43,7 @@ public class FilteredCollectionTests {
         target.Items.Add(item);
 
         var json = JsonSerializer.Serialize(target);
-        var result = JsonSerializer.Deserialize<FilteredCollection<Payload>>(json) ?? throw new Exception();
+        var result = JsonSerializer.Deserialize<SortedCollection<Payload>>(json) ?? throw new Exception();
 
         Assert.NotSame(result, target);
         Assert.NotSame(result.Items.First(), target.Items.First());
@@ -56,7 +56,7 @@ public class FilteredCollectionTests {
     [Fact]
     public void FilteredCollectionCasting()
     {
-        var target = new FilteredCollection<Payload>() {
+        var target = new SortedCollection<Payload>() {
             Filter = "filter",
             Sort = "sort",
         };

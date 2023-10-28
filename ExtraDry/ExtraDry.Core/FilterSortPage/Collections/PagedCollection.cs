@@ -1,9 +1,10 @@
 ﻿namespace ExtraDry.Core;
 
 /// <summary>
-/// Represents a generic payload for returning lists of items from an API that need to be paged for performance.
+/// A page of a sorted and filtered collection of items from the API with information on 
+/// retrieving other pages.
 /// </summary>
-public class PagedCollection<T> : FilteredCollection<T> {
+public class PagedCollection<T> : SortedCollection<T> {
 
     /// <summary>
     /// The starting index of this partial collection within the full collection.
@@ -18,9 +19,9 @@ public class PagedCollection<T> : FilteredCollection<T> {
     public int Total { get; set; }
 
     /// <summary>
-    /// An arbitrary token sent by the server used to managed consistency of results.
-    /// As a best-practice, always send this token back to the server when fetching additional partial results,
-    /// don't rely on the `Query` and `Start` indexes alone.
+    /// An arbitrary token sent by the server used to managed consistency of results.  As a 
+    /// best-practice, always send this token back to the server when fetching additional partial 
+    /// results, don't rely on the `Query` and `Start` indexes alone.
     /// </summary>
     /// <example>AAAAZAAAAGQAAAA=</example>
     public string? ContinuationToken { get; set; }

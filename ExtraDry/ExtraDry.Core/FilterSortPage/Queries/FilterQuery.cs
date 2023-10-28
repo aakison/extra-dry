@@ -11,3 +11,4 @@ public class FilterQuery
     public string? Filter { get; set; }
 
 }
+

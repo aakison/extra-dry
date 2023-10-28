@@ -10,57 +10,29 @@ public class RegionService : IEntityResolver<Region> {
         rules = ruleEngine;
     }
 
-    public async Task<PagedCollection<Region>> ListAsync(FilterQuery query)
+    public async Task<SortedCollection<Region>> ListAsync(SortQuery query)
     {
         return await database.Regions
             .Include(e => e.Parent)
-            .OrderBy(e => e.Lineage)
             .QueryWith(query)
-            .ToPagedCollectionAsync();
+            .ToSortedCollectionAsync();
     }
 
-    public async Task<FilteredCollection<Region>> ListHierarchyAsync(HierarchyQuery query)
+    public async Task<HierarchyCollection<Region>> ListHierarchyAsync(HierarchyQuery query)
     {
-        return await database.Regions.QueryWith(query).ToFilteredCollectionAsync();
-
-        //var level = string.IsNullOrEmpty(query.Filter)
-        //    ? database.Regions.Where(e => e.Lineage.GetLevel() <= query.Level)
-        //    : database.Regions;
-        //var filtered = level.QueryWith(query);
-        //var ancestors = AncestorOf(filtered);
-        //var expansions = ChildrenOf(query.Expand);
-        //var collapses = DescendantOf(query.Collapse);
-        
-        ////var all = filtered.Union(ancestors);
-        //var all = filtered.Union(expansions).Union(ancestors).Except(collapses).OrderBy(e => e.Lineage);
-        
-        //return await all.ToListAsync();
-
-        //IQueryable<Region> ChildrenOf(IEnumerable<string> parentSlugs) =>
-        //    database.Regions.SelectMany(parent => database.Regions
-        //        .Where(child => child.Lineage.IsDescendantOf(parent.Lineage)
-        //                    && child.Lineage.GetLevel() == parent.Lineage.GetLevel() + 1
-        //                    && parentSlugs.Contains(parent.Slug)),
-        //        (parent, child) => child);
-
-        //IQueryable<Region> DescendantOf(IEnumerable<string> parentSlugs) =>
-        //    database.Regions.SelectMany(parent => database.Regions
-        //        .Where(child => child.Lineage.IsDescendantOf(parent.Lineage)
-        //            && child.Lineage.GetLevel() > parent.Lineage.GetLevel()
-        //            && parentSlugs.Contains(parent.Slug)),
-        //        (parent, child) => child);
-
-        //IQueryable<Region> AncestorOf(IQueryable<Region> filteredSubset) =>
-        //    database.Regions.SelectMany(ancestor => filteredSubset
-        //        .Where(descendant => descendant.Lineage.IsDescendantOf(ancestor.Lineage)
-        //            && descendant.Lineage.GetLevel() != ancestor.Lineage.GetLevel()),
-        //        (ancestor, descendant) => ancestor);
+        return await database.Regions
+            .Include(e => e.Parent)
+            .QueryWith(query)
+            .ToHierarchyCollectionAsync();
     }
 
-    public async Task<List<Region>> ListChildrenAsync(string code)
+    public async Task<BaseCollection<Region>> ListChildrenAsync(string code)
     {
         var region = await RetrieveAsync(code);
-        return await database.Regions.Where(e => e.Lineage!.IsDescendantOf(region.Lineage) && e.Lineage.GetLevel() == region.Lineage.GetLevel() + 1).Include(e => e.Parent).ToListAsync();
+        return await database.Regions
+            .Where(e => e.Lineage!.IsDescendantOf(region.Lineage) && e.Lineage.GetLevel() == region.Lineage.GetLevel() + 1)
+            .Include(e => e.Parent)
+            .ToBaseCollectionAsync();
     }
 
     public async Task CreateAsync(Region item)

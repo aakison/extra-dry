@@ -3,8 +3,7 @@ using System.Linq.Expressions;
 
 namespace ExtraDry.Server;
 
-/// <inheritdoc cref="IFilteredQueryable{T}" />
-public class FilteredHierarchyQueryable<T> : FilteredQueryable<T> where T : IHierarchyEntity<T> {
+public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : IHierarchyEntity<T> {
 
     public FilteredHierarchyQueryable(IQueryable<T> queryable, HierarchyQuery hierarchyQuery, Expression<Func<T, bool>>? defaultFilter)
     {
@@ -20,21 +19,11 @@ public class FilteredHierarchyQueryable<T> : FilteredQueryable<T> where T : IHie
         var tempQuery = ExpandCollapseHierarchy(queryable, FilteredQuery, hierarchyQuery);
         // Then sort it the only way that is allowed, breadth-first by lineage.
         SortedQuery = tempQuery.OrderBy(e => e.Lineage);
-        // Finally, page it.
-        PagedQuery = SortedQuery.Page(0, PageQuery.DefaultTake, null);
+        // Finally, ignore paging.
+        PagedQuery = SortedQuery;
     }
 
-    //public FilteredHierarchyQueryable(IQueryable<T> queryable, PageHierarchyQuery pageHierarchyQuery, Expression<Func<T, bool>>? defaultFilter)
-    //{
-    //    ForceStringComparison = (queryable as FilteredListQueryable<T>)?.ForceStringComparison;
-    //    Query = pageHierarchyQuery;
-    //    Token = ContinuationToken.FromString(pageHierarchyQuery.Token);
-    //    FilteredQuery = InitializeMergedFilter(queryable, pageHierarchyQuery, defaultFilter);
-    //    SortedQuery = FilteredQuery.Sort(pageHierarchyQuery);
-    //    PagedQuery = SortedQuery.Page(pageHierarchyQuery);
-    //}
-
-    protected static IQueryable<T> ExpandCollapseHierarchy(IQueryable<T> baseQueryable, IQueryable<T> filteredQueryable, HierarchyQuery query)
+    private static IQueryable<T> ExpandCollapseHierarchy(IQueryable<T> baseQueryable, IQueryable<T> filteredQueryable, HierarchyQuery query)
     {
         var ancestors = AncestorOf(filteredQueryable);
         var expansions = ChildrenOf(query.Expand);
@@ -65,48 +54,22 @@ public class FilteredHierarchyQueryable<T> : FilteredQueryable<T> where T : IHie
                 (ancestor, descendant) => ancestor);
     }
 
-    /// <inheritdoc cref="IFilteredQueryable{T}.ToPagedCollection"/>
-    public override PagedCollection<T> ToPagedCollection()
-    {
-        var items = PagedQuery.ToList();
-        return CreatePartialCollection(items);
-    }
+    public HierarchyCollection<T> ToHierarchyCollection() =>
+        CreateHierarchyCollection(SortedQuery.ToList());
 
-    /// <inheritdoc cref="IFilteredQueryable{T}.ToPagedCollectionAsync(CancellationToken)" />
-    public override async Task<PagedCollection<T>> ToPagedCollectionAsync(CancellationToken cancellationToken = default)
-    {
-        // Logic like EF Core `.ToListAsync` but without taking a dependency on that package into Blazor.
-        var items = new List<T>();
-        if(PagedQuery is IAsyncEnumerable<T> pagedAsyncQuery) {
-            await foreach(var element in pagedAsyncQuery.WithCancellation(cancellationToken)) {
-                items.Add(element);
-            }
-        }
-        else {
-            items.AddRange(PagedQuery);
-        }
-        return CreatePartialCollection(items);
-    }
+    public async Task<HierarchyCollection<T>> ToHierarchyCollectionAsync() =>
+        CreateHierarchyCollection(await ToListAsync(SortedQuery));
 
-    private PagedCollection<T> CreatePartialCollection(List<T> items)
-    {
-        var skip = (Query as PageQuery)?.Skip ?? 0;
-        var take = (Query as PageQuery)?.Take ?? PageQuery.DefaultTake;
-
-        var nextToken = (Token ?? new ContinuationToken(Query.Filter, Sort, take, take)).Next(skip, take);
-        var previousTake = ContinuationToken.ActualTake(Token, take);
-        var previousSkip = ContinuationToken.ActualSkip(Token, skip);
-        var total = items.Count == previousTake ? FilteredQuery.Count() : previousSkip + items.Count;
-        return new PagedCollection<T> {
+    private HierarchyCollection<T> CreateHierarchyCollection(IList<T> items) => 
+        new() {
+            Filter = Query.Filter,
             Items = items,
-            Filter = nextToken.Filter,
-            Sort = nextToken.Sort,
-            Start = previousSkip,
-            Total = total,
-            ContinuationToken = nextToken.ToString(),
-        };
-    }
+            Sort = nameof(IHierarchyEntity<T>.Lineage).ToLowerInvariant(),
+            Level = string.IsNullOrWhiteSpace(Query.Filter) ? Query.Level : null,
+            Expand = Query.Expand.Any() ? Query.Expand.ToArray() : null,
+            Collapse = Query.Collapse.Any() ? Query.Collapse.ToArray() : null,
+        };  
 
-    protected override string? Sort => nameof(IHierarchyEntity<T>.Lineage).ToLowerInvariant();
+    private new HierarchyQuery Query { get; }
 
 }

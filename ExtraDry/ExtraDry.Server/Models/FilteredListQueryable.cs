@@ -1,10 +1,14 @@
 ﻿using ExtraDry.Server.Internal;
+using Microsoft.Azure.Amqp;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.Linq.Expressions;
 
 namespace ExtraDry.Server;
 
 /// <inheritdoc cref="IFilteredQueryable{T}" />
 public class FilteredListQueryable<T> : FilteredQueryable<T> {
+
+    protected FilteredListQueryable() { }
 
     public FilteredListQueryable(IQueryable<T> queryable, StringComparison forceStringComparison)
     {
@@ -19,75 +23,51 @@ public class FilteredListQueryable<T> : FilteredQueryable<T> {
         Query = filterQuery;
         FilteredQuery = ApplyKeywordFilter(queryable, filterQuery, defaultFilter);
         SortedQuery = FilteredQuery;
-        PagedQuery = SortedQuery.Page(0, PageQuery.DefaultTake, null);
+        PagedQuery = SortedQuery;
     }
 
-    public FilteredListQueryable(IQueryable<T> queryable, SortQuery sortQuery, Expression<Func<T, bool>>? defaultFilter)
+    protected static IQueryable<T> ApplyKeywordFilter(IQueryable<T> queryable, FilterQuery query, Expression<Func<T, bool>>? defaultFilter)
     {
-        ForceStringComparison = (queryable as FilteredListQueryable<T>)?.ForceStringComparison;
-        Query = sortQuery;
-        FilteredQuery = ApplyKeywordFilter(queryable, sortQuery, defaultFilter);
-        SortedQuery = FilteredQuery.Sort(sortQuery);
-        PagedQuery = SortedQuery.Page(0, PageQuery.DefaultTake, null);
-    }
+        return (string.IsNullOrWhiteSpace(query.Filter), defaultFilter) switch {
+            (true, null) => queryable,
+            (true, _) => queryable.Where(defaultFilter).AsQueryable(),
+            (false, null) => queryable.Filter(query),
+            (false, _) => ApplyDefaultFilterIfNotInFilterQuery(),
+        };
 
-    public FilteredListQueryable(IQueryable<T> queryable, PageQuery pageQuery, Expression<Func<T, bool>>? defaultFilter)
-    {
-        ForceStringComparison = (queryable as FilteredListQueryable<T>)?.ForceStringComparison;
-        Query = pageQuery;
-        Token = ContinuationToken.FromString(pageQuery.Token);
-        FilteredQuery = ApplyKeywordFilter(queryable, pageQuery, defaultFilter);
-        SortedQuery = FilteredQuery.Sort(pageQuery);
-        PagedQuery = SortedQuery.Page(pageQuery);
-    }
-
-    /// <inheritdoc cref="IFilteredQueryable{T}.ToPagedCollection"/>
-    public override PagedCollection<T> ToPagedCollection()
-    {
-        var items = PagedQuery.ToList();
-        return CreatePartialCollection(items);
-    }
-
-    /// <inheritdoc cref="IFilteredQueryable{T}.ToPagedCollectionAsync(CancellationToken)" />
-    public override async Task<PagedCollection<T>> ToPagedCollectionAsync(CancellationToken cancellationToken = default)
-    {
-        // Logic like EF Core `.ToListAsync` but without taking a dependency on that package into Blazor.
-        var items = new List<T>();
-        if(PagedQuery is IAsyncEnumerable<T> pagedAsyncQuery) {
-            await foreach(var element in pagedAsyncQuery.WithCancellation(cancellationToken)) {
-                items.Add(element);
+        IQueryable<T> ApplyDefaultFilterIfNotInFilterQuery()
+        {
+            var filter = FilterParser.Parse(query.Filter ?? "");
+            var visitor = new MemberAccessVisitor(typeof(T));
+            visitor.Visit(defaultFilter);
+            var hasAnyPropertyInCommon = filter.Rules
+                .Any(r => visitor.PropertyNames
+                    .Any(p => p.Equals(r.PropertyName, StringComparison.InvariantCultureIgnoreCase)));
+            if(hasAnyPropertyInCommon) {
+                return queryable.Filter(query);
+            }
+            else {
+                return queryable.Where(defaultFilter).Filter(query);
             }
         }
-        else {
-            items.AddRange(PagedQuery);
-        }
-        return CreatePartialCollection(items);
     }
 
-    private PagedCollection<T> CreatePartialCollection(List<T> items)
-    {
-        var skip = (Query as PageQuery)?.Skip ?? 0;
-        var take = (Query as PageQuery)?.Take ?? PageQuery.DefaultTake;
-
-        var nextToken = (Token ?? new ContinuationToken(Query.Filter, Sort, take, take)).Next(skip, take);
-        var previousTake = ContinuationToken.ActualTake(Token, take);
-        var previousSkip = ContinuationToken.ActualSkip(Token, skip);
-        var total = items.Count == previousTake ? FilteredQuery.Count() : previousSkip + items.Count;
-        return new PagedCollection<T> {
+    /// <summary>
+    /// Given a collection of items retrieved from a data store, create a filtered collection.
+    /// Base classes will use their knowledge of the queries to fill in the correct details.
+    /// </summary>
+    protected FilteredCollection<T> CreateFilteredCollection(List<T> items) =>
+        new() {
+            Filter = Query.Filter,
             Items = items,
-            Filter = nextToken.Filter,
-            Sort = nextToken.Sort,
-            Start = previousSkip,
-            Total = total,
-            ContinuationToken = nextToken.ToString(),
         };
-    }
+    
+    /// <inheritdoc cref="IFilteredQueryable{T}.ToFilteredCollection" />
+    public FilteredCollection<T> ToFilteredCollection() => 
+        CreateFilteredCollection(FilteredQuery.ToList());
 
-    protected override string? Sort {
-        get {
-            var sort = (Query as SortQuery)?.Sort;
-            return string.IsNullOrWhiteSpace(sort) ? null : sort;
-        }
-    }
+    /// <inheritdoc cref="IFilteredQueryable{T}.ToFilteredCollectionAsync(CancellationToken)" />
+    public async Task<FilteredCollection<T>> ToFilteredCollectionAsync(CancellationToken cancellationToken = default) =>
+        CreateFilteredCollection(await ToListAsync(FilteredQuery, cancellationToken));
 
 }

@@ -35,17 +35,16 @@ public class RegionController {
     /// </summary>
     [HttpGet("api/regions"), Produces("application/json")]
     [AllowAnonymous]
-    public async Task<FilteredCollection<Region>> ListAsync([FromQuery] SortQuery query)
+    public async Task<SortedCollection<Region>> ListAsync([FromQuery] SortQuery query)
     {
         return await regions.ListAsync(query);
     }
 
     [HttpGet("api/regions/hierarchy"), Produces("application/json")]
     [AllowAnonymous]
-    public async Task<FilteredCollection<Region>> ListHierarchyAsync([FromQuery] HierarchyQuery query)
+    public async Task<HierarchyCollection<Region>> ListHierarchyAsync([FromQuery] HierarchyQuery query)
     {
         return await regions.ListHierarchyAsync(query);
-        
     }
 
     /// <summary>
@@ -63,7 +62,7 @@ public class RegionController {
     /// </summary>
     [HttpGet("api/regions/{code}/children"), Produces("application/json")]
     [AllowAnonymous]
-    public async Task<List<Region>> ListChildrenAsync(string code)
+    public async Task<BaseCollection<Region>> ListChildrenAsync(string code)
     {
         return await regions.ListChildrenAsync(code);
     }

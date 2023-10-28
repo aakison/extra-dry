@@ -1,4 +1,5 @@
 ﻿using ExtraDry.Server.Internal;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace ExtraDry.Server;
@@ -10,7 +11,7 @@ public static class QueryableExtensions {
     private const string MissingStabilizerErrorMessage = "Sort requires that a single EF key is uniquely defined to stabalize the sort, even if another sort property is present.  Use a single unique key following EF conventions";
     private const string SortErrorUserMessage = "Unable to Sort. 0x0F3F241C";
 
-    public static IFilteredQueryable<T> QueryWith<T>(this IQueryable<T> source, FilterQuery query, Expression<Func<T, bool>>? defaultFilter = null)
+    public static FilteredListQueryable<T> QueryWith<T>(this IQueryable<T> source, FilterQuery query, Expression<Func<T, bool>>? defaultFilter = null)
     {
         return new FilteredListQueryable<T>(source, query, defaultFilter);
     }
@@ -22,9 +23,9 @@ public static class QueryableExtensions {
     /// <param name="source">The extension source</param>
     /// <param name="query">A sort query that contains filtering and sorting information.</param>
     /// <param name="defaultFilter">An expression that provides default filtering support, which can be overridden by `filterQuery`</param>
-    public static IFilteredQueryable<T> QueryWith<T>(this IQueryable<T> source, SortQuery query, Expression<Func<T, bool>>? defaultFilter = null)
+    public static SortedListQueryable<T> QueryWith<T>(this IQueryable<T> source, SortQuery query, Expression<Func<T, bool>>? defaultFilter = null)
     {
-        return new FilteredListQueryable<T>(source, query, defaultFilter);
+        return new SortedListQueryable<T>(source, query, defaultFilter);
     }
 
     /// <summary>
@@ -34,9 +35,9 @@ public static class QueryableExtensions {
     /// <param name="source">The extension source</param>
     /// <param name="query">A page query that contains filtering, sorting, and paging information.</param>
     /// <param name="defaultFilter">An expression that provides default filtering support, which can be overridden by `partialQuery`</param>
-    public static IFilteredQueryable<T> QueryWith<T>(this IQueryable<T> source, PageQuery query, Expression<Func<T, bool>>? defaultFilter = null)
+    public static PagedListQueryable<T> QueryWith<T>(this IQueryable<T> source, PageQuery query, Expression<Func<T, bool>>? defaultFilter = null)
     {
-        return new FilteredListQueryable<T>(source, query, defaultFilter);
+        return new PagedListQueryable<T>(source, query, defaultFilter);
     }
 
     /// <summary>
@@ -47,14 +48,15 @@ public static class QueryableExtensions {
     /// <param name="source">The extension source</param>
     /// <param name="query">A hierarchy query that contains filtering, expansion, collapse and paging information.</param>
     /// <param name="defaultFilter">An expression that provides default filtering support, which can be overridden by `partialQuery`</param>
-    public static IFilteredQueryable<T> QueryWith<T>(this IQueryable<T> source, HierarchyQuery query, Expression<Func<T, bool>>? defaultFilter = null) where T : IHierarchyEntity<T>
+    public static FilteredHierarchyQueryable<T> QueryWith<T>(this IQueryable<T> source, HierarchyQuery query, Expression<Func<T, bool>>? defaultFilter = null) where T : IHierarchyEntity<T>
     {
         return new FilteredHierarchyQueryable<T>(source, query, defaultFilter);
     }
 
     public static IFilteredQueryable<T> ForceStringComparison<T>(this IQueryable<T> source, StringComparison forceStringComparison)
     {
-        return new FilteredListQueryable<T>(source, forceStringComparison);
+        // TODO:
+        return (source as IFilteredQueryable<T>)!;
     }
 
     /// <summary>
@@ -111,7 +113,7 @@ public static class QueryableExtensions {
     internal static IQueryable<T> Sort<T>(this IQueryable<T> source, string? sort, string? continuationToken)
     {
         var token = ContinuationToken.FromString(continuationToken);
-        var actualSort = token?.Sort ?? sort ?? "";
+        var actualSort = (string.IsNullOrWhiteSpace(token?.Sort) ? sort : null) ?? "";
         var sortProperty = actualSort.TrimStart('+', '-');
         var ascending = !actualSort.StartsWith("-");
         var query = source;
@@ -158,6 +160,19 @@ public static class QueryableExtensions {
         var actualSkip = ContinuationToken.ActualSkip(token, skip);
         var actualTake = ContinuationToken.ActualTake(token, take);
         return source.Skip(actualSkip).Take(actualTake);
+    }
+
+    public static BaseCollection<T> ToBaseCollection<T>(this IQueryable<T> source)
+    {
+        return new BaseCollection<T> {
+            Items = source.ToList(),
+        };
+    }
+
+    public static async Task<BaseCollection<T>> ToBaseCollectionAsync<T>(this IQueryable<T> source, CancellationToken cancellationToken = default)
+    {
+        var baseQuery = new BaseQueryable<T>(source);
+        return await baseQuery.ToBaseCollectionInternalAsync(cancellationToken); 
     }
 
 }

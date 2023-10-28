@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Core;
 
 /// <summary>
-/// Represents a basic query to filter against a list of items with sorting enabled.
+/// Represents a basic query to filter against a list of items with results sorted.
 /// </summary>
 public class SortQuery : FilterQuery {
 
