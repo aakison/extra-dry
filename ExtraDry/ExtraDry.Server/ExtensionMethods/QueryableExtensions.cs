@@ -39,6 +39,19 @@ public static class QueryableExtensions {
         return new FilteredListQueryable<T>(source, query, defaultFilter);
     }
 
+    /// <summary>
+    /// Given a <see cref="HierarchyQuery"/>, dynamically constructs an expression query that 
+    /// applies the indicated level and keyword filtering, expansions, collapses, and paging.
+    /// </summary>
+    /// <typeparam name="T">The type of objects in the collection.</typeparam>
+    /// <param name="source">The extension source</param>
+    /// <param name="query">A hierarchy query that contains filtering, expansion, collapse and paging information.</param>
+    /// <param name="defaultFilter">An expression that provides default filtering support, which can be overridden by `partialQuery`</param>
+    public static IFilteredQueryable<T> QueryWith<T>(this IQueryable<T> source, HierarchyQuery query, Expression<Func<T, bool>>? defaultFilter = null) where T : IHierarchyEntity<T>
+    {
+        return new FilteredHierarchyQueryable<T>(source, query, defaultFilter);
+    }
+
     public static IFilteredQueryable<T> ForceStringComparison<T>(this IQueryable<T> source, StringComparison forceStringComparison)
     {
         return new FilteredListQueryable<T>(source, forceStringComparison);

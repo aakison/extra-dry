@@ -9,6 +9,7 @@ public class HierarchyQuery : FilterQuery {
     /// <summary>
     /// The number of levels of the hierarchy to return.
     /// </summary>
+    [Range(0, 16384)]
     public int Level { get; set; }
 
     /// <summary>

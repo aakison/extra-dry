@@ -17,7 +17,7 @@ public class FilteredListQueryable<T> : FilteredQueryable<T> {
     {
         ForceStringComparison = (queryable as FilteredListQueryable<T>)?.ForceStringComparison;
         Query = filterQuery;
-        FilteredQuery = InitializeMergedFilter(queryable, filterQuery, defaultFilter);
+        FilteredQuery = ApplyKeywordFilter(queryable, filterQuery, defaultFilter);
         SortedQuery = FilteredQuery;
         PagedQuery = SortedQuery.Page(0, PageQuery.DefaultTake, null);
     }
@@ -26,7 +26,7 @@ public class FilteredListQueryable<T> : FilteredQueryable<T> {
     {
         ForceStringComparison = (queryable as FilteredListQueryable<T>)?.ForceStringComparison;
         Query = sortQuery;
-        FilteredQuery = InitializeMergedFilter(queryable, sortQuery, defaultFilter);
+        FilteredQuery = ApplyKeywordFilter(queryable, sortQuery, defaultFilter);
         SortedQuery = FilteredQuery.Sort(sortQuery);
         PagedQuery = SortedQuery.Page(0, PageQuery.DefaultTake, null);
     }
@@ -36,95 +36,9 @@ public class FilteredListQueryable<T> : FilteredQueryable<T> {
         ForceStringComparison = (queryable as FilteredListQueryable<T>)?.ForceStringComparison;
         Query = pageQuery;
         Token = ContinuationToken.FromString(pageQuery.Token);
-        FilteredQuery = InitializeMergedFilter(queryable, pageQuery, defaultFilter);
+        FilteredQuery = ApplyKeywordFilter(queryable, pageQuery, defaultFilter);
         SortedQuery = FilteredQuery.Sort(pageQuery);
         PagedQuery = SortedQuery.Page(pageQuery);
-    }
-
-    private static IQueryable<T> InitializeMergedFilter(IQueryable<T> queryable, FilterQuery query, Expression<Func<T, bool>>? defaultFilter)
-    {
-        if(string.IsNullOrWhiteSpace(query.Filter)) {
-            if(defaultFilter == null) {
-                return queryable;
-            }
-            else {
-                return queryable.Where(defaultFilter).AsQueryable();
-            }
-        }
-        else {
-            if(defaultFilter == null) {
-                return queryable.Filter(query);
-            }
-            else {
-                var filter = FilterParser.Parse(query.Filter);
-                var visitor = new MemberAccessVisitor(typeof(T));
-                visitor.Visit(defaultFilter);
-                var hasAnyPropertyInCommon = filter.Rules
-                    .Any(r => visitor.PropertyNames
-                        .Any(p => p.Equals(r.PropertyName, StringComparison.InvariantCultureIgnoreCase)));
-                if(hasAnyPropertyInCommon) {
-                    return queryable.Filter(query);
-                }
-                else {
-                    return queryable.Where(defaultFilter).Filter(query);
-                }
-            }
-        }
-    }
-
-    // https://stackoverflow.com/questions/31515898/traverse-an-expression-tree-and-extract-parameters
-    public class MemberAccessVisitor : ExpressionVisitor {
-
-        public MemberAccessVisitor(Type forType)
-        {
-            declaringType = forType;
-        }
-
-        public IList<string> PropertyNames { get; } = new List<string>();
-
-        protected override Expression VisitMember(MemberExpression node)
-        {
-            if(node.Member.DeclaringType == declaringType) {
-                PropertyNames.Add(node.Member.Name);
-            }
-            return base.VisitMember(node);
-        }
-
-        private readonly Type declaringType;
-    }
-
-    /// <inheritdoc cref="IFilteredQueryable{T}.ToFilteredCollection" />
-    public override FilteredCollection<T> ToFilteredCollection()
-    {
-        var items = SortedQuery.ToList();
-        return CreateFilteredCollection(items);
-    }
-
-    /// <inheritdoc cref="IFilteredQueryable{T}.ToFilteredCollectionAsync(CancellationToken)" />
-    public override async Task<FilteredCollection<T>> ToFilteredCollectionAsync(CancellationToken cancellationToken = default)
-    {
-        // Logic like EF Core `.ToListAsync` but without taking a dependency on that entire package.
-        var items = new List<T>();
-        if(SortedQuery is IAsyncEnumerable<T> sortedAsyncQuery) {
-            await foreach(var element in sortedAsyncQuery.WithCancellation(cancellationToken)) {
-                if(element != null) {
-                    items.Add(element);
-                }
-            }
-        }
-        else {
-            items.AddRange(SortedQuery);
-        }
-        return CreateFilteredCollection(items);
-    }
-
-    private FilteredCollection<T> CreateFilteredCollection(List<T> items)
-    {
-        return new FilteredCollection<T> {
-            Items = items,
-            Filter = Query.Filter,
-            Sort = Sort,
-        };
     }
 
     /// <inheritdoc cref="IFilteredQueryable{T}.ToPagedCollection"/>
@@ -167,6 +81,13 @@ public class FilteredListQueryable<T> : FilteredQueryable<T> {
             Total = total,
             ContinuationToken = nextToken.ToString(),
         };
+    }
+
+    protected override string? Sort {
+        get {
+            var sort = (Query as SortQuery)?.Sort;
+            return string.IsNullOrWhiteSpace(sort) ? null : sort;
+        }
     }
 
 }

@@ -7,6 +7,9 @@ namespace ExtraDry.Core;
 /// </summary>
 public interface IHierarchyEntity<T> where T : IHierarchyEntity<T> {
 
+    /// <inheritdoc cref="IResourceIdentifiers.Slug" />
+    string Slug { get; }
+
     /// <summary>
     /// The parent entity in the taxonomy, NULL if root node.  This provides the referential 
     /// integrity for the hierarchy that the Lineage doesn't.
