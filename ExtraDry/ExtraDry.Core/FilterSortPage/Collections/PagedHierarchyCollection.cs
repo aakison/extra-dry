@@ -27,8 +27,8 @@ public class PagedHierarchyCollection<T> : HierarchyCollection<T> {
             Start = Start,
             Total = Total,
             Level = Level,
-            Expand = Expand == null ? null : (string[])Expand.Clone(),
-            Collapse = Collapse == null ? null : (string[])Collapse.Clone(),
+            Expand = Expand == null ? null : new List<string>(Expand),
+            Collapse = Collapse == null ? null : new List<string>(Collapse),
     };
 
 }

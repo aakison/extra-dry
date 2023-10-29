@@ -2,7 +2,7 @@
 
 namespace ExtraDry.Server.Tests.Models;
 
-public class PartialQueryableTests {
+public class FilteredListQueryableTests {
 
     [Fact]
     public void QueryableInterfacePublished()

@@ -39,12 +39,12 @@ public class HierarchyCollectionTests {
     [Theory]
     [InlineData(nameof(HierarchyCollection<object>.Expand))]
     [InlineData(nameof(HierarchyCollection<object>.Collapse))]
-    public void RoundtripStringArrayProperties(string propertyName)
+    public void RoundtripStringListProperties(string propertyName)
     {
         var target = new HierarchyCollection<object>();
         var property = target.GetType().GetProperty(propertyName)
             ?? throw new ArgumentException("Bad argument", nameof(propertyName));
-        var array = new[] { "one", "two" };
+        var array = new List<string> { "one", "two" };
 
         property.SetValue(target, array);
         var result = property.GetValue(target);
@@ -59,8 +59,8 @@ public class HierarchyCollectionTests {
             Filter = "filter",
             Sort = "sort",
             Level = 3,
-            Expand = new[] { "one", "two" },
-            Collapse = new[] { "three", "four" },
+            Expand = new List<string> { "one", "two" },
+            Collapse = new List<string> { "three", "four" },
         };
         var item = new Payload { Pay = "pay", Load = "load" };
         target.Items.Add(item);
@@ -86,8 +86,8 @@ public class HierarchyCollectionTests {
             Filter = "filter",
             Sort = "sort",
             Level = 3,
-            Expand = new[] { "one", "two" },
-            Collapse = new[] { "three", "four" },
+            Expand = new List<string> { "one", "two" },
+            Collapse = new List<string> { "three", "four" },
         };
         var item = new Payload { Pay = "pay", Load = "load" };
         target.Items.Add(item);

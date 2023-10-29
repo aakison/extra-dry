@@ -48,7 +48,7 @@ public class PagedHierarchyCollectionTests {
         var target = new HierarchyCollection<object>();
         var property = target.GetType().GetProperty(propertyName)
             ?? throw new ArgumentException("Bad argument", nameof(propertyName));
-        var array = new[] { "one", "two" };
+        var array = new List<string> { "one", "two" };
 
         property.SetValue(target, array);
         var result = property.GetValue(target);
@@ -63,8 +63,8 @@ public class PagedHierarchyCollectionTests {
             Filter = "filter",
             Sort = "sort",
             Level = 3,
-            Expand = new[] { "one", "two" },
-            Collapse = new[] { "three", "four" },
+            Expand = new List<string> { "one", "two" },
+            Collapse = new List<string> { "three", "four" },
             Start = 5,
             Total = 10
         };
@@ -94,8 +94,8 @@ public class PagedHierarchyCollectionTests {
             Filter = "filter",
             Sort = "sort",
             Level = 3,
-            Expand = new[] { "one", "two" },
-            Collapse = new[] { "three", "four" },
+            Expand = new List<string> { "one", "two" },
+            Collapse = new List<string> { "three", "four" },
             Start = 5,
             Total = 10
         };

@@ -42,15 +42,28 @@ public static class QueryableExtensions {
 
     /// <summary>
     /// Given a <see cref="HierarchyQuery"/>, dynamically constructs an expression query that 
-    /// applies the indicated level and keyword filtering, expansions, collapses, and paging.
+    /// applies the indicated level and keyword filtering, expansions, and collapses.
     /// </summary>
     /// <typeparam name="T">The type of objects in the collection.</typeparam>
     /// <param name="source">The extension source</param>
-    /// <param name="query">A hierarchy query that contains filtering, expansion, collapse and paging information.</param>
+    /// <param name="query">A hierarchy query that contains filtering, expansion, and collapse information.</param>
     /// <param name="defaultFilter">An expression that provides default filtering support, which can be overridden by `partialQuery`</param>
     public static FilteredHierarchyQueryable<T> QueryWith<T>(this IQueryable<T> source, HierarchyQuery query, Expression<Func<T, bool>>? defaultFilter = null) where T : IHierarchyEntity<T>
     {
         return new FilteredHierarchyQueryable<T>(source, query, defaultFilter);
+    }
+
+    /// <summary>
+    /// Given a <see cref="PageHierarchyQuery"/>, dynamically constructs an expression query that 
+    /// applies the indicated level and keyword filtering, expansions, collapses, and paging.
+    /// </summary>
+    /// <typeparam name="T">The type of objects in the collection.</typeparam>
+    /// <param name="source">The extension source</param>
+    /// <param name="query">A page hierarchy query that contains filtering, expansion, collapse and paging information.</param>
+    /// <param name="defaultFilter">An expression that provides default filtering support, which can be overridden by `partialQuery`</param>
+    public static PagedHierarchyQueryable<T> QueryWith<T>(this IQueryable<T> source, PageHierarchyQuery query, Expression<Func<T, bool>>? defaultFilter = null) where T : IHierarchyEntity<T>
+    {
+        return new PagedHierarchyQueryable<T>(source, query, defaultFilter);
     }
 
     /// <summary>
@@ -142,7 +155,7 @@ public static class QueryableExtensions {
     /// <typeparam name="T">The type of objects in the collection.</typeparam>
     /// <param name="source">The extension source</param>
     /// <param name="query">A page query that contains paging information.</param>
-    public static IQueryable<T> Page<T>(this IQueryable<T> source, PageQuery query)
+    public static IQueryable<T> Page<T>(this IQueryable<T> source, IPageQuery query)
     {
         // TODO: Implement stabilizer using model meta-data.
         return source.Page(query.Skip, query.Take, query.Token);

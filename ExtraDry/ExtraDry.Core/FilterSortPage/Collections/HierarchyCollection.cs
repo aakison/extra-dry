@@ -16,13 +16,13 @@ public class HierarchyCollection<T> : SortedCollection<T>
     /// The list of additional nodes, if any, that were expanded.
     /// </summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    public string[]? Expand { get; set; }
+    public List<string>? Expand { get; set; }
 
     /// <summary>
     /// The list of additional nodes, if any, that were collapsed.
     /// </summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    public string[]? Collapse { get; set; }
+    public List<string>? Collapse { get; set; }
 
     /// <summary>
     /// Create a new <see cref="HierarchyCollection{T}" /> with the items cast to a base class or interface.

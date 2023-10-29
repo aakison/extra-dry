@@ -25,12 +25,11 @@ public class SortedListQueryable<T> : FilteredListQueryable<T>
         new() {
             Items = items,
             Filter = Query.Filter,
-            Sort = Query.Sort,
+            Sort = (Query as SortQuery)?.Sort,
         };
 
     protected IQueryable<T> ApplyPropertySort(IQueryable<T> queryable, SortQuery query) {
         return queryable.Sort(query);    
     }
 
-    private new SortQuery Query { get; } = new();
 }

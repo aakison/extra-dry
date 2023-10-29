@@ -5,6 +5,10 @@ namespace ExtraDry.Server;
 
 public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : IHierarchyEntity<T> {
 
+    protected FilteredHierarchyQueryable() {
+        Query = new();
+    }
+
     public FilteredHierarchyQueryable(IQueryable<T> queryable, HierarchyQuery hierarchyQuery, Expression<Func<T, bool>>? defaultFilter)
     {
         ForceStringComparison = (queryable as BaseQueryable<T>)?.ForceStringComparison;
@@ -23,7 +27,7 @@ public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : 
         PagedQuery = SortedQuery;
     }
 
-    private static IQueryable<T> ExpandCollapseHierarchy(IQueryable<T> baseQueryable, IQueryable<T> filteredQueryable, HierarchyQuery query)
+    protected static IQueryable<T> ExpandCollapseHierarchy(IQueryable<T> baseQueryable, IQueryable<T> filteredQueryable, HierarchyQuery query)
     {
         var ancestors = AncestorOf(filteredQueryable);
         var expansions = ChildrenOf(query.Expand);
@@ -66,8 +70,8 @@ public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : 
             Items = items,
             Sort = nameof(IHierarchyEntity<T>.Lineage).ToLowerInvariant(),
             Level = string.IsNullOrWhiteSpace(Query.Filter) ? Query.Level : null,
-            Expand = Query.Expand.Any() ? Query.Expand.ToArray() : null,
-            Collapse = Query.Collapse.Any() ? Query.Collapse.ToArray() : null,
+            Expand = Query.Expand.Any() ? Query.Expand : null,
+            Collapse = Query.Collapse.Any() ? Query.Collapse : null,
         };  
 
     private new HierarchyQuery Query { get; }
