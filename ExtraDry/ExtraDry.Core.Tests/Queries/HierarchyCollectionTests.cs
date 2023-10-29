@@ -2,27 +2,31 @@
 
 namespace ExtraDry.Server.Tests.Models;
 
-public class FilteredCollectionTests {
+public class HierarchyCollectionTests {
 
     [Fact]
     public void DefaultConstructor()
     {
-        var collection = new FilteredCollection<object>();
+        var collection = new HierarchyCollection<object>();
 
         Assert.Empty(collection.Items);
         Assert.Equal(0, collection.Count);
         Assert.True(DateTime.UtcNow >= collection.Created);
         Assert.True(DateTime.UtcNow.AddSeconds(-1) < collection.Created);
         Assert.Null(collection.Filter);
-        // TODO: Assert.Null(collection.Sort);
+        Assert.Null(collection.Sort);
+        Assert.Null(collection.Level);
+        Assert.Null(collection.Expand);
+        Assert.Null(collection.Collapse);
     }
 
     [Theory]
-    [InlineData(nameof(FilteredCollection<object>.Filter), "Any")]
-    // TODO: [InlineData(nameof(FilteredCollection<object>.Sort), "Any")]
+    [InlineData(nameof(HierarchyCollection<object>.Filter), "Any")]
+    [InlineData(nameof(HierarchyCollection<object>.Sort), "Any")]
+    [InlineData(nameof(HierarchyCollection<object>.Level), 3)]
     public void RoundtripProperties(string propertyName, object propertyValue)
     {
-        var target = new FilteredCollection<object>();
+        var target = new HierarchyCollection<object>();
         var property = target.GetType().GetProperty(propertyName) 
             ?? throw new ArgumentException("Bad argument", nameof(propertyValue));
 
@@ -32,18 +36,37 @@ public class FilteredCollectionTests {
         Assert.Equal(propertyValue, result);
     }
 
+    [Theory]
+    [InlineData(nameof(HierarchyCollection<object>.Expand))]
+    [InlineData(nameof(HierarchyCollection<object>.Collapse))]
+    public void RoundtripStringArrayProperties(string propertyName)
+    {
+        var target = new HierarchyCollection<object>();
+        var property = target.GetType().GetProperty(propertyName)
+            ?? throw new ArgumentException("Bad argument", nameof(propertyName));
+        var array = new[] { "one", "two" };
+
+        property.SetValue(target, array);
+        var result = property.GetValue(target);
+
+        Assert.Equal(array, result);
+    }
+
     [Fact]
     public void JsonSerializable()
     {
-        var target = new SortedCollection<Payload>() {
+        var target = new HierarchyCollection<Payload>() {
             Filter = "filter",
             Sort = "sort",
+            Level = 3,
+            Expand = new[] { "one", "two" },
+            Collapse = new[] { "three", "four" },
         };
         var item = new Payload { Pay = "pay", Load = "load" };
         target.Items.Add(item);
 
         var json = JsonSerializer.Serialize(target);
-        var result = JsonSerializer.Deserialize<SortedCollection<Payload>>(json) ?? throw new Exception();
+        var result = JsonSerializer.Deserialize<HierarchyCollection<Payload>>(json) ?? throw new Exception();
 
         Assert.NotSame(result, target);
         Assert.NotSame(result.Items.First(), target.Items.First());
@@ -51,14 +74,20 @@ public class FilteredCollectionTests {
         Assert.Equal("load", result.Items.First().Load);
         Assert.Equal("filter", result.Filter);
         Assert.Equal("sort", result.Sort);
+        Assert.Equal(3, result.Level);
+        Assert.Contains("one", result.Expand!);
+        Assert.Contains("three", result.Collapse!);
     }
 
     [Fact]
-    public void FilteredCollectionCasting()
+    public void CollectionCasting()
     {
-        var target = new SortedCollection<Payload>() {
+        var target = new HierarchyCollection<Payload>() {
             Filter = "filter",
             Sort = "sort",
+            Level = 3,
+            Expand = new[] { "one", "two" },
+            Collapse = new[] { "three", "four" },
         };
         var item = new Payload { Pay = "pay", Load = "load" };
         target.Items.Add(item);
@@ -69,6 +98,9 @@ public class FilteredCollectionTests {
         Assert.Equal(target.Items.First(), iPayloadItems.Items.First());
         Assert.Equal(target.Filter, iPayloadItems.Filter);
         Assert.Equal(target.Sort, iPayloadItems.Sort);
+        Assert.Equal(target.Level, iPayloadItems.Level);
+        Assert.Contains("one", iPayloadItems.Expand!);
+        Assert.Contains("three", iPayloadItems.Collapse!);
     }
 
     private interface IPayload {

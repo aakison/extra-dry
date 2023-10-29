@@ -60,7 +60,35 @@ public class PagedCollectionTests {
         Assert.Equal(1, result.Total);
     }
 
-    private class Payload {
+    [Fact]
+    public void CollectionCasting()
+    {
+        var target = new PagedCollection<Payload>() {
+            Filter = "filter",
+            Sort = "sort",
+            Start = 50,
+            Total = 100,
+            ContinuationToken = "TESTTOKEN",
+        };
+        var item = new Payload { Pay = "pay", Load = "load" };
+        target.Items.Add(item);
+
+        var iPayloadItems = target.Cast<IPayload>();
+
+        Assert.Equal(1, iPayloadItems.Count);
+        Assert.Equal(target.Items.First(), iPayloadItems.Items.First());
+        Assert.Equal(target.Filter, iPayloadItems.Filter);
+        Assert.Equal(target.Sort, iPayloadItems.Sort);
+        Assert.Equal(target.Start, iPayloadItems.Start);
+        Assert.Equal(target.Total, iPayloadItems.Total);
+        Assert.Equal(target.ContinuationToken, iPayloadItems.ContinuationToken);
+    }
+
+    private interface IPayload {
+        string Pay { get; set; }
+    }
+
+    private class Payload : IPayload {
         public string Pay { get; set; } = string.Empty;
 
         public string Load { get; set; } = string.Empty;
