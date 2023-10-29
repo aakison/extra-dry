@@ -53,10 +53,14 @@ public static class QueryableExtensions {
         return new FilteredHierarchyQueryable<T>(source, query, defaultFilter);
     }
 
-    public static IFilteredQueryable<T> ForceStringComparison<T>(this IQueryable<T> source, StringComparison forceStringComparison)
+    /// <summary>
+    /// Forces the underlying query mechanism to build string comparisons with the given comparison 
+    /// type.  This only works on in-memory databases and anything that executes on a remote 
+    /// database will throw an exception.
+    /// </summary>
+    public static BaseQueryable<T> ForceStringComparison<T>(this IQueryable<T> source, StringComparison forceStringComparison)
     {
-        // TODO:
-        return (source as IFilteredQueryable<T>)!;
+        return new BaseQueryable<T>(source, forceStringComparison);
     }
 
     /// <summary>
@@ -85,7 +89,7 @@ public static class QueryableExtensions {
         if(!description.FilterProperties.Any()) {
             return source;
         }
-        var comparison = (source as FilteredListQueryable<T>)?.ForceStringComparison;
+        var comparison = (source as BaseQueryable<T>)?.ForceStringComparison;
         return source.WhereFilterConditions(description.FilterProperties.ToArray(), filter, comparison);
     }
 

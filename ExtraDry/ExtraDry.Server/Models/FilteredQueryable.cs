@@ -57,6 +57,4 @@ public class FilteredQueryable<T> : BaseQueryable<T> {
         return stats;
     }
 
-    public StringComparison? ForceStringComparison { get; protected set; }
-
 }

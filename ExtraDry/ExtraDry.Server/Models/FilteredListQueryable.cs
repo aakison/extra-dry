@@ -10,16 +10,9 @@ public class FilteredListQueryable<T> : FilteredQueryable<T> {
 
     protected FilteredListQueryable() { }
 
-    public FilteredListQueryable(IQueryable<T> queryable, StringComparison forceStringComparison)
-    {
-        ForceStringComparison = forceStringComparison;
-        Query = new();
-        PagedQuery = SortedQuery = FilteredQuery = queryable;
-    }
-
     public FilteredListQueryable(IQueryable<T> queryable, FilterQuery filterQuery, Expression<Func<T, bool>>? defaultFilter)
     {
-        ForceStringComparison = (queryable as FilteredListQueryable<T>)?.ForceStringComparison;
+        ForceStringComparison = (queryable as BaseQueryable<T>)?.ForceStringComparison;
         Query = filterQuery;
         FilteredQuery = ApplyKeywordFilter(queryable, filterQuery, defaultFilter);
         SortedQuery = FilteredQuery;

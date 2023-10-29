@@ -7,7 +7,7 @@ public class PagedListQueryable<T> : SortedListQueryable<T>
 {
     public PagedListQueryable(IQueryable<T> queryable, PageQuery pageQuery, Expression<Func<T, bool>>? defaultFilter)
     {
-        ForceStringComparison = (queryable as FilteredListQueryable<T>)?.ForceStringComparison;
+        ForceStringComparison = (queryable as BaseQueryable<T>)?.ForceStringComparison;
         Query = pageQuery;
         Token = ContinuationToken.FromString(pageQuery.Token);
         FilteredQuery = ApplyKeywordFilter(queryable, pageQuery, defaultFilter);
