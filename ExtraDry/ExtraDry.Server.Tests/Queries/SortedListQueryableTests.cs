@@ -37,7 +37,21 @@ public class SortedListQueryableTests {
     [Theory]
     [InlineData("-name")]
     [InlineData("-NAME")] // case-insensitive
-    public async Task StringToSortedSortsDescending(string sort)
+    public void StringToSortedSortsDescending(string sort)
+    {
+        // filter to get rid of duplicate names
+        var query = new SortQuery { Filter = "phonetic", Sort = sort };
+        var expected = Models.ToList().Where(e => e.Type == ModelType.Phonetic).OrderByDescending(e => e.Name);
+
+        var actual = Models.AsQueryable().QueryWith(query).ToSortedCollection();
+
+        Assert.Equal(expected, actual.Items);
+    }
+
+    [Theory]
+    [InlineData("-name")]
+    [InlineData("-NAME")] // case-insensitive
+    public async Task StringToSortedSortsDescendingAsync(string sort)
     {
         // filter to get rid of duplicate names
         var query = new SortQuery { Filter = "phonetic", Sort = sort };

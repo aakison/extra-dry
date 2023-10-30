@@ -21,7 +21,29 @@ public class PagedListQueryableTests {
     [Theory]
     [InlineData(0, 5)]
     [InlineData(5, 5)]
-    public async Task BasicSkipTakePaging(int skip, int take)
+    public void BasicSkipTakePaging(int skip, int take)
+    {
+        var query = new PageQuery { Skip = skip, Take = take };
+        var expected = Models.ToList().Skip(skip).Take(5);
+
+        var actual = Models.AsQueryable().QueryWith(query).ToPagedCollection();
+
+        Assert.Equal(expected, actual.Items);
+        Assert.Equal(Models.Count, actual.Total);
+        Assert.Equal(take, actual.Count);
+        Assert.Equal(skip, actual.Start);
+        Assert.Null(actual.Filter);
+        Assert.Null(actual.Sort);
+        Assert.False(actual.IsFullCollection);
+        Assert.NotNull(actual.ContinuationToken);
+        var token = ContinuationToken.FromString(actual.ContinuationToken);
+        Assert.NotNull(token);
+    }
+
+    [Theory]
+    [InlineData(0, 5)]
+    [InlineData(5, 5)]
+    public async Task BasicSkipTakePagingAsync(int skip, int take)
     {
         var query = new PageQuery { Skip = skip, Take = take };
         var expected = Models.ToList().Skip(skip).Take(5);
@@ -39,34 +61,6 @@ public class PagedListQueryableTests {
         var token = ContinuationToken.FromString(actual.ContinuationToken);
         Assert.NotNull(token);
     }
-
-    //[Theory]
-    //[InlineData("-name")]
-    //[InlineData("-NAME")] // case-insensitive
-    //public async Task StringToSortedSortsDescending(string sort)
-    //{
-    //    // filter to get rid of duplicate names
-    //    var query = new SortQuery { Filter = "phonetic", Sort = sort };
-    //    var expected = Models.ToList().Where(e => e.Type == ModelType.Phonetic).OrderByDescending(e => e.Name);
-
-    //    var actual = await Models.AsQueryable().QueryWith(query).ToSortedCollectionAsync();
-
-    //    Assert.Equal(expected, actual.Items);
-    //}
-
-    //[Theory]
-    //[InlineData(null)]
-    //[InlineData("")]
-    //[InlineData(" ")]
-    //public async Task EmptyStringToSortIgnoresSort(string sort)
-    //{
-    //    var query = new SortQuery { Sort = sort };
-    //    var expected = Models.ToList();
-
-    //    var actual = await Models.AsQueryable().QueryWith(query).ToSortedCollectionAsync();
-
-    //    Assert.Equal(expected, actual.Items);
-    //}
 
     [Fact]
     public async Task ToSortedIgnoresPaging()

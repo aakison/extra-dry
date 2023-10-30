@@ -2,7 +2,7 @@
 
 namespace ExtraDry.Server;
 
-public class FilteredQueryable<T> : BaseQueryable<T> {
+public class StatisticsQueryable<T> : BaseQueryable<T> {
 
     /// <inheritdoc cref="IFilteredQueryable{T}.ToStatistics" />
     public Statistics<T> ToStatistics()

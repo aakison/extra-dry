@@ -17,6 +17,7 @@ public class PagedCollectionTests {
         Assert.Null(target.Sort);
         Assert.Equal(0, target.Total);
         Assert.Null(target.ContinuationToken);
+        Assert.True(target.IsFullCollection);
     }
 
     [Theory]
@@ -82,6 +83,7 @@ public class PagedCollectionTests {
         Assert.Equal(target.Start, iPayloadItems.Start);
         Assert.Equal(target.Total, iPayloadItems.Total);
         Assert.Equal(target.ContinuationToken, iPayloadItems.ContinuationToken);
+        Assert.False(target.IsFullCollection);
     }
 
     private interface IPayload {

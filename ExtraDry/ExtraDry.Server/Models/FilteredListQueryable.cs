@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 namespace ExtraDry.Server;
 
 /// <inheritdoc cref="IFilteredQueryable{T}" />
-public class FilteredListQueryable<T> : FilteredQueryable<T> {
+public class FilteredListQueryable<T> : StatisticsQueryable<T> {
 
     protected FilteredListQueryable() { }
 
