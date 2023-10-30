@@ -26,9 +26,10 @@ public class PagedListQueryable<T> : SortedListQueryable<T>
 
     private PagedCollection<T> CreatePagedCollection(List<T> items)
     {
-        var skip = (Query as PageQuery)?.Skip ?? 0;
-        var take = (Query as PageQuery)?.Take ?? PageQuery.DefaultTake;
-        var sort = (Query as SortQuery)?.Sort;
+        var query = (Query as PageQuery)!;
+        var skip = query.Skip;
+        var take = query.Take;
+        var sort = query.Sort;
 
         var nextToken = (Token ?? new ContinuationToken(Query.Filter, sort, take, take)).Next(skip, take);
         var previousTake = ContinuationToken.ActualTake(Token, take);

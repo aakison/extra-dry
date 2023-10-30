@@ -79,12 +79,12 @@ internal class ContinuationToken {
             return result;
         }
         catch(FormatException ex) {
-            throw new DryException($"Invalid continuation token, not Base 64: {ex.Message}",
-                "Bad data paging request 0x0F062FE3");
+            throw new DryException("Invalid continuation token encoding.",
+                $"Bad data paging request: {ex.Message}");
         }
         catch(EndOfStreamException ex) {
-            throw new DryException($"Invalid token, length too short: {ex.Message}",
-                "Bad data paging request 0x0FF2B67E");
+            throw new DryException("Invalid continuation token length",
+                $"Bad data paging request: {ex.Message}");
         }
     }
 

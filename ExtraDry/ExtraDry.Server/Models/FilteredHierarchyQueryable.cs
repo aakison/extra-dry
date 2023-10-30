@@ -9,20 +9,30 @@ public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : 
         Query = new();
     }
 
-    public FilteredHierarchyQueryable(IQueryable<T> queryable, HierarchyQuery hierarchyQuery, Expression<Func<T, bool>>? defaultFilter)
+    public FilteredHierarchyQueryable(IQueryable<T> queryable, HierarchyQuery query, Expression<Func<T, bool>>? defaultFilter)
     {
         ForceStringComparison = (queryable as BaseQueryable<T>)?.ForceStringComparison;
-        Query = hierarchyQuery;
+        Query = query;
         // Level is the depth to query to, applied in addition tot he filter..
-        var levelQuery = new BaseQueryable<T>(queryable.Where(e => e.Lineage.GetLevel() <= hierarchyQuery.Level), ForceStringComparison);
+        var levelQuery = ApplyLevelFilter(queryable, query.Level);
         // Then filter with common filter mechanism
-        FilteredQuery = ApplyKeywordFilter(levelQuery, hierarchyQuery, defaultFilter);
+        FilteredQuery = ApplyKeywordFilter(levelQuery, query, defaultFilter);
         // Ensure expanded slugs and ancestors are included, while excluding collapsed.
-        var tempQuery = ExpandCollapseHierarchy(queryable, FilteredQuery, hierarchyQuery);
+        var hierarchyQuery = ExpandCollapseHierarchy(queryable, FilteredQuery, query);
         // Then sort it the only way that is allowed, breadth-first by lineage.
-        SortedQuery = tempQuery.OrderBy(e => e.Lineage);
+        SortedQuery = ApplyLineageSort(hierarchyQuery);
         // Finally, ignore paging.
         PagedQuery = SortedQuery;
+    }
+
+    protected IQueryable<T> ApplyLineageSort(IQueryable<T> queryable)
+    {
+        return queryable.OrderBy(e => e.Lineage);
+    }
+
+    protected IQueryable<T> ApplyLevelFilter(IQueryable<T> queryable, int level)
+    {
+        return new BaseQueryable<T>(queryable.Where(e => e.Lineage.GetLevel() <= level), ForceStringComparison);
     }
 
     protected static IQueryable<T> ExpandCollapseHierarchy(IQueryable<T> baseQueryable, IQueryable<T> filteredQueryable, HierarchyQuery query)
