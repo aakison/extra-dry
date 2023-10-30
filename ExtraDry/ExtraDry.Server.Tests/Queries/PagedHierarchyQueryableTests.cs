@@ -19,14 +19,14 @@ public class PagedHierarchyQueryableTests {
     }
 
     [Theory]
-    [InlineData(0, 0, 5, 1)]
-    [InlineData(1, 0, 5, 3)]
-    [InlineData(2, 0, 5, 5)] // 13 total
-    [InlineData(2, 5, 5, 5)] // 13 total
-    [InlineData(2, 10, 5, 3)] // 13 total
-    [InlineData(3, 10, 10, 6)] // 16 total
-    [InlineData(3, 0, 0, 16)] // 16 total, use default take
-    public void HierarchyLevels(int level, int skip, int take, int count)
+    [InlineData(0, 0, 5, 1, true)]
+    [InlineData(1, 0, 5, 3, true)]
+    [InlineData(2, 0, 5, 5, false)] // 13 total
+    [InlineData(2, 5, 5, 5, false)] // 13 total
+    [InlineData(2, 10, 5, 3, false)] // 13 total
+    [InlineData(3, 10, 10, 6, false)] // 16 total
+    [InlineData(3, 0, 0, 16, true)] // 16 total, use default take
+    public void HierarchyLevels(int level, int skip, int take, int count, bool full)
     {
         // filter to get rid of duplicate names
         var query = new PageHierarchyQuery { Level = level, Skip = skip, Take = take };
@@ -38,6 +38,7 @@ public class PagedHierarchyQueryableTests {
 
         var actual = regions.AsQueryable().QueryWith(query).ToPagedHierarchyCollection();
 
+        Assert.Equal(full, actual.IsFullCollection);
         Assert.Equal(count, actual.Count);
         Assert.Equal(expected, actual.Items);
     }

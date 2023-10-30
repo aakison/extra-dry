@@ -9,7 +9,7 @@ public class StatisticsQueryable<T> : BaseQueryable<T> {
     {
         var stats = new Statistics<T> {
             Distributions = new List<DataDistribution>(),
-            Filter = Query.Filter
+            Filter = TrimFilter(Query.Filter),
         };
         var description = new ModelDescription(typeof(T));
 
@@ -29,7 +29,7 @@ public class StatisticsQueryable<T> : BaseQueryable<T> {
     {
         var stats = new Statistics<T> {
             Distributions = new List<DataDistribution>(),
-            Filter = Query.Filter
+            Filter = TrimFilter(Query.Filter),
         };
         var description = new ModelDescription(typeof(T));
 
@@ -38,23 +38,21 @@ public class StatisticsQueryable<T> : BaseQueryable<T> {
                 .GroupBy(statProp)
                 .Select(e => new CountInfo(e.Key, e.Count()));
 
-            await ToListAsync(statsQuery, cancellationToken);
+            var items = await ToListAsync(statsQuery, cancellationToken);
 
-            // Logic like EF Core `.ToListAsync` but without taking a dependency on that entire package.
-            var items = new List<CountInfo>();
-            if(statsQuery is IAsyncEnumerable<CountInfo> statsQueryAsync) {
-                await foreach(var element in statsQueryAsync.WithCancellation(cancellationToken)) {
-                    if(element != null) {
-                        items.Add(element);
-                    }
-                }
-            }
-            else {
-                items.AddRange(statsQuery);
-            }
             stats.Distributions.Add(new DataDistribution(statProp.Property.Name, items.ToDictionary(e => e.Key, e => e.Count)));
         }
         return stats;
+    }
+
+    private string? TrimFilter(string? filter)
+    {
+        if(string.IsNullOrWhiteSpace(filter)) {
+            return null;
+        }
+        else {
+            return filter.Trim();
+        }
     }
 
 }
