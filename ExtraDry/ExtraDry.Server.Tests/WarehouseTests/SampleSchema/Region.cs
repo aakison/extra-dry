@@ -36,6 +36,7 @@ public class Region : IHierarchyEntity<Region> {
     /// </summary>
     [Required, StringLength(32)]
     [Display(ShortName = "Code")]
+    [Filter(FilterType.Equals)]
     public string Slug { get; set; } = string.Empty;
 
     /// <summary>
@@ -44,6 +45,7 @@ public class Region : IHierarchyEntity<Region> {
     [Required, StringLength(32)]
     [Display(ShortName = "Title")]
     [Attribute("The Title")]
+    [Filter(FilterType.Contains)]
     public string Title { get; set; } = string.Empty;
 
     public Region? Parent { get; set; }
@@ -57,6 +59,7 @@ public class Region : IHierarchyEntity<Region> {
     /// Limited to 100 characters based on full names of countries which, in English, max at 59 characters per ISO.
     /// </remarks>
     [Required, StringLength(100)]
+    [Filter(FilterType.Contains)]
     public string Description { get; set; } = string.Empty;
 
     [NotMapped]

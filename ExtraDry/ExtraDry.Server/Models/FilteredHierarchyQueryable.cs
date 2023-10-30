@@ -13,10 +13,8 @@ public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : 
     {
         ForceStringComparison = (queryable as BaseQueryable<T>)?.ForceStringComparison;
         Query = hierarchyQuery;
-        // Level is either the entire set if using text filter, or just a depth otherwise.
-        var levelQuery = string.IsNullOrEmpty(hierarchyQuery.Filter)
-            ? queryable.Where(e => e.Lineage.GetLevel() <= hierarchyQuery.Level)
-            : queryable;
+        // Level is the depth to query to, applied in addition tot he filter..
+        var levelQuery = new BaseQueryable<T>(queryable.Where(e => e.Lineage.GetLevel() <= hierarchyQuery.Level), ForceStringComparison);
         // Then filter with common filter mechanism
         FilteredQuery = ApplyKeywordFilter(levelQuery, hierarchyQuery, defaultFilter);
         // Ensure expanded slugs and ancestors are included, while excluding collapsed.
@@ -69,7 +67,7 @@ public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : 
             Filter = Query.Filter,
             Items = items,
             Sort = nameof(IHierarchyEntity<T>.Lineage).ToLowerInvariant(),
-            Level = string.IsNullOrWhiteSpace(Query.Filter) ? Query.Level : null,
+            Level = Query.Level,
             Expand = Query.Expand.Any() ? Query.Expand : null,
             Collapse = Query.Collapse.Any() ? Query.Collapse : null,
         };  

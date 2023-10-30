@@ -51,9 +51,6 @@ public class BaseQueryable<T> : IQueryable<T>
         return items;
     }
 
-    internal BaseCollection<T> ToBaseCollectionInternal() =>
-        BaseQueryable<T>.CreateBaseCollection(FilteredQuery.ToList());
-
     internal async Task<BaseCollection<T>> ToBaseCollectionInternalAsync(CancellationToken cancellationToken = default) =>
         BaseQueryable<T>.CreateBaseCollection(await ToListAsync(FilteredQuery, cancellationToken));
 
