@@ -1,4 +1,5 @@
-﻿using ExtraDry.Server.Internal;
+﻿using ExtraDry.Server.EF;
+using ExtraDry.Server.Internal;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -11,9 +12,9 @@ public static class QueryableExtensions {
     private const string MissingStabilizerErrorMessage = "Sort requires that a single EF key is uniquely defined to stabalize the sort, even if another sort property is present.  Use a single unique key following EF conventions";
     private const string SortErrorUserMessage = "Unable to Sort. 0x0F3F241C";
 
-    public static FilteredListQueryable<T> QueryWith<T>(this IQueryable<T> source, FilterQuery query, Expression<Func<T, bool>>? defaultFilter = null)
+    public static FilteredListQueryable<T> QueryWith<T>(this IQueryable<T> source, FilterQuery query, Expression<Func<T, bool>>? defaultFilter = null) where T : class
     {
-        return new FilteredListQueryable<T>(source, query, defaultFilter);
+        return new FilteredListQueryable<T>(source.AsNoTracking(), query, defaultFilter);
     }
 
     /// <summary>
@@ -23,9 +24,9 @@ public static class QueryableExtensions {
     /// <param name="source">The extension source</param>
     /// <param name="query">A sort query that contains filtering and sorting information.</param>
     /// <param name="defaultFilter">An expression that provides default filtering support, which can be overridden by `filterQuery`</param>
-    public static SortedListQueryable<T> QueryWith<T>(this IQueryable<T> source, SortQuery query, Expression<Func<T, bool>>? defaultFilter = null)
+    public static SortedListQueryable<T> QueryWith<T>(this IQueryable<T> source, SortQuery query, Expression<Func<T, bool>>? defaultFilter = null) where T : class
     {
-        return new SortedListQueryable<T>(source, query, defaultFilter);
+        return new SortedListQueryable<T>(source.AsNoTracking(), query, defaultFilter);
     }
 
     /// <summary>
@@ -35,9 +36,9 @@ public static class QueryableExtensions {
     /// <param name="source">The extension source</param>
     /// <param name="query">A page query that contains filtering, sorting, and paging information.</param>
     /// <param name="defaultFilter">An expression that provides default filtering support, which can be overridden by `partialQuery`</param>
-    public static PagedListQueryable<T> QueryWith<T>(this IQueryable<T> source, PageQuery query, Expression<Func<T, bool>>? defaultFilter = null)
+    public static PagedListQueryable<T> QueryWith<T>(this IQueryable<T> source, PageQuery query, Expression<Func<T, bool>>? defaultFilter = null) where T : class
     {
-        return new PagedListQueryable<T>(source, query, defaultFilter);
+        return new PagedListQueryable<T>(source.AsNoTracking(), query, defaultFilter);
     }
 
     /// <summary>
@@ -48,9 +49,9 @@ public static class QueryableExtensions {
     /// <param name="source">The extension source</param>
     /// <param name="query">A hierarchy query that contains filtering, expansion, and collapse information.</param>
     /// <param name="defaultFilter">An expression that provides default filtering support, which can be overridden by `partialQuery`</param>
-    public static FilteredHierarchyQueryable<T> QueryWith<T>(this IQueryable<T> source, HierarchyQuery query, Expression<Func<T, bool>>? defaultFilter = null) where T : IHierarchyEntity<T>
+    public static FilteredHierarchyQueryable<T> QueryWith<T>(this IQueryable<T> source, HierarchyQuery query, Expression<Func<T, bool>>? defaultFilter = null) where T : class, IHierarchyEntity<T>
     {
-        return new FilteredHierarchyQueryable<T>(source, query, defaultFilter);
+        return new FilteredHierarchyQueryable<T>(source.AsNoTracking(), query, defaultFilter);
     }
 
     /// <summary>
@@ -61,9 +62,9 @@ public static class QueryableExtensions {
     /// <param name="source">The extension source</param>
     /// <param name="query">A page hierarchy query that contains filtering, expansion, collapse and paging information.</param>
     /// <param name="defaultFilter">An expression that provides default filtering support, which can be overridden by `partialQuery`</param>
-    public static PagedHierarchyQueryable<T> QueryWith<T>(this IQueryable<T> source, PageHierarchyQuery query, Expression<Func<T, bool>>? defaultFilter = null) where T : IHierarchyEntity<T>
+    public static PagedHierarchyQueryable<T> QueryWith<T>(this IQueryable<T> source, PageHierarchyQuery query, Expression<Func<T, bool>>? defaultFilter = null) where T : class, IHierarchyEntity<T>
     {
-        return new PagedHierarchyQueryable<T>(source, query, defaultFilter);
+        return new PagedHierarchyQueryable<T>(source.AsNoTracking(), query, defaultFilter);
     }
 
     /// <summary>

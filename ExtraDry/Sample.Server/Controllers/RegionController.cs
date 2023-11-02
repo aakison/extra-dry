@@ -42,7 +42,7 @@ public class RegionController {
 
     [HttpGet("api/regions/hierarchy"), Produces("application/json")]
     [AllowAnonymous]
-    public async Task<HierarchyCollection<Region>> ListHierarchyAsync([FromQuery] HierarchyQuery query)
+    public async Task<PagedHierarchyCollection<Region>> ListHierarchyAsync([FromQuery] PageHierarchyQuery query)
     {
         return await regions.ListHierarchyAsync(query);
     }

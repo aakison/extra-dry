@@ -1,9 +1,10 @@
 ﻿using ExtraDry.Server.Internal;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace ExtraDry.Server;
 
-public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : IHierarchyEntity<T> {
+public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : class, IHierarchyEntity<T> {
 
     protected FilteredHierarchyQueryable() {
         Query = new();
@@ -37,13 +38,21 @@ public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : 
 
     protected static IQueryable<T> ExpandCollapseHierarchy(IQueryable<T> baseQueryable, IQueryable<T> filteredQueryable, HierarchyQuery query)
     {
-        var ancestors = AncestorOf(filteredQueryable);
-        var expansions = ChildrenOf(query.Expand);
-        var collapses = DescendantOf(query.Collapse);
-
-        //var all = filtered.Union(ancestors);
-        var all = filteredQueryable.Union(expansions).Union(ancestors).Except(collapses).OrderBy(e => e.Lineage);
-        return all;
+        var results = filteredQueryable;
+        if(query.Expand.Any()) {
+            results = results.Union(ChildrenOf(query.Expand));
+        }
+        if(!string.IsNullOrWhiteSpace(query.Filter)) {
+            // Add Tag
+            // see https://github.com/dotnet/efcore/issues/27150
+            var ancestors = AncestorsOf(filteredQueryable).TagWith(ImproveHierarchyQueryPerformance.Tag);
+            results = results.Union(ancestors);
+        }
+        if(query.Collapse.Any()) {
+            results = results.Except(DescendantOf(query.Collapse));
+        }
+        var sql = results.ToQueryString();
+        return results;
 
         IQueryable<T> ChildrenOf(IEnumerable<string> parentSlugs) =>
             baseQueryable.SelectMany(parent => baseQueryable
@@ -59,11 +68,11 @@ public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : 
                     && parentSlugs.Contains(parent.Slug)),
                 (parent, child) => child);
 
-        IQueryable<T> AncestorOf(IQueryable<T> filteredSubset) =>
-            baseQueryable.SelectMany(ancestor => filteredSubset
-                .Where(descendant => descendant.Lineage.IsDescendantOf(ancestor.Lineage)
-                    && descendant.Lineage.GetLevel() != ancestor.Lineage.GetLevel()),
-                (ancestor, descendant) => ancestor);
+        IQueryable<T> AncestorsOf(IQueryable<T> filtered) =>
+            filtered.SelectMany(descendant => baseQueryable
+                .Where(ancestor => descendant.Lineage.IsDescendantOf(ancestor.Lineage)),
+                (_, ancestor) => ancestor).Distinct();
+
     }
 
     public HierarchyCollection<T> ToHierarchyCollection() =>

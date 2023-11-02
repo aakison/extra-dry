@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using ExtraDry.Server.EF;
+﻿using ExtraDry.Server.EF;
 using System.Text.Json;
 
 namespace Sample.Data;
@@ -51,5 +49,10 @@ public class SampleContext : AspectDbContext {
         modelBuilder.Entity<Template>().Property(e => e.Schema).HasConversion(
             e => JsonSerializer.Serialize(e, (JsonSerializerOptions?)null),
             e => JsonSerializer.Deserialize<ExpandoSchema>(e, (JsonSerializerOptions?)null) ?? new());
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.AddInterceptors(new ImproveHierarchyQueryPerformance());
     }
 }

@@ -1,149 +1,152 @@
-﻿using ExtraDry.Server;
-using Microsoft.EntityFrameworkCore;
-using Sample.Data;
-using Sample.Data.Services;
-using System.ComponentModel;
+﻿// For testing Sample functionality, not ExtraDry functionality.  Ignored tests causes warnings in ExtraDry, so exclude.
+// Only return if some ExtraDry functionality for re-parenting is created.
 
-namespace Sample.Tests.Data.Services;
+//using ExtraDry.Server;
+//using Microsoft.EntityFrameworkCore;
+//using Sample.Data;
+//using Sample.Data.Services;
+//using System.ComponentModel;
 
-public class TaxonomyExtensionTests {
+//namespace Sample.Tests.Data.Services;
 
-    // This cannot run on an in-memory database becuase it needs to run relational queries for subtree moving
-    // As a result we ignore unles it's specifically asked for
-    // To have these tests run again, set this constant to null;
-    const string IgnoreTests = "Destructive tests disabled";
+//public class TaxonomyExtensionTests {
 
-    private RegionService regions;
+//    // This cannot run on an in-memory database becuase it needs to run relational queries for subtree moving
+//    // As a result we ignore unles it's specifically asked for
+//    // To have these tests run again, set this constant to null;
+//    const string IgnoreTests = "Destructive tests disabled";
 
-    private SampleContext context;
+//    private RegionService regions;
 
-    public TaxonomyExtensionTests()
-    {
-        var builder = new DbContextOptionsBuilder<SampleContext>()
-            .UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ExtraDryIntegrationTests;Trusted_Connection=True;", opt => opt.UseHierarchyId()).Options;
-        var arrangeContext = new SampleContext(builder);
-        context = new SampleContext(builder);
+//    private SampleContext context;
 
-        var rules = new RuleEngine(new ServiceProviderStub());
+//    public TaxonomyExtensionTests()
+//    {
+//        var builder = new DbContextOptionsBuilder<SampleContext>()
+//            .UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ExtraDryIntegrationTests;Trusted_Connection=True;", opt => opt.UseHierarchyId()).Options;
+//        var arrangeContext = new SampleContext(builder);
+//        context = new SampleContext(builder);
 
-        regions = new RegionService(arrangeContext, rules);
-        regions = new RegionService(context, rules);
-        ClearData();
-        SeedSampleData(regions).Wait();
-    }
+//        var rules = new RuleEngine(new ServiceProviderStub());
 
-    //[Fact(Skip = IgnoreTests)]
-    //public async Task AncestorsCountIsCorrect()
-    //{
-    //    var mel = await arrangeService.TryRetrieveAsync("AU-VIC-Melbourne");
+//        regions = new RegionService(arrangeContext, rules);
+//        regions = new RegionService(context, rules);
+//        ClearData();
+//        SeedSampleData(regions).Wait();
+//    }
 
-    //    Assert.Equal(4, mel.Ancestor.Count); // Self, Victoria, Australia, Global
-    //}
+//    //[Fact(Skip = IgnoreTests)]
+//    //public async Task AncestorsCountIsCorrect()
+//    //{
+//    //    var mel = await arrangeService.TryRetrieveAsync("AU-VIC-Melbourne");
 
-    //[Fact(Skip = IgnoreTests)]
-    //public async Task MoveLeafNode()
-    //{
-    //    var nsw = await arrangeService.TryRetrieveAsync("AU-NSW");
-    //    var nz = await arrangeService.TryRetrieveAsync("NZ");
-    //    nsw.Parent = nz;
+//    //    Assert.Equal(4, mel.Ancestor.Count); // Self, Victoria, Australia, Global
+//    //}
 
-    //    await actService.UpdateAsync("AU-NSW", nsw, true);
+//    //[Fact(Skip = IgnoreTests)]
+//    //public async Task MoveLeafNode()
+//    //{
+//    //    var nsw = await arrangeService.TryRetrieveAsync("AU-NSW");
+//    //    var nz = await arrangeService.TryRetrieveAsync("NZ");
+//    //    nsw.Parent = nz;
 
-    //    nsw = await actService.TryRetrieveAsync("AU-NSW");
-    //    Assert.Equal("NZ", nsw.Parent.Slug);
-    //    Assert.DoesNotContain(nsw.Ancestors, a => a.Slug == "AU");
-    //}
+//    //    await actService.UpdateAsync("AU-NSW", nsw, true);
 
-    [Fact(Skip = IgnoreTests)]
-    public async Task MoveLeafNodeIgnoredWithParameter()
-    {
-        var nsw = await regions.TryRetrieveAsync("AU-NSW");
-        var nz = await regions.TryRetrieveAsync("NZ");
-        Assert.NotNull(nsw);
-        nsw.Parent = nz;
-        nsw.Description = "Value Changed";
-        context.ChangeTracker.Clear(); // so that changes aren't tracked and we can emulate a call coming from the API. Otherwise it passes because of the EF cache
+//    //    nsw = await actService.TryRetrieveAsync("AU-NSW");
+//    //    Assert.Equal("NZ", nsw.Parent.Slug);
+//    //    Assert.DoesNotContain(nsw.Ancestors, a => a.Slug == "AU");
+//    //}
 
-        await regions.UpdateAsync("AU-NSW", nsw);
+//    [Fact(Skip = IgnoreTests)]
+//    public async Task MoveLeafNodeIgnoredWithParameter()
+//    {
+//        var nsw = await regions.TryRetrieveAsync("AU-NSW");
+//        var nz = await regions.TryRetrieveAsync("NZ");
+//        Assert.NotNull(nsw);
+//        nsw.Parent = nz;
+//        nsw.Description = "Value Changed";
+//        context.ChangeTracker.Clear(); // so that changes aren't tracked and we can emulate a call coming from the API. Otherwise it passes because of the EF cache
 
-        nsw = await regions.TryRetrieveAsync("AU-NSW");
-        Assert.NotNull(nsw?.Parent);
-        Assert.Equal("AU", nsw.Parent.Slug);
-        Assert.Equal("Value Changed", nsw.Description);
-    }
+//        await regions.UpdateAsync("AU-NSW", nsw);
 
-    [Fact(Skip = IgnoreTests)]
-    public async Task MoveLeafNodeToDifferentStrata()
-    {
-        var nsw = await regions.TryRetrieveAsync("AU-NSW");
-        Assert.NotNull(nsw?.Parent);
-        var cnt = nsw.Parent;
-        context.ChangeTracker.Clear(); // so that changes aren't tracked and we can emulate a call coming from the API. Otherwise it passes because of the EF cache
-        var auk = await regions.TryRetrieveAsync("NZ-AUK");
-        nsw.Parent = auk;
+//        nsw = await regions.TryRetrieveAsync("AU-NSW");
+//        Assert.NotNull(nsw?.Parent);
+//        Assert.Equal("AU", nsw.Parent.Slug);
+//        Assert.Equal("Value Changed", nsw.Description);
+//    }
 
-        await Assert.ThrowsAsync<ArgumentException>(async () => await regions.UpdateAsync("AU-NSW", nsw, true));
-    }
+//    [Fact(Skip = IgnoreTests)]
+//    public async Task MoveLeafNodeToDifferentStrata()
+//    {
+//        var nsw = await regions.TryRetrieveAsync("AU-NSW");
+//        Assert.NotNull(nsw?.Parent);
+//        var cnt = nsw.Parent;
+//        context.ChangeTracker.Clear(); // so that changes aren't tracked and we can emulate a call coming from the API. Otherwise it passes because of the EF cache
+//        var auk = await regions.TryRetrieveAsync("NZ-AUK");
+//        nsw.Parent = auk;
 
-    [Fact(Skip = IgnoreTests)]
-    public async Task MoveSubtree()
-    {
-        var qld = await regions.TryRetrieveAsync("AU-QLD");
-        var nz = await regions.TryRetrieveAsync("NZ");
-        Assert.NotNull(qld?.Parent);
-        qld.Parent = nz;
+//        await Assert.ThrowsAsync<ArgumentException>(async () => await regions.UpdateAsync("AU-NSW", nsw, true));
+//    }
 
-        await regions.UpdateAsync("AU-QLD", qld, true);
+//    [Fact(Skip = IgnoreTests)]
+//    public async Task MoveSubtree()
+//    {
+//        var qld = await regions.TryRetrieveAsync("AU-QLD");
+//        var nz = await regions.TryRetrieveAsync("NZ");
+//        Assert.NotNull(qld?.Parent);
+//        qld.Parent = nz;
 
-        var qld2 = await regions.TryRetrieveAsync("AU-QLD");
-        Assert.NotNull(qld2?.Parent);
-        Assert.Equal("NZ", qld2.Parent.Slug);
-        var bris = await regions.TryRetrieveAsync("AU-Qld-Brisbane");
-        Assert.NotNull(bris?.Parent);
-        Assert.Equal("AU-QLD", bris.Parent.Slug);
-    }
+//        await regions.UpdateAsync("AU-QLD", qld, true);
 
-    [Fact(Skip = IgnoreTests)]
-    public async Task MoveSubtreeToDifferentStrata()
-    {
-        var qld = await regions.TryRetrieveAsync("AU-QLD");
-        var nz = await regions.TryRetrieveAsync("NZ-AUK");
-        Assert.NotNull(qld);
-        qld.Parent = nz;
-        context.ChangeTracker.Clear(); // so that changes aren't tracked and we can emulate a call coming from the API.
+//        var qld2 = await regions.TryRetrieveAsync("AU-QLD");
+//        Assert.NotNull(qld2?.Parent);
+//        Assert.Equal("NZ", qld2.Parent.Slug);
+//        var bris = await regions.TryRetrieveAsync("AU-Qld-Brisbane");
+//        Assert.NotNull(bris?.Parent);
+//        Assert.Equal("AU-QLD", bris.Parent.Slug);
+//    }
 
-        await Assert.ThrowsAsync<ArgumentException>(async () => await regions.UpdateAsync("AU-QLD", qld, true));
-    }
+//    [Fact(Skip = IgnoreTests)]
+//    public async Task MoveSubtreeToDifferentStrata()
+//    {
+//        var qld = await regions.TryRetrieveAsync("AU-QLD");
+//        var nz = await regions.TryRetrieveAsync("NZ-AUK");
+//        Assert.NotNull(qld);
+//        qld.Parent = nz;
+//        context.ChangeTracker.Clear(); // so that changes aren't tracked and we can emulate a call coming from the API.
 
-    [Fact(Skip = IgnoreTests)]
-    public async Task MoveSubtreeWithAdditionalChanges()
-    {
-        var qld = await regions.TryRetrieveAsync("AU-QLD");
-        var nz = await regions.TryRetrieveAsync("NZ");
-        Assert.NotNull(qld);
-        qld.Parent = nz;
-        qld.Title = "TestTitle";
+//        await Assert.ThrowsAsync<ArgumentException>(async () => await regions.UpdateAsync("AU-QLD", qld, true));
+//    }
 
-        // Should do the move, then the change and not fail.
-        await regions.UpdateAsync("AU-QLD", qld, true);
+//    [Fact(Skip = IgnoreTests)]
+//    public async Task MoveSubtreeWithAdditionalChanges()
+//    {
+//        var qld = await regions.TryRetrieveAsync("AU-QLD");
+//        var nz = await regions.TryRetrieveAsync("NZ");
+//        Assert.NotNull(qld);
+//        qld.Parent = nz;
+//        qld.Title = "TestTitle";
 
-        qld = await regions.TryRetrieveAsync("AU-QLD");
-        Assert.NotNull(qld?.Parent);
-        Assert.Equal("NZ", qld.Parent.Slug);
-        var bris = await regions.TryRetrieveAsync("AU-Qld-Brisbane");
-        Assert.NotNull(bris?.Parent);
-        Assert.Equal("AU-QLD", bris.Parent.Slug);
-        Assert.Equal("TestTitle", qld.Title);
-    }
+//        // Should do the move, then the change and not fail.
+//        await regions.UpdateAsync("AU-QLD", qld, true);
 
-    private void ClearData()
-    {
-        context.Database.ExecuteSqlRaw("DELETE FROM [Regions]");
-    }
+//        qld = await regions.TryRetrieveAsync("AU-QLD");
+//        Assert.NotNull(qld?.Parent);
+//        Assert.Equal("NZ", qld.Parent.Slug);
+//        var bris = await regions.TryRetrieveAsync("AU-Qld-Brisbane");
+//        Assert.NotNull(bris?.Parent);
+//        Assert.Equal("AU-QLD", bris.Parent.Slug);
+//        Assert.Equal("TestTitle", qld.Title);
+//    }
 
-    private async Task SeedSampleData(RegionService service)
-    {
-        var seed = new DummyData();
-        await seed.PopulateRegionsAsync(service);
-    }
-}
+//    private void ClearData()
+//    {
+//        context.Database.ExecuteSqlRaw("DELETE FROM [Regions]");
+//    }
+
+//    private async Task SeedSampleData(RegionService service)
+//    {
+//        var seed = new DummyData();
+//        await seed.PopulateRegionsAsync(service);
+//    }
+//}

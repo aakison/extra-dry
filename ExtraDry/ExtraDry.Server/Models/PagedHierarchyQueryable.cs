@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace ExtraDry.Server;
 
-public class PagedHierarchyQueryable<T> : FilteredHierarchyQueryable<T> where T : IHierarchyEntity<T> 
+public class PagedHierarchyQueryable<T> : FilteredHierarchyQueryable<T> where T : class, IHierarchyEntity<T> 
     {
     public PagedHierarchyQueryable(IQueryable<T> queryable, PageHierarchyQuery query, Expression<Func<T, bool>>? defaultFilter)
     {
@@ -43,7 +43,8 @@ public class PagedHierarchyQueryable<T> : FilteredHierarchyQueryable<T> where T 
             Sort = nameof(IHierarchyEntity<T>.Lineage).ToLowerInvariant(),
             Start = previousSkip,
             Total = total,
-            Expand = query.Expand,
+            Expand = query.Expand.Any() ? query.Expand : null,
+            Collapse = query.Collapse.Any() ? query.Collapse : null,
         };
     }
 
