@@ -28,7 +28,7 @@ public class PagedHierarchyQueryable<T> : FilteredHierarchyQueryable<T> where T 
 
     /// <inheritdoc cref="IFilteredQueryable{T}.ToPagedCollectionAsync(CancellationToken)" />
     public async Task<PagedHierarchyCollection<T>> ToPagedHierarchyCollectionAsync(CancellationToken cancellationToken = default) =>
-        CreatePagedCollection(await ToListAsync(PagedQuery, cancellationToken), await FilteredQuery.CountAsync(cancellationToken));
+        CreatePagedCollection(await ToListAsync(PagedQuery, cancellationToken), await ToCountAsync(FilteredQuery, cancellationToken));
 
     private PagedHierarchyCollection<T> CreatePagedCollection(List<T> items, int total)
     {

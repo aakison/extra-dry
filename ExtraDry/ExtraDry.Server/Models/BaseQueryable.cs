@@ -1,4 +1,6 @@
 ﻿using ExtraDry.Server.Internal;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using System.Collections;
 using System.Linq.Expressions;
 
@@ -35,20 +37,30 @@ public class BaseQueryable<T> : IQueryable<T>
 
     IEnumerator<T> IEnumerable<T>.GetEnumerator() => PagedQuery.GetEnumerator();
 
+    /// <summary>
+    /// Helper to perform either a ToList or ToListAsync depending on the type of queryable.
+    /// </summary>
     protected async Task<List<TItem>> ToListAsync<TItem>(IQueryable<TItem> queryable, CancellationToken cancellationToken = default)
     {
-        var items = new List<TItem>();
-        if(queryable is IAsyncEnumerable<TItem> asyncQuery) {
-            await foreach(var element in asyncQuery.WithCancellation(cancellationToken)) {
-                if(element != null) {
-                    items.Add(element);
-                }
-            }
+        if(queryable is IAsyncEnumerable<TItem>) {
+            return await queryable.ToListAsync();
         }
         else {
-            items.AddRange(queryable);
+            return queryable.ToList();
         }
-        return items;
+    }
+
+    /// <summary>
+    /// Helper to perform either a ToCount or ToCountAsync depending on the type of queryable.
+    /// </summary>
+    protected async Task<int> ToCountAsync<TItem>(IQueryable<TItem> queryable, CancellationToken cancellationToken = default)
+    {
+        if(queryable is IAsyncQueryProvider) {
+            return await queryable.CountAsync(cancellationToken);
+        }
+        else {
+            return queryable.Count();
+        }
     }
 
     internal async Task<BaseCollection<T>> ToBaseCollectionInternalAsync(CancellationToken cancellationToken = default) =>
