@@ -41,12 +41,6 @@ public partial class Region : IHierarchyEntity<Region>, IResourceIdentifiers, IV
     /// <summary>
     /// The hierarchy of this entity using the database-specific HierarchyId type.
     /// </summary>
-    /// <remarks>
-    /// While this would be great to put in the parent class, to share reparenting and hierarchy 
-    /// logic, it's a SQL specific implementation. It is in the 
-    /// Microsoft.EntityFrameworkCore.SqlServer.Abstractions package in EF 8. If it ever enters 
-    /// System, we can promote it.
-    /// </remarks>
     [JsonIgnore]
     public HierarchyId Lineage { get; set; } = HierarchyId.GetRoot();
 

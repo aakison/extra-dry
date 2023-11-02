@@ -1,4 +1,9 @@
 ﻿using ExtraDry.Server;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace ExtraDry.Swashbuckle.Instructions;
 
@@ -27,7 +32,7 @@ public class InstructionDataService {
         return await automobiles
             .AsQueryable()
             .ForceStringComparison(StringComparison.OrdinalIgnoreCase)
-            .QueryWith(query)   
+            .QueryWith(query)
             .ToPagedCollectionAsync();
     }
 
@@ -40,9 +45,72 @@ public class InstructionDataService {
             .ToStatisticsAsync();
     }
 
+    public async Task<HierarchyCollection<Animal>> ListHierarchyAsync(HierarchyQuery query)
+    {
+        return await Animals
+            .AsQueryable()
+            .ForceStringComparison(StringComparison.OrdinalIgnoreCase)
+            .QueryWith(query)
+            .ToHierarchyCollectionAsync();
+    }
+
     public string RandomAffirmation() => affirmations[random.Next(affirmations.Count)];
 
     private readonly Random random = new();
+
+    private List<Animal> Animals {
+        get {
+            var animals = new List<Animal>() {
+                new Animal { Lineage = HierarchyId.Parse("/"), Title = "Animals" },
+                new Animal { Lineage = HierarchyId.Parse("/1/"), Title = "Vertebrates" },
+                new Animal { Lineage = HierarchyId.Parse("/1/1/"), Title = "Mammals" },
+                new Animal { Lineage = HierarchyId.Parse("/1/1/1/"), Title = "Human", Description = "A bipedal primate belonging to the species Homo sapiens, known for its advanced cognitive abilities and civilizations."},
+                new Animal { Lineage = HierarchyId.Parse("/1/1/2/"), Title = "Dolphin", Description = "A highly intelligent aquatic mammal known for its playful behavior and use of complex vocalizations." },
+                new Animal { Lineage = HierarchyId.Parse("/1/1/3/"), Title = "Elephant", Description = "A large herbivorous mammal with a trunk, long tusks, and flapping ears, native to Africa and Asia." },
+                new Animal { Lineage = HierarchyId.Parse("/1/2/"), Title = "Birds" },
+                new Animal { Lineage = HierarchyId.Parse("/1/2/1/"), Title = "Sparrow", Description = "A small, often brown - colored bird known for its melodious songs and wide distribution across the world." },
+                new Animal { Lineage = HierarchyId.Parse("/1/2/2/"), Title = "Eagle", Description = "A large bird of prey with a powerful build, keen eyesight, and the ability to fly at high altitudes."},
+                new Animal { Lineage = HierarchyId.Parse("/1/2/3/"), Title = "Penguin", Description = "A flightless bird adapted for life in the water with a streamlined body and flippers for swimming."},
+                new Animal { Lineage = HierarchyId.Parse("/1/3/"), Title = "Fish" },
+                new Animal { Lineage = HierarchyId.Parse("/1/3/1/"), Title = "Salmon", Description = "An anadromous fish known for its incredible migrations from freshwater to saltwater and back for spawning." },
+                new Animal { Lineage = HierarchyId.Parse("/1/3/2/"), Title = "Shark", Description = "A powerful predatory fish with a streamlined body, cartilaginous skeleton, and multiple rows of sharp teeth." },
+                new Animal { Lineage = HierarchyId.Parse("/1/3/3/"), Title = "Clownfish", Description = "A brightly colored fish known for its symbiotic relationship with sea anemones." },
+                new Animal { Lineage = HierarchyId.Parse("/1/4/"), Title = "Amphibians" },
+                new Animal { Lineage = HierarchyId.Parse("/1/4/1/"), Title = "Frog", Description = "A small amphibian with smooth skin, strong legs for jumping, and a life cycle that includes both aquatic and terrestrial stages." },
+                new Animal { Lineage = HierarchyId.Parse("/1/4/2/"), Title = "Salamander", Description = "A slender amphibian that resembles a lizard and often has an aquatic larval stage."},
+                new Animal { Lineage = HierarchyId.Parse("/1/5/"), Title = "Reptiles" },
+                new Animal { Lineage = HierarchyId.Parse("/1/5/1/"), Title = "Crocodile", Description = "A large predatory reptile with a powerful jaw, long tail, and armored skin, typically found in freshwater habitats." },
+                new Animal { Lineage = HierarchyId.Parse("/1/5/2/"), Title = "Turtle", Description = "A reptile with a bony or cartilaginous shell protecting its body, both in water and on land." },
+                new Animal { Lineage = HierarchyId.Parse("/1/5/3/"), Title = "Snake", Description = "A legless reptile with a long, flexible body and scales, some of which are venomous." },
+                new Animal { Lineage = HierarchyId.Parse("/2/"), Title = "Invertebrates" },
+                new Animal { Lineage = HierarchyId.Parse("/2/1/"), Title = "Arthropods" },
+                new Animal { Lineage = HierarchyId.Parse("/2/1/1/"), Title = "Insects" },
+                new Animal { Lineage = HierarchyId.Parse("/2/1/1/1/"), Title = "Ant", Description = "A small, social insect known for its organized colonies, strength relative to size, and ability to work collectively." },
+                new Animal { Lineage = HierarchyId.Parse("/2/1/1/2/"), Title = "Butterfly", Description = " A colorful, winged insect that undergoes a metamorphic life cycle starting from a caterpillar to a pupa and finally an adult." },
+                new Animal { Lineage = HierarchyId.Parse("/2/1/1/3/"), Title = "Bee", Description = "A flying insect known for its role in pollination and its ability to produce honey in complex social colonies." },
+                new Animal { Lineage = HierarchyId.Parse("/2/1/2/"), Title = "Arachnids" },
+                new Animal { Lineage = HierarchyId.Parse("/2/1/2/1/"), Title = "Spider", Description = "An eight - legged arthropod known for spinning silk webs to catch its prey." },
+                new Animal { Lineage = HierarchyId.Parse("/2/1/2/2/"), Title = "Scorpion", Description = "An arthropod with a segmented tail tipped with a venomous stinger, primarily found in desert habitats." },
+                new Animal { Lineage = HierarchyId.Parse("/2/2/"), Title = "Mollusks" },
+                new Animal { Lineage = HierarchyId.Parse("/2/2/1/"), Title = "Snail", Description = "A slow - moving mollusk with a coiled shell, known for its secretion of slime." },
+                new Animal { Lineage = HierarchyId.Parse("/2/2/2/"), Title = "Octopus", Description = "A cephalopod mollusk with eight tentacles, known for its intelligence and ability to change color." },
+                new Animal { Lineage = HierarchyId.Parse("/2/2/3/"), Title = "Clam", Description = "A bivalve mollusk with two hinged shells, often buried in sand or mud." },
+                new Animal { Lineage = HierarchyId.Parse("/2/3/"), Title = "Annelids" },
+                new Animal { Lineage = HierarchyId.Parse("/2/3/1/"), Title = "Earthworm", Description = "A segmented annelid that lives underground and plays a vital role in soil aeration and decomposition." },
+                new Animal { Lineage = HierarchyId.Parse("/2/4/"), Title = "Cnidarians" },
+                new Animal { Lineage = HierarchyId.Parse("/2/4/1/"), Title = "Jellyfish", Description = "A free-swimming marine cnidarian with a gelatinous, umbrella-shaped bell and trailing tentacles, some of which can deliver painful stings." },
+                new Animal { Lineage = HierarchyId.Parse("/2/4/2/"), Title = "Coral", Description = "Marine invertebrates that live in colonies and are known for building calcium carbonate skeletons that form coral reefs." },
+            };
+
+            for(int i = 0; i < animals.Count(); i++) {
+                var animal = animals[i];
+                animal.Id = i + 1;
+                animal.Parent = animals.SingleOrDefault(e => e.Lineage == animal.Lineage.GetAncestor(1));
+                animal.Slug = animal.Title.ToLower().Replace(" ", "-");
+            }
+            return animals;
+        }
+    }
 
     private readonly List<Automobile> automobiles = new() {
         new Automobile { Make = "Toyota", Model = "Avalon", Year = 1994, Market = "North America and China", Description = "Full-size sedan mainly produced and marketed in North America and China. Hybrid powertrain is available. All-wheel drive models are exclusively sold in North America." },
