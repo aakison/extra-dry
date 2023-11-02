@@ -1,4 +1,5 @@
 ﻿using ExtraDry.Server.Internal;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace ExtraDry.Server;
@@ -9,34 +10,31 @@ public class PagedHierarchyQueryable<T> : FilteredHierarchyQueryable<T> where T 
     {
         ForceStringComparison = (queryable as BaseQueryable<T>)?.ForceStringComparison;
         Query = query;
-        Token = ContinuationToken.FromString(query.Token);
-        var levelQuery = ApplyLevelFilter(queryable, query.Level);
-        FilteredQuery = ApplyKeywordFilter(levelQuery, query, defaultFilter);
+        // Filter by level first, big performance gain.
+        FilteredQuery = ApplyLevelFilter(queryable, query.Level);
+        // Filter by keyword next, if provided.
+        FilteredQuery = ApplyKeywordFilter(FilteredQuery, query, defaultFilter);
         // Ensure expanded slugs and ancestors are included, while excluding collapsed.
-        var hierarchyQuery = ExpandCollapseHierarchy(queryable, FilteredQuery, query);
+        FilteredQuery = ExpandCollapseHierarchy(queryable, FilteredQuery, query);
         // Then sort it the only way that is allowed, breadth-first by lineage.
-        SortedQuery = ApplyLineageSort(hierarchyQuery);
+        SortedQuery = ApplyLineageSort(FilteredQuery);
         // Finally, apply paging
         PagedQuery = SortedQuery.Page(query);
     }
 
     /// <inheritdoc cref="IFilteredQueryable{T}.ToPagedCollection"/>
     public PagedHierarchyCollection<T> ToPagedHierarchyCollection() =>
-        CreatePagedCollection(PagedQuery.ToList());
+        CreatePagedCollection(PagedQuery.ToList(), FilteredQuery.Count());
 
     /// <inheritdoc cref="IFilteredQueryable{T}.ToPagedCollectionAsync(CancellationToken)" />
     public async Task<PagedHierarchyCollection<T>> ToPagedHierarchyCollectionAsync(CancellationToken cancellationToken = default) =>
-        CreatePagedCollection(await ToListAsync(PagedQuery, cancellationToken));
+        CreatePagedCollection(await ToListAsync(PagedQuery, cancellationToken), await FilteredQuery.CountAsync(cancellationToken));
 
-    private PagedHierarchyCollection<T> CreatePagedCollection(List<T> items)
+    private PagedHierarchyCollection<T> CreatePagedCollection(List<T> items, int total)
     {
         var query = (Query as PageHierarchyQuery)!;
         var skip = query.Skip;
-        var take = query.Take;
-
-        var previousTake = ContinuationToken.ActualTake(Token, take);
         var previousSkip = ContinuationToken.ActualSkip(Token, skip);
-        var total = items.Count == previousTake ? FilteredQuery.Count() : previousSkip + items.Count;
         return new PagedHierarchyCollection<T> {
             Items = items,
             Filter = Query.Filter,

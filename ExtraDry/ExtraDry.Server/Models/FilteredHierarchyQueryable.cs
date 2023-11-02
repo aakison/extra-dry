@@ -15,13 +15,13 @@ public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : 
         ForceStringComparison = (queryable as BaseQueryable<T>)?.ForceStringComparison;
         Query = query;
         // Level is the depth to query to, applied in addition tot he filter..
-        var levelQuery = ApplyLevelFilter(queryable, query.Level);
+        FilteredQuery = ApplyLevelFilter(queryable, query.Level);
         // Then filter with common filter mechanism
-        FilteredQuery = ApplyKeywordFilter(levelQuery, query, defaultFilter);
+        FilteredQuery = ApplyKeywordFilter(FilteredQuery, query, defaultFilter);
         // Ensure expanded slugs and ancestors are included, while excluding collapsed.
-        var hierarchyQuery = ExpandCollapseHierarchy(queryable, FilteredQuery, query);
+        FilteredQuery = ExpandCollapseHierarchy(queryable, FilteredQuery, query);
         // Then sort it the only way that is allowed, breadth-first by lineage.
-        SortedQuery = ApplyLineageSort(hierarchyQuery);
+        SortedQuery = ApplyLineageSort(FilteredQuery);
         // Finally, ignore paging.
         PagedQuery = SortedQuery;
     }
@@ -43,15 +43,13 @@ public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : 
             results = results.Union(ChildrenOf(query.Expand));
         }
         if(!string.IsNullOrWhiteSpace(query.Filter)) {
-            // Add Tag
-            // see https://github.com/dotnet/efcore/issues/27150
+            /// Add Tag for <see cref="ImproveHierarchyQueryPerformance"/> to work
             var ancestors = AncestorsOf(filteredQueryable).TagWith(ImproveHierarchyQueryPerformance.Tag);
             results = results.Union(ancestors);
         }
         if(query.Collapse.Any()) {
             results = results.Except(DescendantOf(query.Collapse));
         }
-        var sql = results.ToQueryString();
         return results;
 
         IQueryable<T> ChildrenOf(IEnumerable<string> parentSlugs) =>
