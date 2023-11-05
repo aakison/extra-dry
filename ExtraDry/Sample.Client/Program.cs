@@ -20,7 +20,7 @@ public class Program
         services.AddFilteredListService<Sector>("/api/sectors");
         services.AddFilteredListService<Company>("/api/companies");
         services.AddFilteredListService<Content>("/api/contents");
-        services.AddFilteredListService<Region>("/api/regions");
+        services.AddPagedListService<Region>("/api/regions");
 
         services.AddStatService<Sector>("/api/sectors/stats");
 

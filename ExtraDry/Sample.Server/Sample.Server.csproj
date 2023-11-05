@@ -59,5 +59,17 @@
 	  <PackageReference Update="Newtonsoft.Json" Version="13.0.2" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Update="SampleData\Countries.csv">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="SampleData\Localities.csv">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="SampleData\Subdivisions.csv">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
 
 </Project>

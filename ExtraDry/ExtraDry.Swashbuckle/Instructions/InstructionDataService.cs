@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ExtraDry.Swashbuckle.Instructions;
 
@@ -45,6 +46,7 @@ public class InstructionDataService {
             .ToStatisticsAsync();
     }
 
+    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Service contract should be instance.")]
     public async Task<HierarchyCollection<Animal>> ListHierarchyAsync(HierarchyQuery query)
     {
         return await Animals
@@ -58,7 +60,7 @@ public class InstructionDataService {
 
     private readonly Random random = new();
 
-    private List<Animal> Animals {
+    private static List<Animal> Animals {
         get {
             var animals = new List<Animal>() {
                 new Animal { Lineage = HierarchyId.Parse("/"), Title = "Animals", Uuid = Guid.Parse("123e4567-e89b-12d3-a456-426614174000") },
@@ -101,7 +103,7 @@ public class InstructionDataService {
                 new Animal { Lineage = HierarchyId.Parse("/2/4/1/"), Title = "Jellyfish", Description = "A free-swimming marine cnidarian with a gelatinous, umbrella-shaped bell and trailing tentacles, some of which can deliver painful stings.", Uuid = Guid.Parse("49c5e995-5168-4b1e-8b8e-3e290ab85e54") },
                 new Animal { Lineage = HierarchyId.Parse("/2/4/2/"), Title = "Coral", Description = "Marine invertebrates that live in colonies and are known for building calcium carbonate skeletons that form coral reefs.", Uuid = Guid.Parse("e3b7ed48-4283-4344-8ec1-4aaf3c6f2254") },
             };
-            for(int i = 0; i < animals.Count(); i++) {
+            for(int i = 0; i < animals.Count; i++) {
                 var animal = animals[i];
                 animal.Id = i + 1;
                 animal.Parent = animals.SingleOrDefault(e => e.Lineage == animal.Lineage.GetAncestor(1));

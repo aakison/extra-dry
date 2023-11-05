@@ -41,15 +41,10 @@ public partial class Region : IHierarchyEntity<Region>, IResourceIdentifiers, IV
     /// <summary>
     /// The hierarchy of this entity using the database-specific HierarchyId type.
     /// </summary>
-    [JsonIgnore]
-    public HierarchyId Lineage { get; set; } = HierarchyId.GetRoot();
-
-    /// <summary>
-    /// The order in the ancestry tree using path seperated numeric placeholders.
-    /// </summary>
     /// <example>/1/3/10/</example>
-    [JsonPropertyName("lineage")]
-    public string Ancestry => Lineage.ToString();
+    [JsonConverter(typeof(HierarchyIdConverter))]
+    [Rules(RuleAction.Ignore)]
+    public HierarchyId Lineage { get; set; } = HierarchyId.GetRoot();
 
     /// <summary>
     /// The strata for the entity in the taxonomy, 0 is root, each level adds 1.
@@ -105,7 +100,7 @@ public partial class Region : IHierarchyEntity<Region>, IResourceIdentifiers, IV
         var results = new List<ValidationResult>();
         var codeRegex = Level switch {
             RegionLevel.Country => CountryRegex(),
-            RegionLevel.Division => DivisionRegex(),
+            RegionLevel.Subdivision => DivisionRegex(),
             _ => SubdivisionRegex(),
         };
         if(Level != RegionLevel.Global && !codeRegex.IsMatch(Slug)) {

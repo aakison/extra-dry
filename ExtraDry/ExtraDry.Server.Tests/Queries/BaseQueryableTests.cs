@@ -61,7 +61,11 @@ public class BaseQueryableTests {
 
         public class ModelsEnumerator : IAsyncEnumerator<Model> {
             public Model Current => Models[index];
-            public ValueTask DisposeAsync() => ValueTask.CompletedTask;
+            public ValueTask DisposeAsync()
+            {
+                GC.SuppressFinalize(this);
+                return ValueTask.CompletedTask;
+            }
             public ValueTask<bool> MoveNextAsync() => ValueTask.FromResult(++index < Models.Count);
 
             private int index = -1;

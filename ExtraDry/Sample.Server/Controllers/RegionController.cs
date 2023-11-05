@@ -31,11 +31,11 @@ public class RegionController {
     }
 
     /// <summary>
-    /// Filtered list of all regions
+    /// Paged list of all regions
     /// </summary>
     [HttpGet("api/regions"), Produces("application/json")]
     [AllowAnonymous]
-    public async Task<SortedCollection<Region>> ListAsync([FromQuery] SortQuery query)
+    public async Task<PagedCollection<Region>> ListAsync([FromQuery] PageQuery query)
     {
         return await regions.ListAsync(query);
     }

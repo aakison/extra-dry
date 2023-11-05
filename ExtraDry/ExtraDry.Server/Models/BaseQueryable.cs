@@ -43,7 +43,7 @@ public class BaseQueryable<T> : IQueryable<T>
     protected async Task<List<TItem>> ToListAsync<TItem>(IQueryable<TItem> queryable, CancellationToken cancellationToken = default)
     {
         if(queryable is IAsyncEnumerable<TItem>) {
-            return await queryable.ToListAsync();
+            return await queryable.ToListAsync(cancellationToken);
         }
         else {
             return queryable.ToList();

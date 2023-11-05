@@ -10,17 +10,18 @@ public class RegionService : IEntityResolver<Region> {
         rules = ruleEngine;
     }
 
-    public async Task<SortedCollection<Region>> ListAsync(SortQuery query)
+    public async Task<PagedCollection<Region>> ListAsync(PageQuery query)
     {
         return await database.Regions
             .Include(e => e.Parent)
             .QueryWith(query)
-            .ToSortedCollectionAsync();
+            .ToPagedCollectionAsync();
     }
 
     public async Task<PagedHierarchyCollection<Region>> ListHierarchyAsync(PageHierarchyQuery query)
     {
         return await database.Regions
+            .Include(e => e.Parent)
             .QueryWith(query)
             .ToPagedHierarchyCollectionAsync();
     }
