@@ -1,5 +1,6 @@
 ﻿using CsvHelper;
-using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.AspNetCore.Authentication.OAuth.Claims;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
@@ -7,9 +8,10 @@ namespace Sample.Server.SampleData;
 
 public class SampleDataService {
 
-    public SampleDataService(SampleContext sampleContext)
+    public SampleDataService(SampleContext sampleContext, RegionService regionService)
     {
         database = sampleContext;
+        regions = regionService;
     }
 
     [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Not static to be aligned with other methods.")]
@@ -94,68 +96,6 @@ public class SampleDataService {
         database.SaveChanges();
     }
 
-    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Might need instance in future.")]
-    public async Task PopulateRegionsAsync(RegionService service)
-    {
-
-        // Tier 1
-        var allRegions = new Region { Uuid = Guid.NewGuid(), Slug = "all", Title = "All Regions", Description = "The World", Level = RegionLevel.Global };
-
-        var auRegion = new Region { Parent = allRegions, Slug = "AU", Title = "Australia", Description = "Australia", Level = RegionLevel.Country};
-        var nzRegion = new Region { Parent = allRegions, Slug = "NZ", Title = "New Zealand", Description = "New Zealand", Level = RegionLevel.Country };
-
-        // Tier 2
-        var vicRegion = new Region { Parent = auRegion, Slug = "AU-VIC", Title = "Victoria", Description = "Victoria, Australia", Level = RegionLevel.Subdivision };
-        var qldRegion = new Region { Parent = auRegion, Slug = "AU-QLD", Title = "Queensland", Description = "Queensland, Australia", Level = RegionLevel.Subdivision };
-        var nswRegion = new Region { Parent = auRegion, Slug = "AU-NSW", Title = "New South Wales", Description = "NSW, Australia", Level = RegionLevel.Subdivision };
-        var actRegion = new Region { Parent = auRegion, Slug = "AU-ACT", Title = "Canberra", Description = "Australian Capital Territory", Level = RegionLevel.Subdivision };
-        var tasRegion = new Region { Parent = auRegion, Slug = "AU-TAS", Title = "Tasmania", Description = "Tasmania", Level = RegionLevel.Subdivision };
-        var saRegion = new Region { Parent = auRegion, Slug = "AU-SA", Title = "South Australia", Description = "South Australia", Level = RegionLevel.Subdivision };
-        var ntRegion = new Region { Parent = auRegion, Slug = "AU-NT", Title = "Northern Territory", Description = "Northern Territory", Level = RegionLevel.Subdivision };
-        var waRegion = new Region { Parent = auRegion, Slug = "AU-WA", Title = "Western Australia", Description = "Western Australia", Level = RegionLevel.Subdivision };
-
-        var aukRegion = new Region { Parent = nzRegion, Slug = "NZ-AUK", Title = "Auckland", Description = "Auckland, NZ", Level = RegionLevel.Subdivision };
-        var tkiRegion = new Region { Parent = nzRegion, Slug = "NZ-TKI", Title = "Taranaki", Description = "Taranaki, NZ", Level = RegionLevel.Subdivision };
-
-        // Tier 3
-        var melbRegion = new Region { Parent = vicRegion, Slug = "AU-VIC-Melbourne", Title = "Melbourne City", Description = "Melbourne, Victoria, Australia", Level = RegionLevel.Locality };
-        var brisRegion = new Region { Parent = qldRegion, Slug = "AU-QLD-Brisbane", Title = "Brisbane", Description = "Brisbane", Level = RegionLevel.Locality };
-        var redRegion = new Region { Parent = qldRegion, Slug = "AU-QLD-Redlands", Title = "Redlands", Description = "City of Redlands", Level = RegionLevel.Locality };
-
-        var baseRegions = new Region[] { allRegions, auRegion, nzRegion, vicRegion, qldRegion, nswRegion, actRegion, tasRegion, saRegion, ntRegion, waRegion, aukRegion, tkiRegion, melbRegion, brisRegion, redRegion };
-
-        foreach(var region in baseRegions) {
-            await service.CreateAsync(region);
-        }
-
-    }
-
-    public async Task PopulateArbitaryRegions(RegionService service, int countryCount, int divisionCount, int subdivisionCount)
-    {
-        var allRegions = new List<Region>();
-
-        var topRegion = new Region { Uuid = Guid.NewGuid(), Slug = "global", Title = "Global", Description = "Top", Level = RegionLevel.Global };
-        await service.CreateAsync(topRegion);
-
-        for(int i = 0; i < countryCount; i++) {
-            var country = new Region { Uuid = Guid.NewGuid(), Parent = topRegion, Slug = $"country-{i}", Title = $"Country {i}", Level = RegionLevel.Country };
-            allRegions.Add(country);
-
-            for(int j = 0; j < divisionCount; j++) {
-                var division = new Region { Uuid = Guid.NewGuid(), Parent = country, Slug = $"div-{j}-country-{i}", Title = $"Division {j} Country {i}", Level = RegionLevel.Subdivision };
-                allRegions.Add(division);
-
-                for(int k = 0; k < subdivisionCount; k++) {
-                    var subdivision = new Region { Uuid = Guid.NewGuid(), Parent = division, Slug = $"subdiv-{k}-div-{j}-country-{i}", Title = $"SubDiv {k} Div {j} Country {i}", Level = RegionLevel.Locality };
-                    allRegions.Add(subdivision);
-                }
-            }
-        }
-        foreach(var region in allRegions.OrderBy(e => e.Slug)) {
-            await service.CreateAsync(region);
-        }
-    }
-
     public void PopulateEmployees(int count)
     {
         for(int i = 0; i < count; ++i) {
@@ -191,16 +131,111 @@ public class SampleDataService {
         return new Guid(bytes);
     }
 
-    public Task<RegionLoadStats> PopulateRegionsAsync(RegionService regions, string? country, bool includeSubdivisions, bool includeLocalities)
+    public async Task<RegionLoadStats> PopulateRegionsAsync(string[] countryFilter, bool includeSubdivisions, bool includeLocalities)
     {
         using var reader = new StreamReader(@".\SampleData\Countries.csv");
         using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-        var records = csv.GetRecords<Country>();
-        var re = regions.ListAsync(new PageQuery { Take = int.MaxValue });
-        return Task.FromResult(new RegionLoadStats(records.Count()));
+        var countries = csv.GetRecords<Country>().ToList();
+        var re = await regions.ListAsync(new PageQuery { Take = int.MaxValue });
+        var items = re.Items.ToList();
+        var world = await PopulateWorldAsync(items);
+
+        var maxSibling = items.Where(e => e.Level == RegionLevel.Country).Max(e => e.Lineage);
+        await database.Database.BeginTransactionAsync();
+        foreach(var country in countries) {
+            if(countryFilter.Length == 0 || countryFilter.Contains(country.Alpha2Code)) {
+                var countryRegion = await PopulateCountry(items, country, world, maxSibling);
+                maxSibling = countryRegion.Lineage;
+            }
+        }
+        await database.Database.CommitTransactionAsync();
+
+        if(includeSubdivisions) {
+            await PopulateSubdivisions(items);
+        }
+
+        var stats = new RegionLoadStats(countries.Count);
+        return stats;
+    }
+
+    public async Task PopulateSubdivisions(List<Region> knownRegions)
+    {
+        using var reader = new StreamReader(@".\SampleData\Subdivisions.csv");
+        using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+        var subdivisions = csv.GetRecords<Subdivision>().ToList();
+
+        var loadedCountries = knownRegions.Where(e => e.Level == RegionLevel.Country).ToList();
+        foreach(var country in loadedCountries) {
+            var countrySubs = subdivisions.Where(e => e.Country == country.Slug).ToList();
+            var lastSibling = knownRegions.Where(e => e.Parent == country).Max(e => e.Lineage);
+            foreach(var sub in countrySubs) {
+                var subRegion = await PopulateSubdivision(knownRegions, sub, country, lastSibling);
+                lastSibling = subRegion.Lineage;
+            } 
+            await database.SaveChangesAsync(); // save in batches
+        }
+    }
+
+    public async Task<Region> PopulateSubdivision(List<Region> knownRegions, Subdivision subdivision, Region parent, HierarchyId? lastSibling)
+    {
+        var slug = $"{subdivision.Country}-{subdivision.Code}";
+        var subRegion = knownRegions.FirstOrDefault(e => e.Slug == slug);
+        if(subRegion == null) {
+            subRegion = new Region {
+                Description = subdivision.Name.Trim(),
+                Level = RegionLevel.Subdivision,
+                Lineage = parent.Lineage.GetDescendant(lastSibling, null),
+                Parent = parent,
+                Slug = slug,
+                Title = subdivision.Name.Trim(),
+                Uuid = Guid.NewGuid(),
+            };
+            knownRegions.Add(subRegion);
+            //await regions.CreateAsync(subRegion);
+            database.Regions.Add(subRegion); // direct for performance.
+        }
+        return await Task.FromResult(subRegion);
+    }
+
+    public async Task<Region> PopulateCountry(List<Region> knownRegions, Country country, Region parent, HierarchyId? lastSibling)
+    {
+        var countryRegion = knownRegions.FirstOrDefault(e => e.Slug == country.Alpha2Code);
+        if(countryRegion == null) {
+            countryRegion = new Region {
+                Description = country.Name.Trim(),
+                Level = RegionLevel.Country,
+                Lineage = parent.Lineage.GetDescendant(lastSibling, null),
+                Parent = parent,
+                Slug = country.Alpha2Code,
+                Title = country.Name.Trim(),
+                Uuid = Guid.NewGuid(),
+            };
+            knownRegions.Add(countryRegion);
+            await regions.CreateAsync(countryRegion);
+        }
+        return countryRegion;
+    }
+
+    public async Task<Region> PopulateWorldAsync(List<Region> knownRegions)
+    {
+        var world = knownRegions.FirstOrDefault(e => e.Slug == "all");
+        if(world == null) {
+            world = new Region {
+                Description = "World",
+                Level = RegionLevel.Global,
+                Lineage = HierarchyId.GetRoot(),
+                Slug = "all",
+                Title = "World",
+                Uuid = Guid.NewGuid(),
+            };
+            knownRegions.Add(world);
+            await regions.CreateAsync(world);
+        }
+        return world;
     }
 
     public record Country (string Name, string Alpha2Code, string Alpha3Code, int NumericCode, string Iso3166Code, string Independent);
+    public record Subdivision (string Country, string Code, string Name, string TypeName);
     private readonly Random random = new(123);
 
     private readonly CompanyStatus[] companyStatuses = { CompanyStatus.Inactive, CompanyStatus.Deleted, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active };
@@ -291,6 +326,8 @@ public class SampleDataService {
 
     private readonly SampleContext database;
 
+    private readonly RegionService regions;
+
 }
 
-public record RegionLoadStats(int countries);
+public record RegionLoadStats(int Countries);

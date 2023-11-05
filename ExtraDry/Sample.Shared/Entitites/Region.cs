@@ -64,7 +64,7 @@ public partial class Region : IHierarchyEntity<Region>, IResourceIdentifiers, IV
     /// <summary>
     /// The short name of the country or region, such as 'Australia', or 'USA'.
     /// </summary>
-    [Required, StringLength(32)]
+    [Required, StringLength(80)]
     [Display(ShortName = "Title")]
     [Filter(FilterType.Contains)]
     public string Title { get; set; } = string.Empty;

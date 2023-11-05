@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Sample.Data;
+using Sample.Server.SampleData;
 using Sample.Server.Security;
 using System.Text.Json.Serialization;
 
@@ -113,6 +114,7 @@ namespace Sample.Server {
             services.AddScoped<RuleEngine>();
             services.AddScoped<RegionService>();
             services.AddScoped<TemplateService>();
+            services.AddScoped<SampleDataService>();
 
             services.AddScoped<IEntityResolver<Sector>, SectorService>();
             services.AddScoped<IExpandoSchemaResolver, TemplateService>();

@@ -12,7 +12,7 @@ using Sample.Data;
 namespace Sample.Data.Migrations
 {
     [DbContext(typeof(SampleContext))]
-    [Migration("20231027065416_Initial")]
+    [Migration("20231105112124_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -218,8 +218,8 @@ namespace Sample.Data.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("nvarchar(32)");
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
 
                     b.Property<Guid>("Uuid")
                         .HasColumnType("uniqueidentifier");
