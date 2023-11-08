@@ -1,4 +1,5 @@
 ﻿using ExtraDry.Blazor;
+using ExtraDry.Blazor.Internal;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web.Virtualization;
 using Sample.Shared;
@@ -169,7 +170,7 @@ public partial class ComboBoxComponentPage : ComponentBase, IListItemViewModel<S
 
         public object[] UriArguments { get; set; } = null!;
 
-        public int FetchSize { get; set; } = 20;
+        public int PageSize { get; set; } = 20;
 
         private List<Sector> Sectors { get; set; } = new();
 
@@ -179,7 +180,7 @@ public partial class ComboBoxComponentPage : ComponentBase, IListItemViewModel<S
             filter ??= string.Empty;
             var query = Sectors.Where(e => e.Title.Contains(filter, StringComparison.CurrentCultureIgnoreCase));
             var count = query.Count();
-            query = query.Take(FetchSize);
+            query = query.Take(PageSize);
             var result = new ItemsProviderResult<Sector>(query, count);
             cancellationToken.ThrowIfCancellationRequested();
             await Task.Delay(500, cancellationToken);
@@ -189,11 +190,16 @@ public partial class ComboBoxComponentPage : ComponentBase, IListItemViewModel<S
 
         public async ValueTask<ItemsProviderResult<Sector>> GetItemsAsync(CancellationToken cancellationToken = default)
         {
-            var query = Sectors.Take(FetchSize);
+            var query = Sectors.Take(PageSize);
             var result = new ItemsProviderResult<Sector>(query, Sectors.Count);
             cancellationToken.ThrowIfCancellationRequested();
             await Task.Delay(500, cancellationToken);
             return result;
+        }
+
+        public ValueTask<ItemsProviderResult<Sector>> GetItemsAsync(Query query, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
         }
     }
 }

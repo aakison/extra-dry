@@ -3,7 +3,8 @@
 
 <DryPageQueryView>
     <TableMenu TItem="Region" />
-    <DryTable TItem="Region" ViewModel="@this" ItemsService="@RegionService" GroupFunc="GetParent" GroupColumn="Slug" />
+    <DryHierarchyFilter TItem="Region" />
+    <DryTable TItem="Region" ViewModel="@this" ItemsService="@RegionService" GroupColumn="Slug" />
 </DryPageQueryView>
 
 @code {
@@ -16,7 +17,5 @@
         StateHasChanged();
         //Navigation.NavigateTo($"/companies/{company.Uuid}");
     }
-
-    private Region? GetParent(Region region) => region.Parent;
 
 }

@@ -1,8 +1,8 @@
 ﻿using CsvHelper;
-using Microsoft.AspNetCore.Authentication.OAuth.Claims;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace Sample.Server.SampleData;
 
@@ -181,13 +181,14 @@ public class SampleDataService {
         var slug = $"{subdivision.Country}-{subdivision.Code}";
         var subRegion = knownRegions.FirstOrDefault(e => e.Slug == slug);
         if(subRegion == null) {
+            var name = new Regex(@"(\[.*\])|(\(.*\))").Replace(subdivision.Name, "").Trim();
             subRegion = new Region {
-                Description = subdivision.Name.Trim(),
+                Description = name,
                 Level = RegionLevel.Subdivision,
                 Lineage = parent.Lineage.GetDescendant(lastSibling, null),
                 Parent = parent,
                 Slug = slug,
-                Title = subdivision.Name.Trim(),
+                Title = name,
                 Uuid = Guid.NewGuid(),
             };
             knownRegions.Add(subRegion);

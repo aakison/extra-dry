@@ -39,11 +39,11 @@ public class Animal : IHierarchyEntity<Animal>, IResourceIdentifiers {
     [JsonConverter(typeof(ResourceReferenceConverter<Animal>))]
     public Animal? Parent { get; set; }
 
-    /// <inheritdoc cref="IHierarchyEntity{T}.Lineage" />
+    /// <inheritdoc cref="IHierarchyEntity.Lineage" />
     [JsonIgnore]
     public required HierarchyId Lineage { get; set; }
 
-    /// <inheritdoc cref="IHierarchyEntity{T}.Lineage" />
+    /// <inheritdoc cref="IHierarchyEntity.Lineage" />
     /// <remarks>
     /// This approach is used as OpenAPI treats HierarchyId as an object and cannot then provide
     /// a string example, or have it declared as read-only.

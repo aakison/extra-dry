@@ -15,7 +15,7 @@
         var cssClass = column.DisplayClass;
         var displayValue = column.DisplayValue(Item.Item);
         var command = Description.DefaultCommandFor(column.Property.Name);
-        if (column.HasDiscreteValues) {
+        if(column.HasDiscreteValues) {
             var enumValue = column.GetValue(Item.Item);
             cssClass += $" {enumValue?.ToString()?.ToLowerInvariant()}";
         }
