@@ -12,5 +12,7 @@ public interface IListService<T> : IOptionProvider<T> {
 
     int PageSize { get; }
 
+    int MaxLevel { get; }
+
     ValueTask<ItemsProviderResult<T>> GetItemsAsync(Query query, CancellationToken cancellationToken = default);
 }

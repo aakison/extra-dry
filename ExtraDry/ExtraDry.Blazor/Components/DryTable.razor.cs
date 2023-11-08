@@ -244,6 +244,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
                 var items = await ItemsService.GetItemsAsync(QueryBuilder.Build());
                 var count = items.Items.Count();
                 var total = items.TotalItemCount;
+                QueryBuilder.Level.UpdateMaxLevel(ItemsService.MaxLevel);
 
                 InternalItems.AddRange(items.Items.Select(e => new ListItemInfo<TItem> { Item = e, IsLoaded = true }));
                 InternalItems.AddRange(Enumerable.Range(0, total - count).Select(e => new ListItemInfo<TItem>()));
@@ -268,6 +269,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
                         var items = await ItemsService.GetItemsAsync(QueryBuilder.Build());
                         var count = items.Items.Count();
                         var total = items.TotalItemCount;
+                QueryBuilder.Level.UpdateMaxLevel(ItemsService.MaxLevel);
                         var index = firstIndex;
                         foreach(var item in items.Items) {
                             var info = InternalItems[index++];
@@ -291,8 +293,9 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
             }
         }
         catch(OperationCanceledException) {
-            // KLUDGE: The CancellationTokenSource is initiationed in the Virtualize component, but it can't handle the exception.
-            // Catch the exception here and return an empty result instead.  
+            // KLUDGE: The CancellationTokenSource is initiated in the Virtualize component, but
+            // it can't handle the exception. Catch the exception here and return an empty
+            // result instead.  
             Logger.LogInformation("--Loading cancelled");
             return new ItemsProviderResult<ListItemInfo<TItem>>();
         }

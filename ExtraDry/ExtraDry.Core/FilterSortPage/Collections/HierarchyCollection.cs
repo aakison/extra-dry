@@ -1,16 +1,22 @@
 ﻿namespace ExtraDry.Core;
 
 /// <summary>
-/// A filtered collection of hierarcy items sorted breadth-first from the API.
+/// A filtered collection of hierarcy items sorted depth-first from the API.
 /// </summary>
 public class HierarchyCollection<T> : SortedCollection<T>
 {
     /// <summary>
-    /// The maximum depth of the hierarchy included in the results.  If the collection has a 
-    /// filter, the level is not included.
+    /// The depth of the hierarchy included in the results as defined in the request.  If the 
+    /// collection has a filter, the level is not included.
     /// </summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public int? Level { get; set; }
+
+    /// <summary>
+    /// The maximum level of the hierarchy for the collection, ignoring any Level filter that may 
+    /// be applied.  
+    /// </summary>
+    public int MaxLevels { get; set; }
 
     /// <summary>
     /// The list of additional nodes, if any, that were expanded.

@@ -7,9 +7,10 @@
 public class HierarchyQuery : FilterQuery {
 
     /// <summary>
-    /// The number of levels of the hierarchy to return.
+    /// The number of levels of the hierarchy to return, 0 to return all levels.
     /// </summary>
     [Range(0, 16384)]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public int Level { get; set; }
 
     /// <summary>

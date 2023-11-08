@@ -14,7 +14,7 @@ public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : 
     {
         ForceStringComparison = (queryable as BaseQueryable<T>)?.ForceStringComparison;
         Query = query;
-        // Level is the depth to query to, applied in addition tot he filter..
+        // Level is the depth to query to, applied in addition to the filter..
         FilteredQuery = ApplyLevelFilter(queryable, query.Level);
         // Then filter with common filter mechanism
         FilteredQuery = ApplyKeywordFilter(FilteredQuery, query, defaultFilter);
@@ -33,7 +33,9 @@ public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : 
 
     protected IQueryable<T> ApplyLevelFilter(IQueryable<T> queryable, int level)
     {
-        return new BaseQueryable<T>(queryable.Where(e => e.Lineage.GetLevel() <= level), ForceStringComparison);
+        return level == 0 
+            ? new BaseQueryable<T>(queryable, ForceStringComparison)
+            : new BaseQueryable<T>(queryable.Where(e => e.Lineage.GetLevel() < level), ForceStringComparison);
     }
 
     protected static IQueryable<T> ExpandCollapseHierarchy(IQueryable<T> baseQueryable, IQueryable<T> filteredQueryable, HierarchyQuery query)

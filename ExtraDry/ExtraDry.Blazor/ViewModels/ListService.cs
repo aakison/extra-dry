@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Web.Virtualization;
 using System.Collections.ObjectModel;
-using System.Globalization;
-using System.Runtime.CompilerServices;
+using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
 
 namespace ExtraDry.Blazor;
@@ -52,10 +51,12 @@ public class ListService<TItem> : IListService<TItem> {
                 HierarchyType = typeof(PagedHierarchyCollection<TItem>);
                 HierarchyUnpacker = e => (e as PagedHierarchyCollection<TItem>)?.Items ?? new Collection<TItem>();
                 HierarchyCounter = e => (e as PagedHierarchyCollection<TItem>)?.Total ?? 0;
+                HierarchyMaxLevel = e => (e as PagedHierarchyCollection<TItem>)?.MaxLevels ?? 0;
             }
             else if(options.HierarchyMode == HierarchyServiceMode.Filter) {
                 HierarchyUnpacker = e => (e as HierarchyCollection<TItem>)?.Items ?? new Collection<TItem>();
                 HierarchyCounter = e => (e as HierarchyCollection<TItem>)?.Count ?? 0;
+                HierarchyMaxLevel = e => (e as HierarchyCollection<TItem>)?.MaxLevels ?? 0;
             }
         }
     }
@@ -64,6 +65,7 @@ public class ListService<TItem> : IListService<TItem> {
 
     private ListServiceOptions Options { get; set; }
 
+    [Obsolete("Use from Options")]
     public string UriTemplate { get; set; }
 
     private Type ListType { get; set; }
@@ -78,6 +80,11 @@ public class ListService<TItem> : IListService<TItem> {
 
     private Func<object, int>? HierarchyCounter { get; set; }
 
+    private Func<object, int>? HierarchyMaxLevel { get; set; }
+
+    public int MaxLevel { get; private set; }
+
+    [Obsolete("Inject arguments into HtttpClient derived type")]
     public object[] UriArguments { get; set; } = Array.Empty<object>();
 
     public JsonSerializerOptions JsonSerializerOptions { get; set; }
@@ -182,6 +189,7 @@ public class ListService<TItem> : IListService<TItem> {
                 ?? throw new DryException($"Call to endpoint returned nothing or couldn't be converted to a result.");
             var items = HierarchyUnpacker!(packedResult);
             var total = HierarchyCounter!(packedResult);
+            MaxLevel = HierarchyMaxLevel!(packedResult);
             return new ItemsProviderResult<TItem>(items, total);
         }
         else {

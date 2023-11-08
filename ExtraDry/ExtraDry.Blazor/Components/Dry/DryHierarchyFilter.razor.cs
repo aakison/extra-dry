@@ -24,20 +24,20 @@ public partial class DryHierarchyFilter<TItem> : ComponentBase, IExtraDryCompone
 
     /// <inheritdoc cref="DryPageQueryView.PageQueryBuilder" />
     [CascadingParameter]
-    public QueryBuilder? PageQueryBuilder { get; set; }
+    public QueryBuilder? QueryBuilder { get; set; }
 
     protected void DoFiltersExpand(MouseEventArgs _)
     {
-        if(PageQueryBuilder != null) {
-            PageQueryBuilder.Level = Math.Min(PageQueryBuilder.Level + 1, 5);
-        }
+        if(QueryBuilder?.Level?.Expand() ?? false) {
+            QueryBuilder.NotifyChanged();
+        }            
     }
 
     protected void DoFiltersCollapse(MouseEventArgs _)
     {
-        if(PageQueryBuilder != null) {
-            PageQueryBuilder.Level = Math.Max(PageQueryBuilder.Level - 1, 0);
-        }
+        if(QueryBuilder?.Level?.Collapse() ?? false) {
+            QueryBuilder.NotifyChanged();
+        }   
     }
 
     private ViewModelDescription ViewModelDescription { get; set; }

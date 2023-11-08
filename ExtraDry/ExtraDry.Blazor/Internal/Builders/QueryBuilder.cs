@@ -38,7 +38,7 @@ public class QueryBuilder {
             Sort = BuildSort(),
             Skip = Skip,
             Take = 50, // TODO: Make this configurable
-            Level = Level,
+            Level = BuildLevel(),
             Expand = Expand.ToArray(),
             Collapse = Collapse.ToArray(),
             Source = Source,
@@ -50,10 +50,15 @@ public class QueryBuilder {
 
     private string BuildSort() => Sort.Build();
 
+    private int? BuildLevel() => Level.Build();
+
     public void Reset()
     {
         foreach(var filter in Filters) {
             filter.Reset();
+            Expand.Clear();
+            Collapse.Clear();
+            Level.Reset();
         }
         NotifyChanged();
     }
@@ -78,16 +83,7 @@ public class QueryBuilder {
 
     public ListSource Source { get; set; } = ListSource.Hierarchy;
 
-    public int Level {
-        get => level;
-        set {
-            if(value != level) {
-                level = value;
-                NotifyChanged();
-            }
-        }
-    }
-    private int level = 100;
+    public LevelBuilder Level { get; } = new();
 
     public List<string> Expand { get; } = new();
 
@@ -97,30 +93,4 @@ public class QueryBuilder {
 
     public int? Skip { get; set; }
 
-}
-
-public class Query {
-
-    public ListSource Source { get; init; }
-
-    public string? Filter { get; init; }
-
-    public string? Sort { get; init; }
-
-    public int? Skip { get; init; }
-
-    public int? Take { get; init; }
-
-    public int? Level { get; init; }
-
-    public string[]? Expand { get; init; }
-
-    public string[]? Collapse { get; init; }
-
-}
-
-public enum ListSource
-{
-    List,
-    Hierarchy,
 }

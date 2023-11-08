@@ -23,14 +23,30 @@ public class PagedHierarchyQueryable<T> : FilteredHierarchyQueryable<T> where T 
     }
 
     /// <inheritdoc cref="IFilteredQueryable{T}.ToPagedCollection"/>
-    public PagedHierarchyCollection<T> ToPagedHierarchyCollection() =>
-        CreatePagedCollection(PagedQuery.ToList(), FilteredQuery.Count());
+    public PagedHierarchyCollection<T> ToPagedHierarchyCollection()
+    {
+        var query = FilteredQuery
+            .GroupBy(_ => 1, (_, records) =>
+                new Stats(records.Count(), records.Max(r => r.Lineage.GetLevel() + 1)));
+        var sql = query.ToQueryString();
+        var stats = query.Single();
+        return CreatePagedCollection(PagedQuery.ToList(), stats.Total, stats.MaxLevels);
+    }
+
+    private record Stats(int Total, int MaxLevels);
 
     /// <inheritdoc cref="IFilteredQueryable{T}.ToPagedCollectionAsync(CancellationToken)" />
-    public async Task<PagedHierarchyCollection<T>> ToPagedHierarchyCollectionAsync(CancellationToken cancellationToken = default) =>
-        CreatePagedCollection(await ToListAsync(PagedQuery, cancellationToken), await ToCountAsync(FilteredQuery, cancellationToken));
+    public async Task<PagedHierarchyCollection<T>> ToPagedHierarchyCollectionAsync(CancellationToken cancellationToken = default)
+    {
+        var query = FilteredQuery
+            .GroupBy(_ => 1, (_, records) =>
+                new Stats(records.Count(), records.Max(r => r.Lineage.GetLevel() + 1)));
+        var sql = query.ToQueryString();
+        var stats = await query.SingleAsync(cancellationToken);
+        return CreatePagedCollection(await ToListAsync(PagedQuery, cancellationToken), stats.Total, stats.MaxLevels);
+    }
 
-    private PagedHierarchyCollection<T> CreatePagedCollection(List<T> items, int total)
+    private PagedHierarchyCollection<T> CreatePagedCollection(List<T> items, int total, int maxLevels)
     {
         var query = (Query as PageHierarchyQuery)!;
         var skip = query.Skip;
@@ -41,6 +57,8 @@ public class PagedHierarchyQueryable<T> : FilteredHierarchyQueryable<T> where T 
             Sort = nameof(IHierarchyEntity<T>.Lineage).ToLowerInvariant(),
             Start = previousSkip,
             Total = total,
+            MaxLevels = maxLevels,
+            Level = query.Level,
             Expand = query.Expand.Any() ? query.Expand : null,
             Collapse = query.Collapse.Any() ? query.Collapse : null,
         };

@@ -172,6 +172,8 @@ public partial class ComboBoxComponentPage : ComponentBase, IListItemViewModel<S
 
         public int PageSize { get; set; } = 20;
 
+        public int MaxLevel { get; set; }
+
         private List<Sector> Sectors { get; set; } = new();
 
         public async ValueTask<ItemsProviderResult<Sector>> GetItemsAsync(string? filter, string? sort, bool? ascending, int? skip, int? take, CancellationToken cancellationToken = default)
