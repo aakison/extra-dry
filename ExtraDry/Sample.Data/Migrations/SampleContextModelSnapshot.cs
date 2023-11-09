@@ -61,21 +61,6 @@ namespace Sample.Data.Migrations
                     b.ToTable("Blobs");
                 });
 
-            modelBuilder.Entity("RegionRegion", b =>
-                {
-                    b.Property<int>("AncestorsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("DescendantsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AncestorsId", "DescendantsId");
-
-                    b.HasIndex("DescendantsId");
-
-                    b.ToTable("RegionRegion");
-                });
-
             modelBuilder.Entity("Sample.Shared.Company", b =>
                 {
                     b.Property<int>("Id")
@@ -99,7 +84,10 @@ namespace Sample.Data.Migrations
 
                     b.Property<string>("CustomFields")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValueSql("'{}'")
+                        .HasAnnotation("Relational:JsonPropertyName", "fields");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -210,6 +198,13 @@ namespace Sample.Data.Migrations
                     b.Property<int>("Level")
                         .HasColumnType("int");
 
+                    b.Property<HierarchyId>("Lineage")
+                        .IsRequired()
+                        .HasColumnType("hierarchyid");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Slug")
                         .IsRequired()
                         .HasMaxLength(32)
@@ -220,13 +215,15 @@ namespace Sample.Data.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("nvarchar(32)");
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
 
                     b.Property<Guid>("Uuid")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
 
                     b.HasIndex("Uuid")
                         .IsUnique();
@@ -299,21 +296,6 @@ namespace Sample.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Templates");
-                });
-
-            modelBuilder.Entity("RegionRegion", b =>
-                {
-                    b.HasOne("Sample.Shared.Region", null)
-                        .WithMany()
-                        .HasForeignKey("AncestorsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Sample.Shared.Region", null)
-                        .WithMany()
-                        .HasForeignKey("DescendantsId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Sample.Shared.Company", b =>
@@ -429,6 +411,10 @@ namespace Sample.Data.Migrations
 
             modelBuilder.Entity("Sample.Shared.Region", b =>
                 {
+                    b.HasOne("Sample.Shared.Region", "Parent")
+                        .WithMany()
+                        .HasForeignKey("ParentId");
+
                     b.OwnsOne("ExtraDry.Core.VersionInfo", "Version", b1 =>
                         {
                             b1.Property<int>("RegionId")
@@ -457,6 +443,8 @@ namespace Sample.Data.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("RegionId");
                         });
+
+                    b.Navigation("Parent");
 
                     b.Navigation("Version")
                         .IsRequired();

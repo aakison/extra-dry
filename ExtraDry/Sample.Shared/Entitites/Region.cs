@@ -9,27 +9,42 @@ namespace Sample.Shared;
 /// </summary>
 [DeleteRule(DeleteAction.Recycle, nameof(DeleteStatus), DeleteStatus.Recycled, DeleteStatus.Live)]
 [Index(nameof(Uuid), IsUnique = true)]
-public partial class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidatableObject {
+public partial class Region : IHierarchyEntity<Region>, IResourceIdentifiers, IValidatableObject, IEquatable<Region> {
 
-    /// <inheritdoc cref="ITaxonomyEntity.Id"/>
+    /// <summary>
+    /// The database primary key for the entity.
+    /// </summary>
     [Key]
     [JsonIgnore]
     public int Id { get; set; }
 
     /// <inheritdoc cref="IResourceIdentifiers.Uuid" />
-    [Sort(SortType.Sortable)] // test a normally excempt rule being included in the sort.
+    [Sort(SortType.Sortable)] 
     public Guid Uuid { get; set; } = Guid.NewGuid();
 
     /// <summary>
     /// The level for this region inside a taxonomy of regions.
     /// </summary>
     [Display(Name = "Level", ShortName = "Level")]
+    [Filter]
     public RegionLevel Level { get; set; }
 
-    [NotMapped]
+    /// <summary>
+    /// The hierarchical parent item for this region
+    /// </summary>
+    /// <remarks>Do not set directly, use SetParent on the service.</remarks>
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonConverter(typeof(ResourceReferenceConverter<Region>))]
-    public override Region? Parent { get => base.Parent; set => base.Parent = value; }
+    [Rules(RuleAction.Link)]
+    public Region? Parent { get; set; }
+
+    /// <summary>
+    /// The hierarchy of this entity using the database-specific HierarchyId type.
+    /// </summary>
+    /// <example>/1/3/10/</example>
+    [JsonConverter(typeof(HierarchyIdConverter))]
+    [Rules(RuleAction.Ignore)]
+    public HierarchyId Lineage { get; set; } = HierarchyId.GetRoot();
 
     /// <summary>
     /// The strata for the entity in the taxonomy, 0 is root, each level adds 1.
@@ -49,16 +64,18 @@ public partial class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidata
     /// <summary>
     /// The short name of the country or region, such as 'Australia', or 'USA'.
     /// </summary>
-    [Required, StringLength(32)]
+    [Required, StringLength(80)]
     [Display(ShortName = "Title")]
-    [Filter]
+    [Filter(FilterType.Contains)]
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
-    /// The full name of the country or region, such as 'Commonwealth of Australia', or 'United States of America'.
+    /// The full name of the country or region, such as 'Commonwealth of Australia', or 'United 
+    /// States of America'.
     /// </summary>
     /// <remarks>
-    /// Limited to 100 characters based on full names of countries which, in English, max at 59 characters per ISO.
+    /// Limited to 100 characters based on full names of countries which, in English, max at 59 
+    /// characters per ISO.
     /// </remarks>
     [Required, StringLength(100)]
     [DefaultValue("Description")]
@@ -85,7 +102,7 @@ public partial class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidata
         var results = new List<ValidationResult>();
         var codeRegex = Level switch {
             RegionLevel.Country => CountryRegex(),
-            RegionLevel.Division => DivisionRegex(),
+            RegionLevel.Subdivision => DivisionRegex(),
             _ => SubdivisionRegex(),
         };
         if(Level != RegionLevel.Global && !codeRegex.IsMatch(Slug)) {
@@ -93,6 +110,11 @@ public partial class Region : TaxonomyEntity<Region>, ITaxonomyEntity, IValidata
         }
         return results;
     }
+    public bool Equals(Region? other) => Slug == other?.Slug;
+
+    public override bool Equals(object? obj) => Equals(obj as Region);
+
+    public override int GetHashCode() => Slug.GetHashCode();
 
     [GeneratedRegex(@"^\w{2}$", RegexOptions.Compiled)]
     private partial Regex CountryRegex();

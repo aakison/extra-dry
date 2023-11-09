@@ -51,7 +51,7 @@ public class ExpandoValuesConverter : JsonConverter<ExpandoValues> {
             return item;
         }
         else {
-            throw new ArgumentException(nameof(item), "Elements in Expando Values must either be JsonElement, double, string, or DateTime.");
+            throw new ArgumentException("Elements in Expando Values must either be JsonElement, double, string, or DateTime.", nameof(item));
         }
     }
 

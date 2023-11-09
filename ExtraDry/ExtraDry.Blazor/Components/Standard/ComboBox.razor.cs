@@ -309,7 +309,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
                 //MoreCount = 0;
                 var filter = showAll ? string.Empty : DisplayFilter;
                 cancellationToken.ThrowIfCancellationRequested();
-                var items = await ItemsSource.GetItemsAsync(filter, null, null, null, null, cancellationToken);
+                var items = await ItemsSource.GetItemsAsync(new Query { Filter = filter }, cancellationToken);
                 InternalItems.SetItems(items.Items, Group, Sort, filter);
                 MoreCount = items.TotalItemCount - items.Items.Count();
             }

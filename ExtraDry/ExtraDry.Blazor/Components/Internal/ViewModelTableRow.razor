@@ -15,19 +15,19 @@
         var cssClass = column.DisplayClass;
         var displayValue = column.DisplayValue(Item.Item);
         var command = Description.DefaultCommandFor(column.Property.Name);
-        if (column.HasDiscreteValues) {
+        if(column.HasDiscreteValues) {
             var enumValue = column.GetValue(Item.Item);
             cssClass += $" {enumValue?.ToString()?.ToLowerInvariant()}";
         }
         <td class="@cssClass" data-label="@column.ColumnCaption">
-            @if(column.Property.Name == Grouping?.GroupingColumn) {
-                var cssGroupClass = $"level{Grouping.GroupingDepth}";
-                var cssAction = (Grouping.IsGroup, Grouping.IsExpanded) switch {
+            @if(column.Property.Name == GroupColumn) {
+                var cssGroupClass = $"level{Item.GroupDepth}";
+                var cssAction = (Item.IsGroup, Item.IsExpanded) switch {
                     (false, _) => "child",
                     (true, false) => "collapsed",
                     (true, true) => "expanded"
                 };
-                <span class="group @cssAction @cssGroupClass" @onclick="(e => Grouping.Toggle())" @onclick:stopPropagation="true"></span>
+                <span class="group @cssAction @cssGroupClass" @onclick="(e => Item.Toggle())" @onclick:stopPropagation="true">@displayValue</span>
             }
             else if(command == null) {
                 <span class="@cssClass">@displayValue</span>

@@ -17,10 +17,20 @@ public class Program
 
         services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
+        services.AddHttpClient("api", client => { 
+            client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
+        });
+
         services.AddFilteredListService<Sector>("/api/sectors");
         services.AddFilteredListService<Company>("/api/companies");
         services.AddFilteredListService<Content>("/api/contents");
-        services.AddFilteredListService<Region>("/api/regions");
+
+        services.AddListService<Region>(options => { 
+            options.ListEndpoint = "/api/regions";
+            options.HierarchyEndpoint = "/api/regions/hierarchy";
+            options.HierarchyMethod = HttpMethod.Get;
+            options.HttpClientName = "api";
+        });
 
         services.AddStatService<Sector>("/api/sectors/stats");
 

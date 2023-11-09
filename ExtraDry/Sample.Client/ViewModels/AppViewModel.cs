@@ -250,6 +250,11 @@ public class AppViewModel {
                                 Title = "Sectors",
                                 NavLink = "/admin/works/sectors/list",
                             },
+                            new Menu {
+                                Icon = "regions",
+                                Title = "Regions",
+                                NavLink = "/admin/works/regions/list",
+                            },
                         },
                     },
                 },

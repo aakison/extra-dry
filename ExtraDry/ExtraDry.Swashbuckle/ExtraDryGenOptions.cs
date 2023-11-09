@@ -31,6 +31,7 @@ public class ExtraDryGenOptions
         public string Title { get; set; } = "API Instructions";
 
         public string Description { get; set; } = "This API provides consistent access to services available on this system conforming to Extra DRY principles.  The following instructions are applied consistently across the entire API set.";
+
     }
 
     /// <summary>

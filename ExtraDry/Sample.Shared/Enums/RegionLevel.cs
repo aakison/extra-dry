@@ -17,13 +17,13 @@ public enum RegionLevel {
     Country = 1,
 
     /// <summary>
-    /// The first level divisions of countries, e.g. States and/or Territories
+    /// The first level of sub-divisions of countries, e.g. States and/or Territories
     /// </summary>
-    Division = 2,
+    Subdivision = 2,
 
     /// <summary>
-    /// Represents a division within a division, such as a City, Municipality, etc.
+    /// Represents a named locality within a sub-division, such as a City, Municipality, etc.
     /// </summary>
-    Subdivision = 3,
+    Locality = 3,
 
 }

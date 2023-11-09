@@ -20,7 +20,7 @@ public partial class DryFilterInputText : ComponentBase, IExtraDryComponent, IDi
 
     /// <inheritdoc cref="DryPageQueryView.PageQueryBuilder" />
     [CascadingParameter]
-    internal PageQueryBuilder? PageQueryBuilder { get; set; }
+    internal QueryBuilder? PageQueryBuilder { get; set; }
 
     protected override void OnParametersSet()
     {

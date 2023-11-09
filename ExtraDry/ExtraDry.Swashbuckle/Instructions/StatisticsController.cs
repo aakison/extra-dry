@@ -31,7 +31,7 @@ namespace ExtraDry.Swashbuckle.Instructions;
 [ApiController]
 [ApiExplorerSettings(GroupName = SwaggerOptionsExtensions.GroupName)]
 [ApiExceptionStatusCodes]
-[Display(Order = 4)]
+[Display(Order = 6)]
 public class StatisticsController {
 
     public StatisticsController()

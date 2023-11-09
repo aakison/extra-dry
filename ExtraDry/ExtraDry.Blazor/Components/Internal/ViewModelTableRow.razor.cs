@@ -23,7 +23,7 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
     public ListItemInfo<T> Item { get; set; }
 
     [Parameter]
-    public Grouping Grouping { get; set; }
+    public string GroupColumn { get; set; }
 
     [Parameter]
     public int Height { get; set; } = 40;
