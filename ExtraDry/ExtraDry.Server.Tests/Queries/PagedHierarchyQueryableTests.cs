@@ -19,20 +19,20 @@ public class PagedHierarchyQueryableTests {
     }
 
     [Theory]
-    [InlineData(0, 0, 5, 1, true)]
-    [InlineData(1, 0, 5, 3, true)]
-    [InlineData(2, 0, 5, 5, false)] // 13 total
-    [InlineData(2, 5, 5, 5, false)] // 13 total
-    [InlineData(2, 10, 5, 3, false)] // 13 total
-    [InlineData(3, 10, 10, 6, false)] // 16 total
-    [InlineData(3, 0, 0, 16, true)] // 16 total, use default take
+    [InlineData(1, 0, 5, 1, true)]
+    [InlineData(2, 0, 5, 3, true)]
+    [InlineData(3, 0, 5, 5, false)] // 13 total
+    [InlineData(3, 5, 5, 5, false)] // 13 total
+    [InlineData(3, 10, 5, 3, false)] // 13 total
+    [InlineData(4, 10, 10, 6, false)] // 16 total
+    [InlineData(4, 0, 0, 16, true)] // 16 total, use default take
     public void HierarchyLevels(int level, int skip, int take, int count, bool full)
     {
         // filter to get rid of duplicate names
         var query = new PageHierarchyQuery { Level = level, Skip = skip, Take = take };
         var regions = Samples.Regions;
         var expected = regions
-            .Where(e => e.Lineage.ToString().Split("/").Where(e => !string.IsNullOrEmpty(e)).Count() <= level)
+            .Where(e => e.Lineage.ToString().Split("/").Where(e => !string.IsNullOrEmpty(e)).Count() < level)
             .OrderBy(e => e.Lineage)
             .Skip(query.Skip).Take(query.Take); // make sure from Query for default override.
 
@@ -44,19 +44,19 @@ public class PagedHierarchyQueryableTests {
     }
 
     [Theory]
-    [InlineData(0, 0, 5, 1)]
-    [InlineData(1, 0, 5, 3)]
-    [InlineData(2, 0, 5, 5)] // 13 total
-    [InlineData(2, 5, 5, 5)] // 13 total
-    [InlineData(2, 10, 5, 3)] // 13 total
-    [InlineData(3, 10, 10, 6)] // 16 total
+    [InlineData(1, 0, 5, 1)]
+    [InlineData(2, 0, 5, 3)]
+    [InlineData(3, 0, 5, 5)] // 13 total
+    [InlineData(3, 5, 5, 5)] // 13 total
+    [InlineData(3, 10, 5, 3)] // 13 total
+    [InlineData(4, 10, 10, 6)] // 16 total
     public async Task HierarchyLevelsAsync(int level, int skip, int take, int count)
     {
         // filter to get rid of duplicate names
         var query = new PageHierarchyQuery { Level = level, Skip = skip, Take = take };
         var regions = Samples.Regions;
         var expected = regions
-            .Where(e => e.Lineage.ToString().Split("/").Where(e => !string.IsNullOrEmpty(e)).Count() <= level)
+            .Where(e => e.Lineage.ToString().Split("/").Where(e => !string.IsNullOrEmpty(e)).Count() < level)
             .OrderBy(e => e.Lineage)
             .Skip(skip).Take(take);
 
@@ -70,11 +70,11 @@ public class PagedHierarchyQueryableTests {
     public void ToHierarchyIgnoresPaging()
     {
         // filter to get rid of duplicate names
-        int level = 3;
+        int level = 4;
         var query = new PageHierarchyQuery { Level = level, Skip = 5, Take = 5 };
         var regions = Samples.Regions;
         var expected = regions
-            .Where(e => e.Lineage.ToString().Split("/").Where(e => !string.IsNullOrEmpty(e)).Count() <= level)
+            .Where(e => e.Lineage.ToString().Split("/").Where(e => !string.IsNullOrEmpty(e)).Count() < level)
             .OrderBy(e => e.Lineage);
 
         var actual = regions.AsQueryable().QueryWith(query).ToHierarchyCollection();

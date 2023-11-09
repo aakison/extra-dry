@@ -38,6 +38,19 @@ public class BaseQueryable<T> : IQueryable<T>
     IEnumerator<T> IEnumerable<T>.GetEnumerator() => PagedQuery.GetEnumerator();
 
     /// <summary>
+    /// Helper to perform either a ToSingle or ToSingleAsync depending on the type of queryable.
+    /// </summary>
+    protected async Task<TItem> ToSingleAsync<TItem>(IQueryable<TItem> queryable, CancellationToken cancellationToken = default)
+    {
+        if(queryable is IAsyncEnumerable<TItem>) {
+            return await queryable.SingleAsync(cancellationToken);
+        }
+        else {
+            return queryable.Single();
+        }
+    }
+
+    /// <summary>
     /// Helper to perform either a ToList or ToListAsync depending on the type of queryable.
     /// </summary>
     protected async Task<List<TItem>> ToListAsync<TItem>(IQueryable<TItem> queryable, CancellationToken cancellationToken = default)

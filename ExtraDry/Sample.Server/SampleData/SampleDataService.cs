@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Sample.Server.SampleData;
@@ -133,7 +134,7 @@ public class SampleDataService {
 
     public async Task<RegionLoadStats> PopulateRegionsAsync(string[] countryFilter, bool includeSubdivisions, bool includeLocalities)
     {
-        using var reader = new StreamReader(@".\SampleData\Countries.csv");
+        using var reader = new StreamReader(@".\SampleData\Countries.csv", Encoding.GetEncoding("ISO-8859-1"));
         using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
         var countries = csv.GetRecords<Country>().ToList();
         var re = await regions.ListAsync(new PageQuery { Take = int.MaxValue });
@@ -160,7 +161,9 @@ public class SampleDataService {
 
     public async Task PopulateSubdivisions(List<Region> knownRegions)
     {
-        using var reader = new StreamReader(@".\SampleData\Subdivisions.csv");
+        // File seems to be UTF-8 but when using that encoding, the latin-1 characters are lost.
+        // ISO-8859-1 brings in Latin-1 but doesn't handle multi-byte UTF-8 characters.
+        using var reader = new StreamReader(@".\SampleData\Subdivisions.csv", Encoding.GetEncoding("ISO-8859-1"));
         using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
         var subdivisions = csv.GetRecords<Subdivision>().ToList();
 

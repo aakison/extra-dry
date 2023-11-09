@@ -28,7 +28,10 @@ public class Animal : IHierarchyEntity<Animal>, IResourceIdentifiers {
     /// <summary>
     /// A description of the animal.
     /// </summary>
-    /// <example>A large herbivorous mammal with a trunk, long tusks, and flapping ears, native to Africa and Asia.</example>
+    /// <example>
+    /// A large herbivorous mammal with a trunk, long tusks, and flapping ears, native to Africa 
+    /// and Asia.
+    /// </example>
     public string Description { get; set; } = string.Empty;
 
     /// <inheritdoc cref="IResourceIdentifiers.Slug" />

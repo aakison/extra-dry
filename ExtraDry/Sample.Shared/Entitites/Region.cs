@@ -70,10 +70,12 @@ public partial class Region : IHierarchyEntity<Region>, IResourceIdentifiers, IV
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
-    /// The full name of the country or region, such as 'Commonwealth of Australia', or 'United States of America'.
+    /// The full name of the country or region, such as 'Commonwealth of Australia', or 'United 
+    /// States of America'.
     /// </summary>
     /// <remarks>
-    /// Limited to 100 characters based on full names of countries which, in English, max at 59 characters per ISO.
+    /// Limited to 100 characters based on full names of countries which, in English, max at 59 
+    /// characters per ISO.
     /// </remarks>
     [Required, StringLength(100)]
     [DefaultValue("Description")]

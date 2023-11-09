@@ -28,7 +28,6 @@ public class PagedHierarchyQueryable<T> : FilteredHierarchyQueryable<T> where T 
         var query = FilteredQuery
             .GroupBy(_ => 1, (_, records) =>
                 new Stats(records.Count(), records.Max(r => r.Lineage.GetLevel() + 1)));
-        var sql = query.ToQueryString();
         var stats = query.Single();
         return CreatePagedCollection(PagedQuery.ToList(), stats.Total, stats.MaxLevels);
     }
@@ -41,8 +40,7 @@ public class PagedHierarchyQueryable<T> : FilteredHierarchyQueryable<T> where T 
         var query = FilteredQuery
             .GroupBy(_ => 1, (_, records) =>
                 new Stats(records.Count(), records.Max(r => r.Lineage.GetLevel() + 1)));
-        var sql = query.ToQueryString();
-        var stats = await query.SingleAsync(cancellationToken);
+        var stats = await ToSingleAsync(query, cancellationToken);
         return CreatePagedCollection(await ToListAsync(PagedQuery, cancellationToken), stats.Total, stats.MaxLevels);
     }
 
