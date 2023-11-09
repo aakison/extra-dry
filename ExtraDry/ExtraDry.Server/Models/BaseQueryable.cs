@@ -43,9 +43,11 @@ public class BaseQueryable<T> : IQueryable<T>
     protected async Task<TItem> ToSingleAsync<TItem>(IQueryable<TItem> queryable, CancellationToken cancellationToken = default)
     {
         if(queryable is IAsyncEnumerable<TItem>) {
+            // version for EF to database.
             return await queryable.SingleAsync(cancellationToken);
         }
         else {
+            // version for in-memory querables, including unit tests.
             return queryable.Single();
         }
     }
@@ -56,9 +58,11 @@ public class BaseQueryable<T> : IQueryable<T>
     protected async Task<List<TItem>> ToListAsync<TItem>(IQueryable<TItem> queryable, CancellationToken cancellationToken = default)
     {
         if(queryable is IAsyncEnumerable<TItem>) {
+            // version for EF to database.
             return await queryable.ToListAsync(cancellationToken);
         }
         else {
+            // version for in-memory querables, including unit tests.
             return queryable.ToList();
         }
     }
@@ -69,9 +73,11 @@ public class BaseQueryable<T> : IQueryable<T>
     protected async Task<int> ToCountAsync<TItem>(IQueryable<TItem> queryable, CancellationToken cancellationToken = default)
     {
         if(queryable is IAsyncQueryProvider) {
+            // version for EF to database.
             return await queryable.CountAsync(cancellationToken);
         }
         else {
+            // version for in-memory querables, including unit tests.
             return queryable.Count();
         }
     }

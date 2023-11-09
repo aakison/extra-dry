@@ -31,6 +31,12 @@ public class HierarchyCollection<T> : SortedCollection<T>
     public List<string>? Collapse { get; set; }
 
     /// <summary>
+    /// The list of nodes in the collection that have children and could be expanded.
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public List<string>? Expandable { get; set; }
+
+    /// <summary>
     /// Create a new <see cref="HierarchyCollection{T}" /> with the items cast to a base class or interface.
     /// </summary>
     public new HierarchyCollection<TCast> Cast<TCast>() => new() {

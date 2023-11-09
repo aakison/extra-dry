@@ -7,11 +7,13 @@ namespace ExtraDry.Server;
 public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : class, IHierarchyEntity<T> {
 
     protected FilteredHierarchyQueryable() {
+        UnfilteredQuery = new List<T>().AsQueryable();
         Query = new();
     }
 
     public FilteredHierarchyQueryable(IQueryable<T> queryable, HierarchyQuery query, Expression<Func<T, bool>>? defaultFilter)
     {
+        UnfilteredQuery = queryable;
         ForceStringComparison = (queryable as BaseQueryable<T>)?.ForceStringComparison;
         Query = query;
         // Level is the depth to query to, applied in addition to the filter..
@@ -24,6 +26,24 @@ public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : 
         SortedQuery = ApplyLineageSort(FilteredQuery);
         // Finally, ignore paging.
         PagedQuery = SortedQuery;
+    }
+
+    public HierarchyCollection<T> ToHierarchyCollection()
+    {
+        var childrenQuery = CreateChildrenQuery();
+
+        var items = SortedQuery.ToList();
+        var children = childrenQuery.ToList();
+        return CreateHierarchyCollection(items, children);
+    }
+
+    public async Task<HierarchyCollection<T>> ToHierarchyCollectionAsync()
+    {
+        var childrenQuery = CreateChildrenQuery();
+
+        var items = await ToListAsync(SortedQuery);
+        var children = await ToListAsync(childrenQuery);
+        return CreateHierarchyCollection(items, children);
     }
 
     protected IQueryable<T> ApplyLineageSort(IQueryable<T> queryable)
@@ -75,13 +95,29 @@ public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : 
 
     }
 
-    public HierarchyCollection<T> ToHierarchyCollection() =>
-        CreateHierarchyCollection(SortedQuery.ToList());
+    protected IQueryable<string> CreateChildrenQuery()
+    {
+        return PagedQuery
+            .Join(UnfilteredQuery, parent => parent, child => child.Parent, (parent, child) =>
+                new { ParentSlug = parent.Slug, ChildSlug = child.Slug })
+            .GroupBy(e => e.ParentSlug)
+            .Select(e => e.Key);
+    }
 
-    public async Task<HierarchyCollection<T>> ToHierarchyCollectionAsync() =>
-        CreateHierarchyCollection(await ToListAsync(SortedQuery));
+    protected IQueryable<PagedHierarchyQueryable<T>.Stats> CreateStatQuery()
+    {
+        return FilteredQuery
+            .GroupBy(_ => 1, (_, records) =>
+                new Stats(records.Count(), records.Max(r => r.Lineage.GetLevel() + 1)));
+    }
 
-    private HierarchyCollection<T> CreateHierarchyCollection(IList<T> items) => 
+    protected IQueryable<T> UnfilteredQuery { get; set; }
+
+    protected record Stats(int Total, int MaxLevels);
+
+    private new HierarchyQuery Query { get; }
+
+    private HierarchyCollection<T> CreateHierarchyCollection(IList<T> items, List<string> expandable) => 
         new() {
             Filter = Query.Filter,
             Items = items,
@@ -89,8 +125,7 @@ public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : 
             Level = Query.Level,
             Expand = Query.Expand.Any() ? Query.Expand : null,
             Collapse = Query.Collapse.Any() ? Query.Collapse : null,
+            Expandable = expandable.Any() ? expandable : null,
         };  
-
-    private new HierarchyQuery Query { get; }
 
 }

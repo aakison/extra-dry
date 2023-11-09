@@ -1,5 +1,4 @@
 ﻿using ExtraDry.Server.Internal;
-using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace ExtraDry.Server;
@@ -8,6 +7,7 @@ public class PagedHierarchyQueryable<T> : FilteredHierarchyQueryable<T> where T 
     {
     public PagedHierarchyQueryable(IQueryable<T> queryable, PageHierarchyQuery query, Expression<Func<T, bool>>? defaultFilter)
     {
+        UnfilteredQuery = queryable;
         ForceStringComparison = (queryable as BaseQueryable<T>)?.ForceStringComparison;
         Query = query;
         // Filter by level first, big performance gain.
@@ -25,26 +25,30 @@ public class PagedHierarchyQueryable<T> : FilteredHierarchyQueryable<T> where T 
     /// <inheritdoc cref="IFilteredQueryable{T}.ToPagedCollection"/>
     public PagedHierarchyCollection<T> ToPagedHierarchyCollection()
     {
-        var query = FilteredQuery
-            .GroupBy(_ => 1, (_, records) =>
-                new Stats(records.Count(), records.Max(r => r.Lineage.GetLevel() + 1)));
-        var stats = query.Single();
-        return CreatePagedCollection(PagedQuery.ToList(), stats.Total, stats.MaxLevels);
-    }
+        var statsQuery = CreateStatQuery();
+        var childrenQuery = CreateChildrenQuery();
 
-    private record Stats(int Total, int MaxLevels);
+        var items = PagedQuery.ToList();
+        var stats = statsQuery.Single();
+        var children = childrenQuery.ToList();
+        return CreatePagedCollection(items, stats.Total, stats.MaxLevels, children);
+    }
 
     /// <inheritdoc cref="IFilteredQueryable{T}.ToPagedCollectionAsync(CancellationToken)" />
     public async Task<PagedHierarchyCollection<T>> ToPagedHierarchyCollectionAsync(CancellationToken cancellationToken = default)
     {
-        var query = FilteredQuery
-            .GroupBy(_ => 1, (_, records) =>
-                new Stats(records.Count(), records.Max(r => r.Lineage.GetLevel() + 1)));
-        var stats = await ToSingleAsync(query, cancellationToken);
-        return CreatePagedCollection(await ToListAsync(PagedQuery, cancellationToken), stats.Total, stats.MaxLevels);
+        var statsQuery = CreateStatQuery();
+        var childrenQuery = CreateChildrenQuery();
+
+        var items = await ToListAsync(PagedQuery, cancellationToken);
+        var stats = await ToSingleAsync(statsQuery, cancellationToken);
+        var children = await ToListAsync(childrenQuery, cancellationToken);
+        return CreatePagedCollection(items, stats.Total, stats.MaxLevels, children);
     }
 
-    private PagedHierarchyCollection<T> CreatePagedCollection(List<T> items, int total, int maxLevels)
+    private new PageHierarchyQuery Query { get; }
+
+    private PagedHierarchyCollection<T> CreatePagedCollection(List<T> items, int total, int maxLevels, List<string> expandable)
     {
         var query = (Query as PageHierarchyQuery)!;
         var skip = query.Skip;
@@ -59,6 +63,7 @@ public class PagedHierarchyQueryable<T> : FilteredHierarchyQueryable<T> where T 
             Level = query.Level,
             Expand = query.Expand.Any() ? query.Expand : null,
             Collapse = query.Collapse.Any() ? query.Collapse : null,
+            Expandable = expandable.Any() ? expandable : null,
         };
     }
 
