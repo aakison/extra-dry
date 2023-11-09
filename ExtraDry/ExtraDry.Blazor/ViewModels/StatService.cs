@@ -44,12 +44,13 @@ public class StatService<T> {
     /// Retrieves the Statistics of the Entity
     /// </summary>
     /// <param name="filter">The entity specific text filter for the collection.</param>
+    /// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
     /// <param name="args">The values to replace the placeholders in the collectionEndpointTemplate.</param>
-    public async Task<Statistics<T>?> RetrieveAsync(string? filter, params object[] args)
+    public async Task<Statistics<T>?> RetrieveAsync(string? filter, CancellationToken cancellationToken = default, params object[] args)
     {
         var endpoint = ApiEndpoint(nameof(RetrieveAsync), filter, args);
         logger?.LogInformation("Retrieving '{entity}' from '{endpoint}'", nameof(T), endpoint);
-        var response = await http.GetAsync(endpoint);
+        var response = await http.GetAsync(endpoint, cancellationToken);
         await response.AssertSuccess();
         var item = await response.Content.ReadFromJsonAsync<Statistics<T>>();
         logger?.LogDebug("Retrieved '{entity}' from '{endpoint}' with content: {content}", nameof(T), endpoint, item);
