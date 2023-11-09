@@ -1,17 +1,19 @@
-﻿#nullable disable
+﻿namespace ExtraDry.Blazor.Components.Internal;
 
-namespace ExtraDry.Blazor.Components.Internal;
-
-public class ListItemInfo<T> {
+/// <summary>
+/// Inside of visual collections, a list item that includes information for display and grouping,
+/// along with a reference to the actual item.
+/// </summary>
+public class ListItemInfo<TItem> {
 
     /// <summary>
     /// The actual item, typically linked to another collection.
     /// </summary>
-    public T Item { get; set; }
+    public TItem? Item { get; set; }
 
     /// <summary>
-    /// Indicates if the item has been loaded.  Used when getting pages of data from the server and the actual
-    /// items might be unloaded.
+    /// Indicates if the item has been loaded.  Used when getting pages of data from the server 
+    /// and the actual items might be unloaded.
     /// </summary>
     public bool IsLoaded { get; set; }
 
@@ -24,7 +26,7 @@ public class ListItemInfo<T> {
     /// <summary>
     /// If grouping is enabled, the group that this item is a member of.
     /// </summary>
-    public ListItemInfo<T> Group { get; set; }
+    public ListItemInfo<TItem>? Group { get; set; }
 
     /// <summary>
     /// If grouping is enabled, indicates if this item also acts as a group of other items.
@@ -32,10 +34,14 @@ public class ListItemInfo<T> {
     public bool IsGroup { get; set; }
 
     /// <summary>
-    /// Indicates if the current node is collapsed, this node is still shown but elements grouped under it are not.
+    /// Indicates if the current node is collapsed, this node is still shown but elements grouped 
+    /// under it are not.
     /// </summary>
     public bool IsExpanded { get; set; } = true;
 
+    /// <summary>
+    /// Determins if the item is actually shown based on the visibility of the group it is in.
+    /// </summary>
     public bool IsShown => (Group?.IsExpanded ?? true) && (Group?.IsShown ?? true);
 
     public Action Toggle { get; set; }
