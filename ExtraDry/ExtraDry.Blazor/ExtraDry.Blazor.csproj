@@ -69,6 +69,8 @@
 	
 	<Import Project="..\CommonAnalyzers.targets" />
 
+	<Import Project="..\VulnerabilityFixes.targets" />
+
 	<ItemGroup>
 		<Content Update="wwwroot\img\layout-doubleweightedleft.png">
 			<CopyToOutputDirectory></CopyToOutputDirectory>

@@ -28,11 +28,13 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-		<PackageReference Include="System.Text.Json" Version="7.0.1" />
+		<PackageReference Include="System.Text.Json" Version="7.0.3" />
 		<PackageReference Include="EntityFrameworkCore.SqlServer.HierarchyId.Abstractions" Version="4.0.0" />
 	</ItemGroup>
 
 	<Import Project="..\CommonAnalyzers.targets" />
+
+	<Import Project="..\VulnerabilityFixes.targets" />
 
 	<ItemGroup>
 		<None Include="..\extradry-logo.png">
