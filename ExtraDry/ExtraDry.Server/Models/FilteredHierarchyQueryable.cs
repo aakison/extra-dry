@@ -22,7 +22,7 @@ public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : 
         FilteredQuery = ApplyKeywordFilter(FilteredQuery, query, defaultFilter);
         // Ensure expanded slugs and ancestors are included, while excluding collapsed.
         FilteredQuery = ExpandCollapseHierarchy(queryable, FilteredQuery, query);
-        // Then sort it the only way that is allowed, breadth-first by lineage.
+        // Then sort it the only way that is allowed, depth-first by lineage.
         SortedQuery = ApplyLineageSort(FilteredQuery);
         // Finally, ignore paging.
         PagedQuery = SortedQuery;
