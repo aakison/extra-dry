@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components.Web.Virtualization;
 using System.Collections.ObjectModel;
-using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
 
 namespace ExtraDry.Blazor;
@@ -17,7 +16,6 @@ public class ListService<TItem> : IListService<TItem> {
         http = client;
         logger = iLogger;
         Options = options;
-        UriTemplate = options.ListEndpoint;
         // Make default json to ignore case, most non-.NET "RESTful" services use camelCase...
         JsonSerializerOptions = options.JsonSerializerOptions ?? new JsonSerializerOptions {
             PropertyNameCaseInsensitive = true,
@@ -65,9 +63,6 @@ public class ListService<TItem> : IListService<TItem> {
 
     private ListServiceOptions Options { get; set; }
 
-    [Obsolete("Use from Options")]
-    public string UriTemplate { get; set; }
-
     private Type ListType { get; set; }
 
     private Func<object, ICollection<TItem>>? ListUnpacker { get; set; }
@@ -83,9 +78,6 @@ public class ListService<TItem> : IListService<TItem> {
     private Func<object, int>? HierarchyMaxLevel { get; set; }
 
     public int MaxLevel { get; private set; }
-
-    [Obsolete("Inject arguments into HtttpClient derived type")]
-    public object[] UriArguments { get; set; } = Array.Empty<object>();
 
     public JsonSerializerOptions JsonSerializerOptions { get; set; }
 
