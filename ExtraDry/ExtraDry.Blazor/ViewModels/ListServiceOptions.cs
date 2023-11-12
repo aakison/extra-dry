@@ -2,7 +2,7 @@
 
 namespace ExtraDry.Blazor;
 
-public class ListServiceOptions : IValidatableObject
+public class ListServiceOptions : IHttpClientOptions, IValidatableObject
 {
     public string ListEndpoint { get; set; } = string.Empty;
 
