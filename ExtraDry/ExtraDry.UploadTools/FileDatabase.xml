@@ -52,12 +52,19 @@
     <mime-type name="application/msword">
         <ext>doc</ext>
         <ext>dot</ext>
-        <magic offset="0" type="byte" value="31be0000"/>
+        <magic offset="0" type="byte" value="D0CF11E0A1B11AE1"/>
     </mime-type>
 
     <mime-type name="application/oda">
         <ext>oda</ext>
     </mime-type>
+
+  <mime-type name="image/tiff">
+    <ext>tif</ext>
+    <ext>tiff</ext>
+    <magic offset="0" type="byte" value="49492A00"/>
+    <magic offset="0" type="byte" value="4D4D002A"/>
+  </mime-type>
 
     <mime-type name="application/pdf"
                description="Portable Document Format (PDF)">
@@ -99,6 +106,7 @@
         <ext>xlc</ext>
         <ext>xlm</ext>
         <ext>xlw</ext>
+      <magic offset="0" type="byte" value="D0CF11E0A1B11AE1"/>
     </mime-type>
 
     <mime-type name="application/vnd.ms-powerpoint">
@@ -107,6 +115,7 @@
         <ext>ppa</ext>
         <ext>pps</ext>
         <ext>pwz</ext>
+      <magic offset="0" type="byte" value="D0CF11E0A1B11AE1"/>
     </mime-type>
 
     <mime-type name="application/vnd.sun.xml.writer"
@@ -582,14 +591,6 @@
       <ext>png</ext>
       <magic offset="0" type="byte" value="89504e470d0a1a"/>
       <!-- 89504e470d0a1a0a0000000d49484452 -->
-    </mime-type>
-
-    <mime-type name="image/tiff"
-               description="Tagged Image Format File">
-        <ext>tif</ext>
-        <ext>tiff</ext>
-        <magic offset="0" type="byte" value="4d4d002a"/>
-        <magic offset="0" type="byte" value="49492a00"/>
     </mime-type>
 
     <mime-type name="image/vnd.djvu"
@@ -1233,49 +1234,42 @@
   <mime-type name="application/x-7z-compressed"
              description="7-Zip Archive">
     <ext>7z</ext>
-    <!--<magic offset="0" value="%!"/>-->
+    <magic offset="0" type="byte" value="377ABCAF271C"/>
   </mime-type>
 
   <mime-type name="video/3gpp"
              description="Third Generation Partnership Project Video">
     <ext>3gp</ext>
-    <!--<magic offset="0" value="%!"/>-->
+    <ext>3g2</ext>
+    <magic offset="0" type="byte" value="667479703367"/>
   </mime-type>
 
   <mime-type name="audio/3gpp"
              description="Third Generation Partnership Project Audio">
     <ext>3gp</ext>
-    <!--<magic offset="0" value="%!"/>-->
+    <ext>3g2</ext>
+    <magic offset="0" type="byte" value="667479703367"/>
   </mime-type>
 
   <mime-type name="text/csv"
              description="Comma Seperated Values">
     <ext>csv</ext>
-    <!--<magic offset="0" value="%!"/>-->
-  </mime-type>
-
-  <mime-type name="text/csv"
-             description="Comma Seperated Values">
-    <ext>csv</ext>
-    <!--<magic offset="0" value="%!"/>-->
   </mime-type>
 
   <mime-type name="application/vnd.ms-word.document.macroEnabled.12"
              description="Macro Enabled Word Document">
     <ext>docm</ext>
-    <!--<magic offset="0" value="%!"/>-->
   </mime-type>
 
   <mime-type name="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
              description="MS Word Document">
     <ext>docx</ext>
-    <!--<magic offset="0" value="%!"/>-->
+    <magic offset="0" type="byte" value="504B0304"/>
   </mime-type>
 
   <mime-type name="image/vnd.dwg"
            description="Autodesk Drawing File">
     <ext>dwg</ext>
-    <!--<magic offset="0" value="%!"/>-->
   </mime-type>
 
   <mime-type name="message/rfc822"
@@ -1285,49 +1279,45 @@
     <ext>mhtml</ext>
     <ext>mime</ext>
     <ext>nws</ext>
-    <!--<magic offset="0" value="%!"/>-->
   </mime-type>
 
   <mime-type name="image/vnd.fpx"
            description="Kodak FlashPix Image">
     <ext>fpx</ext>
-    <!--<magic offset="0" value="%!"/>-->
   </mime-type>
 
   <mime-type name="image/heic"
            description="High Efficiency Image File Format">
     <ext>heic</ext>
     <ext>heif</ext>
-    <!--<magic offset="0" value="%!"/>-->
+    <magic offset="4" type="byte" value="66747970686569"/>
   </mime-type>
 
   <!-- 3 advanced audio file formats. -->
+  <!-- mp4 has magic bytes, the others don't, yet they share mimetypes. There's also mp4 video -->
+  <!-- Due to the complexity, we can't be sure, and so we don't test.-->
   <mime-type name="audio/aac"
            description="Advanced Audio Coding">
     <ext>mp4</ext>
     <ext>aac</ext>
     <ext>m4a</ext>
-    <!--<magic offset="0" value="%!"/>-->
   </mime-type>
   <mime-type name="audio/x-aac"
            description="Advanced Audio Coding">
     <ext>mp4</ext>
     <ext>aac</ext>
     <ext>m4a</ext>
-    <!--<magic offset="0" value="%!"/>-->
   </mime-type>
   <mime-type name="audio/mp4"
            description="Advanced Audio Coding">
     <ext>mp4</ext>
     <ext>aac</ext>
     <ext>m4a</ext>
-    <!--<magic offset="0" value="%!"/>-->
   </mime-type>
 
   <mime-type name="video/x-m4v"
            description="Protected MPEG-4">
     <ext>m4v</ext>
-    <!--<magic offset="0" value="%!"/>-->
   </mime-type>
 
   <mime-type name="text/markdown"
@@ -1355,11 +1345,13 @@
   <mime-type name="application/vnd.oasis.opendocument.spreadsheet"
            description="Oasis Spreadsheet">
     <ext>ods</ext>
+    <magic offset="0" type="byte" value="504B0304"/>
   </mime-type>
 
   <mime-type name="application/vnd.oasis.opendocument.text"
            description="Oasis Text File">
     <ext>odt</ext>
+    <magic offset="0" type="byte" value="504B0304"/>
   </mime-type>
 
   <mime-type name="application/vnd.ms-powerpoint.presentation.macroenabled.12"
@@ -1370,6 +1362,7 @@
   <mime-type name="application/vnd.openxmlformats-officedocument.presentationml.presentation"
            description="MS Powerpoint">
     <ext>pptx</ext>
+    <magic offset="0" type="byte" value="504B0304"/>
   </mime-type>
   
   <mime-type name="application/vnd.ms-excel.sheet.macroenabled.12"
@@ -1380,6 +1373,7 @@
   <mime-type name="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
            description="MS Excel workbook">
     <ext>xlsx</ext>
+    <magic offset="0" type="byte" value="504B0304"/>
   </mime-type>
 
   <mime-type name="application/vnd.ms-excel.template.macroenabled.12"

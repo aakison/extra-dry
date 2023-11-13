@@ -5,7 +5,7 @@ namespace ExtraDry.UploadTools.Tests {
 
         public UploadToolsTests()
         {
-            var testConfig = new UploadConfiguration() { ExtensionWhitelist = new List<string>{"txt", "jpg", "png", "rtf", "docx", "docm"} };
+            var testConfig = new UploadConfiguration() { ExtensionWhitelist = new List<string>{"txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4"} };
             UploadTools.ConfigureUploadRestrictions(testConfig);
         }
 
@@ -45,7 +45,10 @@ namespace ExtraDry.UploadTools.Tests {
         [InlineData("jpg.jpg")]
         [InlineData("png.png")]
         [InlineData("rtf.rtf")]
-        [InlineData("word.docx")] // this is not in the library, there is no testing of this file as xml
+        [InlineData("word.docx")]
+        [InlineData("Tiff.tiff")]
+        [InlineData("doc.doc")]
+        [InlineData("mp4.mp4")]
         public async Task ValidToUploadFiles(string filename)
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filename}");

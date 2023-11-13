@@ -29,13 +29,17 @@ namespace ExtraDry.UploadTools {
 
         private const string cleaningRegex = @"[^\p{Lu}\p{Ll}\p{Lt}\p{Lm}\p{Lo}\p{Nd}\-_]";
 
-        static MimeTypes mimeTypes = MimeTypes.Get("FileDatabase.xml");
+        static MimeTypes mimeTypes = null;
 
         /// <summary>
         /// Call in startup of your application to configure the settings for the upload tools;
         /// </summary>
         public static void ConfigureUploadRestrictions(UploadConfiguration config)
         {
+            if(mimeTypes == null) {
+                mimeTypes = MimeTypes.Get("./FileDatabase.xml");
+                var f = File.Exists("./FileDatabase.xml");
+            }
             if (config == null) {
                 return;
             }
@@ -110,6 +114,7 @@ namespace ExtraDry.UploadTools {
             // We don't really use the one from the file name other than to check it matches the content
             // TODO - for a lot of types there are multiple types eg. mp4, check this is all good. Is order important? Means the mimetype may not match up. 
             // mimeTypes.ForName???
+            // TODO - There are also shared magic bytes. eg pptx, docx, odt and ods have the same magic numebrs, and different mime types and extensions
             var fileNameMime = mimeTypes.GetMimeType(filename);
             var magicBytesMime = mimeTypes.GetMimeType(content);
             

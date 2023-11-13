@@ -8,4 +8,10 @@
     <PackageReference Include="Winista.MimeDetect" Version="1.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="FileDatabase.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
