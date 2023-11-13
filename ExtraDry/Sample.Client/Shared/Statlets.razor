@@ -3,8 +3,18 @@
 <section>
     <article>
         <x-statlet>
-            <label>Active Sectors</label>
-            <div>@ActiveSectors</div>
+            <Suspense TModel="int" ItemProvider=@GetCounter TimeoutDuration="5000">
+                <ChildContent>
+                    <label>Active Sectors</label>
+                    <div>@context</div>
+                </ChildContent>
+                <Timeout>
+                    <div>
+                        <Icon CssClass=@context.Size.ToString().ToLower() Key="loader-timeout" />
+                    </div>
+                    <div>Component timeout, <a href="" @onclick=@context.Reload @onclick:preventDefault>try again</a></div>
+                </Timeout>
+            </Suspense>
         </x-statlet>
         <x-statlet>
             <label>Total Assets</label>
@@ -30,16 +40,10 @@
 </section>
 
 @code {
-    private int? ActiveSectors { get; set; } = null;
 
-    protected async override Task OnInitializedAsync()
+    private async Task<int> GetCounter(CancellationToken cancellationToken)
     {
-        ActiveSectors = await GetCounter();
-    }
-
-    public async Task<int> GetCounter()
-    {
-        var foo = await SectorStatService.RetrieveAsync(null);
+        var foo = await SectorStatService.RetrieveAsync(null, cancellationToken);
         var bar = foo?.Distributions?.FirstOrDefault(d => d.PropertyName == "State");
         return bar?.Counts?.FirstOrDefault(c => c.Key == "Active").Value ?? 0;
     }

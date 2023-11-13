@@ -1,6 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System.Net;
-using System.Net.Http;
 
 namespace ExtraDry.Blazor;
 
@@ -34,10 +32,23 @@ public static class ServiceCollectionExtensions {
     /// </summary>
     public static IServiceCollection AddStatService<T>(this IServiceCollection services, string endpointTemplate)
     {
+        services.AddStatService<T>(options => {
+            options.StatEndpoint = endpointTemplate;
+        });
+        return services;
+    }
+
+    public static IServiceCollection AddStatService<T>(this IServiceCollection services, Action<StatServiceOptions> config)
+    {
+        var options = new StatServiceOptions();
+        config(options);
+
+        new DataValidator().ValidateObject(options);
+
         services.AddScoped(e => {
-            var client = e.GetRequiredService<HttpClient>();
+            var client = GetHttpClient(e, options);
             var logger = e.GetRequiredService<ILogger<StatService<T>>>();
-            var service = new StatService<T>(client, endpointTemplate, logger);
+            var service = new StatService<T>(client, options, logger);
             return service;
         });
         return services;
@@ -47,7 +58,7 @@ public static class ServiceCollectionExtensions {
     /// Adds a strongly typed ListService`FilteredCollection`T to the service collection.
     /// Also registered the service using the interfaces IListService`T and IOptionProvider`T.
     /// </summary>
-    public static IServiceCollection AddFilteredListService<T>(this IServiceCollection services, string endpoint) 
+    public static IServiceCollection AddFilteredListService<T>(this IServiceCollection services, string endpoint)
     {
         services.AddListService<T>(options => {
             options.ListEndpoint = endpoint;
@@ -136,7 +147,7 @@ public static class ServiceCollectionExtensions {
         return services;
     }
 
-    private static HttpClient GetHttpClient(IServiceProvider provider, ListServiceOptions options)
+    private static HttpClient GetHttpClient(IServiceProvider provider, IHttpClientOptions options)
     {
         if(options.HttpClientType != null) {
             // Validation above ensures convertible to HttpClient

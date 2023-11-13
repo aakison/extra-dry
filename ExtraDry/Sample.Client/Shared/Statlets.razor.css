@@ -1,15 +1,15 @@
-﻿section {
+section {
   display: flex;
   justify-content: center;
   padding: 0 10px; }
   section article {
     flex: 0 1 1240px;
     display: flex;
-    justify-content: center;
-    background-color: var(--white);
-    height: 76px;
-    margin: 0;
-    padding: 0 0 10px 0;
+  justify-content: center;
+  background-color: var(--white);
+  height: 76px;
+  margin: 0;
+  padding: 0 0 10px 0;
     align-items: center;
     gap: 10px; }
     section article x-statlet {
@@ -33,6 +33,9 @@
         font-weight: 600;
         color: var(--charcoal);
         margin-top: 5px; }
+      section article x-statlet ::deep.suspense.timeout div {
+        font-size: 13px;
+      }
       section article x-statlet:nth-child(1), section article x-statlet:nth-child(2) {
         display: flex; }
       @media (min-width: 550px) {
