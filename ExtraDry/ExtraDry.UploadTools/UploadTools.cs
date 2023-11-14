@@ -5,7 +5,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Winista.Mime;
 
 namespace ExtraDry.UploadTools {
     public static class UploadTools{
@@ -29,23 +28,20 @@ namespace ExtraDry.UploadTools {
 
         private const string cleaningRegex = @"[^\p{Lu}\p{Ll}\p{Lt}\p{Lm}\p{Lo}\p{Nd}\-_]";
 
-        static MimeTypes mimeTypes = null;
+        static FileService mimeTypes = new FileService();
 
         /// <summary>
         /// Call in startup of your application to configure the settings for the upload tools;
         /// </summary>
         public static void ConfigureUploadRestrictions(UploadConfiguration config)
         {
-            if(mimeTypes == null) {
-                mimeTypes = MimeTypes.Get("./FileDatabase.xml");
-                var f = File.Exists("./FileDatabase.xml");
-            }
             if (config == null) {
                 return;
             }
             if(config.ExtensionWhitelist != null && config.ExtensionWhitelist.Any()) {
                 ExtensionWhitelist = config.ExtensionWhitelist;
             }
+            // TODO - config will define additional file types possibly.
         }
 
         /// <summary>
@@ -115,8 +111,8 @@ namespace ExtraDry.UploadTools {
             // TODO - for a lot of types there are multiple types eg. mp4, check this is all good. Is order important? Means the mimetype may not match up. 
             // mimeTypes.ForName???
             // TODO - There are also shared magic bytes. eg pptx, docx, odt and ods have the same magic numebrs, and different mime types and extensions
-            var fileNameMime = mimeTypes.GetMimeType(filename);
-            var magicBytesMime = mimeTypes.GetMimeType(content);
+            var fileNameMime = mimeTypes.GetFileType(filename);
+            var magicBytesMime = mimeTypes.GetFileType(content);
             
 
             // If it's an unknown file type:
@@ -127,12 +123,13 @@ namespace ExtraDry.UploadTools {
             // If just the file name mime is null, then unless the bytes are dangerous, we do nothing more. The filename filter should have already caught it otherwise.
 
             // If the magic bytes mime is in the blacklist, reject
-            if(magicBytesMime != null && magicBytesMime.Extensions.Intersect(ExtensionBlacklist, StringComparer.OrdinalIgnoreCase).Any()) {
+            // TODO - Is there a risk that the magic bytes will match more than one file type, one of which is ok? need ot make sure that no magic bytes is not a match.
+            if(magicBytesMime != null && magicBytesMime.SelectMany(e => e.Extensions).Intersect(ExtensionBlacklist, StringComparer.OrdinalIgnoreCase).Any()) {
                 return false;
             }
 
             // If there's both a filename and a bytes mime, and they don't match, reject
-            if(magicBytesMime != null && fileNameMime != null && fileNameMime?.Name != magicBytesMime?.Name) {
+            if(magicBytesMime != null && fileNameMime != null && !fileNameMime.SelectMany(f => f.MimeTypes).Intersect(magicBytesMime.SelectMany(f => f.MimeTypes)).Any()) {
                 return false;
             }
 
