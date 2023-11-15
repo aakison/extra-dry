@@ -37,7 +37,7 @@ steps:
   inputs:
     command: 'custom'
     custom: 'tool'
-    arguments: 'install --global dotnet-ef'
+    arguments: 'install --global dotnet-ef --version 7.0.14'
 
 - task: DotNetCoreCLI@2
   displayName: Restore
