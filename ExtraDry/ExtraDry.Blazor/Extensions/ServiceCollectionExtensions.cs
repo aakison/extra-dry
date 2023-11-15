@@ -18,10 +18,23 @@ public static class ServiceCollectionExtensions {
     /// </summary>
     public static IServiceCollection AddCrudService<T>(this IServiceCollection services, string endpointTemplate)
     {
+        services.AddCrudService<T>(options => {
+            options.CrudEndpoint = endpointTemplate;
+        });
+        return services;
+    }
+
+    public static IServiceCollection AddCrudService<T>(this IServiceCollection services, Action<CrudServiceOptions> config)
+    {
+        var options = new CrudServiceOptions();
+        config(options);
+
+        new DataValidator().ValidateObject(options);
+
         services.AddScoped(e => {
-            var client = e.GetRequiredService<HttpClient>();
+            var client = GetHttpClient(e, options);
             var logger = e.GetRequiredService<ILogger<CrudService<T>>>();
-            var service = new CrudService<T>(client, endpointTemplate, logger);
+            var service = new CrudService<T>(client, options, logger);
             return service;
         });
         return services;
