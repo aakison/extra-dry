@@ -27,7 +27,7 @@
     </CodeBlock>
 
     <div style="width: 200px;border: solid 1px;margin-bottom: 10px;">
-        <Suspense TModel="Employee" ItemProvider=@LoadEmployee Size=@IndicatorSize @ref="_childComponent">
+        <Suspense TModel="Employee" ItemProvider=@LoadEmployee IndicatorSize=@IndicatorSize SpinnerSize=@SpinnerSize @ref="_childComponent">
             <div>First Name: @context.FirstName</div>
             <div>Last Name: @context.LastName</div>
         </Suspense>
@@ -45,11 +45,22 @@
         </div>
 
         <div>
-            <label>Size:</label>
+            <label>Indicator Size:</label>
             <select @bind="IndicatorSize">
                 <option value="@(IndicatorSize.Standard)">IndicatorSize.Standard</option>
                 <option value="@(IndicatorSize.Small)">IndicatorSize.Small</option>
                 <option value="@(IndicatorSize.Large)">IndicatorSize.Large</option>
+                <option value="@(IndicatorSize.None)">IndicatorSize.None</option>
+            </select>
+        </div>
+
+        <div>
+            <label>Spinner Size:</label>
+            <select @bind="SpinnerSize">
+                <option value="@(IndicatorSize.Standard)">IndicatorSize.Standard</option>
+                <option value="@(IndicatorSize.Small)">IndicatorSize.Small</option>
+                <option value="@(IndicatorSize.Large)">IndicatorSize.Large</option>
+                <option value="@(IndicatorSize.None)">IndicatorSize.None</option>
             </select>
         </div>
     </form>
@@ -71,7 +82,7 @@
     </CodeBlock>
 
     <div style="width: 200px;border: solid 1px;margin-bottom: 10px;">
-        <Suspense TModel="Employee" ItemProvider=@LoadEmployee Size=@IndicatorSize @ref="_childComponent2">
+        <Suspense TModel="Employee" ItemProvider=@LoadEmployee IndicatorSize=@IndicatorSize SpinnerSize=@SpinnerSize @ref="_childComponent2">
             <ChildContent>
                 <div>First Name: @context.FirstName</div>
                 <div>Last Name: @context.LastName</div>
@@ -94,7 +105,7 @@
     </CodeBlock>
 
     <div style="width: 200px;border: solid 1px;margin-bottom: 10px;">
-        <Suspense TModel="Employee" ItemProvider=@LoadEmployee Size=@IndicatorSize TimeoutDuration=500 @ref="_childComponent2">
+        <Suspense TModel="Employee" ItemProvider=@LoadEmployee IndicatorSize=@IndicatorSize SpinnerSize=@SpinnerSize TimeoutDuration=500 @ref="_childComponent2">
             <div>First Name: @context.FirstName</div>
             <div>Last Name: @context.LastName</div>
         </Suspense>
@@ -166,6 +177,7 @@
 @code {
     public LoadingState Value { get; set; } = LoadingState.Complete;
     public IndicatorSize IndicatorSize { get; set; } = IndicatorSize.Standard;
+    public IndicatorSize SpinnerSize { get; set; } = IndicatorSize.Standard;
     private Suspense<Employee>? _childComponent;
     private Suspense<Employee>? _childComponent2;
 

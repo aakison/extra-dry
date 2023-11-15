@@ -8,7 +8,7 @@ public partial class Spinner : ComponentBase, IExtraDryComponent {
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
-    /// <inheritdoc cref="IndicatorSize" />
+    /// Alters the size of the spinner Icon
     [Parameter]
     public IndicatorSize Size { get; set; } = IndicatorSize.Standard;
 
@@ -20,6 +20,7 @@ public partial class Spinner : ComponentBase, IExtraDryComponent {
         IndicatorSize.Standard => "",
         IndicatorSize.Small => "small",
         IndicatorSize.Large => "large",
+        IndicatorSize.None => "none",
         _ => throw new NotImplementedException(),
     };
 

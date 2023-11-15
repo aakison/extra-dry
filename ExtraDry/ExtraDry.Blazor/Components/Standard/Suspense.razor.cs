@@ -51,9 +51,13 @@ public partial class Suspense<TModel> : ComponentBase, IExtraDryComponent {
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
-    /// <inheritdoc cref="IndicatorSize" />
+    /// <inheritdoc cref="Blazor.IndicatorSize" />
     [Parameter]
-    public IndicatorSize Size { get; set; } = IndicatorSize.Standard;
+    public IndicatorSize IndicatorSize { get; set; } = IndicatorSize.Standard;
+    
+    /// <inheritdoc cref="Spinner.Size" />
+    [Parameter]
+    public IndicatorSize SpinnerSize { get; set; } = IndicatorSize.Standard;
 
     /// <summary>
     /// The time span to wait before timing out in milliseconds. Default is 5 seconds

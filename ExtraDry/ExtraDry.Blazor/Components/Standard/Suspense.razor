@@ -6,16 +6,16 @@
         case LoadingState.Loading:
             @if (Fallback != null)
             {
-                @Fallback(new IndicatorContext{Size = @Size, Reload=@Refresh})
+                @Fallback(new IndicatorContext{Size = @SpinnerSize, Reload=@Refresh})
             }
             else if (ThemeInfo?.SuspenseFallback != null)
             {
-                @ThemeInfo?.SuspenseFallback(new IndicatorContext{Size = @Size, Reload=@Refresh})
+                @ThemeInfo?.SuspenseFallback(new IndicatorContext{Size = @SpinnerSize, Reload=@Refresh})
             }
             else
             {
                 <div>
-                    <Spinner Size=@Size></Spinner>
+                    <Spinner Size=@SpinnerSize></Spinner>
                 </div>
                 <div>Loading...</div>
             }
@@ -23,16 +23,16 @@
         case LoadingState.Error:
             @if (Error != null)
             {
-                @Error(new IndicatorContext{Size = @Size, Reload=@Refresh})
+                @Error(new IndicatorContext{Size = IndicatorSize, Reload=@Refresh})
             }
             else if (ThemeInfo?.SuspenseError != null)
             {
-                @ThemeInfo?.SuspenseError(new IndicatorContext{Size = @Size, Reload=@Refresh})
+                @ThemeInfo?.SuspenseError(new IndicatorContext{Size = IndicatorSize, Reload=@Refresh})
             }
             else
             {
                 <div>
-                    <Icon CssClass=@Size.ToString().ToLower() Key="loader-error" />
+                    <Icon CssClass=@IndicatorSize.ToString().ToLower() Key="loader-error" />
                 </div>
                 <div>An error has occurred</div>
             }
@@ -40,16 +40,16 @@
         case LoadingState.Timeout:
             @if(Timeout != null)
             {
-                @Timeout(new IndicatorContext{Size = @Size, Reload=@Refresh})
+                @Timeout(new IndicatorContext{Size = IndicatorSize, Reload=@Refresh})
             }
             else if (ThemeInfo?.SuspenseTimeout != null)
             {
-                @ThemeInfo?.SuspenseTimeout(new IndicatorContext{Size = @Size, Reload=@Refresh})
+                @ThemeInfo?.SuspenseTimeout(new IndicatorContext{Size = IndicatorSize, Reload=@Refresh})
             }
             else
             {
                 <div>
-                    <Icon CssClass=@Size.ToString().ToLower() Key="loader-timeout" />
+                    <Icon CssClass=@IndicatorSize.ToString().ToLower() Key="loader-timeout" />
                 </div>
                 <div>Timeout, <a href="" @onclick="@Refresh" @onclick:preventDefault>try again</a></div>
             }
