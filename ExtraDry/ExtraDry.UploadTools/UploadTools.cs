@@ -111,9 +111,9 @@ namespace ExtraDry.UploadTools {
             // TODO - for a lot of types there are multiple types eg. mp4, check this is all good. Is order important? Means the mimetype may not match up. 
             // mimeTypes.ForName???
             // TODO - There are also shared magic bytes. eg pptx, docx, odt and ods have the same magic numebrs, and different mime types and extensions
-            var fileNameMime = mimeTypes.GetFileType(filename);
-            var magicBytesMime = mimeTypes.GetFileType(content);
-            
+            var filenameFileDefinition = mimeTypes.GetFileTypeFromFilename(filename);
+            var mimeTypeFileDefinition = mimeTypes.GetFileTypeFromMime(mimetype);
+            var magicByteFileDefinition = mimeTypes.GetFileTypeFromBytes(content); // TODO - Should we just take the first X bytes? Almost all file types are defined in the first few hundred bytes
 
             // If it's an unknown file type:
                 // If we don't know the bytes, it's not flagged as dangerous.
@@ -124,14 +124,24 @@ namespace ExtraDry.UploadTools {
 
             // If the magic bytes mime is in the blacklist, reject
             // TODO - Is there a risk that the magic bytes will match more than one file type, one of which is ok? need ot make sure that no magic bytes is not a match.
-            if(magicBytesMime != null && magicBytesMime.SelectMany(e => e.Extensions).Intersect(ExtensionBlacklist, StringComparer.OrdinalIgnoreCase).Any()) {
+            if(magicByteFileDefinition != null && magicByteFileDefinition.SelectMany(e => e.Extensions).Intersect(ExtensionBlacklist, StringComparer.OrdinalIgnoreCase).Any()) {
                 return false;
             }
 
-            // If there's both a filename and a bytes mime, and they don't match, reject
-            if(magicBytesMime != null && fileNameMime != null && !fileNameMime.SelectMany(f => f.MimeTypes).Intersect(magicBytesMime.SelectMany(f => f.MimeTypes)).Any()) {
+            // If there's both a filename and a magic byte type file definition, and they don't match, reject
+            if(magicByteFileDefinition != null && magicByteFileDefinition.Any() &&  // if there's a magic byte file definition
+                filenameFileDefinition != null && filenameFileDefinition.Any() &&   // and a filename magic byte definition
+                !filenameFileDefinition.SelectMany(f => f.MimeTypes).Intersect(magicByteFileDefinition.SelectMany(f => f.MimeTypes)).Any()) { // then they have to map
                 return false;
             }
+
+            // If there's both a filename and a mime type file definition, and they don't match, reject
+            if(mimeTypeFileDefinition != null && mimeTypeFileDefinition.Any() &&        // If there's a mime type
+                filenameFileDefinition != null && filenameFileDefinition.Any() &&       // And a file name type
+                !filenameFileDefinition.SelectMany(f => f.MimeTypes).Intersect(mimeTypeFileDefinition.SelectMany(f => f.MimeTypes)).Any()) { // they have to match.
+                return false;
+            }
+
 
             // TODO - if it's an xml-type file, check there's no script or... was it data? message? whatever we got stung with in that pen test a year ago.
             // TODO - Check mime type in the request?

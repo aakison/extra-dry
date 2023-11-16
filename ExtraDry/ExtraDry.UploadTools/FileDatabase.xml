@@ -678,6 +678,11 @@
     </mime-type>
 
     <mime-type name="message/rfc822">
+        <ext>eml</ext>
+        <ext>mht</ext>
+        <ext>mhtml</ext>
+        <ext>mime</ext>
+        <ext>nws</ext>
         <magic offset="0" value="Relay-Version:"/>
         <magic offset="0" value="#! rnews"/>
         <magic offset="0" value="N#! rnews"/>
@@ -895,15 +900,6 @@
     <ext>dwg</ext>
   </mime-type>
 
-  <mime-type name="message/rfc822"
-           description="Plain text email">
-    <ext>eml</ext>
-    <ext>mht</ext>
-    <ext>mhtml</ext>
-    <ext>mime</ext>
-    <ext>nws</ext>
-  </mime-type>
-
   <mime-type name="image/vnd.fpx"
            description="Kodak FlashPix Image">
     <ext>fpx</ext>
@@ -944,14 +940,14 @@
   </mime-type>
 
   <mime-type name="text/markdown"
-           description="Protected MPEG-4">
+           description="Markdown File">
     <ext>md</ext>
     <ext>markdown</ext>
     <ext>mdown</ext>
     <ext>markdn</ext>
   </mime-type>
   <mime-type name="text/x-markdown"
-           description="Protected MPEG-4">
+           description="Markdown File">
     <ext>md</ext>
     <ext>markdown</ext>
     <ext>mdown</ext>

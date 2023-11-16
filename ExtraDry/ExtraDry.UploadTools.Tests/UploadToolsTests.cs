@@ -5,7 +5,7 @@ namespace ExtraDry.UploadTools.Tests {
 
         public UploadToolsTests()
         {
-            var testConfig = new UploadConfiguration() { ExtensionWhitelist = new List<string>{"txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4"} };
+            var testConfig = new UploadConfiguration() { ExtensionWhitelist = new List<string>{"txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html"} };
             UploadTools.ConfigureUploadRestrictions(testConfig);
         }
 
@@ -41,15 +41,18 @@ namespace ExtraDry.UploadTools.Tests {
         }
 
         [Theory]
-        [InlineData("text.txt")]
-        [InlineData("jpg.jpg")]
-        [InlineData("png.png")]
-        [InlineData("rtf.rtf")]
-        [InlineData("word.docx")]
-        [InlineData("Tiff.tiff")]
-        [InlineData("doc.doc")]
-        [InlineData("mp4.mp4")]
-        public async Task ValidToUploadFiles(string filename)
+        [InlineData("text.txt", "text/plain")]
+        [InlineData("jpg.jpg", "image/jpeg")]
+        [InlineData("png.png", "image/png")]
+        [InlineData("rtf.rtf", "text/rtf")]
+        [InlineData("word.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")]
+        [InlineData("Tiff.tiff", "image/tiff")]
+        [InlineData("doc.doc", "application/msword")]
+        [InlineData("mp4.mp4", "audio/mp4")]
+        [InlineData("mp4.mp4", "audio/aac")]
+        [InlineData("mp4.mp4", "video/mp4")]
+        [InlineData("html.html", "text/html")]
+        public async Task ValidToUploadFiles(string filename, string mime)
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filename}");
 
@@ -59,11 +62,12 @@ namespace ExtraDry.UploadTools.Tests {
         }
 
         [Theory]
-        [InlineData("bat.bat", "bat.bat")] // this is and should be rejected, but is not in the library.
+        [InlineData("bat.bat", "bat.bat")]
         [InlineData("!bat.bat", "bat.bat")]
         [InlineData("exe.exe", "exe.exe")]
         [InlineData("file.txt", "exe.exe")]
-        // xml with script tags, mismatching content and file
+        [InlineData("html.html", "textScript/html")]
+        // mismatching content and file
         public async Task InvalidToUploadFiles(string filename, string filepath)
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");

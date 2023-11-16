@@ -29,6 +29,12 @@
     <None Update="SampleFiles\exe.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="SampleFiles\html.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SampleFiles\htmlScript.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="SampleFiles\jpg.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
