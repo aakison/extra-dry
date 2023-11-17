@@ -1,23 +1,32 @@
-﻿using System;
+﻿using ExtraDry.Core;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ExtraDry.UploadTools {
-    public static class UploadTools{
+    public static class UploadTools {
+
+        const string GenericFailureMessage = "File upload validation failed";
 
         /// <summary>
         /// File extensions that will be rejected regardless of the whitelist settings
         /// </summary>
-        private readonly static List<string> ExtensionBlacklist = new List<string> { 
+        private readonly static List<string> MagicByteBlacklist = new List<string> {
             "asp", "aspx", "config", "ashx", "asmx", "aspq", "axd", "cshtm", "cshtml", "rem", "soap", "vbhtm", "vbhtml", "asa", "cer", "shtml", // Pentester Identified, classified under "ASP"
             "jsp", "jspx", "jsw", "jsv", "jspf", "wss", "do", "action", // Pentester Identified, classified under "JSP"
             "bat", "bin", "cmd", "com", "cpl", "exe", "gadget", "inf1", "ins", "inx", "isu", "job", "jse", "lnk", "msc", "msi", "msp", "mst", "paf", "pif", "ps1", "reg", "rgs", "scr", "sct", "shb", "shs", "u3p", "vb", "vbe", "vbs", "vbscript", "ws", "wsf", "wsh", // Pentester Identified, classified under "General"
-            "py", "jar", "go", "app", "scpt", "scptd", "apk"  // Additional filetypes
+            "py", "go", "app", "scpt", "scptd" // Additional filetypes.
         };
+
+        /// <summary>
+        /// Some files we'd like to reject based off their file extensions, but can't reject off magic bytes becuase they share these with other file types eg docx, zip, jar and apk
+        /// </summary>
+        private readonly static List<string> ExtensionBlacklist = new List<string>(new List<string>() { "apk", "jar" }.Union(MagicByteBlacklist));
 
         /// <summary>
         /// A consumer definable list of whitelisted file extensions. Note that any that also appear in the blacklist will be rejected
@@ -79,31 +88,31 @@ namespace ExtraDry.UploadTools {
 
         public static async Task<bool> CanUpload(string filename, string mimetype, byte[] content)
         {
-            // TODO - for each false return, throw a dry exception with details.
-
             // Filename Checking.
             // if no file name or no content, early exit.
             if(string.IsNullOrEmpty(filename) || filename.Length > 255 || content == null || !content.Any()) {
-                return false;
+                throw new DryException(GenericFailureMessage, "Provided file has no content");
             }
 
             // If the filename has bad characters in it and isn't already cleaned.
             if(filename != CleanFilename(filename)) {
-                return false;
+                throw new DryException(GenericFailureMessage, "Provided filename contained invalid characters");
             }
 
             // File Extension Checking
-            // TODO - How opinionated do we want to be? Do we allow consumers to define their blacklist?
             var fileExtension = Path.GetExtension(filename).TrimStart('.');
+            if(string.IsNullOrEmpty(fileExtension)) {
+                throw new DryException(GenericFailureMessage, "Provided filename contains an invalid extension");
+            }
 
             // Outright reject executable file extensions - even if they're in the whitelist.
             if(ExtensionBlacklist.Contains(fileExtension, StringComparer.OrdinalIgnoreCase)) {
-                return false;
+                throw new DryException(GenericFailureMessage, "Provided filename belongs to a forbidden filetype");
             }
 
             // If the extension isn't in the whitelist, reject it
             if(!ExtensionWhitelist.Contains(fileExtension, StringComparer.OrdinalIgnoreCase)) {
-                return false;
+                throw new DryException(GenericFailureMessage, "Provided filename belongs to a forbidden filetype");
             }
 
             // Get the mime type and file type info from the file name and the content
@@ -122,29 +131,33 @@ namespace ExtraDry.UploadTools {
             // If just the bytes mime is null, then there's nothing new to decide off
             // If just the file name mime is null, then unless the bytes are dangerous, we do nothing more. The filename filter should have already caught it otherwise.
 
-            // If the magic bytes mime is in the blacklist, reject
-            // TODO - Is there a risk that the magic bytes will match more than one file type, one of which is ok? need ot make sure that no magic bytes is not a match.
-            if(magicByteFileDefinition != null && magicByteFileDefinition.SelectMany(e => e.Extensions).Intersect(ExtensionBlacklist, StringComparer.OrdinalIgnoreCase).Any()) {
-                return false;
+            // If the magic bytes filetype is in the bytes blacklist, reject
+            if(magicByteFileDefinition != null && magicByteFileDefinition.SelectMany(e => e.Extensions).Intersect(MagicByteBlacklist, StringComparer.OrdinalIgnoreCase).Any()) {
+                throw new DryException(GenericFailureMessage, "Provided file content belongs to a forbidden filetype");
             }
 
             // If there's both a filename and a magic byte type file definition, and they don't match, reject
             if(magicByteFileDefinition != null && magicByteFileDefinition.Any() &&  // if there's a magic byte file definition
                 filenameFileDefinition != null && filenameFileDefinition.Any() &&   // and a filename magic byte definition
                 !filenameFileDefinition.SelectMany(f => f.MimeTypes).Intersect(magicByteFileDefinition.SelectMany(f => f.MimeTypes)).Any()) { // then they have to map
-                return false;
+                throw new DryException(GenericFailureMessage, "Provided file content and MIME type do not match");
             }
 
             // If there's both a filename and a mime type file definition, and they don't match, reject
             if(mimeTypeFileDefinition != null && mimeTypeFileDefinition.Any() &&        // If there's a mime type
                 filenameFileDefinition != null && filenameFileDefinition.Any() &&       // And a file name type
                 !filenameFileDefinition.SelectMany(f => f.MimeTypes).Intersect(mimeTypeFileDefinition.SelectMany(f => f.MimeTypes)).Any()) { // they have to match.
-                return false;
+                throw new DryException(GenericFailureMessage, "Provided file name and mimetype do not match");
             }
 
-
-            // TODO - if it's an xml-type file, check there's no script or... was it data? message? whatever we got stung with in that pen test a year ago.
-            // TODO - Check mime type in the request?
+            if(magicByteFileDefinition.SelectMany(e => e.Extensions).Union(filenameFileDefinition.SelectMany(e => e.Extensions)).Any(e => e == "xml" || e == "html")) {
+                // If it's an xml file check for script tags
+                // Upper limit? if it's a really big file this might fill memory
+                var filecontent = UTF8Encoding.UTF8.GetString(content);
+                if(filecontent.IndexOf("<script", StringComparison.InvariantCultureIgnoreCase) >= 0) {
+                    throw new DryException(GenericFailureMessage, "Provided file is an XML filetype with protected tags");
+                }
+            }
 
             return true;
         }

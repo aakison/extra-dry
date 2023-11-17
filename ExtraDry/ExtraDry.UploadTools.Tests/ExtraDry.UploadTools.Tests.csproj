@@ -56,6 +56,9 @@
 	  <None Update="SampleFiles\tiff.Tiff">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
+	  <None Update="SampleFiles\zip.zip">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
   </ItemGroup>
 
 </Project>

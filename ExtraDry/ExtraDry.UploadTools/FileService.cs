@@ -15,7 +15,7 @@ namespace ExtraDry.UploadTools {
          * Allow for different json file to be provided
          * Determine type based off file name ✔️
          * Determine type based off mime ✔️
-         * Determine type based off byte[]
+         * Determine type based off byte[] ✔️
          * 
          * Out Of Scope - 
          * Reading Files

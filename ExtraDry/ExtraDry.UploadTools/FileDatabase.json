@@ -516,7 +516,7 @@
   },
   {
     "Description": "Compressed Archive File",
-    "Extensions": [ "zip" ],
+    "Extensions": [ "zip", "jar", "apk" ],
     "MimeTypes": [ "application/zip", "application/x-zip-compressed", "application/zip-compressed" ],
     "MagicBytes": [
       {
@@ -1357,5 +1357,17 @@
     "Extensions": [ "stl" ],
     "MimeTypes": [ "application/vnd.ms-pki.stl" ],
     "MagicBytes": []
+  },
+  {
+    "Description": "VBScript Encoded script",
+    "Extensions": [ "vbe" ],
+    "MimeTypes": [],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "23407E5E",
+        "Type": "Bytes"
+      }
+    ]
   }
 ]

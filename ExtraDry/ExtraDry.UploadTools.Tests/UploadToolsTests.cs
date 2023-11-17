@@ -1,11 +1,12 @@
-﻿using Xunit;
+﻿using ExtraDry.Core;
+using Xunit;
 
 namespace ExtraDry.UploadTools.Tests {
     public class UploadToolsTests {
 
         public UploadToolsTests()
         {
-            var testConfig = new UploadConfiguration() { ExtensionWhitelist = new List<string>{"txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html"} };
+            var testConfig = new UploadConfiguration() { ExtensionWhitelist = new List<string>{"txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip"} };
             UploadTools.ConfigureUploadRestrictions(testConfig);
         }
 
@@ -14,7 +15,7 @@ namespace ExtraDry.UploadTools.Tests {
         [InlineData("Resumè4.docx")]
         [InlineData("Caractères-accentués.txt")]
         [InlineData("Sedím-na-stole-a-moja-výška-mi-umožňuje-pohodlne-čítať-knihu.txt")]
-        
+        [InlineData("myArchive.tar.gz")]
         public void DoesNotAlterGoodFileNames(string inputFilename)
         {
             var clean = UploadTools.CleanFilename(inputFilename);
@@ -45,7 +46,8 @@ namespace ExtraDry.UploadTools.Tests {
         [InlineData("jpg.jpg", "image/jpeg")]
         [InlineData("png.png", "image/png")]
         [InlineData("rtf.rtf", "text/rtf")]
-        [InlineData("word.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")]
+        [InlineData("word.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")] // interesting use case. .docx magic bytes = .zip magic bytes = .apk magic bytes
+        [InlineData("zip.zip", "application/zip")] // interesting use case. .docx magic bytes = .zip magic bytes = .apk magic bytes
         [InlineData("Tiff.tiff", "image/tiff")]
         [InlineData("doc.doc", "application/msword")]
         [InlineData("mp4.mp4", "audio/mp4")]
@@ -56,25 +58,28 @@ namespace ExtraDry.UploadTools.Tests {
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filename}");
 
-            var canUpload = await UploadTools.CanUpload(filename, "unused", fileBytes);
+            var canUpload = await UploadTools.CanUpload(filename, mime, fileBytes);
 
             Assert.True(canUpload);
         }
 
+        // TODO - Mime and filename, Filename and bytes, fail on filename without extension.
+
         [Theory]
-        [InlineData("bat.bat", "bat.bat")]
-        [InlineData("!bat.bat", "bat.bat")]
-        [InlineData("exe.exe", "exe.exe")]
-        [InlineData("file.txt", "exe.exe")]
-        [InlineData("html.html", "textScript/html")]
+        [InlineData("bat.bat", "bat.bat", "text/plain")]
+        [InlineData("!bat.bat", "bat.bat", "text/plain")]
+        [InlineData("exe.exe", "exe.exe", "text/plain")]
+        [InlineData("file.txt", "exe.exe", "text/plain")]
+        [InlineData("html.html", "htmlScript.html", "textScript/html")] // Has script tags
+        [InlineData("file.apk", "word.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")]
+        [InlineData("zip.jar", "zip.zip", "application/zip")]
         // mismatching content and file
-        public async Task InvalidToUploadFiles(string filename, string filepath)
+        public async Task InvalidToUploadFiles(string filename, string filepath, string mime)
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
 
-            var canUpload = await UploadTools.CanUpload(filename, "unused", fileBytes);
+            await Assert.ThrowsAsync<DryException>(()=> UploadTools.CanUpload(filename, mime, fileBytes));
 
-            Assert.False(canUpload);
         }
     }
 }
