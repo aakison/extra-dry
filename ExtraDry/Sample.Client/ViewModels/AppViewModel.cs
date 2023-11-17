@@ -18,15 +18,18 @@ public class AppViewModel {
     private Menu? menu;
 
     public IconInfo[] Icons { get; } = new IconInfo[] {
-        // Inherited - Can override default icons.
+        // Inherited - override default icons with lighter versions.
         new IconInfo("search", "/img/glyphs/magnifying-glass-light.svg", "Search", "glyph"),
-        new IconInfo("select", "fas fa-chevron-down"),
+        new IconInfo("select", "/img/glyphs/chevron-down-light.svg", "Collapse", "glyph"),
+        new IconInfo("expand", "/img/glyphs/chevron-right-light.svg", "Expand", "glyph"),
+        new IconInfo("collapse", "/img/glyphs/chevron-down-light.svg", "Collapse", "glyph"),
 
         // Body glyphs
         new IconInfo("register", "/img/glyphs/registered-light.svg", "Register", "glyph"),
         new IconInfo("contents", "/img/glyphs/file-lines-light.svg", "Contents", "glyph"),
         new IconInfo("companies", "/img/glyphs/buildings-light.svg", "Companies", "glyph"),
         new IconInfo("company", "/img/glyphs/building-light.svg", "Company", "glyph"),
+        new IconInfo("regions", "/img/glyphs/earth-oceania-light.svg", "Regions", "glyph"),
         new IconInfo("dummy", "/img/glyphs/briefcase-light.svg", "Placeholder", "glyph"),
         new IconInfo("sectors", "/img/glyphs/wrench-light.svg", "Sectors", "glyph"),
         new IconInfo("icons", "/img/glyphs/icons-light.svg", "Icons", "glyph"),
@@ -47,8 +50,8 @@ public class AppViewModel {
         new IconInfo("edit", "fas fa-edit"),
         new IconInfo("plus", "fas fa-plus"),
         new IconInfo("filter", "fas fa-filter"),
-        new IconInfo("expand", "fas fa-expand-alt"),
-        new IconInfo("compress", "fas fa-compress-alt"),
+        new IconInfo("full-screen", "fas fa-expand-alt"),
+        new IconInfo("windowed-screen", "fas fa-compress-alt"),
         new IconInfo("chevron-down", "fas fa-chevron-down"),
 
         // Buttcons and affordances:

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Web.Virtualization;
 using System.Collections.ObjectModel;
+using System.Security.AccessControl;
 using System.Text.Json;
 
 namespace ExtraDry.Blazor;
@@ -84,7 +85,7 @@ public class ListService<TItem> : IListService<TItem> {
     internal string ListEndpoint(Query query)
     {
         try {
-            var keys = new Dictionary<string, string>();
+            var keys = new Dictionary<string, List<string>>();
             AddIf(keys, Options.FilterParameterName, query.Filter);
             AddIf(keys, Options.SortParameterName, query.Sort);
             AddIf(keys, Options.SkipParameterName, query.Skip);
@@ -96,10 +97,10 @@ public class ListService<TItem> : IListService<TItem> {
         }
     }
 
-    private static string ConstructPathAndQuery(string path, Dictionary<string, string> keys)
+    private static string ConstructPathAndQuery(string path, Dictionary<string, List<string>> keys)
     {
         if(keys.Any()) {
-            var queries = keys.Select(e => $"{e.Key}={Uri.EscapeDataString(e.Value)}");
+            var queries = keys.SelectMany(e => e.Value.Select(v => $"{e.Key}={Uri.EscapeDataString(v)}"));
             var query = string.Join("&", queries);
             path = $"{path}?{query}";
         }
@@ -109,13 +110,14 @@ public class ListService<TItem> : IListService<TItem> {
     private string HierarchyEndpoint(Query query)
     {
         try {
-            var keys = new Dictionary<string, string>();
+            var keys = new Dictionary<string, List<string>>();
             if(Options.HierarchyMethod == HttpMethod.Get) {
                 AddIf(keys, Options.LevelParameterName, query.Level);
                 AddIf(keys, Options.FilterParameterName, query.Filter);
-                AddIf(keys, Options.SkipParameterName, query.Skip);
+                AddIf(keys, Options.SkipParameterName, query.Skip); 
                 AddIf(keys, Options.TakeParameterName, Options.PageSize);
-                // TODO: Expand Collapse Nodes
+                AddIf(keys, Options.ExpandParameterName, query.Expand);
+                AddIf(keys, Options.CollapseParameterName, query.Collapse);
             }
             return ConstructPathAndQuery(Options.HierarchyEndpoint, keys);
         }
@@ -135,17 +137,24 @@ public class ListService<TItem> : IListService<TItem> {
         return JsonSerializer.Serialize(body, JsonSerializerOptions);
     }
 
-    private static void AddIf(Dictionary<string, string> keys, string key, string? value)
+    private static void AddIf(Dictionary<string, List<string>> keys, string key, string[]? values)
     {
-        if(!string.IsNullOrWhiteSpace(value)) {
-            keys.Add(key, value);
+        if(values?.Any() ?? false) {
+            keys.Add(key, values?.ToList() ?? new());
         }
     }
 
-    private static void AddIf(Dictionary<string, string> keys, string key, int? value)
+    private static void AddIf(Dictionary<string, List<string>> keys, string key, string? value)
+    {
+        if(!string.IsNullOrWhiteSpace(value)) {
+            keys.Add(key, new List<string> { value });
+        }
+    }
+
+    private static void AddIf(Dictionary<string, List<string>> keys, string key, int? value)
     {
         if(value.HasValue && value.Value != 0) {
-            keys.Add(key, value.Value.ToString());
+            keys.Add(key, new List<string> { value.Value.ToString() });
         }
     }
 
@@ -162,6 +171,19 @@ public class ListService<TItem> : IListService<TItem> {
     }
 
     public async ValueTask<ItemsProviderResult<TItem>> GetItemsAsync(Query query, CancellationToken cancellationToken = default)
+    {
+        var result = await GetItemsInternalAsync(query, cancellationToken);
+        return new ItemsProviderResult<TItem>(result.Item2, result.Item3);
+    }
+
+    public async ValueTask<ListItemsProviderResult<TItem>> GetListItemsAsync(Query query, CancellationToken cancellationToken = default)
+    {
+        var result = await GetItemsInternalAsync(query, cancellationToken);
+        var collection = (BaseCollection<TItem>)result.Item1;
+        return new ListItemsProviderResult<TItem>(collection);
+    }
+
+    public async ValueTask<(object, ICollection<TItem>, int)> GetItemsInternalAsync(Query query, CancellationToken cancellationToken)
     {
         var source = (Options.ListEndpoint, Options.HierarchyEndpoint) switch {
             ("", "") => throw new Exception("No endpoints defined"),
@@ -182,7 +204,7 @@ public class ListService<TItem> : IListService<TItem> {
             var items = HierarchyUnpacker!(packedResult);
             var total = HierarchyCounter!(packedResult);
             MaxLevel = HierarchyMaxLevel!(packedResult);
-            return new ItemsProviderResult<TItem>(items, total);
+            return (packedResult, items, total);
         }
         else {
             logger.LogInformation("ListService.GetItemsAsync from {endpoint}", endpoint);
@@ -192,7 +214,7 @@ public class ListService<TItem> : IListService<TItem> {
                 ?? throw new DryException($"Call to endpoint returned nothing or couldn't be converted to a result.");
             var items = ListUnpacker!(packedResult);
             var total = ListCounter!(packedResult);
-            return new ItemsProviderResult<TItem>(items, total);
+            return (packedResult, items, total);
         }
     }
 

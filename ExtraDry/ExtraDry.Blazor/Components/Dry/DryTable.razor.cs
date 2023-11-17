@@ -241,12 +241,12 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
                 var firstPage = PageFor(request.StartIndex);
                 var firstIndex = FirstItemOnPage(firstPage);
                 QueryBuilder.Skip = firstIndex;
-                var items = await ItemsService.GetItemsAsync(QueryBuilder.Build());
-                var count = items.Items.Count();
-                var total = items.TotalItemCount;
+                var container = await ItemsService.GetListItemsAsync(QueryBuilder.Build(), request.CancellationToken);
+                var count = container.ItemInfos.Count();
+                var total = container.Total;
                 QueryBuilder.Level.UpdateMaxLevel(ItemsService.MaxLevel);
 
-                InternalItems.AddRange(items.Items.Select(e => new ListItemInfo<TItem> { Item = e, IsLoaded = true }));
+                InternalItems.AddRange(container.ItemInfos);
                 InternalItems.AddRange(Enumerable.Range(0, total - count).Select(e => new ListItemInfo<TItem>()));
                 Logger.LogInformation(@"DryTable: --Loaded items #0 to #{count} of {total}.", count, total);
             }
@@ -266,15 +266,18 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
                     var firstIndex = FirstItemOnPage(pageNumber);
                     QueryBuilder.Skip = firstIndex;
                     if(!AllItemsCached(firstIndex, ItemsService.PageSize)) {
-                        var items = await ItemsService.GetItemsAsync(QueryBuilder.Build());
-                        var count = items.Items.Count();
-                        var total = items.TotalItemCount;
-                QueryBuilder.Level.UpdateMaxLevel(ItemsService.MaxLevel);
+                        var container = await ItemsService.GetListItemsAsync(QueryBuilder.Build(), request.CancellationToken);
+                        var count = container.ItemInfos.Count();
+                        var total = container.Total;
+                        QueryBuilder.Level.UpdateMaxLevel(ItemsService.MaxLevel);
                         var index = firstIndex;
-                        foreach(var item in items.Items) {
+                        foreach(var item in container.ItemInfos) {
                             var info = InternalItems[index++];
-                            info.Item = item;
-                            info.IsLoaded = true;
+                            info.Item = item.Item;
+                            info.IsLoaded = item.IsLoaded;
+                            info.IsExpanded = item.IsExpanded;
+                            info.GroupDepth = item.GroupDepth;
+                            info.IsGroup = item.IsGroup;
                         }
                         var lastIndex = firstIndex + ItemsService.PageSize;
                         Logger.LogInformation(@"--Loaded items #{firstIndex} to #{lastIndex} of {total}.", firstIndex, lastIndex, total);

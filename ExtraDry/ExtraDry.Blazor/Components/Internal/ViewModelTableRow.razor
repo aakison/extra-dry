@@ -21,13 +21,17 @@
         }
         <td class="@cssClass" data-label="@column.ColumnCaption">
             @if(column.Property.Name == GroupColumn) {
-                var cssGroupClass = $"level{Item.GroupDepth}";
                 var cssAction = (Item.IsGroup, Item.IsExpanded) switch {
                     (false, _) => "child",
                     (true, false) => "collapsed",
                     (true, true) => "expanded"
                 };
-                <span class="group @cssAction @cssGroupClass" @onclick="(e => Item.Toggle())" @onclick:stopPropagation="true">@displayValue</span>
+                <span class="group @cssAction">
+                    @if(Item.Item is IHierarchyEntity) {
+                        <DryTableHierarchyExpander Item="@Item" />
+                    }
+                    @displayValue
+                </span>
             }
             else if(command == null) {
                 <span class="@cssClass">@displayValue</span>

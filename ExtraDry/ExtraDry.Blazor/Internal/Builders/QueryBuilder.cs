@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace ExtraDry.Blazor.Internal;
+﻿namespace ExtraDry.Blazor.Internal;
 
 /// <summary>
 /// Builds a PageQuery for posting back to a server using a set of filters.  This also has change
@@ -30,7 +28,6 @@ public class QueryBuilder {
         OnChanged?.Invoke(this, EventArgs.Empty);
     }
 
-
     public Query Build()
     {
         Query = new Query() {
@@ -39,8 +36,8 @@ public class QueryBuilder {
             Skip = Skip,
             Take = 50, // TODO: Make this configurable
             Level = BuildLevel(),
-            Expand = Expand.ToArray(),
-            Collapse = Collapse.ToArray(),
+            Expand = Hierarchy.ExpandNodes.ToArray(),
+            Collapse = Hierarchy.CollapseNodes.ToArray(),
             Source = Source,
         };
         return Query;
@@ -54,11 +51,10 @@ public class QueryBuilder {
 
     public void Reset()
     {
+        Hierarchy.Reset();
+        Level.Reset();
         foreach(var filter in Filters) {
             filter.Reset();
-            Expand.Clear();
-            Collapse.Clear();
-            Level.Reset();
         }
         NotifyChanged();
     }
@@ -85,9 +81,7 @@ public class QueryBuilder {
 
     public LevelBuilder Level { get; } = new();
 
-    public List<string> Expand { get; } = new();
-
-    public List<string> Collapse { get; } = new();
+    public HierarchyBuilder Hierarchy { get; } = new();
 
     public SortBuilder Sort { get; } = new();
 

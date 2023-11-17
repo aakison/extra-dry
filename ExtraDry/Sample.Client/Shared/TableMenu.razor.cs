@@ -25,14 +25,14 @@ public sealed partial class TableMenu<TItem> : ComponentBase {
         await Reveal.ToggleAsync();
     }
 
-    [Command(Icon = "expand")]
+    [Command(Icon = "full-screen")]
     public void Expand()
     {
         Console.WriteLine($"Expanding {Layout}");
         Layout?.Expand();
     }
 
-    [Command(Icon = "compress")]
+    [Command(Icon = "windowed-screen")]
     public void Compress()
     {
         Console.WriteLine($"Compress {Layout}");
@@ -49,7 +49,7 @@ public sealed partial class TableMenu<TItem> : ComponentBase {
         IsVisible = () => Layout?.ViewExpanded ?? false,
     };
     public CommandInfo CloseFilterCommand => new(this, Filter) {
-        Icon = "times", Caption = "",
+        Icon = "close-dialog", Caption = "",
     };
 
 }

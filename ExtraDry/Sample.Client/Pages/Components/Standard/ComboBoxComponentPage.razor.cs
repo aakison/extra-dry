@@ -203,5 +203,10 @@ public partial class ComboBoxComponentPage : ComponentBase, IListItemViewModel<S
         {
             throw new NotImplementedException();
         }
+
+        public ValueTask<ListItemsProviderResult<Sector>> GetListItemsAsync(Query query, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -2,20 +2,22 @@
 
 <section>
     <article>
-        <x-statlet>
-            <Suspense TModel="int" ItemProvider=@GetCounter TimeoutDuration="5000">
-                <ChildContent>
+        <Suspense TModel="int" ItemProvider=@GetCounter TimeoutDuration="5000">
+            <ChildContent>
+                <x-statlet>
                     <label>Active Sectors</label>
                     <div>@context</div>
-                </ChildContent>
-                <Timeout>
+                </x-statlet>
+            </ChildContent>
+            <Timeout>
+                <x-statlet>
                     <div>
                         <Icon CssClass=@context.Size.ToString().ToLower() Key="loader-timeout" />
                     </div>
                     <div>Component timeout, <a href="" @onclick=@context.Reload @onclick:preventDefault>try again</a></div>
-                </Timeout>
-            </Suspense>
-        </x-statlet>
+                </x-statlet>
+            </Timeout>
+        </Suspense>
         <x-statlet>
             <label>Total Assets</label>
             <div>3,843</div>

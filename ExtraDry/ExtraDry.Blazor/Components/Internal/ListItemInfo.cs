@@ -18,8 +18,8 @@ public class ListItemInfo<TItem> {
     public bool IsLoaded { get; set; }
 
     /// <summary>
-    /// Indicates how far down the grouping this item is.
-    /// 0 implies not in any group or the head of a group.
+    /// Indicates how far down the grouping this item is.  0 implies not in any group or the head 
+    /// of a group.
     /// </summary>
     public int GroupDepth { get; set; }
 
@@ -40,10 +40,8 @@ public class ListItemInfo<TItem> {
     public bool IsExpanded { get; set; } = true;
 
     /// <summary>
-    /// Determins if the item is actually shown based on the visibility of the group it is in.
+    /// Indicates if the item is actually shown based on the visibility of the group it is in.
     /// </summary>
     public bool IsShown => (Group?.IsExpanded ?? true) && (Group?.IsShown ?? true);
-
-    public Action Toggle { get; set; }
 
 }
