@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
@@ -30,6 +30,10 @@
 	<Import Project="..\VulnerabilityFixes.targets" />
 
 	<ItemGroup>
+	  <PackageReference Update="ExtraDry.Analyzers" Version="0.3.43-alpha">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
 	  <PackageReference Update="Newtonsoft.Json" Version="13.0.2" />
 	</ItemGroup>
 

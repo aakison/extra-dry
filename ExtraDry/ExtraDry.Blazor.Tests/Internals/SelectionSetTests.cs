@@ -1,5 +1,3 @@
-#nullable enable
-
 using ExtraDry.Blazor.Components.Internal;
 using System;
 using Xunit;

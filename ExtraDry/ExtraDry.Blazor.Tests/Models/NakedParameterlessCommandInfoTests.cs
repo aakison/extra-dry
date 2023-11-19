@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using ExtraDry.Blazor.Models;
+﻿using ExtraDry.Blazor.Models;
 using System.Threading.Tasks;
 using Xunit;
 
