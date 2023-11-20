@@ -75,7 +75,7 @@ public class PropertyDescription {
 
     public PropertySize Size { get; set; }
 
-    public string DisplayValue(object item)
+    public string DisplayValue(object? item)
     {
         if(item == null) {
             return string.Empty;

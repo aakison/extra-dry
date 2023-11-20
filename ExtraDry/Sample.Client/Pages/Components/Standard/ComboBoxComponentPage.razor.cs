@@ -176,20 +176,6 @@ public partial class ComboBoxComponentPage : ComponentBase, IListItemViewModel<S
 
         private List<Sector> Sectors { get; set; } = new();
 
-        public async ValueTask<ItemsProviderResult<Sector>> GetItemsAsync(string? filter, string? sort, bool? ascending, int? skip, int? take, CancellationToken cancellationToken = default)
-        {
-            Console.WriteLine($"Fetch for filter {filter} at {DateTime.UtcNow.Second}.{DateTime.UtcNow.Millisecond}");
-            filter ??= string.Empty;
-            var query = Sectors.Where(e => e.Title.Contains(filter, StringComparison.CurrentCultureIgnoreCase));
-            var count = query.Count();
-            query = query.Take(PageSize);
-            var result = new ItemsProviderResult<Sector>(query, count);
-            cancellationToken.ThrowIfCancellationRequested();
-            await Task.Delay(500, cancellationToken);
-            Console.WriteLine($"  Returning at {DateTime.UtcNow.Second}.{DateTime.UtcNow.Millisecond}");
-            return result;
-        }
-
         public async ValueTask<ItemsProviderResult<Sector>> GetItemsAsync(CancellationToken cancellationToken = default)
         {
             var query = Sectors.Take(PageSize);

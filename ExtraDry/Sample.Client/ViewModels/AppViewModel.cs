@@ -19,66 +19,66 @@ public class AppViewModel {
 
     public IconInfo[] Icons { get; } = new IconInfo[] {
         // Inherited - override default icons with lighter versions.
-        new IconInfo("search", "/img/glyphs/magnifying-glass-light.svg", "Search", "glyph"),
-        new IconInfo("select", "/img/glyphs/chevron-down-light.svg", "Collapse", "glyph"),
-        new IconInfo("expand", "/img/glyphs/chevron-right-light.svg", "Expand", "glyph"),
-        new IconInfo("collapse", "/img/glyphs/chevron-down-light.svg", "Collapse", "glyph"),
+        new("search", "/img/glyphs/magnifying-glass-light.svg", "Search", "glyph"),
+        new("select", "/img/glyphs/chevron-down-light.svg", "Collapse", "glyph"),
+        new("expand", "/img/glyphs/chevron-right-light.svg", "Expand", "glyph"),
+        new("collapse", "/img/glyphs/chevron-down-light.svg", "Collapse", "glyph"),
 
         // Body glyphs
-        new IconInfo("register", "/img/glyphs/registered-light.svg", "Register", "glyph"),
-        new IconInfo("contents", "/img/glyphs/file-lines-light.svg", "Contents", "glyph"),
-        new IconInfo("companies", "/img/glyphs/buildings-light.svg", "Companies", "glyph"),
-        new IconInfo("company", "/img/glyphs/building-light.svg", "Company", "glyph"),
-        new IconInfo("regions", "/img/glyphs/earth-oceania-light.svg", "Regions", "glyph"),
-        new IconInfo("dummy", "/img/glyphs/briefcase-light.svg", "Placeholder", "glyph"),
-        new IconInfo("sectors", "/img/glyphs/wrench-light.svg", "Sectors", "glyph"),
-        new IconInfo("icons", "/img/glyphs/icons-light.svg", "Icons", "glyph"),
-        new IconInfo("code-block", "/img/glyphs/code-light.svg", "Code Block", "glyph"),
-        new IconInfo("mini-card", "/img/glyphs/address-card-light.svg", "Icons", "glyph"),
-        new IconInfo("mini-dialog", "/img/glyphs/window-maximize-light.svg", "Icons", "glyph"),
-        new IconInfo("gravatar", "/img/glyphs/circle-user-light.svg", "Icons", "glyph"),
-        new IconInfo("tri-check", "/img/glyphs/square-check-light.svg", "Icons", "glyph"),
-        new IconInfo("tri-switch", "/img/glyphs/toggle-on-light.svg", "Icons", "glyph"),
-        new IconInfo("flexi-select", "/img/glyphs/list-radio-light.svg", "Icons", "glyph"),
-        new IconInfo("combo-box", "/img/glyphs/square-caret-down-light.svg", "Icons", "glyph"),
-        new IconInfo("button", "/img/glyphs/square-bolt-light.svg", "Icons", "glyph"),
-        new IconInfo("error-boundary", "/img/glyphs/ban-bug-light.svg", "Icons", "glyph"),
-        new IconInfo("theme", "/img/glyphs/pen-swirl-light.svg", "Icons", "glyph"),
-        new IconInfo("navigation", "/img/glyphs/compass-sharp-light.svg", "Icons", "glyph"),
-        new IconInfo("reveal", "/img/glyphs/expand-light.svg", "Reveal", "glyph"),
-        new IconInfo("suspense", "/img/glyphs/arrow-rotate-left-light.svg", "Suspense", "glyph"),
-        new IconInfo("edit", "fas fa-edit"),
-        new IconInfo("plus", "fas fa-plus"),
-        new IconInfo("filter", "fas fa-filter"),
-        new IconInfo("full-screen", "fas fa-expand-alt"),
-        new IconInfo("windowed-screen", "fas fa-compress-alt"),
-        new IconInfo("chevron-down", "fas fa-chevron-down"),
+        new("register", "/img/glyphs/registered-light.svg", "Register", "glyph"),
+        new("contents", "/img/glyphs/file-lines-light.svg", "Contents", "glyph"),
+        new("companies", "/img/glyphs/buildings-light.svg", "Companies", "glyph"),
+        new("company", "/img/glyphs/building-light.svg", "Company", "glyph"),
+        new("regions", "/img/glyphs/earth-oceania-light.svg", "Regions", "glyph"),
+        new("dummy", "/img/glyphs/briefcase-light.svg", "Placeholder", "glyph"),
+        new("sectors", "/img/glyphs/wrench-light.svg", "Sectors", "glyph"),
+        new("icons", "/img/glyphs/icons-light.svg", "Icons", "glyph"),
+        new("code-block", "/img/glyphs/code-light.svg", "Code Block", "glyph"),
+        new("mini-card", "/img/glyphs/address-card-light.svg", "Icons", "glyph"),
+        new("mini-dialog", "/img/glyphs/window-maximize-light.svg", "Icons", "glyph"),
+        new("gravatar", "/img/glyphs/circle-user-light.svg", "Icons", "glyph"),
+        new("tri-check", "/img/glyphs/square-check-light.svg", "Icons", "glyph"),
+        new("tri-switch", "/img/glyphs/toggle-on-light.svg", "Icons", "glyph"),
+        new("flexi-select", "/img/glyphs/list-radio-light.svg", "Icons", "glyph"),
+        new("combo-box", "/img/glyphs/square-caret-down-light.svg", "Icons", "glyph"),
+        new("button", "/img/glyphs/square-bolt-light.svg", "Icons", "glyph"),
+        new("error-boundary", "/img/glyphs/ban-bug-light.svg", "Icons", "glyph"),
+        new("theme", "/img/glyphs/pen-swirl-light.svg", "Icons", "glyph"),
+        new("navigation", "/img/glyphs/compass-sharp-light.svg", "Icons", "glyph"),
+        new("reveal", "/img/glyphs/expand-light.svg", "Reveal", "glyph"),
+        new("suspense", "/img/glyphs/arrow-rotate-left-light.svg", "Suspense", "glyph"),
+        new("edit", "fas fa-edit"),
+        new("plus", "fas fa-plus"),
+        new("filter", "fas fa-filter"),
+        new("full-screen", "fas fa-expand-alt"),
+        new("windowed-screen", "fas fa-compress-alt"),
+        new("chevron-down", "fas fa-chevron-down"),
 
         // Buttcons and affordances:
-        new IconInfo("close-dialog", "/img/glyphs/xmark-light.svg", "Close", "glyph"),
-        new IconInfo("option-checked", "/img/glyphs/square-check-solid.svg", "Checked", "small-icon"),
-        new IconInfo("option-unchecked", "/img/glyphs/square-regular.svg", "Unchecked", "small-icon"),
-        new IconInfo("option-indeterminate", "/img/glyphs/square-minus-duotone.svg", "Indeterminate", "small-icon"),
+        new("close-dialog", "/img/glyphs/xmark-light.svg", "Close", "glyph"),
+        new("option-checked", "/img/glyphs/square-check-solid.svg", "Checked", "small-icon"),
+        new("option-unchecked", "/img/glyphs/square-regular.svg", "Unchecked", "small-icon"),
+        new("option-indeterminate", "/img/glyphs/square-minus-duotone.svg", "Indeterminate", "small-icon"),
 
         // Header glyphs
-        new IconInfo("modules", "/img/glyphs/grid-solid.svg", "Select Module", "glyph"),
-        new IconInfo("alerts", "/img/glyphs/bell-regular.svg", "Alerts", "glyph"),
-        new IconInfo("newItem", "/img/glyphs/hexagon-plus-regular.svg", "Add Item", "glyph"),
+        new("modules", "/img/glyphs/grid-solid.svg", "Select Module", "glyph"),
+        new("alerts", "/img/glyphs/bell-regular.svg", "Alerts", "glyph"),
+        new("newItem", "/img/glyphs/hexagon-plus-regular.svg", "Add Item", "glyph"),
 
         // Hero icons
-        new IconInfo("assets", "/img/icons/asset-icon.svg", "Assets", "icon"),
-        new IconInfo("logo", "/img/icons/logo.svg", "Site Logo", "icon", SvgRenderType.Reference),
-        new IconInfo("companies-module", "/img/icons/companies-icon.svg", "Company Module", "icon"),
-        new IconInfo("components-module", "/img/icons/components-icon.svg", "Component Module", "icon"),
-        new IconInfo("standard-components", "/img/icons/components-icon-2.svg", "Standard Components", "icon", SvgRenderType.Inline),
-        new IconInfo("dry-components", "/img/icons/components-icon-3.svg", "DRY Components", "icon", SvgRenderType.Inline),
-        new IconInfo("special-components", "/img/icons/components-icon-1.svg", "Special Components", "icon", SvgRenderType.Inline),
-        new IconInfo("api-module", "/img/icons/api-icon.svg", "Integration APIs", "icon"),
-        new IconInfo("overdue", "/img/icons/overdue.svg", "Overdue", "icon", SvgRenderType.Document),
+        new("assets", "/img/icons/asset-icon.svg", "Assets", "icon"),
+        new("logo", "/img/icons/logo.svg", "Site Logo", "icon", SvgRenderType.Reference),
+        new("companies-module", "/img/icons/companies-icon.svg", "Company Module", "icon"),
+        new("components-module", "/img/icons/components-icon.svg", "Component Module", "icon"),
+        new("standard-components", "/img/icons/components-icon-2.svg", "Standard Components", "icon", SvgRenderType.Inline),
+        new("dry-components", "/img/icons/components-icon-3.svg", "DRY Components", "icon", SvgRenderType.Inline),
+        new("special-components", "/img/icons/components-icon-1.svg", "Special Components", "icon", SvgRenderType.Inline),
+        new("api-module", "/img/icons/api-icon.svg", "Integration APIs", "icon"),
+        new("overdue", "/img/icons/overdue.svg", "Overdue", "icon", SvgRenderType.Document),
 
         //Loader icons
-        new IconInfo("loader-error", "fa fa-circle-exclamation"),
-        new IconInfo("loader-timeout", "fa fa-rotate-right"),
+        new("loader-error", "fa fa-circle-exclamation"),
+        new("loader-timeout", "fa fa-rotate-right"),
 
     };
 
@@ -87,87 +87,87 @@ public class AppViewModel {
         Icon = "modules",
         Title = "Yellow Jacket",
         Children = new Menu[] {
-            new Menu {
+            new() {
                 Icon = "components-module",
                 Title = "Blazor Components",
                 Subtitle = "Preview and test both standard and DRY components.",
                 NavLink = "/components/standard/gravatar",
                 ActiveMatch = "/components",
                 Children = new Menu[] {
-                    new Menu {
+                    new() {
                         Icon = "standard-components",
                         Title = "Standard Components",
                         ActiveMatch = "/components/standard",
                         NavLink = "/components/standard/gravatar",
                         Children = new Menu[] {
-                            new Menu {
+                            new() {
                                 Icon = "gravatar",
                                 Title = "Gravatar",
                                 ActiveMatch = "/components/standard/gravatar",
                                 NavLink = "/components/standard/gravatar",
                                 NavAction = () => navigation.NavigateTo("/components/standard/gravatar")
                             },
-                            new Menu {
+                            new() {
                                 Icon = "tri-check",
                                 Title = "Tri Check",
                                 NavLink = "/components/standard/tri-check",
                             },
-                            new Menu {
+                            new() {
                                 Icon = "tri-switch",
                                 Title = "Tri Switch",
                                 NavLink = "/components/standard/tri-switch",
                             },
-                            new Menu {
+                            new() {
                                 Icon = "icons",
                                 Title = "Icons",
                                 NavLink = "/components/standard/icon",
                             },
-                            new Menu {
+                            new() {
                                 Icon = "combo-box",
                                 Title = "Combo Box",
                                 NavLink = "/components/standard/combo-box",
                             },
-                            new Menu {
+                            new() {
                                 Icon = "mini-card",
                                 Title = "Mini Card",
                                 NavLink = "/components/standard/mini-card",
                             },
-                            new Menu {
+                            new() {
                                 Icon = "code-block",
                                 Title = "Code Block",
                                 NavLink = "/components/standard/code-block",
                             },
-                            new Menu {
+                            new() {
                                 Icon = "mini-dialog",
                                 Title = "Mini Dialog",
                                 NavLink = "/components/standard/mini-dialog",
                             },
-                            new Menu {
+                            new() {
                                 Icon = "flexi-select",
                                 Title = "Flexi Select",
                                 NavLink = "/components/standard/flexi-select",
                             },
-                            new Menu {
+                            new() {
                                 Icon = "button",
                                 Title = "Button",
                                 NavLink = "/components/standard/button",
                             },
                         },
                     },
-                    new Menu {
+                    new() {
                         Icon = "standard-components",
                         Title = "Advanced Components",
                         ActiveMatch = "/components/advanced",
                         NavLink = "/components/advanced/reveal",
                         Children = new Menu[] {
-                            new Menu {
+                            new() {
                                 Icon = "suspense",
                                 Title = "Suspense",
                                 ActiveMatch = "/components/advanced/suspense",
                                 NavLink = "/components/advanced/suspense",
                                 NavAction = () => navigation.NavigateTo("/components/advanced/suspense")
                             },
-                            new Menu {
+                            new() {
                                 Icon = "reveal",
                                 Title = "Reveal",
                                 ActiveMatch = "/components/advanced/reveal",
@@ -176,46 +176,46 @@ public class AppViewModel {
                             },
                         },
                     },
-                    new Menu {
+                    new() {
                         Icon = "dry-components",
                         Title = "DRY Components",
                         ActiveMatch = "/components/dry",
                         NavLink = "/components/dry/dry-mini-card",
                         Children = new Menu[] { 
-                            new Menu {
+                            new() {
                                 Icon = "button",
                                 Title = "Button",
                                 NavLink = "/components/dry/dry-button",
                             },
-                            new Menu {
+                            new() {
                                 Icon = "flexi-select",
                                 Title = "Flexi Select",
                                 NavLink = "/components/dry/dry-flexi-select",
                             },
-                            new Menu {
+                            new() {
                                 Icon = "mini-card",
                                 Title = "Mini Card",
                                 NavLink = "/components/dry/dry-mini-card",
                             },
-                            new Menu {
+                            new() {
                                 Icon = "navigation",
                                 Title = "Navigation",
                                 NavLink = "/components/dry/dry-navigation",
                             },
                         },
                     },
-                    new Menu {
+                    new() {
                         Icon = "special-components",
                         Title = "Special Components",
                         ActiveMatch = "/components/special",
                         NavLink = "/components/special/theme",
                         Children = new Menu[] {
-                            new Menu {
+                            new() {
                                 Icon = "error-boundary",
                                 Title = "Error Boundary",
                                 NavLink = "/components/special/dry-error-boundary",
                             },
-                            new Menu {
+                            new() {
                                 Icon = "theme",
                                 Title = "Theme",
                                 NavLink = "/components/special/theme",
@@ -224,36 +224,36 @@ public class AppViewModel {
                     },
                 },
             },
-            new Menu {
+            new() {
                 Icon = "companies-module",
                 Title = "Administration",
                 ActiveMatch = "/admin",
                 NavLink = "/admin/works/companies/list",
                 Subtitle = "Administrative functionality for a sample app.  With additional information to break the UI and test ellipsis based word wrapping.",
                 Children = new Menu[] {
-                    new Menu {
+                    new() {
                         Icon = "assets",
                         Title = "Works",
                         ActiveMatch = "/admin/works",
                         NavLink = "/admin/works/companies/list",
                         Children = new Menu[] {
-                            new Menu {
+                            new() {
                                 Icon = "contents",
                                 Title = "Contents",
                                 NavLink = "/admin/works/contents/list",
                             },
-                            new Menu {
+                            new() {
                                 Icon = "companies",
                                 Title = "Companies",
                                 ActiveMatch = "/companies",
                                 NavLink = "/admin/works/companies/list",
                             },
-                            new Menu {
+                            new() {
                                 Icon = "sectors",
                                 Title = "Sectors",
                                 NavLink = "/admin/works/sectors/list",
                             },
-                            new Menu {
+                            new() {
                                 Icon = "regions",
                                 Title = "Regions",
                                 NavLink = "/admin/works/regions/list",
@@ -262,7 +262,7 @@ public class AppViewModel {
                     },
                 },
             },
-            new Menu {
+            new() {
                 Icon = "api-module",
                 Title = "Integration APIs",
                 Subtitle = "A set of APIs for programmatic integration with other applications.",

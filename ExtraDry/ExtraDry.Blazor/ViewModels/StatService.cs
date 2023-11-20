@@ -33,7 +33,6 @@ public class StatService<T> {
     {
         http = client;
         Options = new StatServiceOptions { StatEndpoint = collectionEndpointTemplate };
-        ApiTemplate = collectionEndpointTemplate;
         logger = iLogger;
     }
 
@@ -47,14 +46,7 @@ public class StatService<T> {
         http = client;
         Options = options;
         this.logger = logger;
-        ApiTemplate = options.StatEndpoint;
     }
-
-    /// <summary>
-    /// The API Template used to determine the final endpoint URI.
-    /// </summary>
-    [Obsolete("Use from Options")]
-    public string ApiTemplate { get; set; }
 
     public StatServiceOptions Options { get; }
 
@@ -103,7 +95,7 @@ public class StatService<T> {
         }
         catch(FormatException ex) {
             var argsFormatted = string.Join(',', args?.Select(e => e?.ToString()) ?? Array.Empty<string>());
-            logger?.LogWarning("Formatting problem while constructing endpoint for `StatService.{method}`.  Typically the endpoint provided has additional placeholders that have not been provided. The endpoint template ({ApiTemplate}), could not be satisfied with arguments ({argsFormatted}).  Inner Exception was:  {ex.Message}", method, ApiTemplate, argsFormatted, ex.Message);
+            logger?.LogWarning("Formatting problem while constructing endpoint for `StatService.{method}`.  Typically the endpoint provided has additional placeholders that have not been provided. The endpoint template ({ApiTemplate}), could not be satisfied with arguments ({argsFormatted}).  Inner Exception was:  {ex.Message}", method, Options.StatEndpoint, argsFormatted, ex.Message);
             throw new DryException("Error occurred connecting to server", "This is a mis-configuration and not a user error, please see the console output for more information.");
         }
     }
