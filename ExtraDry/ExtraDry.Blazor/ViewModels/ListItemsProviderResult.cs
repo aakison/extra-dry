@@ -11,7 +11,7 @@ public class ListItemsProviderResult<T>
             Item = e,
             IsLoaded = true,
             IsGroup = IsGroup(e),
-            GroupDepth = ListItemsProviderResult<T>.GroupDepth(e),
+            GroupDepth = GroupDepth(e),
             IsExpanded = IsExpanded(e),
         }).ToList();
         Count = collection.Count;
