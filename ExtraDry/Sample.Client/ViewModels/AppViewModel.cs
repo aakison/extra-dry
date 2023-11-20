@@ -229,7 +229,7 @@ public class AppViewModel {
                 Title = "Administration",
                 ActiveMatch = "/admin",
                 NavLink = "/admin/works/companies/list",
-                Subtitle = "Administative functionality for a sample app.  With additional information to break the UI and test ellipsis based word wrapping.",
+                Subtitle = "Administrative functionality for a sample app.  With additional information to break the UI and test ellipsis based word wrapping.",
                 Children = new Menu[] {
                     new Menu {
                         Icon = "assets",
