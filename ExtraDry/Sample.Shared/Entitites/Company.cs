@@ -44,7 +44,7 @@ public class Company {
     public CompanyStatus Status { get; set; }
 
     [Display]
-    [MaxLength(1000)]
+    [StringLength(1000)]
     [Rules(RuleAction.IgnoreDefaults)]
     public string Description { get; set; } = string.Empty;
 

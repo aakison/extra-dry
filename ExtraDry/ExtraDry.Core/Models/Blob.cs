@@ -12,7 +12,7 @@ namespace ExtraDry.Core
 
         public string Url { get; set; }
 
-        [MaxLength(256)]
+        [StringLength(256)]
         public string MimeType { get; set; }
     }
 

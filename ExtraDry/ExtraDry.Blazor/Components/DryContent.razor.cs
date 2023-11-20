@@ -9,6 +9,7 @@ public partial class DryContent : ComponentBase {
     public string? ContentName { get; set; }
 
     [Inject]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "DRY1503:JavaScript runtime injection should be replaced with module aware ExtraDryJavacriptModule.", Justification = "Entire component needs to be refactored or temporarily retired.")]
     private IJSRuntime JSRuntime { get; set; } = null!;
 
     [Inject]

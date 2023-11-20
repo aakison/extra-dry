@@ -187,12 +187,13 @@ public class DataFactory {
     private VersionInfo? GetVersionInfo(object item)
     {
         var type = item.GetType();
-        if(!VersionInfoProperties.ContainsKey(type)) {
+        if(!VersionInfoProperties.TryGetValue(type, out PropertyInfo? value)) {
             var property = type.GetProperties().FirstOrDefault(e => e.PropertyType == typeof(VersionInfo))
                 ?? throw new DryException("Object does not have a VersionInfo property.");
-            VersionInfoProperties[type] = property;
+            value = property;
+            VersionInfoProperties[type] = value;
         }
-        return VersionInfoProperties[type].GetValue(item) as VersionInfo;
+        return value.GetValue(item) as VersionInfo;
     }
     private Dictionary<Type, PropertyInfo> VersionInfoProperties { get; } = new();
 

@@ -27,7 +27,7 @@ public class Template : IResourceIdentifiers {
     /// The Target Type of the template
     /// </summary>
     /// <example>Company</example>
-    [Required, MaxLength(50)]
+    [Required, StringLength(50)]
     [Display(Name = "Title", ShortName = "Title")]
     [Filter(FilterType.Contains)]
     public string Title { get => Schema.TargetType; set { Schema.TargetType = value; } }

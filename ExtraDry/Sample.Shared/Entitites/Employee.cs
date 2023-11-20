@@ -10,19 +10,19 @@ public class Employee
     [Rules(RuleAction.Block)]
     public Guid Uuid { get; set; } = Guid.NewGuid();
 
-    [Required, MaxLength(50)]
+    [Required, StringLength(50)]
     [Rules(RuleAction.Allow)]
     [Display(Name = "First Name", ShortName = "First Name")]
     [Filter(FilterType.Equals)]
     public string? FirstName { get; set; }
 
-    [Required, MaxLength(50)]
+    [Required, StringLength(50)]
     [Rules(RuleAction.Allow)]
     [Display(Name = "Last Name", ShortName = "Last Name")]
     [Filter(FilterType.StartsWith)]
     public string? LastName { get; set; }
 
-    [MaxLength(120)]
+    [StringLength(120)]
     [EmailAddress]
     [Display(Name = "Email Address", ShortName = "Email")]
     [Filter(FilterType.Contains)]

@@ -7,7 +7,7 @@ namespace Sample.Shared;
 /// <summary>
 /// Represents a single geo-political region in a taxonomy of geo-political regions.
 /// </summary>
-[DeleteRule(DeleteAction.Recycle, nameof(DeleteStatus), DeleteStatus.Recycled, DeleteStatus.Live)]
+[DeleteRule(DeleteAction.Recycle, nameof(IsDeleted), DeleteStatus.Recycled, DeleteStatus.Live)]
 [Index(nameof(Uuid), IsUnique = true)]
 public partial class Region : IHierarchyEntity<Region>, IResourceIdentifiers, IValidatableObject, IEquatable<Region> {
 

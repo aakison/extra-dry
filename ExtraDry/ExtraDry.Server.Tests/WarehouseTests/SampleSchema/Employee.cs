@@ -14,14 +14,14 @@ public class Employee
 
     public Guid Uuid { get; set; } = Guid.NewGuid();
 
-    [Required, MaxLength(50)]
+    [Required, StringLength(50)]
     [Rules(RuleAction.Allow)]
     [Display(Name = "First Name", ShortName = "First Name")]
     [Filter(FilterType.Equals)]
     [Measure]
     public string? FirstName { get; set; }
 
-    [Required, MaxLength(50)]
+    [Required, StringLength(50)]
     [Rules(RuleAction.Allow)]
     [Display(Name = "Last Name", ShortName = "Last Name")]
     [Filter(FilterType.StartsWith)]

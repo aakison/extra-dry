@@ -43,11 +43,11 @@ namespace Sample.Server.Security {
             if(endpoint?.Metadata?.GetMetadata<IAllowAnonymous>() != null)
                 return Task.FromResult(AuthenticateResult.NoResult());
 
-            if(!Request.Headers.ContainsKey("Authorization"))
+            if(!Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues value)) {
                 return Task.FromResult(AuthenticateResult.Fail("Missing Authorization Header"));
-
+            }
             try {
-                var authHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
+                var authHeader = AuthenticationHeaderValue.Parse(value);
                 var credentialBytes = Convert.FromBase64String(authHeader.Parameter ?? "");
                 var credentials = Encoding.UTF8.GetString(credentialBytes).Split(new[] { ':' }, 2);
                 var username = credentials[0];

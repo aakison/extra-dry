@@ -45,7 +45,7 @@ public class StatisticsQueryable<T> : BaseQueryable<T> {
         return stats;
     }
 
-    private string? TrimFilter(string? filter)
+    private static string? TrimFilter(string? filter)
     {
         if(string.IsNullOrWhiteSpace(filter)) {
             return null;

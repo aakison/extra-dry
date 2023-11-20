@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace Sample.Server.SampleData;
 
-public class SampleDataService {
+public partial class SampleDataService {
 
     public SampleDataService(SampleContext sampleContext, RegionService regionService)
     {
@@ -184,7 +184,7 @@ public class SampleDataService {
         var slug = $"{subdivision.Country}-{subdivision.Code}";
         var subRegion = knownRegions.FirstOrDefault(e => e.Slug == slug);
         if(subRegion == null) {
-            var name = new Regex(@"(\[.*\])|(\(.*\))").Replace(subdivision.Name, "").Trim();
+            var name = RemoveSubdivisionName().Replace(subdivision.Name, "").Trim();
             subRegion = new Region {
                 Description = name,
                 Level = RegionLevel.Subdivision,
@@ -196,7 +196,7 @@ public class SampleDataService {
             };
             knownRegions.Add(subRegion);
             //await regions.CreateAsync(subRegion);
-            database.Regions.Add(subRegion); // direct for performance.
+            database.Regions.Add(subRegion); // direct for batching performance.
         }
         return await Task.FromResult(subRegion);
     }
@@ -332,6 +332,8 @@ public class SampleDataService {
 
     private readonly RegionService regions;
 
+    [GeneratedRegex("(\\[.*\\])|(\\(.*\\))")]
+    private static partial Regex RemoveSubdivisionName();
 }
 
 public record RegionLoadStats(int Countries);

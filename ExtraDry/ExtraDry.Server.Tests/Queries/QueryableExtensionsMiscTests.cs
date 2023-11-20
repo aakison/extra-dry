@@ -32,7 +32,7 @@ public class QueryableExtensionsMiscTests {
         public string Name { get; set; } = string.Empty;
     }
 
-    public List<Unfilterable> UnfilterableModels => new() {
+    public static List<Unfilterable> UnfilterableModels => new() {
             new Unfilterable { Name = "One" },
             new Unfilterable { Name = "Two" },
         };

@@ -4,6 +4,7 @@
 /// The theme for a button which controls the visual rendering of the buttons within a theme, with 
 /// an intent for consistent styles across the site.
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ButtonTheme
 {
     /// <summary>

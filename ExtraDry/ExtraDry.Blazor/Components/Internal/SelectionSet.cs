@@ -118,10 +118,11 @@ public class SelectionSet {
     public static SelectionSet? Lookup(object key) => key == null ? null : registered.TryGetValue(key, out var value) ? value : null;
 
     public static SelectionSet Register(object key) {
-        if(!registered.ContainsKey(key)) {
-            registered.Add(key, new SelectionSet());
+        if(!registered.TryGetValue(key, out SelectionSet? value)) {
+            value = new SelectionSet();
+            registered.Add(key, value);
         }
-        return registered[key];
+        return value;
     }
 
     public static void Deregister(object key)

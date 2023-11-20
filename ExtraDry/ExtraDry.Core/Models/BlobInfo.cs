@@ -17,7 +17,7 @@
 
         public int Size { get; set; }
 
-        [MaxLength(64), RegularExpression("[A-F0-9]{64}")]
+        [StringLength(64), RegularExpression("[A-F0-9]{64}")]
         public string ShaHash { get; set; } = string.Empty;
 
         /// <summary>

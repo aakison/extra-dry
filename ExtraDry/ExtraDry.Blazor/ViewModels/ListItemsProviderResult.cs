@@ -11,7 +11,7 @@ public class ListItemsProviderResult<T>
             Item = e,
             IsLoaded = true,
             IsGroup = IsGroup(e),
-            GroupDepth = GroupDepth(e),
+            GroupDepth = ListItemsProviderResult<T>.GroupDepth(e),
             IsExpanded = IsExpanded(e),
         }).ToList();
         Count = collection.Count;
@@ -36,7 +36,7 @@ public class ListItemsProviderResult<T>
         item is IHierarchyEntity entity && 
         (hierarchy.Expandable?.Contains(entity.Slug) ?? false);
 
-    private int GroupDepth(T item) =>
+    private static int GroupDepth(T item) =>
         item is IHierarchyEntity entity ? entity.Lineage.GetLevel() : 0;
 
     private bool IsExpanded(T item)

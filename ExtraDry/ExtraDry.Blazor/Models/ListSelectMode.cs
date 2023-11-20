@@ -3,6 +3,7 @@
 /// <summary>
 /// For a dry table, determines the action on a row selection.
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ListSelectMode {
 
     /// <summary>

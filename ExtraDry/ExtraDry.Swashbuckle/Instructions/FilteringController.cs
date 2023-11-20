@@ -1,5 +1,6 @@
 ﻿using ExtraDry.Server;
 using Microsoft.AspNetCore.Authorization;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ExtraDry.Swashbuckle.Instructions;
 
@@ -126,6 +127,7 @@ public class FilteringController {
     /// <param name="filter">The entity specific text filter for the collection. Filter fields include any of [`Make`, `Model`, `Year`, `Market`, `Description`]</param>
     [HttpGet("api/sample-data/filter-cars"), Produces("application/json")]
     [AllowAnonymous]
+    [SuppressMessage("Usage", "DRY1113:Http GET methods should not take parameters with names that match internal properties", Justification = "Use in this case is pedagogical.")]
     public async Task<FilteredCollection<Automobile>> ListFilteredAsync([FromQuery] string? filter)
     {
         var query = new FilterQuery { Filter = filter };

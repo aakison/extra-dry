@@ -36,7 +36,7 @@ public class Sector : IResourceIdentifiers {
     /// The title of the sector
     /// </summary>
     /// <example>Commerical Electrical Services</example>
-    [Required, MaxLength(50)]
+    [Required, StringLength(50)]
     [Display(Name = "Title", ShortName = "Title")]
     [Filter(FilterType.Contains)]
     public string Title { get; set; } = string.Empty;
@@ -45,7 +45,7 @@ public class Sector : IResourceIdentifiers {
     /// A group of sectors that logically go together for reporting.
     /// </summary>
     /// <example>Fire, Safety &amp; Security</example>
-    [Required, MaxLength(50)]
+    [Required, StringLength(50)]
     [Display(Name = "Group", ShortName = "Group")]
     [Filter(FilterType.Contains)]
     [Statistics(Stats.Distribution)]
@@ -56,7 +56,7 @@ public class Sector : IResourceIdentifiers {
     /// The description of the sector.
     /// </summary>
     /// <example>Provides licensed electrical works for commercial facilities.</example>
-    [MaxLength(250)]
+    [StringLength(250)]
     [Display(Name = "Description")]
     [Filter(FilterType.Contains)]
     public string Description { get; set; } = string.Empty;
