@@ -71,20 +71,3 @@ public class DeleteRuleAttribute : Attribute
     /// </summary>
     public bool CanUndelete { get; }
 }
-
-// TODO: Delete this after dependent projects are updated.
-[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-[Obsolete("Use DeleteRuleAttribute instead.")]
-public class SoftDeleteRuleAttribute : DeleteRuleAttribute
-{
-
-    public SoftDeleteRuleAttribute(string propertyName, object? deleteValue)
-        : base(DeleteAction.Recycle, propertyName, deleteValue)
-    {
-    }
-
-    public SoftDeleteRuleAttribute(string propertyName, object? deleteValue, object? undeleteValue)
-        : base(DeleteAction.Recycle, propertyName, deleteValue, undeleteValue)
-    {
-    }
-}

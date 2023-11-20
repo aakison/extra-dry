@@ -2,7 +2,7 @@
 	<ItemGroup>
 		<!-- Single place to update analyzers, especially ExtraDry Analyzers -->
 
-		<PackageReference Include="ExtraDry.Analyzers" Version="0.3.28-alpha">
+		<PackageReference Include="ExtraDry.Analyzers" Version="0.3.43-alpha">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>

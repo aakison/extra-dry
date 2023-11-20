@@ -114,8 +114,7 @@ public class RuleEngineUndeleteTests {
         public State State { get; set; } = State.Inactive;
     }
 
-    // Will need again when DRY1305 is fixed
-    //[SuppressMessage("Usage", "DRY1305:SoftDelete on classes should use nameof for property names.", Justification = "Required for testing.")]
+    [SuppressMessage("Usage", "DRY1305:DeleteRule on classes should use nameof for property names.", Justification = "Required for testing.")]
     [DeleteRule(DeleteAction.Recycle, "BadName", State.Deleted, State.Active)]
     public class BadProperty {
         public State State { get; set; } = State.Inactive;
