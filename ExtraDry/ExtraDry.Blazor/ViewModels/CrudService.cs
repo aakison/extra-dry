@@ -37,7 +37,6 @@ public class CrudService<T> {
     {
         http = client;
         Options = new CrudServiceOptions { CrudEndpoint = collectionEndpointTemplate };
-        ApiTemplate = collectionEndpointTemplate;
         logger = iLogger;
     }
 
@@ -51,14 +50,7 @@ public class CrudService<T> {
         http = client;
         Options = options;
         this.logger = logger;
-        ApiTemplate = options.CrudEndpoint;
     }
-
-    /// <summary>
-    /// The API Template used to determine the final endpoint URI.
-    /// </summary>
-    [Obsolete("Use from Options")]
-    public string ApiTemplate { get; set; }
 
     public CrudServiceOptions Options { get; }
 
@@ -85,7 +77,7 @@ public class CrudService<T> {
         logger?.LogDebug("Created '{entity}' on '{endpoint}' with content: {content}", nameof(T), endpoint, json);
     }
 
-    [Obsolete("Inject arguments into HtttpClient derived type")]
+    [Obsolete("Inject arguments into HttpClient derived type")]
     public async Task<T?> RetrieveAsync(object key, params object[] args)
     {
         var endpoint = ApiEndpoint(nameof(RetrieveAsync), key, args);
@@ -155,7 +147,7 @@ public class CrudService<T> {
         }
         catch(FormatException ex) {
             var argsFormatted = string.Join(',', args?.Select(e => e?.ToString()) ?? Array.Empty<string>());
-            logger?.LogWarning("Formatting problem while constructing endpoint for `CrudService.{method}`.  Typically the endpoint provided has additional placeholders that have not been provided. The endpoint template ({ApiTemplate}), could not be satisfied with arguments ({argsFormatted}).  Inner Exception was:  {ex.Message}", method, ApiTemplate, argsFormatted, ex.Message);
+            logger?.LogWarning("Formatting problem while constructing endpoint for `CrudService.{method}`.  Typically the endpoint provided has additional placeholders that have not been provided. The endpoint template ({CrudEndpoint}), could not be satisfied with arguments ({argsFormatted}).  Inner Exception was:  {ex.Message}", method, Options.CrudEndpoint, argsFormatted, ex.Message);
             throw new DryException("Error occurred connecting to server", "This is a mis-configuration and not a user error, please see the console output for more information.");
         }
     }

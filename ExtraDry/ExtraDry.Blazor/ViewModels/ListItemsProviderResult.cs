@@ -43,7 +43,7 @@ public class ListItemsProviderResult<T>
     {
         return Collection.Items.Any(child => IsDescendant(item as IHierarchyEntity, child as IHierarchyEntity));
 
-        bool IsDescendant(IHierarchyEntity? parent, IHierarchyEntity? child)
+        static bool IsDescendant(IHierarchyEntity? parent, IHierarchyEntity? child)
         {
             if(parent == null || child == null) {
                 return false;

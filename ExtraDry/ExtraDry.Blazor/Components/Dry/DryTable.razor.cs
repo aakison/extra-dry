@@ -242,7 +242,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
                 var firstIndex = FirstItemOnPage(firstPage);
                 QueryBuilder.Skip = firstIndex;
                 var container = await ItemsService.GetListItemsAsync(QueryBuilder.Build(), request.CancellationToken);
-                var count = container.ItemInfos.Count();
+                var count = container.ItemInfos.Count;
                 var total = container.Total;
                 QueryBuilder.Level.UpdateMaxLevel(ItemsService.MaxLevel);
 
@@ -267,7 +267,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
                     QueryBuilder.Skip = firstIndex;
                     if(!AllItemsCached(firstIndex, ItemsService.PageSize)) {
                         var container = await ItemsService.GetListItemsAsync(QueryBuilder.Build(), request.CancellationToken);
-                        var count = container.ItemInfos.Count();
+                        var count = container.ItemInfos.Count;
                         var total = container.Total;
                         QueryBuilder.Level.UpdateMaxLevel(ItemsService.MaxLevel);
                         var index = firstIndex;
