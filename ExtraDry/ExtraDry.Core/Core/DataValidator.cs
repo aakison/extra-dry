@@ -69,6 +69,10 @@ public class DataValidator {
         return previousCount == currentCount; ;
     }
 
+    /// <summary>
+    /// Checks if the objects and properties that have been checked are valid.  If any are not, 
+    /// then throws a validation exception with all of the errors.
+    /// </summary>
     public void ThrowIfInvalid()
     {
         if(Errors.Any()) {
