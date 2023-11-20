@@ -1,7 +1,9 @@
 ﻿namespace ExtraDry.Core;
 
 /// <summary>
-/// The processing rule to be applied to a property when a `FilterQuery` or `PageQuery` has a `Filter` provided.
+/// The processing rule to be applied to a property when a <see cref="FilterQuery"/>, 
+/// <see cref="SortQuery"/> or <see cref="PageQuery"/> has a 
+/// <see cref="FilterAttribute"/> provided.
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum FilterType {
@@ -12,12 +14,14 @@ public enum FilterType {
     Equals = 0,
 
     /// <summary>
-    /// If the property is a `string`, then the filter matches when the text matches the start of the property.
+    /// If the property is a `string`, then the filter matches when the text matches the start of 
+    /// the property.
     /// </summary>
     StartsWith,
 
     /// <summary>
-    /// If the property is a `string`, then the filter matches when the text occurs anywhere within the property.
+    /// If the property is a `string`, then the filter matches when the text occurs anywhere 
+    /// within the property.
     /// </summary>
     Contains,
 

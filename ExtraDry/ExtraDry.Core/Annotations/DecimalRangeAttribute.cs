@@ -1,8 +1,8 @@
 ﻿namespace ExtraDry.Core;
 
 /// <summary>
-/// Validates a decimal value as being within the given range.
-/// Functionally the same as the RangeAttribute but works for decimals.
+/// Validates a decimal value as being within the given range.  Functionally the same as the 
+/// <see cref="RangeAttribute"/> but works for decimals.
 /// </summary>
 public class DecimalRangeAttribute : ValidationAttribute {
 
@@ -17,10 +17,10 @@ public class DecimalRangeAttribute : ValidationAttribute {
     public decimal Maximum { get; set; }
 
     /// <summary>
-    /// Create a new validator for a decimal range
+    /// Create a new validator for a decimal range.
     /// </summary>
     /// <remarks>
-    /// Constructor uses double since attibutes need CLR types.
+    /// Constructor uses double since attributes need CLR types.
     /// </remarks>
     public DecimalRangeAttribute(double minimum, double maximum)
     {

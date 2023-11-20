@@ -10,7 +10,7 @@ public class ExpandoField {
     /// </summary>
     /// <example>external_id</example>
     [Required]
-    [ValidIdentifier]
+    [Identifier]
     public string Slug { get; set; } = string.Empty;
 
     /// <summary>
