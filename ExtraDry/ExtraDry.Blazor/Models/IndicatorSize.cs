@@ -16,5 +16,9 @@ public enum IndicatorSize {
     /// <summary>
     /// Displays as a large indicator icon
     /// </summary>
-    Large
+    Large,
+    /// <summary>
+    /// Displays no icon
+    /// </summary>
+    None
 }
