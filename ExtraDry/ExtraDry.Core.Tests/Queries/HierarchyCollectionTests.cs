@@ -2,7 +2,8 @@
 
 namespace ExtraDry.Server.Tests.Models;
 
-public class HierarchyCollectionTests {
+public class HierarchyCollectionTests
+{
 
     [Fact]
     public void DefaultConstructor()
@@ -27,7 +28,7 @@ public class HierarchyCollectionTests {
     public void RoundtripProperties(string propertyName, object propertyValue)
     {
         var target = new HierarchyCollection<object>();
-        var property = target.GetType().GetProperty(propertyName) 
+        var property = target.GetType().GetProperty(propertyName)
             ?? throw new ArgumentException("Bad argument", nameof(propertyValue));
 
         property.SetValue(target, propertyValue);
@@ -103,11 +104,13 @@ public class HierarchyCollectionTests {
         Assert.Contains("three", iPayloadItems.Collapse!);
     }
 
-    private interface IPayload {
+    private interface IPayload
+    {
         string Pay { get; set; }
     }
 
-    private class Payload : IPayload {
+    private class Payload : IPayload
+    {
         public string Pay { get; set; } = string.Empty;
 
         public string Load { get; set; } = string.Empty;

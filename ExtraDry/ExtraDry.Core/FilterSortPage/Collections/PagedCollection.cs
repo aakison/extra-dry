@@ -4,7 +4,8 @@
 /// A page of a sorted and filtered collection of items from the API with information on 
 /// retrieving other pages.
 /// </summary>
-public class PagedCollection<T> : SortedCollection<T> {
+public class PagedCollection<T> : SortedCollection<T>
+{
 
     /// <summary>
     /// The starting index of this partial collection within the full collection.
@@ -37,13 +38,13 @@ public class PagedCollection<T> : SortedCollection<T> {
     /// Create a new PagedCollection with the items cast to a base class or interface.
     /// </summary>
     public new PagedCollection<TCast> Cast<TCast>() => new() {
-            Filter = Filter,
-            ContinuationToken = ContinuationToken,
-            Created = Created,
-            Items = Items.Cast<TCast>().ToList(),
-            Sort = Sort,
-            Start = Start,
-            Total = Total,
-        };
+        Filter = Filter,
+        ContinuationToken = ContinuationToken,
+        Created = Created,
+        Items = Items.Cast<TCast>().ToList(),
+        Sort = Sort,
+        Start = Start,
+        Total = Total,
+    };
 
 }

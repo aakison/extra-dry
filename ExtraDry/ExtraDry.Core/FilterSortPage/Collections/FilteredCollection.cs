@@ -3,7 +3,8 @@
 /// <summary>
 /// A filtered collection of items from the API.
 /// </summary>
-public class FilteredCollection<T> : BaseCollection<T> {
+public class FilteredCollection<T> : BaseCollection<T>
+{
 
     /// <summary>
     /// If the full collection is a subset of all items, this is the query that was used to filter 

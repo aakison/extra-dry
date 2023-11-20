@@ -5,7 +5,8 @@
 /// Models can implement this or ViewModel objects can implement this for models.
 /// Consider IListItemViewModel`TModel instead to use a ViewModel controller.
 /// </summary>
-public interface IListItemViewModel {
+public interface IListItemViewModel
+{
 
     /// <summary>
     /// A Title to display with the subject for single line cards and lists.

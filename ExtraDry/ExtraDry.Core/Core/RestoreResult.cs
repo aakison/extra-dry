@@ -4,7 +4,8 @@
 /// When a `RuleEngine` RestoreAsync method is called, indicates the result of the action.
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum RestoreResult {
+public enum RestoreResult
+{
 
     /// <summary>
     /// The item was successfully restored.

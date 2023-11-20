@@ -4,7 +4,8 @@
 /// Represents a resource that has identifiers that are common on the web, in particular through 
 /// RESTful APIs.
 /// </summary>
-public interface IResourceIdentifiers {
+public interface IResourceIdentifiers
+{
 
     /// <summary>
     /// A universally unique identifier for this new resource. It is used in the permalink.
@@ -30,6 +31,6 @@ public interface IResourceIdentifiers {
     /// is worth the trade-off.
     /// </remarks>
     /// <example>Acme Widget</example>
-    public string Title { get; set;}
+    public string Title { get; set; }
 
 }

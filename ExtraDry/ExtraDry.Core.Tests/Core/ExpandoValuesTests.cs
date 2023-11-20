@@ -1,8 +1,9 @@
 ﻿using System.Text.Json;
 
-namespace ExtraDry.Core.Tests; 
+namespace ExtraDry.Core.Tests;
 
-public class ExpandoValuesTests {
+public class ExpandoValuesTests
+{
     private ExpandoSchema Schema { get; set; }
 
     public ExpandoValuesTests()
@@ -39,7 +40,7 @@ public class ExpandoValuesTests {
 
     public static IEnumerable<object[]> ValidExpandoData =>
         new List<object[]> {
-            new object[] { 
+            new object[] {
                 new ExpandoValues {
                     { "external_id", "EX01" },
                     { "external_id_with_valid_values", "EX03" },
@@ -47,32 +48,32 @@ public class ExpandoValuesTests {
                     { "property_code", 10 }
                 }
             },
-            new object[] { 
-                new ExpandoValues { 
-                    { "external_id", "10" }, 
-                    { "external_id_with_valid_values", "EX02" }, 
-                    { "building_construction_date", DateTime.Now.AddYears(-5) }, 
-                    { "property_code", 15 } 
+            new object[] {
+                new ExpandoValues {
+                    { "external_id", "10" },
+                    { "external_id_with_valid_values", "EX02" },
+                    { "building_construction_date", DateTime.Now.AddYears(-5) },
+                    { "property_code", 15 }
                 }
             },
         };
 
     public static IEnumerable<object[]> InValidExpandoData =>
         new List<object[]> {
-            new object[] { 
-                new ExpandoValues { 
-                    { "external_id", "EX0000000000001" }, 
-                    { "external_id_with_valid_values", "EX05" }, 
-                    { "building_construction_date", "InvalidDate" }, 
-                    { "property_code", 51 } 
+            new object[] {
+                new ExpandoValues {
+                    { "external_id", "EX0000000000001" },
+                    { "external_id_with_valid_values", "EX05" },
+                    { "building_construction_date", "InvalidDate" },
+                    { "property_code", 51 }
                 }
             },
-            new object[] { 
-                new ExpandoValues { 
-                    { "external_id", 13298470 }, 
-                    { "external_id_with_valid_values", "EXT01" }, 
-                    { "building_construction_date", "" }, 
-                    { "property_code", 100 } 
+            new object[] {
+                new ExpandoValues {
+                    { "external_id", 13298470 },
+                    { "external_id_with_valid_values", "EXT01" },
+                    { "building_construction_date", "" },
+                    { "property_code", 100 }
                 }
             },
         };

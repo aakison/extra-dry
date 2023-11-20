@@ -1,6 +1,7 @@
 ﻿namespace ExtraDry.Core.Tests.Helpers;
 
-public class DataConverterTests {
+public class DataConverterTests
+{
 
     [Theory]
     [InlineData(TestEnum.SimpleName, "SimpleName")]
@@ -22,7 +23,8 @@ public class DataConverterTests {
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum TestEnum {
+    public enum TestEnum
+    {
 
         SimpleName = 0,
 
@@ -30,7 +32,7 @@ public class DataConverterTests {
         DisplayName = 1,
 
     }
-    
+
     [Theory]
     [InlineData("Test", "Test")]
     [InlineData("TEST", "TEST")]

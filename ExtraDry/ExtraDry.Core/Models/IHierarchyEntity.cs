@@ -25,7 +25,8 @@ public interface IHierarchyEntity
 /// Parent pattern.  This provides the ability to navigate the hierarchy and is the preferred 
 /// mechansim for hierarchy support.
 /// </summary>
-public interface IHierarchyEntity<T> : IHierarchyEntity where T : IHierarchyEntity<T> {
+public interface IHierarchyEntity<T> : IHierarchyEntity where T : IHierarchyEntity<T>
+{
 
     /// <summary>
     /// The parent entity in the taxonomy, NULL if root node.  This provides the referential 
@@ -35,6 +36,7 @@ public interface IHierarchyEntity<T> : IHierarchyEntity where T : IHierarchyEnti
 }
 
 [Obsolete("Use IHierarchyEntity`T instead")]
-public interface ITaxonomyEntity {
+public interface ITaxonomyEntity
+{
 
 }

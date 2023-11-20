@@ -5,7 +5,8 @@
 /// <see cref="PageQuery"/> has a <see cref="FilterAttribute"/> provided.
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum SortType {
+public enum SortType
+{
 
     /// <summary>
     /// Property is sortable, the default behavior.  Use to override a property that is not 

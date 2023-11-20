@@ -1,6 +1,7 @@
 ﻿namespace ExtraDry.Core.Tests;
 
-public class SlugTests {
+public class SlugTests
+{
     #region Slug Tests
     [Fact]
     public void SlugWithNullArg()

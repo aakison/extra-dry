@@ -2,7 +2,8 @@
 
 namespace ExtraDry.Server.Tests.Models;
 
-public class FilteredCollectionTests {
+public class FilteredCollectionTests
+{
 
     [Fact]
     public void DefaultConstructor()
@@ -21,7 +22,7 @@ public class FilteredCollectionTests {
     public void RoundtripProperties(string propertyName, object propertyValue)
     {
         var target = new FilteredCollection<object>();
-        var property = target.GetType().GetProperty(propertyName) 
+        var property = target.GetType().GetProperty(propertyName)
             ?? throw new ArgumentException("Bad argument", nameof(propertyValue));
 
         property.SetValue(target, propertyValue);
@@ -65,11 +66,13 @@ public class FilteredCollectionTests {
         Assert.Equal(target.Filter, iPayloadItems.Filter);
     }
 
-    private interface IPayload {
+    private interface IPayload
+    {
         string Pay { get; set; }
     }
 
-    private class Payload : IPayload {
+    private class Payload : IPayload
+    {
         public string Pay { get; set; } = string.Empty;
 
         public string Load { get; set; } = string.Empty;

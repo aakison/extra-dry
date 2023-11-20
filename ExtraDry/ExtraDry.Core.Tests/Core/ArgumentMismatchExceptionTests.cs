@@ -1,6 +1,7 @@
 ﻿namespace ExtraDry.Core.Tests;
 
-public class ArgumentMismatchExceptionTests {
+public class ArgumentMismatchExceptionTests
+{
 
     [Fact]
     public void ArgumentMismatchRoundtrip1()

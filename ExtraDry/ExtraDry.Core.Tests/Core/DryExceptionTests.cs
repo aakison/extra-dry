@@ -1,10 +1,10 @@
 ﻿using ExtraDry.Core.Models;
-using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using System.Net;
 
 namespace ExtraDry.Core.Tests;
 
-public class DryExceptionTests {
+public class DryExceptionTests
+{
 
     [Fact]
     public void ArgumentMismatchRoundtrip1()

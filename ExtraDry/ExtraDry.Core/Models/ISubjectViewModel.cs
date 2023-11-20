@@ -5,7 +5,8 @@
 /// Models can implement this or ViewModel objects can implement this for models.
 /// Consider ISubjectViewModel`TModel instead to use a ViewModel controller.
 /// </summary>
-public interface ISubjectViewModel : IListItemViewModel {
+public interface ISubjectViewModel : IListItemViewModel
+{
 
     /// <summary>
     /// A Code that is used to uniquely identify the subject amongst similar typed entities.
@@ -34,7 +35,7 @@ public interface ISubjectViewModel : IListItemViewModel {
 /// A ViewModel controller interface to extract subject information out of models.
 /// </summary>
 /// <typeparam name="TModel">The type of the model.</typeparam>
-public interface ISubjectViewModel<TModel> : IListItemViewModel<TModel> 
+public interface ISubjectViewModel<TModel> : IListItemViewModel<TModel>
 {
     /// <inheritdoc cref="ISubjectViewModel.Code" />
     string Code(TModel item);

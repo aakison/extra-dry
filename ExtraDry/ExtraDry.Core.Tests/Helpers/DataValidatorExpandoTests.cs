@@ -1,8 +1,7 @@
-﻿using System.Runtime.CompilerServices;
+﻿namespace ExtraDry.Core.Tests.Helpers;
 
-namespace ExtraDry.Core.Tests.Helpers;
-
-public class DataValidatorExpandoTests {
+public class DataValidatorExpandoTests
+{
 
     [Fact]
     public void EmptyExpandoValidates()
@@ -60,7 +59,8 @@ public class DataValidatorExpandoTests {
         Assert.Equal(1, validator.Errors.Count);
     }
 
-    public class Sample {
+    public class Sample
+    {
 
         public ExpandoValues Values { get; set; } = new();
 
@@ -83,7 +83,7 @@ public class DataValidatorExpandoTests {
             sample.Values.Schema = Schema;
             sample.Values.Add("ABN", "0123456789"); // required, so default it.
             return sample;
-        }   
+        }
     }
 
 }

@@ -3,7 +3,8 @@
 /// <summary>
 /// Represents a basic query to filter against a list of items with results sorted.
 /// </summary>
-public class SortQuery : FilterQuery {
+public class SortQuery : FilterQuery
+{
 
     /// <summary>
     /// If the request would like sorted results, the name of the property to sort by.

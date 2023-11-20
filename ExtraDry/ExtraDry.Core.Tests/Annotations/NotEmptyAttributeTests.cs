@@ -1,6 +1,7 @@
 ﻿namespace ExtraDry.Core.Tests;
 
-public class NotEmptyAttributeTests {
+public class NotEmptyAttributeTests
+{
 
     [Fact]
     public void ActualGuidIsNotEmpty()

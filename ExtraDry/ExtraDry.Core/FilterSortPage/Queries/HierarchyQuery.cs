@@ -4,7 +4,8 @@
 /// Represents a hierarchy query to filter against a hierarchy of items.  Can only be used with 
 /// entities that implement <see cref="IHierarchyEntity{T}" />.
 /// </summary>
-public class HierarchyQuery : FilterQuery {
+public class HierarchyQuery : FilterQuery
+{
 
     /// <summary>
     /// The number of levels of the hierarchy to return, 0 to return all levels.

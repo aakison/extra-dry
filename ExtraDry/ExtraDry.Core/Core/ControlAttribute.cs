@@ -6,7 +6,8 @@
 /// a radio button list instead of a select drop-down.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property)]
-public class ControlAttribute : Attribute {
+public class ControlAttribute : Attribute
+{
 
     /// <inheritdoc cref="ControlAttribute" />
     public ControlAttribute(ControlType type = ControlType.BestMatch)

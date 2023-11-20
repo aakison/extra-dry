@@ -3,7 +3,8 @@
 /// <summary>
 /// The interface for entities that want to embellish the behavior before they are updated.
 /// </summary>
-public interface IUpdatingCallback {
+public interface IUpdatingCallback
+{
 
     /// <summary>
     /// Callback handler for the item that is done as it is being updated. This is called just 
@@ -17,7 +18,8 @@ public interface IUpdatingCallback {
 /// <summary>
 /// The interface for entities that want to embellish the behavior after they are updated.
 /// </summary>
-public interface IUpdatedCallback { 
+public interface IUpdatedCallback
+{
 
     /// <summary>
     /// Callback handler for the item that is done as it is being updated. This is called just 

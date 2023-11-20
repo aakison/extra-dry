@@ -7,7 +7,8 @@
 /// UUIDs) are not sortable by default and this can override that behavior.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property)]
-public class SortAttribute : Attribute {
+public class SortAttribute : Attribute
+{
 
     /// <inheritdoc cref="SortAttribute" />
     public SortAttribute(SortType type)

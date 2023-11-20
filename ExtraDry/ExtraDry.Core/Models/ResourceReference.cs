@@ -6,7 +6,8 @@ namespace ExtraDry.Core;
 /// A reference to a resource suitable for sending through an API, as for example the return value 
 /// of a Create method.
 /// </summary>
-public class ResourceReference {
+public class ResourceReference
+{
 
     /// <inheritdoc cref="ResourceReference" />
     public ResourceReference() { }
@@ -40,7 +41,8 @@ public class ResourceReference {
 /// A strongly typed version of a ResourceReference to a resource suitable for sending through an 
 /// API, as for example the return value of a Create method.
 /// </summary>
-public class ResourceReference<T> : ResourceReference where T : IResourceIdentifiers {
+public class ResourceReference<T> : ResourceReference where T : IResourceIdentifiers
+{
 
     /// <inheritdoc cref="ResourceReference" />
     public ResourceReference() { }

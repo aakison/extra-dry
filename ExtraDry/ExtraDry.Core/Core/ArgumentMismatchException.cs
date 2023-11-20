@@ -5,16 +5,19 @@
 /// particular, use when controller gets both URI and body versions of an ID.
 /// </summary>
 [Serializable]
-public sealed class ArgumentMismatchException : ArgumentException {
+public sealed class ArgumentMismatchException : ArgumentException
+{
 
     /// <inheritdoc cref="ArgumentMismatchException" />
-    public ArgumentMismatchException(string message, string paramName) : base(message, paramName) {
+    public ArgumentMismatchException(string message, string paramName) : base(message, paramName)
+    {
         UserMessage = string.Format(UserMessage, paramName);
     }
 
     /// <inheritdoc cref="ArgumentMismatchException" />
-    public ArgumentMismatchException(string message, Exception inner) : base(message, inner) { 
-    
+    public ArgumentMismatchException(string message, Exception inner) : base(message, inner)
+    {
+
     }
 
     /// <inheritdoc cref="ArgumentMismatchException" />

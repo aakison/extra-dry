@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace ExtraDry.Core;
+﻿namespace ExtraDry.Core;
 
 /// <summary>
 /// A version sub-object for objects in the ORM that are versioned.
@@ -8,7 +6,8 @@ namespace ExtraDry.Core;
 /// <remarks>
 /// Works in conjunction with overloads in the AspectDbContext and VersionInfoAspect.
 /// </remarks>
-public class VersionInfo {
+public class VersionInfo
+{
 
     /// <summary>
     /// The date the object was first created.

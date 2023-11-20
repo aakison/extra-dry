@@ -7,7 +7,8 @@ namespace ExtraDry.Core;
 /// Supports slightly different data type than JSON, dropping support for arrays and objects and
 /// adding support for DateTime when the string format is exact.
 /// </summary>
-public class ExpandoValuesConverter : JsonConverter<ExpandoValues> {
+public class ExpandoValuesConverter : JsonConverter<ExpandoValues>
+{
 
     /// <inheritdoc cref="JsonConverter{T}.Read(ref Utf8JsonReader, Type, JsonSerializerOptions)"/>
     public override ExpandoValues? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)

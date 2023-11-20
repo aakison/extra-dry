@@ -2,7 +2,8 @@
 
 namespace ExtraDry.Server.Tests.Models;
 
-public class BaseCollectionTests {
+public class BaseCollectionTests
+{
 
     [Fact]
     public void DefaultConstructor()
@@ -44,11 +45,13 @@ public class BaseCollectionTests {
         Assert.Equal(target.Items.First(), iPayloadItems.Items.First());
     }
 
-    private interface IPayload {
+    private interface IPayload
+    {
         string Pay { get; set; }
     }
 
-    private class Payload : IPayload {
+    private class Payload : IPayload
+    {
         public string Pay { get; set; } = string.Empty;
 
         public string Load { get; set; } = string.Empty;

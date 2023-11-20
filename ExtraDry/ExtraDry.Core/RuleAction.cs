@@ -4,7 +4,8 @@
 /// Actions that are used by the Rule Engine to determine how creates and updates should be processed.
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum RuleAction {
+public enum RuleAction
+{
 
     /// <summary>
     /// Changes to values will always be allowed by the Rule Engine.

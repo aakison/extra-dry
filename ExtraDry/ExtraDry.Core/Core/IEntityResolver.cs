@@ -8,7 +8,8 @@
 /// linked back to the data store and the system might need to have the 'right' instance of 
 /// sector resolved.
 /// </summary>
-public interface IEntityResolver<T> {
+public interface IEntityResolver<T>
+{
 
     /// <summary>
     /// Returns the correct object for the given examplar.  This could be an existing one looked 

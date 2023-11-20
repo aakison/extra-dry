@@ -3,7 +3,8 @@
 /// <summary>
 /// Represents a Field in a User Defined Schema, this defines the name, data type, ordering etc.
 /// </summary>
-public class ExpandoField {
+public class ExpandoField
+{
 
     /// <summary>
     /// A unique slug for the field that is auto-generated on create.
@@ -93,7 +94,7 @@ public class ExpandoField {
 
     public IEnumerable<ValidationResult> ValidateValue(object? value)
     {
-        var results = new List<ValidationResult>(); 
+        var results = new List<ValidationResult>();
 
         ValidateDataType(value, ref results);
 
@@ -112,7 +113,7 @@ public class ExpandoField {
                 results.Add(new ValidationResult($"{Label} exceeds Maxlength.", new[] { Label }));
             }
 
-            if(ValidValues != null && ValidValues.Any() && !ValidValues!.Contains(stringVal)) {
+            if(ValidValues != null && ValidValues.Count != 0 && !ValidValues!.Contains(stringVal)) {
                 results.Add(new ValidationResult($"{Label} does not exist in list of ValidValues.", new[] { Label }));
             }
         }
@@ -164,7 +165,7 @@ public class ExpandoField {
             results.Add(new ValidationResult($"{Label} exceeds RangeMaximum set.", new[] { Label }));
         }
 
-        if(ValidValues != null && ValidValues.Any()) {
+        if(ValidValues != null && ValidValues.Count > 0) {
             var intValidValues = ValidValues.ConvertAll(s => double.TryParse(s, out double x) ? x : 0);
             if(!intValidValues.Contains(number)) {
                 results.Add(new ValidationResult($"{Label} does not exist in list of ValidValues.", new[] { Label }));

@@ -5,7 +5,8 @@
 /// Distinct from null in that it exists but does not have a value.  
 /// </summary>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, AllowMultiple = false)]
-public sealed class NotEmptyAttribute : ValidationAttribute {
+public sealed class NotEmptyAttribute : ValidationAttribute
+{
 
     public NotEmptyAttribute() : base("The {0} field must not be empty.") { }
 

@@ -3,7 +3,8 @@
 /// <summary>
 /// The interface for entities that want to embellish the behavior before they are created.
 /// </summary>
-public interface ICreatingCallback {
+public interface ICreatingCallback
+{
 
     /// <summary>
     /// Callback handler for the item that is done as it is being created for the first time. This
@@ -17,7 +18,8 @@ public interface ICreatingCallback {
 /// <summary>
 /// The interface for entities that want to embellish the behavior after they are created.
 /// </summary>
-public interface ICreatedCallback { 
+public interface ICreatedCallback
+{
 
     /// <summary>
     /// Callback handler for the item that is done as it is being created for the first time. This

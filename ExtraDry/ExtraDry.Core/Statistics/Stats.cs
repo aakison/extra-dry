@@ -4,7 +4,8 @@
 /// The type of statistics to apply to extract from this property.
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum Stats {
+public enum Stats
+{
 
     /// <summary>
     /// Returns a summary of the frequency distribution of a given attribute, counting by unique 

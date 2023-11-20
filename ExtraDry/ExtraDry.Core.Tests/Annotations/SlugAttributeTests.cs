@@ -1,6 +1,7 @@
 ﻿namespace ExtraDry.Core.Tests;
 
-public class SlugAttributeTests {
+public class SlugAttributeTests
+{
 
     [Theory]
     [InlineData("acme")]
@@ -54,15 +55,15 @@ public class SlugAttributeTests {
 
     [Theory]
     [InlineData("A1_Suppliers")]
-    [InlineData("a_b")]  
-    [InlineData("a~b")]  
-    [InlineData("a!b")]  
-    [InlineData("a.b")]  
-    [InlineData("a=b")]  
-    [InlineData("a+b")]  
-    [InlineData("a?b")]  
-    [InlineData("a\\b")] 
-    [InlineData("a/b")]  
+    [InlineData("a_b")]
+    [InlineData("a~b")]
+    [InlineData("a!b")]
+    [InlineData("a.b")]
+    [InlineData("a=b")]
+    [InlineData("a+b")]
+    [InlineData("a?b")]
+    [InlineData("a\\b")]
+    [InlineData("a/b")]
     public void InvalidCodeSlugs(string slug)
     {
         var titleSlug = new SlugAttribute(SlugType.MixedCase);

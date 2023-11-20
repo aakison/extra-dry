@@ -1,6 +1,7 @@
 ﻿namespace ExtraDry.Core.Tests;
 
-public class FormatAttributeTests {
+public class FormatAttributeTests
+{
 
     [Theory]
     [InlineData("Icon", "abc")]

@@ -4,7 +4,8 @@
 /// Validates a decimal value as being within the given range.  Functionally the same as the 
 /// <see cref="RangeAttribute"/> but works for decimals.
 /// </summary>
-public class DecimalRangeAttribute : ValidationAttribute {
+public class DecimalRangeAttribute : ValidationAttribute
+{
 
     /// <summary>
     /// The minimum, inclusive, lower bound for the value.
@@ -31,7 +32,7 @@ public class DecimalRangeAttribute : ValidationAttribute {
     /// <summary>
     /// Standard validation override.
     /// </summary>
-    public override bool IsValid(object? value) => 
+    public override bool IsValid(object? value) =>
         value switch {
             null => true,
             decimal decimalValue => Minimum <= decimalValue && decimalValue <= Maximum,

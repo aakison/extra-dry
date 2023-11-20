@@ -6,7 +6,8 @@
 /// <see cref="FilterAttribute"/> provided.
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum FilterType {
+public enum FilterType
+{
 
     /// <summary>
     /// Performs an exact match of the value, the default behavior.

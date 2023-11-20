@@ -3,13 +3,14 @@
 /// <summary>
 /// Standard payload for hierarchy controllers endpoints that return paged results.
 /// </summary>
-public class PageHierarchyQuery : HierarchyQuery, IPageQuery {
+public class PageHierarchyQuery : HierarchyQuery, IPageQuery
+{
 
     /// <inheritdoc cref="IPageQuery.Skip" />
     public int Skip { get; set; }
 
     /// <inheritdoc cref="IPageQuery.Take" />
-    public int Take { 
+    public int Take {
         get => take <= 0 ? DefaultTake : take;
         set => take = value;
     }

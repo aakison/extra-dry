@@ -2,7 +2,8 @@
 
 namespace ExtraDry.Server.Tests.Models;
 
-public class PagedCollectionTests {
+public class PagedCollectionTests
+{
 
     [Fact]
     public void DefaultConstructor()
@@ -86,11 +87,13 @@ public class PagedCollectionTests {
         Assert.False(target.IsFullCollection);
     }
 
-    private interface IPayload {
+    private interface IPayload
+    {
         string Pay { get; set; }
     }
 
-    private class Payload : IPayload {
+    private class Payload : IPayload
+    {
         public string Pay { get; set; } = string.Empty;
 
         public string Load { get; set; } = string.Empty;

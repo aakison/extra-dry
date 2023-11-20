@@ -3,7 +3,8 @@
 /// <summary>
 /// The count of discrete values for a given property.
 /// </summary>
-public class DataDistribution {
+public class DataDistribution
+{
 
     /// <summary>
     /// Create the set of data points for a single property name

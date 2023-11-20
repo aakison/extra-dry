@@ -3,7 +3,8 @@
 /// <summary>
 /// Page query payload for controller endpoints that return paged results.
 /// </summary>
-public interface IPageQuery {
+public interface IPageQuery
+{
 
     /// <summary>
     /// The number of records to skip before returning results.

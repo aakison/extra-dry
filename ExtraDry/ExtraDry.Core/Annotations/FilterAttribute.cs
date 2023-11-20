@@ -6,7 +6,8 @@
 /// properties is that they are not filtereable unless this attribute is applied.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property)]
-public class FilterAttribute : Attribute {
+public class FilterAttribute : Attribute
+{
 
     /// <inheritdoc cref="FilterAttribute" />
     public FilterAttribute(FilterType type = FilterType.Equals)

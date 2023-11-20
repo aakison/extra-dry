@@ -1,11 +1,10 @@
 ﻿#nullable enable
 
-using System;
-using System.ComponentModel.DataAnnotations;
+namespace ExtraDry.Core
+{
 
-namespace ExtraDry.Core {
-
-    public interface IBlobInfo {
+    public interface IBlobInfo
+    {
 
         public Guid UniqueId { get; set; }
 

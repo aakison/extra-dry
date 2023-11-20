@@ -2,7 +2,8 @@
 
 namespace ExtraDry.Core.Tests;
 
-public class EntityMessageTests {
+public class EntityMessageTests
+{
 
     [Theory]
     [InlineData("EntityName", "abc")]

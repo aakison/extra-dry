@@ -5,7 +5,8 @@
 /// methods are used on an instantiated object.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-public class DeleteRuleAttribute : Attribute {
+public class DeleteRuleAttribute : Attribute
+{
 
     /// <inheritdoc cref="DeleteRuleAttribute" />
     public DeleteRuleAttribute(DeleteAction deleteAction)
@@ -74,7 +75,8 @@ public class DeleteRuleAttribute : Attribute {
 // TODO: Delete this after dependent projects are updated.
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 [Obsolete("Use DeleteRuleAttribute instead.")]
-public class SoftDeleteRuleAttribute : DeleteRuleAttribute {
+public class SoftDeleteRuleAttribute : DeleteRuleAttribute
+{
 
     public SoftDeleteRuleAttribute(string propertyName, object? deleteValue)
         : base(DeleteAction.Recycle, propertyName, deleteValue)

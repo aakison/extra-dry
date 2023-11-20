@@ -3,7 +3,8 @@
 /// <summary>
 /// Designed to facility the validation of properties of objects, especially when not all of the object is validated.
 /// </summary>
-public class DataValidator {
+public class DataValidator
+{
 
     /// <summary>
     /// Validates all properties of the indicated object.

@@ -1,9 +1,9 @@
-﻿using System.Reflection.Metadata.Ecma335;
-using System.Text.Json;
+﻿using System.Text.Json;
 
 namespace ExtraDry.Core.Tests;
 
-public class ExpandoValuesConverterTests {
+public class ExpandoValuesConverterTests
+{
 
     [Fact]
     public void NullExpandoValuesAreNull()
@@ -64,7 +64,8 @@ public class ExpandoValuesConverterTests {
         Assert.Equal(element, target.Values.First().Value);
     }
 
-    public class Target {
+    public class Target
+    {
 
         public ExpandoValues Values { get; set; } = new();
 

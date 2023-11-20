@@ -10,7 +10,8 @@
 /// E.g. Synonym 'Column' has an issue as ColumnAttribute conflicts with DataAnnotations.Schema.
 /// </remarks>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Method)]
-public class AttributeAttribute : Attribute {
+public class AttributeAttribute : Attribute
+{
 
     /// <summary>
     /// Declares a property as a data warehouse attribute with the name inferred from the property name.

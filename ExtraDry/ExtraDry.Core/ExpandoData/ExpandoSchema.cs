@@ -3,7 +3,8 @@
 /// <summary>
 /// Represents the structure of user defined fields that can be added to a Subject.
 /// </summary>
-public class ExpandoSchema : IValidatableObject {
+public class ExpandoSchema : IValidatableObject
+{
 
     /// <summary>
     /// The target type of the Subject that the <see cref="ExpandoSchema"/> provides custom fields for.
@@ -28,7 +29,7 @@ public class ExpandoSchema : IValidatableObject {
     public IEnumerable<ValidationResult> ValidateValues(ExpandoValues values)
     {
         var results = new List<ValidationResult>();
-        
+
         foreach(var field in Fields) {
             values.TryGetValue(field.Slug, out var fieldValue);
             results.AddRange(field.ValidateValue(fieldValue));
