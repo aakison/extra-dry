@@ -53,7 +53,7 @@ section {
                 margin-top: $padding;
             }
 
-            ::deep.suspense.timeout div {
+            ::deep .suspense.timeout div {
                 font-size: $statlet-label-height;
             }
 
@@ -79,5 +79,14 @@ section {
                 }
             }
         }
+    }
+}
+
+// 
+// Change display of suspense for statlet alignment.
+//
+section article {
+    ::deep .suspense.complete {
+        display: inline;
     }
 }

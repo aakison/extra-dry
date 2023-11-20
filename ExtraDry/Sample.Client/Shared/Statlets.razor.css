@@ -39,7 +39,7 @@ section article x-statlet div {
   color: var(--charcoal);
   margin-top: 5px;
 }
-section article x-statlet ::deep.suspense.timeout div {
+section article x-statlet ::deep .suspense.timeout div {
   font-size: 13px;
 }
 section article x-statlet:nth-child(1), section article x-statlet:nth-child(2) {
@@ -59,4 +59,8 @@ section article x-statlet:nth-child(1), section article x-statlet:nth-child(2) {
   section article x-statlet:nth-child(5) {
     display: flex;
   }
+}
+
+section article ::deep .suspense.complete {
+  display: inline;
 }
