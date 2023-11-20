@@ -145,7 +145,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
             return;
         }
 
-        if(GroupFunc == null) {
+        if(GroupFunc == null || item.Item == null) {
             return;
         }
         var group = GroupFunc(item.Item);

@@ -7,7 +7,7 @@
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<LangVersion>latest</LangVersion>
+		<LangVersion>11.0</LangVersion> <!-- .NET 7 compatibility for now -->
 	</PropertyGroup>
 
 	<PropertyGroup>

@@ -143,9 +143,7 @@ public class RuleEngineDeleteTests {
         var rules = new RuleEngine(new ServiceProviderStub());
         var obj = new BadDeleteValueDeletable();
 
-        var lambda = async () => {
-            _ = await rules.DeleteAsync(obj, () => { }, () => Task.CompletedTask);
-        };
+        async Task lambda() => await rules.DeleteAsync(obj, () => { }, () => Task.CompletedTask);
 
         await Assert.ThrowsAsync<DryException>(lambda);
     }

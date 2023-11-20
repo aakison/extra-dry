@@ -8,7 +8,7 @@
 }
 @if(Uuid != Guid.Empty)
 {
-    <DialogBox>
+    <DialogBox CloseUrl="@CloseDialogUrl">
         <DryErrorBoundary>
             <RegionEdit Uuid="@Uuid" />
         </DryErrorBoundary>
@@ -21,5 +21,7 @@
 
     [Parameter]
     public Guid Uuid { get; set; } = Guid.Empty;
+
+    private string CloseDialogUrl => $"/admin/works/regions/{View}";
 
 }
