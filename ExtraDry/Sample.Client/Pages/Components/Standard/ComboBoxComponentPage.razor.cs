@@ -6,8 +6,6 @@ using Sample.Shared;
 
 namespace Sample.Client.Pages.Components.Standard;
 
-#pragma warning disable IDE0051 // false positives, used in .razor page.
-
 public partial class ComboBoxComponentPage : ComponentBase, IListItemViewModel<Sector> {
 
     public string Title(Sector sector) => sector.Title;

@@ -15,7 +15,6 @@ public partial class SampleDataService {
         regions = regionService;
     }
 
-    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Not static to be aligned with other methods.")]
     public void PopulateServices()
     {
         database.Sectors.Add(new Sector { 

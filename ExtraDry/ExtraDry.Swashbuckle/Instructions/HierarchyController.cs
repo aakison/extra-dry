@@ -101,7 +101,6 @@ public class HierarchyController {
     /// </summary>
     [HttpGet("api/sample-data/region-hierarchy"), Produces("application/json")]
     [AllowAnonymous]
-    [SuppressMessage("Usage", "DRY1104:Http Verbs should be named with their CRUD counterparts", Justification = "Hierarchy queries are an exception.")]
     public async Task<HierarchyCollection<Animal>> ListHierarchyAsync([FromQuery] HierarchyQuery query)
     {
         return await sampleData.ListHierarchyAsync(query);

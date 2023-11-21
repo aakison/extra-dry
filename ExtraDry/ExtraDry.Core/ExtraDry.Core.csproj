@@ -4,8 +4,6 @@
 		<TargetFramework>netstandard2</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<EnableNETAnalyzers>true</EnableNETAnalyzers>
-		<EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<LangVersion>11.0</LangVersion> <!-- .NET 7 compatibility for now -->
 	</PropertyGroup>
@@ -24,7 +22,7 @@
 		<PackageIcon>extradry-logo.png</PackageIcon>
 		<PackageIconUrl />
 	</PropertyGroup>
-
+	
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
