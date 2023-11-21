@@ -79,9 +79,9 @@ public class AttributeBuilder : ColumnBuilder {
         return this;
     }
 
-    public AttributeBuilder HasDefault(object _default)
+    public AttributeBuilder HasDefault(object @default)
     {
-        SetDefault(_default);
+        SetDefault(@default);
         return this;
     }
 

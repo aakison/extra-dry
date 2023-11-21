@@ -1,6 +1,7 @@
 ﻿using ExtraDry.Core.DataWarehouse;
 using ExtraDry.Server.DataWarehouse;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ExtraDry.Server.Tests.WarehouseTests;
 
@@ -8,14 +9,14 @@ public class WarehouseMeasureTests {
 
     [Theory]
     [InlineData("Measure Container ID", ColumnType.Key)] // Key Column naming convention
-    [InlineData("Integer", ColumnType.Integer)] // Simple int property, no decoration or special handling
-    [InlineData("Short", ColumnType.Integer)] // Simple short property, no decoration or special handling
-    [InlineData("Float", ColumnType.Real)] // Simple float property, no decoration or special handling
-    [InlineData("Double", ColumnType.Real)] // Simple double property, no decoration or special handling
-    [InlineData("Gross", ColumnType.Decimal)] // Simple decimal property, no decoration or special handling
+    [InlineData(nameof(MeasureContainer.Integer), ColumnType.Integer)] // Simple int property, no decoration or special handling
+    [InlineData(nameof(MeasureContainer.Short), ColumnType.Integer)] // Simple short property, no decoration or special handling
+    [InlineData(nameof(MeasureContainer.Float), ColumnType.Real)] // Simple float property, no decoration or special handling
+    [InlineData(nameof(MeasureContainer.Double), ColumnType.Real)] // Simple double property, no decoration or special handling
+    [InlineData(nameof(MeasureContainer.Gross), ColumnType.Decimal)] // Simple decimal property, no decoration or special handling
     [InlineData("Annual Revenue", ColumnType.Decimal)] // Simple decimal property, with naming conversion
     [InlineData("Double Revenue", ColumnType.Decimal)] // Decimal property with getter only, with naming conversion
-    [InlineData("Gifts", ColumnType.Decimal)] // NotMapped, but also Measure so include it.
+    [InlineData(nameof(MeasureContainer.Gifts), ColumnType.Decimal)] // NotMapped, but also Measure so include it.
     [InlineData("Big Bucks", ColumnType.Decimal)] // Measure attribute rename
     public void MeasureIncluded(string title, ColumnType columnType)
     {
@@ -165,7 +166,7 @@ public class WarehouseMeasureTests {
         var builder = new WarehouseModelBuilder();
         builder.LoadSchema<MeasureContext>();
 
-        Assert.Throws<DryException>(() => builder.Fact<MeasureContainer>().Measure(e => e.SmallWholeNumberTest).HasName("Integer"));
+        Assert.Throws<DryException>(() => builder.Fact<MeasureContainer>().Measure(e => e.Short).HasName("Integer"));
     }
 
     [Fact]
@@ -243,13 +244,17 @@ public class MeasureContainer {
     [Measure]
     public string Title { get; set; } = string.Empty;
 
-    public int WholeNumberTest { get; set; }
+    [SuppressMessage("Naming", "CA1720:Identifier contains type name", Justification = "For testing purposes.")]
+    public int Integer { get; set; }
 
-    public short SmallWholeNumberTest { get; set; }
+    [SuppressMessage("Naming", "CA1720:Identifier contains type name", Justification = "For testing purposes.")]
+    public short Short { get; set; }
 
-    public float SmallPrecisionRealNumber { get; set; }
+    [SuppressMessage("Naming", "CA1720:Identifier contains type name", Justification = "For testing purposes.")]
+    public float Float { get; set; }
 
-    public double LargePrecisionRealNumber { get; set; }
+    [SuppressMessage("Naming", "CA1720:Identifier contains type name", Justification = "For testing purposes.")]
+    public double Double { get; set; }
 
     public decimal Gross { get; set; }
 

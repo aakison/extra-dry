@@ -2,10 +2,10 @@
 
 namespace ExtraDry.Server.DataWarehouse;
 
-[DimensionTable]
-public class Date {
+[DimensionTable(Name = "Date")]
+public class DateDimension {
 
-    public Date(int sequence, DayType dayType)
+    public DateDimension(int sequence, DayType dayType)
     {
         Id = sequence;
         DayType = dayType;

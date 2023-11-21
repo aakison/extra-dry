@@ -2,10 +2,10 @@
 
 namespace ExtraDry.Server.DataWarehouse;
 
-[DimensionTable]
-public class Time {
+[DimensionTable(Name = "Time")]
+public class TimeDimension {
     
-    public Time(TimeOnly time)
+    public TimeDimension(TimeOnly time)
     {
         Value = new TimeOnly(time.Hour, time.Minute);
         Id = 60 * Value.Hour + Value.Minute;

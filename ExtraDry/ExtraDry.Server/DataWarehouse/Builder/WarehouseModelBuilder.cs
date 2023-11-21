@@ -56,7 +56,7 @@ public class WarehouseModelBuilder {
 
     private static List<Type> GetWarehouseTables(IEnumerable<Type> enumerable)
     {
-        var tableClasses = new List<Type>() { typeof(Date), typeof(Time) };
+        var tableClasses = new List<Type>() { typeof(DateDimension), typeof(TimeDimension) };
         var rejectedClasses = new List<Type>();
         foreach(var candidate in enumerable) {
             ExpandTables(candidate);

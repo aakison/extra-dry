@@ -14,14 +14,19 @@ csharp_new_line_before_finally = true
 insert_final_newline = true
 csharp_space_after_keywords_in_control_flow_statements = false
 
-# CA1303: Specify Localized Text
+dotnet_diagnostic.CS1591.severity = none #temp until other issues fixed...
+
 # .NET Core conventions are to use local text as key, so migrating is much easier if/when i18n is added.
 dotnet_diagnostic.CA1303.severity = none
-dotnet_diagnostic.CS1591.severity = none #temp until other issues fixed...
+
 # Wish this worked, but with different rule sets it just has too many false-positives...
 #dotnet_diagnostic.IDE0079.severity = none
 
+# This is just noise as default for web applications is not to return to non-existent UI thread.
 dotnet_diagnostic.CA2007.severity = none # Consider calling ConfigureAwait on the awaited task
+
+# Would be nice if this wasn't global, but conflicts on VB "shared" keyword
+dotnet_diagnostic.CA1716.severity = none # Identifiers should not match keywords
 
 [*.{cshtml,xml,html,css}]
 indent_style = space

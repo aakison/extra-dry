@@ -18,7 +18,7 @@ public class TimeGenerator : IDataGenerator {
             var start = actualMax + 1;
             var end = requiredMax;
             for(int t = start; t < end; ++t) {
-                batch.Add(new Time(new TimeOnly(t / 60, t % 60)));
+                batch.Add(new TimeDimension(new TimeOnly(t / 60, t % 60)));
             }
             return batch;
         }
