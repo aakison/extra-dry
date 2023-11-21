@@ -453,7 +453,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
         // And filter the internal list of items.
         InternalItems.SetFilter(filter);
         // When filter changes, clear the selected option
-        if(!DisplayFilter.Equals(DisplayItemTitle(SelectedOption), StringComparison.CurrentCultureIgnoreCase)) {
+        if(!DisplayFilter.Equals(DisplayItemTitle(SelectedOption), StringComparison.OrdinalIgnoreCase)) {
             SelectedOption = default;
         }
         // When filtering from scratch, auto-expand options
