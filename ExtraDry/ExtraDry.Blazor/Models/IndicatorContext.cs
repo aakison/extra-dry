@@ -14,4 +14,9 @@ public class IndicatorContext {
     /// A callback method to retry the load process
     /// </summary>
     public Func<Task> Reload { get; set; } = () => Task.CompletedTask;
+
+    /// <summary>
+    /// Which Icons should be hidden
+    /// </summary>
+    public IndicatorIcon ShowIcons { get; set; }
 }
