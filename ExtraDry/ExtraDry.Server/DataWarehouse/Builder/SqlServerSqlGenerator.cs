@@ -64,8 +64,8 @@ WHEN NOT MATCHED THEN
     private static string SqlColumnType(Column column) =>
         (column.ColumnType, column.Nullable) switch {
             (ColumnType.Key, _) => "INT NOT NULL PRIMARY KEY",
-            (ColumnType.Double, false) => "REAL NOT NULL",
-            (ColumnType.Double, true) => "REAL",
+            (ColumnType.Real, false) => "REAL NOT NULL",
+            (ColumnType.Real, true) => "REAL",
             (ColumnType.Integer, false) => "INT NOT NULL",
             (ColumnType.Integer, true) => "INT",
             (ColumnType.Decimal, false) => $"DECIMAL({column.Precision}) NOT NULL",

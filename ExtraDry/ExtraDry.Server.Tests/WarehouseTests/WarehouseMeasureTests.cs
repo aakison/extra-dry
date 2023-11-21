@@ -10,8 +10,8 @@ public class WarehouseMeasureTests {
     [InlineData("Measure Container ID", ColumnType.Key)] // Key Column naming convention
     [InlineData("Integer", ColumnType.Integer)] // Simple int property, no decoration or special handling
     [InlineData("Short", ColumnType.Integer)] // Simple short property, no decoration or special handling
-    [InlineData("Float", ColumnType.Double)] // Simple float property, no decoration or special handling
-    [InlineData("Double", ColumnType.Double)] // Simple double property, no decoration or special handling
+    [InlineData("Float", ColumnType.Real)] // Simple float property, no decoration or special handling
+    [InlineData("Double", ColumnType.Real)] // Simple double property, no decoration or special handling
     [InlineData("Gross", ColumnType.Decimal)] // Simple decimal property, no decoration or special handling
     [InlineData("Annual Revenue", ColumnType.Decimal)] // Simple decimal property, with naming conversion
     [InlineData("Double Revenue", ColumnType.Decimal)] // Decimal property with getter only, with naming conversion
@@ -100,11 +100,11 @@ public class WarehouseMeasureTests {
         var builder = new WarehouseModelBuilder();
         builder.LoadSchema<MeasureContext>();
 
-        builder.Fact<MeasureContainer>().Measure(e => e.Gross).HasColumnType(ColumnType.Double);
+        builder.Fact<MeasureContainer>().Measure(e => e.Gross).HasColumnType(ColumnType.Real);
 
         var warehouse = builder.Build();
         var fact = warehouse.Facts.Single(e => e.EntityType == typeof(MeasureContainer));
-        Assert.Contains(fact.Columns, e => e.Name == "Gross" && e.ColumnType == ColumnType.Double);
+        Assert.Contains(fact.Columns, e => e.Name == "Gross" && e.ColumnType == ColumnType.Real);
     }
 
     [Fact]
@@ -165,7 +165,7 @@ public class WarehouseMeasureTests {
         var builder = new WarehouseModelBuilder();
         builder.LoadSchema<MeasureContext>();
 
-        Assert.Throws<DryException>(() => builder.Fact<MeasureContainer>().Measure(e => e.Short).HasName("Integer"));
+        Assert.Throws<DryException>(() => builder.Fact<MeasureContainer>().Measure(e => e.SmallWholeNumberTest).HasName("Integer"));
     }
 
     [Fact]
@@ -243,13 +243,13 @@ public class MeasureContainer {
     [Measure]
     public string Title { get; set; } = string.Empty;
 
-    public int Integer { get; set; }
+    public int WholeNumberTest { get; set; }
 
-    public short Short { get; set; }
+    public short SmallWholeNumberTest { get; set; }
 
-    public float Float { get; set; }
+    public float SmallPrecisionRealNumber { get; set; }
 
-    public double Double { get; set; }
+    public double LargePrecisionRealNumber { get; set; }
 
     public decimal Gross { get; set; }
 
