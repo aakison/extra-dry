@@ -174,14 +174,14 @@ public partial class DryContent : ComponentBase {
     [JSInvokable("UploadImage")]
     public static async Task<IBlobInfo> UploadImage(string imageDataUrl)
     {
-        if(!imageDataUrl.StartsWith("data:")) {
+        if(!imageDataUrl.StartsWith("data:", StringComparison.Ordinal)) {
             throw new DryException("When posting back an image, send through the imageDataUri from the clipboard.  This URL must begin with 'data:' scheme.", "Unable to upload image. 0x0F4B39DA");
         }
         var semicolon = imageDataUrl.IndexOf(';');
         if(semicolon > 64 || semicolon < 7) {
             throw new DryException("When posting back an image, send through the imageDataUri from the clipboard.  This must include the mime type between the first ':' and the first ';'", "Unable to upload image. 0x0F8A8B8C");
         }
-        var base64Delimiter = imageDataUrl.IndexOf("base64,");
+        var base64Delimiter = imageDataUrl.IndexOf("base64,", StringComparison.Ordinal);
         if(base64Delimiter < 0) {
             throw new DryException("When posting back an image, send through the imageDataUri from the clipboard.  This must include the content of the image properly base64 encoded.", "Unable to upload image. 0x0F3CEE65");
         }

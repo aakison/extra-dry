@@ -64,7 +64,7 @@ public class DataConverterTests
 
         var display = DataConverter.DateToRelativeTime(current);
 
-        expected = string.Format(expected, current);
+        expected = string.Format(CultureInfo.CurrentCulture, expected, current);
         Assert.Equal(expected, display);
     }
 

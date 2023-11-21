@@ -249,7 +249,7 @@ public class DataFactory {
         }
     }
 
-    private bool migrationsApplied = false;
+    private bool migrationsApplied;
 
     private WarehouseModel Model { get; }
 

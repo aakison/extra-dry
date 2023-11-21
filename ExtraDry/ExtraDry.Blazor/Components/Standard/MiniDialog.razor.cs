@@ -245,7 +245,7 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent {
 
     private CancellationTokenSource stateChangeCancellation = new();
 
-    private bool shouldCollapse = false;
+    private bool shouldCollapse;
 
     private int ActualAnimationDuration => Math.Clamp(AnimationDuration, 0, maximumDuration);
 
@@ -307,7 +307,7 @@ public class DialogEventArgs : EventArgs {
     /// <summary>
     /// If set in an event handler, cancels the button action from applying.
     /// </summary>
-    public bool Cancel { get; set; } = false;
+    public bool Cancel { get; set; }
 
     /// <summary>
     /// If a mouse event started processing, the underlying mouse event that triggered the event.

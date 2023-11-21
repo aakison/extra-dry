@@ -61,7 +61,7 @@ public partial class DryMultipleSelect<T> : ComponentBase {
         }
         int index = 100;
         foreach(var value in Values) {
-            var key = index++.ToString();
+            var key = $"{index++}";
             var selected = PropertyList?.Contains(value) ?? false;
             AllOptions.Add(key, new OptionInfo(key, value?.ToString() ?? "-empty-", value) { 
                 Selected = selected,

@@ -107,7 +107,7 @@ public class InstructionDataService {
                 var animal = animals[i];
                 animal.Id = i + 1;
                 animal.Parent = animals.SingleOrDefault(e => e.Lineage == animal.Lineage.GetAncestor(1));
-                animal.Slug = animal.Title.ToLower().Replace(" ", "-");
+                animal.Slug = animal.Title.ToLower(CultureInfo.CurrentCulture).Replace(" ", "-");
             }
             return animals;
         }

@@ -56,7 +56,7 @@ public class DryBlobService : IBlobService {
             var formatArgs = new List<object>(args);
             formatArgs.Insert(0, key);
             args = formatArgs.ToArray();
-            return string.Format(ApiTemplate, args).TrimEnd('/');
+            return string.Format(CultureInfo.InvariantCulture, ApiTemplate, args).TrimEnd('/');
         }
         catch(FormatException ex) {
             var argsFormatted = string.Join(',', args?.Select(e => e?.ToString()) ?? Array.Empty<string>());

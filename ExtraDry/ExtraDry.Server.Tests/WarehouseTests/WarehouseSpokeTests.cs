@@ -108,7 +108,7 @@ public class WarehouseSpokeTests {
         var warehouse = builder.Build();
 
         var dimension = warehouse.Dimensions.First(e => e.EntityType == typeof(SelfReferenceContext.SelfReference));
-        Assert.Contains(dimension.Columns, e => e.Name.EndsWith("Self Reference ID"));
+        Assert.Contains(dimension.Columns, e => e.Name.EndsWith("Self Reference ID", StringComparison.Ordinal));
     }
 
     public class TestContext : DbContext {

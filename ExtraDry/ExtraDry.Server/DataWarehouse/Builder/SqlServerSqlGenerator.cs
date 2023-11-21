@@ -2,7 +2,7 @@
 
 public class SqlServerSqlGenerator : ISqlGenerator {
 
-    public bool IncludeConstraints { get; set; } = false;
+    public bool IncludeConstraints { get; set; }
 
     public string Generate(WarehouseModel warehouse) =>
         string.Join("\nGO\n", warehouse.Dimensions.Union(warehouse.Facts).Select(e => CreateTable(e))) +

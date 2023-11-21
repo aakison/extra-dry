@@ -93,7 +93,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
         StateHasChanged();
     }
 
-    private bool changing = false;
+    private bool changing;
 
     private async void Notify_OnChanged(object? sender, EventArgs e)
     {
@@ -316,7 +316,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
         int FirstItemOnPage(int page) => ItemsService.PageSize * page;
     }
 
-    private bool firstLoadCompleted = false;
+    private bool firstLoadCompleted;
 
     public void Dispose()
     {

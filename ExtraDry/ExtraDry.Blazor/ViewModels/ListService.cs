@@ -154,7 +154,7 @@ public class ListService<TItem> : IListService<TItem> {
     private static void AddIf(Dictionary<string, List<string>> keys, string key, int? value)
     {
         if(value.HasValue && value.Value != 0) {
-            keys.Add(key, new List<string> { value.Value.ToString() });
+            keys.Add(key, new List<string> { $"{value.Value}" });
         }
     }
 

@@ -137,7 +137,7 @@ public partial class Theme : ComponentBase {
         }
     }
 
-    private static bool loaded = false;
+    private static bool loaded;
 
     private static readonly ConcurrentDictionary<string, IconInfo> CachedIcons = new();
 

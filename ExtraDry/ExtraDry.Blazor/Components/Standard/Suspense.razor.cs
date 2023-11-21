@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Blazor;
+﻿using System.Globalization;
+
+namespace ExtraDry.Blazor;
 
 /// <summary>
 /// Represents a value that requires an async operation to populate.
@@ -75,7 +77,7 @@ public partial class Suspense<TModel> : ComponentBase, IExtraDryComponent {
     /// <inheritdoc cref="LoadingState" />
     public LoadingState State { get; set; }  
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass, "suspense", State.ToString().ToLower());
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass, "suspense", State.ToString().ToLower(CultureInfo.InvariantCulture));
 
     protected async override Task OnInitializedAsync()
     {

@@ -141,7 +141,7 @@ public class CrudService<T> {
     private string ApiEndpoint(string method, object key, params object[] args)
     {
         try {
-            var baseUrl = string.Format(Options.CrudEndpoint, args);
+            var baseUrl = string.Format(CultureInfo.InvariantCulture, Options.CrudEndpoint, args);
             var url = $"{baseUrl}/{key}".TrimEnd('/');
             return url;
         }

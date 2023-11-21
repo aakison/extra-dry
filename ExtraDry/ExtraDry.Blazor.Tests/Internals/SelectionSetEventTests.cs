@@ -206,9 +206,9 @@ namespace ExtraDry.Blazor.Tests.Internals {
             Assert.Null(args);
         }
 
-        private object? sender = null;
+        private object? sender;
 
-        private SelectionSetChangedEventArgs? args = null;
+        private SelectionSetChangedEventArgs? args;
 
         private readonly object obj1 = new();
 

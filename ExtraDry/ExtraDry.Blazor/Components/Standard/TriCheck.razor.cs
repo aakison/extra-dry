@@ -113,9 +113,9 @@ public partial class TriCheck : ComponentBase, IExtraDryComponent {
     [Inject]
     private ExtraDryJavascriptModule Module { get; set; } = null!;
 
-    private bool jsIndeterminate = false;
+    private bool jsIndeterminate;
 
-    private static int maxId = 0;
+    private static int maxId;
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]

@@ -22,7 +22,7 @@ public partial class ComboBoxComponentPage : ComponentBase, IListItemViewModel<S
 
     private bool AdvancedSort { get; set; } = true;
 
-    private bool BasicGroup { get; set; } = false;
+    private bool BasicGroup { get; set; }
 
     private Sector? BasicValue { get; set; }
 

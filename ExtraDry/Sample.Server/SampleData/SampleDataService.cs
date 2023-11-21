@@ -1,6 +1,5 @@
 ﻿using CsvHelper;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -85,7 +84,7 @@ public partial class SampleDataService {
                 //Randomly populate fields.
                 if(company.PrimarySector.Id == 3 ) {
                     company.CustomFields = new ExpandoValues { 
-                        { "asx_code", Slug.RandomWebString(3).ToUpper() }
+                        { "asx_code", Slug.RandomWebString(3).ToUpper(CultureInfo.CurrentCulture) }
                     };
                 }
                 //company.Videos.Add(new Video { Title = "Huzzah 1", Uri = "https://www.example.com/huzzah1" });

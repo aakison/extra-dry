@@ -45,7 +45,7 @@ public class PropertyDescription {
     /// It is possible that mapping through ChildModel's will create an infinite loop;
     /// Check and limit the number of layers, in practice a UI will be horrible if recursion is even 2-3 levels.
     /// </summary>
-    private static int recursionDepth = 0;
+    private static int recursionDepth;
 
     public ViewModelDescription? ChildModel { get; private set; }
 

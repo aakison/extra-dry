@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Server.DataWarehouse;
+﻿using System.Globalization;
+
+namespace ExtraDry.Server.DataWarehouse;
 
 [DimensionTable]
 public class Time {
@@ -44,14 +46,14 @@ public class Time {
     public int TwelthHour => 5 * (Value.Minute / 5);
 
     [StringLength(2)]
-    public string Meridian => Value.ToString("tt");
+    public string Meridian => Value.ToString("tt", CultureInfo.CurrentCulture);
 
     [StringLength(5)]
     [Attribute("24 Hour Time Name")]
-    public string Time24Name => Value.ToString("HH:mm");
+    public string Time24Name => Value.ToString("HH:mm", CultureInfo.CurrentCulture);
 
     [StringLength(8)]
     [Attribute("12 Hour Time Name")]
-    public string Time12Name => Value.ToString("hh:mm tt");
+    public string Time12Name => Value.ToString("hh:mm tt", CultureInfo.CurrentCulture);
 
 }

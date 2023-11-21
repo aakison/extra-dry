@@ -54,7 +54,7 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass, ClickableClass, SelectedClass);
 
-    private string RadioButtonScope => Description.GetHashCode().ToString();
+    private string RadioButtonScope => $"{Description.GetHashCode()}";
 
     private bool IsSelected => Selection.Contains(Item.Item);
 

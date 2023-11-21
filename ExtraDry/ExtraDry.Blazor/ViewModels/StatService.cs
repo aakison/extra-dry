@@ -86,10 +86,10 @@ public class StatService<T> {
     private string ApiEndpoint(string method, string? filter, params object[] args)
     {
         try {
-            var baseUrl = string.Format(Options.StatEndpoint, args);
+            var baseUrl = string.Format(CultureInfo.InvariantCulture, Options.StatEndpoint, args);
             var url = $"{baseUrl}".TrimEnd('/');
             if(filter != null) {
-                url += string.Format("?Filter={0}", filter);
+                url += $"?Filter={filter}";
             }
             return url;
         }

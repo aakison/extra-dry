@@ -108,7 +108,7 @@ public class LinqBuilderTests {
     [Fact]
     public void SingleStartsWithWhereFilterCompatible()
     {
-        var linqWhere = SampleData.Where(e => e.LastName.StartsWith("Bark")).ToList();
+        var linqWhere = SampleData.Where(e => e.LastName.StartsWith("Bark", StringComparison.Ordinal)).ToList();
 
         var filterProperty = GetFilterProperty("LastName");
         var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "LastName:Bark").ToList();
@@ -119,7 +119,7 @@ public class LinqBuilderTests {
     [Fact]
     public void MultipleWhereFilterCompatible()
     {
-        var linqWhere = SampleData.Where(e => e.FirstName == "Bob" || e.LastName.StartsWith("Bark")).ToList();
+        var linqWhere = SampleData.Where(e => e.FirstName == "Bob" || e.LastName.StartsWith("Bark", StringComparison.Ordinal)).ToList();
 
         var firstName = GetFilterProperty("FirstName");
         var lastName = GetFilterProperty("LastName");
