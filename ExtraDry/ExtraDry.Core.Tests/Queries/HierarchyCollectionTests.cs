@@ -109,7 +109,7 @@ public class HierarchyCollectionTests
         string Pay { get; set; }
     }
 
-    private class Payload : IPayload
+    private sealed class Payload : IPayload
     {
         public string Pay { get; set; } = string.Empty;
 

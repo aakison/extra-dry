@@ -354,11 +354,11 @@ public class ChildEntityNoDefaultContructor {
     public ChildEntity? TestObject { get; set; }
 }
 
-class InvalidReferenceTypes {
+internal sealed class InvalidReferenceTypes {
     public InvalidTestObject? TestObject { get; set; }
 }
 
-class InvalidTestObject { }
+internal sealed class InvalidTestObject { }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum State {
