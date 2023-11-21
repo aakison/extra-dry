@@ -20,13 +20,13 @@ public class DateGenerator : IDataGenerator {
 
     public int FiscalYearEndingMonth => Options.FiscalYearEndingMonth;
 
-    public async Task<List<object>> GetBatchAsync(Table table, DbContext oltp, DbContext olap, ISqlGenerator sql)
+    public async Task<List<object>> GetBatchAsync(Table table, DbContext oltpContext, DbContext olapContext, ISqlGenerator sqlGenerator)
     {
         RefreshOptions();
         var batch = new List<object>();
 
-        var minSql = sql.SelectMinimum(table, table.KeyColumn.Name);
-        var actualMin = await olap.Database.ExecuteScalerAsync(minSql);
+        var minSql = sqlGenerator.SelectMinimum(table, table.KeyColumn.Name);
+        var actualMin = await olapContext.Database.ExecuteScalerAsync(minSql);
         var requiredMin = StandardConversions.DateOnlyToSequence(StartDate);
         if(requiredMin < actualMin) {
             // Earlier dates are required, ensure they're added in decreasing order, reverses typical for loop.
@@ -38,8 +38,8 @@ public class DateGenerator : IDataGenerator {
             return batch;
         }
 
-        var maxSql = sql.SelectMaximum(table, table.KeyColumn.Name);
-        var actualMax = await olap.Database.ExecuteScalerAsync(maxSql);
+        var maxSql = sqlGenerator.SelectMaximum(table, table.KeyColumn.Name);
+        var actualMax = await olapContext.Database.ExecuteScalerAsync(maxSql);
 
         var requiredMax = StandardConversions.DateOnlyToSequence(EndDate);
         if(requiredMax > actualMax) {

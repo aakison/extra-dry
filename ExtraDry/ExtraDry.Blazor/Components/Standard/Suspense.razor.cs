@@ -47,7 +47,7 @@ public partial class Suspense<TModel> : ComponentBase, IExtraDryComponent {
     /// Requires a method that is async and returns Task&lt;object?$gt;
     /// </summary>
     [Parameter, EditorRequired]    
-    public SuspenseItemsProviderDelegate<TModel>? ItemProvider { get; set; }
+    public SuspenseItemsProvider<TModel>? ItemProvider { get; set; }
 
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
@@ -149,4 +149,4 @@ public enum LoadingState {
 /// <typeparam name="TItem">The type of the context the item being loaded.</typeparam>
 /// <param name="cancellationToken">The <see cref="CancellationToken"/> for the consumer to make use of to handle cancellation events and timeouts.</param>
 /// <returns>A <see cref="Task"/> whose result is of type <c>TItem</c> upon successful completion.</returns>
-public delegate Task<TItem> SuspenseItemsProviderDelegate<TItem>(CancellationToken cancellationToken);
+public delegate Task<TItem> SuspenseItemsProvider<TItem>(CancellationToken cancellationToken);

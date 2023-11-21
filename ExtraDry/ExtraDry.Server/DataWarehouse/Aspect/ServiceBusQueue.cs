@@ -1,5 +1,6 @@
 ﻿using Azure.Messaging.ServiceBus;
 using Microsoft.Extensions.Configuration;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ExtraDry.Server.DataWarehouse;
 
@@ -12,6 +13,7 @@ namespace ExtraDry.Server.DataWarehouse;
 /// Advice on singleton:
 /// https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-dotnet-get-started-with-queues
 /// </remarks>
+[SuppressMessage("Naming", "CA1711:Identifiers should not have incorrect suffix", Justification = "Name makes it clear that it is not an in-memory queue.")]
 public class ServiceBusQueue<T> {
 
     public ServiceBusQueue(ServiceBusSenderOptions? options = null, IConfiguration? configuration = null)

@@ -15,7 +15,7 @@ public class DataWarehouseAspect {
         Queue = queue;
         Logger = logger;
         ExceptionTypes.Add(typeof(VersionInfo));
-        context.EntitiesChanged += Context_EntitiesChanged;
+        context.EntitiesChangedEvent += Context_EntitiesChanged;
     }
 
     private async void Context_EntitiesChanged(object sender, EntitiesChangedEventArgs args)

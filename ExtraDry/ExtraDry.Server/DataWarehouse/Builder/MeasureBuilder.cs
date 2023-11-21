@@ -71,9 +71,9 @@ public class MeasureBuilder : ColumnBuilder {
         return this;
     }
 
-    public MeasureBuilder HasDefault(object _default)
+    public MeasureBuilder HasDefault(object @default)
     {
-        SetDefault(_default);
+        SetDefault(@default);
         return this;
     }
 

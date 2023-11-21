@@ -158,10 +158,10 @@ public class ListService<TItem> : IListService<TItem> {
         }
     }
 
-    public async ValueTask<ItemsProviderResult<TItem>> GetItemsAsync(CancellationToken token)
+    public async ValueTask<ItemsProviderResult<TItem>> GetItemsAsync(CancellationToken cancellationToken)
     {
         var query = new Query { Source = ListSource.List };
-        return await GetItemsAsync(query, token);
+        return await GetItemsAsync(query, cancellationToken);
     }
 
     public async ValueTask<ItemsProviderResult<TItem>> GetItemsAsync(string filter, CancellationToken token)

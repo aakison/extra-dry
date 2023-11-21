@@ -39,11 +39,11 @@ public class SectorInfoJsonConverter : JsonConverter<Sector> {
         //throw new JsonException();
     }
 
-    public override void Write(Utf8JsonWriter writer, Sector sector, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, Sector value, JsonSerializerOptions options)
     {
         writer.WriteStartObject();
-        writer.WriteString(Renamer(nameof(sector.Uuid)), sector.Uuid);
-        writer.WriteString(Renamer(nameof(sector.Title)), sector.Title);
+        writer.WriteString(Renamer(nameof(value.Uuid)), value.Uuid);
+        writer.WriteString(Renamer(nameof(value.Title)), value.Title);
         writer.WriteEndObject();
 
         string Renamer(string name) => options.PropertyNamingPolicy?.ConvertName(name) ?? name;

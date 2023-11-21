@@ -6,12 +6,12 @@ namespace ExtraDry.Server.DataWarehouse;
 
 public class TimeGenerator : IDataGenerator {
 
-    public async Task<List<object>> GetBatchAsync(Table table, DbContext oltp, DbContext olap, ISqlGenerator sql)
+    public async Task<List<object>> GetBatchAsync(Table table, DbContext oltpContext, DbContext olapContext, ISqlGenerator sqlGenerator)
     {
         var batch = new List<object>();
 
-        var maxSql = sql.SelectMaximum(table, table.KeyColumn.Name);
-        var actualMax = await olap.Database.ExecuteScalerAsync(maxSql);
+        var maxSql = sqlGenerator.SelectMaximum(table, table.KeyColumn.Name);
+        var actualMax = await olapContext.Database.ExecuteScalerAsync(maxSql);
 
         var requiredMax = 24 * 60;
         if(requiredMax > actualMax) {
