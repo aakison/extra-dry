@@ -41,7 +41,7 @@ public class FilteredCollectionTests
         target.Items.Add(item);
 
         var json = JsonSerializer.Serialize(target);
-        var result = JsonSerializer.Deserialize<FilteredCollection<Payload>>(json) ?? throw new Exception();
+        var result = JsonSerializer.Deserialize<FilteredCollection<Payload>>(json) ?? throw new ArgumentException();
 
         Assert.NotSame(result, target);
         Assert.NotSame(result.Items.First(), target.Items.First());

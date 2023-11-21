@@ -115,7 +115,7 @@ public class RuleEngineDeleteTests {
 
         var result = await rules.DeleteAsync(obj, () => { },
             // exception on hard delete (the second call).
-            () => { if(callCount++ > 0) { throw new Exception(); } return Task.CompletedTask; } 
+            () => { if(callCount++ > 0) { throw new ArgumentException(); } return Task.CompletedTask; } 
         );
 
         Assert.False(obj.Active);

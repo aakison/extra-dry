@@ -186,7 +186,7 @@ public class ListService<TItem> : IListService<TItem> {
     public async ValueTask<(object, ICollection<TItem>, int)> GetItemsInternalAsync(Query query, CancellationToken cancellationToken)
     {
         var source = (Options.ListEndpoint, Options.HierarchyEndpoint) switch {
-            ("", "") => throw new Exception("No endpoints defined"),
+            ("", "") => throw new DryException(HttpStatusCode.NotFound, "No endpoints defined", "When configuring a ListService, either or both of ListEndpoint and/or HierarchyEndpoint must be provided."),
             ("", _) => ListSource.Hierarchy,
             (_, "") => ListSource.List,
             (_, _) => query.Source,

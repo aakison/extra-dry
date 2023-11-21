@@ -33,7 +33,7 @@ public class ServiceBusQueue<T> {
             var json = JsonSerializer.Serialize(item);
             var message = new ServiceBusMessage(json) { ContentType = "application/json" };
             if(batch.TryAddMessage(message)) {
-                throw new Exception("Couldn't add message to batch.");
+                throw new DryException("Couldn't add message to batch.");
             }
         }
         await Sender.SendMessagesAsync(batch);
