@@ -179,7 +179,7 @@ public class FilteredListQueryableTests {
     {
         var filter = new FilterQuery { Filter = "bob" };
         var models = Samples.Models;
-        var expected = models.Where(e => e.Name == "bob" || e.Soundex.StartsWith("bob")).ToList();
+        var expected = models.Where(e => e.Name == "bob" || e.Soundex.StartsWith("bob", StringComparison.OrdinalIgnoreCase)).ToList();
 
         var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync();
 
@@ -193,7 +193,7 @@ public class FilteredListQueryableTests {
     {
         var filter = new FilterQuery { Filter = keyword };
         var models = Samples.Models;
-        var expected = models.Where(e => e.Name.Equals(keyword, StringComparison.InvariantCultureIgnoreCase) || e.Soundex.StartsWith(keyword, StringComparison.InvariantCultureIgnoreCase)).ToList();
+        var expected = models.Where(e => e.Name.Equals(keyword, StringComparison.OrdinalIgnoreCase) || e.Soundex.StartsWith(keyword, StringComparison.OrdinalIgnoreCase)).ToList();
 
         var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync();
 

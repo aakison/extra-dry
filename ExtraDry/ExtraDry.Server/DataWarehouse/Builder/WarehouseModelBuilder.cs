@@ -151,8 +151,8 @@ public class WarehouseModelBuilder {
     }
 
     internal bool HasTableNamed(string name) =>
-        FactTables.Values.Any(e => string.Compare(e.TableName, name, StringComparison.OrdinalIgnoreCase) == 0) ||
-        DimensionTables.Values.Any(e => string.Compare(e.TableName, name, StringComparison.OrdinalIgnoreCase) == 0);
+        FactTables.Values.Any(e => string.Equals(e.TableName, name, StringComparison.OrdinalIgnoreCase)) ||
+        DimensionTables.Values.Any(e => string.Equals(e.TableName, name, StringComparison.OrdinalIgnoreCase));
 
     private void LoadEnumDimension(Type enumType, DimensionTableAttribute dimension)
     {
