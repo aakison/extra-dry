@@ -58,7 +58,7 @@ public partial class Icon : ComponentBase, IExtraDryComponent {
                         return placeholderIcon;
                     }
                     else {
-                        Logger.LogWarning("Icon '{icon}' not registered, add an entry for icon to the `Icons` attribute of the `Theme` component.", Key);
+                        Logger.LogWarning("Icon '{Icon}' not registered, add an entry for icon to the `Icons` attribute of the `Theme` component.", Key);
                         return new IconInfo(Key, "no-key") { ImagePath = $"/img/no-icon-for-{Key}.svg", AlternateText = "" };
                     }
                 }

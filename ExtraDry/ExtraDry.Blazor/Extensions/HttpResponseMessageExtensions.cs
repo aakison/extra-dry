@@ -25,7 +25,7 @@ public static class HttpResponseMessageExtensions {
             catch {
                 logger?.LogError($"Attempt to assert success failed to parse response.");
             }
-            logger?.LogDebug("Response was not successful, full problem: {problem}", problem);
+            logger?.LogDebug("Response was not successful, full problem: {Problem}", problem);
             throw new DryException(problem);
         }
     }

@@ -84,7 +84,7 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
 
     private void CheckChanged(ChangeEventArgs args)
     {
-        Logger.LogInformation("Checked checkbox/radio with new value '{arg}'", args?.Value);
+        Logger.LogInformation("Checked checkbox/radio with new value '{Arg}'", args?.Value);
         //if(IsSelected) {
         //    Select();
         //}

@@ -8,7 +8,7 @@ public abstract class DryViewModelComponentBase : ComponentBase {
     protected override void OnParametersSet()
     {
         if(ViewModel == null) {
-            BaseLogger.LogError("Component '{class}' requires a ViewModel", GetType().Name);
+            BaseLogger.LogError("Component '{Class}' requires a ViewModel", GetType().Name);
             return;
         }
         if(Description == null || Description.ViewModel != ViewModel) {

@@ -29,12 +29,12 @@ public class DryPropertyComponentBase : ComponentBase {
     {
         base.OnParametersSet();
         if(Model == null) {
-            Logger.LogError("Model property must be supplied on {type}.", GetType());
+            Logger.LogError("Model property must be supplied on {Type}.", GetType());
             return;
         }
         if(Property == null) {
             if(PropertyName == null) {
-                Logger.LogError("A property must be specified using either Property or PropertyName on {type}.", GetType());
+                Logger.LogError("A property must be specified using either Property or PropertyName on {Type}.", GetType());
                 return;
             }
             var propInfo = Model.GetType().GetProperty(PropertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);

@@ -60,10 +60,10 @@ public class CrudService<T> {
         var json = JsonSerializer.Serialize(item);
         using var content = new StringContent(json, Encoding.UTF8, "application/json");
         var endpoint = ApiEndpoint(nameof(CreateAsync), string.Empty, args);
-        logger?.LogInformation("Created '{entity}' at '{endpoint}'", nameof(T), endpoint);
+        logger?.LogInformation("Created '{Entity}' at '{Endpoint}'", nameof(T), endpoint);
         var response = await http.PostAsync(endpoint, content);
         await response.AssertSuccess();
-        logger?.LogDebug("Created '{entity}' on '{endpoint}' with content: {content}", nameof(T), endpoint, json);
+        logger?.LogDebug("Created '{Entity}' on '{Endpoint}' with content: {Content}", nameof(T), endpoint, json);
     }
 
     public async Task CreateAsync(T item, CancellationToken cancellationToken = default)
@@ -71,32 +71,32 @@ public class CrudService<T> {
         var json = JsonSerializer.Serialize(item);
         using var content = new StringContent(json, Encoding.UTF8, "application/json");
         var endpoint = ApiEndpoint(nameof(CreateAsync), string.Empty);
-        logger?.LogInformation("Created '{entity}' at '{endpoint}'", nameof(T), endpoint);
+        logger?.LogInformation("Created '{Entity}' at '{Endpoint}'", nameof(T), endpoint);
         var response = await http.PostAsync(endpoint, content, cancellationToken);
         await response.AssertSuccess();
-        logger?.LogDebug("Created '{entity}' on '{endpoint}' with content: {content}", nameof(T), endpoint, json);
+        logger?.LogDebug("Created '{Entity}' on '{Endpoint}' with content: {Content}", nameof(T), endpoint, json);
     }
 
     [Obsolete("Inject arguments into HttpClient derived type")]
     public async Task<T?> RetrieveAsync(object key, params object[] args)
     {
         var endpoint = ApiEndpoint(nameof(RetrieveAsync), key, args);
-        logger?.LogInformation("Retrieving '{entity}' from '{endpoint}'", nameof(T), endpoint);
+        logger?.LogInformation("Retrieving '{Entity}' from '{Endpoint}'", nameof(T), endpoint);
         var response = await http.GetAsync(endpoint);
         await response.AssertSuccess();
         var item = await response.Content.ReadFromJsonAsync<T>();
-        logger?.LogDebug("Retrieved '{entity}' from '{endpoint}' with content: {content}", nameof(T), endpoint, item);
+        logger?.LogDebug("Retrieved '{Entity}' from '{Endpoint}' with content: {Content}", nameof(T), endpoint, item);
         return item;
     }
 
     public async Task<T?> RetrieveAsync(object key, CancellationToken cancellationToken = default)
     {
         var endpoint = ApiEndpoint(nameof(RetrieveAsync), key);
-        logger?.LogInformation("Retrieving '{entity}' from '{endpoint}'", nameof(T), endpoint);
+        logger?.LogInformation("Retrieving '{Entity}' from '{Endpoint}'", nameof(T), endpoint);
         var response = await http.GetAsync(endpoint, cancellationToken);
         await response.AssertSuccess();
         var item = await response.Content.ReadFromJsonAsync<T>(cancellationToken: cancellationToken);
-        logger?.LogDebug("Retrieved '{entity}' from '{endpoint}' with content: {content}", nameof(T), endpoint, item);
+        logger?.LogDebug("Retrieved '{Entity}' from '{Endpoint}' with content: {Content}", nameof(T), endpoint, item);
         return item;
     }
 
@@ -104,38 +104,38 @@ public class CrudService<T> {
     public async Task UpdateAsync(object key, T item, params object[] args)
     {
         var endpoint = ApiEndpoint(nameof(UpdateAsync), key, args);
-        logger?.LogInformation("Updating '{entity}' on '{endpoint}'", nameof(T), endpoint);
+        logger?.LogInformation("Updating '{Entity}' on '{Endpoint}'", nameof(T), endpoint);
         var response = await http.PutAsJsonAsync(endpoint, item);
         await response.AssertSuccess();
-        logger?.LogDebug("Updated '{entity}' on '{endpoint}' with content: {content}", nameof(T), endpoint, item);
+        logger?.LogDebug("Updated '{Entity}' on '{Endpoint}' with content: {Content}", nameof(T), endpoint, item);
     }
 
     public async Task UpdateAsync(object key, T item, CancellationToken cancellationToken = default)
     {
         var endpoint = ApiEndpoint(nameof(UpdateAsync), key);
-        logger?.LogInformation("Updating '{entity}' on '{endpoint}'", nameof(T), endpoint);
+        logger?.LogInformation("Updating '{Entity}' on '{Endpoint}'", nameof(T), endpoint);
         var response = await http.PutAsJsonAsync(endpoint, item, cancellationToken);
         await response.AssertSuccess();
-        logger?.LogDebug("Updated '{entity}' on '{endpoint}' with content: {content}", nameof(T), endpoint, item);
+        logger?.LogDebug("Updated '{Entity}' on '{Endpoint}' with content: {Content}", nameof(T), endpoint, item);
     }
 
     [Obsolete("Inject arguments into HtttpClient derived type")]
     public async Task DeleteAsync(object key, params object[] args)
     {
         var endpoint = ApiEndpoint(nameof(DeleteAsync), key, args);
-        logger?.LogInformation("Deleting '{entity}' at '{endpoint}'", nameof(T), endpoint);
+        logger?.LogInformation("Deleting '{Entity}' at '{Endpoint}'", nameof(T), endpoint);
         var response = await http.DeleteAsync(endpoint);
         await response.AssertSuccess();
-        logger?.LogDebug("Deleted '{entity}' at '{endpoint}'", nameof(T), endpoint);
+        logger?.LogDebug("Deleted '{Entity}' at '{Endpoint}'", nameof(T), endpoint);
     }
 
     public async Task DeleteAsync(object key, CancellationToken cancellationToken = default)
     {
         var endpoint = ApiEndpoint(nameof(DeleteAsync), key);
-        logger?.LogInformation("Deleting '{entity}' at '{endpoint}'", nameof(T), endpoint);
+        logger?.LogInformation("Deleting '{Entity}' at '{Endpoint}'", nameof(T), endpoint);
         var response = await http.DeleteAsync(endpoint, cancellationToken);
         await response.AssertSuccess();
-        logger?.LogDebug("Deleted '{entity}' at '{endpoint}'", nameof(T), endpoint);
+        logger?.LogDebug("Deleted '{Entity}' at '{Endpoint}'", nameof(T), endpoint);
     }
 
     private string ApiEndpoint(string method, object key, params object[] args)
@@ -147,7 +147,7 @@ public class CrudService<T> {
         }
         catch(FormatException ex) {
             var argsFormatted = string.Join(',', args?.Select(e => e?.ToString()) ?? Array.Empty<string>());
-            logger?.LogWarning("Formatting problem while constructing endpoint for `CrudService.{method}`.  Typically the endpoint provided has additional placeholders that have not been provided. The endpoint template ({CrudEndpoint}), could not be satisfied with arguments ({argsFormatted}).  Inner Exception was:  {ex.Message}", method, Options.CrudEndpoint, argsFormatted, ex.Message);
+            logger?.LogWarning("Formatting problem while constructing endpoint for `CrudService.{Method}`.  Typically the endpoint provided has additional placeholders that have not been provided. The endpoint template ({CrudEndpoint}), could not be satisfied with arguments ({ArgsFormatted}).  Inner Exception was:  {Message}", method, Options.CrudEndpoint, argsFormatted, ex.Message);
             throw new DryException("Error occurred connecting to server", "This is a mis-configuration and not a user error, please see the console output for more information.");
         }
     }

@@ -59,11 +59,11 @@ public class StatService<T> {
     public async Task<Statistics<T>?> RetrieveAsync(string? filter, params object[] args)
     {
         var endpoint = ApiEndpoint(nameof(RetrieveAsync), filter, args);
-        logger?.LogInformation("Retrieving '{entity}' from '{endpoint}'", nameof(T), endpoint);
+        logger?.LogInformation("Retrieving '{Entity}' from '{Endpoint}'", nameof(T), endpoint);
         var response = await http.GetAsync(endpoint);
         await response.AssertSuccess();
         var item = await response.Content.ReadFromJsonAsync<Statistics<T>>();
-        logger?.LogDebug("Retrieved '{entity}' from '{endpoint}' with content: {content}", nameof(T), endpoint, item);
+        logger?.LogDebug("Retrieved '{Entity}' from '{Endpoint}' with content: {Content}", nameof(T), endpoint, item);
         return item;
     }
 
@@ -75,11 +75,11 @@ public class StatService<T> {
     public async Task<Statistics<T>?> RetrieveAsync(string? filter, CancellationToken cancellationToken = default)
     {
         var endpoint = ApiEndpoint(nameof(RetrieveAsync), filter);
-        logger?.LogInformation("Retrieving '{entity}' from '{endpoint}'", nameof(T), endpoint);
+        logger?.LogInformation("Retrieving '{Entity}' from '{Endpoint}'", nameof(T), endpoint);
         var response = await http.GetAsync(endpoint, cancellationToken);
         await response.AssertSuccess(logger);
         var item = await response.Content.ReadFromJsonAsync<Statistics<T>>(Options.JsonSerializerOptions, cancellationToken);
-        logger?.LogDebug("Retrieved '{entity}' from '{endpoint}' with content: {content}", nameof(T), endpoint, item);
+        logger?.LogDebug("Retrieved '{Entity}' from '{Endpoint}' with content: {Content}", nameof(T), endpoint, item);
         return item;
     }
 
@@ -95,7 +95,7 @@ public class StatService<T> {
         }
         catch(FormatException ex) {
             var argsFormatted = string.Join(',', args?.Select(e => e?.ToString()) ?? Array.Empty<string>());
-            logger?.LogWarning("Formatting problem while constructing endpoint for `StatService.{method}`.  Typically the endpoint provided has additional placeholders that have not been provided. The endpoint template ({ApiTemplate}), could not be satisfied with arguments ({argsFormatted}).  Inner Exception was:  {ex.Message}", method, Options.StatEndpoint, argsFormatted, ex.Message);
+            logger?.LogWarning("Formatting problem while constructing endpoint for `StatService.{Method}`.  Typically the endpoint provided has additional placeholders that have not been provided. The endpoint template ({ApiTemplate}), could not be satisfied with arguments ({ArgsFormatted}).  Inner Exception was:  {Message}", method, Options.StatEndpoint, argsFormatted, ex.Message);
             throw new DryException("Error occurred connecting to server", "This is a mis-configuration and not a user error, please see the console output for more information.");
         }
     }

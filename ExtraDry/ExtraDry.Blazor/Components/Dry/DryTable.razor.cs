@@ -248,7 +248,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
 
                 InternalItems.AddRange(container.ItemInfos);
                 InternalItems.AddRange(Enumerable.Range(0, total - count).Select(e => new ListItemInfo<TItem>()));
-                Logger.LogInformation(@"DryTable: --Loaded items #0 to #{count} of {total}.", count, total);
+                Logger.LogInformation(@"DryTable: --Loaded items #0 to #{Count} of {Total}.", count, total);
             }
             if(AllItemsCached(request.StartIndex, request.Count)) {
                 Logger.LogInformation("--Returning cached results");
@@ -280,7 +280,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
                             info.IsGroup = item.IsGroup;
                         }
                         var lastIndex = firstIndex + ItemsService.PageSize;
-                        Logger.LogInformation(@"--Loaded items #{firstIndex} to #{lastIndex} of {total}.", firstIndex, lastIndex, total);
+                        Logger.LogInformation(@"--Loaded items #{FirstIndex} to #{LastIndex} of {Total}.", firstIndex, lastIndex, total);
                     }
                 }
             }

@@ -102,7 +102,7 @@ public partial class Theme : ComponentBase {
     private async Task LoadIconConcurrentAsync(IconInfo icon)
     {
         if(CachedIcons.ContainsKey(icon.Key)) {
-            Logger.LogWarning("Theme already contains an icon with key {icon.Key}, skipping.  Remove duplicate IconInfo from Theme's Icon collection.", icon.Key);
+            Logger.LogWarning("Theme already contains an icon with key {Icon.Key}, skipping.  Remove duplicate IconInfo from Theme's Icon collection.", icon.Key);
             return;
         }
         if(!CachedIcons.TryAdd(icon.Key, icon)) {
@@ -114,7 +114,7 @@ public partial class Theme : ComponentBase {
                 || !icon.ImagePath.EndsWith(".svg", StringComparison.InvariantCultureIgnoreCase)) {
                 return;
             }
-            Logger.LogDebug("Loading SVG Icon {icon.Key} from {icon.ImagePath}", icon.Key, icon.ImagePath);
+            Logger.LogDebug("Loading SVG Icon {Icon.Key} from {Icon.ImagePath}", icon.Key, icon.ImagePath);
             var content = await Http.GetStringAsync(icon.ImagePath);
             icon.SvgInlineBody = content;
             if(icon.SvgRenderType == SvgRenderType.Document) {
@@ -133,7 +133,7 @@ public partial class Theme : ComponentBase {
             }
         }
         catch(Exception ex) {
-            Logger.LogError("Failed to load icon {icon.Key} from {icon.ImagePath}: {ex.Message}", icon?.Key, icon?.ImagePath, ex.Message);
+            Logger.LogError("Failed to load icon {Icon.Key} from {Icon.ImagePath}: {Message}", icon?.Key, icon?.ImagePath, ex.Message);
         }
     }
 

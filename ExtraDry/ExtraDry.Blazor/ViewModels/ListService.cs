@@ -193,12 +193,12 @@ public class ListService<TItem> : IListService<TItem> {
         };
         var endpoint = source == ListSource.Hierarchy ? HierarchyEndpoint(query) : ListEndpoint(query);
         if(source == ListSource.Hierarchy) {
-            logger.LogInformation("ListService.GetItemsAsync from {endpoint}", endpoint);
+            logger.LogInformation("ListService.GetItemsAsync from {Endpoint}", endpoint);
             var response = Options.HierarchyMethod == HttpMethod.Get
                 ? await http.GetAsync(endpoint, cancellationToken)
                 : await http.PostAsync(endpoint, new StringContent(HierarchyRequestBody(query)), cancellationToken);
             var body = await response.Content.ReadAsStringAsync(cancellationToken);
-            logger.LogInformation("ListService.GetItemsAsync retrieved {body}", body);
+            logger.LogInformation("ListService.GetItemsAsync retrieved {Body}", body);
             var packedResult = JsonSerializer.Deserialize(body, HierarchyType, JsonSerializerOptions)
                 ?? throw new DryException($"Call to endpoint returned nothing or couldn't be converted to a result.");
             var items = HierarchyUnpacker!(packedResult);
@@ -207,9 +207,9 @@ public class ListService<TItem> : IListService<TItem> {
             return (packedResult, items, total);
         }
         else {
-            logger.LogInformation("ListService.GetItemsAsync from {endpoint}", endpoint);
+            logger.LogInformation("ListService.GetItemsAsync from {Endpoint}", endpoint);
             var body = await http.GetStringAsync(endpoint, cancellationToken);
-            logger.LogInformation("ListService.GetItemsAsync retrieved {body}", body);
+            logger.LogInformation("ListService.GetItemsAsync retrieved {Body}", body);
             var packedResult = JsonSerializer.Deserialize(body, ListType, JsonSerializerOptions)
                 ?? throw new DryException($"Call to endpoint returned nothing or couldn't be converted to a result.");
             var items = ListUnpacker!(packedResult);

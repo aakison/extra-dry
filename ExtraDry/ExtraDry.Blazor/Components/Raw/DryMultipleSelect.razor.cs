@@ -40,7 +40,7 @@ public partial class DryMultipleSelect<T> : ComponentBase {
         Logger.LogWarning("List contents:");
         if(Property?.GetValue(Model) is IList list) {
             foreach(var item in list) {
-                Logger.LogWarning("List Item {item}", item);
+                Logger.LogWarning("List Item {Item}", item);
             }
         }
         else {
@@ -97,7 +97,7 @@ public partial class DryMultipleSelect<T> : ComponentBase {
 
     private async Task DeselectOption(string key)
     {
-        Logger.LogDebug("DryMultiSelect Remove Option by Key '{key}'", key);
+        Logger.LogDebug("DryMultiSelect Remove Option by Key '{Key}'", key);
         var option = AllOptions[key];
         option.Selected = false;
         if(option.Value != null) {

@@ -25,7 +25,7 @@ public class DataFactory {
             var schema = JsonSerializer.Serialize(table);
             var updateInfo = await Olap.TableSyncs.FirstOrDefaultAsync(e => e.Table == table.Name);
             if(updateInfo == null) {
-                Logger?.LogInformation("No table for [{tableName}], creating new.", table.Name);
+                Logger?.LogInformation("No table for [{TableName}], creating new.", table.Name);
                 await Olap.Database.BeginTransactionAsync();
                 updateInfo = new DataTableSync { Schema = schema, Table = table.Name, SyncTimestamp = DateTime.MinValue };
                 Olap.TableSyncs.Add(updateInfo);
@@ -33,7 +33,7 @@ public class DataFactory {
                 await Olap.Database.CommitTransactionAsync();
             }
             else if(updateInfo.Schema != schema) {
-                Logger?.LogInformation("Table for [{tableName}] obsolete, dropping and creating new.", table.Name);
+                Logger?.LogInformation("Table for [{TableName}] obsolete, dropping and creating new.", table.Name);
                 await Olap.Database.BeginTransactionAsync();
                 updateInfo.Schema = schema;
                 updateInfo.SyncTimestamp = DateTime.MinValue;
@@ -42,7 +42,7 @@ public class DataFactory {
                 await Olap.Database.CommitTransactionAsync();
             }
             else {
-                Logger?.LogInformation("No changes detected for [{tableName}].", table.Name);
+                Logger?.LogInformation("No changes detected for [{TableName}].", table.Name);
             }
         }
     }
@@ -83,7 +83,7 @@ public class DataFactory {
 
     private async Task<int> ProcessGeneratorBatchAsync(Table table)
     {
-        Logger?.LogDebug("Processing date records for [{tableName}]", table.Name);
+        Logger?.LogDebug("Processing date records for [{TableName}]", table.Name);
 
         if(table.Generator == null) {
             throw new DryException("Can't use method when no generator is defined.");
@@ -91,7 +91,7 @@ public class DataFactory {
 
         var batchStats = await Olap.TableSyncs.FirstOrDefaultAsync(e => e.Table == table.Name)
             ?? throw new DryException("Unable to process batch, stats missing, run MigrateAsync() first.");
-        Logger?.LogDebug("Most recent record for [{tableName}] was modified on {timestamp}", table.Name, batchStats.SyncTimestamp);
+        Logger?.LogDebug("Most recent record for [{TableName}] was modified on {Timestamp}", table.Name, batchStats.SyncTimestamp);
 
         var batch = await table.Generator.GetBatchAsync(table, Oltp, Olap, Sql);
 
@@ -99,22 +99,22 @@ public class DataFactory {
             await UpsertBatch(table, batchStats, batch);
         }
         else {
-            Logger?.LogDebug("No new dates required on [{tableName}], batch completed with no changes.", table.Name);
+            Logger?.LogDebug("No new dates required on [{TableName}], batch completed with no changes.", table.Name);
         }
         return batch.Count;
     }
 
     private async Task<int> ProcessTableBatchAsync(Table table)
     {
-        Logger?.LogDebug("Processing batch for [{tableName}]", table.Name);
+        Logger?.LogDebug("Processing batch for [{TableName}]", table.Name);
         if(table.SourceProperty == null) {
-            Logger?.LogDebug("Table [{tableName}] not dynamic, batch load aborted", table.Name);
+            Logger?.LogDebug("Table [{TableName}] not dynamic, batch load aborted", table.Name);
             return 0; // can't process changes on enums without a source property.
         }
 
         var batchStats = await Olap.TableSyncs.FirstOrDefaultAsync(e => e.Table == table.Name)
             ?? throw new DryException("Unable to process batch, stats missing, run MigrateAsync() first.");
-        Logger?.LogDebug("Most recent record for [{tableName}] was modified on {timestamp}", table.Name, batchStats.SyncTimestamp);
+        Logger?.LogDebug("Most recent record for [{TableName}] was modified on {Timestamp}", table.Name, batchStats.SyncTimestamp);
 
         var batch = await GetBatchAfterTimestampAsync(table.SourceProperty, batchStats);
 
@@ -124,28 +124,28 @@ public class DataFactory {
             var duplicateTimestamps = await GetBatchExactTimestamp(table.SourceProperty, batchStats);
             duplicateTimestamps = duplicateTimestamps.Where(e => !batch.Contains(e)).ToList();
             if(duplicateTimestamps.Any()) {
-                Logger?.LogInformation("Duplicate entities with same modified timestamp {timestamp}, extending batch.", batchStats.SyncTimestamp);
+                Logger?.LogInformation("Duplicate entities with same modified timestamp {Timestamp}, extending batch.", batchStats.SyncTimestamp);
                 await UpsertBatch(table, batchStats, duplicateTimestamps);
             }
         }
         else {
-            Logger?.LogDebug("No entities modified on [{tableName}], batch completed with no changes.", table.Name);
+            Logger?.LogDebug("No entities modified on [{TableName}], batch completed with no changes.", table.Name);
         }
         return batch.Count;
     }
 
     private async Task UpsertBatch(Table table, DataTableSync batchStats, List<object> batch)
     {
-        Logger?.LogInformation("Modified entities on [{tableName}], processing {batchCount} upserts.", table.Name, batch.Count);
+        Logger?.LogInformation("Modified entities on [{TableName}], processing {BatchCount} upserts.", table.Name, batch.Count);
         foreach(var item in batch) {
             var sql = Upsert(table, item);
-            Logger?.LogTrace("Executing Upsert SQL: {sql}", sql);
+            Logger?.LogTrace("Executing Upsert SQL: {Sql}", sql);
             await Olap.Database.ExecuteSqlRawAsync(sql);
         }
         batchStats.SyncTimestamp =  table.Generator?.GetSyncTimestamp()
             ?? batch.Max(e => GetVersionInfo(e)?.DateModified ?? DateTime.MinValue);
         await Olap.SaveChangesAsync();
-        Logger?.LogInformation("Processed {batchCount} upserts on [{tableName}], updating sync timestamp to {timestamp}.", batch.Count, table.Name, batchStats.SyncTimestamp);
+        Logger?.LogInformation("Processed {BatchCount} upserts on [{TableName}], updating sync timestamp to {Timestamp}.", batch.Count, table.Name, batchStats.SyncTimestamp);
     }
 
     private async Task<List<object>> GetBatchAfterTimestampAsync(PropertyInfo entitiesDbSet, DataTableSync batchStats)
@@ -219,13 +219,13 @@ public class DataFactory {
 
     private async Task CreateTargetTable(Table table, DataTableSync updateInfo)
     {
-        Logger?.LogInformation("Creating warehouse table [{tableName}]", table.Name);
+        Logger?.LogInformation("Creating warehouse table [{TableName}]", table.Name);
         var sqlTable = Sql.CreateTable(table);
-        Logger?.LogTrace("Executing Create Table SQL: {sql}", sqlTable);
+        Logger?.LogTrace("Executing Create Table SQL: {Sql}", sqlTable);
         await Olap.Database.ExecuteSqlRawAsync(sqlTable);
         var sqlData = Sql.InsertData(table);
         if(!string.IsNullOrWhiteSpace(sqlData)) {
-            Logger?.LogTrace("Executing Insert Data SQL: {sql}", sqlData);
+            Logger?.LogTrace("Executing Insert Data SQL: {Sql}", sqlData);
             // Enums have static data
             await Olap.Database.ExecuteSqlRawAsync(sqlData);
             updateInfo.SyncTimestamp = DateTime.UtcNow;
@@ -236,7 +236,7 @@ public class DataFactory {
     private async Task DropTargetTable(Table table)
     {
         var sqlDrop = Sql.DropTable(table);
-        Logger?.LogTrace("Executing Drop Table SQL: {sql}", sqlDrop);
+        Logger?.LogTrace("Executing Drop Table SQL: {Sql}", sqlDrop);
         await Olap.Database.ExecuteSqlRawAsync(sqlDrop);
         await Olap.SaveChangesAsync();
     }
