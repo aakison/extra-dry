@@ -32,9 +32,6 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
-    [Inject]
-    private ILogger<ViewModelTableRow<T>> Logger { get; set; }
-
     protected override void OnParametersSet()
     {
         if(Description == null) {
@@ -62,7 +59,6 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
 
     private async Task RowClick(MouseEventArgs _)
     {
-        Logger.LogInformation("Select Row with Row Click");
         if(Description.ListSelectMode == ListSelectMode.Action) {
             await Description.SelectCommand?.ExecuteAsync(Item.Item);
         }
@@ -77,21 +73,19 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
 
     private async Task RowDoubleClick(MouseEventArgs _)
     {
-        Logger.LogInformation("Select Row with Row Double Click");
         await Description.DefaultCommand?.ExecuteAsync(Item.Item);
         StateHasChanged();
     }
 
     private void CheckChanged(ChangeEventArgs args)
     {
-        Logger.LogInformation("Checked checkbox/radio with new value '{Arg}'", args?.Value);
-        //if(IsSelected) {
-        //    Select();
-        //}
-        //else {
-        //    Deselect();
-        //}
-        //StateHasChanged();
+        if(IsSelected) {
+            Select();
+        }
+        else {
+            Deselect();
+        }
+        StateHasChanged();
     }
 
     private void Select()

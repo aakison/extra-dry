@@ -29,17 +29,17 @@ public class DryPropertyComponentBase : ComponentBase {
     {
         base.OnParametersSet();
         if(Model == null) {
-            Logger.LogError("Model property must be supplied on {Type}.", GetType());
+            Logger.LogConsoleError("Model property must be supplied");
             return;
         }
         if(Property == null) {
             if(PropertyName == null) {
-                Logger.LogError("A property must be specified using either Property or PropertyName on {Type}.", GetType());
+                Logger.LogConsoleError("A property must be specified using either Property or PropertyName.");
                 return;
             }
             var propInfo = Model.GetType().GetProperty(PropertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             if(propInfo == null) {
-                Logger.LogError("The {PropertyName} did not specify a valid property on {ModelType} in component {ComponentType}", PropertyName, Model.GetType(), GetType());
+                Logger.LogConsoleError($"The {PropertyName} did not specify a valid property on {Model.GetType()} in component {GetType()}");
                 return;
             }
             Property = new PropertyDescription(propInfo);

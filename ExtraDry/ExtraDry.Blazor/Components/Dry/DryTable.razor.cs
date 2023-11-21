@@ -71,7 +71,6 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
 
     protected override void OnInitialized()
     {
-        Logger.LogInformation("DryTable.OnInitialized");
         ViewModel ??= this;
         description = new ViewModelDescription(typeof(TItem), ViewModel);
     }
@@ -229,7 +228,6 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
 
     private async ValueTask<ItemsProviderResult<ListItemInfo<TItem>>> GetItemsAsync(ItemsProviderRequest request)
     {
-        Logger.LogInformation(@"DryTable: Getting page of results, from index {StartIndex}, fetching {Count}", request.StartIndex, request.Count);
         if(ItemsService == null) {
             return new ItemsProviderResult<ListItemInfo<TItem>>();
         }
@@ -237,7 +235,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
         try {
             request.CancellationToken.ThrowIfCancellationRequested();
             if(!InternalItems.Any()) {
-                Logger.LogInformation("--Loading initial items from remote service...");
+                Logger.LogConsoleVerbose("Loading initial items from remote service.");
                 var firstPage = PageFor(request.StartIndex);
                 var firstIndex = FirstItemOnPage(firstPage);
                 QueryBuilder.Skip = firstIndex;
@@ -248,10 +246,10 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
 
                 InternalItems.AddRange(container.ItemInfos);
                 InternalItems.AddRange(Enumerable.Range(0, total - count).Select(e => new ListItemInfo<TItem>()));
-                Logger.LogInformation(@"DryTable: --Loaded items #0 to #{Count} of {Total}.", count, total);
+                Logger.LogPartialResults(typeof(TItem), 0, count, total);
             }
             if(AllItemsCached(request.StartIndex, request.Count)) {
-                Logger.LogInformation("--Returning cached results");
+                Logger.LogConsoleVerbose("Returning cached results");
                 var count = Math.Min(request.Count, InternalItems.Count);
                 var items = InternalItems.GetRange(request.StartIndex, count);
                 await PerformInitialSort();
@@ -259,7 +257,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
                 return new ItemsProviderResult<ListItemInfo<TItem>>(items, InternalItems.Count);
             }
             else {
-                Logger.LogInformation("--Loading page of items from remote service...");
+                Logger.LogConsoleVerbose("Loading page of items from remote service.");
                 var firstPage = PageFor(request.StartIndex);
                 var lastPage = PageFor(request.StartIndex + request.Count);
                 for(int pageNumber = firstPage; pageNumber <= lastPage; ++pageNumber) {
@@ -280,7 +278,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
                             info.IsGroup = item.IsGroup;
                         }
                         var lastIndex = firstIndex + ItemsService.PageSize;
-                        Logger.LogInformation(@"--Loaded items #{FirstIndex} to #{LastIndex} of {Total}.", firstIndex, lastIndex, total);
+                        Logger.LogPartialResults(typeof(TItem), firstIndex, count, total);
                     }
                 }
             }
@@ -299,7 +297,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
             // KLUDGE: The CancellationTokenSource is initiated in the Virtualize component, but
             // it can't handle the exception. Catch the exception here and return an empty
             // result instead.  
-            Logger.LogInformation("--Loading cancelled");
+            Logger.LogConsoleVerbose("Loading cancelled by request");
             return new ItemsProviderResult<ListItemInfo<TItem>>();
         }
         finally {

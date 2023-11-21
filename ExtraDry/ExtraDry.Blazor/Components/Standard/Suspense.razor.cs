@@ -102,15 +102,15 @@ public partial class Suspense<TModel> : ComponentBase, IExtraDryComponent {
         }
         catch(TaskCanceledException tcex) {
             State = LoadingState.Timeout;
-            Logger.LogWarning(tcex, "Timeout caught in Suspense component");
+            Logger.LogConsoleError("Timeout caught in Suspense component", tcex);
         }
         catch(TimeoutException tex) {
             State = LoadingState.Timeout;
-            Logger.LogWarning(tex, "Timeout caught in Suspense component");
+            Logger.LogConsoleError("Timeout caught in Suspense component", tex);
         }
         catch(Exception ex) {
             State = LoadingState.Error;
-            Logger.LogError(ex, "Error caught in Suspense component");
+            Logger.LogConsoleError("Error caught in Suspense component", ex);
         }
     }
 

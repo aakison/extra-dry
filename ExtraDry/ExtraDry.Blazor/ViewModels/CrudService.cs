@@ -5,6 +5,8 @@ using System.Text.Json;
 
 namespace ExtraDry.Blazor;
 
+using Microsoft.Extensions.Logging;
+
 /// <summary>
 /// A simple CRUD API service wrapper for Extra Dry service endpoints.
 /// This wrapper assumes that 4 endpoints exist following standard RESTful principles for endpoints.
@@ -15,30 +17,6 @@ namespace ExtraDry.Blazor;
 /// payload will be made.
 /// </summary>
 public class CrudService<T> {
-
-    /// <summary>
-    /// Create a CRUD service with the specified configuration.  This service should not be 
-    /// manually added to the IServiceCollection.  Instead, use the AddCrudService`T 
-    /// extension method.
-    /// </summary>
-    /// <param name="client">A HttpClient object, typically from DI</param>
-    /// <param name="collectionEndpointTemplate">
-    /// The template for the API.  This is that path portion of the URI as the app can only call
-    /// the server that it came from.  This is used directly for Create methods and is the stem
-    /// for Retrieve/Update/Delete methods where the Id is appended to the template.
-    /// Additionally the endpoint may include placeholders for any number of 
-    /// replacements, e.g. "{0}".  During construction of the final endpoint, these placeholders
-    /// are used with `args` provided to each method to resolve the final endpoint.
-    /// This allows for version numbers, tenant names, etc. to be added.
-    /// </param>
-    /// <param name="iLogger">An optional Logger</param>
-    [Obsolete("Use Options")]
-    public CrudService(HttpClient client, string collectionEndpointTemplate, ILogger<CrudService<T>>? iLogger = null)
-    {
-        http = client;
-        Options = new CrudServiceOptions { CrudEndpoint = collectionEndpointTemplate };
-        logger = iLogger;
-    }
 
     /// <summary>
     /// Create a CRUD service with the specified configuration.  This service should not be 
@@ -60,10 +38,9 @@ public class CrudService<T> {
         var json = JsonSerializer.Serialize(item);
         using var content = new StringContent(json, Encoding.UTF8, "application/json");
         var endpoint = ApiEndpoint(nameof(CreateAsync), string.Empty, args);
-        logger?.LogInformation("Created '{Entity}' at '{Endpoint}'", nameof(T), endpoint);
+        logger.LogEndpointCall(typeof(T), endpoint);
         var response = await http.PostAsync(endpoint, content);
-        await response.AssertSuccess();
-        logger?.LogDebug("Created '{Entity}' on '{Endpoint}' with content: {Content}", nameof(T), endpoint, json);
+        await response.AssertSuccess(logger);
     }
 
     public async Task CreateAsync(T item, CancellationToken cancellationToken = default)
@@ -71,32 +48,29 @@ public class CrudService<T> {
         var json = JsonSerializer.Serialize(item);
         using var content = new StringContent(json, Encoding.UTF8, "application/json");
         var endpoint = ApiEndpoint(nameof(CreateAsync), string.Empty);
-        logger?.LogInformation("Created '{Entity}' at '{Endpoint}'", nameof(T), endpoint);
+        logger.LogEndpointCall(typeof(T), endpoint);
         var response = await http.PostAsync(endpoint, content, cancellationToken);
-        await response.AssertSuccess();
-        logger?.LogDebug("Created '{Entity}' on '{Endpoint}' with content: {Content}", nameof(T), endpoint, json);
+        await response.AssertSuccess(logger);
     }
 
     [Obsolete("Inject arguments into HttpClient derived type")]
     public async Task<T?> RetrieveAsync(object key, params object[] args)
     {
         var endpoint = ApiEndpoint(nameof(RetrieveAsync), key, args);
-        logger?.LogInformation("Retrieving '{Entity}' from '{Endpoint}'", nameof(T), endpoint);
+        logger.LogEndpointCall(typeof(T), endpoint);
         var response = await http.GetAsync(endpoint);
-        await response.AssertSuccess();
+        await response.AssertSuccess(logger);
         var item = await response.Content.ReadFromJsonAsync<T>();
-        logger?.LogDebug("Retrieved '{Entity}' from '{Endpoint}' with content: {Content}", nameof(T), endpoint, item);
         return item;
     }
 
     public async Task<T?> RetrieveAsync(object key, CancellationToken cancellationToken = default)
     {
         var endpoint = ApiEndpoint(nameof(RetrieveAsync), key);
-        logger?.LogInformation("Retrieving '{Entity}' from '{Endpoint}'", nameof(T), endpoint);
+        logger.LogEndpointCall(typeof(T), endpoint);
         var response = await http.GetAsync(endpoint, cancellationToken);
-        await response.AssertSuccess();
+        await response.AssertSuccess(logger);
         var item = await response.Content.ReadFromJsonAsync<T>(cancellationToken: cancellationToken);
-        logger?.LogDebug("Retrieved '{Entity}' from '{Endpoint}' with content: {Content}", nameof(T), endpoint, item);
         return item;
     }
 
@@ -104,38 +78,34 @@ public class CrudService<T> {
     public async Task UpdateAsync(object key, T item, params object[] args)
     {
         var endpoint = ApiEndpoint(nameof(UpdateAsync), key, args);
-        logger?.LogInformation("Updating '{Entity}' on '{Endpoint}'", nameof(T), endpoint);
+        logger.LogEndpointCall(typeof(T), endpoint);
         var response = await http.PutAsJsonAsync(endpoint, item);
-        await response.AssertSuccess();
-        logger?.LogDebug("Updated '{Entity}' on '{Endpoint}' with content: {Content}", nameof(T), endpoint, item);
+        await response.AssertSuccess(logger);
     }
 
     public async Task UpdateAsync(object key, T item, CancellationToken cancellationToken = default)
     {
         var endpoint = ApiEndpoint(nameof(UpdateAsync), key);
-        logger?.LogInformation("Updating '{Entity}' on '{Endpoint}'", nameof(T), endpoint);
+        logger.LogEndpointCall(typeof(T), endpoint);
         var response = await http.PutAsJsonAsync(endpoint, item, cancellationToken);
-        await response.AssertSuccess();
-        logger?.LogDebug("Updated '{Entity}' on '{Endpoint}' with content: {Content}", nameof(T), endpoint, item);
+        await response.AssertSuccess(logger);
     }
 
     [Obsolete("Inject arguments into HtttpClient derived type")]
     public async Task DeleteAsync(object key, params object[] args)
     {
         var endpoint = ApiEndpoint(nameof(DeleteAsync), key, args);
-        logger?.LogInformation("Deleting '{Entity}' at '{Endpoint}'", nameof(T), endpoint);
+        logger.LogEndpointCall(typeof(T), endpoint);
         var response = await http.DeleteAsync(endpoint);
-        await response.AssertSuccess();
-        logger?.LogDebug("Deleted '{Entity}' at '{Endpoint}'", nameof(T), endpoint);
+        await response.AssertSuccess(logger);
     }
 
     public async Task DeleteAsync(object key, CancellationToken cancellationToken = default)
     {
         var endpoint = ApiEndpoint(nameof(DeleteAsync), key);
-        logger?.LogInformation("Deleting '{Entity}' at '{Endpoint}'", nameof(T), endpoint);
+        logger.LogEndpointCall(typeof(T), endpoint);
         var response = await http.DeleteAsync(endpoint, cancellationToken);
-        await response.AssertSuccess();
-        logger?.LogDebug("Deleted '{Entity}' at '{Endpoint}'", nameof(T), endpoint);
+        await response.AssertSuccess(logger);
     }
 
     private string ApiEndpoint(string method, object key, params object[] args)
@@ -147,12 +117,12 @@ public class CrudService<T> {
         }
         catch(FormatException ex) {
             var argsFormatted = string.Join(',', args?.Select(e => e?.ToString()) ?? Array.Empty<string>());
-            logger?.LogWarning("Formatting problem while constructing endpoint for `CrudService.{Method}`.  Typically the endpoint provided has additional placeholders that have not been provided. The endpoint template ({CrudEndpoint}), could not be satisfied with arguments ({ArgsFormatted}).  Inner Exception was:  {Message}", method, Options.CrudEndpoint, argsFormatted, ex.Message);
+            logger.LogFormattingError(typeof(T), Options.CrudEndpoint, argsFormatted, ex, method);
             throw new DryException("Error occurred connecting to server", "This is a mis-configuration and not a user error, please see the console output for more information.");
         }
     }
 
     private readonly HttpClient http;
 
-    private readonly ILogger<CrudService<T>>? logger;
+    private readonly ILogger<CrudService<T>> logger;
 }

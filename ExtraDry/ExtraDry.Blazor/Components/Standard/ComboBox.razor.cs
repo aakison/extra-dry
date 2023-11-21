@@ -344,7 +344,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent, IDispo
     private void Assert(bool value, string message)
     {
         if(value == false) {
-            Logger.LogWarning("{Id} ERROR - {Message}", Id, message);
+            Logger.LogConsoleWarning($"{Id} ERROR - {message}");
         }
     }
 

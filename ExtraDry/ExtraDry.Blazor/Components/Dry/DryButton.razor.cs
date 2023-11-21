@@ -87,20 +87,20 @@ public partial class DryButton : ComponentBase, IExtraDryComponent {
     {
         if(Command is not null) {
             if(ViewModel is not null || MethodName is not null) {
-                Logger.LogWarning("Command should be used mutually exclusively with ViewModel and MethodName in DryButton.  The Command property takes precedence and the ViewModel and MethodName will be ignored.");
+                Logger.LogConsoleWarning("Command should be used mutually exclusively with ViewModel and MethodName in DryButton.  The Command property takes precedence and the ViewModel and MethodName will be ignored.");
             }
             ResolvedCommand = Command;
         }
         else if(ViewModel is not null || MethodName is not null) {
             if(ViewModel is null || MethodName is null) {
-                Logger.LogError("When using ViewModel and MethodName to define a command, both must be set.  Button command can not be resolved.");
+                Logger.LogConsoleError("When using ViewModel and MethodName to define a command, both must be set.  Button command can not be resolved.");
             }
             else {
                 ResolvedCommand = new CommandInfo(ViewModel, MethodName);
             }
         }
         else {
-            Logger.LogError("DryButton must define the command by either providing the Command parameter or both the ViewModel and the MethodName parameters.");
+            Logger.LogConsoleError("DryButton must define the command by either providing the Command parameter or both the ViewModel and the MethodName parameters.");
         }
     }
 
