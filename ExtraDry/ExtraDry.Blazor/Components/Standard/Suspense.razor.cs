@@ -55,6 +55,9 @@ public partial class Suspense<TModel> : ComponentBase, IExtraDryComponent {
     [Parameter]
     public IndicatorSize Size { get; set; } = IndicatorSize.Standard;
 
+    /// <summary>
+    /// Which Indicator Icons should be displayed. Defaults to All
+    /// </summary>
     [Parameter]
     public IndicatorIcon ShowIcons { get; set; } = IndicatorIcon.All;
 

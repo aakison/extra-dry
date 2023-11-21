@@ -16,7 +16,7 @@ public class IndicatorContext {
     public Func<Task> Reload { get; set; } = () => Task.CompletedTask;
 
     /// <summary>
-    /// Which Icons should be hidden
+    /// Which Indicator Icons should be displayed
     /// </summary>
     public IndicatorIcon ShowIcons { get; set; }
 }
