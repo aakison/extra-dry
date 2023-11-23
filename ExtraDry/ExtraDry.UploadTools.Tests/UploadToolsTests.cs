@@ -54,11 +54,11 @@ namespace ExtraDry.UploadTools.Tests {
         [InlineData("mp4.mp4", "audio/aac")]
         [InlineData("mp4.mp4", "video/mp4")]
         [InlineData("html.html", "text/html")]
-        public async Task ValidToUploadFiles(string filename, string mime)
+        public void ValidToUploadFiles(string filename, string mime)
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filename}");
 
-            var canUpload = await UploadTools.CanUpload(filename, mime, fileBytes);
+            var canUpload = UploadTools.CanUpload(filename, mime, fileBytes);
 
             Assert.True(canUpload);
         }
@@ -75,13 +75,13 @@ namespace ExtraDry.UploadTools.Tests {
         [InlineData("file.apk", "word.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")]
         [InlineData("zip.jar", "zip.zip", "application/zip")]
         // mismatching content and file
-        public async Task InvalidToUploadFiles(string filename, string filepath, string mime)
+        public void InvalidToUploadFiles(string filename, string filepath, string mime)
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
 
             var lambda = () => UploadTools.CanUpload(filename, mime, fileBytes);
 
-            await Assert.ThrowsAsync<DryException>(lambda);
+            Assert.Throws<DryException>(() =>  lambda);
 
         }
     }
