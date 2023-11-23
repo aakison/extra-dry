@@ -1369,5 +1369,11 @@
         "Type": "Bytes"
       }
     ]
+  },
+  {
+    "Description": "Scalable Vector Graphic",
+    "Extensions": [ "svg" ],
+    "MimeTypes": [ "image/svg+xml", "image/svg" ],
+    "MagicBytes": []
   }
 ]

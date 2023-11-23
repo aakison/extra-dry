@@ -13,13 +13,10 @@ namespace ExtraDry.UploadTools {
         /* TODO -
          * Read from Internal Json File ✔️
          * Allow for different json file to be provided
+         *   Including blacklist(s)
          * Determine type based off file name ✔️
          * Determine type based off mime ✔️
          * Determine type based off byte[] ✔️
-         * 
-         * Out Of Scope - 
-         * Reading Files
-         * 
          */
 
         private static List<FileTypeDefinition> FileDefinitions;

@@ -24,8 +24,8 @@ namespace ExtraDry.UploadTools.Tests {
         }
 
         [Theory]
-        [InlineData("file1.test-1.txt", "file1-test-1.txt")]
-        [InlineData("file1-.test-1.txt", "file1-test-1.txt")]
+        [InlineData("file1.test-1.txt", "file1.test-1.txt")]
+        [InlineData("file1-.test-1.txt", "file1.test-1.txt")]
         [InlineData("123___sad---.html", "123_sad.html")]
         [InlineData("Caractères[]@%$#&().txt", "Caractères.txt")]
         [InlineData("Caractères[]@%$#&()sifd.txt", "Caractères-sifd.txt")]
@@ -64,6 +64,7 @@ namespace ExtraDry.UploadTools.Tests {
         }
 
         // TODO - Mime and filename, Filename and bytes, fail on filename without extension.
+        //          Break up test types, ie invalid for what reason.
 
         [Theory]
         [InlineData("bat.bat", "bat.bat", "text/plain")]
@@ -78,7 +79,9 @@ namespace ExtraDry.UploadTools.Tests {
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
 
-            await Assert.ThrowsAsync<DryException>(()=> UploadTools.CanUpload(filename, mime, fileBytes));
+            var lambda = () => UploadTools.CanUpload(filename, mime, fileBytes);
+
+            await Assert.ThrowsAsync<DryException>(lambda);
 
         }
     }
