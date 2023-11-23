@@ -3,7 +3,11 @@ using Microsoft.AspNetCore.Components.Web.Virtualization;
 
 namespace ExtraDry.Blazor;
 
-public partial class DryTable<TItem> : ComponentBase, IDisposable {
+public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComponent {
+
+    /// <inheritdoc />
+    [Parameter]
+    public string CssClass { get; set; } = string.Empty;
 
     [Parameter]
     public object ViewModel { get; set; } = null!; // If not overridden, set to this in OnInitialized.
@@ -38,6 +42,10 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
     [Parameter]
     public SelectionSet? Selection { get; set; }
 
+    /// <inheritdoc />
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? UnmatchedAttributes { get; set; }
+
     private ViewModelDescription description = null!; // Set in OnInitialized
 
     [Inject]
@@ -49,7 +57,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable {
 
     private bool HasCommandsColumn => description.ContextCommands.Any();
 
-    private string TableClasses => $"{ModelClass} {FilteredClass} {StateClass}";
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", ModelClass, FilteredClass, StateClass, CssClass);
 
     private string ModelClass => description.ModelType?.Name?.ToLowerInvariant() ?? "";
 

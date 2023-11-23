@@ -75,7 +75,7 @@ public partial class DryButton : ComponentBase, IExtraDryComponent {
     [Inject]
     protected ILogger<DryButton> Logger { get; set; } = null!;
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass, ResolvedCommand?.DisplayClass ?? "");
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass, ResolvedCommand?.DisplayClass);
 
     private SelectionSet? selection;
 
