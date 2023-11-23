@@ -35,23 +35,24 @@ public class RegionService : IEntityResolver<Region> {
             .ToBaseCollectionAsync();
     }
 
-    public async Task CreateAsync(Region item)
+    public async Task<Region> CreateAsync(Region exemplar)
     {
+        var region = await rules.CreateAsync(exemplar);
         Region? parent = null;
-        if(item.Level != RegionLevel.Global) {
-            if(item.Parent == null) {
+        if(exemplar.Level != RegionLevel.Global) {
+            if(exemplar.Parent == null) {
                 throw new ArgumentException("A region must have a parent if it is not at the global level.");
             }
-            parent = await TryRetrieveAsync(item.Parent.Slug);
-
+            parent = await TryRetrieveAsync(exemplar.Parent.Slug);
             if(parent == null) {
                 throw new ArgumentException("Invalid parent");
             }
         }
 
-        await SetParent(item, parent);
-        database.Regions.Add(item);
+        await SetParent(region, parent);
+        database.Regions.Add(region);
         await database.SaveChangesAsync();
+        return region;
     }
 
     public async Task<Region?> TryRetrieveAsync(string code)

@@ -40,9 +40,9 @@ public class BlobInfoTests {
         var blob = ValidBlob;
         var guid = Guid.NewGuid();
             
-        blob.UniqueId = guid;
+        blob.Uuid = guid;
 
-        Assert.Equal(guid, blob.UniqueId);
+        Assert.Equal(guid, blob.Uuid);
     }
 
     [Fact]

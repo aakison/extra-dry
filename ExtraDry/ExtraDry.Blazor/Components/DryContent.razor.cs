@@ -191,7 +191,7 @@ public partial class DryContent : ComponentBase {
         if(StaticServiceProvider.GetService(typeof(IBlobService)) is not IBlobService blobService) {
             StaticLogger.LogConsoleWarning("No IBlobService was registered with the service locator, the pasted image will encoded inside the content of the page.  This becomes problematic for large or multiple images and images should be stored in blob storage.  Create an implementation of IBlobService and register with the IServiceCollection.");
             return new BlobInfo() {
-                UniqueId = Guid.Empty,
+                Uuid = Guid.Empty,
                 Url = imageDataUrl,
             };
         }

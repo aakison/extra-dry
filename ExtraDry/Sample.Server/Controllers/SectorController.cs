@@ -32,11 +32,12 @@ public class SectorController {
     /// <summary>
     /// Create a new global sector
     /// </summary>
-    [HttpPost("api/sectors"), Consumes("application/json")]
+    [HttpPost("api/sectors"), Consumes("application/json"), Produces("application/json")]
     [Authorize(nameof(SectorController))]
-    public async Task CreateAsync(Sector value)
+    public async Task<ResourceReference<Sector>> CreateAsync(Sector value)
     {
-        await sectors.CreateAsync(value);
+        var sector = await sectors.CreateAsync(value);
+        return new ResourceReference<Sector>(sector);
     }
 
     /// <summary>

@@ -70,11 +70,12 @@ public class RegionController {
     /// <summary>
     /// Create a new region
     /// </summary>
-    [HttpPost("api/regions"), Consumes("application/json")]
+    [HttpPost("api/regions"), Consumes("application/json"), Produces("application/json")]
     [Authorize(SamplePolicies.SamplePolicy)]
-    public async Task CreateAsync(Region value)
+    public async Task<ResourceReference<Region>> CreateAsync(Region value)
     {
-        await regions.CreateAsync(value);
+        var region = await regions.CreateAsync(value);
+        return new ResourceReference<Region>(region);
     }
 
     /// <summary>
@@ -95,18 +96,6 @@ public class RegionController {
     public async Task DeleteAsync(string code)
     {
         await regions.DeleteAsync(code);
-    }
-
-    /// <summary>
-    /// Undeletes a previously deleted Region if it's still in the Recycle Bin.
-    /// </summary>
-    [HttpPost("api/regions/{code}:undelete")]
-    [Authorize(SamplePolicies.SamplePolicy)]
-    [SuppressMessage("ApiUsage", "DRY1107:HttpPost, HttpPut and HttpPatch methods should have Consumes attribute", Justification = "This is an empty-bodied RPC style call and not a REST Create.")]
-    [SuppressMessage("Usage", "DRY1104:Http Verbs should be named with their CRUD counterparts", Justification = "This is an Undelete RPC call using POST instead of a Create method.")]
-    public async Task UndeleteAsync(string code)
-    {
-        await regions.RestoreAsync(code);
     }
 
     private readonly RegionService regions;

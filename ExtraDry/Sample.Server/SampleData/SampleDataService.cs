@@ -72,7 +72,7 @@ public partial class SampleDataService {
                 trademarks.Add(name);
                 var company = new Company {
                     Uuid = PseudoRandomGuid(),
-                    Code = Slug.RandomWebString(6),
+                    Slug = Slug.RandomWebString(6),
                     Title = name,
                     PrimarySector = PickRandom(services),
                     Status = PickRandom(companyStatuses),

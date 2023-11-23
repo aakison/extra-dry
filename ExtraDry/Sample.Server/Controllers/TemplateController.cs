@@ -16,7 +16,7 @@ public class TemplateController {
     /// </summary>
     public TemplateController(TemplateService templateService)
     {
-        template = templateService;
+        templates = templateService;
     }
 
     /// <summary>
@@ -26,17 +26,18 @@ public class TemplateController {
     [AllowAnonymous]
     public async Task<FilteredCollection<Template>> ListAsync([FromQuery] SortQuery query)
     {
-        return await template.ListAsync(query);
+        return await templates.ListAsync(query);
     }
 
     /// <summary>
     /// Create a new template
     /// </summary>
-    [HttpPost("api/templates"), Consumes("application/json")]
+    [HttpPost("api/templates"), Consumes("application/json"), Produces("application/json")]
     [AllowAnonymous]
-    public async Task CreateAsync(Template value)
+    public async Task<ResourceReference<Template>> CreateAsync(Template value)
     {
-        await template.CreateAsync(value);
+        var template = await templates.CreateAsync(value);
+        return new ResourceReference<Template>(template);
     }
 
     /// <summary>
@@ -46,7 +47,7 @@ public class TemplateController {
     [AllowAnonymous]
     public async Task<Template> RetrieveAsync(string title)
     {
-        return await template.RetrieveAsync(title);
+        return await templates.RetrieveAsync(title);
     }
 
     /// <summary>
@@ -59,7 +60,7 @@ public class TemplateController {
         if(title != value?.Title) {
             throw new ArgumentMismatchException("Title in URI must match body.", nameof(title));
         }
-        await template.UpdateAsync(value);
+        await templates.UpdateAsync(value);
     }
 
     /// <summary>
@@ -69,8 +70,8 @@ public class TemplateController {
     [Authorize(SamplePolicies.SamplePolicy)]
     public async Task DeleteAsync(string title)
     {
-        await template.DeleteAsync(title);
+        await templates.DeleteAsync(title);
     }
 
-    private readonly TemplateService template;
+    private readonly TemplateService templates;
 }

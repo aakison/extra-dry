@@ -48,13 +48,14 @@ public class CompanyController {
     /// Create a new company
     /// </summary>
     /// <remarks>
-    /// Create a new company at the URI, the uniqueId in the URI must match the Id in the payload.
+    /// Create a new company at the URI.
     /// </remarks>
-    [HttpPost("api/companies"), Consumes("application/json")]
+    [HttpPost("api/companies"), Produces("application/json"), Consumes("application/json")]
     [Authorize(SamplePolicies.SamplePolicy)]
-    public async Task Create(Company value)
+    public async Task<ResourceReference<Company>> Create(Company value)
     {
-        await companies.Create(value);
+        var company = await companies.Create(value);
+        return new ResourceReference<Company>(company);
     }
 
     /// <summary>
