@@ -109,7 +109,7 @@ public class SelectionSet {
     public bool MultipleSelect { get; set; }
 
 
-    public event EventHandler<SelectionSetChangedEventArgs>? Changed;
+    public event EventHandler<SelectionSetChangedEventArgs> Changed = null!;
 
 
     private bool inclusiveStorage = true;

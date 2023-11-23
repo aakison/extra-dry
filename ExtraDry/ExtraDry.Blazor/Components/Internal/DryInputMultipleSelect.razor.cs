@@ -1,10 +1,13 @@
-﻿using ExtraDry.Blazor.Components.Internal;
-using System.Collections;
+﻿using System.Collections;
 using System.Reflection.Metadata;
 
-namespace ExtraDry.Blazor.Components.Raw;
+namespace ExtraDry.Blazor.Components.Internal;
 
-public partial class DryMultipleSelect<T> : ComponentBase {
+public partial class DryInputMultipleSelect<T> : ComponentBase, IExtraDryComponent {
+
+    /// <inheritdoc />
+    [Parameter]
+    public string CssClass { get; set; } = string.Empty;
 
     [Parameter, EditorRequired]
     public T Model { get; set; } = default!;
@@ -18,14 +21,12 @@ public partial class DryMultipleSelect<T> : ComponentBase {
     [Parameter]
     public EventCallback<ChangeEventArgs>? OnChange { get; set; }
 
-    [Parameter]
-    public string? CssClass { get; set; }
-
-    [Inject]
-    private ILogger<DryInput<T>> Logger { get; set; } = null!;
-
     [CascadingParameter]
     public EditMode EditMode { get; set; } = EditMode.Create;
+
+    /// <inheritdoc />
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
     protected override void OnParametersSet()
     {
@@ -33,6 +34,9 @@ public partial class DryMultipleSelect<T> : ComponentBase {
         InitializeList();
         InitializeOptions();
     }
+
+    [Inject]
+    private ILogger<DryInput<T>> Logger { get; set; } = null!;
 
     private void InitializeList()
     {
@@ -107,4 +111,9 @@ public partial class DryMultipleSelect<T> : ComponentBase {
     private IEnumerable<OptionInfo> AvailableOptions => AllOptions.Values.Where(e => e.Selected == false);
 
     private bool ReadOnly => EditMode == EditMode.ReadOnly;
+
+    private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
+
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", ReadOnlyCss, CssClass);
+
 }

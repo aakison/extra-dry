@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 
 namespace ExtraDry.Blazor;
@@ -7,6 +8,7 @@ namespace ExtraDry.Blazor;
 /// Provides a cascading theme mechanism to configure portions of ExtraDry.
 /// Note: this does not cover styles like colors which should be done in CSS.
 /// </summary>
+[SuppressMessage("Usage", "DRY1500:Extra DRY Blazor components should have an interface.", Justification = "Theme does not render a root tag, purpose is to register cascading values.")]
 public partial class Theme : ComponentBase {
 
     /// <summary>

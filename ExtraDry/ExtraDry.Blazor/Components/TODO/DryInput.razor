@@ -76,10 +76,10 @@
     else if(LookupProviderOptions != null) {
         var selectedValue = Property.GetValue(Model);
         @if(Property.HasArrayValues) {
-            <DryMultipleSelect CssClass="@CssClasses" Model="@Model" Property="@Property" Values="@LookupValues" />
+            <DryInputMultipleSelect CssClass="@CssClasses" Model="@Model" Property="@Property" Values="@LookupValues" />
         }
         else { 
-            <DrySingleSelect CssClass="@CssClasses" Model="@Model" Property="@Property" Values="@LookupValues" />
+            <DryInputSingleSelect CssClass="@CssClasses" Model="@Model" Property="@Property" Values="@LookupValues" />
         }
     }
     else if(ReadOnly) {
