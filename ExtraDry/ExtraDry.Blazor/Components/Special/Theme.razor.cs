@@ -25,11 +25,9 @@ public partial class Theme : ComponentBase {
     [Parameter]
     public IEnumerable<IconInfo>? Icons { get; set; }
 
-    /// <summary>
-    /// A ThemeInfo that might have been cascaded from a parent theme.
-    /// </summary>
+    /// <inheritdoc cref="Blazor.ThemeInfo" />
     [CascadingParameter]
-    public ThemeInfo ThemeInfo { get; set; } = new();
+    protected ThemeInfo ThemeInfo { get; set; } = new();
 
     /// <summary>
     /// A custom error component that is applied and used on any DryErrorBoundary instead of the default.
