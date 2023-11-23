@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace ExtraDry.UploadTools {
     public class UploadConfiguration {
@@ -13,6 +14,7 @@ namespace ExtraDry.UploadTools {
         public List<string> ExtensionBlacklist { get; set; } = new List<string>();
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum FileDefinitionBehaviour
     {
         /// <summary>
@@ -41,6 +43,7 @@ namespace ExtraDry.UploadTools {
         public CheckType CheckType { get; set; } = CheckType.BytesAndFilename;
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum CheckType
     {
         /// <summary>

@@ -22,7 +22,7 @@ namespace ExtraDry.UploadTools {
         public static byte[] GetBytesFromString(string hexstring)
         {
             if(string.IsNullOrEmpty(hexstring)) {
-                return new byte[0];
+                return Array.Empty<byte>();
             }
             if(hexstring.Length % 2 != 0) {
                 throw new ArgumentException("Hex String must be an even number of characters");

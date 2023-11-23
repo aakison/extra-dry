@@ -38,8 +38,6 @@ namespace ExtraDry.UploadTools {
 
         private const string cleaningRegex = @"[^\p{Lu}\p{Ll}\p{Lt}\p{Lm}\p{Lo}\p{Nd}\-_\.]";
 
-        static FileService mimeTypes = new FileService();
-
         /// <summary>
         /// Call in startup of your application to configure the settings for the upload tools;
         /// </summary>
@@ -48,7 +46,7 @@ namespace ExtraDry.UploadTools {
             if (config == null) {
                 return;
             }
-            if(config.ExtensionWhitelist != null && config.ExtensionWhitelist.Any()) {
+            if(config.ExtensionWhitelist != null && config.ExtensionWhitelist.Count != 0) {
                 ExtensionWhitelist = config.ExtensionWhitelist;
             }
             //
@@ -102,7 +100,7 @@ namespace ExtraDry.UploadTools {
         public static bool CanUpload(string filename, string mimetype, byte[] content)
         {
             // if no file name or no content, early exit.
-            if(string.IsNullOrEmpty(filename) || filename.Length > 255 || content == null || !content.Any()) {
+            if(string.IsNullOrEmpty(filename) || filename.Length > 255 || content == null || content.Length == 0) {
                 throw new DryException("Provided file has no content");
             }
 
@@ -129,9 +127,9 @@ namespace ExtraDry.UploadTools {
 
             // Get the mime type and file type info from the file name and the content
             // We don't really use the one from the file name other than to check it matches the content
-            var filenameFileDefinition = mimeTypes.GetFileTypeFromFilename(filename);
-            var mimeTypeFileDefinition = mimeTypes.GetFileTypeFromMime(mimetype);
-            var magicByteFileDefinition = mimeTypes.GetFileTypeFromBytes(content);
+            var filenameFileDefinition = FileService.GetFileTypeFromFilename(filename);
+            var mimeTypeFileDefinition = FileService.GetFileTypeFromMime(mimetype);
+            var magicByteFileDefinition = FileService.GetFileTypeFromBytes(content);
 
             // If it's an unknown file type:
             // If we don't know the bytes, it's not flagged as dangerous.
@@ -145,16 +143,16 @@ namespace ExtraDry.UploadTools {
             }
 
             // If there's both a filename and a magic byte type file definition, and they don't match, reject
-            if(magicByteFileDefinition?.Any() == true &&  // if there's a magic byte file definition
-                filenameFileDefinition?.Any() == true &&   // and a filename magic byte definition
-                !filenameFileDefinition.SelectMany(f => f.MimeTypes).Intersect(magicByteFileDefinition.SelectMany(f => f.MimeTypes)).Any()) { // then they have to map
+            if(magicByteFileDefinition?.Count > 0 &&  // if there's a magic byte file definition
+                filenameFileDefinition?.Count > 0 &&   // and a filename magic byte definition
+                filenameFileDefinition.SelectMany(f => f.MimeTypes).Intersect(magicByteFileDefinition.SelectMany(f => f.MimeTypes)).Count() == 0) { // then they have to map
                 throw new DryException("Provided file content and filename do not match", $"Content was {GetFileDefinitionDescription(magicByteFileDefinition)}, Filename was {GetFileDefinitionDescription(filenameFileDefinition)}");
             }
 
             // If there's both a filename and a mime type file definition, and they don't match, reject
-            if(mimeTypeFileDefinition?.Any() == true &&        // If there's a mime type 
-                filenameFileDefinition?.Any() == true &&       // And a file name type
-                !filenameFileDefinition.SelectMany(f => f.MimeTypes).Intersect(mimeTypeFileDefinition.SelectMany(f => f.MimeTypes)).Any()) { // they have to match.
+            if(mimeTypeFileDefinition?.Count > 0 &&        // If there's a mime type 
+                filenameFileDefinition?.Count > 0 &&       // And a file name type
+                filenameFileDefinition.SelectMany(f => f.MimeTypes).Intersect(mimeTypeFileDefinition.SelectMany(f => f.MimeTypes)).Count() == 0) { // they have to match.
                 throw new DryException("Provided file name and mimetype do not match", $"Mime type was {GetFileDefinitionDescription(mimeTypeFileDefinition)}, Filename was {GetFileDefinitionDescription(filenameFileDefinition)}");
             }
 
@@ -172,7 +170,7 @@ namespace ExtraDry.UploadTools {
 
         private static string GetFileDefinitionDescription(List<FileTypeDefinition> fileTypes)
         {
-            if(fileTypes?.Any() != true) {
+            if(fileTypes?.Count == 0) {
                 return "unknown";
             }
             var description = fileTypes.FirstOrDefault(f => !string.IsNullOrEmpty(f.Description))?.Description;

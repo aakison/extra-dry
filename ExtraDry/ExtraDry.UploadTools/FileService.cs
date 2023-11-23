@@ -21,12 +21,12 @@ namespace ExtraDry.UploadTools {
 
         private static List<FileTypeDefinition> FileDefinitions;
 
-        public FileService()
+        static FileService()
         {
             if(FileDefinitions == null) { LoadFileDefinitions(); }
         }
 
-        private void LoadFileDefinitions()
+        private static void LoadFileDefinitions()
         {
             var assembly = Assembly.GetExecutingAssembly();
             var resourceName = "ExtraDry.UploadTools.FileDatabase.json";
@@ -39,20 +39,20 @@ namespace ExtraDry.UploadTools {
             }
         }
 
-        internal List<FileTypeDefinition> GetFileTypeFromFilename(string filename)
+        internal static List<FileTypeDefinition> GetFileTypeFromFilename(string filename)
         {
             var extension = Path.GetExtension(filename).Trim('.');
             var options = FileDefinitions.Where(f => f.Extensions.Contains(extension, StringComparer.OrdinalIgnoreCase));
             return options.ToList();
         }
 
-        internal List<FileTypeDefinition> GetFileTypeFromMime(string mime)
+        internal static List<FileTypeDefinition> GetFileTypeFromMime(string mime)
         {
             var options = FileDefinitions.Where(f => f.MimeTypes.Contains(mime, StringComparer.OrdinalIgnoreCase));
             return options.ToList();
         }
 
-        internal bool MatchesMagicBytesOf(byte[] content, List<FileTypeDefinition> fileTypes)
+        internal static bool MatchesMagicBytesOf(byte[] content, List<FileTypeDefinition> fileTypes)
         {
             if(content == null || content.Length < 1) {
                 return false;
@@ -61,7 +61,7 @@ namespace ExtraDry.UploadTools {
             return fileTypes.Where(m => IsMatch(content, m.MagicBytes)).Any();
         }
 
-        internal List<FileTypeDefinition> GetFileTypeFromBytes(byte[] content)
+        internal static List<FileTypeDefinition> GetFileTypeFromBytes(byte[] content)
         {
             if(content == null || content.Length < 1) {
                 return null;
@@ -70,7 +70,7 @@ namespace ExtraDry.UploadTools {
             return FileDefinitions.Where(m => IsMatch(content, m.MagicBytes)).ToList();
         }
 
-        private bool IsMatch(byte[] content, List<MagicBytes> magic)
+        private static bool IsMatch(byte[] content, List<MagicBytes> magic)
         {
             foreach(var m in magic) {
                 if(IsMatch(content, m)){ return true; }
@@ -78,7 +78,7 @@ namespace ExtraDry.UploadTools {
             return false;
         }
 
-        private bool IsMatch(byte[] content, MagicBytes magic)
+        private static bool IsMatch(byte[] content, MagicBytes magic)
         {
             if(magic == null || content == null || content.Length == 0) { return false; }
 

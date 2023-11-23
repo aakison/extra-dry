@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -20,12 +20,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ExtraDry.Core\ExtraDry.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="FileDatabase.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 	<Import Project="..\CommonAnalyzers.targets" />

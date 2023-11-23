@@ -66,23 +66,65 @@ namespace ExtraDry.UploadTools.Tests {
         // TODO - Mime and filename, Filename and bytes, fail on filename without extension.
         //          Break up test types, ie invalid for what reason.
 
+
         [Theory]
-        [InlineData("bat.bat", "bat.bat", "text/plain")]
         [InlineData("!bat.bat", "bat.bat", "text/plain")]
-        [InlineData("exe.exe", "exe.exe", "text/plain")]
-        [InlineData("file.txt", "exe.exe", "text/plain")]
-        [InlineData("html.html", "htmlScript.html", "textScript/html")] // Has script tags
-        [InlineData("file.apk", "word.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")]
-        [InlineData("zip.jar", "zip.zip", "application/zip")]
-        // mismatching content and file
-        public void InvalidToUploadFiles(string filename, string filepath, string mime)
+        [InlineData("te1--xt.txt", "text.txt", "text/plain")]
+        [InlineData("text", "text.txt", "text/plain")]
+        [InlineData("j%pg.jpg", "jpg.jpg", "image/jpeg")]
+        [InlineData("!4png.png", "png.png", "image/png")]
+        [InlineData("rtf-.rtf", "rtf.rtf", "text/rtf")]
+        public void InvalidFileName(string filename, string filepath, string mime)
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
 
-            var lambda = () => UploadTools.CanUpload(filename, mime, fileBytes);
-
-            Assert.Throws<DryException>(() =>  lambda);
+            Assert.Throws<DryException>(() => UploadTools.CanUpload(filename, mime, fileBytes));
 
         }
+
+        [Theory]
+        [InlineData("doc.docx", "jpg.jpg", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")]
+        [InlineData("file.txt", "exe.exe", "text/plain")]
+        public void MismatchingNameAndBytes(string filename, string filepath, string mime)
+        {
+            var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
+
+            Assert.Throws<DryException>(() => UploadTools.CanUpload(filename, mime, fileBytes));
+        }
+
+        [Theory]
+        [InlineData("doc.docx", "word.docx", "image/jpeg")]
+        [InlineData("file.txt", "text.txt", "image/jpeg")]
+        public void MismatchingNameAndMime(string filename, string filepath, string mime)
+        {
+            var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
+
+            Assert.Throws<DryException>(() => UploadTools.CanUpload(filename, mime, fileBytes));
+        }
+
+        [Theory]
+        [InlineData("bat.bat", "bat.bat", "text/plain")]
+        [InlineData("exe.exe", "exe.exe", "application/x-dosexec")]
+        [InlineData("zip.jar", "zip.zip", "application/java-archive")]
+        [InlineData("file.apk", "word.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")]
+        public void BlacklistFileType(string filename, string filepath, string mime)
+        {
+            var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
+
+            Assert.Throws<DryException>(() => UploadTools.CanUpload(filename, mime, fileBytes));
+        }
+
+        [Theory]
+        [InlineData("html.html", "htmlScript.html", "textScript/html")] // Has script tags
+        public void XmlFileWithScriptFileType(string filename, string filepath, string mime)
+        {
+            var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
+
+            Assert.Throws<DryException>(() => UploadTools.CanUpload(filename, mime, fileBytes));
+        }
+
+
+
+
     }
 }
