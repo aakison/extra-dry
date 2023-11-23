@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Blazor.Components.Internal;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace ExtraDry.Blazor.Components.Internal;
 
 /// <summary>
 /// Trivial extension to the ErrorBoundary to allow access to the CurrentException.  This allows 
@@ -11,6 +13,7 @@
 /// Typically the exposed exception will be a DryException with ProblemDetails which are designed 
 /// for end-users and system integrators.
 /// </remarks>
+[SuppressMessage("Usage", "DRY1500:Extra DRY Blazor components should have an interface.", Justification = "Not a full-blown DRY component, just a bit of a hack to get the Exception out.")]
 public class ExposedErrorBoundary : ErrorBoundary {
 
     /// <summary>
