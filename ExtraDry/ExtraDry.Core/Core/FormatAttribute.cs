@@ -1,7 +1,8 @@
 ﻿namespace ExtraDry.Core;
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-public class FormatAttribute : Attribute {
+public class FormatAttribute : Attribute
+{
 
     /// <summary>
     /// The name of the icon for use with this entity.

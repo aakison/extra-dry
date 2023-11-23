@@ -4,7 +4,8 @@
 /// Determines the scope for blob, which affects which container it's in and there for the security level.
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum BlobScope {
+public enum BlobScope
+{
 
     /// <summary>
     /// Private scope, a SAS token will be required.

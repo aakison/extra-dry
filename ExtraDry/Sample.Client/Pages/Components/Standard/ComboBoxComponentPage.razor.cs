@@ -1,4 +1,5 @@
 ﻿using ExtraDry.Blazor;
+using ExtraDry.Blazor.Internal;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web.Virtualization;
 using Sample.Shared;
@@ -7,9 +8,9 @@ namespace Sample.Client.Pages.Components.Standard;
 
 public partial class ComboBoxComponentPage : ComponentBase, IListItemViewModel<Sector> {
 
-    public string Title(Sector sector) => sector.Title;
+    public string Title(Sector item) => item.Title;
 
-    public string Description(Sector sector) => sector.Description;
+    public string Description(Sector item) => item.Description;
 
     private string Icon { get; set; } = "sectors";
 
@@ -21,7 +22,7 @@ public partial class ComboBoxComponentPage : ComponentBase, IListItemViewModel<S
 
     private bool AdvancedSort { get; set; } = true;
 
-    private bool BasicGroup { get; set; } = false;
+    private bool BasicGroup { get; set; }
 
     private Sector? BasicValue { get; set; }
 
@@ -31,7 +32,7 @@ public partial class ComboBoxComponentPage : ComponentBase, IListItemViewModel<S
 
     private SectorListService SectorService { get; set; } = new();
 
-    private string MoreItemsTemplate = "plus {0} more...";
+    private string MoreItemsTemplate { get; set; } = "plus {0} more...";
 
     private static string GroupName(Sector? item) => item?.Group ?? "unnamed";
 
@@ -169,31 +170,29 @@ public partial class ComboBoxComponentPage : ComponentBase, IListItemViewModel<S
 
         public object[] UriArguments { get; set; } = null!;
 
-        public int FetchSize { get; set; } = 20;
+        public int PageSize { get; set; } = 20;
+
+        public int MaxLevel { get; set; }
 
         private List<Sector> Sectors { get; set; } = new();
 
-        public async ValueTask<ItemsProviderResult<Sector>> GetItemsAsync(string? filter, string? sort, bool? ascending, int? skip, int? take, CancellationToken cancellationToken = default)
-        {
-            Console.WriteLine($"Fetch for filter {filter} at {DateTime.UtcNow.Second}.{DateTime.UtcNow.Millisecond}");
-            filter ??= string.Empty;
-            var query = Sectors.Where(e => e.Title.Contains(filter, StringComparison.CurrentCultureIgnoreCase));
-            var count = query.Count();
-            query = query.Take(FetchSize);
-            var result = new ItemsProviderResult<Sector>(query, count);
-            cancellationToken.ThrowIfCancellationRequested();
-            await Task.Delay(500, cancellationToken);
-            Console.WriteLine($"  Returning at {DateTime.UtcNow.Second}.{DateTime.UtcNow.Millisecond}");
-            return result;
-        }
-
         public async ValueTask<ItemsProviderResult<Sector>> GetItemsAsync(CancellationToken cancellationToken = default)
         {
-            var query = Sectors.Take(FetchSize);
+            var query = Sectors.Take(PageSize);
             var result = new ItemsProviderResult<Sector>(query, Sectors.Count);
             cancellationToken.ThrowIfCancellationRequested();
             await Task.Delay(500, cancellationToken);
             return result;
+        }
+
+        public ValueTask<ItemsProviderResult<Sector>> GetItemsAsync(Query query, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ValueTask<ListItemsProviderResult<Sector>> GetListItemsAsync(Query query, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
         }
     }
 }

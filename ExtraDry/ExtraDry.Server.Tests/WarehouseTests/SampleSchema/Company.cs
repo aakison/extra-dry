@@ -1,6 +1,7 @@
 ﻿#nullable disable // EF Model Class
 
 using ExtraDry.Core.DataWarehouse;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ExtraDry.Server.Tests.WarehouseTests;
 
@@ -36,7 +37,7 @@ public class Company {
     public CompanyStatus Status { get; set; }
 
     [Display]
-    [MaxLength(1000)]
+    [StringLength(1000)]
     [Rules(RuleAction.IgnoreDefaults)]
     public string Description { get; set; }
 
@@ -63,5 +64,6 @@ public class Company {
     public VersionInfo Version { get; set; } = new VersionInfo();
 
     // Not a measure as it's a field and not a property.
+    [SuppressMessage("Design", "CA1051:Do not declare visible instance fields", Justification = "For testing purposes.")]
     public decimal field;
 }

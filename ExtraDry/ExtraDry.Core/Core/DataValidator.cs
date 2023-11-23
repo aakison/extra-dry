@@ -3,7 +3,8 @@
 /// <summary>
 /// Designed to facility the validation of properties of objects, especially when not all of the object is validated.
 /// </summary>
-public class DataValidator {
+public class DataValidator
+{
 
     /// <summary>
     /// Validates all properties of the indicated object.
@@ -69,6 +70,10 @@ public class DataValidator {
         return previousCount == currentCount; ;
     }
 
+    /// <summary>
+    /// Checks if the objects and properties that have been checked are valid.  If any are not, 
+    /// then throws a validation exception with all of the errors.
+    /// </summary>
     public void ThrowIfInvalid()
     {
         if(Errors.Any()) {

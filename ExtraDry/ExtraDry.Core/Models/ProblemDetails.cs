@@ -8,7 +8,8 @@
 /// Adapted from open source version in Microsoft.AspNetCore.Mvc.
 /// This is repeated here so it can be shared between server and blazor clients.
 /// </remarks>
-public class ProblemDetails {
+public class ProblemDetails
+{
 
     /// <summary>
     /// A URI reference that identifies the problem type. This specification encourages that, 

@@ -84,7 +84,7 @@ public partial class Theme : ComponentBase {
         ThemeInfo.Loading = true;
         Icons ??= Array.Empty<IconInfo>();
         if(Http == null) {
-            Logger.LogError("Theme requires an HttpClient to load SVG icons, please register one in DI.");
+            Logger.LogConsoleError("Theme requires an HttpClient to load SVG icons, please register one in DI.");
             return;
         }
         foreach(var icon in Icons) {
@@ -102,11 +102,11 @@ public partial class Theme : ComponentBase {
     private async Task LoadIconConcurrentAsync(IconInfo icon)
     {
         if(CachedIcons.ContainsKey(icon.Key)) {
-            Logger.LogWarning("Theme already contains an icon with key {icon.Key}, skipping.  Remove duplicate IconInfo from Theme's Icon collection.", icon.Key);
+            Logger.LogDuplicateIcon(icon.Key);
             return;
         }
         if(!CachedIcons.TryAdd(icon.Key, icon)) {
-            Logger.LogError("Failed to add icon to the cache concurrently.");
+            Logger.LogConsoleError("Failed to add icon to the cache concurrently.");
             return;
         }
         try {
@@ -114,7 +114,7 @@ public partial class Theme : ComponentBase {
                 || !icon.ImagePath.EndsWith(".svg", StringComparison.InvariantCultureIgnoreCase)) {
                 return;
             }
-            Logger.LogDebug("Loading SVG Icon {icon.Key} from {icon.ImagePath}", icon.Key, icon.ImagePath);
+            Logger.LogLoadingIcon(icon.Key, icon.ImagePath);
             var content = await Http.GetStringAsync(icon.ImagePath);
             icon.SvgInlineBody = content;
             if(icon.SvgRenderType == SvgRenderType.Document) {
@@ -133,11 +133,11 @@ public partial class Theme : ComponentBase {
             }
         }
         catch(Exception ex) {
-            Logger.LogError("Failed to load icon {icon.Key} from {icon.ImagePath}: {ex.Message}", icon?.Key, icon?.ImagePath, ex.Message);
+            Logger.LogIconFailed(icon.Key, icon.ImagePath, ex);
         }
     }
 
-    private static bool loaded = false;
+    private static bool loaded;
 
     private static readonly ConcurrentDictionary<string, IconInfo> CachedIcons = new();
 

@@ -3,7 +3,7 @@
 /// <summary>
 /// Arguments with information on the entities that have changed.
 /// </summary>
-public class EntitiesChangedEventArgs {
+public class EntitiesChangedEventArgs : EventArgs {
 
     /// <summary>
     /// Create args with the added, updated and deleted entities.

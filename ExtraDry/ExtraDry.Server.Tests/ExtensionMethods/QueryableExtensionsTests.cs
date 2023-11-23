@@ -6,9 +6,9 @@ public class QueryableExtensionsTests {
     public void NoSortSpecifiedUseIdStabilizer()
     {
         var list = new List<IdConventionKey> {
-            new IdConventionKey { Id = 1 },
-            new IdConventionKey { Id = 3 },
-            new IdConventionKey { Id = 2 },
+            new() { Id = 1 },
+            new() { Id = 3 },
+            new() { Id = 2 },
         };
         var query = new SortQuery();
 
@@ -25,9 +25,9 @@ public class QueryableExtensionsTests {
     public void NoSortSpecifiedUseClassNameStabilizer()
     {
         var list = new List<ClassNameConventionKey> {
-            new ClassNameConventionKey { ClassNameConventionKeyId = 1 },
-            new ClassNameConventionKey { ClassNameConventionKeyId = 3 },
-            new ClassNameConventionKey { ClassNameConventionKeyId = 2 },
+            new() { ClassNameConventionKeyId = 1 },
+            new() { ClassNameConventionKeyId = 3 },
+            new() { ClassNameConventionKeyId = 2 },
         };
         var query = new SortQuery();
 
@@ -42,9 +42,9 @@ public class QueryableExtensionsTests {
     public void NoSortSpecifiedUseKeyAttributeStabilizer()
     {
         var list = new List<KeyAttributeEntity> {
-            new KeyAttributeEntity { PrimaryKey = 1 },
-            new KeyAttributeEntity { PrimaryKey = 3 },
-            new KeyAttributeEntity { PrimaryKey = 2 },
+            new() { PrimaryKey = 1 },
+            new() { PrimaryKey = 3 },
+            new() { PrimaryKey = 2 },
         };
         var query = new SortQuery();
 
@@ -59,9 +59,9 @@ public class QueryableExtensionsTests {
     public void NoSortSpecifiedNoStabilizerException()
     {
         var list = new List<NoImplicitStabilizer> {
-            new NoImplicitStabilizer { PrimaryKey = 1 },
-            new NoImplicitStabilizer { PrimaryKey = 3 },
-            new NoImplicitStabilizer { PrimaryKey = 2 },
+            new() { PrimaryKey = 1 },
+            new() { PrimaryKey = 3 },
+            new() { PrimaryKey = 2 },
         };
         var query = new SortQuery();
 
@@ -72,9 +72,9 @@ public class QueryableExtensionsTests {
     public void NoSortSpecifiedCompositeKeyStabilizerException()
     {
         var list = new List<CompositeKeyStabilizer> {
-            new CompositeKeyStabilizer { FirstPartKey = 1 },
-            new CompositeKeyStabilizer { FirstPartKey = 3 },
-            new CompositeKeyStabilizer { FirstPartKey = 2 },
+            new() { FirstPartKey = 1 },
+            new() { FirstPartKey = 3 },
+            new() { FirstPartKey = 2 },
         };
         var query = new SortQuery();
 

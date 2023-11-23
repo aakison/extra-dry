@@ -8,7 +8,7 @@ public class Content {
 
     public Guid Uuid { get; set; } = Guid.NewGuid();
 
-    [Required, MaxLength(50)]
+    [Required, StringLength(50)]
     [Display(Name = "Title", ShortName = "Title")]
     public string Title { get; set; } = null!;
 

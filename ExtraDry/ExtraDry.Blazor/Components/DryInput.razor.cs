@@ -81,10 +81,10 @@ public partial class DryInput<T> : OwningComponentBase, IDisposable {
             dynamic task = method.Invoke(optionProvider, new object[] { token });
             var optList = (await task).Items as ICollection;
             var options = optList.Cast<object>().ToList();
-            LookupProviderOptions = options.Select((e, i) => new { Key = i, Item = e }).ToDictionary(e => e.Key.ToString(), e => e.Item);
+            LookupProviderOptions = options.Select((e, i) => new { Key = i, Item = e }).ToDictionary(e => e.Key.ToString(CultureInfo.InvariantCulture), e => e.Item);
         }
         else {
-            Logger.LogError(@"No option provider was registered.", $"An attempt to display a DryInput for type `{Property?.Property?.PropertyType}`, but no option provider was registered.  To enable select functionality for linked types, please add a scoped reference to the `IOptionProvider` in `Main`.  E.g. `builder.Services.AddScoped<IOptionProvider<{Property?.Property?.PropertyType}>>(e => new MyOptionProvider());`.  Also note that IListService implements IOptionProvider and can be used to register RESTful APIs.");
+            Logger.LogMissingOptionProvider(Property?.Property?.PropertyType?.Name);
         }
     }
 

@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace ExtraDry.Core;
 
-public class DataConverter {
+public class DataConverter
+{
 
     /// <summary>
     /// Given a date, formats it for display using a relative time.

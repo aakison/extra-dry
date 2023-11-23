@@ -55,7 +55,7 @@ public partial class Gravatar : ComponentBase, IExtraDryComponent {
         var encoder = new UTF8Encoding();
         using var md5 = new MD5();
         var hashedBytes = md5.ComputeHash(encoder.GetBytes(email.ToLowerInvariant()));
-        var hash = string.Join("", hashedBytes.Select(e => e.ToString("X2")));
+        var hash = string.Join("", hashedBytes.Select(e => e.ToString("X2", CultureInfo.InvariantCulture)));
         return hash.ToLowerInvariant();
     }
 }

@@ -19,7 +19,6 @@
 		<PackageIcon>extradry-logo.png</PackageIcon>
 		<PackageIconUrl />
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-		<EnableNETAnalyzers>True</EnableNETAnalyzers>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -57,7 +56,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="BuildWebCompiler2022" Version="1.14.10" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.14" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
 		<PackageReference Include="Microsoft.VisualStudio.VsixColorCompiler" Version="17.0.31709.430" />
 		<PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.175" />
 	</ItemGroup>
@@ -67,6 +67,7 @@
 	</ItemGroup>
 	
 	<Import Project="..\CommonAnalyzers.targets" />
+	<Import Project="..\VulnerabilityFixes.targets" />
 
 	<ItemGroup>
 		<Content Update="wwwroot\img\layout-doubleweightedleft.png">

@@ -1,6 +1,8 @@
-﻿namespace Sample.Data.Services;
+﻿using System.Globalization;
 
-public class RegionService {
+namespace Sample.Data.Services;
+
+public class RegionService : IEntityResolver<Region> {
 
     public RegionService(SampleContext sampleContext, RuleEngine ruleEngine)
     {
@@ -8,19 +10,29 @@ public class RegionService {
         rules = ruleEngine;
     }
 
-    public async Task<FilteredCollection<Region>> ListAsync(FilterQuery query)
+    public async Task<PagedCollection<Region>> ListAsync(PageQuery query)
     {
         return await database.Regions
-            .Include(e => e.Ancestors)
+            .Include(e => e.Parent)
             .QueryWith(query)
-            .ToFilteredCollectionAsync();
+            .ToPagedCollectionAsync();
     }
 
-    public async Task<FilteredCollection<Region>> ListChildrenAsync(string code)
+    public async Task<PagedHierarchyCollection<Region>> ListHierarchyAsync(PageHierarchyQuery query)
     {
         return await database.Regions
-            .QueryWith(new(), e => e.Ancestors.Any(f => f.Slug == code && (int)f.Level + 1 == (int)e.Level))
-            .ToFilteredCollectionAsync();
+            .Include(e => e.Parent)
+            .QueryWith(query)
+            .ToPagedHierarchyCollectionAsync();
+    }
+
+    public async Task<BaseCollection<Region>> ListChildrenAsync(string code)
+    {
+        var region = await RetrieveAsync(code);
+        return await database.Regions
+            .Where(e => e.Lineage!.IsDescendantOf(region.Lineage) && e.Lineage.GetLevel() == region.Lineage.GetLevel() + 1)
+            .Include(e => e.Parent)
+            .ToBaseCollectionAsync();
     }
 
     public async Task CreateAsync(Region item)
@@ -31,8 +43,13 @@ public class RegionService {
                 throw new ArgumentException("A region must have a parent if it is not at the global level.");
             }
             parent = await TryRetrieveAsync(item.Parent.Slug);
+
+            if(parent == null) {
+                throw new ArgumentException("Invalid parent");
+            }
         }
-        item.SetParent(parent);
+
+        await SetParent(item, parent);
         database.Regions.Add(item);
         await database.SaveChangesAsync();
     }
@@ -40,7 +57,7 @@ public class RegionService {
     public async Task<Region?> TryRetrieveAsync(string code)
     {
         return await database.Regions
-            .Include(e => e.Ancestors)
+            .Include(e => e.Parent)
             .FirstOrDefaultAsync(e => e.Slug == code);
     }
 
@@ -56,30 +73,23 @@ public class RegionService {
     /// </summary>
     /// <param name="slug">The slug that is used to identify the region to update</param>
     /// <param name="item">The item to update</param>
-    /// <param name="allowMove">If false (default), any parent changes will be ignored. If true, will attempt to reparent the provided item to the provided parent. Afterwards, will clear the changetracker. </param>
+    /// <param name="allowMove">If false (default), any parent changes will be ignored. If true, will attempt to reparent the provided item to the provided parent.</param>
     /// <returns></returns>
     public async Task UpdateAsync(string slug, Region item, bool allowMove = false)
-    {        
+    {
         var existing = await RetrieveAsync(slug);
-        await database.Database.BeginTransactionAsync();
-        try {
-            if(allowMove && existing.Parent != null && item.Parent != null && existing.Parent.Slug != item.Parent.Slug) {
-                var newParent = await RetrieveAsync(item.Parent.Slug);
-                await existing.MoveSubtree(newParent, database);
+        if(!allowMove) {
+            // if we're not allowing a parent change, ensure they're not bypassing the parent update by explicitly resetting it.
+            item.Parent = existing.Parent;
+        }
+        else if(allowMove && existing.Parent != null && item.Parent != null && existing.Parent.Slug != item.Parent.Slug) {
+            var newParent = await RetrieveAsync(item.Parent.Slug);
+            existing.Parent = newParent;
 
-                // Clear the changetracker. Moving the subtree is destructive and outside EFs wheelhouse
-                // We detach all Regions so that future fetches have these changes.
-                database.ChangeTracker.Clear();
-                existing = await RetrieveAsync(slug);
-            }
-            await rules.UpdateAsync(item, existing);
-            await database.SaveChangesAsync();
-            await database.Database.CommitTransactionAsync();
+            await SetParent(existing, existing.Parent);
         }
-        catch {
-            await database.Database.RollbackTransactionAsync();
-            throw;
-        }
+        await rules.UpdateAsync(item, existing);
+        await database.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(string code)
@@ -95,8 +105,35 @@ public class RegionService {
         await database.SaveChangesAsync();
     }
 
+    private async Task SetParent(Region child, Region? parent)
+    {
+        if(parent == null) { return; }
+
+        if(database.Regions.Any(e => e.Uuid == child.Uuid && e.Lineage.IsDescendantOf(parent.Lineage))) {
+            // Already a child of this entity in the DB, so lets not set it again, it'll change the sort and make the lineage numbers climb.
+            return;
+        }
+
+        if(parent.Strata >= child.Strata) {
+            throw new ArgumentException("Parent must be at a higher level than current entity.");
+        }
+        child.Parent = parent;
+
+        var maxChildLineage = await database.Regions.Where(e => e.Lineage!.IsDescendantOf(parent.Lineage)).MaxAsync(c => c.Lineage);
+        if(maxChildLineage == HierarchyId.GetRoot() || maxChildLineage == parent.Lineage) {
+            // If this is the first child of the parent, pass null as the first param for GetDescendant
+            maxChildLineage = null;
+        }
+        var newLineage = parent.Lineage?.GetDescendant(maxChildLineage, null);
+        child.Lineage = newLineage ?? HierarchyId.GetRoot();
+    }
+
+    public async Task<Region?> ResolveAsync(Region exemplar)
+    {
+        return await TryRetrieveAsync(exemplar.Slug);
+    }
+
     private readonly SampleContext database;
 
     private readonly RuleEngine rules;
-
 }

@@ -56,7 +56,7 @@ public class WarehouseModelBuilder {
 
     private static List<Type> GetWarehouseTables(IEnumerable<Type> enumerable)
     {
-        var tableClasses = new List<Type>() { typeof(Date), typeof(Time) };
+        var tableClasses = new List<Type>() { typeof(DateDimension), typeof(TimeDimension) };
         var rejectedClasses = new List<Type>();
         foreach(var candidate in enumerable) {
             ExpandTables(candidate);
@@ -151,8 +151,8 @@ public class WarehouseModelBuilder {
     }
 
     internal bool HasTableNamed(string name) =>
-        FactTables.Values.Any(e => string.Compare(e.TableName, name, StringComparison.InvariantCultureIgnoreCase) == 0) ||
-        DimensionTables.Values.Any(e => string.Compare(e.TableName, name, StringComparison.InvariantCultureIgnoreCase) == 0);
+        FactTables.Values.Any(e => string.Equals(e.TableName, name, StringComparison.OrdinalIgnoreCase)) ||
+        DimensionTables.Values.Any(e => string.Equals(e.TableName, name, StringComparison.OrdinalIgnoreCase));
 
     private void LoadEnumDimension(Type enumType, DimensionTableAttribute dimension)
     {

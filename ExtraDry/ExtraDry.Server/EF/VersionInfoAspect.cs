@@ -31,7 +31,7 @@ public class VersionInfoAspect {
     /// </summary>
     public VersionInfoAspect(AspectDbContext context, IHttpContextAccessor httpContextAccessor)
     {
-        context.EntitiesChanged += Context_EntitiesChanged;
+        context.EntitiesChangedEvent += Context_EntitiesChanged;
         VersionInfo.CurrentUsername = () => httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "anonymous";
     }
 

@@ -1,6 +1,7 @@
 ﻿namespace ExtraDry.Core.Tests;
 
-public class DecimalRangeAttributeTests {
+public class DecimalRangeAttributeTests
+{
 
     [Theory]
     [InlineData("Minimum", 1)]

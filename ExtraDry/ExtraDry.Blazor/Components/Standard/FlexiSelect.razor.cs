@@ -8,7 +8,7 @@
 /// <typeparam name="TItem">The type for items in the select list.</typeparam>
 public partial class FlexiSelect<TItem> : ComponentBase, IExtraDryComponent where TItem : notnull {
 
-    public string Id = $"Id{Guid.NewGuid()}";
+    public string Id { get; set; } = $"Id{Guid.NewGuid()}";
 
     /// <inheritdoc cref="IExtraDryComponent.CssClass" />
     [Parameter]

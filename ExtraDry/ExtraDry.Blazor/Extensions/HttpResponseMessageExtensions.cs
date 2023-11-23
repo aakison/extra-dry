@@ -5,7 +5,7 @@ namespace ExtraDry.Blazor.Extensions;
 
 public static class HttpResponseMessageExtensions {
 
-    public static async Task AssertSuccess(this HttpResponseMessage response, ILogger? logger = null)
+    public static async Task AssertSuccess(this HttpResponseMessage response, ILogger logger)
     {
         if(!response.IsSuccessStatusCode) {
             ProblemDetails? problem = null;
@@ -21,11 +21,11 @@ public static class HttpResponseMessageExtensions {
                         Instance = response.RequestMessage?.RequestUri?.AbsolutePath,
                     };
                 }
+                logger.LogProblemDetails(problem);
             }
             catch {
-                logger?.LogError($"Attempt to assert success failed to parse response.");
+                logger.LogConsoleError($"Attempt to extract problem details from request failed.");
             }
-            logger?.LogDebug("Response was not successful, full problem: {problem}", problem);
             throw new DryException(problem);
         }
     }

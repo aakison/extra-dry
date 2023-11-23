@@ -25,8 +25,8 @@ public class SqlGeneratorTests {
     [InlineData(ColumnType.Text, "Foo", true, "[Foo] NVARCHAR(Max),")]
     [InlineData(ColumnType.Key, "Foo", false, "[Foo] INT NOT NULL PRIMARY KEY,")] // nullable is ignored.
     [InlineData(ColumnType.Key, "Foo", true, "[Foo] INT NOT NULL PRIMARY KEY,")]
-    [InlineData(ColumnType.Double, "Foo", false, "[Foo] REAL NOT NULL,")]
-    [InlineData(ColumnType.Double, "Foo", true, "[Foo] REAL,")]
+    [InlineData(ColumnType.Real, "Foo", false, "[Foo] REAL NOT NULL,")]
+    [InlineData(ColumnType.Real, "Foo", true, "[Foo] REAL,")]
     [InlineData(ColumnType.Integer, "Multi Part Name", true, "[Multi Part Name] INT,")]
     [InlineData(ColumnType.Integer, "Property Formerly Known '!~@#%", true, "[Property Formerly Known '!~@#%] INT,")]
     public void ColumnTypeIsCorrect(ColumnType type, string name, bool nullable, string expected)
@@ -45,7 +45,7 @@ public class SqlGeneratorTests {
     [Theory]
     [InlineData(ColumnType.Integer, "Foo", 12, "[Foo] INT NOT NULL,")] // ignore length
     [InlineData(ColumnType.Decimal, "Foo", 12, "[Foo] DECIMAL(18,2) NOT NULL,")] // ignore length
-    [InlineData(ColumnType.Double, "Foo", 12, "[Foo] REAL NOT NULL,")] // ignore length
+    [InlineData(ColumnType.Real, "Foo", 12, "[Foo] REAL NOT NULL,")] // ignore length
     [InlineData(ColumnType.Text, "Foo", 12, "[Foo] NVARCHAR(12) NOT NULL,")]
     [InlineData(ColumnType.Text, "Foo", 8000, "[Foo] NVARCHAR(8000) NOT NULL,")]
     [InlineData(ColumnType.Text, "Foo", 9000, "[Foo] NVARCHAR(Max) NOT NULL,")] // To big for column, wrap to max.

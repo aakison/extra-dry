@@ -1,9 +1,7 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-
-namespace ExtraDry.Core {
-    public class BlobInfo : IBlobInfo {
+﻿namespace ExtraDry.Core
+{
+    public class BlobInfo : IBlobInfo
+    {
 
         [Key]
         [Rules(RuleAction.Block)]
@@ -19,7 +17,7 @@ namespace ExtraDry.Core {
 
         public int Size { get; set; }
 
-        [MaxLength(64), RegularExpression("[A-F0-9]{64}")]
+        [StringLength(64), RegularExpression("[A-F0-9]{64}")]
         public string ShaHash { get; set; } = string.Empty;
 
         /// <summary>

@@ -7,6 +7,7 @@
 /// There should only be one `Primary` or `Default` command, and `Danger` should be used 
 /// sparingly, so `Alternate` is explicitly the default.
 /// </remarks>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum CommandContext {
 
     /// <summary>

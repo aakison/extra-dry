@@ -1,5 +1,33 @@
 # Extra Dry - Blazor
-Performant blazor client library extending DRY principles.
+Performant Blazor client and server libraries extending DRY principles.
+
+Extra Dry extends DRY principles through all architectural layers to reduce the amount of 
+boilerplate code required to build applications.  In borrows from facet design patterns to provide
+common services across model objects, and to configure aspects of models relevant to different 
+tiers.  This allows a single model to be used for all layers and tiers of the application, removing 
+redundant objects and eliminating mapping code.
+
+Extra Dry uses existing features from Entity Framework and the System JSON serializer to provide
+distinctions between model properties that are relevant to different layers.  While tiers and 
+layers may go by different names, the following layers and the objects they typically work in are 
+referenced in Extra Dry as:
+* Tier: Client (_specifically a Blazor WASM client_)
+  * Presentation Layer - uses View Model Objects (View-Models) and Model Objects (Models)
+  * Service Layer - uses Service Access Objects (SAOs)
+* Tier: Server (_specifically an ASP.NET OpenAPI server_)
+  * Controller Layer - consumes Business Model Objects (Models) and produces Data Transfer Objects (DTOs)
+  * Service Layer - consumes Data Access Objects (DAOs) and produces Business Model Objects (Models)
+* Tier: Database
+  * Note: No layers, just the database
+
+In Extra Dry, a single model object is created that is used for all of the purposes above, from 
+the DAO, through the DTO, to the Model.  Oftentimes, the Model is the final object that is passed
+to the presentation and no View-Model is required.
+
+Extra Dry then leverages existing .NET DRY features and extends them to provide the following
+benefits:
+
+* TODO:
 
 ### Adding an Item Service
 

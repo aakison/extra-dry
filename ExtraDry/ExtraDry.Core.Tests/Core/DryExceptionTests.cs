@@ -1,17 +1,17 @@
 ﻿using ExtraDry.Core.Models;
-using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using System.Net;
 
 namespace ExtraDry.Core.Tests;
 
-public class DryExceptionTests {
+public class DryExceptionTests
+{
 
     [Fact]
     public void ArgumentMismatchRoundtrip1()
     {
         var ex = new DryException();
 
-        Assert.StartsWith("Exception of type", ex.Message);
+        Assert.StartsWith("Error in the application", ex.Message);
         Assert.Null(ex.ProblemDetails.Detail);
         Assert.Null(ex.ProblemDetails.Instance);
         Assert.Null(ex.ProblemDetails.Title);
@@ -59,7 +59,7 @@ public class DryExceptionTests {
     [Fact]
     public void ArgumentMismatchRoundtrip5()
     {
-        var inner = new Exception("inner");
+        var inner = new ArgumentException("inner");
 
         var ex = new DryException("message", inner);
 

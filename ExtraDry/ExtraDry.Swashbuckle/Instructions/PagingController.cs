@@ -104,6 +104,7 @@ public class PagingController {
     [HttpGet("api/sample-data/page-cars"), Produces("application/json")]
     [AllowAnonymous]
     [SuppressMessage("Security", "DRY1106:HttpVerbs methods should not take int values", Justification = "Not an ID")]
+    [SuppressMessage("Usage", "DRY1113:Http GET methods should not take parameters with names that match internal properties", Justification = "Use in this case is pedagogical.")]
     public async Task<PagedCollection<Automobile>> ListAsync([FromQuery] int skip, int take, string? token)
     {
         take = take <= 0 ? 10 : Math.Min(take, 10);

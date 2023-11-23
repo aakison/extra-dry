@@ -3,7 +3,8 @@
 /// <summary>
 /// The interface for entities that want to embellish the behavior before they are deleted.
 /// </summary>
-public interface IDeletingCallback {
+public interface IDeletingCallback
+{
 
     /// <summary>
     /// Callback handler for the item that is done as it is being deleted. This is called just 
@@ -18,7 +19,8 @@ public interface IDeletingCallback {
 /// <summary>
 /// The interface for entities that want to embellish the behavior after they are deleted.
 /// </summary>
-public interface IDeletedCallback { 
+public interface IDeletedCallback
+{
 
     /// <summary>
     /// Callback handler for the item that is done as it is being deleted. This is called just 

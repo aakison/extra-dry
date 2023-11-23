@@ -26,7 +26,7 @@ public partial class DryFilterEnumSelect : ComponentBase, IExtraDryComponent, ID
 
     /// <inheritdoc cref="DryPageQueryView.PageQueryBuilder" />
     [CascadingParameter]
-    public PageQueryBuilder? PageQueryBuilder { get; set; }
+    public QueryBuilder? PageQueryBuilder { get; set; }
 
     /// <summary>
     /// When parameters are set, check if the PageQuery has a filter that matches our property

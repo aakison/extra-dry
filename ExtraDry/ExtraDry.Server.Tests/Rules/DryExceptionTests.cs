@@ -8,7 +8,7 @@ public class DryExceptionTests {
         var exception = new DryException();
 
         Assert.Null(exception.ProblemDetails.Detail);
-        Assert.Contains(nameof(DryException), exception.Message);
+        Assert.Contains("Error in the application", exception.Message);
         Assert.Null(exception.InnerException);
     }
 
@@ -25,7 +25,7 @@ public class DryExceptionTests {
     [Fact]
     public void DefaultValuesInnerConstructor()
     {
-        var inner = new Exception();
+        var inner = new ArgumentException();
         var exception = new DryException("message", inner);
 
         Assert.Null(exception.ProblemDetails.Detail);

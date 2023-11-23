@@ -9,6 +9,7 @@ public partial class DryContent : ComponentBase {
     public string? ContentName { get; set; }
 
     [Inject]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "DRY1503:JavaScript runtime injection should be replaced with module aware ExtraDryJavacriptModule.", Justification = "Entire component needs to be refactored or temporarily retired.")]
     private IJSRuntime JSRuntime { get; set; } = null!;
 
     [Inject]
@@ -173,14 +174,14 @@ public partial class DryContent : ComponentBase {
     [JSInvokable("UploadImage")]
     public static async Task<IBlobInfo> UploadImage(string imageDataUrl)
     {
-        if(!imageDataUrl.StartsWith("data:")) {
+        if(!imageDataUrl.StartsWith("data:", StringComparison.Ordinal)) {
             throw new DryException("When posting back an image, send through the imageDataUri from the clipboard.  This URL must begin with 'data:' scheme.", "Unable to upload image. 0x0F4B39DA");
         }
         var semicolon = imageDataUrl.IndexOf(';');
         if(semicolon > 64 || semicolon < 7) {
             throw new DryException("When posting back an image, send through the imageDataUri from the clipboard.  This must include the mime type between the first ':' and the first ';'", "Unable to upload image. 0x0F8A8B8C");
         }
-        var base64Delimiter = imageDataUrl.IndexOf("base64,");
+        var base64Delimiter = imageDataUrl.IndexOf("base64,", StringComparison.Ordinal);
         if(base64Delimiter < 0) {
             throw new DryException("When posting back an image, send through the imageDataUri from the clipboard.  This must include the content of the image properly base64 encoded.", "Unable to upload image. 0x0F3CEE65");
         }
@@ -188,7 +189,7 @@ public partial class DryContent : ComponentBase {
         var base64 = imageDataUrl[(base64Delimiter+7)..];
         var bytes = Convert.FromBase64String(base64);
         if(StaticServiceProvider.GetService(typeof(IBlobService)) is not IBlobService blobService) {
-            StaticLogger.LogWarning("No IBlobService was registered with the service locator, the pasted image will encoded inside the content of the page.  This becomes problematic for large or multiple images and images should be stored in blob storage.  Create an implementation of IBlobService and register with the IServiceCollection.");
+            StaticLogger.LogConsoleWarning("No IBlobService was registered with the service locator, the pasted image will encoded inside the content of the page.  This becomes problematic for large or multiple images and images should be stored in blob storage.  Create an implementation of IBlobService and register with the IServiceCollection.");
             return new BlobInfo() {
                 UniqueId = Guid.Empty,
                 Url = imageDataUrl,

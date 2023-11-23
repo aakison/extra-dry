@@ -7,12 +7,14 @@
 /// Type T is not strictly necessary, but provides consistency with other return types and allows
 /// helper methods (such as auto-documentation) to work more easily.
 /// </remarks>
-public class Statistics<T> {
+public class Statistics<T>
+{
 
     /// <summary>
     /// Create a statistics payload.
     /// </summary>
-    public Statistics() { 
+    public Statistics()
+    {
         TypeName = typeof(T).Name;
     }
 

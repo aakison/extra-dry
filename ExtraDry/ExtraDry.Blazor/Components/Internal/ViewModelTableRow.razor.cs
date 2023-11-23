@@ -23,7 +23,7 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
     public ListItemInfo<T> Item { get; set; }
 
     [Parameter]
-    public Grouping Grouping { get; set; }
+    public string GroupColumn { get; set; }
 
     [Parameter]
     public int Height { get; set; } = 40;
@@ -31,9 +31,6 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
     /// <inheritdoc cref="IExtraDryComponent.CssClass" />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
-
-    [Inject]
-    private ILogger<ViewModelTableRow<T>> Logger { get; set; }
 
     protected override void OnParametersSet()
     {
@@ -54,7 +51,7 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass, ClickableClass, SelectedClass);
 
-    private string RadioButtonScope => Description.GetHashCode().ToString();
+    private string RadioButtonScope => $"{Description.GetHashCode()}";
 
     private bool IsSelected => Selection.Contains(Item.Item);
 
@@ -62,7 +59,6 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
 
     private async Task RowClick(MouseEventArgs _)
     {
-        Logger.LogInformation("Select Row with Row Click");
         if(Description.ListSelectMode == ListSelectMode.Action) {
             await Description.SelectCommand?.ExecuteAsync(Item.Item);
         }
@@ -77,21 +73,19 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
 
     private async Task RowDoubleClick(MouseEventArgs _)
     {
-        Logger.LogInformation("Select Row with Row Double Click");
         await Description.DefaultCommand?.ExecuteAsync(Item.Item);
         StateHasChanged();
     }
 
     private void CheckChanged(ChangeEventArgs args)
     {
-        Logger.LogInformation("Checked checkbox/radio with new value '{arg}'", args?.Value);
-        //if(IsSelected) {
-        //    Select();
-        //}
-        //else {
-        //    Deselect();
-        //}
-        //StateHasChanged();
+        if(IsSelected) {
+            Select();
+        }
+        else {
+            Deselect();
+        }
+        StateHasChanged();
     }
 
     private void Select()

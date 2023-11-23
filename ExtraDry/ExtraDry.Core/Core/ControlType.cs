@@ -1,7 +1,8 @@
 ﻿namespace ExtraDry.Core;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum ControlType {
+public enum ControlType
+{
 
     BestMatch,
 

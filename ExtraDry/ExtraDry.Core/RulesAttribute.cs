@@ -6,7 +6,8 @@
 /// a aggregated object from the OpenApi specification, the declaration must be on the class.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Class, AllowMultiple = false)]
-public sealed class RulesAttribute : Attribute {
+public sealed class RulesAttribute : Attribute
+{
 
     /// <summary>
     /// Create a Rule that allows property to change on both create and update.

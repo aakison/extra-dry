@@ -11164,6 +11164,7 @@ button.unobtrusive {
   min-width: initial;
   background-color: transparent;
   color: var(--gray);
+  padding: 5px;
 }
 button.unobtrusive:hover {
   background-color: rgba(255, 255, 255, 0.5);

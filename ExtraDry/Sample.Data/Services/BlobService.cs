@@ -21,7 +21,7 @@ public class BlobService {
     public async Task<BlobInfo> UploadAsync(BlobInfo item, byte[] content)
     {
         var hash = SHA256.HashData(content);
-        var hashString = string.Join("", hash.Select(e => e.ToString("X2")));
+        var hashString = string.Join("", hash.Select(e => e.ToString("X2", CultureInfo.InvariantCulture)));
 
         var existing = await database.Blobs.FirstOrDefaultAsync(e => e.ShaHash == hashString && e.Scope == BlobScope.Public);
         if(existing != null) {

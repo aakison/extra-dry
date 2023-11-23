@@ -1,12 +1,13 @@
 ﻿namespace ExtraDry.Core.Tests.Helpers;
 
-public class DataConverterTests {
+public class DataConverterTests
+{
 
     [Theory]
-    [InlineData(TestEnum.SimpleName, "SimpleName")]
-    [InlineData(TestEnum.DisplayName, "Display Name")]
-    [InlineData((TestEnum)10, "10")]
-    public void TestDataConverter(TestEnum test, string expected)
+    [InlineData(TestType.SimpleName, "SimpleName")]
+    [InlineData(TestType.DisplayName, "Display Name")]
+    [InlineData((TestType)10, "10")]
+    public void TestDataConverter(TestType test, string expected)
     {
         var actual = DataConverter.DisplayEnum(test);
 
@@ -22,7 +23,8 @@ public class DataConverterTests {
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum TestEnum {
+    public enum TestType
+    {
 
         SimpleName = 0,
 
@@ -30,7 +32,7 @@ public class DataConverterTests {
         DisplayName = 1,
 
     }
-    
+
     [Theory]
     [InlineData("Test", "Test")]
     [InlineData("TEST", "TEST")]
@@ -62,7 +64,7 @@ public class DataConverterTests {
 
         var display = DataConverter.DateToRelativeTime(current);
 
-        expected = string.Format(expected, current);
+        expected = string.Format(CultureInfo.CurrentCulture, expected, current);
         Assert.Equal(expected, display);
     }
 

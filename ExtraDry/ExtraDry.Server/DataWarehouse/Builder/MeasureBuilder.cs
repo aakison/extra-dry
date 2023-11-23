@@ -17,7 +17,7 @@ public class MeasureBuilder : ColumnBuilder {
             SetType(ColumnType.Decimal);
         }
         else if(PropertyInfo.PropertyType == typeof(double) || PropertyInfo.PropertyType == typeof(float)) {
-            SetType(ColumnType.Double);
+            SetType(ColumnType.Real);
         }
         else {
             SetType(ColumnType.Integer);
@@ -71,9 +71,9 @@ public class MeasureBuilder : ColumnBuilder {
         return this;
     }
 
-    public MeasureBuilder HasDefault(object _default)
+    public MeasureBuilder HasDefault(object @default)
     {
-        SetDefault(_default);
+        SetDefault(@default);
         return this;
     }
 
@@ -112,7 +112,7 @@ public class MeasureBuilder : ColumnBuilder {
 
     protected override bool IsValidColumnType(ColumnType type)
     {
-        return type == ColumnType.Decimal || type == ColumnType.Double || type == ColumnType.Integer;
+        return type == ColumnType.Decimal || type == ColumnType.Real || type == ColumnType.Integer;
     }
 
     private MeasureAttribute? MeasureAttribute { get; set; }

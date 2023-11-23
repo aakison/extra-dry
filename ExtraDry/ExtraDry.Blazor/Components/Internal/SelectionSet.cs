@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Blazor.Components.Internal;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace ExtraDry.Blazor.Components.Internal;
 
 /// <summary>
 /// Represents a list of items that can be selected, supporting both single-select and multi-select lists.
@@ -97,6 +99,7 @@ public class SelectionSet {
     /// <summary>
     /// Indicates if a single selection is made, independent of whether multiple or single select mode is on.
     /// </summary>
+    [SuppressMessage("Naming", "CA1720:Identifier contains type name", Justification = "Good enough for LINQ, good enough here.")]
     public bool Single() => (!MultipleSelect || inclusiveStorage) && items.Count == 1;
 
     public bool All() => ExclusiveStorage && !items.Any();
@@ -118,10 +121,11 @@ public class SelectionSet {
     public static SelectionSet? Lookup(object key) => key == null ? null : registered.TryGetValue(key, out var value) ? value : null;
 
     public static SelectionSet Register(object key) {
-        if(!registered.ContainsKey(key)) {
-            registered.Add(key, new SelectionSet());
+        if(!registered.TryGetValue(key, out SelectionSet? value)) {
+            value = new SelectionSet();
+            registered.Add(key, value);
         }
-        return registered[key];
+        return value;
     }
 
     public static void Deregister(object key)

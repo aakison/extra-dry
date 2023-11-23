@@ -2,13 +2,14 @@
 
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
-		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="CsvHelper" Version="30.0.1" />
+		<PackageReference Include="EntityFrameworkCore.SqlServer.HierarchyId" Version="4.0.0" />
+		<PackageReference Include="EntityFrameworkCore.SqlServer.HierarchyId.Abstractions" Version="4.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.2">
 			<PrivateAssets>all</PrivateAssets>

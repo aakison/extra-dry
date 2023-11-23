@@ -19,4 +19,9 @@
         Navigation.NavigateTo($"/admin/works/companies/list/{company.Uuid}");
     }
 
+    [Command]
+    public void DoSomething(IEnumerable<Company> companies)
+    {
+        
+    }
 }

@@ -74,8 +74,8 @@ public class RuleEngineUpdateCollectionAsyncTests {
         var services = new ServiceProviderStub();
         var rules = new RuleEngine(services);
         var source = new Parent { Children = new List<Child> {
-            new Child { Uuid = Guid.NewGuid(), Name = "Child1" },
-            new Child { Uuid = Guid.NewGuid(), Name = "Child2" },
+            new() { Uuid = Guid.NewGuid(), Name = "Child1" },
+            new() { Uuid = Guid.NewGuid(), Name = "Child2" },
         }};
         var destination = new Parent { };
 
@@ -96,8 +96,8 @@ public class RuleEngineUpdateCollectionAsyncTests {
         var rules = new RuleEngine(services);
         var source = new Parent {
             Children = new List<Child> {
-            new Child { Uuid = Guid.NewGuid(), Name = "Child1" },
-            new Child { Uuid = Guid.NewGuid(), Name = "Child2" },
+            new() { Uuid = Guid.NewGuid(), Name = "Child1" },
+            new() { Uuid = Guid.NewGuid(), Name = "Child2" },
         }
         };
         var destination = new Parent { Children = new List<Child>() };
@@ -119,14 +119,14 @@ public class RuleEngineUpdateCollectionAsyncTests {
         var rules = new RuleEngine(services);
         var source = new Parent {
             Children = new List<Child> {
-                new Child { Uuid = Guid.NewGuid(), Name = "Child3" },
-                new Child { Uuid = Guid.NewGuid(), Name = "Child4" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child3" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child4" },
             }
         };
         var destination = new Parent {
             Children = new List<Child> {
-                new Child { Uuid = Guid.NewGuid(), Name = "Child1" },
-                new Child { Uuid = Guid.NewGuid(), Name = "Child2" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child1" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child2" },
             }
         };
 
@@ -148,14 +148,14 @@ public class RuleEngineUpdateCollectionAsyncTests {
         var guid = Guid.NewGuid();
         var source = new Parent {
             Children = new List<Child> {
-                new Child { Uuid = guid, Name = "Child1" },
+                new() { Uuid = guid, Name = "Child1" },
             }
         };
         var destination = new Parent {
             Children = new List<Child> {
-                new Child { Uuid = Guid.NewGuid(), Name = "Child2" },
-                new Child { Uuid = guid, Name = "Child1" },
-                new Child { Uuid = Guid.NewGuid(), Name = "Child3" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child2" },
+                new() { Uuid = guid, Name = "Child1" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child3" },
             }
         };
 
@@ -175,13 +175,13 @@ public class RuleEngineUpdateCollectionAsyncTests {
         var guid = Guid.NewGuid();
         var source = new Parent {
             Children = new List<Child> {
-                new Child { Uuid = guid, Name = "Child New Name" },
-                new Child { Uuid = Guid.NewGuid(), Name = "Child2" },
+                new() { Uuid = guid, Name = "Child New Name" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child2" },
             }
         };
         var destination = new Parent {
             Children = new List<Child> {
-                new Child { Uuid = guid, Name = "Child Original Name" },
+                new() { Uuid = guid, Name = "Child Original Name" },
             }
         };
         var originalObject = destination.Children.First();
@@ -203,8 +203,8 @@ public class RuleEngineUpdateCollectionAsyncTests {
         var source = new Parent { };
         var destination = new Parent {
             Children = new List<Child> {
-                new Child { Uuid = Guid.NewGuid(), Name = "Child1" },
-                new Child { Uuid = Guid.NewGuid(), Name = "Child2" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child1" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child2" },
             }
         };
 
@@ -222,8 +222,8 @@ public class RuleEngineUpdateCollectionAsyncTests {
         var source = new Parent { Children = new List<Child>() };
         var destination = new Parent {
             Children = new List<Child> {
-                new Child { Uuid = Guid.NewGuid(), Name = "Child1" },
-                new Child { Uuid = Guid.NewGuid(), Name = "Child2" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child1" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child2" },
             }
         };
 
@@ -240,14 +240,14 @@ public class RuleEngineUpdateCollectionAsyncTests {
         var rules = new RuleEngine(services);
         var source = new Parent {
             IgnoredChildren = new List<Child> {
-                new Child { Uuid = Guid.NewGuid(), Name = "Child1" },
-                new Child { Uuid = Guid.NewGuid(), Name = "Child2" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child1" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child2" },
             }
         };
         var destination = new Parent {
             IgnoredChildren = new List<Child> {
-                new Child { Uuid = Guid.NewGuid(), Name = "Child3" },
-                new Child { Uuid = Guid.NewGuid(), Name = "Child4" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child3" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child4" },
             }
         };
 
@@ -266,14 +266,14 @@ public class RuleEngineUpdateCollectionAsyncTests {
         var rules = new RuleEngine(services);
         var source = new Parent {
             IgnoredDefaultsChildren = new List<Child> {
-                new Child { Uuid = Guid.NewGuid(), Name = "Child1" },
-                new Child { Uuid = Guid.NewGuid(), Name = "Child2" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child1" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child2" },
             }
         };
         var destination = new Parent {
             IgnoredDefaultsChildren = new List<Child> {
-                new Child { Uuid = Guid.NewGuid(), Name = "Child3" },
-                new Child { Uuid = Guid.NewGuid(), Name = "Child4" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child3" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child4" },
             }
         };
 
@@ -296,8 +296,8 @@ public class RuleEngineUpdateCollectionAsyncTests {
         };
         var destination = new Parent {
             IgnoredDefaultsChildren = new List<Child> {
-                new Child { Uuid = Guid.NewGuid(), Name = "Child3" },
-                new Child { Uuid = Guid.NewGuid(), Name = "Child4" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child3" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child4" },
             }
         };
 
@@ -319,8 +319,8 @@ public class RuleEngineUpdateCollectionAsyncTests {
         };
         var destination = new Parent {
             IgnoredDefaultsChildren = new List<Child> {
-                new Child { Uuid = Guid.NewGuid(), Name = "Child3" },
-                new Child { Uuid = Guid.NewGuid(), Name = "Child4" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child3" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child4" },
             }
         };
 
@@ -374,14 +374,14 @@ public class RuleEngineUpdateCollectionAsyncTests {
         var guid2 = Guid.NewGuid();
         var source = new Parent {
             BlockedChildren = new List<Child> {
-                new Child { Uuid = guid1, Name = "Child3" },
-                new Child { Uuid = guid2, Name = "Child4" },
+                new() { Uuid = guid1, Name = "Child3" },
+                new() { Uuid = guid2, Name = "Child4" },
             }
         };
         var destination = new Parent {
             BlockedChildren = new List<Child> {
-                new Child { Uuid = guid1, Name = "Child3" },
-                new Child { Uuid = guid2, Name = "Child4" },
+                new() { Uuid = guid1, Name = "Child3" },
+                new() { Uuid = guid2, Name = "Child4" },
             }
         };
 
@@ -404,8 +404,8 @@ public class RuleEngineUpdateCollectionAsyncTests {
         };
         var destination = new Parent {
             BlockedChildren = new List<Child> {
-                new Child { Uuid = Guid.NewGuid(), Name = "Child3" },
-                new Child { Uuid = Guid.NewGuid(), Name = "Child4" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child3" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child4" },
             }
         };
 
@@ -422,8 +422,8 @@ public class RuleEngineUpdateCollectionAsyncTests {
         };
         var destination = new Parent {
             BlockedChildren = new List<Child> {
-                new Child { Uuid = Guid.NewGuid(), Name = "Child3" },
-                new Child { Uuid = Guid.NewGuid(), Name = "Child4" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child3" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child4" },
             }
         };
 
@@ -437,14 +437,14 @@ public class RuleEngineUpdateCollectionAsyncTests {
         var rules = new RuleEngine(services);
         var source = new Parent {
             BlockedChildren = new List<Child> {
-                new Child { Uuid = Guid.NewGuid(), Name = "Child1" },
-                new Child { Uuid = Guid.NewGuid(), Name = "Child2" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child1" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child2" },
             }
         };
         var destination = new Parent {
             BlockedChildren = new List<Child> {
-                new Child { Uuid = Guid.NewGuid(), Name = "Child3" },
-                new Child { Uuid = Guid.NewGuid(), Name = "Child4" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child3" },
+                new() { Uuid = Guid.NewGuid(), Name = "Child4" },
             }
         };
 
@@ -498,16 +498,16 @@ public class RuleEngineUpdateCollectionAsyncTests {
     public class ChildEntityResolver : IEntityResolver<Child> {
         public Task<Child?> ResolveAsync(Child exemplar)
         {
-            database.TryGetValue(exemplar.Uuid, out var child);
+            Database.TryGetValue(exemplar.Uuid, out var child);
             return Task.FromResult(child);
         }
 
         public void AddChild(Child item)
         {
-            database.Add(item.Uuid, item);
+            Database.Add(item.Uuid, item);
         }
 
-        public Dictionary<Guid, Child> database = new();
+        private Dictionary<Guid, Child> Database { get; set; } = new();
 
     }
 

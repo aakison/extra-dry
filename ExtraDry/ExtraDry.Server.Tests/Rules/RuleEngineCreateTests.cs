@@ -34,8 +34,8 @@ public class RuleEngineCreateTests {
     {
         var rules = new RuleEngine(new ServiceProviderStub());
         var exemplar = new Entity {
-            Integer = 123,
-            String = "Hello World",
+            IntegerTest = 123,
+            StringTest = "Hello World",
             Uuid = Guid.NewGuid(),
             State = State.Active
         };
@@ -43,8 +43,8 @@ public class RuleEngineCreateTests {
         var entity = await rules.CreateAsync(exemplar);
 
         Assert.NotNull(entity);
-        Assert.Equal(exemplar.Integer, entity.Integer);
-        Assert.Equal(exemplar.String, entity.String);
+        Assert.Equal(exemplar.IntegerTest, entity.IntegerTest);
+        Assert.Equal(exemplar.StringTest, entity.StringTest);
         Assert.Equal(exemplar.Uuid, entity.Uuid);
         Assert.Equal(exemplar.State, entity.State);
     }
@@ -276,21 +276,30 @@ public class IgnoreDefaultsEntity {
 public class Entity {
     
     public int DefaultInteger { get; set; }
+
     public string? DefaultString { get; set; }
+
     public Guid DefaultGuid { get; set; }
+
     public State DefaultState { get; set; }
+
     public ChildEntity? DefaultTestObject { get; set; }
 
     [Rules(CreateAction = RuleAction.Allow)]
-    public int Integer { get; set; }
+    public int IntegerTest { get; set; }
+
     [Rules(CreateAction = RuleAction.Allow)]
-    public string? String { get; set; }
+    public string? StringTest { get; set; }
+
     [Rules(CreateAction = RuleAction.Allow)]
     public Guid Uuid { get; set; }
+
     [Rules(CreateAction = RuleAction.Allow)]
     public State State { get; set; }
+
     [Rules(CreateAction = RuleAction.Allow)]
     public ChildEntity? TestObject { get; set; }
+
     [Rules(CreateAction = RuleAction.Allow)]
     public ChildEntity? DesendantsTestObject { get; set; }
 
@@ -354,11 +363,11 @@ public class ChildEntityNoDefaultContructor {
     public ChildEntity? TestObject { get; set; }
 }
 
-class InvalidReferenceTypes {
+internal sealed class InvalidReferenceTypes {
     public InvalidTestObject? TestObject { get; set; }
 }
 
-class InvalidTestObject { }
+internal sealed class InvalidTestObject { }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum State {

@@ -32,7 +32,7 @@ public class ContinuationTokenTests {
         var token = new ContinuationToken("filter", "sort", 10, 20);
 
         var serial = token.ToString();
-        var result = ContinuationToken.FromString(serial) ?? throw new Exception();
+        var result = ContinuationToken.FromString(serial) ?? throw new ArgumentException();
 
         Assert.Equal(token.Filter, result.Filter);
         Assert.Equal(token.Sort, result.Sort);

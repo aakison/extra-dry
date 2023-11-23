@@ -4,7 +4,7 @@ public class ThemeInfo {
 
     public Type ErrorComponent { get; set; } = typeof(DefaultErrorComponent);
 
-    public Dictionary<string, IconInfo> Icons { get; set; } = new();
+    public Dictionary<string, IconInfo> Icons { get; set; } = new(StringComparer.InvariantCultureIgnoreCase);
 
     /// <summary>
     /// Indicates that the Theme is in a loading state and not all icons are available.

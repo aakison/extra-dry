@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Sample.Data;
+using Sample.Server.SampleData;
 using Sample.Server.Security;
 using System.Text.Json.Serialization;
 
@@ -91,13 +92,13 @@ namespace Sample.Server {
 
             services.AddScoped(services => {
                 var connectionString = Configuration.GetConnectionString("WebAppOltpDatabase");
-                var dbOptionsBuilder = new DbContextOptionsBuilder<SampleContext>().UseSqlServer(connectionString);
+                var dbOptionsBuilder = new DbContextOptionsBuilder<SampleContext>().UseSqlServer(connectionString, config => config.UseHierarchyId());
                 var context = new SampleContext(dbOptionsBuilder.Options);
 
                 var accessor = services.GetRequiredService<IHttpContextAccessor>();
                 _ = new VersionInfoAspect(context, accessor);
 
-                var logger = services.GetService<ILogger<DataWarehouseAspect>>();
+                var logger = services.GetRequiredService<ILogger<DataWarehouseAspect>>();
                 var queue = services.GetRequiredService<ServiceBusQueue<EntityMessage>>();
                 _ = new DataWarehouseAspect(context, queue, logger);
 
@@ -113,6 +114,7 @@ namespace Sample.Server {
             services.AddScoped<RuleEngine>();
             services.AddScoped<RegionService>();
             services.AddScoped<TemplateService>();
+            services.AddScoped<SampleDataService>();
 
             services.AddScoped<IEntityResolver<Sector>, SectorService>();
             services.AddScoped<IExpandoSchemaResolver, TemplateService>();
@@ -155,7 +157,7 @@ namespace Sample.Server {
                 endpoints.MapControllers();
 
                 // Calls to API endpoints shouldn't fallback to Blazor
-                endpoints.Map("api/{**slug}", context => { 
+                endpoints.Map("api/{**slug}", context => {
                     context.Response.StatusCode = StatusCodes.Status404NotFound;
                     return Task.CompletedTask;
                 });
