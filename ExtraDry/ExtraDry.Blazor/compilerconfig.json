@@ -77,10 +77,5 @@
     "outputFile": "Components/Dry/DryTable.razor.css",
     "inputFile": "Components/Dry/DryTable.razor.scss",
     "minify": { "enabled": false }
-  },
-  {
-    "outputFile": "Components/Standard/Suspense.razor.css",
-    "inputFile": "Components/Standard/Suspense.razor.scss",
-    "minify": { "enabled": false }
   }
 ]
