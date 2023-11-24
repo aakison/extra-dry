@@ -18,12 +18,13 @@ namespace Sample.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UniqueId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Uuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Scope = table.Column<int>(type: "int", nullable: false),
                     Size = table.Column<int>(type: "int", nullable: false),
                     ShaHash = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
                     Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Filename = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Slug = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MimeType = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -38,6 +39,7 @@ namespace Sample.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Uuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Slug = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Layout = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     VersionDateCreated = table.Column<DateTime>(name: "Version_DateCreated", type: "datetime2", nullable: false),
@@ -57,6 +59,8 @@ namespace Sample.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Uuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Slug = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: true),
@@ -128,8 +132,8 @@ namespace Sample.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Uuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Slug = table.Column<string>(type: "nvarchar(24)", maxLength: 24, nullable: false),
                     Title = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false),
-                    Code = table.Column<string>(type: "nvarchar(24)", maxLength: 24, nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     PrimarySectorId = table.Column<int>(type: "int", nullable: true),

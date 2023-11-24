@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 
 namespace ExtraDry.Blazor;
@@ -7,6 +8,7 @@ namespace ExtraDry.Blazor;
 /// Provides a cascading theme mechanism to configure portions of ExtraDry.
 /// Note: this does not cover styles like colors which should be done in CSS.
 /// </summary>
+[SuppressMessage("Usage", "DRY1500:Extra DRY Blazor components should have an interface.", Justification = "Theme does not render a root tag, purpose is to register cascading values.")]
 public partial class Theme : ComponentBase {
 
     /// <summary>
@@ -25,11 +27,9 @@ public partial class Theme : ComponentBase {
     [Parameter]
     public IEnumerable<IconInfo>? Icons { get; set; }
 
-    /// <summary>
-    /// A ThemeInfo that might have been cascaded from a parent theme.
-    /// </summary>
+    /// <inheritdoc cref="Blazor.ThemeInfo" />
     [CascadingParameter]
-    public ThemeInfo ThemeInfo { get; set; } = new();
+    protected ThemeInfo ThemeInfo { get; set; } = new();
 
     /// <summary>
     /// A custom error component that is applied and used on any DryErrorBoundary instead of the default.

@@ -1,7 +1,7 @@
-﻿@namespace ExtraDry.Blazor.Components.Raw
+﻿@namespace ExtraDry.Blazor.Components.Internal
 @typeparam T
 
-<div class="@CssClass">
+<div class="@CssClasses" @attributes="@UnmatchedAttributes">
   @foreach(var option in SelectedOptions) { 
     <div>
       @if(EditMode != EditMode.ReadOnly) { 

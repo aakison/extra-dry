@@ -81,6 +81,7 @@ public partial class Button : ComponentBase, IExtraDryComponent {
     [Parameter]
     public bool Enabled { get; set; } = true;
 
+    /// <inheritdoc cref="Blazor.ThemeInfo" />
     [CascadingParameter]
     protected ThemeInfo? ThemeInfo { get; set; }
 

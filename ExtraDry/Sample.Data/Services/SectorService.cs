@@ -15,10 +15,12 @@ public class SectorService : IEntityResolver<Sector> {
             .ToFilteredCollectionAsync();
     }
 
-    public async Task CreateAsync(Sector item)
+    public async Task<Sector> CreateAsync(Sector exemplar)
     {
-        database.Sectors.Add(item);
+        var sector = await rules.CreateAsync(exemplar);
+        database.Sectors.Add(sector);
         await database.SaveChangesAsync();
+        return sector;
     }
 
     public async Task<Sector?> ResolveAsync(Sector exemplar)
@@ -37,11 +39,12 @@ public class SectorService : IEntityResolver<Sector> {
             ?? throw new ArgumentOutOfRangeException(nameof(uuid), "No sector exists with given uuid.");
     }
 
-    public async Task UpdateAsync(Sector item)
+    public async Task<Sector> UpdateAsync(Sector exemplar)
     {
-        var existing = await RetrieveAsync(item.Uuid);
-        await rules.UpdateAsync(item, existing);
+        var existing = await RetrieveAsync(exemplar.Uuid);
+        await rules.UpdateAsync(exemplar, existing);
         await database.SaveChangesAsync();
+        return existing;
     }
 
     public async Task DeleteAsync(Guid uuid)

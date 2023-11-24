@@ -1,12 +1,15 @@
 ﻿namespace Sample.Shared;
 
-public class Content {
+public class Content : IResourceIdentifiers {
+
     [Key]
     [Rules(RuleAction.Block)]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public int Id { get; set; }
 
     public Guid Uuid { get; set; } = Guid.NewGuid();
+
+    public string Slug { get; set; } = string.Empty;
 
     [Required, StringLength(50)]
     [Display(Name = "Title", ShortName = "Title")]
@@ -20,5 +23,4 @@ public class Content {
     /// </summary>
     [JsonIgnore]
     public VersionInfo Version { get; set; } = new VersionInfo();
-
 }

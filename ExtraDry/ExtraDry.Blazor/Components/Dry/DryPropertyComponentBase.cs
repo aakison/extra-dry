@@ -1,10 +1,11 @@
 ﻿namespace ExtraDry.Blazor.Components.Dry;
 
 /// <summary>
-/// Represents a set of common component functionality for the implementation
-/// of a DRY component that reads and/or writes a property of a model object.
+/// Represents a set of common component functionality for the implementation of a DRY component 
+/// that reads and/or writes a property of a model object.
 /// </summary>
-public class DryPropertyComponentBase : ComponentBase {
+public abstract class DryPropertyComponentBase : ComponentBase {
+
     /// <summary>
     /// The link to the Model where values are stored.
     /// </summary>

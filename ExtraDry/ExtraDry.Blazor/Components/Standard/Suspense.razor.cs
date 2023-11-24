@@ -63,6 +63,7 @@ public partial class Suspense<TModel> : ComponentBase, IExtraDryComponent {
     [Parameter]
     public int TimeoutDuration { get; set; } = 5000;
 
+    /// <inheritdoc cref="Blazor.ThemeInfo" />
     [CascadingParameter]
     protected ThemeInfo? ThemeInfo { get; set; }
 

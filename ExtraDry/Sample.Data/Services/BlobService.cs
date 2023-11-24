@@ -39,19 +39,19 @@ public class BlobService {
             item.MimeType = "image/jpeg";
         }
         item.ShaHash = hashString;
-        item.UniqueId = Guid.NewGuid();
-        item.Url = $"/api/blobs/{item.UniqueId}/content";
+        item.Uuid = Guid.NewGuid();
+        item.Url = $"/api/blobs/{item.Uuid}/content";
 
         database.Blobs.Add(item);
         await database.SaveChangesAsync();
-        fakeBlobStorage.Add(item.UniqueId, content);
+        fakeBlobStorage.Add(item.Uuid, content);
         return item;
     }
 
     [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "When not faked, will require instance.")]
     public async Task<byte[]> DownloadAsync(BlobInfo item)
     {
-        if(fakeBlobStorage.TryGetValue(item.UniqueId, out var content)) {
+        if(fakeBlobStorage.TryGetValue(item.Uuid, out var content)) {
             return content;
         }
         else {
@@ -68,12 +68,12 @@ public class BlobService {
 
     public async Task<BlobInfo?> TryRetrieveAsync(Guid uniqueId)
     {
-        return await database.Blobs.FirstOrDefaultAsync(e => e.UniqueId == uniqueId);
+        return await database.Blobs.FirstOrDefaultAsync(e => e.Uuid == uniqueId);
     }
 
     public async Task UpdateAsync(BlobInfo item)
     {
-        var existing = await RetrieveAsync(item.UniqueId);
+        var existing = await RetrieveAsync(item.Uuid);
         await rules.UpdateAsync(item, existing);
         await database.SaveChangesAsync();
     }

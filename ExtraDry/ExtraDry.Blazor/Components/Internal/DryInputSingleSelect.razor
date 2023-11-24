@@ -1,14 +1,14 @@
-﻿@namespace ExtraDry.Blazor.Components.Raw
+﻿@namespace ExtraDry.Blazor.Components.Internal
 @typeparam T
 
 @if(ReadOnly) {
     var value = Values != null && SelectedValue != null ? Values.IndexOf(SelectedValue) : -1;
-    <select class="@CssClass readonly" disabled>
+    <select class="@CssClasses readonly" disabled @attributes="@UnmatchedAttributes">
         <option value="@value" selected>@SelectedValue?.ToString()</option>
     </select>
 }
 else {
-    <select class="@CssClass" @onchange="SelectOption">
+    <select class="@CssClasses" @onchange="SelectOption" @attributes="@UnmatchedAttributes">
         @if(SelectedValue == null) {
             <option value="" disabled selected>@Property?.Display?.Prompt</option>
         }

@@ -72,7 +72,7 @@ public partial class SampleDataService {
                 trademarks.Add(name);
                 var company = new Company {
                     Uuid = PseudoRandomGuid(),
-                    Code = Slug.RandomWebString(6),
+                    Slug = Slug.RandomWebString(6),
                     Title = name,
                     PrimarySector = PickRandom(services),
                     Status = PickRandom(companyStatuses),
@@ -140,14 +140,13 @@ public partial class SampleDataService {
         var world = await PopulateWorldAsync(items);
 
         var maxSibling = items.Where(e => e.Level == RegionLevel.Country).Max(e => e.Lineage);
-        await database.Database.BeginTransactionAsync();
         foreach(var country in countries) {
             if(countryFilter.Length == 0 || countryFilter.Contains(country.Alpha2Code)) {
                 var countryRegion = await PopulateCountry(items, country, world, maxSibling);
                 maxSibling = countryRegion.Lineage;
             }
         }
-        await database.Database.CommitTransactionAsync();
+        database.ChangeTracker.Clear();
 
         if(includeSubdivisions) {
             await PopulateSubdivisions(items);
@@ -165,15 +164,19 @@ public partial class SampleDataService {
         using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
         var subdivisions = csv.GetRecords<Subdivision>().ToList();
 
-        var loadedCountries = knownRegions.Where(e => e.Level == RegionLevel.Country).ToList();
-        foreach(var country in loadedCountries) {
-            var countrySubs = subdivisions.Where(e => e.Country == country.Slug).ToList();
-            var lastSibling = knownRegions.Where(e => e.Parent == country).Max(e => e.Lineage);
-            foreach(var sub in countrySubs) {
-                var subRegion = await PopulateSubdivision(knownRegions, sub, country, lastSibling);
-                lastSibling = subRegion.Lineage;
-            } 
-            await database.SaveChangesAsync(); // save in batches
+        try {
+            var loadedCountries = knownRegions.Where(e => e.Level == RegionLevel.Country).ToList();
+            foreach(var country in loadedCountries) {
+                var countrySubs = subdivisions.Where(e => e.Country == country.Slug).ToList();
+                var lastSibling = knownRegions.Where(e => e.Parent == country).Max(e => e.Lineage);
+                foreach(var sub in countrySubs) {
+                    var subRegion = await PopulateSubdivision(knownRegions, sub, country, lastSibling);
+                    lastSibling = subRegion.Lineage;
+                }
+            }
+        }
+        catch(Exception ex) {
+            Console.WriteLine(ex.Message);
         }
     }
 
@@ -193,10 +196,9 @@ public partial class SampleDataService {
                 Uuid = Guid.NewGuid(),
             };
             knownRegions.Add(subRegion);
-            //await regions.CreateAsync(subRegion);
-            database.Regions.Add(subRegion); // direct for batching performance.
+            await regions.CreateAsync(subRegion);
         }
-        return await Task.FromResult(subRegion);
+        return subRegion;
     }
 
     public async Task<Region> PopulateCountry(List<Region> knownRegions, Country country, Region parent, HierarchyId? lastSibling)

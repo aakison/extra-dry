@@ -2,6 +2,8 @@
 
 namespace ExtraDry.Blazor;
 
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "DRY1500:Extra DRY Blazor components should have an interface.",
+    Justification = "Decide fate of component")]
 public partial class DryFormFieldset<T> : ComponentBase {
 
     [CascadingParameter]
