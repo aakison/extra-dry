@@ -11,7 +11,7 @@
     </div>
   }
   @if(!ReadOnly) { 
-    <select @onchange="SelectOption">
+    <select @onchange="SelectOption" title="@Property?.FieldCaption">
       <option selected="@BlankSelected"></option>
       @foreach (var option in AvailableOptions) {
         <option value="@option.Key">@option.Display</option>

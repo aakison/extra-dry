@@ -2,17 +2,14 @@
 @using ExtraDry.Blazor.Internal
 @typeparam T
 
-<fieldset class="@Form.ModelNameSlug @Fieldset.CssClass">
-    @if (!string.IsNullOrWhiteSpace(Fieldset.Legend))
-    {
-        <legend class="@Form.ModelNameSlug @Fieldset.CssClass">@Fieldset.Legend</legend>
+<fieldset class="@CssClasses">
+    @if(!string.IsNullOrWhiteSpace(FormFieldset.Legend)) {
+        <legend class="@CssClasses">@FormFieldset.Legend</legend>
     }
-    @foreach (var group in Fieldset.Groups)
-    {
+    @foreach(var group in FormFieldset.Groups) {
         var redundant = "";// line.FormProperties.Count == 1 && line.FormProperties.First().FieldCaption == fieldset.Legend ? "redundant" : "";
         <div class="group @group.ClassName">
-            @if (group.Type == FormGroupType.Element)
-            {
+            @if(group.Type == FormGroupType.Element) {
                 <div class="line header">
                     <span class="caption">Video</span>
                     <button @onclick="@(() => DeleteItem(group.ParentTarget, group.Target))">X</button>
@@ -20,21 +17,16 @@
                         <DryButton Target="@group.Target" Command="@MoveDownCommand" />*@
                 </div>
             }
-            @foreach (var line in group.Lines)
-            {
+            @foreach(var line in group.Lines) {
                 <div class="line properties @redundant">
-                    @foreach (var property in line.FormProperties)
-                    {
+                    @foreach(var property in line.FormProperties) {
                         <DryInput Model="@line.Model" Property="@property" />
                     }
-                    @foreach (var command in line.Commands)
-                    {
-                        if (command == Internal.FormCommand.AddNew)
-                        {
+                    @foreach(var command in line.Commands) {
+                        if(command == Internal.FormCommand.AddNew) {
                             <DryButton Target="@line.Model" Command="@AddNewCommand" />
                         }
-                        else
-                        {
+                        else {
                             Console.WriteLine("Unrecognized command");
                         }
                     }

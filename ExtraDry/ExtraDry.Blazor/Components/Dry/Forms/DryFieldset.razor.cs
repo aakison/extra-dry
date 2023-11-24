@@ -1,12 +1,34 @@
 ﻿namespace ExtraDry.Blazor.Forms;
 
-public partial class DryFieldset<T> : ComponentBase {
+/// <summary>
+/// A representation of a fieldset in a form, typically rendered automatically by an enclosing
+/// <see cref="DryForm{T}"/>.  This component may be used to group a set of properties together on
+/// a form with a legend.  It may also be used to group a set of child items in a list, where each
+/// has their own small form or rendering.
+/// </summary>
+public partial class DryFieldset<T> : ComponentBase, IExtraDryComponent {
 
+    /// <inheritdoc />
+    [Parameter]
+    public string CssClass { get; set; } = string.Empty;
+
+    /// <inheritdoc />
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? UnmatchedAttributes { get; set; }
+
+    /// <summary>
+    /// Cascading parameter so the model can be internal and not exposed to users.
+    /// </summary>
     [CascadingParameter]
     internal DryForm<T> Form { get; set; } = null!;
 
+    /// <summary>
+    /// Cascading parameter so the model can be internal and not exposed to users.
+    /// </summary>
     [CascadingParameter]
-    internal FormFieldset Fieldset { get; set; } = null!;
+    internal FormFieldset FormFieldset { get; set; } = null!;
+
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "dry-fieldset", Form.ModelNameSlug, FormFieldset.CssClass, CssClass);
 
     private CommandInfo AddNewCommand =>
         new(this, MethodInfoHelper.GetMethodInfo<DryFieldset<T>>(e => e.AddDefaultElementToList(Array.Empty<int>()))) {

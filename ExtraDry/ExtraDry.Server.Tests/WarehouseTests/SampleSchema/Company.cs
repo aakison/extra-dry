@@ -3,12 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace ExtraDry.Server.Tests.WarehouseTests;
 
-public enum OwnershipStructure {
-    Private,
-    Public,
-    Hybrid
-}
-
 [FactTable, DimensionTable]
 public class Company {
 
@@ -41,12 +35,8 @@ public class Company {
     [Filter]
     public CompanyStatus Status { get; set; }
 
-    [Rules(RuleAction.Allow)]
-    [Filter]
-    public OwnershipStructure Ownership { get; set; }
-
     [Display]
-    [StringLength(1000)]
+    [StringLength(500)]
     [Rules(RuleAction.IgnoreDefaults)]
     public string Description { get; set; } = "";
 

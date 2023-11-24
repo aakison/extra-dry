@@ -50,7 +50,7 @@ public class Company : IResourceIdentifiers {
     public CompanyStatus Status { get; set; }
 
     [Display]
-    [StringLength(1000)]
+    [StringLength(500)]
     [Rules(RuleAction.IgnoreDefaults)]
     public string Description { get; set; } = "";
 

@@ -9,7 +9,7 @@ public partial class DryInputMultipleSelect<T> : ComponentBase, IDryInput<T>, IE
     public string CssClass { get; set; } = string.Empty;
 
     [Parameter, EditorRequired]
-    public T Model { get; set; } = default!;
+    public T? Model { get; set; }
 
     [Parameter]
     public PropertyDescription? Property { get; set; }

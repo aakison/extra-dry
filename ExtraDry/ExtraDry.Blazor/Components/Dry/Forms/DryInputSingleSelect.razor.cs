@@ -3,7 +3,8 @@
 namespace ExtraDry.Blazor.Forms;
 
 /// <summary>
-/// A DRY wrapper around a single select dropdown list.
+/// A DRY wrapper around a single select dropdown list.  Prefer the use of <see cref="DryInput{T}"/> 
+/// instead of this component as it is more flexible and supports more data types.
 /// </summary>
 public partial class DryInputSingleSelect<T> : ComponentBase, IDryInput<T>, IExtraDryComponent {
 
