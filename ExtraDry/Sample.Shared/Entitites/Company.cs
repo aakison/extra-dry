@@ -49,7 +49,7 @@ public class Company : IResourceIdentifiers {
     [Filter]
     public CompanyStatus Status { get; set; }
 
-    [Display]
+    [Display(AutoGenerateField = false)]
     [StringLength(500)]
     [Rules(RuleAction.IgnoreDefaults)]
     public string Description { get; set; } = "";
@@ -77,12 +77,15 @@ public class Company : IResourceIdentifiers {
     [Rules(RuleAction.IgnoreDefaults)]
     public string ContactEmail { get; set; } = "";
 
+    [Display]
     [Precision(18, 2)]
     public decimal AnnualRevenue { get; set; }
 
+    [Display]
     [Precision(18, 2)]
     public decimal SalesMargin { get; set; }
 
+    [Display]
     public DateTime IncorporationDate { get; set; }
 
     [Display]
