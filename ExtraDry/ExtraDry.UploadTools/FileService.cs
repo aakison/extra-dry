@@ -3,21 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
-namespace ExtraDry.UploadTools {
+namespace ExtraDry.UploadTools
+{
     internal class FileService {
-        /* TODO -
-         * Read from Internal Json File ✔️
-         * Allow for different json file to be provided
-         *   Including blacklist(s)
-         * Determine type based off file name ✔️
-         * Determine type based off mime ✔️
-         * Determine type based off byte[] ✔️
-         */
 
         private static List<FileTypeDefinition> FileDefinitions;
 
@@ -39,6 +29,16 @@ namespace ExtraDry.UploadTools {
             }
         }
 
+        /// <summary>
+        /// Add file definitions to the default database.
+        /// </summary>
+        internal static void AddFileDefinitions(List<FileTypeDefinition> fileTypeDefinitions){
+            FileDefinitions.AddRange(fileTypeDefinitions);
+        }
+
+        /// <summary>
+        /// Retrieves filetype definitions that match the provided filename
+        /// </summary>
         internal static List<FileTypeDefinition> GetFileTypeFromFilename(string filename)
         {
             var extension = Path.GetExtension(filename).Trim('.');
@@ -46,21 +46,18 @@ namespace ExtraDry.UploadTools {
             return options.ToList();
         }
 
+        /// <summary>
+        /// Retrieves filetype definitions that match the provided mimetype
+        /// </summary>
         internal static List<FileTypeDefinition> GetFileTypeFromMime(string mime)
         {
             var options = FileDefinitions.Where(f => f.MimeTypes.Contains(mime, StringComparer.OrdinalIgnoreCase));
             return options.ToList();
         }
 
-        internal static bool MatchesMagicBytesOf(byte[] content, List<FileTypeDefinition> fileTypes)
-        {
-            if(content == null || content.Length < 1) {
-                return false;
-            }
-
-            return fileTypes.Where(m => IsMatch(content, m.MagicBytes)).Any();
-        }
-
+        /// <summary>
+        /// Retrieves filetype definitions where the magic bytes are found in the content
+        /// </summary>
         internal static List<FileTypeDefinition> GetFileTypeFromBytes(byte[] content)
         {
             if(content == null || content.Length < 1) {
@@ -87,9 +84,6 @@ namespace ExtraDry.UploadTools {
                 return true;
             }
             return false;
-
         }
-
-
     }
 }

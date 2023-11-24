@@ -1,4 +1,5 @@
 ﻿using ExtraDry.Core;
+using System;
 using Xunit;
 
 namespace ExtraDry.UploadTools.Tests {
@@ -6,7 +7,9 @@ namespace ExtraDry.UploadTools.Tests {
 
         public UploadToolsTests()
         {
-            var testConfig = new UploadConfiguration() { ExtensionWhitelist = new List<string>{"txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip"} };
+            var testConfig = new UploadConfiguration() { 
+                ExtensionWhitelist = new List<string>{"txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip"} 
+            };
             UploadTools.ConfigureUploadRestrictions(testConfig);
         }
 
@@ -63,33 +66,34 @@ namespace ExtraDry.UploadTools.Tests {
             Assert.True(canUpload);
         }
 
-        // TODO - Mime and filename, Filename and bytes, fail on filename without extension.
-        //          Break up test types, ie invalid for what reason.
-
 
         [Theory]
         [InlineData("!bat.bat", "bat.bat", "text/plain")]
         [InlineData("te1--xt.txt", "text.txt", "text/plain")]
-        [InlineData("text", "text.txt", "text/plain")]
         [InlineData("j%pg.jpg", "jpg.jpg", "image/jpeg")]
         [InlineData("!4png.png", "png.png", "image/png")]
         [InlineData("rtf-.rtf", "rtf.rtf", "text/rtf")]
-        public void InvalidFileName(string filename, string filepath, string mime)
+        [InlineData("text", "text.txt", "text/plain", "Provided filename contains an invalid extension")]
+        public void InvalidFileName(string filename, string filepath, string mime, string exceptionText = "Provided filename contained invalid characters")
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
 
-            Assert.Throws<DryException>(() => UploadTools.CanUpload(filename, mime, fileBytes));
+            var exception = Assert.Throws<DryException>(() => UploadTools.CanUpload(filename, mime, fileBytes));
+
+            Assert.Equal(exceptionText, exception.Message);
 
         }
 
         [Theory]
         [InlineData("doc.docx", "jpg.jpg", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")]
-        [InlineData("file.txt", "exe.exe", "text/plain")]
+        [InlineData("file.txt", "png.png", "text/plain")]
         public void MismatchingNameAndBytes(string filename, string filepath, string mime)
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
 
-            Assert.Throws<DryException>(() => UploadTools.CanUpload(filename, mime, fileBytes));
+            var exception = Assert.Throws<DryException>(() => UploadTools.CanUpload(filename, mime, fileBytes));
+
+            Assert.Equal("Provided file content and filename do not match", exception.Message);
         }
 
         [Theory]
@@ -99,7 +103,9 @@ namespace ExtraDry.UploadTools.Tests {
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
 
-            Assert.Throws<DryException>(() => UploadTools.CanUpload(filename, mime, fileBytes));
+            var exception = Assert.Throws<DryException>(() => UploadTools.CanUpload(filename, mime, fileBytes));
+
+            Assert.Equal("Provided file name and mimetype do not match", exception.Message);
         }
 
         [Theory]
@@ -111,7 +117,9 @@ namespace ExtraDry.UploadTools.Tests {
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
 
-            Assert.Throws<DryException>(() => UploadTools.CanUpload(filename, mime, fileBytes));
+            var exception = Assert.Throws<DryException>(() => UploadTools.CanUpload(filename, mime, fileBytes));
+
+            Assert.Equal("Provided filename belongs to a forbidden filetype", exception.Message);
         }
 
         [Theory]
@@ -120,11 +128,42 @@ namespace ExtraDry.UploadTools.Tests {
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
 
-            Assert.Throws<DryException>(() => UploadTools.CanUpload(filename, mime, fileBytes));
+            var exception = Assert.Throws<DryException>(() => UploadTools.CanUpload(filename, mime, fileBytes));
+
+            Assert.Equal("Provided file is an XML filetype with protected tags", exception.Message);
         }
 
+        [Theory]
+        [InlineData("txt", "text.txt", "text.txt", "text/plain")] 
+        [InlineData("docx", "word.docx", "word.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")]
+        [InlineData("docx", "zip.zip", "zip.zip", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")]
+        public void CanConfigureBlacklist(string blackListFileExtension, string filepath, string filename, string mime)
+        {
+            var testConfig = new UploadConfiguration() { 
+                ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip" }, 
+                ExtensionBlacklist = new List<BlacklistFileType>() { new BlacklistFileType() { Extension = blackListFileExtension } } };
+            UploadTools.ConfigureUploadRestrictions(testConfig);
 
+            var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
+            var exception = Assert.Throws<DryException>(() => UploadTools.CanUpload(filename, mime, fileBytes));
 
+            Assert.EndsWith("belongs to a forbidden filetype", exception.Message);
+        }
 
+        [Theory]
+        [InlineData("docx", "word.docx", "zip.zip", "application/zip")]
+        public void NameOnlyBlacklistDoesntCheckBytes(string blackListFileExtension, string filepath, string filename, string mime)
+        {
+            var testConfig = new UploadConfiguration() {
+                ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip" },
+                ExtensionBlacklist = new List<BlacklistFileType>() { new BlacklistFileType() { Extension = blackListFileExtension, CheckType = CheckType.FilenameOnly } }
+            };
+            UploadTools.ConfigureUploadRestrictions(testConfig);
+
+            var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
+            var result = UploadTools.CanUpload(filename, mime, fileBytes);
+
+            Assert.True(result);
+        }
     }
 }

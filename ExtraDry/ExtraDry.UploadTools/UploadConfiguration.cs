@@ -9,23 +9,7 @@ namespace ExtraDry.UploadTools {
 
         public List<FileTypeDefinition> FileDefinitions { get; set; } = new List<FileTypeDefinition>();
 
-        public FileDefinitionBehaviour FileDefinitionBehaviour { get; set; } = FileDefinitionBehaviour.Add;
-
-        public List<string> ExtensionBlacklist { get; set; } = new List<string>();
-    }
-
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum FileDefinitionBehaviour
-    {
-        /// <summary>
-        /// The File Definitions provided alongside this value will be used to add to the default ones in the file checker.
-        /// </summary>
-        Add,
-
-        /// <summary>
-        /// The File Definitions provided alongside this value will be used to replace the default ones in the file checker.
-        /// </summary>
-        Replace
+        public List<BlacklistFileType> ExtensionBlacklist { get; set; } = new List<BlacklistFileType>();
     }
 
     /// <summary>

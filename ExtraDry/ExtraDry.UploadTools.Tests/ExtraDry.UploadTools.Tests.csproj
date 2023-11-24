@@ -61,4 +61,6 @@
 	  </None>
   </ItemGroup>
 
+	<Import Project="..\CommonAnalyzers.targets" />
+
 </Project>

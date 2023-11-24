@@ -1,56 +1,78 @@
 ﻿using ExtraDry.Core;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
-using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
-namespace ExtraDry.UploadTools {
+namespace ExtraDry.UploadTools
+{
     public static class UploadTools {
         /// <summary>
         /// File extensions that will be rejected regardless of the whitelist settings
         /// </summary>
-        private readonly static List<string> FileTypeBlacklist = new List<string> {
-            "asp", "aspx", "config", "ashx", "asmx", "aspq", "axd", "cshtm", "cshtml", "rem", "soap", "vbhtm", "vbhtml", "asa", "cer", "shtml", // Pentester Identified, classified under "ASP"
-            "jsp", "jspx", "jsw", "jsv", "jspf", "wss", "do", "action", // Pentester Identified, classified under "JSP"
-            "bat", "bin", "cmd", "com", "cpl", "exe", "gadget", "inf1", "ins", "inx", "isu", "job", "jse", "lnk", "msc", "msi", "msp", "mst", "paf", "pif", "ps1", "reg", "rgs", "scr", "sct", "shb", "shs", "u3p", "vb", "vbe", "vbs", "vbscript", "ws", "wsf", "wsh", // Pentester Identified, classified under "General"
-            "py", "go", "app", "scpt", "scptd" // Additional filetypes.
-        };
+        private readonly static List<string> FileTypeBlacklist = new List<string>();
 
         /// <summary>
         /// Some files we'd like to reject based off their file extensions, but can't reject off magic bytes becuase they share these with other file types eg docx, zip, jar and apk
         /// </summary>
-        private readonly static List<string> ExtensionOnlyBlacklist = new List<string>(new List<string>() { "apk", "jar" }.Union(FileTypeBlacklist));
+        private readonly static List<string> ExtensionOnlyBlacklist = new List<string>();
 
         /// <summary>
-        /// A consumer definable list of whitelisted file extensions. Note that any that also appear in the blacklist will be rejected
+        /// Whitelisted file extensions. Note that any that also appear in the blacklists will be rejected. The blacklist overrides the whitelist
         /// </summary>
-        private static List<string> ExtensionWhitelist { get; set; } = new List<string> {
-            "txt", "jpg", "png", "jpeg"
-        };
+        private static List<string> ExtensionWhitelist { get; set; }
 
-        private static List<string> KnownXmlFileTypes { get; set; } = new List<string>{ "xml", "html" };
+        /// <summary>
+        /// XML file types that are checked for <script> tags
+        /// </summary>
+        private static List<string> KnownXmlFileTypes { get; set; } = new List<string>{ "xml", "html", "svg" };
 
+        /// <summary>
+        /// Regex used to help clean the filenames.
+        /// </summary>
         private const string cleaningRegex = @"[^\p{Lu}\p{Ll}\p{Lt}\p{Lm}\p{Lo}\p{Nd}\-_\.]";
+
+        static UploadTools()
+        {
+            ConfigureUploadRestrictions(null);
+        }
 
         /// <summary>
         /// Call in startup of your application to configure the settings for the upload tools;
+        /// Lists that aren't provided will be set to default values.
         /// </summary>
         public static void ConfigureUploadRestrictions(UploadConfiguration config)
         {
-            if (config == null) {
-                return;
-            }
-            if(config.ExtensionWhitelist != null && config.ExtensionWhitelist.Count != 0) {
+            if(config?.ExtensionWhitelist?.Count > 0) {
                 ExtensionWhitelist = config.ExtensionWhitelist;
+            } else {
+                ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "jpeg" };
             }
-            //
-            // TODO - config will define additional file types, their own blacklist.
+
+            if(config?.FileDefinitions?.Count > 0) {
+                FileService.AddFileDefinitions(config.FileDefinitions);
+            }
+
+            FileTypeBlacklist.Clear();
+            ExtensionOnlyBlacklist.Clear();
+
+            if(config?.ExtensionBlacklist?.Count > 0) {
+                FileTypeBlacklist.AddRange(config.ExtensionBlacklist.Where(f => f.CheckType == CheckType.BytesAndFilename).Select(f => f.Extension));
+                ExtensionOnlyBlacklist.AddRange(config.ExtensionBlacklist.Where(f => f.CheckType == CheckType.FilenameOnly).Select(f => f.Extension));
+                ExtensionOnlyBlacklist.AddRange(FileTypeBlacklist);
+            }
+            else {
+                FileTypeBlacklist.AddRange(new List<string> {
+                    "asp", "aspx", "config", "ashx", "asmx", "aspq", "axd", "cshtm", "cshtml", "rem", "soap", "vbhtm", "vbhtml", "asa", "cer", "shtml", // Pentester Identified, classified under "ASP"
+                    "jsp", "jspx", "jsw", "jsv", "jspf", "wss", "do", "action", // Pentester Identified, classified under "JSP"
+                    "bat", "bin", "cmd", "com", "cpl", "exe", "gadget", "inf1", "ins", "inx", "isu", "job", "jse", "lnk", "msc", "msi", "msp", "mst", "paf", "pif", "ps1", "reg", "rgs", "scr", "sct", "shb", "shs", "u3p", "vb", "vbe", "vbs", "vbscript", "ws", "wsf", "wsh", // Pentester Identified, classified under "General"
+                    "py", "go", "app", "scpt", "scptd" // Additional filetypes.
+                });
+                ExtensionOnlyBlacklist.AddRange(FileTypeBlacklist);
+                ExtensionOnlyBlacklist.AddRange(new List<string>() { "apk", "jar" });
+            }
         }
 
         /// <summary>
@@ -104,15 +126,15 @@ namespace ExtraDry.UploadTools {
                 throw new DryException("Provided file has no content");
             }
 
-            // If the filename has bad characters in it and isn't already cleaned.
-            if(filename != CleanFilename(filename)) {
-                throw new DryException("Provided filename contained invalid characters", $"Filename was {filename}");
-            }
-
             // File Extension Checking
             var fileExtension = Path.GetExtension(filename).TrimStart('.');
             if(string.IsNullOrEmpty(fileExtension)) {
                 throw new DryException("Provided filename contains an invalid extension", "File extension was not found");
+            }
+
+            // If the filename has bad characters in it and isn't already cleaned.
+            if(filename != CleanFilename(filename)) {
+                throw new DryException("Provided filename contained invalid characters", $"Filename was {filename}");
             }
 
             // Outright reject executable file extensions - even if they're in the whitelist.
@@ -145,21 +167,20 @@ namespace ExtraDry.UploadTools {
             // If there's both a filename and a magic byte type file definition, and they don't match, reject
             if(magicByteFileDefinition?.Count > 0 &&  // if there's a magic byte file definition
                 filenameFileDefinition?.Count > 0 &&   // and a filename magic byte definition
-                filenameFileDefinition.SelectMany(f => f.MimeTypes).Intersect(magicByteFileDefinition.SelectMany(f => f.MimeTypes)).Count() == 0) { // then they have to map
+                !filenameFileDefinition.SelectMany(f => f.MimeTypes).Intersect(magicByteFileDefinition.SelectMany(f => f.MimeTypes)).Any()) { // then they have to map
                 throw new DryException("Provided file content and filename do not match", $"Content was {GetFileDefinitionDescription(magicByteFileDefinition)}, Filename was {GetFileDefinitionDescription(filenameFileDefinition)}");
             }
 
             // If there's both a filename and a mime type file definition, and they don't match, reject
-            if(mimeTypeFileDefinition?.Count > 0 &&        // If there's a mime type 
-                filenameFileDefinition?.Count > 0 &&       // And a file name type
-                filenameFileDefinition.SelectMany(f => f.MimeTypes).Intersect(mimeTypeFileDefinition.SelectMany(f => f.MimeTypes)).Count() == 0) { // they have to match.
+            if((mimeTypeFileDefinition?.Count > 0) &&        // If there's a mime type 
+                (filenameFileDefinition?.Count > 0) &&       // And a file name type
+                !filenameFileDefinition.SelectMany(f => f.MimeTypes).Intersect(mimeTypeFileDefinition.SelectMany(f => f.MimeTypes)).Any()) { // they have to match.
                 throw new DryException("Provided file name and mimetype do not match", $"Mime type was {GetFileDefinitionDescription(mimeTypeFileDefinition)}, Filename was {GetFileDefinitionDescription(filenameFileDefinition)}");
             }
 
             if(magicByteFileDefinition.SelectMany(e => e.Extensions).Union(filenameFileDefinition.SelectMany(e => e.Extensions)).Intersect(KnownXmlFileTypes).Any()) {
                 // If it's an xml file check for script tags
-                // Upper limit? if it's a really big file this might fill memory
-                var filecontent = UTF8Encoding.UTF8.GetString(content);
+                var filecontent = UTF8Encoding.UTF8.GetString(content.Take(1000).ToArray()); // Take the first 1000 characters, it's a sanity check, not anti-virus
                 if(filecontent.IndexOf("<script", StringComparison.InvariantCultureIgnoreCase) >= 0) {
                     throw new DryException("Provided file is an XML filetype with protected tags", "Script tags found");
                 }
@@ -168,6 +189,9 @@ namespace ExtraDry.UploadTools {
             return true;
         }
 
+        /// <summary>
+        /// Get the file type description to populate error messages.
+        /// </summary>
         private static string GetFileDefinitionDescription(List<FileTypeDefinition> fileTypes)
         {
             if(fileTypes?.Count == 0) {
