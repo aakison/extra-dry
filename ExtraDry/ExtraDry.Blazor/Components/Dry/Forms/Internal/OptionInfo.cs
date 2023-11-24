@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Components.Internal;
+﻿namespace ExtraDry.Blazor.Forms;
 
 internal class OptionInfo {
 

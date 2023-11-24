@@ -12,7 +12,7 @@ using Sample.Data;
 namespace Sample.Data.Migrations
 {
     [DbContext(typeof(SampleContext))]
-    [Migration("20231123042912_Initial")]
+    [Migration("20231124032632_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -84,6 +84,16 @@ namespace Sample.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ContactEmail")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("ContactPhone")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("nvarchar(24)");
+
                     b.Property<string>("CustomFields")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
@@ -98,6 +108,9 @@ namespace Sample.Data.Migrations
 
                     b.Property<DateTime>("IncorporationDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("Ownership")
+                        .HasColumnType("int");
 
                     b.Property<int?>("PrimarySectorId")
                         .HasColumnType("int");

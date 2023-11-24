@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Reflection.Metadata;
+﻿using System.Reflection.Metadata;
 
-namespace ExtraDry.Blazor.Components.Internal;
+namespace ExtraDry.Blazor.Forms;
 
-public partial class DryInputMultipleSelect<T> : ComponentBase, IExtraDryComponent {
+public partial class DryInputMultipleSelect<T> : ComponentBase, IDryInput<T>, IExtraDryComponent {
 
     /// <inheritdoc />
     [Parameter]

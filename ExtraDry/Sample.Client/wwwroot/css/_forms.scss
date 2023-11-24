@@ -1,4 +1,4 @@
-﻿@import "_constants.scss";
+﻿/*@import "_constants.scss";
 
 //
 // Forms that have a summary (should be most), are given the standard summary heading.
@@ -66,18 +66,9 @@ form fieldset.status {
 // Forms are broken into status and description sections, fix the status and scroll the description.
 //
 form {
-    display: flex;
-    flex-direction: column;
     height: 100%;
 
-    .status-properties {
-        flex: 0 0 auto;
-    }
 
-    .description-properties {
-        flex: 1 1 auto;
-        overflow-y: auto;
-    }
 }
 
 //
@@ -146,3 +137,4 @@ form {
         }
     }
 }
+*/

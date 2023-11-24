@@ -1,20 +1,23 @@
 ﻿using System.Reflection.Metadata;
 
-namespace ExtraDry.Blazor.Components.Internal;
+namespace ExtraDry.Blazor.Forms;
 
-public partial class DryInputSingleSelect<T> : ComponentBase, IExtraDryComponent {
+/// <summary>
+/// A DRY wrapper around a single select dropdown list.
+/// </summary>
+public partial class DryInputSingleSelect<T> : ComponentBase, IDryInput<T>, IExtraDryComponent {
 
     /// <inheritdoc />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
-    [Parameter]
+    [Parameter, EditorRequired]
     public T? Model { get; set; }
 
-    [Parameter]
+    [Parameter, EditorRequired]
     public PropertyDescription? Property { get; set; }
 
-    [Parameter]
+    [Parameter, EditorRequired]
     public List<object>? Values { get; set; } 
 
     [Parameter]

@@ -1,10 +1,6 @@
-﻿using System.Collections;
+﻿namespace ExtraDry.Blazor.Forms;
 
-namespace ExtraDry.Blazor;
-
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "DRY1500:Extra DRY Blazor components should have an interface.",
-    Justification = "Decide fate of component")]
-public partial class DryFormFieldset<T> : ComponentBase {
+public partial class DryFieldset<T> : ComponentBase {
 
     [CascadingParameter]
     internal DryForm<T> Form { get; set; } = null!;
@@ -13,7 +9,7 @@ public partial class DryFormFieldset<T> : ComponentBase {
     internal FormFieldset Fieldset { get; set; } = null!;
 
     private CommandInfo AddNewCommand =>
-        new(this, MethodInfoHelper.GetMethodInfo<DryFormFieldset<T>>(e => e.AddDefaultElementToList(Array.Empty<int>()))) {
+        new(this, MethodInfoHelper.GetMethodInfo<DryFieldset<T>>(e => e.AddDefaultElementToList(Array.Empty<int>()))) {
             Arguments = CommandArguments.Single,
             Context = CommandContext.Alternate
         };

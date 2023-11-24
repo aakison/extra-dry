@@ -1,5 +1,11 @@
 ﻿namespace ExtraDry.Blazor;
 
+/// <summary>
+/// The abstract edit mode for forms and input controls.  The mode is combined with the 
+/// <see cref="RulesAttribute"/> to determine the behavior of the form and it's elements. For 
+/// example, a property can be set to block changes on update but not on create, in which case the
+/// input element will be read-only when updating, but writable in the form.
+/// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum EditMode {
 

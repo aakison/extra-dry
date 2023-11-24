@@ -1,0 +1,11 @@
+﻿/*
+  Styles for the individual input fields.
+*/
+div {
+  display: flex;
+  flex-direction: column;
+}
+
+  div label {
+    font-size: 14px;
+  }

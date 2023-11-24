@@ -1,34 +1,32 @@
-﻿#nullable disable
+﻿namespace ExtraDry.Blazor.Forms;
 
-using System.Collections;
-
-namespace ExtraDry.Blazor;
-
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "DRY1500:Extra DRY Blazor components should have an interface.",
-    Justification = "Decide fate of component")]
-public partial class DryInput<T> : OwningComponentBase, IDisposable {
-
-    [Parameter]
-    public T Model { get; set; }
-
-    [Parameter]
-    public PropertyDescription Property { get; set; }
-
-    [Parameter]
-    public string PropertyName { get; set; }
-
-    [Parameter]
-    public EventCallback<ChangeEventArgs>? OnChange { get; set; }
+public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryComponent, IDisposable {
 
     /// <inheritdoc cref="IExtraDryComponent.CssClass" />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
+    
+    [Parameter, EditorRequired]
+    public T? Model { get; set; }
 
-    [Inject]
-    private ILogger<DryInput<T>> Logger { get; set; } = null!;
+    [Parameter]
+    public PropertyDescription? Property { get; set; }
+
+    [Parameter]
+    public string PropertyName { get; set; } = string.Empty;
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs>? OnChange { get; set; }
 
     [CascadingParameter]
     public EditMode EditMode { get; set; } = EditMode.Create;
+
+    /// <inheritdoc />
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? UnmatchedAttributes { get; set; }
+
+    [Inject]
+    private ILogger<DryInput<T>> Logger { get; set; } = null!;
 
     protected async override Task OnInitializedAsync()
     {
@@ -60,7 +58,7 @@ public partial class DryInput<T> : OwningComponentBase, IDisposable {
 
     private bool valid = true;
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass, Property.DisplayClass, StateCss, ValidCss);
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "field", SizeClass, Property?.DisplayClass, StateCss, ValidCss, CssClass);
 
     private string SizeClass => Property.Size.ToString().ToLowerInvariant();
 
@@ -80,7 +78,7 @@ public partial class DryInput<T> : OwningComponentBase, IDisposable {
         if(optionProvider != null) {
             var method = typedOptionProvider.GetMethod("GetItemsAsync");
             var token = new CancellationTokenSource().Token;
-            dynamic task = method.Invoke(optionProvider, new object[] { token });
+            dynamic task = method!.Invoke(optionProvider, new object[] { token })!;
             var optList = (await task).Items as ICollection;
             var options = optList.Cast<object>().ToList();
             LookupProviderOptions = options.Select((e, i) => new { Key = i, Item = e }).ToDictionary(e => e.Key.ToString(CultureInfo.InvariantCulture), e => e.Item);

@@ -1,11 +1,11 @@
-﻿@namespace ExtraDry.Blazor
+﻿@namespace ExtraDry.Blazor.Forms
 @using ExtraDry.Blazor.Internal
 @typeparam T
 
-<fieldset class="@Form.ModelNameWebId @Fieldset.CssClass">
+<fieldset class="@Form.ModelNameSlug @Fieldset.CssClass">
     @if (!string.IsNullOrWhiteSpace(Fieldset.Legend))
     {
-        <legend class="@Form.ModelNameWebId @Fieldset.CssClass">@Fieldset.Legend</legend>
+        <legend class="@Form.ModelNameSlug @Fieldset.CssClass">@Fieldset.Legend</legend>
     }
     @foreach (var group in Fieldset.Groups)
     {
