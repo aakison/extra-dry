@@ -141,7 +141,7 @@ namespace ExtraDry.UploadTools.Tests {
         {
             var testConfig = new UploadConfiguration() { 
                 ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip" }, 
-                ExtensionBlacklist = new List<BlacklistFileType>() { new BlacklistFileType() { Extension = blackListFileExtension } } };
+                ExtensionBlacklist = new List<BlacklistFileType>() { new() { Extension = blackListFileExtension } } };
             UploadTools.ConfigureUploadRestrictions(testConfig);
 
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
@@ -156,7 +156,7 @@ namespace ExtraDry.UploadTools.Tests {
         {
             var testConfig = new UploadConfiguration() {
                 ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip" },
-                ExtensionBlacklist = new List<BlacklistFileType>() { new BlacklistFileType() { Extension = blackListFileExtension, CheckType = CheckType.FilenameOnly } }
+                ExtensionBlacklist = new List<BlacklistFileType>() { new() { Extension = blackListFileExtension, CheckType = CheckType.FilenameOnly } }
             };
             UploadTools.ConfigureUploadRestrictions(testConfig);
 
