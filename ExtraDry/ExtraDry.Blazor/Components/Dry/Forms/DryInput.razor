@@ -75,7 +75,7 @@
                 <textarea class="@CssClasses" rows="@rows" readonly="@ReadOnly" placeholder="@Property.Display?.Prompt" @onchange="HandleChange">@Value</textarea>
             }
             else { 
-                <input class="@CssClasses" title="@Property.FieldCaption" type="text" value="@Value" readonly="@ReadOnly" placeholder="@Property.Display?.Prompt" @onchange="HandleChange" />
+                <DryInputText CssClass="@CssClasses" Model="@Model" Property="@Property" />
             }
         } 
         else if(LookupProviderOptions != null) {

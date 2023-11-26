@@ -14,12 +14,15 @@ public partial class DryInputMultipleSelect<T> : ComponentBase, IDryInput<T>, IE
     [Parameter]
     public PropertyDescription? Property { get; set; }
 
+    /// <inheritdoc cref="DryInputSingleSelect{T}.Values" />
     [Parameter]
     public List<object>? Values { get; set; } 
 
+    /// <inheritdoc />
     [Parameter]
     public EventCallback<ChangeEventArgs>? OnChange { get; set; }
 
+    /// <inheritdoc />
     [CascadingParameter]
     public EditMode EditMode { get; set; } = EditMode.Create;
 

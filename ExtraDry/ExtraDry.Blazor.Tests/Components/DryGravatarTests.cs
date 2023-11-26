@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using Bunit;
+﻿using Bunit;
 using System;
 using Xunit;
 

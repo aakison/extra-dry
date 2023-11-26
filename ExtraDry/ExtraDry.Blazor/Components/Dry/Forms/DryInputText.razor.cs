@@ -1,12 +1,13 @@
-﻿using System.Reflection.Metadata;
+﻿using Microsoft.AspNetCore.Components.Forms;
+using System.Reflection.Metadata;
 
 namespace ExtraDry.Blazor.Forms;
 
 /// <summary>
-/// A DRY wrapper around a single select dropdown list.  Prefer the use of <see cref="DryInput{T}"/> 
+/// A DRY wrapper around a text input field.  Prefer the use of <see cref="DryInput{T}"/> 
 /// instead of this component as it is more flexible and supports more data types.
 /// </summary>
-public partial class DryInputSingleSelect<T> : ComponentBase, IDryInput<T>, IExtraDryComponent {
+public partial class DryInputText<T> : ComponentBase, IDryInput<T>, IExtraDryComponent {
 
     /// <inheritdoc />
     [Parameter]
@@ -19,12 +20,6 @@ public partial class DryInputSingleSelect<T> : ComponentBase, IDryInput<T>, IExt
     /// <inheritdoc />
     [Parameter, EditorRequired]
     public PropertyDescription? Property { get; set; }
-
-    /// <summary>
-    /// Set of values to select from, any object can be used and the ToString values are displayed.
-    /// </summary>
-    [Parameter, EditorRequired]
-    public List<object>? Values { get; set; } 
 
     /// <inheritdoc />
     [Parameter]
@@ -40,28 +35,31 @@ public partial class DryInputSingleSelect<T> : ComponentBase, IDryInput<T>, IExt
 
     protected override void OnParametersSet()
     {
-        if(Model != null) {
-            SelectedValue = Property?.GetValue(Model);
+        if(Model == null || Property == null) {
+            return;
         }
+        Value = Property.DisplayValue(Model);
     }
 
     [Inject]
     private ILogger<DryInput<T>> Logger { get; set; } = null!;
 
-    private async Task SelectOption(ChangeEventArgs args)
+    private async Task InvokeOnChange(ChangeEventArgs args)
     {
-        if(Values == null || !int.TryParse(args.Value as string, out var index)) {
-            return; // selected blank line
-        }
-        SelectedValue = Values[index];
-        if(Model != null) {
-            Property?.SetValue(Model, SelectedValue);
-            await InvokeOnChange(args);
+        var task = OnChange?.InvokeAsync(args);
+        if(task != null) {
+            await task;
         }
     }
 
-    private async Task InvokeOnChange(ChangeEventArgs args)
+    private async Task HandleChange(ChangeEventArgs args)
     {
+        if(Property == null || Model == null) {
+            return;
+        }
+        var value = args.Value;
+        Property.SetValue(Model, value);
+
         var task = OnChange?.InvokeAsync(args);
         if(task != null) {
             await task;
@@ -74,6 +72,6 @@ public partial class DryInputSingleSelect<T> : ComponentBase, IDryInput<T>, IExt
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", ReadOnlyCss, CssClass);
 
-    private object? SelectedValue { get; set; }
+    private string Value { get; set; } = "";
 
 }
