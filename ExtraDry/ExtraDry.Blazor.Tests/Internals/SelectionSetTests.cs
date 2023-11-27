@@ -1,6 +1,4 @@
 using ExtraDry.Blazor.Components.Internal;
-using System;
-using Xunit;
 
 namespace ExtraDry.Blazor.Tests.Internals;
 

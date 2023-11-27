@@ -1,8 +1,4 @@
-﻿using ExtraDry.Blazor.Models;
-using System.Threading.Tasks;
-using Xunit;
-
-namespace ExtraDry.Blazor.Tests.Models;
+﻿namespace ExtraDry.Blazor.Tests.Models;
 
 public class NakedParameterlessCommandInfoTests {
 

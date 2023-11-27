@@ -1,8 +1,5 @@
-﻿using ExtraDry.Blazor.Models;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace ExtraDry.Blazor.Tests.Models;
 

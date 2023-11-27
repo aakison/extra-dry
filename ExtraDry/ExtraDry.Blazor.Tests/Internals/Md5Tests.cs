@@ -1,7 +1,4 @@
-﻿using ExtraDry.Blazor.Internal;
-using Xunit;
-
-namespace ExtraDry.Blazor.Tests.Internals;
+﻿namespace ExtraDry.Blazor.Tests.Internals;
 
 public class Md5Tests {
 

@@ -69,7 +69,7 @@ public class ViewModelDescription {
         foreach(var property in properties) {
             var display = property.GetCustomAttribute<DisplayAttribute>();
             var col = new PropertyDescription(property);
-            if(display != null && (display.GetAutoGenerateField() ?? true)) {
+            if(display?.GetAutoGenerateField() ?? true) {
                 FormProperties.Add(col);
             }
             if(!string.IsNullOrEmpty(display?.ShortName)) {
