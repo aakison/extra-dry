@@ -7,16 +7,16 @@ using System.Text.Json;
 
 namespace ExtraDry.UploadTools
 {
-    internal class FileService {
+    public class FileService {
 
-        private static List<FileTypeDefinition> FileDefinitions;
+        private List<FileTypeDefinition> FileDefinitions;
 
-        static FileService()
+        public FileService()
         {
             if(FileDefinitions == null) { LoadFileDefinitions(); }
         }
 
-        private static void LoadFileDefinitions()
+        private void LoadFileDefinitions()
         {
             var assembly = Assembly.GetExecutingAssembly();
             var resourceName = "ExtraDry.UploadTools.FileDatabase.json";
@@ -32,14 +32,14 @@ namespace ExtraDry.UploadTools
         /// <summary>
         /// Add file definitions to the default database.
         /// </summary>
-        internal static void AddFileDefinitions(List<FileTypeDefinition> fileTypeDefinitions){
+        internal void AddFileDefinitions(List<FileTypeDefinition> fileTypeDefinitions){
             FileDefinitions.AddRange(fileTypeDefinitions);
         }
 
         /// <summary>
         /// Retrieves filetype definitions that match the provided filename
         /// </summary>
-        internal static List<FileTypeDefinition> GetFileTypeFromFilename(string filename)
+        internal List<FileTypeDefinition> GetFileTypeFromFilename(string filename)
         {
             var extension = Path.GetExtension(filename).Trim('.');
             var options = FileDefinitions.Where(f => f.Extensions.Contains(extension, StringComparer.OrdinalIgnoreCase));
@@ -49,7 +49,7 @@ namespace ExtraDry.UploadTools
         /// <summary>
         /// Retrieves filetype definitions that match the provided mimetype
         /// </summary>
-        internal static List<FileTypeDefinition> GetFileTypeFromMime(string mime)
+        internal List<FileTypeDefinition> GetFileTypeFromMime(string mime)
         {
             var options = FileDefinitions.Where(f => f.MimeTypes.Contains(mime, StringComparer.OrdinalIgnoreCase));
             return options.ToList();
@@ -58,7 +58,7 @@ namespace ExtraDry.UploadTools
         /// <summary>
         /// Retrieves filetype definitions where the magic bytes are found in the content
         /// </summary>
-        internal static List<FileTypeDefinition> GetFileTypeFromBytes(byte[] content)
+        internal List<FileTypeDefinition> GetFileTypeFromBytes(byte[] content)
         {
             if(content == null || content.Length < 1) {
                 return null;

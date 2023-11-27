@@ -1,16 +1,20 @@
 ﻿using ExtraDry.Core;
 using System;
+using System.Linq.Expressions;
 using Xunit;
 
 namespace ExtraDry.UploadTools.Tests {
     public class UploadToolsTests {
+
+        UploadTools tools;
 
         public UploadToolsTests()
         {
             var testConfig = new UploadConfiguration() { 
                 ExtensionWhitelist = new List<string>{"txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip"} 
             };
-            UploadTools.ConfigureUploadRestrictions(testConfig);
+            var fileservice = new FileService();
+            tools = new UploadTools(fileservice, testConfig);
         }
 
         [Theory]
@@ -61,9 +65,9 @@ namespace ExtraDry.UploadTools.Tests {
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filename}");
 
-            var canUpload = UploadTools.CanUpload(filename, mime, fileBytes);
+            var underTest = new FileValidator(filename, mime, fileBytes, tools);
 
-            Assert.True(canUpload);
+            Assert.True(underTest.Success);
         }
 
 
@@ -78,8 +82,10 @@ namespace ExtraDry.UploadTools.Tests {
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
 
-            var exception = Assert.Throws<DryException>(() => UploadTools.CanUpload(filename, mime, fileBytes));
+            var underTest = new FileValidator(filename, mime, fileBytes, tools);
 
+            Assert.False(underTest.Success);
+            var exception = Assert.Throws<DryException>(() => underTest.ThrowIfError());
             Assert.Equal(exceptionText, exception.Message);
 
         }
@@ -91,8 +97,10 @@ namespace ExtraDry.UploadTools.Tests {
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
 
-            var exception = Assert.Throws<DryException>(() => UploadTools.CanUpload(filename, mime, fileBytes));
+            var underTest = new FileValidator(filename, mime, fileBytes, tools);
 
+            Assert.False(underTest.Success);
+            var exception = Assert.Throws<DryException>(() => underTest.ThrowIfError());
             Assert.Equal("Provided file content and filename do not match", exception.Message);
         }
 
@@ -103,8 +111,10 @@ namespace ExtraDry.UploadTools.Tests {
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
 
-            var exception = Assert.Throws<DryException>(() => UploadTools.CanUpload(filename, mime, fileBytes));
+            var underTest = new FileValidator(filename, mime, fileBytes, tools);
 
+            Assert.False(underTest.Success);
+            var exception = Assert.Throws<DryException>(() => underTest.ThrowIfError());
             Assert.Equal("Provided file name and mimetype do not match", exception.Message);
         }
 
@@ -117,8 +127,10 @@ namespace ExtraDry.UploadTools.Tests {
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
 
-            var exception = Assert.Throws<DryException>(() => UploadTools.CanUpload(filename, mime, fileBytes));
+            var underTest = new FileValidator(filename, mime, fileBytes, tools);
 
+            Assert.False(underTest.Success);
+            var exception = Assert.Throws<DryException>(() => underTest.ThrowIfError());
             Assert.Equal("Provided filename belongs to a forbidden filetype", exception.Message);
         }
 
@@ -128,8 +140,10 @@ namespace ExtraDry.UploadTools.Tests {
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
 
-            var exception = Assert.Throws<DryException>(() => UploadTools.CanUpload(filename, mime, fileBytes));
+            var underTest = new FileValidator(filename, mime, fileBytes, tools);
 
+            Assert.False(underTest.Success);
+            var exception = Assert.Throws<DryException>(() => underTest.ThrowIfError());
             Assert.Equal("Provided file is an XML filetype with protected tags", exception.Message);
         }
 
@@ -142,11 +156,14 @@ namespace ExtraDry.UploadTools.Tests {
             var testConfig = new UploadConfiguration() { 
                 ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip" }, 
                 ExtensionBlacklist = new List<BlacklistFileType>() { new() { Extension = blackListFileExtension } } };
-            UploadTools.ConfigureUploadRestrictions(testConfig);
+            var fileservice = new FileService();
+            tools = new UploadTools(fileservice, testConfig);
 
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
-            var exception = Assert.Throws<DryException>(() => UploadTools.CanUpload(filename, mime, fileBytes));
+            var underTest = new FileValidator(filename, mime, fileBytes, tools);
 
+            Assert.False(underTest.Success);
+            var exception = Assert.Throws<DryException>(() => underTest.ThrowIfError());
             Assert.EndsWith("belongs to a forbidden filetype", exception.Message);
         }
 
@@ -158,12 +175,13 @@ namespace ExtraDry.UploadTools.Tests {
                 ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip" },
                 ExtensionBlacklist = new List<BlacklistFileType>() { new() { Extension = blackListFileExtension, CheckType = CheckType.FilenameOnly } }
             };
-            UploadTools.ConfigureUploadRestrictions(testConfig);
-
+            var fileservice = new FileService();
+            tools = new UploadTools(fileservice, testConfig);
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
-            var result = UploadTools.CanUpload(filename, mime, fileBytes);
 
-            Assert.True(result);
+            var underTest = new FileValidator(filename, mime, fileBytes, tools);
+
+            Assert.True(underTest.Success);
         }
     }
 }

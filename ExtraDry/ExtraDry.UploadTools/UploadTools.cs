@@ -1,6 +1,7 @@
 ﻿using ExtraDry.Core;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -8,42 +9,51 @@ using System.Text.RegularExpressions;
 
 namespace ExtraDry.UploadTools
 {
-    public static class UploadTools {
+    public class UploadTools {
         /// <summary>
         /// File extensions that will be rejected regardless of the whitelist settings
         /// </summary>
-        private readonly static List<string> FileTypeBlacklist = new List<string>();
+        private readonly List<string> FileTypeBlacklist = new List<string>();
 
         /// <summary>
         /// Some files we'd like to reject based off their file extensions, but can't reject off magic bytes becuase they share these with other file types eg docx, zip, jar and apk
         /// </summary>
-        private readonly static List<string> ExtensionOnlyBlacklist = new List<string>();
+        private readonly List<string> ExtensionOnlyBlacklist = new List<string>();
 
         /// <summary>
         /// Whitelisted file extensions. Note that any that also appear in the blacklists will be rejected. The blacklist overrides the whitelist
         /// </summary>
-        private static List<string> ExtensionWhitelist { get; set; }
+        private List<string> ExtensionWhitelist { get; set; }
 
         /// <summary>
         /// XML file types that are checked for <script> tags
         /// </summary>
-        private static List<string> KnownXmlFileTypes { get; set; } = new List<string>{ "xml", "html", "svg" };
+        private List<string> KnownXmlFileTypes { get; set; } = new List<string>{ "xml", "html", "svg" };
 
         /// <summary>
         /// Regex used to help clean the filenames.
         /// </summary>
         private const string cleaningRegex = @"[^\p{Lu}\p{Ll}\p{Lt}\p{Lm}\p{Lo}\p{Nd}\-_\.]";
 
-        static UploadTools()
+        private readonly FileService fileService;
+
+        public UploadTools(FileService file)
         {
+            fileService = file;
             ConfigureUploadRestrictions(null);
+        }
+
+        public UploadTools(FileService file, UploadConfiguration config)
+        {
+            fileService = file;
+            ConfigureUploadRestrictions(config);
         }
 
         /// <summary>
         /// Call in startup of your application to configure the settings for the upload tools;
         /// Lists that aren't provided will be set to default values.
         /// </summary>
-        public static void ConfigureUploadRestrictions(UploadConfiguration config)
+        internal void ConfigureUploadRestrictions(UploadConfiguration config)
         {
             if(config?.ExtensionWhitelist?.Count > 0) {
                 ExtensionWhitelist = config.ExtensionWhitelist;
@@ -52,7 +62,7 @@ namespace ExtraDry.UploadTools
             }
 
             if(config?.FileDefinitions?.Count > 0) {
-                FileService.AddFileDefinitions(config.FileDefinitions);
+                fileService.AddFileDefinitions(config.FileDefinitions);
             }
 
             FileTypeBlacklist.Clear();
@@ -119,7 +129,7 @@ namespace ExtraDry.UploadTools
         /// - If the file type is of a known xml type, it must not contain a script tag
         /// If all of these are true, then true is returned. Else, a <see cref="DryException"/> with details is thrown
         /// </summary>
-        public static bool CanUpload(string filename, string mimetype, byte[] content)
+        internal bool ValidateFile(string filename, string mimetype, byte[] content)
         {
             // if no file name or no content, early exit.
             if(string.IsNullOrEmpty(filename) || filename.Length > 255 || content == null || content.Length == 0) {
@@ -149,9 +159,9 @@ namespace ExtraDry.UploadTools
 
             // Get the mime type and file type info from the file name and the content
             // We don't really use the one from the file name other than to check it matches the content
-            var filenameFileDefinition = FileService.GetFileTypeFromFilename(filename);
-            var mimeTypeFileDefinition = FileService.GetFileTypeFromMime(mimetype);
-            var magicByteFileDefinition = FileService.GetFileTypeFromBytes(content);
+            var filenameFileDefinition = fileService.GetFileTypeFromFilename(filename);
+            var mimeTypeFileDefinition = fileService.GetFileTypeFromMime(mimetype);
+            var magicByteFileDefinition = fileService.GetFileTypeFromBytes(content);
 
             // If it's an unknown file type:
             // If we don't know the bytes, it's not flagged as dangerous.
