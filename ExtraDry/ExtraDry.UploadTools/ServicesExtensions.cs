@@ -1,16 +1,17 @@
-﻿using Azure.Identity;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ExtraDry.UploadTools
 {
     public static class ServicesExtensions
     {
-        public static void AddUploadService(this IServiceCollection services)
+        /// <summary>
+        /// Registers the upload tools to services, able to be injected in future FileValidators
+        /// </summary>
+        public static void AddUploadService(this IServiceCollection services, IOptions<UploadConfiguration> options)
         {
-            services.AddSingleton<UploadTools>();
+            var fileService = new FileService();
+            services.AddSingleton(new UploadTools(fileService, options.Value));
         }
     }
 }

@@ -65,9 +65,9 @@ namespace ExtraDry.UploadTools.Tests {
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filename}");
 
-            var underTest = new FileValidator(filename, mime, fileBytes, tools);
+            var underTest = new FileChecker(filename, mime, fileBytes, tools);
 
-            Assert.True(underTest.Success);
+            Assert.True(underTest.CanUpload);
         }
 
 
@@ -82,9 +82,9 @@ namespace ExtraDry.UploadTools.Tests {
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
 
-            var underTest = new FileValidator(filename, mime, fileBytes, tools);
+            var underTest = new FileChecker(filename, mime, fileBytes, tools);
 
-            Assert.False(underTest.Success);
+            Assert.False(underTest.CanUpload);
             var exception = Assert.Throws<DryException>(() => underTest.ThrowIfError());
             Assert.Equal(exceptionText, exception.Message);
 
@@ -97,9 +97,9 @@ namespace ExtraDry.UploadTools.Tests {
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
 
-            var underTest = new FileValidator(filename, mime, fileBytes, tools);
+            var underTest = new FileChecker(filename, mime, fileBytes, tools);
 
-            Assert.False(underTest.Success);
+            Assert.False(underTest.CanUpload);
             var exception = Assert.Throws<DryException>(() => underTest.ThrowIfError());
             Assert.Equal("Provided file content and filename do not match", exception.Message);
         }
@@ -111,9 +111,9 @@ namespace ExtraDry.UploadTools.Tests {
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
 
-            var underTest = new FileValidator(filename, mime, fileBytes, tools);
+            var underTest = new FileChecker(filename, mime, fileBytes, tools);
 
-            Assert.False(underTest.Success);
+            Assert.False(underTest.CanUpload);
             var exception = Assert.Throws<DryException>(() => underTest.ThrowIfError());
             Assert.Equal("Provided file name and mimetype do not match", exception.Message);
         }
@@ -127,9 +127,9 @@ namespace ExtraDry.UploadTools.Tests {
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
 
-            var underTest = new FileValidator(filename, mime, fileBytes, tools);
+            var underTest = new FileChecker(filename, mime, fileBytes, tools);
 
-            Assert.False(underTest.Success);
+            Assert.False(underTest.CanUpload);
             var exception = Assert.Throws<DryException>(() => underTest.ThrowIfError());
             Assert.Equal("Provided filename belongs to a forbidden filetype", exception.Message);
         }
@@ -140,9 +140,9 @@ namespace ExtraDry.UploadTools.Tests {
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
 
-            var underTest = new FileValidator(filename, mime, fileBytes, tools);
+            var underTest = new FileChecker(filename, mime, fileBytes, tools);
 
-            Assert.False(underTest.Success);
+            Assert.False(underTest.CanUpload);
             var exception = Assert.Throws<DryException>(() => underTest.ThrowIfError());
             Assert.Equal("Provided file is an XML filetype with protected tags", exception.Message);
         }
@@ -160,9 +160,9 @@ namespace ExtraDry.UploadTools.Tests {
             tools = new UploadTools(fileservice, testConfig);
 
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
-            var underTest = new FileValidator(filename, mime, fileBytes, tools);
+            var underTest = new FileChecker(filename, mime, fileBytes, tools);
 
-            Assert.False(underTest.Success);
+            Assert.False(underTest.CanUpload);
             var exception = Assert.Throws<DryException>(() => underTest.ThrowIfError());
             Assert.EndsWith("belongs to a forbidden filetype", exception.Message);
         }
@@ -179,9 +179,9 @@ namespace ExtraDry.UploadTools.Tests {
             tools = new UploadTools(fileservice, testConfig);
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
 
-            var underTest = new FileValidator(filename, mime, fileBytes, tools);
+            var underTest = new FileChecker(filename, mime, fileBytes, tools);
 
-            Assert.True(underTest.Success);
+            Assert.True(underTest.CanUpload);
         }
     }
 }
