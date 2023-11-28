@@ -44,7 +44,7 @@ public class Company : IResourceIdentifiers {
     [Required, StringLength(80)]
     public string Title { get; set; } = "";
 
-    [Display(Name = "Status", ShortName = "Status", GroupName = "Status")]
+    [Display(ShortName = "Status", GroupName = "Status")]
     [Rules(RuleAction.Allow)]
     [Filter]
     public CompanyStatus Status { get; set; }
@@ -53,7 +53,7 @@ public class Company : IResourceIdentifiers {
     [Rules(RuleAction.IgnoreDefaults)]
     public string Description { get; set; } = "";
 
-    [Display(Name = "Primary Sector", ShortName = "Sector")]
+    [Display(ShortName = "Sector")]
     [Rules(RuleAction.Link)]
     [JsonConverter(typeof(ResourceReferenceConverter<Sector>))]
     public Sector? PrimarySector { get; set; }
@@ -66,25 +66,20 @@ public class Company : IResourceIdentifiers {
     [Filter]
     public OwnershipStructure Ownership { get; set; }
 
-    [Display]
     [Phone, StringLength(24)]
     [Rules(RuleAction.IgnoreDefaults)]
     public string ContactPhone { get; set; } = "";
 
-    [Display]
     [EmailAddress, StringLength(100)]
     [Rules(RuleAction.IgnoreDefaults)]
     public string ContactEmail { get; set; } = "";
 
-    [Display]
     [Precision(18, 2)]
     public decimal AnnualRevenue { get; set; }
 
-    [Display]
     [Precision(18, 2)]
     public decimal SalesMargin { get; set; }
 
-    [Display]
     public DateTime IncorporationDate { get; set; }
 
     [Display]

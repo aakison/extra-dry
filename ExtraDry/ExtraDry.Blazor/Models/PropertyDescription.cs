@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Globalization;
-
-namespace ExtraDry.Blazor;
+﻿namespace ExtraDry.Blazor;
 
 public class PropertyDescription {
 
@@ -16,8 +13,8 @@ public class PropertyDescription {
         IsRequired = Property.GetCustomAttribute<RequiredAttribute>() != null;
         Control = Property.GetCustomAttribute<ControlAttribute>();
         Filter = Property.GetCustomAttribute<FilterAttribute>();
-        FieldCaption = Display?.Name ?? Property.Name;
-        ColumnCaption = Display?.ShortName ?? Property.Name;
+        FieldCaption = Display?.Name ?? DataConverter.CamelCaseToTitleCase(Property.Name);
+        ColumnCaption = Display?.ShortName ?? DataConverter.CamelCaseToTitleCase(Property.Name);
         Description = Display?.Description;
         HasDescription = !string.IsNullOrWhiteSpace(Description);
         Size = PredictSize();

@@ -362,4 +362,7 @@
     border-spacing: 0;
   }
 
+  ::deep textarea {
+    resize: vertical; /* user can resize vertically, but width is fixed */
+  }
 }
