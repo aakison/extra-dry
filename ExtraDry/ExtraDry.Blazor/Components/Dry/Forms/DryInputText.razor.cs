@@ -44,14 +44,6 @@ public partial class DryInputText<T> : ComponentBase, IDryInput<T>, IExtraDryCom
     [Inject]
     private ILogger<DryInput<T>> Logger { get; set; } = null!;
 
-    private async Task InvokeOnChange(ChangeEventArgs args)
-    {
-        var task = OnChange?.InvokeAsync(args);
-        if(task != null) {
-            await task;
-        }
-    }
-
     private async Task HandleChange(ChangeEventArgs args)
     {
         if(Property == null || Model == null) {

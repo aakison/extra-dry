@@ -1,5 +1,7 @@
-﻿using AngleSharp.Html.Dom;
+﻿using AngleSharp.Dom;
+using AngleSharp.Html.Dom;
 using ExtraDry.Blazor.Forms;
+using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
@@ -28,6 +30,26 @@ public class DryInputTextTests {
     }
 
     [Fact]
+    public void ReadOnlyComponents()
+    {
+        using var context = new TestContext();
+        var model = new Model { Id = 1, Name = "TheModel" };
+        var description = new ViewModelDescription(typeof(Model), model);
+        var property = description.FormProperties.First(e => e.Property.Name == nameof(Model.Name));
+
+        var fragment = context.RenderComponent<DryInputText<Model>>(
+            (nameof(DryInputText<Model>.Model), model),
+            (nameof(DryInputText<Model>.Property), property),
+            (nameof(DryInputText<Model>.EditMode), EditMode.ReadOnly)
+            );
+
+        var input = fragment.Find("input");
+        Assert.NotNull(input);
+        Assert.True(input.IsReadOnly());
+        //Assert.Contains("readonly", input.ClassName);
+    }
+
+    [Fact]
     public void UnmatchedAttributesPassthrough()
     {
         using var context = new TestContext();
@@ -44,70 +66,69 @@ public class DryInputTextTests {
         Assert.Equal("bar", input.GetAttribute("data-foo"));
     }
 
-    //[Fact]
-    //public void GravatarImgClass()
-    //{
-    //    var fragment = context.RenderComponent<Gravatar>(("Email", exampleEmail));
+    [Fact]
+    public void ChangeEventSync()
+    {
+        using var context = new TestContext();
+        var model = new Model { Id = 1, Name = "TheModel" };
+        var description = new ViewModelDescription(typeof(Model), model);
+        var property = description.FormProperties.First(e => e.Property.Name == nameof(Model.Name));
+        var fragment = context.RenderComponent<DryInputText<Model>>(
+            (nameof(DryInputText<Model>.Model), model),
+            (nameof(DryInputText<Model>.Property), property)
+            );
+        var input = fragment.Find("input");
+        var newValue = "Updated";
+        var args = new ChangeEventArgs { Value = newValue };
 
-    //    var img = fragment.Find("img");
+        input.NodeValue = newValue;
+        input.Change(args);
 
-    //    Assert.NotNull(img);
-    //    Assert.Equal("gravatar", img.ClassName);
-    //}
+        Assert.NotNull(input);
+        Assert.Equal(newValue, model.Name);
+    }
 
-    //[Fact]
-    //public void GravatarUsesEmailInAlt()
-    //{
-    //    var fragment = context.RenderComponent<Gravatar>(("Email", exampleEmail));
+    [Fact]
+    public async Task ChangeEventAsync()
+    {
+        using var context = new TestContext();
+        var model = new Model { Id = 1, Name = "TheModel" };
+        var description = new ViewModelDescription(typeof(Model), model);
+        var property = description.FormProperties.First(e => e.Property.Name == nameof(Model.Name));
+        var fragment = context.RenderComponent<DryInputText<Model>>(
+            (nameof(DryInputText<Model>.Model), model),
+            (nameof(DryInputText<Model>.Property), property)
+            );
+        var input = fragment.Find("input");
+        var newValue = "Updated";
+        var args = new ChangeEventArgs { Value = newValue };
 
-    //    var img = fragment.Find("img");
-    //    var alt = img?.Attributes["alt"]?.Value;
+        input.NodeValue = newValue;
+        await input.ChangeAsync(args);
 
-    //    Assert.NotNull(img);
-    //    Assert.NotNull(alt);
-    //    Assert.Equal(exampleEmail, alt);
-    //}
+        Assert.NotNull(input);
+        Assert.Equal(newValue, model.Name);
+    }
 
-    //[Fact]
-    //public void GravatarSuppressesEmailInAlt()
-    //{
-    //    var fragment = context.RenderComponent<Gravatar>(("Email", exampleEmail), ("HideEmail", true));
 
-    //    var img = fragment.Find("img");
-    //    var alt = img?.Attributes["alt"]?.Value;
+    [Fact]
+    public void ModellessChangeEventAsync()
+    {
+        using var context = new TestContext();
+        var model = new Model { Id = 1, Name = "TheModel" };
+        var fragment = context.RenderComponent<DryInputText<Model>>(
+            (nameof(DryInputText<Model>.Model), model)
+            );
+        var input = fragment.Find("input");
+        var newValue = "Updated";
+        var args = new ChangeEventArgs { Value = newValue };
 
-    //    Assert.NotNull(img);
-    //    Assert.NotNull(alt);
-    //    Assert.NotEqual(exampleEmail, alt);
-    //    Assert.Contains("Gravatar", alt);
-    //}
+        input.NodeValue = newValue;
+        input.Change(args);
 
-    //[Fact]
-    //public void GravatarImageHasCorrectHash()
-    //{
-    //    var fragment = context.RenderComponent<Gravatar>(("Email", exampleEmail));
-
-    //    var img = fragment.Find("img");
-    //    var src = img?.Attributes["src"]?.Value;
-
-    //    Assert.NotNull(img);
-    //    Assert.NotNull(src);
-    //    Assert.Contains(exampleHash, src);
-    //    Assert.StartsWith("https://www.gravatar.com/avatar/", src);
-    //}
-
-    //[Fact]
-    //public void GravatarImageRequestsSize()
-    //{
-    //    var fragment = context.RenderComponent<Gravatar>(("Email", exampleEmail), ("Size", 123));
-
-    //    var img = fragment.Find("img");
-    //    var src = img?.Attributes["src"]?.Value;
-
-    //    Assert.NotNull(img);
-    //    Assert.NotNull(src);
-    //    Assert.Contains("s=123", src);
-    //}
+        Assert.NotNull(input);
+        Assert.Equal("TheModel", model.Name); // i.e. no change.
+    }
 
     public class Model
     {
@@ -115,6 +136,7 @@ public class DryInputTextTests {
         public int Id { get; set; }
 
         public string Name { get; set; } = string.Empty;
+
     }
 
 
