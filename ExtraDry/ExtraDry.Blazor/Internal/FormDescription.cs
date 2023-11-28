@@ -26,7 +26,8 @@ internal class FormDescription {
     {
         int lineCapacity = 4;
         object? lastModel = null;
-        foreach(var property in ExtendedProperties) {
+        var orderedProperties = ExtendedProperties.OrderBy(e => e.Property.DisplayOrder);
+        foreach(var property in orderedProperties) {
             var fieldset = Fieldsets.LastOrDefault(e => string.Equals(e.Legend, property.FieldsetTitle, StringComparison.OrdinalIgnoreCase));
             if(fieldset == null) {
                 fieldset = new FormFieldset(property.FieldsetTitle, Slug.ToSlug(property.FieldsetTitle));
@@ -59,7 +60,7 @@ internal class FormDescription {
     private void ExtendProperties(Collection<PropertyDescription> properties, string fieldsetName, FormGroupType formGroup, object? model, object? parentModel = null)
     {
         foreach(var property in properties) {
-            var groupName = property.Display?.GroupName ?? "Details";
+            var groupName = property.DisplayGroup;
             if(groupName != string.Empty) {
                 fieldsetName = groupName;
             }

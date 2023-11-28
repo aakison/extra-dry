@@ -84,6 +84,16 @@ public class PropertyDescription {
 
     public PropertySize Size { get; set; }
 
+    /// <summary>
+    /// The display order of the property as defined in the Display attribute, or a default of 10,000 per Microsoft guidelines.
+    /// </summary>
+    public int DisplayOrder => Display?.GetOrder() ?? 10_000;
+
+    /// <summary>
+    /// The display group of the property as defined in the Display attribute, or a default of "Details".
+    /// </summary>
+    public string DisplayGroup => Display?.GetGroupName() ?? "Details";
+
     public string DisplayValue(object? item)
     {
         if(item == null) {

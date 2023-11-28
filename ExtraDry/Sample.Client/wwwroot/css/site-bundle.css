@@ -219,146 +219,115 @@ table.empty tbody::before {
   margin-top: 50px;
 }
 
-/*@import "_constants.scss";
+form {
+  padding: 0;
+  gap: 0;
+}
+form .variable-fieldsets, form .entity-actions {
+  padding: 10px;
+}
 
-//
-// Forms that have a summary (should be most), are given the standard summary heading.
-// Color defaults to primary, some forms will want to change this to have special highlights for certain entities.
-//
+form div.entity-info, form fieldset.summary {
+  border-left: solid 10px var(--primary);
+  padding: 5px 10px;
+}
+
 form fieldset.summary {
-    border-left: solid $margin $var-primary;
-    padding: $margin/2 $margin;
-    height: 102px;
-
-    legend {
-        display: none;
-    }
+  height: 75px;
+}
+form fieldset.summary legend {
+  display: none;
+}
+form fieldset.summary div.line.properties {
+  gap: 5px;
 }
 
-//
-// The status line is usually seldom written fields and gets a custom set of visual styles.
-//
+form fieldset.summary .line.properties {
+  flex-direction: column;
+}
+
+form div.field.title label, form div.field.slug label {
+  display: none;
+}
+form div.field.title input, form div.field.slug input {
+  font-size: 18px;
+  font-weight: 600;
+  border: solid 1px transparent;
+  width: 100%;
+}
+form div.field.title input:hover, form div.field.slug input:hover {
+  border-color: var(--light);
+}
+form div.field.title input:focus-visible, form div.field.slug input:focus-visible {
+  border-color: var(--info);
+  outline: none;
+}
+
+form div.fixed-fieldsets {
+  gap: 0;
+}
+
 form fieldset.status {
-    background-color: $var-off-white;
-    border-top: solid 1px $var-light;
-    border-bottom: solid 1px $var-light;
-    padding: $margin/2 $margin;
-    height: 70px;
-
-    legend {
-        display: none;
-    }
-
-    div.line {
-        height: 28px;
-        padding: $margin/2;
-    }
-
-    div.field label {
-        color: $var-gray;
-        font-weight: 600;
-        font-size: 12px;
-        width: 80px;
-
-        span:after {
-            content: ":";
-        }
-    }
-
-    select {
-        border: solid 1px transparent;
-        background: transparent;
-        font-weight: 600;
-        appearance: none;
-
-        &:hover {
-            background: $var-white;
-            border: solid 1px $var-gray;
-            appearance: auto;
-        }
-
-        &:focus-visible {
-            outline: none;
-        }
-    }
+  background-color: var(--off-white);
+  border-top: solid 1px var(--light);
+  border-bottom: solid 1px var(--light);
+  padding: 5px 10px;
+  height: 75px;
 }
-
-//
-// Forms are broken into status and description sections, fix the status and scroll the description.
-//
-form {
-    height: 100%;
-
-
+form fieldset.status legend {
+  display: none;
 }
-
-//
-// Title property is editable but also should display as a title, make it prominent with hover effects for visual pliancy.
-//
-form div.field.title {
-    label {
-        display: none;
-    }
-
-    input {
-        font-size: 18px;
-        font-weight: 600;
-        border: solid 1px transparent;
-        width: 100%;
-
-        &:hover {
-            border-color: $var-light;
-        }
-
-        &:focus-visible {
-            border-color: $var-info;
-            outline: none;
-        }
-    }
+form fieldset.status div.line {
+  height: 28px;
+  padding: 5px;
 }
-
-//
-// The form entity info should be abridged and mostly hidden, except for the icon.
-// Then adjust the caption so they don't overlap each other.
-//
-form {
-    .entity-info {
-        height: 0;
-        transform: translate(22px, 8px);
-        color: $var-gray;
-
-        label {
-            display: none;
-        }
-    }
+form fieldset.status div.field {
+  flex-direction: row;
+  align-items: center;
+  font-size: 14px;
+}
+form fieldset.status div.field label {
+  color: var(--gray);
+  font-weight: 600;
+  width: 80px;
+}
+form fieldset.status div.field label span:after {
+  content: ":";
+}
+form fieldset.status select {
+  border: solid 1px transparent;
+  background: transparent;
+  font-weight: 600;
+  appearance: none;
+}
+form fieldset.status select:hover {
+  background: var(--white);
+  border: solid 1px var(--gray);
+  appearance: auto;
+}
+form fieldset.status select:focus-visible {
+  outline: none;
 }
 
 div.field.caption {
-    margin-left: 22px;
-
-    input {
-        font-weight: 600;
-        font-size: 16px;
-    }
-
-    label span {
-        display: none;
-    }
-
-    input {
-        border: none;
-    }
+  margin-left: 22px;
+}
+div.field.caption input {
+  font-weight: 600;
+  font-size: 16px;
+}
+div.field.caption label span {
+  display: none;
+}
+div.field.caption input {
+  border: none;
 }
 
-form {
-    select {
-        option::before {
-            color: red;
-            content: "X";
-        }
-    }
+form select option::before {
+  color: red;
+  content: "X";
 }
-*/
+
 div.error h3 {
   display: none;
 }

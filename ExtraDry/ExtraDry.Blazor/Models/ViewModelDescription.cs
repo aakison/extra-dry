@@ -69,7 +69,18 @@ public class ViewModelDescription {
         foreach(var property in properties) {
             var display = property.GetCustomAttribute<DisplayAttribute>();
             var col = new PropertyDescription(property);
-            if(display?.GetAutoGenerateField() ?? true) {
+            var formProperty = col.HasTextRepresentation;
+            // If no display attribute, then infer from rules
+            if(col.Rules != null && display == null
+                && (col.Rules.CreateAction == RuleAction.Block || col.Rules.CreateAction == RuleAction.Ignore)
+                && (col.Rules.UpdateAction == RuleAction.Block || col.Rules.UpdateAction == RuleAction.Ignore)) {
+                formProperty = false;
+            }
+            // If display attribute, assume display unless explicitly set to false
+            if(display != null) {
+                formProperty = display.GetAutoGenerateField() ?? true;
+            }
+            if(formProperty) {
                 FormProperties.Add(col);
             }
             if(!string.IsNullOrEmpty(display?.ShortName)) {

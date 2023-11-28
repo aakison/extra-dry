@@ -358,5 +358,8 @@
     line-height: inherit;
   }
 
+  ::deep table {
+    border-spacing: 0;
+  }
 
 }

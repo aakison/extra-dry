@@ -24,21 +24,21 @@ public class Company : IResourceIdentifiers {
     [Rules(RuleAction.Ignore)]
     public Guid Uuid { get; set; } = Guid.NewGuid();
 
-    [Display(Name = "Code", GroupName = "Summary")]
+    [Display(Name = "Code", GroupName = "Summary", Order = 2)]
     [Filter(FilterType.Equals)]
     [Rules(CreateAction = RuleAction.Allow, UpdateAction = RuleAction.Block)]
     [Required, StringLength(24)]
     public string Slug { get; set; } = string.Empty;
 
     [NotMapped]
-    [Display(GroupName = "Summary")]
+    [Display(GroupName = "Summary", AutoGenerateField = false)]
     public string Caption => $"Company {Slug}";
 
     /// <summary>
     /// Official incorporated name of company, as listed in Dun &amp; Bradstreet
     /// </summary>
     /// <example>Alphabet, Inc.</example>
-    [Display(Name = "Name", ShortName = "Name", GroupName = "Summary")]
+    [Display(Name = "Name", ShortName = "Name", GroupName = "Summary", Order = 1)]
     [Filter(FilterType.Contains)]
     [Rules(RuleAction.IgnoreDefaults)]
     [Required, StringLength(80)]
@@ -49,7 +49,6 @@ public class Company : IResourceIdentifiers {
     [Filter]
     public CompanyStatus Status { get; set; }
 
-    [Display(AutoGenerateField = false)]
     [StringLength(500)]
     [Rules(RuleAction.IgnoreDefaults)]
     public string Description { get; set; } = "";
