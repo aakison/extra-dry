@@ -1,20 +1,25 @@
 ﻿using ExtraDry.Core;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System;
 using System.Linq.Expressions;
 using Xunit;
 
 namespace ExtraDry.UploadTools.Tests {
     public class UploadToolsTests {
+        // TODO - Test with the client side configuration.
 
         UploadService service;
 
         public UploadToolsTests()
         {
-            var testConfig = new UploadConfiguration() { 
-                ExtensionWhitelist = new List<string>{"txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip"} 
+            
+            var testConfig = new UploadConfiguration() {
+                ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip" },
+                CheckMagicBytesAndMimes = true
             };
-            var fileservice = new FileService();
-            service = new UploadService(fileservice, testConfig);
+
+            service = new UploadService(testConfig);
         }
 
         [Theory]
@@ -153,11 +158,11 @@ namespace ExtraDry.UploadTools.Tests {
         [InlineData("docx", "zip.zip", "zip.zip", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")]
         public void CanConfigureBlacklist(string blackListFileExtension, string filepath, string filename, string mime)
         {
-            var testConfig = new UploadConfiguration() { 
-                ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip" }, 
-                ExtensionBlacklist = new List<BlacklistFileType>() { new() { Extension = blackListFileExtension } } };
-            var fileservice = new FileService();
-            service = new UploadService(fileservice, testConfig);
+            var testConfig = new UploadConfiguration() {
+                ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip" },
+                ExtensionBlacklist = new List<BlacklistFileType>() { new() { Extension = blackListFileExtension } },
+                CheckMagicBytesAndMimes = true };
+            service = new UploadService(testConfig);
 
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
             var underTest = new FileChecker(filename, mime, fileBytes, service);
@@ -173,10 +178,10 @@ namespace ExtraDry.UploadTools.Tests {
         {
             var testConfig = new UploadConfiguration() {
                 ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip" },
-                ExtensionBlacklist = new List<BlacklistFileType>() { new() { Extension = blackListFileExtension, CheckType = CheckType.FilenameOnly } }
+                ExtensionBlacklist = new List<BlacklistFileType>() { new() { Extension = blackListFileExtension, CheckType = CheckType.FilenameOnly } },
+                CheckMagicBytesAndMimes = true
             };
-            var fileservice = new FileService();
-            service = new UploadService(fileservice, testConfig);
+            service = new UploadService(testConfig);
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
 
             var underTest = new FileChecker(filename, mime, fileBytes, service);

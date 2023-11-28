@@ -16,10 +16,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ExtraDry.UploadTools\ExtraDry.UploadTools.csproj" />
+    <ProjectReference Include="..\ExtraDry.Core\ExtraDry.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="FileDatabase.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="SampleFiles\bat.bat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

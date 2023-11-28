@@ -17,6 +17,30 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="GlobalUsings.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="FileDatabase.json" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ApplicationDefinition Include="FileDatabase.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </ApplicationDefinition>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="GlobalUsings.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="FileDatabase.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
 
