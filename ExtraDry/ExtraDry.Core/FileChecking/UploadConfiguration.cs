@@ -31,7 +31,7 @@ public class BlacklistFileType {
     /// <summary>
     /// The file extension to blacklist
     /// </summary>
-    public string Extension { get; set; }
+    public string Extension { get; set; } = string.Empty;
 
     /// <summary>
     /// The method to check the file extension. By default will check both filename and magic bytes.

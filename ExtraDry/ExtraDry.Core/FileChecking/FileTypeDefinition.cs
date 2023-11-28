@@ -10,7 +10,7 @@ public class FileTypeDefinition {
     /// <summary>
     /// A human readable description of the file type eg. "Portable Network Graphics Image"
     /// </summary>
-    public string Description { get; set; }
+    public string Description { get; set; } = string.Empty;
 
     /// <summary>
     /// The file extensions that are associated with this file type. eg ["jpg", "jpeg"]
@@ -37,7 +37,7 @@ public class MagicBytes {
     /// <summary>
     /// The value to search for to define this file type. How this is interpreted is defined by the Type property
     /// </summary>
-    public string Value { get; set; }
+    public string Value { get; set; } = string.Empty;
 
     /// <summary>
     /// Defines how to search for the Value in the provided file
@@ -61,7 +61,7 @@ public class MagicBytes {
             return ValueAsByte;
         }
     }
-    private byte[] valueAsByte;
+    private byte[] valueAsByte = Array.Empty<byte>();
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]

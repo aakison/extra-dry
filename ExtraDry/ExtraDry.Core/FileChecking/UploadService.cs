@@ -6,12 +6,12 @@ public class UploadService {
     /// <summary>
     /// File extensions that will be rejected regardless of the whitelist settings
     /// </summary>
-    private readonly List<string> FileTypeBlacklist = new List<string>();
+    private readonly List<string> FileTypeBlacklist = new();
 
     /// <summary>
     /// Some files we'd like to reject based off their file extensions, but can't reject off magic bytes becuase they share these with other file types eg docx, zip, jar and apk
     /// </summary>
-    private readonly List<string> ExtensionOnlyBlacklist = new List<string>();
+    private readonly List<string> ExtensionOnlyBlacklist = new();
 
     /// <summary>
     /// Whitelisted file extensions. Note that any that also appear in the blacklists will be rejected. The blacklist overrides the whitelist
@@ -19,16 +19,16 @@ public class UploadService {
     private List<string> ExtensionWhitelist { get; set; }
 
     /// <summary>
-    /// XML file types that are checked for <script> tags
+    /// XML file types that are checked for script tags
     /// </summary>
-    private List<string> KnownXmlFileTypes { get; set; } = new List<string>{ "xml", "html", "svg" };
+    private List<string> KnownXmlFileTypes { get; set; } = new(){ "xml", "html", "svg" };
 
     /// <summary>
     /// Regex used to help clean the filenames.
     /// </summary>
     private const string cleaningRegex = @"[^\p{Lu}\p{Ll}\p{Lt}\p{Lm}\p{Lo}\p{Nd}\-_\.]";
 
-    private readonly FileService fileService;
+    private readonly FileService? fileService;
 
     private readonly bool CheckFileContent;
 
@@ -39,6 +39,7 @@ public class UploadService {
         if(CheckFileContent) {
             fileService = new FileService(config.FileDatabaseLocation!);
         }
+        ExtensionWhitelist = new List<string>();
         ConfigureUploadRestrictions(config);
     }
 
@@ -144,6 +145,15 @@ public class UploadService {
         // If the extension isn't in the whitelist, reject it
         if(!ExtensionWhitelist.Contains(fileExtension, StringComparer.OrdinalIgnoreCase)) {
             throw new DryException("Provided filename belongs to a forbidden filetype", $"File was of type \"{fileExtension}\"");
+        }
+
+        // If we're not on the server side, this is the end of the parts we care about
+        if(!CheckFileContent) {
+            return true;
+        }
+
+        if(fileService == null) {
+            throw new NullReferenceException("Upload service was misconfigured. File service was not found");
         }
 
         // Get the mime type and file type info from the file name and the content

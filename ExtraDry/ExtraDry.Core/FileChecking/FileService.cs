@@ -14,7 +14,7 @@ public class FileService {
     }
 
 
-    private List<FileTypeDefinition> LoadFileDefinitionsFromAssembly(string fileDatabasePath)
+    private static List<FileTypeDefinition> LoadFileDefinitionsFromAssembly(string fileDatabasePath)
     {
         string fileContent;
         if(File.Exists(fileDatabasePath)) {

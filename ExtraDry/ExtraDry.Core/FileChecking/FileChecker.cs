@@ -7,7 +7,7 @@ public class FileChecker
     /// </summary>
     public bool CanUpload { get; } = true;
 
-    private DryException ValidationError { get; set; }
+    private DryException? ValidationError { get; set; }
 
     /// <summary>
     /// Creates a new file validator. At the time of creation, the validation is run
@@ -29,7 +29,7 @@ public class FileChecker
     public void ThrowIfError()
     {
         if(!CanUpload) {
-            throw ValidationError;
+            throw ValidationError ?? new DryException("Unknown file processing exception");
         }
     }
 }
