@@ -11,7 +11,7 @@ namespace ExtraDry.UploadTools
         public static void AddUploadService(this IServiceCollection services, IOptions<UploadConfiguration> options)
         {
             var fileService = new FileService();
-            services.AddSingleton(new UploadTools(fileService, options.Value));
+            services.AddSingleton(new UploadService(fileService, options.Value));
         }
     }
 }

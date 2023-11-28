@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace ExtraDry.UploadTools
 {
-    public class UploadTools {
+    public class UploadService {
         /// <summary>
         /// File extensions that will be rejected regardless of the whitelist settings
         /// </summary>
@@ -37,13 +37,13 @@ namespace ExtraDry.UploadTools
 
         private readonly FileService fileService;
 
-        public UploadTools(FileService file)
+        public UploadService(FileService file)
         {
             fileService = file;
             ConfigureUploadRestrictions(null);
         }
 
-        public UploadTools(FileService file, UploadConfiguration config)
+        public UploadService(FileService file, UploadConfiguration config)
         {
             fileService = file;
             ConfigureUploadRestrictions(config);

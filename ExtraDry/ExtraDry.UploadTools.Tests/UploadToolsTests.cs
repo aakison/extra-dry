@@ -6,7 +6,7 @@ using Xunit;
 namespace ExtraDry.UploadTools.Tests {
     public class UploadToolsTests {
 
-        UploadTools tools;
+        UploadService service;
 
         public UploadToolsTests()
         {
@@ -14,7 +14,7 @@ namespace ExtraDry.UploadTools.Tests {
                 ExtensionWhitelist = new List<string>{"txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip"} 
             };
             var fileservice = new FileService();
-            tools = new UploadTools(fileservice, testConfig);
+            service = new UploadService(fileservice, testConfig);
         }
 
         [Theory]
@@ -25,7 +25,7 @@ namespace ExtraDry.UploadTools.Tests {
         [InlineData("myArchive.tar.gz")]
         public void DoesNotAlterGoodFileNames(string inputFilename)
         {
-            var clean = UploadTools.CleanFilename(inputFilename);
+            var clean = UploadService.CleanFilename(inputFilename);
 
             Assert.Equal(inputFilename, clean);
         }
@@ -43,7 +43,7 @@ namespace ExtraDry.UploadTools.Tests {
         [InlineData("-21938721309781231content.txt", "21938721309781231content.txt")]
         public void AltersFileNameToCorrect(string inputFilename, string expected)
         {
-            var clean = UploadTools.CleanFilename(inputFilename);
+            var clean = UploadService.CleanFilename(inputFilename);
 
             Assert.Equal(expected, clean);
         }
@@ -65,7 +65,7 @@ namespace ExtraDry.UploadTools.Tests {
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filename}");
 
-            var underTest = new FileChecker(filename, mime, fileBytes, tools);
+            var underTest = new FileChecker(filename, mime, fileBytes, service);
 
             Assert.True(underTest.CanUpload);
         }
@@ -82,7 +82,7 @@ namespace ExtraDry.UploadTools.Tests {
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
 
-            var underTest = new FileChecker(filename, mime, fileBytes, tools);
+            var underTest = new FileChecker(filename, mime, fileBytes, service);
 
             Assert.False(underTest.CanUpload);
             var exception = Assert.Throws<DryException>(() => underTest.ThrowIfError());
@@ -97,7 +97,7 @@ namespace ExtraDry.UploadTools.Tests {
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
 
-            var underTest = new FileChecker(filename, mime, fileBytes, tools);
+            var underTest = new FileChecker(filename, mime, fileBytes, service);
 
             Assert.False(underTest.CanUpload);
             var exception = Assert.Throws<DryException>(() => underTest.ThrowIfError());
@@ -111,7 +111,7 @@ namespace ExtraDry.UploadTools.Tests {
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
 
-            var underTest = new FileChecker(filename, mime, fileBytes, tools);
+            var underTest = new FileChecker(filename, mime, fileBytes, service);
 
             Assert.False(underTest.CanUpload);
             var exception = Assert.Throws<DryException>(() => underTest.ThrowIfError());
@@ -127,7 +127,7 @@ namespace ExtraDry.UploadTools.Tests {
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
 
-            var underTest = new FileChecker(filename, mime, fileBytes, tools);
+            var underTest = new FileChecker(filename, mime, fileBytes, service);
 
             Assert.False(underTest.CanUpload);
             var exception = Assert.Throws<DryException>(() => underTest.ThrowIfError());
@@ -140,7 +140,7 @@ namespace ExtraDry.UploadTools.Tests {
         {
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
 
-            var underTest = new FileChecker(filename, mime, fileBytes, tools);
+            var underTest = new FileChecker(filename, mime, fileBytes, service);
 
             Assert.False(underTest.CanUpload);
             var exception = Assert.Throws<DryException>(() => underTest.ThrowIfError());
@@ -157,10 +157,10 @@ namespace ExtraDry.UploadTools.Tests {
                 ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip" }, 
                 ExtensionBlacklist = new List<BlacklistFileType>() { new() { Extension = blackListFileExtension } } };
             var fileservice = new FileService();
-            tools = new UploadTools(fileservice, testConfig);
+            service = new UploadService(fileservice, testConfig);
 
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
-            var underTest = new FileChecker(filename, mime, fileBytes, tools);
+            var underTest = new FileChecker(filename, mime, fileBytes, service);
 
             Assert.False(underTest.CanUpload);
             var exception = Assert.Throws<DryException>(() => underTest.ThrowIfError());
@@ -176,10 +176,10 @@ namespace ExtraDry.UploadTools.Tests {
                 ExtensionBlacklist = new List<BlacklistFileType>() { new() { Extension = blackListFileExtension, CheckType = CheckType.FilenameOnly } }
             };
             var fileservice = new FileService();
-            tools = new UploadTools(fileservice, testConfig);
+            service = new UploadService(fileservice, testConfig);
             var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
 
-            var underTest = new FileChecker(filename, mime, fileBytes, tools);
+            var underTest = new FileChecker(filename, mime, fileBytes, service);
 
             Assert.True(underTest.CanUpload);
         }
