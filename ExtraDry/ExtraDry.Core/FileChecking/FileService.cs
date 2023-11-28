@@ -16,11 +16,19 @@ public class FileService {
 
     private List<FileTypeDefinition> LoadFileDefinitionsFromAssembly(string fileDatabasePath)
     {
-        if(!File.Exists(fileDatabasePath)) {
-            throw new ArgumentException($"The file {fileDatabasePath} could not be found");
+        string fileContent;
+        if(File.Exists(fileDatabasePath)) {
+            fileContent = File.ReadAllText(fileDatabasePath);
         }
+        else {
+            var assembly = Assembly.LoadFrom("ExtraDry.Server");
+            var resourceName = "ExtraDry.Server.FileDatabase.json";
 
-        var fileContent = File.ReadAllText(fileDatabasePath);
+            using var stream = assembly.GetManifestResourceStream(resourceName);
+            using var reader = new StreamReader(stream);
+            fileContent = reader.ReadToEnd();
+        }
+         
         return JsonSerializer.Deserialize<List<FileTypeDefinition>>(fileContent) ?? new List<FileTypeDefinition>();
     }
 

@@ -16,7 +16,8 @@ namespace ExtraDry.UploadTools.Tests {
             
             var testConfig = new UploadConfiguration() {
                 ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip" },
-                CheckMagicBytesAndMimes = true
+                CheckMagicBytesAndMimes = true,
+                FileDatabaseLocation = "FileUpload/FileDatabase.json"
             };
 
             service = new UploadService(testConfig);
@@ -68,7 +69,7 @@ namespace ExtraDry.UploadTools.Tests {
         [InlineData("html.html", "text/html")]
         public void ValidToUploadFiles(string filename, string mime)
         {
-            var fileBytes = File.ReadAllBytes($"SampleFiles/{filename}");
+            var fileBytes = File.ReadAllBytes($"FileUpload/SampleFiles/{filename}");
 
             var underTest = new FileChecker(filename, mime, fileBytes, service);
 
@@ -85,7 +86,7 @@ namespace ExtraDry.UploadTools.Tests {
         [InlineData("text", "text.txt", "text/plain", "Provided filename contains an invalid extension")]
         public void InvalidFileName(string filename, string filepath, string mime, string exceptionText = "Provided filename contained invalid characters")
         {
-            var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
+            var fileBytes = File.ReadAllBytes($"FileUpload/SampleFiles/{filepath}");
 
             var underTest = new FileChecker(filename, mime, fileBytes, service);
 
@@ -100,7 +101,7 @@ namespace ExtraDry.UploadTools.Tests {
         [InlineData("file.txt", "png.png", "text/plain")]
         public void MismatchingNameAndBytes(string filename, string filepath, string mime)
         {
-            var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
+            var fileBytes = File.ReadAllBytes($"FileUpload/SampleFiles/{filepath}");
 
             var underTest = new FileChecker(filename, mime, fileBytes, service);
 
@@ -114,7 +115,7 @@ namespace ExtraDry.UploadTools.Tests {
         [InlineData("file.txt", "text.txt", "image/jpeg")]
         public void MismatchingNameAndMime(string filename, string filepath, string mime)
         {
-            var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
+            var fileBytes = File.ReadAllBytes($"FileUpload/SampleFiles/{filepath}");
 
             var underTest = new FileChecker(filename, mime, fileBytes, service);
 
@@ -130,7 +131,7 @@ namespace ExtraDry.UploadTools.Tests {
         [InlineData("file.apk", "word.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")]
         public void BlacklistFileType(string filename, string filepath, string mime)
         {
-            var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
+            var fileBytes = File.ReadAllBytes($"FileUpload/SampleFiles/{filepath}");
 
             var underTest = new FileChecker(filename, mime, fileBytes, service);
 
@@ -143,7 +144,7 @@ namespace ExtraDry.UploadTools.Tests {
         [InlineData("html.html", "htmlScript.html", "textScript/html")] // Has script tags
         public void XmlFileWithScriptFileType(string filename, string filepath, string mime)
         {
-            var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
+            var fileBytes = File.ReadAllBytes($"FileUpload/SampleFiles/{filepath}");
 
             var underTest = new FileChecker(filename, mime, fileBytes, service);
 
@@ -161,10 +162,12 @@ namespace ExtraDry.UploadTools.Tests {
             var testConfig = new UploadConfiguration() {
                 ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip" },
                 ExtensionBlacklist = new List<BlacklistFileType>() { new() { Extension = blackListFileExtension } },
-                CheckMagicBytesAndMimes = true };
+                CheckMagicBytesAndMimes = true,
+                FileDatabaseLocation = "FileUpload/FileDatabase.json"
+            };
             service = new UploadService(testConfig);
 
-            var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
+            var fileBytes = File.ReadAllBytes($"FileUpload/SampleFiles/{filepath}");
             var underTest = new FileChecker(filename, mime, fileBytes, service);
 
             Assert.False(underTest.CanUpload);
@@ -179,10 +182,11 @@ namespace ExtraDry.UploadTools.Tests {
             var testConfig = new UploadConfiguration() {
                 ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip" },
                 ExtensionBlacklist = new List<BlacklistFileType>() { new() { Extension = blackListFileExtension, CheckType = CheckType.FilenameOnly } },
-                CheckMagicBytesAndMimes = true
+                CheckMagicBytesAndMimes = true,
+                FileDatabaseLocation = "FileUpload/FileDatabase.json"
             };
             service = new UploadService(testConfig);
-            var fileBytes = File.ReadAllBytes($"SampleFiles/{filepath}");
+            var fileBytes = File.ReadAllBytes($"FileUpload/SampleFiles/{filepath}");
 
             var underTest = new FileChecker(filename, mime, fileBytes, service);
 
