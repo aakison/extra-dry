@@ -50,8 +50,8 @@ public class AppViewModel {
         new("edit", "fas fa-edit"),
         new("plus", "fas fa-plus"),
         new("filter", "fas fa-filter"),
-        new("full-screen", "fas fa-expand-alt"),
-        new("windowed-screen", "fas fa-compress-alt"),
+        new("fullscreen", "/img/glyphs/expand-light.svg", "Icons", "glyph"),
+        new("windowed", "/img/glyphs/compress-light.svg", "Icons", "glyph"),
         new("chevron-down", "fas fa-chevron-down"),
 
         // Buttcons and affordances:

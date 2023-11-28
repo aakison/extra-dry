@@ -5,12 +5,12 @@
         @ChildContent
         <div class="controls">
             @if(FullScreen) {
-                <DryButton IconOnly="true" Command="@MakeWindowCommand" Target="@this"></DryButton>
+                <Button Theme="ButtonTheme.Unobtrusive" Icon="windowed" Caption="Collapse to Window" ShowCaption="false" @onclick="@MakeWindow"></Button>
             }
             else {
-                <DryButton IconOnly="true" Command="@MakeFullScreenCommand" Target="@this"></DryButton>
+                <Button Theme="ButtonTheme.Unobtrusive" Icon="fullscreen" Caption="Expand to Full Screen" ShowCaption="false" @onclick="@MakeFullScreen"></Button>
             }
-            <Button Icon="close-dialog" Caption="Close" ShowCaption="false" @onclick="CloseDialog"></Button>
+            <Button Theme="ButtonTheme.Unobtrusive" Icon="close-dialog" Caption="Close" ShowCaption="false" @onclick="CloseDialog"></Button>
         </div>
     </div>
 </div>
@@ -33,20 +33,16 @@
         Navigation.NavigateTo(CloseUrl);
     }
 
-    [Command(Icon = "arrow-right")] //"arrow-up-right-and-arrow-down-left-from-center"
     public void MakeFullScreen()
     {
         FullScreen = true;
         StateHasChanged();
     }
-    public CommandInfo MakeFullScreenCommand => new(this, MakeFullScreen);
 
-    [Command(Icon = "arrow-left")] //"arrow-down-left-and-arrow-up-right-to-center"
     public void MakeWindow()
     {
         FullScreen = false;
         StateHasChanged();
     }
-    public CommandInfo MakeWindowCommand => new(this, MakeWindow);
 
 }
