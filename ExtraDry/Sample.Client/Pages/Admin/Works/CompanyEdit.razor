@@ -16,7 +16,7 @@
     }
 
     [Command(CommandContext.Primary, Name = "Save & Close")]
-    public async Task SaveAsync(Company company)
+    public async Task SaveAsync()
     {
         await Service.UpdateAsync(Uuid, company);
         Navigation.NavigateTo("/companies/list");

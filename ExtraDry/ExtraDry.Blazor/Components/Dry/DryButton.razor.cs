@@ -3,9 +3,10 @@
 namespace ExtraDry.Blazor;
 
 /// <summary>
-/// An Extra Dry button executes a command, typically from a ViewModel, with a Model as the argument.
-/// This is typically used from within `DryCommandBar` or `DryForm`, but can be used directly.
-/// If using manually, populate ViewModel and MethodName, and optionally Model.
+/// An Extra Dry button executes a command, typically on a ViewModel, with a Model as the argument.
+/// This is typically used from within <see cref="DryButtonBar" /> or <see cref="DryForm{T}"/>, but 
+/// can be used directly.  If using manually, populate <see cref="ViewModel"/> and 
+/// <see cref="MethodName"/>, and optionally <see cref="Model"/>.
 /// </summary>
 public partial class DryButton : ComponentBase, IExtraDryComponent {
 

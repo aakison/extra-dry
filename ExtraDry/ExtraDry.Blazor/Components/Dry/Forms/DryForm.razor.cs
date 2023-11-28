@@ -31,6 +31,9 @@ public partial class DryForm<T> : ComponentBase, IExtraDryComponent {
     [Parameter]
     public int FixedFieldsets { get; set; }
 
+    /// <summary>
+    /// Additional content that is rendered in the form, just before the entity actions section.
+    /// </summary>
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 

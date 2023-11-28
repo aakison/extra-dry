@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Reflection;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace ExtraDry.Blazor.Models;
 
@@ -65,13 +63,13 @@ public partial class CommandInfo {
     public MethodInfo Method { get; set; }
 
     /// <summary>
-    /// The caption of the command, taken from the `CommandAttribute` if available.
-    /// If not, this is inferred from the signature of the `Method` by convention.
+    /// The caption of the command, taken from the <see cref="CommandAttribute"/> if available.  
+    /// If not provided, this is inferred from the signature of the <see cref="Method"/>.
     /// </summary>
     public string? Caption { get; set; }
 
     /// <summary>
-    /// The optional key of the icon to be displayed on buttons.
+    /// The optional key of the icon to be displayed on buttons.  
     /// </summary>
     public string? Icon { get; set; }
 
