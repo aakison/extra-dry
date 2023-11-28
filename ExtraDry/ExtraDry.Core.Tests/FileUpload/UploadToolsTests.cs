@@ -7,8 +7,6 @@ using Xunit;
 
 namespace ExtraDry.UploadTools.Tests {
     public class UploadToolsTests {
-        // TODO - Test with the client side configuration.
-
         UploadService service;
 
         public UploadToolsTests()
@@ -184,6 +182,60 @@ namespace ExtraDry.UploadTools.Tests {
                 ExtensionBlacklist = new List<BlacklistFileType>() { new() { Extension = blackListFileExtension, CheckType = CheckType.FilenameOnly } },
                 CheckMagicBytesAndMimes = true,
                 FileDatabaseLocation = "FileUpload/FileDatabase.json"
+            };
+            service = new UploadService(testConfig);
+            var fileBytes = File.ReadAllBytes($"FileUpload/SampleFiles/{filepath}");
+
+            var underTest = new FileChecker(filename, mime, fileBytes, service);
+
+            Assert.True(underTest.CanUpload);
+        }
+
+
+        [Theory]
+        [InlineData("exe.exe", "exe.jpg", "image/jpg")]
+        [InlineData("exe.exe", "exe.jpg", "application/x-dosexec")]
+        public void ClientSideConfigDoesntCheckBytes(string filepath, string filename, string mime)
+        {
+            var testConfig = new UploadConfiguration() {
+                ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip" },
+                CheckMagicBytesAndMimes = false,
+            };
+            service = new UploadService(testConfig);
+            var fileBytes = File.ReadAllBytes($"FileUpload/SampleFiles/{filepath}");
+
+            var underTest = new FileChecker(filename, mime, fileBytes, service);
+
+            Assert.True(underTest.CanUpload);
+        }
+
+        [Theory]
+        [InlineData("jpg", "exe.exe", "exe.jpg", "image/jpg")]
+        [InlineData("exe", "exe.exe", "exe.exe", "application/x-dosexec")]
+        public void ClientSideConfigDoesRejectByName(string blackListFileExtension, string filepath, string filename, string mime)
+        {
+            var testConfig = new UploadConfiguration() {
+                ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip" },
+                ExtensionBlacklist = new List<BlacklistFileType>() { new() { Extension = blackListFileExtension, CheckType = CheckType.FilenameOnly } },
+                CheckMagicBytesAndMimes = false,
+            };
+            service = new UploadService(testConfig);
+            var fileBytes = File.ReadAllBytes($"FileUpload/SampleFiles/{filepath}");
+
+            var underTest = new FileChecker(filename, mime, fileBytes, service);
+
+            Assert.False(underTest.CanUpload);
+            var exception = Assert.Throws<DryException>(() => underTest.ThrowIfError());
+        }
+
+        [Theory]
+        [InlineData("exe.exe", "exe.jpg", "image/jpg")]
+        [InlineData("exe.exe", "exe.html", "application/x-dosexec")]
+        public void ClientSideConfigDoesAcceptValidFilenames(string filepath, string filename, string mime)
+        {
+            var testConfig = new UploadConfiguration() {
+                ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip" },
+                CheckMagicBytesAndMimes = false,
             };
             service = new UploadService(testConfig);
             var fileBytes = File.ReadAllBytes($"FileUpload/SampleFiles/{filepath}");

@@ -37,7 +37,7 @@ public class MagicBytes {
     /// <summary>
     /// The value to search for to define this file type. How this is interpreted is defined by the Type property
     /// </summary>
-    public string Value { get; set; } = string.Empty;
+    public string? Value { get; set; }
 
     /// <summary>
     /// Defines how to search for the Value in the provided file
@@ -53,6 +53,9 @@ public class MagicBytes {
     public byte[] ValueAsByte {
         get {
             if(valueAsByte != null) { return valueAsByte; }
+            if (Value == null) {
+                throw new ArgumentException("Provided magic bytes do not have a value defined");
+            }
             if(Type == ByteType.Bytes) {
                 valueAsByte = HexStringHelper.GetBytesFromString(Value);
             } else {
@@ -61,7 +64,7 @@ public class MagicBytes {
             return ValueAsByte;
         }
     }
-    private byte[] valueAsByte = Array.Empty<byte>();
+    private byte[]? valueAsByte;
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
