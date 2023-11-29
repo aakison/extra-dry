@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System.Collections.ObjectModel;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace ExtraDry.Core;
@@ -16,9 +18,10 @@ public class FileValidationService
     private readonly List<string> ExtensionOnlyBlacklist = new();
 
     /// <summary>
-    /// Whitelisted file extensions. Note that any that also appear in the blacklists will be rejected. The blacklist overrides the whitelist
+    /// Whitelisted file extensions. Note that blacklist extension duplicates will override this list.
     /// </summary>
-    private List<string> ExtensionWhitelist { get; set; }
+    public ReadOnlyCollection<string> ExtensionWhitelist => new(extensionWhitelist);
+    private List<string> extensionWhitelist;
 
     /// <summary>
     /// XML file types that are checked for script tags
@@ -30,32 +33,43 @@ public class FileValidationService
     /// </summary>
     private const string cleaningRegex = @"[^\p{Lu}\p{Ll}\p{Lt}\p{Lm}\p{Lo}\p{Nd}\-_\.]";
 
-    private readonly FileService? fileService;
+    private FileTypeDefinitionSource fileService;
 
     private readonly bool CheckFileContent;
-
 
     public FileValidationService(FileValidationOptions config)
     {
         CheckFileContent = config.CheckMagicBytesAndMimes;
         if(CheckFileContent) {
-            fileService = new FileService(config.FileDatabaseLocation!);
+            fileService = new FileTypeDefinitionSource(config.FileDatabaseLocation!);
         }
-        ExtensionWhitelist = new List<string>();
+        else {
+            fileService = new FileTypeDefinitionSource("");
+        }
+        extensionWhitelist = new List<string>(config.ExtensionWhitelist);
         ConfigureUploadRestrictions(config);
+
+        ValidateContent = config.ValidateContent;
+        ValidateExtension = config.ValidateExtension;
     }
+
+    /// <inheritdoc cref="FileValidationOptions.ValidateContent" />
+    public ValidationCondition ValidateContent { get; private set; }
+
+    /// <inheritdoc cref="FileValidationOptions.ValidateExtension" />
+    public ValidationCondition ValidateExtension { get; private set; }
 
     /// <summary>
     /// Call in startup of your application to configure the settings for the upload tools;
     /// Lists that aren't provided will be set to default values.
     /// </summary>
-    internal void ConfigureUploadRestrictions(FileValidationOptions config)
+    private void ConfigureUploadRestrictions(FileValidationOptions config)
     {
-        if(config?.ExtensionWhitelist?.Count > 0) {
-            ExtensionWhitelist = config.ExtensionWhitelist;
+        if(config.ExtensionWhitelist.Count > 0) {
+            extensionWhitelist = config.ExtensionWhitelist;
         }
         else {
-            ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "jpeg" };
+            extensionWhitelist = new List<string> { "txt", "jpg", "png", "jpeg" };
         }
 
         FileTypeBlacklist.Clear();
@@ -82,7 +96,7 @@ public class FileValidationService
     /// Given a filename, this will:
     ///  - Replace spaces with hyphens
     ///  - Remove invalid characters and replace with hyphens. 
-    ///  - Ensure the file name begins with a valid character
+    ///  - Ensure the filename begins with a valid character
     ///  - Trim invalid characters from start and end from filename
     /// </summary>
     public string CleanFilename(string filename)
@@ -118,98 +132,127 @@ public class FileValidationService
     /// - The filename must not contain no special characters
     /// - The filename must not not have an extension that is in our blacklist
     /// - The filename must be included in our whitelist
-    /// - The magic bytes, filename and mimetype must match if present
+    /// - The magic bytes, filename and mime type must match if present
     /// - If the file type is of a known xml type, it must not contain a script tag
     /// If all of these are true, then true is returned. Else, a <see cref="DryException"/> with details is thrown
     /// </summary>
-    internal bool ValidateFile(string filename, string mimetype, byte[] content)
+    internal IEnumerable<ValidationResult> ValidateFile(string filename, string mimetype, byte[]? content = null)
     {
-        // if no file name or no content, early exit.
-        if(string.IsNullOrEmpty(filename) || filename.Length > 255 || content == null || content.Length == 0) {
-            throw new DryException("Provided file has no content");
+        if(string.IsNullOrEmpty(filename)) {
+            yield return new ValidationResult("Provided filename was null or empty");
         }
 
-        // File Extension Checking
-        var fileExtension = Path.GetExtension(filename).TrimStart('.');
-        if(string.IsNullOrEmpty(fileExtension)) {
-            throw new DryException("Provided filename contains an invalid extension", "File extension was not found");
+        if(filename.Length > 255) {
+            yield return new ValidationResult("Provided filename was too long");
         }
+
+        var extension = Path.GetExtension(filename).TrimStart('.');
 
         // If the filename has bad characters in it and isn't already cleaned.
         if(filename != CleanFilename(filename)) {
-            throw new DryException("Provided filename contained invalid characters", $"Filename was {filename}");
+            yield return new ValidationResult($"Provided filename contained invalid characters, '{filename}'");
+        }
+
+        fileService ??= new();
+
+        // Get the mime type and file type info from the filename and the content
+        // We don't really use the one from the filename other than to check it matches the content
+        var filenameInferredTypes = fileService.GetFileTypeFromFilename(filename);
+        var mimeInferredTypes = fileService.GetFileTypeFromMime(mimetype);
+
+        // If there's both a filename and a mime type file definition, and they don't match, reject
+        if(mimeInferredTypes.Any() &&
+            filenameInferredTypes.Any() &&
+            !filenameInferredTypes.SelectMany(f => f.MimeTypes).Intersect(mimeInferredTypes.SelectMany(f => f.MimeTypes)).Any()) { 
+            yield return new ValidationResult($"Provided filename and mime type do not match, mime type was {GetFileDefinitionDescription(mimeInferredTypes)}, and filename was {GetFileDefinitionDescription(filenameInferredTypes)}");
+        }
+
+        var contentErrors = 
+            ValidateFileExtension(extension)
+            .Union(ValidateFileContent(content, filenameInferredTypes));
+        foreach(var error in contentErrors) {
+            yield return error;
+        }
+    }
+
+    private IEnumerable<ValidationResult> ValidateFileExtension(string extension)
+    {
+        var validate = ValidateExtension switch {
+            ValidationCondition.Never => false,
+            ValidationCondition.Always => true,
+            _ => !WebAssemblyRuntime,
+        };
+        if(!validate) {
+            yield break;
+        }
+        if(string.IsNullOrEmpty(extension)) {
+            yield return new ValidationResult($"Provided filename contains an invalid extension, '{extension}'");
         }
 
         // Outright reject executable file extensions - even if they're in the whitelist.
-        if(ExtensionOnlyBlacklist.Contains(fileExtension, StringComparer.OrdinalIgnoreCase)) {
-            throw new DryException("Provided filename belongs to a forbidden filetype", $"File was of type \"{fileExtension}\"");
+        if(ExtensionOnlyBlacklist.Contains(extension, StringComparer.OrdinalIgnoreCase)) {
+            yield return new ValidationResult($"Provided filename belongs to a forbidden filetype, '{extension}'");
         }
 
         // If the extension isn't in the whitelist, reject it
-        if(!ExtensionWhitelist.Contains(fileExtension, StringComparer.OrdinalIgnoreCase)) {
-            throw new DryException("Provided filename belongs to a forbidden filetype", $"File was of type \"{fileExtension}\"");
+        if(!extensionWhitelist.Contains(extension, StringComparer.OrdinalIgnoreCase)) {
+            yield return new ValidationResult($"Provided filename does not belongs to an allowed filetype, '{extension}'");
         }
 
-        // If we're not on the server side, this is the end of the parts we care about
-        if(!CheckFileContent) {
-            return true;
+    }
+
+    private IEnumerable<ValidationResult> ValidateFileContent(byte[]? content, IEnumerable<FileTypeDefinition> filenameInferredTypes)
+    {
+        var validate = ValidateContent switch {
+            ValidationCondition.Never => false,
+            ValidationCondition.Always => true,
+            _ => !WebAssemblyRuntime,
+        };
+        if(!validate) {
+            yield break;
         }
-
-        if(fileService == null) {
-            throw new NullReferenceException("Upload service was misconfigured. File service was not found");
+        if(content == null || content.Length == 0) {
+            yield return new ValidationResult("File content is required", new[] { nameof(content) });
+            yield break; // remainder of tests would throw exceptions...
         }
-
-        // Get the mime type and file type info from the file name and the content
-        // We don't really use the one from the file name other than to check it matches the content
-        var filenameFileDefinition = fileService.GetFileTypeFromFilename(filename);
-        var mimeTypeFileDefinition = fileService.GetFileTypeFromMime(mimetype);
-        var magicByteFileDefinition = fileService.GetFileTypeFromBytes(content);
-
-        // If it's an unknown file type:
-        // If we don't know the bytes, it's not flagged as dangerous.
-        // If we don't know the type from the extension, we don't reject it because it's already through the file name whitelist and we know no better
-        // If we don't know the mime type, then it's ok, mime types are client side and they might not know the mimetype themselves.
+        var contentInferredTypes = fileService.GetFileTypeFromBytes(content);
 
         // If the magic bytes filetype is in the bytes blacklist, reject
-        var blacklistType = magicByteFileDefinition?.SelectMany(e => e.Extensions)?.Intersect(FileTypeBlacklist, StringComparer.OrdinalIgnoreCase)?.FirstOrDefault();
-        if(blacklistType != null) {
-            throw new DryException("Provided file content belongs to a forbidden filetype", $"Detected filetype was {blacklistType}");
+        var blacklistedType = contentInferredTypes
+            ?.SelectMany(e => e.Extensions)
+            ?.Intersect(FileTypeBlacklist, StringComparer.OrdinalIgnoreCase)
+            ?.FirstOrDefault();
+        if(blacklistedType != null) {
+            yield return new ValidationResult($"Provided file content belongs to a forbidden filetype, {blacklistedType}", new[] { nameof(content) });
         }
 
         // If there's both a filename and a magic byte type file definition, and they don't match, reject
-        if(magicByteFileDefinition?.Count > 0 &&  // if there's a magic byte file definition
-            filenameFileDefinition?.Count > 0 &&   // and a filename magic byte definition
-            !filenameFileDefinition.SelectMany(f => f.MimeTypes).Intersect(magicByteFileDefinition.SelectMany(f => f.MimeTypes)).Any()) { // then they have to map
-            throw new DryException("Provided file content and filename do not match", $"Content was {GetFileDefinitionDescription(magicByteFileDefinition)}, Filename was {GetFileDefinitionDescription(filenameFileDefinition)}");
+        if(contentInferredTypes.Any() && 
+            filenameInferredTypes.Any() && 
+            !filenameInferredTypes.SelectMany(f => f.MimeTypes).Intersect(contentInferredTypes.SelectMany(f => f.MimeTypes)).Any()) { 
+            yield return new ValidationResult($"Provided filename and content do not match, {GetFileDefinitionDescription(contentInferredTypes)} vs {GetFileDefinitionDescription(filenameInferredTypes)}", new[] { nameof(content) });
         }
 
-        // If there's both a filename and a mime type file definition, and they don't match, reject
-        if((mimeTypeFileDefinition?.Count > 0) &&        // If there's a mime type 
-            (filenameFileDefinition?.Count > 0) &&       // And a file name type
-            !filenameFileDefinition.SelectMany(f => f.MimeTypes).Intersect(mimeTypeFileDefinition.SelectMany(f => f.MimeTypes)).Any()) { // they have to match.
-            throw new DryException("Provided file name and mimetype do not match", $"Mime type was {GetFileDefinitionDescription(mimeTypeFileDefinition)}, Filename was {GetFileDefinitionDescription(filenameFileDefinition)}");
-        }
-
-        if(magicByteFileDefinition.SelectMany(e => e.Extensions).Union(filenameFileDefinition.SelectMany(e => e.Extensions)).Intersect(KnownXmlFileTypes).Any()) {
+        // If it's an xml file check for script tags
+        if(contentInferredTypes.SelectMany(e => e.Extensions).Union(filenameInferredTypes.SelectMany(e => e.Extensions)).Intersect(KnownXmlFileTypes).Any()) {
             // If it's an xml file check for script tags
-            var filecontent = UTF8Encoding.UTF8.GetString(content.Take(1000).ToArray()); // Take the first 1000 characters, it's a sanity check, not anti-virus
+            // Take the first 1000 characters, it's a sanity check, not anti-virus
+            var filecontent = Encoding.UTF8.GetString(content.Take(1000).ToArray()); 
             if(filecontent.IndexOf("<script", StringComparison.InvariantCultureIgnoreCase) >= 0) {
-                throw new DryException("Provided file is an XML filetype with protected tags", "Script tags found");
+                yield return new ValidationResult("Provided file is an XML filetype with protected tags", new[] { nameof(content) });
             }
         }
-
-        return true;
     }
+
+    private bool WebAssemblyRuntime { get; } = RuntimeInformation.IsOSPlatform(OSPlatform.Create("WEBASSEMBLY"));
 
     /// <summary>
     /// Get the file type description to populate error messages.
     /// </summary>
-    private static string GetFileDefinitionDescription(List<FileTypeDefinition> fileTypes)
+    private static string GetFileDefinitionDescription(IEnumerable<FileTypeDefinition> fileTypes)
     {
-        if(fileTypes?.Count == 0) {
-            return "unknown";
-        }
         var description = fileTypes.FirstOrDefault(f => !string.IsNullOrEmpty(f.Description))?.Description;
         return description ?? fileTypes.First().Extensions.FirstOrDefault() ?? "unknown";
     }
+
 }

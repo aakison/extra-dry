@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Core;
+﻿using System.Collections.ObjectModel;
+
+namespace ExtraDry.Core;
 
 /// <summary>
 /// Provides validation services for files that are uploaded from Blazor clients to MVC servers.
@@ -16,34 +18,47 @@ public class FileValidator
         validator = fileValidationService;
     }
 
-    public void ValidateFile(string filename, string mimeType, byte[] content)
+    /// <summary>
+    /// Validates a file given the filename, mime type, and content.  If the file is invalid, the
+    /// list of invalid reasons is returned.  For multiple file uploads, call this multiple times 
+    /// and retrieve the results fromt the Errors property.
+    /// </summary>
+    public IEnumerable<ValidationResult> ValidateFile(string filename, string mimeType, byte[]? content = null)
     {
-        try {
-            validator.ValidateFile(filename, mimeType, content);
+        try { 
+            var errors = validator.ValidateFile(filename, mimeType, content);
+            ValidationErrors.AddRange(errors);
+            return errors;
         }
-        catch(DryException ex) {
-            ValidationError = ex;
-            CanUpload = false;
+        catch(ValidationException ex) {
+            ValidationErrors.Add(ex.ValidationResult);
+            return new[] { ex.ValidationResult };
         }
     }
 
     /// <summary>
-    /// Gets a value indicating whether the file that was put into this checker can be uploaded
+    /// Gets a value indicating whether the file (or files) that was validated with 
+    /// <see cref="ValidateFile" /> contain any free from validation errors.
     /// </summary>
-    public bool CanUpload { get; private set; } = true;
-
-    private DryException? ValidationError { get; set; }
-
+    public bool IsValid => ValidationErrors.Count == 0;
 
     /// <summary>
-    /// If the file that was checked was unable to be uploaded, this will throw the first validation exception that was encountered while checking
+    /// A list of validation errors that were encountered while validating the file or files.
+    /// </summary>
+    public ReadOnlyCollection<ValidationResult> Errors => ValidationErrors.AsReadOnly();
+
+    /// <summary>
+    /// If the file or files that were validated had any validation errors, then throw a validation exception.
     /// </summary>
     public void ThrowIfError()
     {
-        if(!CanUpload) {
-            throw ValidationError ?? new DryException("Unknown file processing exception");
+        if(ValidationErrors.Count != 0) {
+            throw new ValidationException(string.Join(", ", ValidationErrors.Select(e => e.ErrorMessage)));
         }
     }
 
+    private List<ValidationResult> ValidationErrors { get; } = new();
+
     private readonly FileValidationService validator;
+
 }

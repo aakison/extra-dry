@@ -5,7 +5,6 @@ public class FileValidationTests {
     public FileValidationTests()
     {
         options = new FileValidationOptions() {
-            ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip" },
             CheckMagicBytesAndMimes = true,
             FileDatabaseLocation = "FileUpload/FileDatabase.json"
         };
@@ -65,7 +64,7 @@ public class FileValidationTests {
 
         validator.ValidateFile(filename, mime, fileBytes);
 
-        Assert.True(validator.CanUpload);
+        Assert.True(validator.IsValid);
     }
 
 
@@ -75,17 +74,15 @@ public class FileValidationTests {
     [InlineData("j%pg.jpg", "jpg.jpg", "image/jpeg")]
     [InlineData("!4png.png", "png.png", "image/png")]
     [InlineData("rtf-.rtf", "rtf.rtf", "text/rtf")]
-    [InlineData("text", "text.txt", "text/plain", "Provided filename contains an invalid extension")]
-    public void InvalidFileName(string filename, string filepath, string mime, string exceptionText = "Provided filename contained invalid characters")
+    [InlineData("text", "text.txt", "text/plain")]
+    public void InvalidFileName(string filename, string filepath, string mime)
     {
         var fileBytes = File.ReadAllBytes($"FileUpload/SampleFiles/{filepath}");
 
-        validator.ValidateFile(filename, mime, fileBytes);
+        var results = validator.ValidateFile(filename, mime, fileBytes);
 
-        Assert.False(validator.CanUpload);
-        var exception = Assert.Throws<DryException>(() => validator.ThrowIfError());
-        Assert.Equal(exceptionText, exception.Message);
-
+        Assert.False(validator.IsValid);
+        var exception = Assert.Throws<ValidationException>(() => validator.ThrowIfError());
     }
 
     [Theory]
@@ -97,9 +94,8 @@ public class FileValidationTests {
 
         validator.ValidateFile(filename, mime, fileBytes);
 
-        Assert.False(validator.CanUpload);
-        var exception = Assert.Throws<DryException>(() => validator.ThrowIfError());
-        Assert.Equal("Provided file content and filename do not match", exception.Message);
+        Assert.False(validator.IsValid);
+        Assert.Throws<ValidationException>(() => validator.ThrowIfError());
     }
 
     [Theory]
@@ -111,9 +107,9 @@ public class FileValidationTests {
 
         validator.ValidateFile(filename, mime, fileBytes);
 
-        Assert.False(validator.CanUpload);
-        var exception = Assert.Throws<DryException>(() => validator.ThrowIfError());
-        Assert.Equal("Provided file name and mimetype do not match", exception.Message);
+        Assert.False(validator.IsValid);
+        var exception = Assert.Throws<ValidationException>(() => validator.ThrowIfError());
+        Assert.Contains("filename and mime type do not match", exception.Message);
     }
 
     [Theory]
@@ -127,9 +123,8 @@ public class FileValidationTests {
 
         validator.ValidateFile(filename, mime, fileBytes);
 
-        Assert.False(validator.CanUpload);
-        var exception = Assert.Throws<DryException>(() => validator.ThrowIfError());
-        Assert.Equal("Provided filename belongs to a forbidden filetype", exception.Message);
+        Assert.False(validator.IsValid);
+        var exception = Assert.Throws<ValidationException>(() => validator.ThrowIfError());
     }
 
     [Theory]
@@ -140,9 +135,8 @@ public class FileValidationTests {
 
         validator.ValidateFile(filename, mime, fileBytes);
 
-        Assert.False(validator.CanUpload);
-        var exception = Assert.Throws<DryException>(() => validator.ThrowIfError());
-        Assert.Equal("Provided file is an XML filetype with protected tags", exception.Message);
+        Assert.False(validator.IsValid);
+        Assert.Throws<ValidationException>(() => validator.ThrowIfError());
     }
 
     [Theory]
@@ -163,9 +157,8 @@ public class FileValidationTests {
         var fileBytes = File.ReadAllBytes($"FileUpload/SampleFiles/{filepath}");
         validator.ValidateFile(filename, mime, fileBytes);
 
-        Assert.False(validator.CanUpload);
-        var exception = Assert.Throws<DryException>(() => validator.ThrowIfError());
-        Assert.EndsWith("belongs to a forbidden filetype", exception.Message);
+        Assert.False(validator.IsValid);
+        Assert.Throws<ValidationException>(() => validator.ThrowIfError());
     }
 
     [Theory]
@@ -173,7 +166,6 @@ public class FileValidationTests {
     public void NameOnlyBlacklistDoesntCheckBytes(string blackListFileExtension, string filepath, string filename, string mime)
     {
         options = new FileValidationOptions() {
-            ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip" },
             ExtensionBlacklist = new List<BlacklistFileType>() { new() { Extension = blackListFileExtension, CheckType = CheckType.FilenameOnly } },
             CheckMagicBytesAndMimes = true,
             FileDatabaseLocation = "FileUpload/FileDatabase.json"
@@ -184,7 +176,7 @@ public class FileValidationTests {
 
         validator.ValidateFile(filename, mime, fileBytes);
 
-        Assert.True(validator.CanUpload);
+        Assert.True(validator.IsValid);
     }
 
 
@@ -194,7 +186,6 @@ public class FileValidationTests {
     public void ClientSideConfigDoesntCheckBytes(string filepath, string filename, string mime)
     {
         options = new FileValidationOptions() {
-            ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip" },
             CheckMagicBytesAndMimes = false,
         };
         service = new FileValidationService(options);
@@ -203,7 +194,7 @@ public class FileValidationTests {
 
         validator.ValidateFile(filename, mime, fileBytes);
 
-        Assert.True(validator.CanUpload);
+        Assert.True(validator.IsValid);
     }
 
     [Theory]
@@ -212,9 +203,10 @@ public class FileValidationTests {
     public void ClientSideConfigDoesRejectByName(string blackListFileExtension, string filepath, string filename, string mime)
     {
         options = new FileValidationOptions() {
-            ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip" },
             ExtensionBlacklist = new List<BlacklistFileType>() { new() { Extension = blackListFileExtension, CheckType = CheckType.FilenameOnly } },
             CheckMagicBytesAndMimes = false,
+            ValidateContent = ValidationCondition.Never,
+            ValidateExtension = ValidationCondition.Always,
         };
         service = new FileValidationService(options);
         validator = new FileValidator(service);
@@ -222,8 +214,8 @@ public class FileValidationTests {
 
         validator.ValidateFile(filename, mime, fileBytes);
 
-        Assert.False(validator.CanUpload);
-        var exception = Assert.Throws<DryException>(() => validator.ThrowIfError());
+        Assert.False(validator.IsValid);
+        var exception = Assert.Throws<ValidationException>(() => validator.ThrowIfError());
     }
 
     [Theory]
@@ -232,8 +224,8 @@ public class FileValidationTests {
     public void ClientSideConfigDoesAcceptValidFilenames(string filepath, string filename, string mime)
     {
         options = new FileValidationOptions() {
-            ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip" },
             CheckMagicBytesAndMimes = false,
+            ValidateContent = ValidationCondition.Never,
         };
         service = new FileValidationService(options);
         validator = new FileValidator(service);
@@ -241,7 +233,7 @@ public class FileValidationTests {
 
         validator.ValidateFile(filename, mime, fileBytes);
 
-        Assert.True(validator.CanUpload);
+        Assert.True(validator.IsValid);
     }
 
     private FileValidationService service;

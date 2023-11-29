@@ -11,8 +11,10 @@
 </section>
 <section>
     <h3>Basic Usage</h3>
-    <InputFile OnChange="@LoadFiles" multiple />
-
+    <InputFile OnChange="@LoadFile" />
+    <div>Filename: @Filename</div>
+    <div>Mime Type: @FileMimeType</div>
+    <div>Validation: @FileValidation</div>
     <CodeBlock Lang="blazor">
         &lt;Theme Icons="@@Icons" ErrorComponent="@@typeof(MyCustomErrorComponent)">
             &lt;main>
@@ -63,12 +65,27 @@
 </section>
 
 @code {
-    private void LoadFiles(InputFileChangeEventArgs e)
+
+    private void LoadFile(InputFileChangeEventArgs e)
     {
-        throw new NotImplementedException();
+        Filename = e.File.Name;
+        FileMimeType = e.File.ContentType;
+        var errors = validator.ValidateFile(e.File.Name, e.File.ContentType);
+        if(validator.IsValid) {
+            FileValidation = "Valid";
+        } 
+        else {
+            FileValidation = string.Join(", ", errors.Select(e => e.ErrorMessage));
+        }
     }
 
+    private string Filename { get; set; } = "";
+
+    private string FileMimeType { get; set; } = "";
+
+    private string FileValidation { get; set; } = "";
+
     [Inject]
-    private FileValidator SafeFile { get; set; } = null!;
+    private FileValidator validator { get; set; } = null!;
 
 }
