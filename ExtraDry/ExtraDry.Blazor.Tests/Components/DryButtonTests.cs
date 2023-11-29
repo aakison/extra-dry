@@ -1,11 +1,4 @@
-﻿using Bunit;
-using ExtraDry.Blazor.Models;
-using Microsoft.AspNetCore.Components.Web;
-using System;
-using System.Threading.Tasks;
-using Xunit;
-
-namespace ExtraDry.Blazor.Tests.Components;
+﻿namespace ExtraDry.Blazor.Tests.Components;
 
 public class DryButtonTests : IDisposable {
 

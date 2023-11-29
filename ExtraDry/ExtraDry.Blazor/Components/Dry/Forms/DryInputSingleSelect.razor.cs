@@ -1,25 +1,36 @@
 ﻿using System.Reflection.Metadata;
 
-namespace ExtraDry.Blazor.Components.Internal;
+namespace ExtraDry.Blazor.Forms;
 
-public partial class DryInputSingleSelect<T> : ComponentBase, IExtraDryComponent {
+/// <summary>
+/// A DRY wrapper around a single select dropdown list.  Prefer the use of <see cref="DryInput{T}"/> 
+/// instead of this component as it is more flexible and supports more data types.
+/// </summary>
+public partial class DryInputSingleSelect<T> : ComponentBase, IDryInput<T>, IExtraDryComponent {
 
     /// <inheritdoc />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
-    [Parameter]
+    /// <inheritdoc />
+    [Parameter, EditorRequired]
     public T? Model { get; set; }
 
-    [Parameter]
+    /// <inheritdoc />
+    [Parameter, EditorRequired]
     public PropertyDescription? Property { get; set; }
 
-    [Parameter]
+    /// <summary>
+    /// Set of values to select from, any object can be used and the ToString values are displayed.
+    /// </summary>
+    [Parameter, EditorRequired]
     public List<object>? Values { get; set; } 
 
+    /// <inheritdoc />
     [Parameter]
     public EventCallback<ChangeEventArgs>? OnChange { get; set; }
 
+    /// <inheritdoc cref="Blazor.EditMode" />
     [CascadingParameter]
     public EditMode EditMode { get; set; } = EditMode.Create;
 

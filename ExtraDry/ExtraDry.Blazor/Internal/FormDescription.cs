@@ -59,7 +59,7 @@ internal class FormDescription {
     private void ExtendProperties(Collection<PropertyDescription> properties, string fieldsetName, FormGroupType formGroup, object? model, object? parentModel = null)
     {
         foreach(var property in properties) {
-            var groupName = property.Display?.GroupName ?? "default";
+            var groupName = property.Display?.GroupName ?? "Details";
             if(groupName != string.Empty) {
                 fieldsetName = groupName;
             }

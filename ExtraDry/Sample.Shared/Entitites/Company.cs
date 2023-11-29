@@ -3,7 +3,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sample.Shared;
 
-[Format(Icon = "building")]
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum OwnershipStructure
+{
+    Private,
+    Public,
+    Hybrid
+}
+
+[Format(Icon = "company")]
 [FactTable, DimensionTable]
 [DeleteRule(DeleteAction.Recycle, nameof(Status), CompanyStatus.Deleted, CompanyStatus.Active)]
 public class Company : IResourceIdentifiers {
@@ -34,17 +42,17 @@ public class Company : IResourceIdentifiers {
     [Filter(FilterType.Contains)]
     [Rules(RuleAction.IgnoreDefaults)]
     [Required, StringLength(80)]
-    public string Title { get; set; } = string.Empty;
+    public string Title { get; set; } = "";
 
     [Display(Name = "Status", ShortName = "Status", GroupName = "Status")]
     [Rules(RuleAction.Allow)]
     [Filter]
     public CompanyStatus Status { get; set; }
 
-    [Display]
-    [StringLength(1000)]
+    [Display(AutoGenerateField = false)]
+    [StringLength(500)]
     [Rules(RuleAction.IgnoreDefaults)]
-    public string Description { get; set; } = string.Empty;
+    public string Description { get; set; } = "";
 
     [Display(Name = "Primary Sector", ShortName = "Sector")]
     [Rules(RuleAction.Link)]
@@ -55,12 +63,29 @@ public class Company : IResourceIdentifiers {
     [Rules(RuleAction.Link)]
     public List<Sector> AdditionalSectors { get; set; } = new();
 
+    [Rules(RuleAction.Allow)]
+    [Filter]
+    public OwnershipStructure Ownership { get; set; }
+
+    [Display]
+    [Phone, StringLength(24)]
+    [Rules(RuleAction.IgnoreDefaults)]
+    public string ContactPhone { get; set; } = "";
+
+    [Display]
+    [EmailAddress, StringLength(100)]
+    [Rules(RuleAction.IgnoreDefaults)]
+    public string ContactEmail { get; set; } = "";
+
+    [Display]
     [Precision(18, 2)]
     public decimal AnnualRevenue { get; set; }
 
+    [Display]
     [Precision(18, 2)]
     public decimal SalesMargin { get; set; }
 
+    [Display]
     public DateTime IncorporationDate { get; set; }
 
     [Display]
