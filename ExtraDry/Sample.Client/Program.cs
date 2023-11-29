@@ -51,6 +51,8 @@ public class Program
             }
         );
 
+        services.AddFileValidation();
+
         services.AddScoped<ISubjectViewModel<Employee>, EmployeeViewModel>();
 
         services.AddScoped<AppViewModel>();

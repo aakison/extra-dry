@@ -2,7 +2,9 @@
 using System.Text.RegularExpressions;
 
 namespace ExtraDry.Core;
-public class UploadService {
+
+public class FileValidationService
+{
     /// <summary>
     /// File extensions that will be rejected regardless of the whitelist settings
     /// </summary>
@@ -21,7 +23,7 @@ public class UploadService {
     /// <summary>
     /// XML file types that are checked for script tags
     /// </summary>
-    private List<string> KnownXmlFileTypes { get; set; } = new(){ "xml", "html", "svg" };
+    private List<string> KnownXmlFileTypes { get; set; } = new() { "xml", "html", "svg" };
 
     /// <summary>
     /// Regex used to help clean the filenames.
@@ -33,7 +35,7 @@ public class UploadService {
     private readonly bool CheckFileContent;
 
 
-    public UploadService(UploadConfiguration config)
+    public FileValidationService(FileValidationOptions config)
     {
         CheckFileContent = config.CheckMagicBytesAndMimes;
         if(CheckFileContent) {
@@ -47,11 +49,12 @@ public class UploadService {
     /// Call in startup of your application to configure the settings for the upload tools;
     /// Lists that aren't provided will be set to default values.
     /// </summary>
-    internal void ConfigureUploadRestrictions(UploadConfiguration config)
+    internal void ConfigureUploadRestrictions(FileValidationOptions config)
     {
         if(config?.ExtensionWhitelist?.Count > 0) {
             ExtensionWhitelist = config.ExtensionWhitelist;
-        } else {
+        }
+        else {
             ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "jpeg" };
         }
 
@@ -82,7 +85,7 @@ public class UploadService {
     ///  - Ensure the file name begins with a valid character
     ///  - Trim invalid characters from start and end from filename
     /// </summary>
-    public static string CleanFilename(string filename)
+    public string CleanFilename(string filename)
     {
         // Sort out the filename part
         var fileOnly = Path.GetFileNameWithoutExtension(filename);

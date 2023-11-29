@@ -220,6 +220,11 @@ public class AppViewModel {
                                 Title = "Theme",
                                 NavLink = "/components/special/theme",
                             },
+                            new() {
+                                Icon = "theme",
+                                Title = "File Validator",
+                                NavLink = "/components/special/file-validator",
+                            }
                         },
                     },
                 },

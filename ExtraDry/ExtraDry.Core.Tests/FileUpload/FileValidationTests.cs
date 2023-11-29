@@ -1,18 +1,18 @@
 ﻿namespace ExtraDry.UploadTools.Tests;
 
-public class UploadToolsTests {
-    UploadService service;
+public class FileValidationTests {
 
-    public UploadToolsTests()
+    public FileValidationTests()
     {
-        
-        var testConfig = new UploadConfiguration() {
+        options = new FileValidationOptions() {
             ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip" },
             CheckMagicBytesAndMimes = true,
             FileDatabaseLocation = "FileUpload/FileDatabase.json"
         };
 
-        service = new UploadService(testConfig);
+        service = new FileValidationService(options);
+
+        validator = new FileValidator(service);
     }
 
     [Theory]
@@ -23,7 +23,7 @@ public class UploadToolsTests {
     [InlineData("myArchive.tar.gz")]
     public void DoesNotAlterGoodFileNames(string inputFilename)
     {
-        var clean = UploadService.CleanFilename(inputFilename);
+        var clean = service.CleanFilename(inputFilename);
 
         Assert.Equal(inputFilename, clean);
     }
@@ -41,7 +41,7 @@ public class UploadToolsTests {
     [InlineData("-21938721309781231content.txt", "21938721309781231content.txt")]
     public void AltersFileNameToCorrect(string inputFilename, string expected)
     {
-        var clean = UploadService.CleanFilename(inputFilename);
+        var clean = service.CleanFilename(inputFilename);
 
         Assert.Equal(expected, clean);
     }
@@ -63,9 +63,9 @@ public class UploadToolsTests {
     {
         var fileBytes = File.ReadAllBytes($"FileUpload/SampleFiles/{filename}");
 
-        var underTest = new FileChecker(filename, mime, fileBytes, service);
+        validator.ValidateFile(filename, mime, fileBytes);
 
-        Assert.True(underTest.CanUpload);
+        Assert.True(validator.CanUpload);
     }
 
 
@@ -80,10 +80,10 @@ public class UploadToolsTests {
     {
         var fileBytes = File.ReadAllBytes($"FileUpload/SampleFiles/{filepath}");
 
-        var underTest = new FileChecker(filename, mime, fileBytes, service);
+        validator.ValidateFile(filename, mime, fileBytes);
 
-        Assert.False(underTest.CanUpload);
-        var exception = Assert.Throws<DryException>(() => underTest.ThrowIfError());
+        Assert.False(validator.CanUpload);
+        var exception = Assert.Throws<DryException>(() => validator.ThrowIfError());
         Assert.Equal(exceptionText, exception.Message);
 
     }
@@ -95,10 +95,10 @@ public class UploadToolsTests {
     {
         var fileBytes = File.ReadAllBytes($"FileUpload/SampleFiles/{filepath}");
 
-        var underTest = new FileChecker(filename, mime, fileBytes, service);
+        validator.ValidateFile(filename, mime, fileBytes);
 
-        Assert.False(underTest.CanUpload);
-        var exception = Assert.Throws<DryException>(() => underTest.ThrowIfError());
+        Assert.False(validator.CanUpload);
+        var exception = Assert.Throws<DryException>(() => validator.ThrowIfError());
         Assert.Equal("Provided file content and filename do not match", exception.Message);
     }
 
@@ -109,10 +109,10 @@ public class UploadToolsTests {
     {
         var fileBytes = File.ReadAllBytes($"FileUpload/SampleFiles/{filepath}");
 
-        var underTest = new FileChecker(filename, mime, fileBytes, service);
+        validator.ValidateFile(filename, mime, fileBytes);
 
-        Assert.False(underTest.CanUpload);
-        var exception = Assert.Throws<DryException>(() => underTest.ThrowIfError());
+        Assert.False(validator.CanUpload);
+        var exception = Assert.Throws<DryException>(() => validator.ThrowIfError());
         Assert.Equal("Provided file name and mimetype do not match", exception.Message);
     }
 
@@ -125,10 +125,10 @@ public class UploadToolsTests {
     {
         var fileBytes = File.ReadAllBytes($"FileUpload/SampleFiles/{filepath}");
 
-        var underTest = new FileChecker(filename, mime, fileBytes, service);
+        validator.ValidateFile(filename, mime, fileBytes);
 
-        Assert.False(underTest.CanUpload);
-        var exception = Assert.Throws<DryException>(() => underTest.ThrowIfError());
+        Assert.False(validator.CanUpload);
+        var exception = Assert.Throws<DryException>(() => validator.ThrowIfError());
         Assert.Equal("Provided filename belongs to a forbidden filetype", exception.Message);
     }
 
@@ -138,10 +138,10 @@ public class UploadToolsTests {
     {
         var fileBytes = File.ReadAllBytes($"FileUpload/SampleFiles/{filepath}");
 
-        var underTest = new FileChecker(filename, mime, fileBytes, service);
+        validator.ValidateFile(filename, mime, fileBytes);
 
-        Assert.False(underTest.CanUpload);
-        var exception = Assert.Throws<DryException>(() => underTest.ThrowIfError());
+        Assert.False(validator.CanUpload);
+        var exception = Assert.Throws<DryException>(() => validator.ThrowIfError());
         Assert.Equal("Provided file is an XML filetype with protected tags", exception.Message);
     }
 
@@ -151,19 +151,20 @@ public class UploadToolsTests {
     [InlineData("docx", "zip.zip", "zip.zip", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")]
     public void CanConfigureBlacklist(string blackListFileExtension, string filepath, string filename, string mime)
     {
-        var testConfig = new UploadConfiguration() {
+        options = new FileValidationOptions() {
             ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip" },
             ExtensionBlacklist = new List<BlacklistFileType>() { new() { Extension = blackListFileExtension } },
             CheckMagicBytesAndMimes = true,
             FileDatabaseLocation = "FileUpload/FileDatabase.json"
         };
-        service = new UploadService(testConfig);
+        service = new FileValidationService(options);
+        validator = new FileValidator(service);
 
         var fileBytes = File.ReadAllBytes($"FileUpload/SampleFiles/{filepath}");
-        var underTest = new FileChecker(filename, mime, fileBytes, service);
+        validator.ValidateFile(filename, mime, fileBytes);
 
-        Assert.False(underTest.CanUpload);
-        var exception = Assert.Throws<DryException>(() => underTest.ThrowIfError());
+        Assert.False(validator.CanUpload);
+        var exception = Assert.Throws<DryException>(() => validator.ThrowIfError());
         Assert.EndsWith("belongs to a forbidden filetype", exception.Message);
     }
 
@@ -171,18 +172,19 @@ public class UploadToolsTests {
     [InlineData("docx", "word.docx", "zip.zip", "application/zip")]
     public void NameOnlyBlacklistDoesntCheckBytes(string blackListFileExtension, string filepath, string filename, string mime)
     {
-        var testConfig = new UploadConfiguration() {
+        options = new FileValidationOptions() {
             ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip" },
             ExtensionBlacklist = new List<BlacklistFileType>() { new() { Extension = blackListFileExtension, CheckType = CheckType.FilenameOnly } },
             CheckMagicBytesAndMimes = true,
             FileDatabaseLocation = "FileUpload/FileDatabase.json"
         };
-        service = new UploadService(testConfig);
+        service = new FileValidationService(options);
+        validator = new FileValidator(service);
         var fileBytes = File.ReadAllBytes($"FileUpload/SampleFiles/{filepath}");
 
-        var underTest = new FileChecker(filename, mime, fileBytes, service);
+        validator.ValidateFile(filename, mime, fileBytes);
 
-        Assert.True(underTest.CanUpload);
+        Assert.True(validator.CanUpload);
     }
 
 
@@ -191,16 +193,17 @@ public class UploadToolsTests {
     [InlineData("exe.exe", "exe.jpg", "application/x-dosexec")]
     public void ClientSideConfigDoesntCheckBytes(string filepath, string filename, string mime)
     {
-        var testConfig = new UploadConfiguration() {
+        options = new FileValidationOptions() {
             ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip" },
             CheckMagicBytesAndMimes = false,
         };
-        service = new UploadService(testConfig);
+        service = new FileValidationService(options);
+        validator = new FileValidator(service);
         var fileBytes = File.ReadAllBytes($"FileUpload/SampleFiles/{filepath}");
 
-        var underTest = new FileChecker(filename, mime, fileBytes, service);
+        validator.ValidateFile(filename, mime, fileBytes);
 
-        Assert.True(underTest.CanUpload);
+        Assert.True(validator.CanUpload);
     }
 
     [Theory]
@@ -208,18 +211,19 @@ public class UploadToolsTests {
     [InlineData("exe", "exe.exe", "exe.exe", "application/x-dosexec")]
     public void ClientSideConfigDoesRejectByName(string blackListFileExtension, string filepath, string filename, string mime)
     {
-        var testConfig = new UploadConfiguration() {
+        options = new FileValidationOptions() {
             ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip" },
             ExtensionBlacklist = new List<BlacklistFileType>() { new() { Extension = blackListFileExtension, CheckType = CheckType.FilenameOnly } },
             CheckMagicBytesAndMimes = false,
         };
-        service = new UploadService(testConfig);
+        service = new FileValidationService(options);
+        validator = new FileValidator(service);
         var fileBytes = File.ReadAllBytes($"FileUpload/SampleFiles/{filepath}");
 
-        var underTest = new FileChecker(filename, mime, fileBytes, service);
+        validator.ValidateFile(filename, mime, fileBytes);
 
-        Assert.False(underTest.CanUpload);
-        var exception = Assert.Throws<DryException>(() => underTest.ThrowIfError());
+        Assert.False(validator.CanUpload);
+        var exception = Assert.Throws<DryException>(() => validator.ThrowIfError());
     }
 
     [Theory]
@@ -227,15 +231,23 @@ public class UploadToolsTests {
     [InlineData("exe.exe", "exe.html", "application/x-dosexec")]
     public void ClientSideConfigDoesAcceptValidFilenames(string filepath, string filename, string mime)
     {
-        var testConfig = new UploadConfiguration() {
+        options = new FileValidationOptions() {
             ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip" },
             CheckMagicBytesAndMimes = false,
         };
-        service = new UploadService(testConfig);
+        service = new FileValidationService(options);
+        validator = new FileValidator(service);
         var fileBytes = File.ReadAllBytes($"FileUpload/SampleFiles/{filepath}");
 
-        var underTest = new FileChecker(filename, mime, fileBytes, service);
+        validator.ValidateFile(filename, mime, fileBytes);
 
-        Assert.True(underTest.CanUpload);
+        Assert.True(validator.CanUpload);
     }
+
+    private FileValidationService service;
+
+    private FileValidationOptions options;
+
+    private FileValidator validator;
+
 }
