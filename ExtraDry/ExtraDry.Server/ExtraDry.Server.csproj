@@ -17,10 +17,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="GlobalUsings.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <None Remove="FileDatabase.json" />
 	</ItemGroup>
 
@@ -28,10 +24,6 @@
 	  <ApplicationDefinition Include="FileDatabase.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </ApplicationDefinition>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Content Include="GlobalUsings.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
