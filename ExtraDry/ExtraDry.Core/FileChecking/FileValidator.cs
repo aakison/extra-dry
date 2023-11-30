@@ -25,15 +25,9 @@ public class FileValidator
     /// </summary>
     public IEnumerable<ValidationResult> ValidateFile(string filename, string mimeType, byte[]? content = null)
     {
-        try { 
-            var errors = validator.ValidateFile(filename, mimeType, content);
-            ValidationErrors.AddRange(errors);
-            return errors;
-        }
-        catch(ValidationException ex) {
-            ValidationErrors.Add(ex.ValidationResult);
-            return new[] { ex.ValidationResult };
-        }
+        var errors = validator.ValidateFile(filename, mimeType, content);
+        ValidationErrors.AddRange(errors);
+        return errors;
     }
 
     /// <summary>
@@ -52,7 +46,7 @@ public class FileValidator
     /// </summary>
     public void ThrowIfError()
     {
-        if(ValidationErrors.Count != 0) {
+        if(!IsValid) {
             throw new ValidationException(string.Join(", ", ValidationErrors.Select(e => e.ErrorMessage)));
         }
     }

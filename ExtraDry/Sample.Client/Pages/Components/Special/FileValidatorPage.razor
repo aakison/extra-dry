@@ -73,9 +73,9 @@
         var errors = validator.ValidateFile(e.File.Name, e.File.ContentType);
         if(validator.IsValid) {
             FileValidation = "Valid";
-        } 
+        }
         else {
-            FileValidation = string.Join(", ", errors.Select(e => e.ErrorMessage));
+            FileValidation = $"Found {errors.Count()} problems: " + string.Join(", ", errors.Select(e => e.ErrorMessage));
         }
     }
 

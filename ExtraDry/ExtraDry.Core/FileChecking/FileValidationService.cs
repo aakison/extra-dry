@@ -167,10 +167,9 @@ public class FileValidationService
             yield return new ValidationResult($"Provided filename and mime type do not match, mime type was {GetFileDefinitionDescription(mimeInferredTypes)}, and filename was {GetFileDefinitionDescription(filenameInferredTypes)}");
         }
 
-        var contentErrors = 
-            ValidateFileExtension(extension)
-            .Union(ValidateFileContent(content, filenameInferredTypes));
-        foreach(var error in contentErrors) {
+        var extensionErrors = ValidateFileExtension(extension).ToList();
+        var contentErrors = ValidateFileContent(content, filenameInferredTypes).ToList();
+        foreach(var error in contentErrors.Union(extensionErrors)) {
             yield return error;
         }
     }
@@ -208,6 +207,7 @@ public class FileValidationService
             ValidationCondition.Always => true,
             _ => !WebAssemblyRuntime,
         };
+
         if(!validate) {
             yield break;
         }
@@ -244,7 +244,15 @@ public class FileValidationService
         }
     }
 
-    private bool WebAssemblyRuntime { get; } = RuntimeInformation.IsOSPlatform(OSPlatform.Create("WEBASSEMBLY"));
+    /// <summary>
+    /// Determine if the system is running in a WebAssembly runtime.  This doesn't seem to be a 
+    /// but advice online didn't work.  String comparison seems to work, but the underlying ENUM 
+    /// doesn't contain the actual value.  Presumably the enum is compiled in differently and 
+    /// contains the additional type?
+    /// </summary>
+    private static bool WebAssemblyRuntime => 
+        RuntimeInformation.OSArchitecture.ToString().Equals("WASM", StringComparison.OrdinalIgnoreCase);
+        // RuntimeInformation.IsOSPlatform(OSPlatform.Create("WEBASSEMBLY")); -> doesn't seem to work
 
     /// <summary>
     /// Get the file type description to populate error messages.
