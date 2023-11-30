@@ -91,6 +91,15 @@ public partial class Suspense<TModel> : ComponentBase, IExtraDryComponent {
         await DoLoadData();
     }
 
+    private IndicatorContext GetContext()
+    {
+        return new IndicatorContext { 
+            Size = Size, 
+            Reload = Refresh, 
+            ShowIcon = ShowIcon 
+        };
+    }
+
     private async Task DoLoadData()
     {
         State = LoadingState.Loading;

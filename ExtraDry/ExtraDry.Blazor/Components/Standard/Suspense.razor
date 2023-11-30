@@ -6,11 +6,11 @@
         case LoadingState.Loading:
             @if (Fallback != null)
             {
-                @Fallback(new IndicatorContext{Size = @Size, Reload=@Refresh, ShowIcon=@ShowIcon})
+                @Fallback(GetContext())
             }
             else if (ThemeInfo?.SuspenseFallback != null)
             {
-                @ThemeInfo?.SuspenseFallback(new IndicatorContext{Size = @Size, Reload=@Refresh, ShowIcon=@ShowIcon})
+                @ThemeInfo?.SuspenseFallback(GetContext())
             }
             else
             {
@@ -26,11 +26,11 @@
         case LoadingState.Error:
             @if (Error != null)
             {
-                @Error(new IndicatorContext{Size = @Size, Reload=@Refresh, ShowIcon=@ShowIcon})
+                @Error(GetContext())
             }
             else if (ThemeInfo?.SuspenseError != null)
             {
-                @ThemeInfo?.SuspenseError(new IndicatorContext{Size = @Size, Reload=@Refresh, ShowIcon=@ShowIcon})
+                @ThemeInfo?.SuspenseError(GetContext())
             }
             else
             {
@@ -46,11 +46,11 @@
         case LoadingState.Timeout:
             @if(Timeout != null)
             {
-                @Timeout(new IndicatorContext{Size = @Size, Reload=@Refresh, ShowIcon=@ShowIcon})
+                @Timeout(GetContext())
             }
             else if (ThemeInfo?.SuspenseTimeout != null)
             {
-                @ThemeInfo?.SuspenseTimeout(new IndicatorContext{Size = @Size, Reload=@Refresh, ShowIcon=@ShowIcon})
+                @ThemeInfo?.SuspenseTimeout(GetContext())
             }
             else
             {
