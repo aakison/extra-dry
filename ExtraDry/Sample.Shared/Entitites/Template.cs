@@ -44,7 +44,7 @@ public class Template : IResourceIdentifiers {
     public VersionInfo Version { get; set; } = new VersionInfo();
 
     [NotMapped]
-    public string Slug { get => Title.ToLower(); set { } }
+    public string Slug { get => Title.ToLower(CultureInfo.CurrentCulture); set { } }
 
     /// <inheritdoc cref="ExpandoSchema"/>
     public ExpandoSchema Schema { get; set; } = new();

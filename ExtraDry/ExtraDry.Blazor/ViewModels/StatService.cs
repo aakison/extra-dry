@@ -1,5 +1,6 @@
 ﻿using ExtraDry.Blazor.Extensions;
 using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace ExtraDry.Blazor;
 
@@ -19,28 +20,6 @@ public class StatService<T> {
     /// manually added to the IServiceCollection.  Instead, use the AddCrudService`T 
     /// extension method.
     /// </summary>
-    /// <param name="client">A HttpClient object, typically from DI</param>
-    /// <param name="collectionEndpointTemplate">
-    /// The template for the API.  This is that path portion of the URI as the app can only call
-    /// the server that it came from.  The endpoint may include placeholders for any number of 
-    /// replacements, e.g. "{0}".  During construction of the final endpoint, these placeholders
-    /// are used with `args` provided to each method to resolve the final endpoint.
-    /// This allows for version numbers, tenant names, etc. to be added.
-    /// </param>
-    /// <param name="iLogger">An optional Logger</param>
-    [Obsolete("Use Options")]
-    public StatService(HttpClient client, string collectionEndpointTemplate, ILogger<StatService<T>>? iLogger = null)
-    {
-        http = client;
-        Options = new StatServiceOptions { StatEndpoint = collectionEndpointTemplate };
-        logger = iLogger;
-    }
-
-    /// <summary>
-    /// Create a stat service with the specified configuration. This service should not be 
-    /// manually added to the IServiceCollection.  Instead, use the AddCrudService`T 
-    /// extension method.
-    /// </summary>
     public StatService(HttpClient client, StatServiceOptions options, ILogger<StatService<T>> logger)
     {
         http = client;
@@ -54,52 +33,34 @@ public class StatService<T> {
     /// Retrieves the Statistics of the Entity
     /// </summary>
     /// <param name="filter">The entity specific text filter for the collection.</param>
-    /// <param name="args">The values to replace the placeholders in the collectionEndpointTemplate.</param>
-    [Obsolete("Inject arguments into HtttpClient derived type")]
-    public async Task<Statistics<T>?> RetrieveAsync(string? filter, params object[] args)
-    {
-        var endpoint = ApiEndpoint(nameof(RetrieveAsync), filter, args);
-        logger?.LogInformation("Retrieving '{entity}' from '{endpoint}'", nameof(T), endpoint);
-        var response = await http.GetAsync(endpoint);
-        await response.AssertSuccess();
-        var item = await response.Content.ReadFromJsonAsync<Statistics<T>>();
-        logger?.LogDebug("Retrieved '{entity}' from '{endpoint}' with content: {content}", nameof(T), endpoint, item);
-        return item;
-    }
-
-    /// <summary>
-    /// Retrieves the Statistics of the Entity
-    /// </summary>
-    /// <param name="filter">The entity specific text filter for the collection.</param>
     /// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
     public async Task<Statistics<T>?> RetrieveAsync(string? filter, CancellationToken cancellationToken = default)
     {
-        var endpoint = ApiEndpoint(nameof(RetrieveAsync), filter);
-        logger?.LogInformation("Retrieving '{entity}' from '{endpoint}'", nameof(T), endpoint);
+        var endpoint = ApiEndpoint(filter);
+        logger.LogEndpointCall(typeof(T), endpoint);
         var response = await http.GetAsync(endpoint, cancellationToken);
         await response.AssertSuccess(logger);
-        var item = await response.Content.ReadFromJsonAsync<Statistics<T>>(Options.JsonSerializerOptions, cancellationToken);
-        logger?.LogDebug("Retrieved '{entity}' from '{endpoint}' with content: {content}", nameof(T), endpoint, item);
+        var body = await response.Content.ReadAsStringAsync(cancellationToken);
+        logger.LogEndpointResult(typeof(T), endpoint, body);
+        var item = JsonSerializer.Deserialize<Statistics<T>>(body, Options.JsonSerializerOptions);
         return item;
     }
 
-    private string ApiEndpoint(string method, string? filter, params object[] args)
+    private string ApiEndpoint(string? filter)
     {
         try {
-            var baseUrl = string.Format(Options.StatEndpoint, args);
-            var url = $"{baseUrl}".TrimEnd('/');
+            var url = Options.StatEndpoint;
             if(filter != null) {
-                url += string.Format("?Filter={0}", filter);
+                url += $"?Filter={filter}";
             }
             return url;
         }
         catch(FormatException ex) {
-            var argsFormatted = string.Join(',', args?.Select(e => e?.ToString()) ?? Array.Empty<string>());
-            logger?.LogWarning("Formatting problem while constructing endpoint for `StatService.{method}`.  Typically the endpoint provided has additional placeholders that have not been provided. The endpoint template ({ApiTemplate}), could not be satisfied with arguments ({argsFormatted}).  Inner Exception was:  {ex.Message}", method, Options.StatEndpoint, argsFormatted, ex.Message);
+            logger.LogFormattingError(typeof(T), Options.StatEndpoint, "-none-", ex);
             throw new DryException("Error occurred connecting to server", "This is a mis-configuration and not a user error, please see the console output for more information.");
         }
     }
     private readonly HttpClient http;
 
-    private readonly ILogger<StatService<T>>? logger;
+    private readonly ILogger<StatService<T>> logger;
 }

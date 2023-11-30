@@ -1,5 +1,7 @@
 ﻿namespace ExtraDry.Blazor;
 
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "DRY1500:Extra DRY Blazor components should have an interface.",
+    Justification = "Decide fate of component")]
 public partial class DryForm<T> : ComponentBase {
         
     [Parameter]
@@ -23,14 +25,14 @@ public partial class DryForm<T> : ComponentBase {
     public RenderFragment? ChildContent { get; set; }
 
     [Inject]
-    private ILogger<DryForm<T>>? Logger { get; set; }
+    private ILogger<DryForm<T>> Logger { get; set; } = null!;
 
     private string? error;
 
     protected override void OnParametersSet()
     {
         if(ViewModel == null) {
-            Logger?.LogError("DryForm requires a ViewModel");
+            Logger.LogConsoleError("DryForm requires a ViewModel");
             return;
         }
         Description ??= new ViewModelDescription(typeof(T), ViewModel);

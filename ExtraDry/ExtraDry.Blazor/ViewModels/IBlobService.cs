@@ -1,4 +1,5 @@
 ﻿using ExtraDry.Blazor.Extensions;
+using Microsoft.Extensions.Logging;
 using System.Net.Http.Json;
 
 namespace ExtraDry.Blazor;
@@ -19,10 +20,11 @@ public interface IBlobService {
 /// </summary>
 public class DryBlobService : IBlobService {
 
-    public DryBlobService(HttpClient client, string entityEndpointTemplate)
+    public DryBlobService(HttpClient client, string entityEndpointTemplate, ILogger<DryBlobService> iLogger)
     {
         http = client;
         ApiTemplate = entityEndpointTemplate;
+        logger = iLogger;
     }
 
     public string ApiTemplate { get; set; }
@@ -37,7 +39,7 @@ public class DryBlobService : IBlobService {
         var endpoint = ApiEndpoint("POST", Scope.ToString().ToLowerInvariant(), filename ?? string.Empty);
         try {
             var response = await http.PostAsync(endpoint, contentToUpload);
-            await response.AssertSuccess();
+            await response.AssertSuccess(logger);
             var item = await response.Content.ReadFromJsonAsync<BlobInfo>() 
                 ?? throw new DryException("Blob created endpoint did not return a Blob.", "Unable to upload image. 0x0F2D6C00");
             return item;
@@ -56,7 +58,7 @@ public class DryBlobService : IBlobService {
             var formatArgs = new List<object>(args);
             formatArgs.Insert(0, key);
             args = formatArgs.ToArray();
-            return string.Format(ApiTemplate, args).TrimEnd('/');
+            return string.Format(CultureInfo.InvariantCulture, ApiTemplate, args).TrimEnd('/');
         }
         catch(FormatException ex) {
             var argsFormatted = string.Join(',', args?.Select(e => e?.ToString()) ?? Array.Empty<string>());
@@ -67,5 +69,7 @@ public class DryBlobService : IBlobService {
     }
 
     private readonly HttpClient http;
+
+    private readonly ILogger<DryBlobService> logger;
 
 }

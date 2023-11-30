@@ -19,7 +19,6 @@
 		<PackageIcon>extradry-logo.png</PackageIcon>
 		<PackageIconUrl />
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-		<EnableNETAnalyzers>True</EnableNETAnalyzers>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -68,7 +67,6 @@
 	</ItemGroup>
 	
 	<Import Project="..\CommonAnalyzers.targets" />
-
 	<Import Project="..\VulnerabilityFixes.targets" />
 
 	<ItemGroup>

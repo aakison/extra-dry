@@ -498,16 +498,16 @@ public class RuleEngineUpdateCollectionAsyncTests {
     public class ChildEntityResolver : IEntityResolver<Child> {
         public Task<Child?> ResolveAsync(Child exemplar)
         {
-            database.TryGetValue(exemplar.Uuid, out var child);
+            Database.TryGetValue(exemplar.Uuid, out var child);
             return Task.FromResult(child);
         }
 
         public void AddChild(Child item)
         {
-            database.Add(item.Uuid, item);
+            Database.Add(item.Uuid, item);
         }
 
-        public Dictionary<Guid, Child> database = new();
+        private Dictionary<Guid, Child> Database { get; set; } = new();
 
     }
 

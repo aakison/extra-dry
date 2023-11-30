@@ -152,7 +152,7 @@ public static class QueryableExtensions {
         var token = ContinuationToken.FromString(continuationToken);
         var actualSort = (string.IsNullOrWhiteSpace(token?.Sort) ? sort : null) ?? "";
         var sortProperty = actualSort.TrimStart('+', '-');
-        var ascending = !actualSort.StartsWith("-");
+        var ascending = !actualSort.StartsWith("-", StringComparison.Ordinal);
         var query = source;
         var modelDescription = new ModelDescription(typeof(T));
         if(modelDescription.StabilizerProperty == default) {

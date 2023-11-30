@@ -13,10 +13,12 @@ public class CompanyService {
         return await database.Companies.Include(e => e.PrimarySector).QueryWith(query).ToPagedCollectionAsync();
     }
 
-    public async Task Create(Company item)
+    public async Task<Company> Create(Company item)
     {
-        database.Companies.Add(item);
+        var company = await rules.CreateAsync(item);
+        database.Companies.Add(company);
         await database.SaveChangesAsync();
+        return company;
     }
 
     public async Task<Company> RetrieveAsync(Guid companyId)

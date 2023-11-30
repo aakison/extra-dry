@@ -5,9 +5,9 @@ namespace ExtraDry.Blazor;
 
 /// <summary>
 /// Creates a error boundary very similar to ErrorBoundary, but with the ErrorContent managed
-/// centrally so that it can stay consistent.  Provide the type for the RazorComponent either
-/// here or in an enclosing Theme tag.  If not component is provided a default component
-/// is displayed that can be styled.
+/// centrally so that it can stay consistent.  Provide the type for the RazorComponent either here 
+/// or in an enclosing Theme tag.  If not component is provided a default component is displayed 
+/// that can be styled.
 /// </summary>
 public partial class DryErrorBoundary : ComponentBase, IExtraDryComponent {
 
@@ -19,7 +19,7 @@ public partial class DryErrorBoundary : ComponentBase, IExtraDryComponent {
     /// The cascading theme information from a Theme tag.  Used to access global exception pages.
     /// </summary>
     [CascadingParameter]
-    public ThemeInfo? ThemeInfo { get; set; }
+    protected ThemeInfo? ThemeInfo { get; set; }
 
     /// <summary>
     /// The normal content to display.  Exceptions in this child will be caught and exceptions
@@ -40,6 +40,7 @@ public partial class DryErrorBoundary : ComponentBase, IExtraDryComponent {
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
+    /// <inheritdoc cref="ErrorBoundaryBase.Recover"/>
     public void Recover()
     {
         ErrorBoundary.Recover();

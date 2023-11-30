@@ -3,10 +3,8 @@
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
 		<OutputType>Exe</OutputType>
-		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 		<nullable>enable</nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -66,7 +64,7 @@
 	  <None Update="SampleData\Localities.csv">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
-	  <None Update="SampleData\Subdivisions.csv">
+	  <None Update="SampleData\Subdivisions2.csv">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
 	</ItemGroup>

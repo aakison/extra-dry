@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Diagnostics;
+using System.Globalization;
 using System.Net;
 
 namespace ExtraDry.Server;
@@ -16,7 +17,7 @@ public static class ProblemDetailsResponse {
     internal static void RewriteResponse(HttpContext httpContext, HttpStatusCode httpStatusCode, string? title = null, string? details = null)
     {
         string statusCode = httpStatusCode.ToString();
-        RewriteResponse(httpContext, statusCode.ToLower(), httpContext.Response.StatusCode, title ?? statusCode, details);
+        RewriteResponse(httpContext, statusCode.ToLower(CultureInfo.InvariantCulture), httpContext.Response.StatusCode, title ?? statusCode, details);
     }
 
     private static void RewriteResponse(HttpContext httpContext, string problem, int code, string title, string? details = null)

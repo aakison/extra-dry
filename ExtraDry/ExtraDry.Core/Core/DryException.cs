@@ -8,7 +8,7 @@ namespace ExtraDry.Core;
 /// from the server through the API to the client using RFC7807.
 /// </summary>
 [Serializable]
-public sealed class DryException : Exception
+public sealed class DryException : ApplicationException
 {
 
     /// <summary>
@@ -29,6 +29,9 @@ public sealed class DryException : Exception
     /// <summary>
     /// Create an exception with information that will populate the inner ProblemDetails.
     /// </summary>
+    /// <param name="status">The HTTP status code for this occurrence of the problem.</param>
+    /// <param name="message">A short, human-readable summary of the problem type.</param>
+    /// <param name="detail">A human-readable explanation specific to this occurrence of the problem.</param>
     public DryException(HttpStatusCode status, string message, string detail) : base(message)
     {
         ProblemDetails.Status = (int)status;

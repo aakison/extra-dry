@@ -40,11 +40,12 @@ public class ContentsController {
     /// </remarks>
     /// <param name="value"></param>
     /// <returns></returns>
-    [HttpPost("api/contents"), Consumes("application/json")]
+    [HttpPost("api/contents"), Produces("application/json"), Consumes("application/json")]
     [Authorize(SamplePolicies.SamplePolicy)]
-    public async Task Create(Content value)
+    public async Task<ResourceReference<Content>> CreateAsync(Content value)
     {
-        await contents.CreateAsync(value);
+        var content = await contents.CreateAsync(value);
+        return new ResourceReference<Content>(content);
     }
 
     /// <summary>

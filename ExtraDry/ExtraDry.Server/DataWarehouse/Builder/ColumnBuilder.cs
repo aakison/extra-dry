@@ -107,9 +107,9 @@ public abstract class ColumnBuilder {
         Converter = converter;
     }
 
-    protected void SetDefault(object _default)
+    protected void SetDefault(object @default)
     {
-        this._default = _default;
+        _default = @default;
     }
 
     protected Func<object, object> Converter { get; private set; }

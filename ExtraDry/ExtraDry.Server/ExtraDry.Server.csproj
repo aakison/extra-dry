@@ -14,8 +14,6 @@
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>blazor spa microsoft dry don't repeat yourself low-code swashbuckle openapi</PackageTags>
 		<NeutralLanguage />
-		<EnableNETAnalyzers>true</EnableNETAnalyzers>
-		<EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -39,17 +39,18 @@ public class BlobController : ControllerBase {
     [HttpPost("api/blobs/{scope}/{filename}")]
     [Consumes("multipart/form-data"), Produces("application/json")]
     [Authorize(SamplePolicies.SamplePolicy)]
-    public async Task<BlobInfo> CreateBlobAsync(BlobScope scope, string filename)
+    public async Task<ResourceReference<BlobInfo>> CreateBlobAsync(BlobScope scope, string filename)
     {
         var memoryStream = new MemoryStream();
         await Request.Body.CopyToAsync(memoryStream);
         var bytes = memoryStream.ToArray();
         var item = new BlobInfo {
-            Filename = filename,
+            Title = filename,
             Scope = scope,
             Size = bytes.Length,
         };
-        return await blobs.UploadAsync(item, bytes);
+        var blob = await blobs.UploadAsync(item, bytes);
+        return new ResourceReference<BlobInfo>(blob);
     }
 
     /// <summary>
@@ -89,7 +90,7 @@ public class BlobController : ControllerBase {
     [Authorize(SamplePolicies.SamplePolicy)]
     public async Task Update(Guid uniqueId, [FromBody] BlobInfo value)
     {
-        if(uniqueId != value?.UniqueId) {
+        if(uniqueId != value?.Uuid) {
             throw new ArgumentException("ID in URI must match body.", nameof(uniqueId));
         }
         await blobs.UpdateAsync(value);

@@ -120,5 +120,5 @@ public partial class CodeBlock : ComponentBase, IExtraDryComponent {
     [Inject]
     private ExtraDryJavascriptModule Module { get; set; } = null!;
 
-    private static int instanceCount = 0;
+    private static int instanceCount;
 }

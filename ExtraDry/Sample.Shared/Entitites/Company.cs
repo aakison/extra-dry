@@ -1,6 +1,4 @@
-﻿using ExtraDry.Core;
-using Microsoft.EntityFrameworkCore;
-using Sample.Shared.Converters;
+﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sample.Shared;
@@ -8,7 +6,7 @@ namespace Sample.Shared;
 [Format(Icon = "building")]
 [FactTable, DimensionTable]
 [DeleteRule(DeleteAction.Recycle, nameof(Status), CompanyStatus.Deleted, CompanyStatus.Active)]
-public class Company {
+public class Company : IResourceIdentifiers {
 
     [Key]
     [JsonIgnore]
@@ -18,9 +16,15 @@ public class Company {
     [Rules(RuleAction.Ignore)]
     public Guid Uuid { get; set; } = Guid.NewGuid();
 
+    [Display(Name = "Code", GroupName = "Summary")]
+    [Filter(FilterType.Equals)]
+    [Rules(CreateAction = RuleAction.Allow, UpdateAction = RuleAction.Block)]
+    [Required, StringLength(24)]
+    public string Slug { get; set; } = string.Empty;
+
     [NotMapped]
     [Display(GroupName = "Summary")]
-    public string Caption => $"Company {Code}";
+    public string Caption => $"Company {Slug}";
 
     /// <summary>
     /// Official incorporated name of company, as listed in Dun &amp; Bradstreet
@@ -31,12 +35,6 @@ public class Company {
     [Rules(RuleAction.IgnoreDefaults)]
     [Required, StringLength(80)]
     public string Title { get; set; } = string.Empty;
-
-    [Display(Name = "Code", GroupName = "Summary")]
-    [Filter(FilterType.Equals)]
-    [Rules(CreateAction = RuleAction.Allow, UpdateAction = RuleAction.Block)]
-    [Required, StringLength(24)]
-    public string Code { get; set; } = string.Empty;
 
     [Display(Name = "Status", ShortName = "Status", GroupName = "Status")]
     [Rules(RuleAction.Allow)]

@@ -3,9 +3,9 @@
 namespace ExtraDry.Blazor;
 
 /// <summary>
-/// Displays an error using a consistent display style.  
-/// Use with DryErrorBoundary to get consistent styling of exceptions across site.
-/// To override, use the `Theme` component to register your own custom implementation.
+/// Displays an error using a consistent display style.  Use with DryErrorBoundary to get 
+/// consistent styling of exceptions across site.  To override, use the `Theme` component to 
+/// register your own custom implementation.
 /// </summary>
 public partial class DefaultErrorComponent : ComponentBase, IExtraDryComponent {
 
@@ -20,8 +20,8 @@ public partial class DefaultErrorComponent : ComponentBase, IExtraDryComponent {
     public Exception? Exception { get; set; }
 
     /// <summary>
-    /// If ProblemDetails are available (per RFC7231) they are provided here.
-    /// This will be the case with any RFC7231 APIs that return problem details on any 4xx response.
+    /// If ProblemDetails are available (per RFC7231) they are provided here.  This will be the 
+    /// case with any RFC7231 APIs that return problem details on any 4xx response.
     /// </summary>
     [Parameter]
     public ProblemDetails? ProblemDetails { get; set; }

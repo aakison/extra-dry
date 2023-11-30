@@ -1,9 +1,11 @@
-﻿namespace ExtraDry.Server.DataWarehouse;
+﻿using System.Globalization;
 
-[DimensionTable]
-public class Date {
+namespace ExtraDry.Server.DataWarehouse;
 
-    public Date(int sequence, DayType dayType)
+[DimensionTable(Name = "Date")]
+public class DateDimension {
+
+    public DateDimension(int sequence, DayType dayType)
     {
         Id = sequence;
         DayType = dayType;
@@ -55,10 +57,10 @@ public class Date {
     public int DayOfYear => Value.DayOfYear;
 
     [StringLength(9)]
-    public string MonthName => Value.ToString("MMMM");
+    public string MonthName => Value.ToString("MMMM", CultureInfo.CurrentCulture);
 
     [StringLength(3)]
-    public string MonthShortName => Value.ToString("MMM");
+    public string MonthShortName => Value.ToString("MMM", CultureInfo.CurrentCulture);
 
     /// <summary>
     /// The name of the day of the week.

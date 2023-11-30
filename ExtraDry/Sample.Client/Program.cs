@@ -11,6 +11,10 @@ public class Program
         var builder = WebAssemblyHostBuilder.CreateDefault(args);
         builder.RootComponents.Add<App>("#app");
 
+        builder.Logging
+            .SetMinimumLevel(LogLevel.Debug)
+            .AddFilter("Microsoft.AspNetCore.Components.RenderTree.*", LogLevel.None);
+
         var services = builder.Services;
 
         services.AddExtraDry();
@@ -42,7 +46,7 @@ public class Program
         services.AddCrudService<Region>("/api/regions");
 
         services.AddScoped<IBlobService>(e => 
-            new DryBlobService(e.GetRequiredService<HttpClient>(), "/api/blobs/{0}/{1}") {
+            new DryBlobService(e.GetRequiredService<HttpClient>(), "/api/blobs/{0}/{1}", e.GetRequiredService<ILogger<DryBlobService>>()) {
                 Scope = BlobScope.Public,
             }
         );

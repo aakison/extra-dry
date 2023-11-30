@@ -98,7 +98,7 @@ namespace Sample.Server {
                 var accessor = services.GetRequiredService<IHttpContextAccessor>();
                 _ = new VersionInfoAspect(context, accessor);
 
-                var logger = services.GetService<ILogger<DataWarehouseAspect>>();
+                var logger = services.GetRequiredService<ILogger<DataWarehouseAspect>>();
                 var queue = services.GetRequiredService<ServiceBusQueue<EntityMessage>>();
                 _ = new DataWarehouseAspect(context, queue, logger);
 

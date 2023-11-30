@@ -78,7 +78,7 @@ public class Sector : IResourceIdentifiers {
     public VersionInfo Version { get; set; } = new VersionInfo();
 
     [NotMapped]
-    public string Slug { get => Title.ToLower().Replace(' ', '-'); set { } }
+    public string Slug { get => Title.ToLower(CultureInfo.InvariantCulture).Replace(' ', '-'); set { } }
 
     /// <summary>
     /// Display title for the sector.

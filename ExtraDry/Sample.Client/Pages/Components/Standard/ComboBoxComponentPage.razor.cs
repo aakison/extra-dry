@@ -6,13 +6,11 @@ using Sample.Shared;
 
 namespace Sample.Client.Pages.Components.Standard;
 
-#pragma warning disable IDE0051 // false positives, used in .razor page.
-
 public partial class ComboBoxComponentPage : ComponentBase, IListItemViewModel<Sector> {
 
-    public string Title(Sector sector) => sector.Title;
+    public string Title(Sector item) => item.Title;
 
-    public string Description(Sector sector) => sector.Description;
+    public string Description(Sector item) => item.Description;
 
     private string Icon { get; set; } = "sectors";
 
@@ -24,7 +22,7 @@ public partial class ComboBoxComponentPage : ComponentBase, IListItemViewModel<S
 
     private bool AdvancedSort { get; set; } = true;
 
-    private bool BasicGroup { get; set; } = false;
+    private bool BasicGroup { get; set; }
 
     private Sector? BasicValue { get; set; }
 

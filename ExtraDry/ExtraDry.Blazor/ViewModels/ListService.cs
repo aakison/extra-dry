@@ -154,14 +154,14 @@ public class ListService<TItem> : IListService<TItem> {
     private static void AddIf(Dictionary<string, List<string>> keys, string key, int? value)
     {
         if(value.HasValue && value.Value != 0) {
-            keys.Add(key, new List<string> { value.Value.ToString() });
+            keys.Add(key, new List<string> { $"{value.Value}" });
         }
     }
 
-    public async ValueTask<ItemsProviderResult<TItem>> GetItemsAsync(CancellationToken token)
+    public async ValueTask<ItemsProviderResult<TItem>> GetItemsAsync(CancellationToken cancellationToken)
     {
         var query = new Query { Source = ListSource.List };
-        return await GetItemsAsync(query, token);
+        return await GetItemsAsync(query, cancellationToken);
     }
 
     public async ValueTask<ItemsProviderResult<TItem>> GetItemsAsync(string filter, CancellationToken token)
@@ -186,19 +186,19 @@ public class ListService<TItem> : IListService<TItem> {
     public async ValueTask<(object, ICollection<TItem>, int)> GetItemsInternalAsync(Query query, CancellationToken cancellationToken)
     {
         var source = (Options.ListEndpoint, Options.HierarchyEndpoint) switch {
-            ("", "") => throw new Exception("No endpoints defined"),
+            ("", "") => throw new DryException(HttpStatusCode.NotFound, "No endpoints defined", "When configuring a ListService, either or both of ListEndpoint and/or HierarchyEndpoint must be provided."),
             ("", _) => ListSource.Hierarchy,
             (_, "") => ListSource.List,
             (_, _) => query.Source,
         };
         var endpoint = source == ListSource.Hierarchy ? HierarchyEndpoint(query) : ListEndpoint(query);
         if(source == ListSource.Hierarchy) {
-            logger.LogInformation("ListService.GetItemsAsync from {endpoint}", endpoint);
+            logger.LogEndpointCall(typeof(TItem), endpoint);
             var response = Options.HierarchyMethod == HttpMethod.Get
                 ? await http.GetAsync(endpoint, cancellationToken)
                 : await http.PostAsync(endpoint, new StringContent(HierarchyRequestBody(query)), cancellationToken);
             var body = await response.Content.ReadAsStringAsync(cancellationToken);
-            logger.LogInformation("ListService.GetItemsAsync retrieved {body}", body);
+            logger.LogEndpointResult(typeof(TItem), endpoint, body);
             var packedResult = JsonSerializer.Deserialize(body, HierarchyType, JsonSerializerOptions)
                 ?? throw new DryException($"Call to endpoint returned nothing or couldn't be converted to a result.");
             var items = HierarchyUnpacker!(packedResult);
@@ -207,9 +207,9 @@ public class ListService<TItem> : IListService<TItem> {
             return (packedResult, items, total);
         }
         else {
-            logger.LogInformation("ListService.GetItemsAsync from {endpoint}", endpoint);
+            logger.LogEndpointCall(typeof(TItem), endpoint);
             var body = await http.GetStringAsync(endpoint, cancellationToken);
-            logger.LogInformation("ListService.GetItemsAsync retrieved {body}", body);
+            logger.LogEndpointResult(typeof(TItem), endpoint, body);
             var packedResult = JsonSerializer.Deserialize(body, ListType, JsonSerializerOptions)
                 ?? throw new DryException($"Call to endpoint returned nothing or couldn't be converted to a result.");
             var items = ListUnpacker!(packedResult);

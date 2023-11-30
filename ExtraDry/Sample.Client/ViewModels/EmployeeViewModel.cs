@@ -5,16 +5,16 @@ namespace Sample.Client;
 
 public class EmployeeViewModel : ISubjectViewModel<Employee> {
 
-    public string Caption(Employee employee) => $"{employee.FirstName} {employee.LastName} ({employee.Email})";
+    public string Caption(Employee item) => $"{item.FirstName} {item.LastName} ({item.Email})";
 
-    public string Code(Employee _) => string.Empty;
+    public string Code(Employee item) => string.Empty;
 
-    public string Title(Employee employee) => $"{employee.FirstName} {employee.LastName}";
+    public string Title(Employee item) => $"{item.FirstName} {item.LastName}";
 
-    public string Subtitle(Employee employee) => employee.Email ?? string.Empty;
+    public string Subtitle(Employee item) => item.Email ?? string.Empty;
 
-    public string Icon(Employee employee) => Gravatar.ToGravatarUrl(employee.Email, 40);
+    public string Icon(Employee item) => Gravatar.ToGravatarUrl(item.Email, 40);
 
-    public string Description(Employee _) => string.Empty;
+    public string Description(Employee item) => string.Empty;
 
 }

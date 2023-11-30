@@ -33,7 +33,7 @@ public class FilteredListQueryable<T> : StatisticsQueryable<T> {
             visitor.Visit(defaultFilter);
             var hasAnyPropertyInCommon = filter.Rules
                 .Any(r => visitor.PropertyNames
-                    .Any(p => p.Equals(r.PropertyName, StringComparison.InvariantCultureIgnoreCase)));
+                    .Any(p => p.Equals(r.PropertyName, StringComparison.OrdinalIgnoreCase)));
             if(hasAnyPropertyInCommon) {
                 return queryable.Filter(query);
             }

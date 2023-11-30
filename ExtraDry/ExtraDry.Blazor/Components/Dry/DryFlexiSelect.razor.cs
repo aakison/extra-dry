@@ -1,6 +1,6 @@
 ﻿namespace ExtraDry.Blazor;
 
-public partial class DryFlexiSelect : DryPropertyComponentBase {
+public partial class DryFlexiSelect : DryPropertyComponentBase, IExtraDryComponent {
 
     /// <inheritdoc cref="IExtraDryComponent.CssClass" />
     [Parameter]
@@ -52,7 +52,7 @@ public partial class DryFlexiSelect : DryPropertyComponentBase {
 
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object> UnmatchedAttributes { get; set; } = null!;
+    public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
     protected override void OnParametersSet()
     {

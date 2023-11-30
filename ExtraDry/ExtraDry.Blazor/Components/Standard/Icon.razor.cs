@@ -28,6 +28,7 @@ public partial class Icon : ComponentBase, IExtraDryComponent {
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
+    /// <inheritdoc cref="Blazor.ThemeInfo" />
     [CascadingParameter]
     protected ThemeInfo? ThemeInfo { get; set; }
 
@@ -58,7 +59,7 @@ public partial class Icon : ComponentBase, IExtraDryComponent {
                         return placeholderIcon;
                     }
                     else {
-                        Logger.LogWarning("Icon '{icon}' not registered, add an entry for icon to the `Icons` attribute of the `Theme` component.", Key);
+                        Logger.LogMissingIcon(Key);
                         return new IconInfo(Key, "no-key") { ImagePath = $"/img/no-icon-for-{Key}.svg", AlternateText = "" };
                     }
                 }
@@ -75,7 +76,7 @@ public partial class Icon : ComponentBase, IExtraDryComponent {
     private void LogNoThemeErrorOnce()
     {
         if(noThemeErrorIssued) {
-            Logger.LogError("Icons must be used within a `Theme` component.  Create a `Theme` component, typically in the MainLayout.blazor component that wraps the site.  Then add a collection of `IconInfo` to the `Icons` property to register the key of the icon with an image or a font glyph.");
+            Logger.LogConsoleError("Icons must be used within a `Theme` component.  Create a `Theme` component, typically in the MainLayout.blazor component that wraps the site.  Then add a collection of `IconInfo` to the `Icons` property to register the key of the icon with an image or a font glyph.");
             noThemeErrorIssued = false;
         }
     }

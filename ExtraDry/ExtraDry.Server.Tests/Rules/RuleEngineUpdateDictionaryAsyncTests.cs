@@ -99,7 +99,6 @@ public class RuleEngineUpdateDictionaryAsyncTests {
         Assert.Equal("old-value", destination.Values["key"]);
     }
 
-#pragma warning disable CS8625 
     [Fact]
     public async Task NullValueNoEffectWhenNotInDestination()
     {
@@ -114,10 +113,7 @@ public class RuleEngineUpdateDictionaryAsyncTests {
         Assert.NotNull(destination.Values);
         Assert.False(destination.Values.ContainsKey("key"));
     }
-#pragma warning restore CS8625
 
-
-#pragma warning disable CS8625
     [Fact]
     public async Task NullValueRemovesWhenInDestination()
     {
@@ -133,7 +129,6 @@ public class RuleEngineUpdateDictionaryAsyncTests {
         Assert.NotNull(destination.Values);
         Assert.False(destination.Values.ContainsKey("key"));
     }
-#pragma warning restore CS8625
 
     [Fact]
     public async Task IgnoreValueLeavesDestination()

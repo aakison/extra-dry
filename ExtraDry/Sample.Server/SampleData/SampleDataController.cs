@@ -30,6 +30,7 @@ public class SampleDataController {
     [HttpPost("api/load-sample-data")]
     [AllowAnonymous]
     [SuppressMessage("ApiUsage", "DRY1107:HttpPost, HttpPut and HttpPatch methods should have Consumes attribute", Justification = "RPC, not REST.")]
+    [SuppressMessage("ApiUsage", "DRY1114:HttpPost actions should Produces ResourceReference output.", Justification = "Not RESTful")]
     public async Task CreateBaseDataRpcAsync()
     {
         var shouldLoadSamples = !await context.Sectors.AnyAsync();
@@ -54,6 +55,7 @@ public class SampleDataController {
     [HttpPost("api/load-sample-data/regions")]
     [AllowAnonymous]
     [Produces("application/json"), Consumes("application/json")]
+    [SuppressMessage("ApiUsage", "DRY1114:HttpPost actions should Produces ResourceReference output.", Justification = "Not RESTful")]
     public async Task<RegionLoadStats> CreateRegionsRpcAsync(string[] countryFilter, bool includeSubdivisions, bool includeLocalities)
     {
         return await samples.PopulateRegionsAsync(countryFilter, includeSubdivisions, includeLocalities);

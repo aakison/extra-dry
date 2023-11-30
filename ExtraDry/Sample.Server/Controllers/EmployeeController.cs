@@ -45,11 +45,12 @@ public class EmployeeController {
     /// </remarks>
     /// <param name="value"></param>
     /// <returns></returns>
-    [HttpPost("api/employees"), Consumes("application/json")]
+    [HttpPost("api/employees"), Consumes("application/json"), Produces("application/json")]
     [Authorize(SamplePolicies.SamplePolicy)]
-    public async Task Create(Employee value)
+    public async Task<ResourceReference<Employee>> CreateAsync(Employee value)
     {
-        await employees.Create(value);
+        var employee = await employees.CreateAsync(value);
+        return new ResourceReference<Employee>(employee);
     }
 
     /// <summary>

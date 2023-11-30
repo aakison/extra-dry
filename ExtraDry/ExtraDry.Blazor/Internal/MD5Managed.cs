@@ -83,7 +83,7 @@ internal class MD5 : HashAlgorithm {
     {
         var encoder = new UTF8Encoding();
         var hashedBytes = ComputeHash(encoder.GetBytes(input));
-        var hash = string.Join("", hashedBytes.Select(e => e.ToString("X2")));
+        var hash = string.Join("", hashedBytes.Select(e => e.ToString("X2", CultureInfo.InvariantCulture)));
         return hash;
     }
 }

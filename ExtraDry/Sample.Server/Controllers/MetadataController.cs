@@ -33,6 +33,7 @@ public class MetadataController {
     [AllowAnonymous]
     [Produces("application/json")]
     [SuppressMessage("Security", "DRY1106:HttpVerbs methods should not take int values", Justification = "Not an internal ID.")]
+    [SuppressMessage("Usage", "CA2201:Do not raise reserved exception types", Justification = "For testing purposes.")]
     public MessagePayload RetrieveException(int code = 404)
     {
         return code switch {

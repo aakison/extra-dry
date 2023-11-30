@@ -602,7 +602,7 @@ public class RuleEngine {
     private static void CompleteActionMasquardingAsFuncTask(Task task)
     {
         if(task.IsCompleted && task.IsFaulted) {
-            throw task.Exception?.InnerException ?? task.Exception ?? new Exception("Aggregate exception occurred but was missing details.");
+            throw task.Exception?.InnerException ?? task.Exception ?? new AggregateException("Aggregate exception occurred but was missing details.");
         }
     }
 
