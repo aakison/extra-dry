@@ -58,10 +58,10 @@ public partial class Suspense<TModel> : ComponentBase, IExtraDryComponent {
     public IndicatorSize Size { get; set; } = IndicatorSize.Standard;
 
     /// <summary>
-    /// Which Indicator Icons should be displayed. Defaults to All
+    /// Which Indicator Icons should be displayed. Defaults to true
     /// </summary>
     [Parameter]
-    public IndicatorIcon ShowIcons { get; set; } = IndicatorIcon.All;
+    public bool ShowIcon { get; set; } = true;
 
     /// <summary>
     /// The time span to wait before timing out in milliseconds. Default is 5 seconds

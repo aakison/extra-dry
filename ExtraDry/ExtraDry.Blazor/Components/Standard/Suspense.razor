@@ -10,11 +10,11 @@
             }
             else if (ThemeInfo?.SuspenseFallback != null)
             {
-                @ThemeInfo?.SuspenseFallback(new IndicatorContext{Size = @Size, Reload=@Refresh, ShowIcons=@ShowIcons})
+                @ThemeInfo?.SuspenseFallback(new IndicatorContext{Size = @Size, Reload=@Refresh, ShowIcon=ShowIcon})
             }
             else
             {
-                if (ShowIcons.HasFlag(IndicatorIcon.Loading))
+                if (ShowIcon)
                 {
                     <div>
                         <Spinner Size=@Size></Spinner>
@@ -30,11 +30,11 @@
             }
             else if (ThemeInfo?.SuspenseError != null)
             {
-                @ThemeInfo?.SuspenseError(new IndicatorContext{Size = @Size, Reload=@Refresh, ShowIcons=@ShowIcons})
+                @ThemeInfo?.SuspenseError(new IndicatorContext{Size = @Size, Reload=@Refresh, ShowIcon=ShowIcon})
             }
             else
             {
-                if (ShowIcons.HasFlag(IndicatorIcon.Error))
+                if (ShowIcon)
                 {
                     <div>
                         <Icon CssClass=@Size.ToString().ToLower() Key="loader-error" />
@@ -50,11 +50,11 @@
             }
             else if (ThemeInfo?.SuspenseTimeout != null)
             {
-                @ThemeInfo?.SuspenseTimeout(new IndicatorContext{Size = @Size, Reload=@Refresh, ShowIcons=@ShowIcons})
+                @ThemeInfo?.SuspenseTimeout(new IndicatorContext{Size = @Size, Reload=@Refresh, ShowIcon=ShowIcon})
             }
             else
             {
-                if (ShowIcons.HasFlag(IndicatorIcon.Timeout))
+                if (ShowIcon)
                 {
                     <div>
                         <Icon CssClass=@Size.ToString().ToLower() Key="loader-timeout" />

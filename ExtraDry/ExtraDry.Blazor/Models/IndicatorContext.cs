@@ -16,7 +16,7 @@ public class IndicatorContext {
     public Func<Task> Reload { get; set; } = () => Task.CompletedTask;
 
     /// <summary>
-    /// Which Indicator Icons should be displayed
+    /// Display Icon
     /// </summary>
-    public IndicatorIcon ShowIcons { get; set; }
+    public bool ShowIcon { get; set; }
 }
