@@ -76,15 +76,19 @@
     </CodeBlock>
 
     <div style="width: 200px;border: solid 1px;margin-bottom: 10px;">
-        <Suspense TModel="Employee" ItemProvider=@LoadEmployee Size=@IndicatorSize ShowIcon=@ShowIcon @ref="_childComponent2">
+        <Suspense TModel="Employee" ItemProvider=@LoadEmployee Size=@IndicatorSize TimeoutDuration=500 ShowIcon=@ShowIcon @ref="_childComponent2">
             <ChildContent>
                 <div>First Name: @context.FirstName</div>
                 <div>Last Name: @context.LastName</div>
             </ChildContent>
             <Timeout>
-                <div>
-                    <Icon CssClass=@context.Size.ToString().ToLower() Key="loader-timeout" />
-                </div>
+                @if (ShowIcon)
+                {
+                    <div>
+
+                        <Icon CssClass=@context.Size.ToString().ToLower() Key="loader-timeout" />                    
+                    </div>
+                }
                 <div>Component timeout, <a href="" @onclick=@context.Reload @onclick:preventDefault>try again</a></div>
             </Timeout>
         </Suspense>
@@ -178,7 +182,7 @@
     private Suspense<Employee>? _childComponent;
     private Suspense<Employee>? _childComponent2;
 
-    private bool ShowIcon;
+    private bool ShowIcon = true;
 
     async Task OnValueChange(ChangeEventArgs e)
     {

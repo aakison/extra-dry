@@ -6,7 +6,7 @@
         case LoadingState.Loading:
             @if (Fallback != null)
             {
-                @Fallback(new IndicatorContext{Size = @Size, Reload=@Refresh})
+                @Fallback(new IndicatorContext{Size = @Size, Reload=@Refresh, ShowIcon=@ShowIcon})
             }
             else if (ThemeInfo?.SuspenseFallback != null)
             {
@@ -26,7 +26,7 @@
         case LoadingState.Error:
             @if (Error != null)
             {
-                @Error(new IndicatorContext{Size = @Size, Reload=@Refresh})
+                @Error(new IndicatorContext{Size = @Size, Reload=@Refresh, ShowIcon=@ShowIcon})
             }
             else if (ThemeInfo?.SuspenseError != null)
             {
@@ -46,7 +46,7 @@
         case LoadingState.Timeout:
             @if(Timeout != null)
             {
-                @Timeout(new IndicatorContext{Size = @Size, Reload=@Refresh})
+                @Timeout(new IndicatorContext{Size = @Size, Reload=@Refresh, ShowIcon=@ShowIcon})
             }
             else if (ThemeInfo?.SuspenseTimeout != null)
             {
