@@ -168,7 +168,7 @@ public static class Slug {
     {
         const string characters = "abcdefghijklmnopqrstuvwxyz";
         return RandomCharacters(count, characters);
-    } 
+    }
 
     private static string ToSlugInternal(string name, bool lowercase = true, string okCharacters = @"_")
     {
