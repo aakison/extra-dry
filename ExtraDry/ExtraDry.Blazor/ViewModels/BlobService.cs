@@ -67,7 +67,7 @@ public class BlobService
         var json = JsonSerializer.Serialize(item);
         var endpoint = ApiEndpoint(nameof(UploadAsync), item.Uuid);
         //logger.LogEndpointCall(typeof(BlobInfo), endpoint);
-        content.Headers.Add("Content-Type", item.MimeType);
+        //content.Headers.Add("Content-Type", item.MimeType);
         content.Headers.Add(BlobInfo.SlugHeaderName, item.Slug);
         content.Headers.Add(BlobInfo.TitleHeaderName, item.Title);
         content.Headers.Add(BlobInfo.ScopeHeaderName, item.Scope.ToString());
