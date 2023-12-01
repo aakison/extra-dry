@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.UploadTools.Tests;
+﻿namespace ExtraDry.Core.Tests;
 
 public class FileValidationTests {
 
@@ -67,22 +67,25 @@ public class FileValidationTests {
         Assert.True(validator.IsValid);
     }
 
-
-    [Theory(Skip = "Refactor to remove file dependency")]
-    [InlineData("!bat.bat", "bat.bat", "text/plain")]
-    [InlineData("te1--xt.txt", "text.txt", "text/plain")]
-    [InlineData("j%pg.jpg", "jpg.jpg", "image/jpeg")]
-    [InlineData("!4png.png", "png.png", "image/png")]
-    [InlineData("rtf-.rtf", "rtf.rtf", "text/rtf")]
-    [InlineData("text", "text.txt", "text/plain")]
-    public void InvalidFileName(string filename, string filepath, string mime)
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("!bat.txt")]
+    [InlineData("te1--xt.txt")]
+    [InlineData("j%pg.txt")]
+    [InlineData("rtf-.rtf")]
+    [InlineData("text")]
+    public void InvalidFilename(string filename)
     {
-        var fileBytes = File.ReadAllBytes($"FileUpload/SampleFiles/{filepath}");
+        var validator = OptionedFileValidator(config => {
+                config.ValidateFilename = ValidationCondition.Always;
+                config.ValidateExtension = ValidationCondition.Never;
+                config.ValidateContent = ValidationCondition.Never;
+            });
 
-        var results = validator.ValidateFile(filename, mime, fileBytes);
+        validator.ValidateFile(filename, "text/plain");
 
         Assert.False(validator.IsValid);
-        var exception = Assert.Throws<ValidationException>(() => validator.ThrowIfNotValid());
     }
 
     [Theory(Skip = "Refactor to remove file dependency")]
@@ -241,5 +244,18 @@ public class FileValidationTests {
     private FileValidationOptions options;
 
     private FileValidator validator;
+
+    private static FileValidator OptionedFileValidator(Action<FileValidationOptions> config)
+    {
+        var service = OptionedFileValidationService(config);
+        return new FileValidator(service);
+    }
+
+    private static FileValidationService OptionedFileValidationService(Action<FileValidationOptions> config)
+    {
+        var options = new FileValidationOptions();
+        config(options);
+        return new FileValidationService(options);
+    }
 
 }

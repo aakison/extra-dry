@@ -52,6 +52,7 @@ public class FileValidationService
 
         ValidateContent = config.ValidateContent;
         ValidateExtension = config.ValidateExtension;
+        ValidateFilename = config.ValidateFilename;
     }
 
     /// <inheritdoc cref="FileValidationOptions.ValidateContent" />
@@ -59,6 +60,9 @@ public class FileValidationService
 
     /// <inheritdoc cref="FileValidationOptions.ValidateExtension" />
     public ValidationCondition ValidateExtension { get; private set; }
+
+    /// <inheritdoc cref="FileValidationOptions.ValidateFilename" />
+    public ValidationCondition ValidateFilename { get; private set; }
 
     /// <summary>
     /// Call in startup of your application to configure the settings for the upload tools;
@@ -138,24 +142,16 @@ public class FileValidationService
     /// - If the file type is of a known xml type, it must not contain a script tag
     /// If all of these are true, then true is returned. Else, a <see cref="DryException"/> with details is thrown
     /// </summary>
-    internal IEnumerable<ValidationResult> ValidateFile(string filename, string mimetype, byte[]? content = null)
+    internal IEnumerable<ValidationResult> ValidateFile(string? filename, string? mimetype, byte[]? content = null)
     {
-        if(string.IsNullOrEmpty(filename)) {
-            yield return new ValidationResult("Provided filename was null or empty");
-        }
-
-        if(filename.Length > 255) {
-            yield return new ValidationResult("Provided filename was too long");
-        }
+        // Still invalid but cleaner logic later.
+        filename ??= ""; 
+        mimetype ??= "";
+        
+        fileService ??= new();
 
         var extension = Path.GetExtension(filename).TrimStart('.');
 
-        // If the filename has bad characters in it and isn't already cleaned.
-        if(filename != CleanFilename(filename)) {
-            yield return new ValidationResult($"Provided filename contained invalid characters, '{filename}'");
-        }
-
-        fileService ??= new();
 
         // Get the mime type and file type info from the filename and the content
         // We don't really use the one from the filename other than to check it matches the content
@@ -169,10 +165,36 @@ public class FileValidationService
             yield return new ValidationResult($"Provided filename and mime type do not match, mime type was {GetFileDefinitionDescription(mimeInferredTypes)}, and filename was {GetFileDefinitionDescription(filenameInferredTypes)}");
         }
 
+        var filenameErrors = ValidateFileFilename(filename).ToList();
         var extensionErrors = ValidateFileExtension(extension).ToList();
         var contentErrors = ValidateFileContent(content, filenameInferredTypes).ToList();
-        foreach(var error in contentErrors.Union(extensionErrors)) {
+        foreach(var error in contentErrors.Union(extensionErrors).Union(filenameErrors)) {
             yield return error;
+        }
+    }
+
+    private IEnumerable<ValidationResult> ValidateFileFilename(string filename)
+    {
+        var validate = ValidateFilename switch {
+            ValidationCondition.Never => false,
+            ValidationCondition.Always => true,
+            _ => !WebAssemblyRuntime,
+        };
+        if(!validate) {
+            yield break;
+        }
+
+        if(string.IsNullOrEmpty(filename)) {
+            yield return new ValidationResult("Provided filename was null or empty");
+        }
+
+        if(filename.Length > 255) {
+            yield return new ValidationResult("Provided filename was too long");
+        }
+
+        // If the filename has bad characters in it and isn't already cleaned.
+        if(filename != CleanFilename(filename)) {
+            yield return new ValidationResult($"Provided filename contained invalid characters, '{filename}'");
         }
     }
 
@@ -186,6 +208,7 @@ public class FileValidationService
         if(!validate) {
             yield break;
         }
+
         if(string.IsNullOrEmpty(extension)) {
             yield return new ValidationResult($"Provided filename contains an invalid extension, '{extension}'");
         }

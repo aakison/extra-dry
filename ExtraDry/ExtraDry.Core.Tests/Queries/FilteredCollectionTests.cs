@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace ExtraDry.Server.Tests.Models;
+namespace ExtraDry.Core.Tests.Models;
 
 public class FilteredCollectionTests
 {

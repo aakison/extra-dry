@@ -51,5 +51,11 @@ public class FileValidationOptions
     /// </summary>
     public ValidationCondition ValidateExtension { get; set; } = ValidationCondition.Always;
 
+    /// <summary>
+    /// Determines if the <see cref="FileValidator" /> validates filenames.  The default is
+    /// <see cref="ValidationCondition.Always" /> which checks filenames on both the server and the
+    /// client.  This is recommended as it is a simple check that can be performed on the client.
+    /// </summary>
+    public ValidationCondition ValidateFilename { get; set; } = ValidationCondition.Always;
 
 }

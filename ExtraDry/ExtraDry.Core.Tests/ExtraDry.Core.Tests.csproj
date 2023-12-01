@@ -8,6 +8,64 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="FileValidation\SampleFiles\bat.bat" />
+	  <None Remove="FileValidation\SampleFiles\doc.doc" />
+	  <None Remove="FileValidation\SampleFiles\exe.exe" />
+	  <None Remove="FileValidation\SampleFiles\html.html" />
+	  <None Remove="FileValidation\SampleFiles\htmlScript.html" />
+	  <None Remove="FileValidation\SampleFiles\jpg.jpg" />
+	  <None Remove="FileValidation\SampleFiles\mp4.mp4" />
+	  <None Remove="FileValidation\SampleFiles\png.png" />
+	  <None Remove="FileValidation\SampleFiles\rtf.rtf" />
+	  <None Remove="FileValidation\SampleFiles\text.txt" />
+	  <None Remove="FileValidation\SampleFiles\Tiff.tiff" />
+	  <None Remove="FileValidation\SampleFiles\word.docx" />
+	  <None Remove="FileValidation\SampleFiles\zip.zip" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="FileValidation\SampleFiles\bat.bat">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="FileValidation\SampleFiles\doc.doc">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="FileValidation\SampleFiles\exe.exe">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="FileValidation\SampleFiles\html.html">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="FileValidation\SampleFiles\htmlScript.html">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="FileValidation\SampleFiles\jpg.jpg">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="FileValidation\SampleFiles\mp4.mp4">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="FileValidation\SampleFiles\png.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="FileValidation\SampleFiles\rtf.rtf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="FileValidation\SampleFiles\text.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="FileValidation\SampleFiles\Tiff.tiff">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="FileValidation\SampleFiles\word.docx">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="FileValidation\SampleFiles\zip.zip">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.2" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
 		<PackageReference Include="xunit" Version="2.4.2" />
@@ -29,46 +87,7 @@
 	<Import Project="..\VulnerabilityFixes.targets" />
 
 	<ItemGroup>
-	  <None Update="FileUpload\FileDatabase.json">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	  <None Update="FileUpload\SampleFiles\bat.bat">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	  <None Update="FileUpload\SampleFiles\doc.doc">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	  <None Update="FileUpload\SampleFiles\exe.exe">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	  <None Update="FileUpload\SampleFiles\html.html">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	  <None Update="FileUpload\SampleFiles\htmlScript.html">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	  <None Update="FileUpload\SampleFiles\jpg.jpg">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	  <None Update="FileUpload\SampleFiles\mp4.mp4">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	  <None Update="FileUpload\SampleFiles\png.png">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	  <None Update="FileUpload\SampleFiles\rtf.rtf">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	  <None Update="FileUpload\SampleFiles\text.txt">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	  <None Update="FileUpload\SampleFiles\Tiff.tiff">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	  <None Update="FileUpload\SampleFiles\word.docx">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	  <None Update="FileUpload\SampleFiles\zip.zip">
+	  <None Update="FileValidation\FileDatabase.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	</ItemGroup>
