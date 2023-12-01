@@ -1,40 +1,60 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+﻿using System.Security.Cryptography;
 
-namespace ExtraDry.Core {
-    public class BlobInfo : IBlobInfo {
+namespace ExtraDry.Core;
 
-        [Key]
-        [Rules(RuleAction.Block)]
-        [JsonIgnore]
-        public int Id { get; set; }
+public class BlobInfo : IBlobInfo
+{
 
-        [Rules(RuleAction.Block)]
-        public Guid UniqueId { get; set; } = Guid.NewGuid();
+    [Key]
+    [Rules(RuleAction.Block)]
+    [JsonIgnore]
+    public int Id { get; set; }
 
-        [Display]
-        [Filter]
-        public BlobScope Scope { get; set; }
+    [Rules(RuleAction.Block)]
+    public Guid Uuid { get; set; } = Guid.NewGuid();
 
-        public int Size { get; set; }
+    [Filter]
+    public BlobScope Scope { get; set; }
 
-        [MaxLength(64), RegularExpression("[A-F0-9]{64}")]
-        public string ShaHash { get; set; } = string.Empty;
+    public int Size { get; set; }
 
-        /// <summary>
-        /// The Url for the blob that allows direct access without using this API.
-        /// </summary>
-        public string Url { get; set; } = string.Empty;
+    [StringLength(64), RegularExpression("[A-F0-9]{64}")]
+    public string ShaHash { get; set; } = string.Empty;
 
-        [Display(Name = "Name", ShortName = "Name")]
-        [Filter]
-        public string Filename { get; set; } = string.Empty;
-
-        /// <summary>
-        /// The mime type of the blob which is delivered along with the blob when requested.
-        /// Defaults to `application/octet-string` which is the most generic option.
-        /// </summary>
-        public string MimeType { get; set; } = "application/octet-string";
+    public void SetShaHashFromContent(byte[] bytes)
+    {
+        using var sha = new SHA256Managed();
+        var hash = sha.ComputeHash(bytes);
+        ShaHash = string.Concat(hash.Select(b => b.ToString("x2")));
     }
+
+    /// <summary>
+    /// The Url for the blob that allows direct access without using this API.
+    /// </summary>
+    public string Url { get; set; } = string.Empty;
+
+    [Display(Name = "Name", ShortName = "Name")]
+    [Filter]
+    public string Title { get; set; } = string.Empty;
+
+    public string Slug { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The mime type of the blob which is delivered along with the blob when requested.
+    /// Defaults to `application/octet-string` which is the most generic option.
+    /// </summary>
+    public string MimeType { get; set; } = "application/octet-string";
+
+    public const string SlugHeaderName = "X-Ed-Blob-Slug";
+
+    public const string TitleHeaderName = "X-Ed-Blob-Title";
+
+    public const string ScopeHeaderName = "X-Ed-Blob-Scope";
+
+    public const string UuidHeaderName = "X-Ed-Blob-Uuid";
+
+    public const string ShaHashHeaderName = "X-Ed-Blob-Sha-Hash";
+
+    public const string MimeTypeHeaderName = "Content-Type";
+
 }

@@ -36,10 +36,13 @@ public class Program
                 Scope = BlobScope.Public,
             }
         );
+        services.AddBlobService("/api/blobs");
 
         services.AddScoped<ISubjectViewModel<Employee>, EmployeeViewModel>();
 
         services.AddScoped<AppViewModel>();
+
+        services.AddFileValidation();
 
         await builder.Build().RunAsync();
     }

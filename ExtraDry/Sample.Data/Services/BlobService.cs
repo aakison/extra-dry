@@ -1,16 +1,16 @@
-﻿#nullable enable
-
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Security.Cryptography;
 
 namespace Sample.Data.Services;
 
 public class BlobService {
 
-    public BlobService(SampleContext sampleContext, RuleEngine ruleEngine)
+    public BlobService(SampleContext sampleContext, RuleEngine ruleEngine, FileValidator fileValidator)
     {
         database = sampleContext;
         rules = ruleEngine;
+        validator = fileValidator;
     }
 
     public async Task<PagedCollection<BlobInfo>> List(PageQuery query)
@@ -21,7 +21,10 @@ public class BlobService {
     public async Task<BlobInfo> UploadAsync(BlobInfo item, byte[] content)
     {
         var hash = SHA256.HashData(content);
-        var hashString = string.Join("", hash.Select(e => e.ToString("X2")));
+        var hashString = string.Join("", hash.Select(e => e.ToString("X2", CultureInfo.InvariantCulture)));
+
+        validator.ValidateFile(item.Title, item.MimeType, content);
+        validator.ThrowIfNotValid();
 
         var existing = await database.Blobs.FirstOrDefaultAsync(e => e.ShaHash == hashString && e.Scope == BlobScope.Public);
         if(existing != null) {
@@ -39,19 +42,19 @@ public class BlobService {
             item.MimeType = "image/jpeg";
         }
         item.ShaHash = hashString;
-        item.UniqueId = Guid.NewGuid();
-        item.Url = $"/api/blobs/{item.UniqueId}/content";
+        item.Uuid = Guid.NewGuid();
+        item.Url = $"/api/blobs/{item.Uuid}/content";
 
         database.Blobs.Add(item);
         await database.SaveChangesAsync();
-        fakeBlobStorage.Add(item.UniqueId, content);
+        fakeBlobStorage.Add(item.Uuid, content);
         return item;
     }
 
     [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "When not faked, will require instance.")]
     public async Task<byte[]> DownloadAsync(BlobInfo item)
     {
-        if(fakeBlobStorage.TryGetValue(item.UniqueId, out var content)) {
+        if(fakeBlobStorage.TryGetValue(item.Uuid, out var content)) {
             return content;
         }
         else {
@@ -68,12 +71,12 @@ public class BlobService {
 
     public async Task<BlobInfo?> TryRetrieveAsync(Guid uniqueId)
     {
-        return await database.Blobs.FirstOrDefaultAsync(e => e.UniqueId == uniqueId);
+        return await database.Blobs.FirstOrDefaultAsync(e => e.Uuid == uniqueId);
     }
 
     public async Task UpdateAsync(BlobInfo item)
     {
-        var existing = await RetrieveAsync(item.UniqueId);
+        var existing = await RetrieveAsync(item.Uuid);
         await rules.UpdateAsync(item, existing);
         await database.SaveChangesAsync();
     }
@@ -90,5 +93,6 @@ public class BlobService {
 
     private static readonly Dictionary<Guid, byte[]> fakeBlobStorage = new();
 
+    private readonly FileValidator validator;
 }
 

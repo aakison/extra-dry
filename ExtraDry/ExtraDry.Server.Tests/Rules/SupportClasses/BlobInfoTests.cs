@@ -20,7 +20,7 @@ public class BlobInfoTests {
     [InlineData("Scope", BlobScope.Private)]
     [InlineData("ShaHash", "X")]
     [InlineData("Url", "X")]
-    [InlineData("Filename", "X")]
+    //[InlineData("Filename", "X")]
     [InlineData("MimeType", "X")]
     [InlineData("Size", 123)]
     public void RoundtripProperties(string propertyName, object propertyValue)
@@ -34,16 +34,16 @@ public class BlobInfoTests {
         Assert.Equal(propertyValue, result);
     }
 
-    [Fact]
-    public void RoundtripUniqueId()
-    {
-        var blob = ValidBlob;
-        var guid = Guid.NewGuid();
+    //[Fact]
+    //public void RoundtripUniqueId()
+    //{
+    //    var blob = ValidBlob;
+    //    var guid = Guid.NewGuid();
             
-        blob.UniqueId = guid;
+    //    blob.UniqueId = guid;
 
-        Assert.Equal(guid, blob.UniqueId);
-    }
+    //    Assert.Equal(guid, blob.UniqueId);
+    //}
 
     [Fact]
     public void IdDoesNotLeakToJson()

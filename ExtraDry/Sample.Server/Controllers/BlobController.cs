@@ -45,7 +45,7 @@ public class BlobController : ControllerBase {
         await Request.Body.CopyToAsync(memoryStream);
         var bytes = memoryStream.ToArray();
         var item = new BlobInfo {
-            Filename = filename,
+            //Filename = filename,
             Scope = scope,
             Size = bytes.Length,
         };
@@ -78,22 +78,22 @@ public class BlobController : ControllerBase {
         return await blobs.RetrieveAsync(uuid);
     }
 
-    /// <summary>
-    /// Update an existing blob description.
-    /// </summary>
-    /// <remarks>
-    /// Updates information about the indicated blob, to change the blob content use the `/upload` endpoint.
-    /// </remarks>
-    [HttpPut("api/blobs/{uniqueId}")]
-    [Consumes("multipart/form-data")]
-    [Authorize(SamplePolicies.SamplePolicy)]
-    public async Task Update(Guid uniqueId, [FromBody] BlobInfo value)
-    {
-        if(uniqueId != value?.UniqueId) {
-            throw new ArgumentException("ID in URI must match body.", nameof(uniqueId));
-        }
-        await blobs.UpdateAsync(value);
-    }
+    ///// <summary>
+    ///// Update an existing blob description.
+    ///// </summary>
+    ///// <remarks>
+    ///// Updates information about the indicated blob, to change the blob content use the `/upload` endpoint.
+    ///// </remarks>
+    //[HttpPut("api/blobs/{uniqueId}")]
+    //[Consumes("multipart/form-data")]
+    //[Authorize(SamplePolicies.SamplePolicy)]
+    //public async Task Update(Guid uniqueId, [FromBody] BlobInfo value)
+    //{
+    //    if(uniqueId != value?.UniqueId) {
+    //        throw new ArgumentException("ID in URI must match body.", nameof(uniqueId));
+    //    }
+    //    await blobs.UpdateAsync(value);
+    //}
 
     /// <summary>
     /// Delete an existing blob.

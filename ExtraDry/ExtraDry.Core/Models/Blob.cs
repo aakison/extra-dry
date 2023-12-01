@@ -7,9 +7,9 @@ namespace ExtraDry.Core {
 
     public interface IBlobInfo {
 
-        public Guid UniqueId { get; set; }
+        //public Guid UniqueId { get; set; }
 
-        public string Filename { get; set; }
+        //public string Filename { get; set; }
 
         public string Url { get; set; }
 

@@ -154,6 +154,11 @@ public class AppViewModel {
                                 Title = "Theme",
                                 NavLink = "/components/special/theme",
                             },
+                            new Menu {
+                                Icon = "theme",
+                                Title = "File Validator",
+                                NavLink = "/components/special/file-validator",
+                            },
                         },
                     },
                 },

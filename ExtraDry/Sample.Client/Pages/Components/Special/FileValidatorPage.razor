@@ -1,0 +1,106 @@
+﻿@page "/components/special/file-validator"
+
+<section>
+    <h2>FileValidator</h2>
+    <p>
+        The <code>&lt;Theme&gt;</code> component configures sections of the Blazor DOM to have a particular theme.
+    </p>
+    <p>
+        Icons and custom error pages can be configured in areas of the application, although most typical to do entire app.
+    </p>
+</section>
+<section>
+    <h3>Basic Usage</h3>
+    <InputFile OnChange="@LoadFileAsync" />
+    <div>Filename: @Filename</div>
+    <div>Mime Type: @FileMimeType</div>
+    <div>Client Validation: @ClientValidation</div>
+    <div>Server Validation: @ServerValidation</div>
+    <CodeBlock Lang="blazor">
+        &lt;Theme Icons="@@Icons" ErrorComponent="@@typeof(MyCustomErrorComponent)">
+            &lt;main>
+                &lt;!-- // rest of site ... -->
+            &lt;/main>
+        &lt;Theme>
+
+        @@code {
+            public IconInfo[] Icons = new IconInfo[] {
+                // Glyphs or Icons as SVGs
+                new IconInfo("register", "/img/glyphs/registered-light.svg", "Register", "icon"),
+
+                // Glyphs as Fonts (e.g. FontAwesome Free shown here)
+                new IconInfo("edit", "fas fa-edit"),
+
+                // Inherited - Can override default icons.
+                new IconInfo("search", "/img/glyphs/magnifying-glass-light.svg", "Search", "glyph"),
+            };
+        }
+    </CodeBlock>
+</section>
+<section>
+    <h3>Configuration</h3>
+    <p>
+        This is a standalone component, no configuration is required.
+    </p>
+    <h5>Semantic Styles</h5>
+    <p>The control does not emit any HTML and cannot be styled.  Child components can capture the theme information using the `ThemeInfo` cascading parameter:</p>
+    <CodeBlock lang="Blazor">
+        @@code {
+            [CascadingParameter]
+            public ThemeInfo Theme { get; set; }
+        }
+    </CodeBlock>
+</section>
+<section>
+    <h3>Tips &amp; Practices</h3>
+    <ul>
+        <li>Read the console in developer tools to see <code>Icon</code> components that don't have associated icons in the Theme.</li>
+        <li></li>
+    </ul>
+</section>
+<section>
+    <h3>See Also</h3>
+    <ul>
+        <li><a href="/components/standard/icon">Icon Component</a></li>
+    </ul>
+</section>
+
+@code {
+
+    private async Task LoadFileAsync(InputFileChangeEventArgs e)
+    {
+        Filename = e.File.Name;
+        FileMimeType = e.File.ContentType;
+        var errors = Validator.ValidateFile(e.File.Name, e.File.ContentType);
+        if(Validator.IsValid) {
+            ClientValidation = "Valid";
+        }
+        else {
+            ClientValidation = $"Found {errors.Count()} problems: " + string.Join(", ", errors.Select(e => e.ErrorMessage));
+        }
+        ServerValidation = "Uploading...";
+        await Task.Delay(1);
+        try {
+            await Blobs.UploadAsync(e.File);
+            ServerValidation = "Valid";
+        }
+        catch(DryException ex) {
+            ServerValidation = $"{ex.Message}: {ex.ProblemDetails.Detail}";
+        }
+    }
+
+    private string Filename { get; set; } = "";
+
+    private string FileMimeType { get; set; } = "";
+
+    private string ClientValidation { get; set; } = "";
+
+    private string ServerValidation { get; set; } = "";
+
+    [Inject]
+    private FileValidator Validator { get; set; } = null!;
+
+    [Inject]
+    private BlobService Blobs { get; set; } = null!;
+
+}

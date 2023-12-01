@@ -105,6 +105,8 @@ namespace Sample.Server {
                 return context;
             });
 
+            services.AddFileValidation();
+
             services.AddScoped<EmployeeService>();
             services.AddScoped<CompanyService>();
             services.AddScoped<ContentsService>();
