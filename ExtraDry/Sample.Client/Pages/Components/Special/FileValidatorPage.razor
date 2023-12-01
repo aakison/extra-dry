@@ -11,10 +11,11 @@
 </section>
 <section>
     <h3>Basic Usage</h3>
-    <InputFile OnChange="@LoadFile" />
+    <InputFile OnChange="@LoadFileAsync" />
     <div>Filename: @Filename</div>
     <div>Mime Type: @FileMimeType</div>
-    <div>Validation: @FileValidation</div>
+    <div>Client Validation: @ClientValidation</div>
+    <div>Server Validation: @ServerValidation</div>
     <CodeBlock Lang="blazor">
         &lt;Theme Icons="@@Icons" ErrorComponent="@@typeof(MyCustomErrorComponent)">
             &lt;main>
@@ -66,16 +67,25 @@
 
 @code {
 
-    private void LoadFile(InputFileChangeEventArgs e)
+    private async Task LoadFileAsync(InputFileChangeEventArgs e)
     {
         Filename = e.File.Name;
         FileMimeType = e.File.ContentType;
-        var errors = validator.ValidateFile(e.File.Name, e.File.ContentType);
-        if(validator.IsValid) {
-            FileValidation = "Valid";
+        var errors = Validator.ValidateFile(e.File.Name, e.File.ContentType);
+        if(Validator.IsValid) {
+            ClientValidation = "Valid";
         }
         else {
-            FileValidation = $"Found {errors.Count()} problems: " + string.Join(", ", errors.Select(e => e.ErrorMessage));
+            ClientValidation = $"Found {errors.Count()} problems: " + string.Join(", ", errors.Select(e => e.ErrorMessage));
+        }
+        ServerValidation = "Uploading...";
+        await Task.Delay(1);
+        try {
+            await Blobs.UploadAsync(e.File);
+            ServerValidation = "Valid";
+        }
+        catch(DryException ex) {
+            ServerValidation = $"{ex.Message}: {ex.ProblemDetails.Detail}";
         }
     }
 
@@ -83,9 +93,14 @@
 
     private string FileMimeType { get; set; } = "";
 
-    private string FileValidation { get; set; } = "";
+    private string ClientValidation { get; set; } = "";
+
+    private string ServerValidation { get; set; } = "";
 
     [Inject]
-    private FileValidator validator { get; set; } = null!;
+    private FileValidator Validator { get; set; } = null!;
+
+    [Inject]
+    private BlobService Blobs { get; set; } = null!;
 
 }

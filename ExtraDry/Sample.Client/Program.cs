@@ -51,6 +51,9 @@ public class Program
             }
         );
 
+        services.AddCrudService<BlobInfo>("/api/blobs");
+        services.AddBlobService("/api/blobs");
+
         services.AddFileValidation();
 
         services.AddScoped<ISubjectViewModel<Employee>, EmployeeViewModel>();

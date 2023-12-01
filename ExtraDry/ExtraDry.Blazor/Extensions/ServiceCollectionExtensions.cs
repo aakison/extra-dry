@@ -40,6 +40,32 @@ public static class ServiceCollectionExtensions {
         return services;
     }
 
+    public static IServiceCollection AddBlobService(this IServiceCollection services, string endpointTemplate)
+    {
+        services.AddBlobService(options => {
+            options.BlobEndpoint = endpointTemplate;
+        });
+        return services;
+    }
+
+    public static IServiceCollection AddBlobService(this IServiceCollection services, Action<BlobServiceOptions> config)
+    {
+        var options = new BlobServiceOptions();
+        config(options);
+
+        var validator = new DataValidator();
+        validator.ValidateObject(options);
+        validator.ThrowIfInvalid();
+
+        services.AddScoped(e => {
+            var client = GetHttpClient(e, options);
+            var logger = e.GetRequiredService<ILogger<BlobService>>();
+            var service = new BlobService(client, options, logger);
+            return service;
+        });
+        return services;
+    }
+
     /// <summary>
     /// Adds a strongly typed StatService`T to the service collection.
     /// </summary>

@@ -1,16 +1,15 @@
-﻿#nullable enable
-
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 
 namespace Sample.Data.Services;
 
 public class BlobService {
 
-    public BlobService(SampleContext sampleContext, RuleEngine ruleEngine)
+    public BlobService(SampleContext sampleContext, RuleEngine ruleEngine, FileValidator fileValidator)
     {
         database = sampleContext;
         rules = ruleEngine;
+        validator = fileValidator;
     }
 
     public async Task<PagedCollection<BlobInfo>> List(PageQuery query)
@@ -22,6 +21,9 @@ public class BlobService {
     {
         var hash = SHA256.HashData(content);
         var hashString = string.Join("", hash.Select(e => e.ToString("X2", CultureInfo.InvariantCulture)));
+
+        validator.ValidateFile(item.Title, item.MimeType, content);
+        validator.ThrowIfNotValid();
 
         var existing = await database.Blobs.FirstOrDefaultAsync(e => e.ShaHash == hashString && e.Scope == BlobScope.Public);
         if(existing != null) {
@@ -90,5 +92,6 @@ public class BlobService {
 
     private static readonly Dictionary<Guid, byte[]> fakeBlobStorage = new();
 
+    private readonly FileValidator validator;
 }
 

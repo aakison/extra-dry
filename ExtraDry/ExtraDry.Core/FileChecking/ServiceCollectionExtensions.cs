@@ -17,7 +17,7 @@ public static class ServiceCollectionExtensions
         var options = new FileValidationOptions();
         config?.Invoke(options);
         services.AddSingleton(e => options);
-        services.AddSingleton(e => new FileValidationService(options));
+        services.AddSingleton<FileValidationService>();
         services.AddTransient<FileValidator>();
     }
 }

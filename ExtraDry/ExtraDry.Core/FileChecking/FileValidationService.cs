@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -99,6 +100,7 @@ public class FileValidationService
     ///  - Ensure the filename begins with a valid character
     ///  - Trim invalid characters from start and end from filename
     /// </summary>
+    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "It will access instance once configuration implemented.")]
     public string CleanFilename(string filename)
     {
         // Sort out the filename part
@@ -219,9 +221,9 @@ public class FileValidationService
 
         // If the magic bytes filetype is in the bytes blacklist, reject
         var blacklistedType = contentInferredTypes
-            ?.SelectMany(e => e.Extensions)
-            ?.Intersect(FileTypeBlacklist, StringComparer.OrdinalIgnoreCase)
-            ?.FirstOrDefault();
+            .SelectMany(e => e.Extensions)
+            .Intersect(FileTypeBlacklist, StringComparer.OrdinalIgnoreCase)
+            .FirstOrDefault();
         if(blacklistedType != null) {
             yield return new ValidationResult($"Provided file content belongs to a forbidden filetype, {blacklistedType}", new[] { nameof(content) });
         }
@@ -245,11 +247,14 @@ public class FileValidationService
     }
 
     /// <summary>
-    /// Determine if the system is running in a WebAssembly runtime.  This doesn't seem to be a 
-    /// but advice online didn't work.  String comparison seems to work, but the underlying ENUM 
-    /// doesn't contain the actual value.  Presumably the enum is compiled in differently and 
-    /// contains the additional type?
+    /// Determine if the system is running in a WebAssembly runtime, allowing logic which is 
+    /// conditional on running on the client and/or the server.  
     /// </summary>
+    /// <remarks>
+    /// This doesn't seem to be great, but the advice online didn't work.  String comparison seems 
+    /// to work, but the underlying `Enum` doesn't contain the actual value.  Presumably the enum 
+    /// is compiled in differently and contains the additional type?
+    /// </remarks>
     private static bool WebAssemblyRuntime => 
         RuntimeInformation.OSArchitecture.ToString().Equals("WASM", StringComparison.OrdinalIgnoreCase);
         // RuntimeInformation.IsOSPlatform(OSPlatform.Create("WEBASSEMBLY")); -> doesn't seem to work

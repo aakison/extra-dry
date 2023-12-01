@@ -44,7 +44,7 @@ public class FileValidator
     /// <summary>
     /// If the file or files that were validated had any validation errors, then throw a validation exception.
     /// </summary>
-    public void ThrowIfError()
+    public void ThrowIfNotValid()
     {
         if(!IsValid) {
             throw new ValidationException(string.Join(", ", ValidationErrors.Select(e => e.ErrorMessage)));

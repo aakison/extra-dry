@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Core;
+﻿using System.Security.Cryptography;
+
+namespace ExtraDry.Core;
 
 public class BlobInfo : IBlobInfo
 {
@@ -11,7 +13,6 @@ public class BlobInfo : IBlobInfo
     [Rules(RuleAction.Block)]
     public Guid Uuid { get; set; } = Guid.NewGuid();
 
-    [Display]
     [Filter]
     public BlobScope Scope { get; set; }
 
@@ -19,6 +20,13 @@ public class BlobInfo : IBlobInfo
 
     [StringLength(64), RegularExpression("[A-F0-9]{64}")]
     public string ShaHash { get; set; } = string.Empty;
+
+    public void SetShaHashFromContent(byte[] bytes)
+    {
+        using var sha = new SHA256Managed();
+        var hash = sha.ComputeHash(bytes);
+        ShaHash = string.Concat(hash.Select(b => b.ToString("x2")));
+    }
 
     /// <summary>
     /// The Url for the blob that allows direct access without using this API.
@@ -36,4 +44,17 @@ public class BlobInfo : IBlobInfo
     /// Defaults to `application/octet-string` which is the most generic option.
     /// </summary>
     public string MimeType { get; set; } = "application/octet-string";
+
+    public const string SlugHeaderName = "X-Ed-Blob-Slug";
+
+    public const string TitleHeaderName = "X-Ed-Blob-Title";
+
+    public const string ScopeHeaderName = "X-Ed-Blob-Scope";
+
+    public const string UuidHeaderName = "X-Ed-Blob-Uuid";
+
+    public const string ShaHashHeaderName = "X-Ed-Blob-Sha-Hash";
+
+    public const string MimeTypeHeaderName = "Content-Type";
+
 }

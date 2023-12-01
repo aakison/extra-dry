@@ -82,7 +82,7 @@ public class FileValidationTests {
         var results = validator.ValidateFile(filename, mime, fileBytes);
 
         Assert.False(validator.IsValid);
-        var exception = Assert.Throws<ValidationException>(() => validator.ThrowIfError());
+        var exception = Assert.Throws<ValidationException>(() => validator.ThrowIfNotValid());
     }
 
     [Theory]
@@ -95,7 +95,7 @@ public class FileValidationTests {
         validator.ValidateFile(filename, mime, fileBytes);
 
         Assert.False(validator.IsValid);
-        Assert.Throws<ValidationException>(() => validator.ThrowIfError());
+        Assert.Throws<ValidationException>(() => validator.ThrowIfNotValid());
     }
 
     [Theory]
@@ -108,7 +108,7 @@ public class FileValidationTests {
         validator.ValidateFile(filename, mime, fileBytes);
 
         Assert.False(validator.IsValid);
-        var exception = Assert.Throws<ValidationException>(() => validator.ThrowIfError());
+        var exception = Assert.Throws<ValidationException>(() => validator.ThrowIfNotValid());
         Assert.Contains("filename and mime type do not match", exception.Message);
     }
 
@@ -124,7 +124,7 @@ public class FileValidationTests {
         validator.ValidateFile(filename, mime, fileBytes);
 
         Assert.False(validator.IsValid);
-        var exception = Assert.Throws<ValidationException>(() => validator.ThrowIfError());
+        var exception = Assert.Throws<ValidationException>(() => validator.ThrowIfNotValid());
     }
 
     [Theory]
@@ -136,7 +136,7 @@ public class FileValidationTests {
         validator.ValidateFile(filename, mime, fileBytes);
 
         Assert.False(validator.IsValid);
-        Assert.Throws<ValidationException>(() => validator.ThrowIfError());
+        Assert.Throws<ValidationException>(() => validator.ThrowIfNotValid());
     }
 
     [Theory]
@@ -158,7 +158,7 @@ public class FileValidationTests {
         validator.ValidateFile(filename, mime, fileBytes);
 
         Assert.False(validator.IsValid);
-        Assert.Throws<ValidationException>(() => validator.ThrowIfError());
+        Assert.Throws<ValidationException>(() => validator.ThrowIfNotValid());
     }
 
     [Theory]
@@ -215,7 +215,7 @@ public class FileValidationTests {
         validator.ValidateFile(filename, mime, fileBytes);
 
         Assert.False(validator.IsValid);
-        var exception = Assert.Throws<ValidationException>(() => validator.ThrowIfError());
+        var exception = Assert.Throws<ValidationException>(() => validator.ThrowIfNotValid());
     }
 
     [Theory]
