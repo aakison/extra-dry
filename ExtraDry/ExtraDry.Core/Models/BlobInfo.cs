@@ -2,7 +2,7 @@
 
 namespace ExtraDry.Core;
 
-public class BlobInfo : IBlobInfo
+public class BlobInfo : IBlobInfo, IResourceIdentifiers
 {
 
     [Key]
