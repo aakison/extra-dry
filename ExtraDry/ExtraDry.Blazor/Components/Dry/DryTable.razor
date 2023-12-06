@@ -29,9 +29,9 @@
               <th class="radio"></th>
             }
             @foreach(var column in description.TableProperties) {
-              var direction = SortAscending ? "ascending" : "descending";
-              var sortClasses = column.Property.Name == Sort ? $"sort {direction}" : "";
-              <th class="@column.DisplayClass @sortClasses" @onclick="@(async e => await SortBy(column))">
+                    var direction = QueryBuilder.Sort.Ascending ? "ascending" : "descending";
+                    var sortClasses = column.Property.Name == QueryBuilder.Sort.SortProperty ? $"sort {direction}" : "";
+              <th class="@column.DisplayClass @sortClasses" @onclick="@(e => SortBy(column))">
                 <span>@column.ColumnCaption</span>
                 <sup class="@sortClasses"></sup>
               </th>
