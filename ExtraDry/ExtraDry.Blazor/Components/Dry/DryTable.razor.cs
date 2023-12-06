@@ -27,18 +27,6 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     [Parameter]
     public string? GroupColumn { get; set; }
 
-    /// <summary>
-    /// Optional name of a property to sort the table by.
-    /// </summary>
-    [Parameter]
-    public string? Sort { get; set; }
-
-    /// <summary>
-    /// If `Sort` specified, determines the order of the sort.
-    /// </summary>
-    [Parameter]
-    public bool SortAscending { get; set; }
-
     [Parameter]
     public SelectionSet? Selection { get; set; }
 
@@ -122,16 +110,16 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
         }
     }
 
-    private async Task PerformInitialSort()
+    private void PerformInitialSort()
     {
         CalculateGroupDepth();
-        if(!string.IsNullOrWhiteSpace(Sort)) {
-            var property = description.TableProperties.FirstOrDefault(e => string.Equals(e.Property.Name, Sort, StringComparison.OrdinalIgnoreCase));
+        if(!string.IsNullOrWhiteSpace(QueryBuilder.Sort.SortProperty)) {
+            var property = description.TableProperties.FirstOrDefault(e => string.Equals(e.Property.Name, QueryBuilder.Sort.SortProperty, StringComparison.OrdinalIgnoreCase));
             if(property == null) {
-                Sort = null;
+                QueryBuilder.Sort.SortProperty = "";
             }
-            else {
-                await SortBy(property, false);
+            else if(QueryBuilder.Sort.SortProperty != property.Property.Name){                
+                SortBy(property, false);
                 StateHasChanged();
             }
         }
@@ -192,34 +180,29 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
         }
     }
 
-    private async Task SortBy(PropertyDescription property, bool reverseOrder = true)
+    private void SortBy(PropertyDescription property, bool reverseOrder = true)
     {
         var sort = property.Property.Name;
-        if(sort == Sort) {
+        if(sort == QueryBuilder.Sort.SortProperty) {
             if(reverseOrder) {
-                SortAscending = !SortAscending;
+                QueryBuilder.Sort.Ascending = !QueryBuilder.Sort.Ascending;
             }
         }
         else {
-            Sort = property.Property.Name;
-            SortAscending = true;
+            QueryBuilder.Sort.SortProperty = property.Property.Name;
+            QueryBuilder.Sort.Ascending = true;
         }
+        
         if(Items != null) {
             // Client side sort, we've got all items.
-            IComparer<ListItemInfo<TItem>> comparer = new ItemComparer<TItem>(property, SortAscending);
+            IComparer<ListItemInfo<TItem>> comparer = new ItemComparer<TItem>(property, QueryBuilder.Sort.Ascending);
             if(GroupFunc != null) {
                 comparer = new GroupComparer<TItem>(comparer);
             }
             InternalItems.Sort(comparer);
         }
         else {
-            // Server side sort, can't assume all items, clear them out and re-request.
-            changing = true;
-            InternalItems.Clear();
-            if(VirtualContainer != null) {
-                await VirtualContainer.RefreshDataAsync();
-            }
-            changing = false;
+            QueryBuilder.NotifyChanged();
         }
     }
 
@@ -260,7 +243,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
                 Logger.LogConsoleVerbose("Returning cached results");
                 var count = Math.Min(request.Count, InternalItems.Count);
                 var items = InternalItems.GetRange(request.StartIndex, count);
-                await PerformInitialSort();
+                PerformInitialSort();
 
                 return new ItemsProviderResult<ListItemInfo<TItem>>(items, InternalItems.Count);
             }
@@ -293,7 +276,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
             if(InternalItems.Any()) {
                 var count = Math.Min(request.Count, InternalItems.Count);
                 var items = InternalItems.GetRange(request.StartIndex, count);
-                await PerformInitialSort();
+                PerformInitialSort();
                 return new ItemsProviderResult<ListItemInfo<TItem>>(items, InternalItems.Count);
             }
             else {
