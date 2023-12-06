@@ -1,17 +1,19 @@
-﻿.suspense {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-}
+﻿@layer extra-dry {
+  .suspense {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
 
-::deep i.small {
-  font-size: 16px;
-}
+  ::deep i.small {
+    font-size: 16px;
+  }
 
-::deep i.standard {
-  font-size: 20px;
-}
+  ::deep i.standard {
+    font-size: 20px;
+  }
 
-::deep i.large {
-  font-size: 28px;
+  ::deep i.large {
+    font-size: 28px;
+  }
 }

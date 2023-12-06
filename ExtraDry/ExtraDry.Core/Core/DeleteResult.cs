@@ -4,7 +4,8 @@
 /// When a `RuleEngine` DeleteAsync method is called, indicates the result of the action.
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum DeleteResult {
+public enum DeleteResult
+{
 
     /// <summary>
     /// The item was not deleted, this is an error condition and is not expected.

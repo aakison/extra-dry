@@ -28,6 +28,7 @@ public partial class Icon : ComponentBase, IExtraDryComponent {
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
+    /// <inheritdoc cref="Blazor.ThemeInfo" />
     [CascadingParameter]
     protected ThemeInfo? ThemeInfo { get; set; }
 
@@ -50,7 +51,7 @@ public partial class Icon : ComponentBase, IExtraDryComponent {
             }
             else {
                 if(ThemeInfo == null) {
-                    NoThemeError();
+                    LogNoThemeErrorOnce();
                     return new IconInfo(Key, "no-theme") { ImagePath = $"/img/themeless/{Key}.svg", AlternateText = "" };
                 }
                 else {
@@ -58,7 +59,7 @@ public partial class Icon : ComponentBase, IExtraDryComponent {
                         return placeholderIcon;
                     }
                     else {
-                        Logger.LogWarning("Icon '{icon}' not registered, add an entry for icon to the `Icons` attribute of the `Theme` component.", Key);
+                        Logger.LogMissingIcon(Key);
                         return new IconInfo(Key, "no-key") { ImagePath = $"/img/no-icon-for-{Key}.svg", AlternateText = "" };
                     }
                 }
@@ -72,10 +73,10 @@ public partial class Icon : ComponentBase, IExtraDryComponent {
 
     private MarkupString Svg => (MarkupString)IconInfo.SvgInlineBody;
 
-    private void NoThemeError()
+    private void LogNoThemeErrorOnce()
     {
         if(noThemeErrorIssued) {
-            Logger.LogError("Icons must be used within a `Theme` component.  Create a `Theme` component, typically in the MainLayout.blazor component that wraps the site.  Then add a collection of `IconInfo` to the `Icons` property to register the key of the icon with an image or a font glyph.");
+            Logger.LogConsoleError("Icons must be used within a `Theme` component.  Create a `Theme` component, typically in the MainLayout.blazor component that wraps the site.  Then add a collection of `IconInfo` to the `Icons` property to register the key of the icon with an image or a font glyph.");
             noThemeErrorIssued = false;
         }
     }
@@ -87,9 +88,11 @@ public partial class Icon : ComponentBase, IExtraDryComponent {
     private static readonly string glyphPath = "/_content/ExtraDry.Blazor/img/glyphs";
 
     private static readonly Dictionary<string, IconInfo> fallbackIcons = (new IconInfo[] {
-            new IconInfo("search", $"{glyphPath}/magnifying-glass-regular.svg", "Search", "glyph"),
-            new IconInfo("select", $"{glyphPath}/chevron-down-regular.svg", "Select", "glyph"),
-            new IconInfo("clear", $"{glyphPath}/xmark-regular.svg", "Clear", "glyph"),
+            new("search", $"{glyphPath}/magnifying-glass-regular.svg", "Search", "glyph", SvgRenderType.Reference),
+            new("select", $"{glyphPath}/chevron-down-regular.svg", "Select", "glyph", SvgRenderType.Reference),
+            new("clear", $"{glyphPath}/xmark-regular.svg", "Clear", "glyph", SvgRenderType.Reference),
+            new("expand", $"{glyphPath}/chevron-right-regular.svg", "Expand", "glyph", SvgRenderType.Reference),
+            new("collapse", $"{glyphPath}/chevron-down-regular.svg", "Collapse", "glyph", SvgRenderType.Reference),
         }).ToDictionary(e => e.Key, e => e);
 
     private static readonly IconInfo placeholderIcon = new("placeholder", $"{glyphPath}/loading-placeholder.svg", "Placeholder", "glyph");

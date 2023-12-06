@@ -27,7 +27,7 @@ public class Template : IResourceIdentifiers {
     /// The Target Type of the template
     /// </summary>
     /// <example>Company</example>
-    [Required, MaxLength(50)]
+    [Required, StringLength(50)]
     [Display(Name = "Title", ShortName = "Title")]
     [Filter(FilterType.Contains)]
     public string Title { get => Schema.TargetType; set { Schema.TargetType = value; } }
@@ -44,7 +44,7 @@ public class Template : IResourceIdentifiers {
     public VersionInfo Version { get; set; } = new VersionInfo();
 
     [NotMapped]
-    public string Slug { get => Title.ToLower(); set { } }
+    public string Slug { get => Title.ToLower(CultureInfo.CurrentCulture); set { } }
 
     /// <inheritdoc cref="ExpandoSchema"/>
     public ExpandoSchema Schema { get; set; } = new();

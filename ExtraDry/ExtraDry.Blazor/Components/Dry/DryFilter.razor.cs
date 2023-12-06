@@ -55,7 +55,7 @@ public partial class DryFilter<TItem> : ComponentBase, IExtraDryComponent {
 
     /// <inheritdoc cref="DryPageQueryView.PageQueryBuilder" />
     [CascadingParameter]
-    public PageQueryBuilder? PageQueryBuilder { get; set; }
+    public QueryBuilder? PageQueryBuilder { get; set; }
 
     protected void DoFiltersSubmit(DialogEventArgs _)
     {

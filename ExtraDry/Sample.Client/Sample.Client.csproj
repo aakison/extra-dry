@@ -2,7 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
-		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
@@ -47,10 +46,6 @@
 	<ItemGroup>
 		<Folder Include="ViewModels\Admin\" />
 		<Folder Include="wwwroot\fonts\" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <PackageReference Update="Newtonsoft.Json" Version="13.0.2" />
 	</ItemGroup>
 
 </Project>

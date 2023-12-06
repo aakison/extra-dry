@@ -1,10 +1,4 @@
-﻿#nullable enable
-
-using Bunit;
-using System;
-using Xunit;
-
-namespace ExtraDry.Blazor.Tests.Components;
+﻿namespace ExtraDry.Blazor.Tests.Components;
 
 public class GravatarTests : IDisposable {
 

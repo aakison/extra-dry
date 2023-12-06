@@ -5,6 +5,9 @@
 /// </summary>
 public class Automobile {
 
+    /// <summary>
+    /// The DAO primary key.
+    /// </summary> 
     [JsonIgnore]
     [Key]
     public int Id { get; set; }

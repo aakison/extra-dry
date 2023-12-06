@@ -8,7 +8,7 @@ public class RegionTests {
     [Theory]
     [InlineData("Id", 2)]
     [InlineData("Slug", "US")]
-    [InlineData("Level", RegionLevel.Division)]
+    [InlineData("Level", RegionLevel.Subdivision)]
     [InlineData("Title", "USA")]
     [InlineData("Description", "United States of America")]
 
@@ -36,9 +36,9 @@ public class RegionTests {
 
     [Theory]
     [InlineData("Title", "")] // required
-    [InlineData("Title", "0123456789012345678901234567890123456789")]
+    [InlineData("Title", "01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890")]
     [InlineData("Description", "")]
-    [InlineData("Description", "01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123")]
+    [InlineData("Description", "01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890")]
     public void InvalidPropertyValue(string propertyName, string propertyValue)
     {
         var request = ValidRegion;
@@ -54,8 +54,8 @@ public class RegionTests {
     [Theory]
     [InlineData(RegionLevel.Country, "AU")]
     [InlineData(RegionLevel.Country, "US")]
-    [InlineData(RegionLevel.Division, "AU-QLD")]
-    [InlineData(RegionLevel.Division, "US-CO")]
+    [InlineData(RegionLevel.Subdivision, "AU-QLD")]
+    [InlineData(RegionLevel.Subdivision, "US-CO")]
     public void ValidCodesForLevel(RegionLevel level, string code)
     {
         var request = ValidRegion;
@@ -73,17 +73,17 @@ public class RegionTests {
     [InlineData(RegionLevel.Country, "U")]
     [InlineData(RegionLevel.Country, "")]
     [InlineData(RegionLevel.Country, "W!")]
-    [InlineData(RegionLevel.Division, "AU-Q")]
-    [InlineData(RegionLevel.Division, "AU-QABCDEF")]
-    [InlineData(RegionLevel.Subdivision, "AU-QLD-")]
-    [InlineData(RegionLevel.Division, "AU-QLD-ThisSuburbHasTooLongOfAName")]
+    [InlineData(RegionLevel.Subdivision, "AU-Q")]
+    [InlineData(RegionLevel.Subdivision, "AU-QABCDEF")]
+    [InlineData(RegionLevel.Locality, "AU-QLD-")]
+    [InlineData(RegionLevel.Subdivision, "AU-QLD-ThisSuburbHasTooLongOfAName")]
     // valid codes at wrong level
     [InlineData(RegionLevel.Country, "AU-QLD")]
     [InlineData(RegionLevel.Country, "AU-QLD-Brisbane")]
-    [InlineData(RegionLevel.Division, "AU")]
-    [InlineData(RegionLevel.Division, "AU-QLD-Brisbane")]
     [InlineData(RegionLevel.Subdivision, "AU")]
-    [InlineData(RegionLevel.Subdivision, "AU-QLD")]
+    [InlineData(RegionLevel.Subdivision, "AU-QLD-Brisbane")]
+    [InlineData(RegionLevel.Locality, "AU")]
+    [InlineData(RegionLevel.Locality, "AU-QLD")]
     public void InvalidCodesForLevel(RegionLevel level, string code)
     {
         var request = ValidRegion;
@@ -98,7 +98,7 @@ public class RegionTests {
 
     [Theory]
     [InlineData("Id", 123456)]
-    [InlineData("Level", (int)RegionLevel.Subdivision)] // don't show number through Strata
+    [InlineData("Level", (int)RegionLevel.Locality)] // don't show number through Strata
     public void JsonIgnoreValue(string propertyName, object propertyValue)
     {
         var request = ValidRegion;

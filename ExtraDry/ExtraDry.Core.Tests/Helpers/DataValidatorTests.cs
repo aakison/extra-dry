@@ -1,6 +1,7 @@
 ﻿namespace ExtraDry.Core.Tests.Helpers;
 
-public class DataValidatorTests {
+public class DataValidatorTests
+{
 
     [Fact]
     public void DefaultValues()
@@ -107,7 +108,8 @@ public class DataValidatorTests {
         Assert.Empty(validator.Errors);
     }
 
-    public class Sample {
+    public class Sample
+    {
 
         [Required]
         public string? Text { get; set; }

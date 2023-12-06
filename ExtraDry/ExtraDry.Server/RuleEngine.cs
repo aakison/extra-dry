@@ -460,7 +460,7 @@ public class RuleEngine {
                 throw new DryException($"Invalid attempt to change property '{property.Name}'", $"Attempt to change read-only property '{property.Name}'");
             }
 
-            // Do not allow property to be set to the value configured in SoftDeleteAttribute.
+            // Do not allow property to be set to the value configured in DeleteAttribute.
             if(!same && deleteRuleAttribute?.DeleteValue != null && deleteRuleAttribute.PropertyName == property.Name && AreEqual(value, deleteRuleAttribute.DeleteValue)) {
                 throw new DryException($"Invalid attempt to change property '{property.Name}' to the DeleteValue", "Unable to update, an attempt was made to make the entity appear deleted. Check your values to prevent this or use the dedicated delete functionality if available.");
             }
@@ -602,23 +602,23 @@ public class RuleEngine {
     private static void CompleteActionMasquardingAsFuncTask(Task task)
     {
         if(task.IsCompleted && task.IsFaulted) {
-            throw task.Exception?.InnerException ?? task.Exception ?? new Exception("Aggregate exception occurred but was missing details.");
+            throw task.Exception?.InnerException ?? task.Exception ?? new AggregateException("Aggregate exception occurred but was missing details.");
         }
     }
 
     private static DeleteResult AttemptRecycle<T>(T item)
     {
         var type = typeof(T);
-        var softDelete = type.GetCustomAttribute<DeleteRuleAttribute>();
-        if(softDelete == null) {
+        var deleteRule = type.GetCustomAttribute<DeleteRuleAttribute>();
+        if(deleteRule == null) {
             return DeleteResult.NotDeleted;
         }
-        var property = type.GetProperty(softDelete.PropertyName, BindingFlags.Instance | BindingFlags.Public);
+        var property = type.GetProperty(deleteRule.PropertyName, BindingFlags.Instance | BindingFlags.Public);
         if(property == null) {
             return DeleteResult.NotDeleted;
         }
         try {
-            property.SetValue(item, softDelete.DeleteValue);
+            property.SetValue(item, deleteRule.DeleteValue);
         }
         catch {
             return DeleteResult.NotDeleted;
@@ -630,14 +630,14 @@ public class RuleEngine {
     {
         var data = items
             .Where(e => e is not null)
-            .Select(e => new SoftDeleteItem {
+            .Select(e => new DeleteItem {
                 Item = e!,
                 DeleteRuleAttribute = e!.GetType().GetCustomAttribute<DeleteRuleAttribute>(),
                 PropInfo = null
             })
             .ToList();
 
-        //Check SoftDeleteRule attribute is set on all items - Fail all if any missing.
+        //Check DeleteRule attribute is set on all items - Fail all if any missing.
         if(data.Any(e => e.DeleteRuleAttribute == null)) {
             return DeleteResult.NotDeleted;
         }
@@ -646,7 +646,7 @@ public class RuleEngine {
             item.PropInfo = item.Item.GetType().GetProperty(item.DeleteRuleAttribute!.PropertyName, BindingFlags.Instance | BindingFlags.Public);
         }
 
-        //SoftDeleteRuleAttribute set on Invalid Property
+        //DeleteRuleAttribute set on Invalid Property
         if(data.Any(e => e.PropInfo == null)) {
             return DeleteResult.NotDeleted;
         }
@@ -663,7 +663,7 @@ public class RuleEngine {
         return DeleteResult.Recycled;
     }
 
-    private class SoftDeleteItem {
+    private class DeleteItem {
         public required object Item { get; set; }
         public DeleteRuleAttribute? DeleteRuleAttribute { get; set; }
         public PropertyInfo? PropInfo { get; set; }

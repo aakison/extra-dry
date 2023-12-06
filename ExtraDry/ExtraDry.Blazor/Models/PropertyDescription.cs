@@ -12,6 +12,7 @@ public class PropertyDescription {
         Format = Property.GetCustomAttribute<DisplayFormatAttribute>();
         Rules = Property.GetCustomAttribute<RulesAttribute>();
         MaxLength = Property.GetCustomAttribute<MaxLengthAttribute>();
+        StringLength = Property.GetCustomAttribute<StringLengthAttribute>();
         IsRequired = Property.GetCustomAttribute<RequiredAttribute>() != null;
         Control = Property.GetCustomAttribute<ControlAttribute>();
         Filter = Property.GetCustomAttribute<FilterAttribute>();
@@ -45,7 +46,7 @@ public class PropertyDescription {
     /// It is possible that mapping through ChildModel's will create an infinite loop;
     /// Check and limit the number of layers, in practice a UI will be horrible if recursion is even 2-3 levels.
     /// </summary>
-    private static int recursionDepth = 0;
+    private static int recursionDepth;
 
     public ViewModelDescription? ChildModel { get; private set; }
 
@@ -61,7 +62,15 @@ public class PropertyDescription {
 
     public FilterAttribute? Filter { get; }
 
-    public MaxLengthAttribute? MaxLength { get; }
+    /// <summary>
+    /// Use FieldLength instead.
+    /// </summary>
+    private MaxLengthAttribute? MaxLength { get; }
+
+    /// <summary>
+    /// Use FieldLength instead.
+    /// </summary>
+    private StringLengthAttribute? StringLength { get; }
 
     public ControlAttribute? Control { get; }
 
@@ -75,7 +84,7 @@ public class PropertyDescription {
 
     public PropertySize Size { get; set; }
 
-    public string DisplayValue(object item)
+    public string DisplayValue(object? item)
     {
         if(item == null) {
             return string.Empty;
@@ -260,10 +269,12 @@ public class PropertyDescription {
         }
     }
 
+    public int? FieldLength => StringLength?.MaximumLength ?? MaxLength?.Length;
+
     private PropertySize PredictSize()
     {
         if(Property.PropertyType == typeof(string)) {
-            var length = MaxLength?.Length ?? 1000;
+            var length = FieldLength ?? 1000;
             if(length <= 25) {
                 return PropertySize.Small;
             }

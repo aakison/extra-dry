@@ -15,10 +15,12 @@ public class TemplateService : IExpandoSchemaResolver {
             .ToFilteredCollectionAsync();
     }
 
-    public async Task CreateAsync(Template item)
+    public async Task<Template> CreateAsync(Template exemplar)
     {
-        database.Templates.Add(item);
+        var template = await rules.CreateAsync(exemplar);
+        database.Templates.Add(template);
         await database.SaveChangesAsync();
+        return template;
     }
 
     public async Task<Template?> TryRetrieveAsync(string title)
@@ -32,11 +34,12 @@ public class TemplateService : IExpandoSchemaResolver {
             ?? throw new ArgumentOutOfRangeException(nameof(title), "No template exists with given Target Type.");
     }
 
-    public async Task UpdateAsync(Template item)
+    public async Task<Template> UpdateAsync(Template exemplar)
     {
-        var existing = await RetrieveAsync(item.Title);
-        await rules.UpdateAsync(item, existing);
+        var existing = await RetrieveAsync(exemplar.Title);
+        await rules.UpdateAsync(exemplar, existing);
         await database.SaveChangesAsync();
+        return existing;
     }
 
     public async Task DeleteAsync(string title)

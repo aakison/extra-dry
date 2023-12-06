@@ -14,9 +14,23 @@
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>blazor spa microsoft dry don't repeat yourself low-code swashbuckle openapi</PackageTags>
 		<NeutralLanguage />
-		<EnableNETAnalyzers>true</EnableNETAnalyzers>
-		<EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="FileDatabase.json" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ApplicationDefinition Include="FileDatabase.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </ApplicationDefinition>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="FileDatabase.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	</ItemGroup>
 
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
@@ -41,9 +55,5 @@
 
 	<Import Project="..\CommonAnalyzers.targets" />
 	<Import Project="..\VulnerabilityFixes.targets" />
-
-	<ItemGroup>
-	  <PackageReference Update="Newtonsoft.Json" Version="13.0.2" />
-	</ItemGroup>
 
 </Project>

@@ -3,7 +3,8 @@
 /// <summary>
 /// A message for queuing transports to indicate an event has occurred on an entity type.
 /// </summary>
-public class EntityMessage {
+public class EntityMessage
+{
 
     public EntityMessage(string entityName)
     {

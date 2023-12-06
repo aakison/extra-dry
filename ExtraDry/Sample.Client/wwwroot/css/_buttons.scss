@@ -54,6 +54,7 @@ button {
         min-width: initial;
         background-color: transparent;
         color: $var-gray;
+        padding: $margin / 2;
 
         &:hover {
             background-color: rgba(255, 255, 255, 0.5);

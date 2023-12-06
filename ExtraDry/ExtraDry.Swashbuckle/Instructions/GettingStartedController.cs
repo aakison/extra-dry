@@ -18,15 +18,13 @@ namespace ExtraDry.Swashbuckle.Instructions;
 ///   * Semantic Versioning - In a major.minor.patch format, where breaking changes are not 
 ///     introduced without changing the major version.
 ///   * All endpoints are secured, or in some cases explicitly not secured (i.e.the samples).  
-///     Before using, authentication tokens will need to be issued.
+///   * Before use in integration scenarios, authentication tokens will need to be issued.
 /// 
 /// ### APIs in this collection
 /// APIs are divided into logical groupings to make them more accessible, both when learning the
 /// APIs and when consuming through code generation tools.For example, these instructions form part
-/// of the 'instructions' API.This API doesn't provide more than sample information to get started
-/// quickly with the APIs.  The other APIs that are available include: 
-///   * Sample APIs - contain the core entities for the system.
-///   * Reference Codes - contains codes and configuration.
+/// of the 'instructions' API.  This API doesn't provide more than sample information to get 
+/// started quickly with the APIs.  
 ///
 /// The complete list of all API specifications is in the dropdown at the top of the page.  Each
 /// specification page will list provide information on the endpoints and the schema, along with a
@@ -51,9 +49,10 @@ namespace ExtraDry.Swashbuckle.Instructions;
 /// ### Cross-Cutting Design
 /// In order to make these APIs more approachable, endpoints share some common interface details.
 /// For example, sorting of results from collections of entities is always done with the same query
-/// request format, and always produces the same metadata container in the result.These design
-/// styles cut-across the entire system and are documented here with these instructions.When you're
-/// using other APIs, they will always link back to these instructions for review when needed.
+/// request format, and always produces the same metadata container in the result.  These design
+/// styles cut-across the entire system and are documented here with these instructions.  When 
+/// you're using other APIs, they will always link back to these instructions for review 
+/// when needed.
 /// 
 /// The key concerns are:
 ///   * Filtering - how to reduce the number of results when querying large sets of entities.
@@ -61,6 +60,10 @@ namespace ExtraDry.Swashbuckle.Instructions;
 ///     results to users.
 ///   * Paging - how to efficiently get large sets of data one page at a time, for both display to 
 ///     users and machine-agent batch processing.
+/// Some endpoint-specific concerns include:
+///   * Statistics - Summary results over groups of entities, such as counts, sums, averages, etc.
+///   * Hierarchy - How to list entities with parent/child relationships ordered depth-first for
+///     logical display as a tree-view in a table.
 ///   
 /// ### Live Samples
 /// Where possible, these instructions also contain live samples to demonstrate these concepts.  For

@@ -1,0 +1,22 @@
+﻿@namespace ExtraDry.Blazor.Forms
+@typeparam T
+
+<div class="@CssClasses" @attributes="@UnmatchedAttributes">
+  @foreach(var option in SelectedOptions) { 
+    <div>
+      @if(EditMode != EditMode.ReadOnly) { 
+        <span @onclick="@(() => DeselectOption(option.Key))">@option.Key</span> 
+      }
+      @option.Display
+    </div>
+  }
+  @if(!ReadOnly) { 
+    <select @onchange="SelectOption" title="@Property?.FieldCaption">
+      <option selected="@BlankSelected"></option>
+      @foreach (var option in AvailableOptions) {
+        <option value="@option.Key">@option.Display</option>
+      }
+    </select>
+  }
+</div>
+ 

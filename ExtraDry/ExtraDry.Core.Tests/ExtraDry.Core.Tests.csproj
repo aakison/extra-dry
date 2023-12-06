@@ -4,7 +4,6 @@
 		<TargetFramework>net7.0</TargetFramework>
 		<IsPackable>false</IsPackable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
@@ -30,7 +29,9 @@
 	<Import Project="..\VulnerabilityFixes.targets" />
 
 	<ItemGroup>
-	  <PackageReference Update="Newtonsoft.Json" Version="13.0.2" />
+	  <None Update="FileValidation\FileDatabase.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 
 </Project>

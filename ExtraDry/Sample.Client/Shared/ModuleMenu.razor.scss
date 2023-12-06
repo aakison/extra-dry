@@ -42,6 +42,7 @@ div {
                             margin-right: $margin;
                             width: $logo-size;
                             height: $logo-size;
+                            min-width: $logo-size;
                         }
 
                         a:link, a:visited, a:hover, a:active {

@@ -9,9 +9,7 @@ public class RuleEngineUndeleteTests {
     {
         var rules = new RuleEngine(new ServiceProviderStub());
 
-        var lambda = async () => {
-            await rules.RestoreAsync((object?)null);
-        };
+        async Task lambda() => await rules.RestoreAsync((object?)null);
 
         await Assert.ThrowsAsync<ArgumentNullException>(lambda);
     }
@@ -57,9 +55,7 @@ public class RuleEngineUndeleteTests {
         var rules = new RuleEngine(new ServiceProviderStub());
         var obj = new BadProperty();
 
-        var lambda = async () => {
-            await rules.RestoreAsync(obj);
-        };
+        async Task lambda() => await rules.RestoreAsync(obj);
 
         await Assert.ThrowsAsync<DryException>(lambda);
     }
@@ -82,9 +78,7 @@ public class RuleEngineUndeleteTests {
         var obj = new BadUndeleteValue();
         await rules.DeleteAsync(obj, () => { }, () => Task.CompletedTask);
 
-        var lambda = async () => {
-            await rules.RestoreAsync(obj);
-        };
+        async Task lambda() => await rules.RestoreAsync(obj);
 
         await Assert.ThrowsAsync<DryException>(lambda);
     }
@@ -120,8 +114,7 @@ public class RuleEngineUndeleteTests {
         public State State { get; set; } = State.Inactive;
     }
 
-    // Will need again when DRY1305 is fixed
-    //[SuppressMessage("Usage", "DRY1305:SoftDelete on classes should use nameof for property names.", Justification = "Required for testing.")]
+    [SuppressMessage("Usage", "DRY1305:DeleteRule on classes should use nameof for property names.", Justification = "Required for testing.")]
     [DeleteRule(DeleteAction.Recycle, "BadName", State.Deleted, State.Active)]
     public class BadProperty {
         public State State { get; set; } = State.Inactive;

@@ -10,7 +10,8 @@ namespace ExtraDry.Core;
 /// object is approximated by using default values and Id references. This is suitable for 
 /// properties that are treated as RuleAction.Link.
 /// </summary>
-public class ResourceReferenceConverter<T> : JsonConverter<T> where T : IResourceIdentifiers {
+public class ResourceReferenceConverter<T> : JsonConverter<T> where T : IResourceIdentifiers
+{
 
     /// <inheritdoc cref="JsonConverter{T}.ReadAsPropertyName(ref Utf8JsonReader, Type, JsonSerializerOptions)" />
     public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)

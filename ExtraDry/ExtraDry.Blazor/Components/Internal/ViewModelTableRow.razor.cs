@@ -1,29 +1,30 @@
-﻿#nullable disable
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace ExtraDry.Blazor.Components.Internal;
 
+[SuppressMessage("Usage", "DRY1500:Extra DRY Blazor components should have an interface.", Justification = "Internal component not for general use.")]
 public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
 
     /// <summary>
     /// Required parameter which is the view model description passed from the DryTable.
     /// </summary>
     [Parameter]
-    public ViewModelDescription Description { get; set; }
+    public ViewModelDescription Description { get; set; } = null!; // Only used in DryTable
 
     /// <summary>
     /// Required parameter which is the selection set for all items, passed from the DryTable.
     /// </summary>
     [Parameter]
-    public SelectionSet Selection { get; set; }
+    public SelectionSet Selection { get; set; } = null!; // Only used in DryTable
 
     /// <summary>
     /// Required parameter which is the current item, passed from the DryTable.
     /// </summary>
     [Parameter]
-    public ListItemInfo<T> Item { get; set; }
+    public ListItemInfo<T> Item { get; set; } = null!; // Only used in DryTable
 
     [Parameter]
-    public Grouping Grouping { get; set; }
+    public string GroupColumn { get; set; } = null!; // Only used in DryTable
 
     [Parameter]
     public int Height { get; set; } = 40;
@@ -31,9 +32,6 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
     /// <inheritdoc cref="IExtraDryComponent.CssClass" />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
-
-    [Inject]
-    private ILogger<ViewModelTableRow<T>> Logger { get; set; }
 
     protected override void OnParametersSet()
     {
@@ -54,17 +52,18 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass, ClickableClass, SelectedClass);
 
-    private string RadioButtonScope => Description.GetHashCode().ToString();
+    private string RadioButtonScope => $"{Description.GetHashCode()}";
 
-    private bool IsSelected => Selection.Contains(Item.Item);
+    private bool IsSelected => Item.Item != null && Selection.Contains(Item.Item);
 
     private string UuidValue => Description.UuidProperty?.GetValue(Item.Item)?.ToString() ?? string.Empty;
 
     private async Task RowClick(MouseEventArgs _)
     {
-        Logger.LogInformation("Select Row with Row Click");
         if(Description.ListSelectMode == ListSelectMode.Action) {
-            await Description.SelectCommand?.ExecuteAsync(Item.Item);
+            if(Description.SelectCommand != null && Item.Item != null) {
+                await Description.SelectCommand.ExecuteAsync(Item.Item);
+            }
         }
         else if(IsSelected) {
             Deselect();
@@ -77,26 +76,26 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
 
     private async Task RowDoubleClick(MouseEventArgs _)
     {
-        Logger.LogInformation("Select Row with Row Double Click");
-        await Description.DefaultCommand?.ExecuteAsync(Item.Item);
+        if(Description.DefaultCommand != null && Item.Item != null) {
+            await Description.DefaultCommand.ExecuteAsync(Item.Item);
+        }
         StateHasChanged();
     }
 
     private void CheckChanged(ChangeEventArgs args)
     {
-        Logger.LogInformation("Checked checkbox/radio with new value '{arg}'", args?.Value);
-        //if(IsSelected) {
-        //    Select();
-        //}
-        //else {
-        //    Deselect();
-        //}
-        //StateHasChanged();
+        if(IsSelected) {
+            Select();
+        }
+        else {
+            Deselect();
+        }
+        StateHasChanged();
     }
 
     private void Select()
     {
-        if(!IsSelected) {
+        if(!IsSelected && Item.Item != null) {
             Selection.Add(Item.Item);
             if(!Selection.MultipleSelect) {
                 Selection.Changed += OnExclusivity;
@@ -106,7 +105,7 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
 
     private void Deselect()
     {
-        if(IsSelected) {
+        if(IsSelected && Item.Item != null) {
             Selection.Remove(Item.Item);
             if(!Selection.MultipleSelect) {
                 Selection.Changed -= OnExclusivity;
@@ -114,7 +113,7 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
         }
     }
 
-    private void OnExclusivity(object sender, EventArgs args)
+    private void OnExclusivity(object? sender, EventArgs args)
     {
         Deselect();
         StateHasChanged(); // external event, need to signal to update UI.

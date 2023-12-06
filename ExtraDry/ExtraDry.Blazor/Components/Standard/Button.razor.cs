@@ -70,6 +70,10 @@ public partial class Button : ComponentBase, IExtraDryComponent {
     [Parameter]
     public bool ShowContent { get; set; } = true;
 
+    /// <inheritdoc cref="ButtonTheme" />
+    [Parameter]
+    public ButtonTheme Theme { get; set; } = ButtonTheme.Normal;
+
     /// <summary>
     /// Indicates if the button is currently enabled.  Note: this is the inverse of the HTML 
     /// disabled logic.
@@ -77,6 +81,7 @@ public partial class Button : ComponentBase, IExtraDryComponent {
     [Parameter]
     public bool Enabled { get; set; } = true;
 
+    /// <inheritdoc cref="Blazor.ThemeInfo" />
     [CascadingParameter]
     protected ThemeInfo? ThemeInfo { get; set; }
 
@@ -84,7 +89,7 @@ public partial class Button : ComponentBase, IExtraDryComponent {
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass);
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", Slug.ToTitleSlug(Theme.ToString()), CssClass);
 
     private bool DisplayIcon => ShowIcon && !string.IsNullOrWhiteSpace(Icon);
 

@@ -10,12 +10,12 @@ namespace ExtraDry.Server.DataWarehouse;
 /// </summary>
 public class DataWarehouseAspect {
 
-    public DataWarehouseAspect(AspectDbContext context, ServiceBusQueue<EntityMessage> queue, ILogger<DataWarehouseAspect>? logger)
+    public DataWarehouseAspect(AspectDbContext context, ServiceBusQueue<EntityMessage> queue, ILogger<DataWarehouseAspect> iLogger)
     {
         Queue = queue;
-        Logger = logger;
+        logger = iLogger;
         ExceptionTypes.Add(typeof(VersionInfo));
-        context.EntitiesChanged += Context_EntitiesChanged;
+        context.EntitiesChangedEvent += Context_EntitiesChanged;
     }
 
     private async void Context_EntitiesChanged(object sender, EntitiesChangedEventArgs args)
@@ -26,8 +26,8 @@ public class DataWarehouseAspect {
         try {
             await Queue.SendBatchAsync(messages);
         }
-        catch(Exception ex) {
-            Logger?.LogWarning(ex, "Could not send batch of messages to service bus.  Warning only as this will prevent the warehouse from dynamically being updated but it should still be updated on a CRON schedule.");
+        catch(Exception) {
+            logger.LogTextWarning("Could not send batch of messages to service bus.  Warning only as this will prevent the warehouse from dynamically being updated but it should still be updated on a CRON schedule.");
             // eat exception, don't want to tank EF.
         }
     }
@@ -41,6 +41,6 @@ public class DataWarehouseAspect {
 
     private ServiceBusQueue<EntityMessage> Queue { get; }
 
-    private ILogger<DataWarehouseAspect>? Logger { get; }
+    private readonly ILogger<DataWarehouseAspect> logger;
 
 }

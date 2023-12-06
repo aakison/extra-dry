@@ -5,7 +5,8 @@ namespace ExtraDry.Core;
 /// <summary>
 /// Helper class to facilitate the maintenance of Slugs that can be used in a URI path without escaping.
 /// </summary>
-public static class Slug {
+public static class Slug
+{
     #region Slug Methods
     /// <summary>
     /// Given a name, with punctuation and mixed case, create a matching Slug.

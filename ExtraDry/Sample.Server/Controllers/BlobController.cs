@@ -11,8 +11,9 @@ namespace Sample.Server.Controllers;
 [ApiExplorerSettings(GroupName = ApiGroupNames.SampleApi)]
 [ApiExceptionStatusCodes]
 [SuppressMessage("Usage", "DRY1002:ApiController shouldn't inherit from ControllerBase",
-    Justification = "Blobc Controller makes use of ControllerBase functionality directly managing the Request.")]
-public class BlobController : ControllerBase {
+    Justification = "Controller makes use of ControllerBase functionality for emitting file content.")]
+public class BlobController : ControllerBase
+{
 
     /// <summary>
     /// Standard DI Constructor

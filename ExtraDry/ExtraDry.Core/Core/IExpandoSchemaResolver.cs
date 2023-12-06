@@ -7,7 +7,8 @@
 public interface IExpandoSchemaResolver
 {
     /// <summary>
-    /// Given a target object, return the ExpandoSchema that defines the custom fields for the object.
+    /// Given a target object, return the ExpandoSchema that defines the custom fields for 
+    /// the object.
     /// </summary>
     Task<ExpandoSchema?> ResolveAsync(object target);
 }

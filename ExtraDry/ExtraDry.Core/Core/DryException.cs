@@ -8,7 +8,8 @@ namespace ExtraDry.Core;
 /// from the server through the API to the client using RFC7807.
 /// </summary>
 [Serializable]
-public sealed class DryException : Exception {
+public sealed class DryException : ApplicationException
+{
 
     /// <summary>
     /// Construct an empty exception, prefer use of a constructor with more information.
@@ -28,6 +29,9 @@ public sealed class DryException : Exception {
     /// <summary>
     /// Create an exception with information that will populate the inner ProblemDetails.
     /// </summary>
+    /// <param name="status">The HTTP status code for this occurrence of the problem.</param>
+    /// <param name="message">A short, human-readable summary of the problem type.</param>
+    /// <param name="detail">A human-readable explanation specific to this occurrence of the problem.</param>
     public DryException(HttpStatusCode status, string message, string detail) : base(message)
     {
         ProblemDetails.Status = (int)status;
@@ -39,7 +43,8 @@ public sealed class DryException : Exception {
     /// Create a simple exception with a message, prefer the constructor with (status, message,
     /// detail) over this one.
     /// </summary>
-    public DryException(string message) : base(message) {
+    public DryException(string message) : base(message)
+    {
         ProblemDetails.Title = message;
     }
 
@@ -47,7 +52,8 @@ public sealed class DryException : Exception {
     /// Create a simple exception with a message and inner exception, prefer the constructor with
     /// (status, message, detail) over this one.
     /// </summary>
-    public DryException(string message, Exception inner) : base(message, inner) {
+    public DryException(string message, Exception inner) : base(message, inner)
+    {
         ProblemDetails.Title = message;
     }
 

@@ -1,6 +1,7 @@
 ﻿namespace ExtraDry.Core.Tests;
 
-public class ArgumentMismatchExceptionTests {
+public class ArgumentMismatchExceptionTests
+{
 
     [Fact]
     public void ArgumentMismatchRoundtrip1()
@@ -30,7 +31,7 @@ public class ArgumentMismatchExceptionTests {
     [Fact]
     public void ArgumentMismatchRoundtrip3()
     {
-        var inner = new Exception("inner");
+        var inner = new ArgumentException("inner");
         var ex = new ArgumentMismatchException("message", inner);
 
         Assert.StartsWith("message", ex.Message);

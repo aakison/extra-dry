@@ -8,7 +8,7 @@ using Sample.Data;
 using Sample.WebJob;
 
 var netCoreEnvironment = Environment.GetEnvironmentVariable("NETCORE_ENVIRONMENT");
-var isDevelopment = string.IsNullOrEmpty(netCoreEnvironment) || string.Compare(netCoreEnvironment, "development", StringComparison.OrdinalIgnoreCase) == 0;
+var isDevelopment = string.IsNullOrEmpty(netCoreEnvironment) || string.Equals(netCoreEnvironment, "development", StringComparison.OrdinalIgnoreCase);
 
 var configurationBuilder = new ConfigurationBuilder()
     .SetBasePath(Environment.CurrentDirectory)

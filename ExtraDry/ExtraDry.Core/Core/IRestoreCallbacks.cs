@@ -3,7 +3,8 @@
 /// <summary>
 /// The interface for entities that want to embellish the behavior before they are restored.
 /// </summary>
-public interface IRestoringCallback {
+public interface IRestoringCallback
+{
 
     /// <summary>
     /// Handling for the item that is done as it is being restored.  This is called just 
@@ -17,7 +18,8 @@ public interface IRestoringCallback {
 /// <summary>
 /// The interface for entities that want to embellish the behavior after they are restored.
 /// </summary>
-public interface IRestoredCallback { 
+public interface IRestoredCallback
+{
 
     /// <summary>
     /// Handling for the item that is done as it is being restored.  This is called just 

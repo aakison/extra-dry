@@ -4,12 +4,11 @@ namespace ExtraDry.Blazor;
 
 public interface IListService<T> : IOptionProvider<T> {
 
-    string UriTemplate { get; set; }
+    int PageSize { get; }
 
-    object[] UriArguments { get; set; }
+    int MaxLevel { get; }
 
-    int FetchSize { get; set; }
+    ValueTask<ItemsProviderResult<T>> GetItemsAsync(Query query, CancellationToken cancellationToken = default);
 
-    ValueTask<ItemsProviderResult<T>> GetItemsAsync(string? filter, string? sort, bool? ascending, int? skip, int? take, CancellationToken cancellationToken = default);
-
+    ValueTask<ListItemsProviderResult<T>> GetListItemsAsync(Query query, CancellationToken cancellationToken = default);
 }

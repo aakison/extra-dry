@@ -2,8 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
-		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
@@ -24,10 +22,6 @@
 		<ProjectReference Include="..\ExtraDry.Core\ExtraDry.Core.csproj" />
 		<ProjectReference Include="..\ExtraDry.Server\ExtraDry.Server.csproj" />
 		<ProjectReference Include="..\Sample.Shared\Sample.Shared.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <PackageReference Update="Newtonsoft.Json" Version="13.0.2" />
 	</ItemGroup>
 
 </Project>

@@ -115,7 +115,7 @@ public class RuleEngineDeleteTests {
 
         var result = await rules.DeleteAsync(obj, () => { },
             // exception on hard delete (the second call).
-            () => { if(callCount++ > 0) { throw new Exception(); } return Task.CompletedTask; } 
+            () => { if(callCount++ > 0) { throw new ArgumentException(); } return Task.CompletedTask; } 
         );
 
         Assert.False(obj.Active);
@@ -143,9 +143,7 @@ public class RuleEngineDeleteTests {
         var rules = new RuleEngine(new ServiceProviderStub());
         var obj = new BadDeleteValueDeletable();
 
-        var lambda = async () => {
-            _ = await rules.DeleteAsync(obj, () => { }, () => Task.CompletedTask);
-        };
+        async Task lambda() => await rules.DeleteAsync(obj, () => { }, () => Task.CompletedTask);
 
         await Assert.ThrowsAsync<DryException>(lambda);
     }
@@ -177,8 +175,7 @@ public class RuleEngineDeleteTests {
         public int UnRuled { get; set; } = 3;
     }
 
-    //Will need suppression again when DRY1305 is fixed.
-    //[SuppressMessage("Usage", "DRY1305:SoftDelete on classes should use nameof for property names.", Justification = "Required for testing.")]
+    [SuppressMessage("Usage", "DRY1305:DeleteRule on classes should use nameof for property names.", Justification = "Required for testing.")]
     [DeleteRule(DeleteAction.Recycle, "BadName", false, true)]
     public class BadPropertyDeletable
     {

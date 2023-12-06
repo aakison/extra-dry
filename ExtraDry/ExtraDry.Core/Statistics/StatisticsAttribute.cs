@@ -7,7 +7,8 @@
 /// ToStatisticsAsync low.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-public class StatisticsAttribute : Attribute {
+public class StatisticsAttribute : Attribute
+{
 
     /// <summary>
     /// Apply statistics to a property.
@@ -17,7 +18,7 @@ public class StatisticsAttribute : Attribute {
     {
         Stats = type;
     }
-    
+
     /// <summary>
     /// The type of statistics collected for the indicated property.
     /// </summary>

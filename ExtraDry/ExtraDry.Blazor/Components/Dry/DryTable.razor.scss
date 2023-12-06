@@ -1,0 +1,54 @@
+@layer extra-dry {
+    table {
+        ::deep span.group {
+            display: flex;
+
+            span.dry-hierarchy-expander {
+                display: flex;
+                align-items: center;
+                justify-content: end;
+
+                &.level-0 {
+                    width: 32px;
+                }
+
+                &.level-1 {
+                    width: 48px;
+                }
+
+                &.level-2 {
+                    width: 64px;
+                }
+
+                &.level-3 {
+                    width: 80px;
+                }
+
+                &.level-4 {
+                    width: 96px;
+                }
+
+                &.level-5 {
+                    width: 112px;
+                }
+
+                &.level-6 {
+                    width: 128px;
+                }
+
+                &.level-7 {
+                    width: 144px;
+                }
+
+                button {
+                    display: flex;
+                    width: 32px;
+                    height: 32px;
+                    padding: 0;
+                    align-items: center;
+                    justify-content: center;
+                }
+            }
+        }
+    }
+}

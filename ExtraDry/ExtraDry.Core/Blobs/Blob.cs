@@ -36,7 +36,7 @@ public class Blob : IBlob, IValidatableObject
     public string MimeType { get; set; } = "application/octet-string";
 
     /// <inheritdoc/>
-    [StringLength(32, MinimumLength = 32), RegularExpression("[A-F0-9]*")]
+    [StringLength(32), RegularExpression("[A-F0-9]{32}")]
     [HttpHeader("Content-Md5")]
     public string MD5Hash { get; set; } = "";
 

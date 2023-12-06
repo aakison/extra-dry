@@ -251,7 +251,7 @@ public partial class FlexiSelectForm<TItem> : ComponentBase, IExtraDryComponent 
     /// </summary>
     private string Name { get; set; } = $"FlexiSingleSelect{++count}";
 
-    private static int count = 0;
+    private static int count;
 
     private class DisplayItemViewModel
     {

@@ -2,7 +2,8 @@
 
 namespace ExtraDry.Core.Tests;
 
-public class ExpandoValuesConverterTests {
+public class ExpandoValuesConverterTests
+{
 
     [Fact]
     public void NullExpandoValuesAreNull()
@@ -20,9 +21,9 @@ public class ExpandoValuesConverterTests {
     {
         var json = $@"{{ ""Values"" : {{ ""key"" : [1, 2] }} }}";
 
-        var lambda = () => JsonSerializer.Deserialize<Target>(json);
+        Target lambda() => JsonSerializer.Deserialize<Target>(json)!;
 
-        Assert.Throws<DryException>(lambda);
+        Assert.Throws<DryException>((Func<Target>)lambda);
     }
 
     [Fact]
@@ -30,9 +31,9 @@ public class ExpandoValuesConverterTests {
     {
         var json = $@"{{ ""Values"" : {{ ""key"" : {{ ""inner"" : ""value"" }} }} }}";
 
-        var lambda = () => JsonSerializer.Deserialize<Target>(json);
+        Target lambda() => JsonSerializer.Deserialize<Target>(json)!;
 
-        Assert.Throws<DryException>(lambda);
+        Assert.Throws<DryException>((Func<Target>)lambda);
     }
 
     [Fact]
@@ -63,7 +64,8 @@ public class ExpandoValuesConverterTests {
         Assert.Equal(element, target.Values.First().Value);
     }
 
-    public class Target {
+    public class Target
+    {
 
         public ExpandoValues Values { get; set; } = new();
 

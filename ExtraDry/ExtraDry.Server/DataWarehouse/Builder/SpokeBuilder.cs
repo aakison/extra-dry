@@ -37,9 +37,9 @@ public class SpokeBuilder : ColumnBuilder {
         return this;
     }
 
-    public SpokeBuilder HasDefault(object _default)
+    public SpokeBuilder HasDefault(object @default)
     {
-        SetDefault(_default);
+        SetDefault(@default);
         return this;
     }
 

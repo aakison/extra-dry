@@ -31,13 +31,20 @@ public class RegionController {
     }
 
     /// <summary>
-    /// Filtered list of all regions
+    /// Paged list of all regions
     /// </summary>
     [HttpGet("api/regions"), Produces("application/json")]
     [AllowAnonymous]
-    public async Task<FilteredCollection<Region>> ListAsync([FromQuery] SortQuery query)
+    public async Task<PagedCollection<Region>> ListAsync([FromQuery] PageQuery query)
     {
         return await regions.ListAsync(query);
+    }
+
+    [HttpGet("api/regions/hierarchy"), Produces("application/json")]
+    [AllowAnonymous]
+    public async Task<PagedHierarchyCollection<Region>> ListHierarchyAsync([FromQuery] PageHierarchyQuery query)
+    {
+        return await regions.ListHierarchyAsync(query);
     }
 
     /// <summary>
@@ -55,7 +62,7 @@ public class RegionController {
     /// </summary>
     [HttpGet("api/regions/{code}/children"), Produces("application/json")]
     [AllowAnonymous]
-    public async Task<FilteredCollection<Region>> ListChildrenAsync(string code)
+    public async Task<BaseCollection<Region>> ListChildrenAsync(string code)
     {
         return await regions.ListChildrenAsync(code);
     }
@@ -63,11 +70,12 @@ public class RegionController {
     /// <summary>
     /// Create a new region
     /// </summary>
-    [HttpPost("api/regions"), Consumes("application/json")]
+    [HttpPost("api/regions"), Consumes("application/json"), Produces("application/json")]
     [Authorize(SamplePolicies.SamplePolicy)]
-    public async Task CreateAsync(Region value)
+    public async Task<ResourceReference<Region>> CreateAsync(Region value)
     {
-        await regions.CreateAsync(value);
+        var region = await regions.CreateAsync(value);
+        return new ResourceReference<Region>(region);
     }
 
     /// <summary>
@@ -88,18 +96,6 @@ public class RegionController {
     public async Task DeleteAsync(string code)
     {
         await regions.DeleteAsync(code);
-    }
-
-    /// <summary>
-    /// Undeletes a previously deleted Region if it's still in the Recycle Bin.
-    /// </summary>
-    [HttpPost("api/regions/{code}:undelete")]
-    [Authorize(SamplePolicies.SamplePolicy)]
-    [SuppressMessage("ApiUsage", "DRY1107:HttpPost, HttpPut and HttpPatch methods should have Consumes attribute", Justification = "This is an empty-bodied RPC style call and not a REST Create.")]
-    [SuppressMessage("Usage", "DRY1104:Http Verbs should be named with their CRUD counterparts", Justification = "This is an Undelete RPC call using POST instead of a Create method.")]
-    public async Task UndeleteAsync(string code)
-    {
-        await regions.RestoreAsync(code);
     }
 
     private readonly RegionService regions;

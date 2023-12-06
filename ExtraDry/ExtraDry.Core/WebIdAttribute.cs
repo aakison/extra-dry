@@ -1,12 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace ExtraDry.Core;
+﻿namespace ExtraDry.Core;
 
 /// <summary>
 /// Validates that a string field is a valid WebId, allowing it to be part of a URI path without translation.
 /// This only allows letters, numbers, and the punctuation "-", "_", ".", and "~".
 /// </summary>
-public class WebIdAttribute : RegularExpressionAttribute {
+public class WebIdAttribute : RegularExpressionAttribute
+{
 
     /// <summary>
     /// Indicates string is a WebId.

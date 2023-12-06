@@ -1,9 +1,12 @@
-﻿namespace ExtraDry.Server.DataWarehouse;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace ExtraDry.Server.DataWarehouse;
 
 /// <summary>
 /// Type data types for columns in the schema for the data warehouse.
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
+[SuppressMessage("Naming", "CA1720:Identifier contains type name", Justification = "Integer is a math concept first.")]
 public enum ColumnType {
 
     /// <summary>
@@ -17,9 +20,9 @@ public enum ColumnType {
     Integer,
 
     /// <summary>
-    /// A double value column
+    /// A real value column.
     /// </summary>
-    Double,
+    Real,
 
     /// <summary>
     /// A decimal/money field that has a fixed precision.

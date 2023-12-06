@@ -1,14 +1,20 @@
-﻿using ExtraDry.Core;
-using Microsoft.EntityFrameworkCore;
-using Sample.Shared.Converters;
+﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sample.Shared;
 
-[Format(Icon = "building")]
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum OwnershipStructure
+{
+    Private,
+    Public,
+    Hybrid
+}
+
+[Format(Icon = "company")]
 [FactTable, DimensionTable]
 [DeleteRule(DeleteAction.Recycle, nameof(Status), CompanyStatus.Deleted, CompanyStatus.Active)]
-public class Company {
+public class Company : IResourceIdentifiers {
 
     [Key]
     [JsonIgnore]
@@ -18,9 +24,15 @@ public class Company {
     [Rules(RuleAction.Ignore)]
     public Guid Uuid { get; set; } = Guid.NewGuid();
 
+    [Display(Name = "Code", GroupName = "Summary")]
+    [Filter(FilterType.Equals)]
+    [Rules(CreateAction = RuleAction.Allow, UpdateAction = RuleAction.Block)]
+    [Required, StringLength(24)]
+    public string Slug { get; set; } = string.Empty;
+
     [NotMapped]
     [Display(GroupName = "Summary")]
-    public string Caption => $"Company {Code}";
+    public string Caption => $"Company {Slug}";
 
     /// <summary>
     /// Official incorporated name of company, as listed in Dun &amp; Bradstreet
@@ -30,23 +42,17 @@ public class Company {
     [Filter(FilterType.Contains)]
     [Rules(RuleAction.IgnoreDefaults)]
     [Required, StringLength(80)]
-    public string Title { get; set; } = string.Empty;
-
-    [Display(Name = "Code", GroupName = "Summary")]
-    [Filter(FilterType.Equals)]
-    [Rules(CreateAction = RuleAction.Allow, UpdateAction = RuleAction.Block)]
-    [Required, StringLength(24)]
-    public string Code { get; set; } = string.Empty;
+    public string Title { get; set; } = "";
 
     [Display(Name = "Status", ShortName = "Status", GroupName = "Status")]
     [Rules(RuleAction.Allow)]
     [Filter]
     public CompanyStatus Status { get; set; }
 
-    [Display]
-    [MaxLength(1000)]
+    [Display(AutoGenerateField = false)]
+    [StringLength(500)]
     [Rules(RuleAction.IgnoreDefaults)]
-    public string Description { get; set; } = string.Empty;
+    public string Description { get; set; } = "";
 
     [Display(Name = "Primary Sector", ShortName = "Sector")]
     [Rules(RuleAction.Link)]
@@ -57,12 +63,29 @@ public class Company {
     [Rules(RuleAction.Link)]
     public List<Sector> AdditionalSectors { get; set; } = new();
 
+    [Rules(RuleAction.Allow)]
+    [Filter]
+    public OwnershipStructure Ownership { get; set; }
+
+    [Display]
+    [Phone, StringLength(24)]
+    [Rules(RuleAction.IgnoreDefaults)]
+    public string ContactPhone { get; set; } = "";
+
+    [Display]
+    [EmailAddress, StringLength(100)]
+    [Rules(RuleAction.IgnoreDefaults)]
+    public string ContactEmail { get; set; } = "";
+
+    [Display]
     [Precision(18, 2)]
     public decimal AnnualRevenue { get; set; }
 
+    [Display]
     [Precision(18, 2)]
     public decimal SalesMargin { get; set; }
 
+    [Display]
     public DateTime IncorporationDate { get; set; }
 
     [Display]

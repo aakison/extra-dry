@@ -1,0 +1,27 @@
+﻿@page "/admin/works/regions/{View}"
+@page "/admin/works/regions/{View}/{Uuid:guid}"
+
+@inject NavigationManager Navigation;
+
+@if(View == "list") {
+    <RegionList />
+}
+@if(Uuid != Guid.Empty)
+{
+    <DialogBox CloseUrl="@CloseDialogUrl">
+        <DryErrorBoundary>
+            <RegionEdit Uuid="@Uuid" />
+        </DryErrorBoundary>
+    </DialogBox>
+}
+
+@code {
+    [Parameter]
+    public string View { get; set; } = string.Empty;
+
+    [Parameter]
+    public Guid Uuid { get; set; } = Guid.Empty;
+
+    private string CloseDialogUrl => $"/admin/works/regions/{View}";
+
+}

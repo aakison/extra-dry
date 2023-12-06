@@ -1,0 +1,46 @@
+﻿@namespace ExtraDry.Blazor
+@using ExtraDry.Blazor.Forms
+@using ExtraDry.Blazor.Internal
+@typeparam T
+
+<form class="@CssClasses" onsubmit="return false;" action="/" method="GET" @attributes="@UnmatchedAttributes">
+    <CascadingValue Value="@EditMode">
+        <CascadingValue Value="@this">
+            @if(Model == null) {
+                <progress>Loading...</progress>
+            }
+            else {
+                <div class="@ModelNameSlug entity-info">
+                    <Icon Key="@Description?.Icon" />
+                    <label>@Description?.ModelDisplayName</label>
+                </div>
+                <div class="@ModelNameSlug fixed-fieldsets">
+                    @foreach(var fieldset in FormDescription?.Fieldsets?.Take(FixedFieldsets) ?? Array.Empty<FormFieldset>()) {
+                        <CascadingValue Value="@fieldset">
+                            <DryFieldset T="@T" />
+                        </CascadingValue>
+                    }
+                </div>
+                <div class="@ModelNameSlug variable-fieldsets">
+                    @foreach(var fieldset in FormDescription?.Fieldsets?.Skip(FixedFieldsets) ?? Array.Empty<FormFieldset>()) {
+                        <CascadingValue Value="@fieldset">
+                            <DryFieldset T="@T" />
+                        </CascadingValue>
+                    }
+                    <div class="content">
+                        @ChildContent
+                    </div>
+                </div>
+                <div class="@ModelNameSlug entity-actions">
+                    @if(error != null) {
+                        <div class="alert danger">
+                            <h5><i></i> Error</h5>
+                            @error
+                        </div>
+                    }
+                    <DryButtonBar Commands="@Description?.Commands" Target="@Model" />
+                </div>
+            }
+        </CascadingValue>
+    </CascadingValue>
+</form>

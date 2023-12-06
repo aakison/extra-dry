@@ -17,7 +17,7 @@ public static class DataWarehouseServiceCollectionExtensions {
             var model = provider.GetRequiredService<TModel>();
             var oltp = provider.GetRequiredService<TOltpContext>();
             var olap = provider.GetRequiredService<TOlapContext>();
-            var logger = provider.GetService<ILogger<DataFactory>>();
+            var logger = provider.GetRequiredService<ILogger<DataFactory>>();
             var opt = new DataFactoryOptions();
             options?.Invoke(opt);
             return new DataFactory<TModel, TOltpContext, TOlapContext>(model, oltp, olap, logger, opt);

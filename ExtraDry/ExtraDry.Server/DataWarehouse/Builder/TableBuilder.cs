@@ -31,8 +31,8 @@ public abstract class TableBuilder {
     {
         var properties = TableEntityType!.GetProperties();
         var keyProperty = properties.FirstOrDefault(e => e.GetCustomAttribute<KeyAttribute>() != null) ??
-            properties.FirstOrDefault(e => string.Compare(e.Name, "Id", StringComparison.OrdinalIgnoreCase) == 0) ??
-            properties.FirstOrDefault(e => string.Compare(e.Name, $"{TableEntityType.Name}Id", StringComparison.OrdinalIgnoreCase) == 0);
+            properties.FirstOrDefault(e => string.Equals(e.Name, "Id", StringComparison.OrdinalIgnoreCase)) ??
+            properties.FirstOrDefault(e => string.Equals(e.Name, $"{TableEntityType.Name}Id", StringComparison.OrdinalIgnoreCase));
         return keyProperty ?? throw new DryException("Missing primary key", $"On {TableName}, Fact and Dimension tables must have primary keys.");
     }
 

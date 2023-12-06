@@ -6,7 +6,7 @@ namespace ExtraDry.Server.Tests.WarehouseTests;
 /// Represents a single geo-political region in a taxonomy of geo-political regions.
 /// </summary>
 [DimensionTable("Geographic Region")]
-public class Region : TaxonomyEntity<Region>, ITaxonomyEntity {
+public class Region : IHierarchyEntity<Region> { 
 
     /// <summary>
     /// The principal ID for the region, internal to the database.
@@ -36,6 +36,7 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity {
     /// </summary>
     [Required, StringLength(32)]
     [Display(ShortName = "Code")]
+    [Filter(FilterType.Equals)]
     public string Slug { get; set; } = string.Empty;
 
     /// <summary>
@@ -44,7 +45,12 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity {
     [Required, StringLength(32)]
     [Display(ShortName = "Title")]
     [Attribute("The Title")]
+    [Filter(FilterType.Contains)]
     public string Title { get; set; } = string.Empty;
+
+    public Region? Parent { get; set; }
+
+    public HierarchyId Lineage { get; set; } = HierarchyId.GetRoot();
 
     /// <summary>
     /// The full name of the country or region, such as 'Commonwealth of Australia', or 'United States of America'.
@@ -53,6 +59,7 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity {
     /// Limited to 100 characters based on full names of countries which, in English, max at 59 characters per ISO.
     /// </remarks>
     [Required, StringLength(100)]
+    [Filter(FilterType.Contains)]
     public string Description { get; set; } = string.Empty;
 
     [NotMapped]

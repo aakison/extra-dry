@@ -1,6 +1,6 @@
 ﻿namespace Sample.Shared;
 
-public class Employee
+public class Employee : IResourceIdentifiers, ICreatingCallback
 {
     [Key]
     [Rules(RuleAction.Block)]
@@ -10,19 +10,26 @@ public class Employee
     [Rules(RuleAction.Block)]
     public Guid Uuid { get; set; } = Guid.NewGuid();
 
-    [Required, MaxLength(50)]
+    [Required, StringLength(50)]
+    public string Slug { get; set; } = string.Empty;
+
+    [Required, StringLength(100)]
+    [Display(Name = "Full Name", ShortName = "Name")]
+    public string Title { get; set; } = string.Empty;
+
+    [Required, StringLength(50)]
     [Rules(RuleAction.Allow)]
     [Display(Name = "First Name", ShortName = "First Name")]
     [Filter(FilterType.Equals)]
     public string? FirstName { get; set; }
 
-    [Required, MaxLength(50)]
+    [Required, StringLength(50)]
     [Rules(RuleAction.Allow)]
     [Display(Name = "Last Name", ShortName = "Last Name")]
     [Filter(FilterType.StartsWith)]
     public string? LastName { get; set; }
 
-    [MaxLength(120)]
+    [StringLength(120)]
     [EmailAddress]
     [Display(Name = "Email Address", ShortName = "Email")]
     [Filter(FilterType.Contains)]
@@ -42,5 +49,16 @@ public class Employee
     public VersionInfo Version { get; set; } = new VersionInfo();
 
     public override string ToString() => $"{FirstName} {LastName}";
+
+    public Task OnCreatingAsync()
+    {
+        if(string.IsNullOrEmpty(Slug)) {
+            Slug = Uuid.ToString().ToLowerInvariant();
+        }
+        if(string.IsNullOrEmpty(Title)) {
+            Title = $"{FirstName} {LastName}";
+        }
+        return Task.CompletedTask;
+    }
 
 }

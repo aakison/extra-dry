@@ -1,6 +1,7 @@
 ﻿namespace ExtraDry.Core.DataWarehouse;
 
-public abstract class WarehouseTableAttribute : Attribute {
+public abstract class WarehouseTableAttribute : Attribute
+{
 
     /// <summary>
     /// The name to use for the data warehouse table.  
@@ -14,7 +15,7 @@ public abstract class WarehouseTableAttribute : Attribute {
     /// </summary>
     public string? Group { get; set; }
 
-    public bool MatchesGroup(string? group) => 
+    public bool MatchesGroup(string? group) =>
         (group == null && Group == null) ||
         (Group?.Split(',')?.Any(e => string.Equals(e, group, StringComparison.OrdinalIgnoreCase)) ?? true);
 

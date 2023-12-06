@@ -1,6 +1,13 @@
 ﻿namespace ExtraDry.Blazor;
 
-public partial class MiniDialog : ComponentBase, IExtraDryComponent {
+/// <summary>
+/// A mini-dialog box that can be used to edit a single property or field.  Is typically shown as a
+/// dropdown from a button or link.  On small screens (i.e. phones), it may be displayed full screen
+/// to support all the options of just a single field.  The dialog box is shown and hidden using the 
+/// Show() and Hide() methods.
+/// </summary>
+public partial class MiniDialog : ComponentBase, IExtraDryComponent, IDisposable
+{
 
     /// <summary>
     /// The title for the dialog box.
@@ -43,10 +50,7 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent {
     [Parameter]
     public bool ShowSubmitButton { get; set; } = true;
 
-    /// <summary>
-    /// If the user clicks outside of the dialog and it loses focus, determines what the dialog should do.
-    /// Default: SaveAndClose
-    /// </summary>
+    /// <inheritdoc cref="MiniDialogAction"/>
     [Parameter]
     public MiniDialogAction LoseFocusAction { get; set; } = MiniDialogAction.SaveAndClose;
 
@@ -100,6 +104,9 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent {
     /// </summary>
     public DialogState State { get; private set; } = DialogState.NotLoaded;
 
+    /// <summary>
+    /// Show the mini dialog box, cylcing through CSS states for animation.
+    /// </summary>
     public async Task ShowAsync()
     {
         CancelAndResetCancellation();
@@ -123,6 +130,9 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent {
         StateHasChanged();
     }
 
+    /// <summary>
+    /// Hide the mini dialog box, cycling through CSS states for animation.
+    /// </summary>
     public async Task HideAsync()
     {
         CancelAndResetCancellation();
@@ -145,6 +155,10 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent {
         StateHasChanged();
     }
 
+    /// <summary>
+    /// Show/Hide the mini dialog box depending on the current state, cycling through CSS states 
+    /// for animation.
+    /// </summary>
     public async Task ToggleAsync()
     {
         if(State == DialogState.NotLoaded || State == DialogState.Hidden || State == DialogState.Hiding) {
@@ -152,6 +166,18 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent {
         }
         else {
             await HideAsync();
+        }
+    }
+
+    /// <summary>
+    /// Dispose of managed resources.
+    /// </summary>
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
+        if(stateChangeCancellation != null) {
+            stateChangeCancellation.Dispose();
+            stateChangeCancellation = null!;
         }
     }
 
@@ -188,7 +214,7 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent {
         return Task.CompletedTask;
     }
 
-    public async Task OnKeyDown(KeyboardEventArgs args)
+    private async Task OnKeyDown(KeyboardEventArgs args)
     {
         if(args.Code == "Escape") {
             await DoCancel(null);
@@ -245,7 +271,7 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent {
 
     private CancellationTokenSource stateChangeCancellation = new();
 
-    private bool shouldCollapse = false;
+    private bool shouldCollapse;
 
     private int ActualAnimationDuration => Math.Clamp(AnimationDuration, 0, maximumDuration);
 
@@ -254,64 +280,5 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent {
 
     // Maximum to some logical upper bound that prevents app-destructive behavior.
     private const int maximumDuration = 5000;
-
-}
-
-[JsonConverter(typeof(JsonStringEnumConverter))]
-public enum MiniDialogAction
-{
-    Save,
-    Cancel,
-    SaveAndClose,
-    Disabled,
-}
-
-/// <summary>
-/// The states that cycle through as the dialog is moved through states with Show(), Hide(), and Toggle().
-/// </summary>
-[JsonConverter(typeof(JsonStringEnumConverter))]
-public enum DialogState
-{
-    /// <summary>
-    /// The dialog has not been shown, or has been hidden and then unloaded.
-    /// </summary>
-    NotLoaded,
-
-    /// <summary>
-    /// The dialog is in the page but the child content has not been loaded or rendered.
-    /// </summary>
-    Hidden,
-
-    /// <summary>
-    /// The mini-dialog has been loaded and has a showing state, typically for animation of dialog.
-    /// </summary>
-    Showing,
-
-    /// <summary>
-    /// The dialog has been loaded and is visible to users.
-    /// </summary>
-    Visible,
-
-    /// <summary>
-    /// The dialog continues to be loaded but has a limited hiding state just before unloading, typically for animation of dialog.
-    /// </summary>
-    Hiding,
-
-}
-
-/// <summary>
-/// Event args for Ok and Cancel events from a dialog.
-/// </summary>
-public class DialogEventArgs : EventArgs {
-
-    /// <summary>
-    /// If set in an event handler, cancels the button action from applying.
-    /// </summary>
-    public bool Cancel { get; set; } = false;
-
-    /// <summary>
-    /// If a mouse event started processing, the underlying mouse event that triggered the event.
-    /// </summary>
-    public MouseEventArgs? MouseEventArgs { get; init; }
 
 }

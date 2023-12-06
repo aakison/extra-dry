@@ -8,7 +8,7 @@
 }
 @if(Uuid != Guid.Empty)
 {
-    <DialogBox>
+    <DialogBox CloseUrl="@CloseDialogUrl">
         <DryErrorBoundary>
             <CompanyEdit Uuid="@Uuid" />
         </DryErrorBoundary>
@@ -16,10 +16,13 @@
 }
 
 @code {
+
     [Parameter]
     public string View { get; set; } = string.Empty;
 
     [Parameter]
     public Guid Uuid { get; set; } = Guid.Empty;
+
+    private string CloseDialogUrl => $"/admin/works/companies/{View}";
 
 }

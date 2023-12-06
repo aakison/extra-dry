@@ -1,16 +1,16 @@
 ﻿[
   {
-    "outputFile": "Components/DryVideoCapture.razor.es5.js",
-    "inputFile": "Components/DryVideoCapture.razor.js"
+    "outputFile": "Components/TODO/DryVideoCapture.razor.es5.js",
+    "inputFile": "Components/TODO/DryVideoCapture.razor.js"
   },
   {
-    "outputFile": "Components/DryVideoCapture.razor.css",
-    "inputFile": "Components/DryVideoCapture.razor.scss",
+    "outputFile": "Components/TODO/DryVideoCapture.razor.css",
+    "inputFile": "Components/TODO/DryVideoCapture.razor.scss",
     "minify": { "enabled": false }
   },
   {
-    "outputFile": "Components/DryContent.razor.css",
-    "inputFile": "Components/DryContent.razor.scss",
+    "outputFile": "Components/TODO/DryContent.razor.css",
+    "inputFile": "Components/TODO/DryContent.razor.scss",
     "minify": { "enabled": false }
   },
   {
@@ -74,8 +74,8 @@
     "minify": { "enabled": false }
   },
   {
-    "outputFile": "Components/Standard/Suspense.razor.css",
-    "inputFile": "Components/Standard/Suspense.razor.scss",
+    "outputFile": "Components/Dry/DryTable.razor.css",
+    "inputFile": "Components/Dry/DryTable.razor.scss",
     "minify": { "enabled": false }
   }
 ]

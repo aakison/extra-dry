@@ -135,8 +135,8 @@ public class LinqBuilderFilterTests {
     public void WildcardSearchWhenOnlySingleFilterField()
     {
         var SampleData = new List<SimpleDatum>() {
-            new SimpleDatum { Name = "Charlie" },
-            new SimpleDatum { Name = "Alice" },
+            new() { Name = "Charlie" },
+            new() { Name = "Alice" },
         };
         var name = GetFilterProperty<SimpleDatum>(nameof(SimpleDatum.Name));
         var filter = "Alice";

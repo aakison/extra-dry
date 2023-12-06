@@ -7,7 +7,8 @@ namespace ExtraDry.Core;
 /// an Expando Schema.
 /// </summary>
 [JsonConverter(typeof(ExpandoValuesConverter))]
-public class ExpandoValues : Dictionary<string, object?>, IValidatableObject {
+public class ExpandoValues : Dictionary<string, object?>, IValidatableObject
+{
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ExpandoValues"/> class with the default 
@@ -31,7 +32,7 @@ public class ExpandoValues : Dictionary<string, object?>, IValidatableObject {
     /// Initializes a new instance of the <see cref="ExpandoValues"/> class with the specified
     /// equality comparer that is initialized with the provided dictionary.
     /// </summary>
-    public ExpandoValues(IDictionary<string, object?> dictionary, IEqualityComparer<string> comparer) 
+    public ExpandoValues(IDictionary<string, object?> dictionary, IEqualityComparer<string> comparer)
         : base(dictionary, comparer) { }
 
     /// <summary>

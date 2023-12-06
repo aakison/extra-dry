@@ -30,10 +30,6 @@ namespace Sample.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Filename")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("MimeType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -49,31 +45,24 @@ namespace Sample.Data.Migrations
                     b.Property<int>("Size")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("UniqueId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Url")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("Uuid")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.ToTable("Blobs");
-                });
-
-            modelBuilder.Entity("RegionRegion", b =>
-                {
-                    b.Property<int>("AncestorsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("DescendantsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AncestorsId", "DescendantsId");
-
-                    b.HasIndex("DescendantsId");
-
-                    b.ToTable("RegionRegion");
                 });
 
             modelBuilder.Entity("Sample.Shared.Company", b =>
@@ -92,14 +81,22 @@ namespace Sample.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Code")
+                    b.Property<string>("ContactEmail")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("ContactPhone")
                         .IsRequired()
                         .HasMaxLength(24)
                         .HasColumnType("nvarchar(24)");
 
                     b.Property<string>("CustomFields")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValueSql("'{}'")
+                        .HasAnnotation("Relational:JsonPropertyName", "fields");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -109,12 +106,20 @@ namespace Sample.Data.Migrations
                     b.Property<DateTime>("IncorporationDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Ownership")
+                        .HasColumnType("int");
+
                     b.Property<int?>("PrimarySectorId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("SalesMargin")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("nvarchar(24)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -143,6 +148,10 @@ namespace Sample.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Layout")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
@@ -180,8 +189,18 @@ namespace Sample.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<DateTime?>("TerminationDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<Guid>("Uuid")
                         .HasColumnType("uniqueidentifier");
@@ -210,6 +229,13 @@ namespace Sample.Data.Migrations
                     b.Property<int>("Level")
                         .HasColumnType("int");
 
+                    b.Property<HierarchyId>("Lineage")
+                        .IsRequired()
+                        .HasColumnType("hierarchyid");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Slug")
                         .IsRequired()
                         .HasMaxLength(32)
@@ -220,13 +246,15 @@ namespace Sample.Data.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("nvarchar(32)");
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
 
                     b.Property<Guid>("Uuid")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
 
                     b.HasIndex("Uuid")
                         .IsUnique();
@@ -299,21 +327,6 @@ namespace Sample.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Templates");
-                });
-
-            modelBuilder.Entity("RegionRegion", b =>
-                {
-                    b.HasOne("Sample.Shared.Region", null)
-                        .WithMany()
-                        .HasForeignKey("AncestorsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Sample.Shared.Region", null)
-                        .WithMany()
-                        .HasForeignKey("DescendantsId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Sample.Shared.Company", b =>
@@ -429,6 +442,10 @@ namespace Sample.Data.Migrations
 
             modelBuilder.Entity("Sample.Shared.Region", b =>
                 {
+                    b.HasOne("Sample.Shared.Region", "Parent")
+                        .WithMany()
+                        .HasForeignKey("ParentId");
+
                     b.OwnsOne("ExtraDry.Core.VersionInfo", "Version", b1 =>
                         {
                             b1.Property<int>("RegionId")
@@ -457,6 +474,8 @@ namespace Sample.Data.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("RegionId");
                         });
+
+                    b.Navigation("Parent");
 
                     b.Navigation("Version")
                         .IsRequired();

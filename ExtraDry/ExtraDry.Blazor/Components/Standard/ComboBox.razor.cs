@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Blazor;
+﻿using System.Globalization;
+
+namespace ExtraDry.Blazor;
 
 /// <summary>
 /// A flexi alternative to a select control. Creates a semantic HTML control with extended
@@ -6,7 +8,7 @@
 /// platforms. Includes list management and filtering.
 /// </summary>
 /// <typeparam name="TItem">The type for items in the select list.</typeparam>
-public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where TItem : class {
+public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent, IDisposable where TItem : class {
 
     /// <inheritdoc cref="IExtraDryComponent.CssClass" />
     [Parameter]
@@ -114,7 +116,6 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
 
     protected async Task DoButtonClick(MouseEventArgs _)
     {
-        Logger.LogDebug("{Id}::DoClick()", Id);
         if(ShowOptions) {
             CancelInput();
             ShowOptions = false;
@@ -126,14 +127,12 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
 
     protected async Task DoItemClick(TItem item)
     {
-        Logger.LogDebug("{Id}::DoItemClick()", Id);
         SelectedOption = item;
         await ConfirmInputAsync(item);
     }
 
     protected Task DoMouseDown(TItem item)
     {
-        Logger.LogDebug("{Id}::DoMouseDown()", Id);
         SelectedOption = item;
         return Task.CompletedTask;
     }
@@ -146,7 +145,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// onfocusin event.  If it loses focus and gains focus both in the same event loop then it
     /// "hasn't actually lost focus" and we don't want to cancel.
     /// </summary>
-    private bool haveActuallyLostFocus = false;
+    private bool haveActuallyLostFocus;
 
     /// <summary>
     /// Just to check if we got focus back and haven't actually lost focus.
@@ -171,7 +170,6 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
 
     protected override async Task OnParametersSetAsync()
     {
-        Logger.LogDebug("{Id}::OnParametersSetAsync()", Id);
         Name ??= $"combo_{typeof(TItem).Name}";
         AssertItemsMutualExclusivity();
 
@@ -190,7 +188,6 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// <returns></returns>
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        Logger.LogDebug("{Id}::OnAfterRenderAsync({firstRender})", Id, firstRender);
         await ScrollIntoView(OptionsId);
         if(SelectedOption != null && ShowOptions) {
             var id = DisplayItemID(SelectedOption);
@@ -213,9 +210,9 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// there is no pending request, if not null and a new request comes in then need to cancel
     /// before continuing. Used by `DoFilterInput` when `ItemsSource` is not null.
     /// </summary>
-    private CancellationTokenSource? computeFilterCancellationSource = null;
+    private CancellationTokenSource? computeFilterCancellationSource;
 
-    private bool PreventDefault = false;
+    private bool PreventDefault;
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "combo-box", CssClass);
 
@@ -275,7 +272,6 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// </summary>
     private void CancelInput()
     {
-        Logger.LogDebug("{Id}::CancelInput()", Id);
         Assert(ShowOptions == true, "CancelInput is wasteful if the options aren't shown.");
         ShowOptions = false;
         if(Value == null) {
@@ -291,7 +287,6 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
 
     private async Task RetrieveFilteredFromItemsSource()
     {
-        Logger.LogDebug("{Id}::RetrieveFilteredFromItemsSource()", Id);
         Assert(ShowOptions == true, "RetrieveFilteredFromItemsSource is wasteful if the options aren't shown.");
         Assert(ItemsSource != null, "RetrieveFilteredFromItemsSource is designed for remote collections.");
         if(ItemsSource == null) {
@@ -306,10 +301,9 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
             ShowProgress = true;
             using(computeFilterCancellationSource = new CancellationTokenSource()) {
                 var cancellationToken = computeFilterCancellationSource.Token;
-                //MoreCount = 0;
                 var filter = showAll ? string.Empty : DisplayFilter;
                 cancellationToken.ThrowIfCancellationRequested();
-                var items = await ItemsSource.GetItemsAsync(filter, null, null, null, null, cancellationToken);
+                var items = await ItemsSource.GetItemsAsync(new Query { Filter = filter }, cancellationToken);
                 InternalItems.SetItems(items.Items, Group, Sort, filter);
                 MoreCount = items.TotalItemCount - items.Items.Count();
             }
@@ -329,7 +323,6 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// </summary>
     private async Task ConfirmInputAsync(TItem? selectedItem)
     {
-        Logger.LogDebug("{Id}::ConfirmInputAsync({title})", Id, DisplayItemTitle(selectedItem));
         Assert(ShowOptions == true, "ConfirmInputAsync expects that the options are shown.");
         if(selectedItem != null) {
             // Valid Item selected and want to lock it in
@@ -351,7 +344,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     private void Assert(bool value, string message)
     {
         if(value == false) {
-            Logger.LogWarning("{Id} ERROR - {message}", Id, message);
+            Logger.LogConsoleWarning($"{Id} ERROR - {message}");
         }
     }
 
@@ -360,7 +353,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// </summary>
     private string DisplayItemGroup(TItem? item) => 
         GroupFunc?.Invoke(item) 
-        ?? DisplayItemTitle(item)[0..1].ToUpper();
+        ?? DisplayItemTitle(item)[0..1].ToUpper(CultureInfo.CurrentCulture);
 
     /// <summary>
     /// A string that determines the sort order of group items, typically the same as the Group
@@ -408,14 +401,13 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// <summary>
     /// The formatted display text for showing that more items are available.
     /// </summary>
-    private string DisplayMoreCaption => string.Format(MoreItemsTemplate, MoreCount);
+    private string DisplayMoreCaption => string.Format(CultureInfo.CurrentCulture, MoreItemsTemplate, MoreCount);
 
     /// <summary>
     /// When first opening the options set everything up for user-input.
     /// </summary>
     private async Task LoadOptionsAsync()
     {
-        Logger.LogDebug("{Id}::LoadOptionsAsync()", Id);
         ShowOptions = true;
         InternalItems.SetFilter(string.Empty);
         if(SelectedOption != null) {
@@ -437,7 +429,6 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// </remarks>
     protected async Task DoFilterInput(ChangeEventArgs args)
     {
-        Logger.LogDebug("{Id}::DoFilterInput({value})", Id, args.Value);
         await SetOptionsFilter(args.Value?.ToString() ?? string.Empty);
     }
 
@@ -447,13 +438,12 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// </summary>
     private async Task SetOptionsFilter(string filter)
     {
-        Logger.LogDebug("{Id}::SetOptionsFilter({filter})", Id, filter);
         // change the filter display the user sees
         DisplayFilter = filter;
         // And filter the internal list of items.
         InternalItems.SetFilter(filter);
         // When filter changes, clear the selected option
-        if(!DisplayFilter.Equals(DisplayItemTitle(SelectedOption), StringComparison.CurrentCultureIgnoreCase)) {
+        if(!DisplayFilter.Equals(DisplayItemTitle(SelectedOption), StringComparison.OrdinalIgnoreCase)) {
             SelectedOption = default;
         }
         // When filtering from scratch, auto-expand options
@@ -473,7 +463,6 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// </summary>
     protected async Task DoKeyDown(KeyboardEventArgs args)
     {
-        Logger.LogDebug("{Id}::DoKeyDown({code})", Id, args.Code);
         PreventDefault = false;
         // 9 lines shown so page up/down should be one less so we have one line overlap for context.
         var pageSize = 8;
@@ -524,7 +513,6 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// </summary>
     private void SelectOptionIndex(int index)
     {
-        Logger.LogDebug("{Id}::SelectIndex({index})", Id, index);
         if(index < 0 || index >= InternalItems.FilteredItems.Count) {
             SelectedOption = default;
         }
@@ -540,7 +528,6 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
     /// </summary>
     private void SelectOptionOffset(int offset)
     {
-        Logger.LogDebug("{Id}::SelectOffset({offset})", Id, offset);
         if(SelectedOption == null) {
             if(offset > 0) {
                 SelectOptionIndex(0);
@@ -554,6 +541,16 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent where T
             var newIndex = SelectedIndex + offset;
             newIndex = Math.Clamp(newIndex, 0, InternalItems.FilteredItems.Count - 1);
             SelectOptionIndex(newIndex);
+        }
+    }
+
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
+        if(computeFilterCancellationSource != null) {
+            computeFilterCancellationSource.Cancel();
+            computeFilterCancellationSource.Dispose();
+            computeFilterCancellationSource = null;
         }
     }
 
@@ -594,7 +591,7 @@ internal class SortedFilteredCollection<T> {
         }
     }
 
-    public Func<T?, string> GroupFunc { get; private set; } = e => (e?.ToString() ?? "unnamed")[0..1].ToUpper();
+    public Func<T?, string> GroupFunc { get; private set; } = e => (e?.ToString() ?? "unnamed")[0..1].ToUpper(CultureInfo.CurrentCulture);
 
     public Func<T?, string> SortFunc { get; private set; } = e => e?.ToString() ?? "unnamed";
 

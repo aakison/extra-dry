@@ -107,7 +107,7 @@ internal class ModelDescription {
         }
     }
 
-    private SortProperty? stabilizerProperty = null;
+    private SortProperty? stabilizerProperty;
 
     private bool multipleStabilizerProperties;
 

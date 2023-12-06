@@ -2,8 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
-		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
@@ -13,6 +11,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="EntityFrameworkCore.SqlServer.HierarchyId" Version="4.0.0" />
+		<PackageReference Include="EntityFrameworkCore.SqlServer.HierarchyId.Abstractions" Version="4.0.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="7.0.14" />
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
@@ -30,14 +30,4 @@
 	  <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<AdditionalFiles Include="json3.json" />
-		<AdditionalFiles Include="json2.json" />
-		<AdditionalFiles Include="json1.json" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <PackageReference Update="Newtonsoft.Json" Version="13.0.2" />
-	</ItemGroup>
-	
 </Project>

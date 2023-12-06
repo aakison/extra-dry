@@ -3,6 +3,7 @@
 /// <summary>
 /// For SVG in the IconInfo, determines how the icon is rendered to the page.
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum SvgRenderType
 {
     /// <summary>
