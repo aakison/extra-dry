@@ -1,4 +1,6 @@
-﻿namespace Sample.Data.Services;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Sample.Data.Services;
 
 public class BlobService {
 
@@ -27,6 +29,7 @@ public class BlobService {
         return await TryRetrieveAsync(uuid) ?? throw new ArgumentOutOfRangeException(nameof(uuid));
     }
 
+    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Could move if/when fake database replaced with file system.")]
     public async Task<Blob?> TryRetrieveAsync(Guid uuid)
     {
         if(fakeBlobStorage.TryGetValue(uuid, out Blob? value)) {

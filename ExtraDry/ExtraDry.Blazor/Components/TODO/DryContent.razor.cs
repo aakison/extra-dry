@@ -199,6 +199,7 @@ public partial class DryContent : ComponentBase {
         //}
         //var blob = await blobService.CreateAsync(bytes);
         //return blob;
+        await Task.Delay(1);
         throw new NotImplementedException("Change implementation to use BlobService.");
     }
 

@@ -97,7 +97,7 @@ public class BlobService<TBlob> : IBlobServiceOptions where TBlob : IBlob, new()
         };
         var memoryStream = new MemoryStream();
         using var stream = file.OpenReadStream(MaxBlobSize, cancellationToken);
-        await stream.CopyToAsync(memoryStream);
+        await stream.CopyToAsync(memoryStream, cancellationToken);
         blob.Content = memoryStream.ToArray();
         await CreateAsync(blob, cancellationToken);
         return blob;
@@ -114,7 +114,7 @@ public class BlobService<TBlob> : IBlobServiceOptions where TBlob : IBlob, new()
         var response = await http.GetAsync(endpoint, cancellationToken);
         await response.AssertSuccess(logger);
 
-        var blob = await BlobSerializer.DeserializeBlobAsync<TBlob>(response);
+        var blob = await BlobSerializer.DeserializeBlobAsync<TBlob>(response, cancellationToken);
 
         var validator = new DataValidator();
         validator.ValidateObject(blob);
@@ -130,7 +130,7 @@ public class BlobService<TBlob> : IBlobServiceOptions where TBlob : IBlob, new()
             return url;
         }
         catch(FormatException ex) {
-            throw new DryException("Error occurred connecting to server", "This is a mis-configuration and not a user error, please see the console output for more information.");
+            throw new DryException("Error occurred connecting to server", $"This is a mis-configuration and not a user error, please see the console output for more information.  Error: {ex.Message}");
         }
     }
 

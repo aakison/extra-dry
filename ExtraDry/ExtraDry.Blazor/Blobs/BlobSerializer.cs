@@ -50,7 +50,7 @@ public static class BlobSerializer
                     property.SetValue(blob, Guid.Parse(headerValue));
                 }
                 else if(property.PropertyType == typeof(int)) {
-                    property.SetValue(blob, int.Parse(headerValue));
+                    property.SetValue(blob, int.Parse(headerValue, CultureInfo.InvariantCulture));
                 }
                 else if(headerAttribute != null) {
                     throw new NotImplementedException("HttpHeaderAttribute only supports string, int, and Guid types.");

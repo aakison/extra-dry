@@ -72,7 +72,7 @@ public static class ServiceCollectionExtensions {
     }
 
     /// <summary>
-    /// Adds a strongly typed <see cref="ListService{TCollection, TItem}"/> that provides a 
+    /// Adds a strongly typed <see cref="ListService{TItem}"/> that provides a 
     /// <see cref="FilteredCollection{T}"/> to the service collection.  Also registers the 
     /// service using the interfaces <see cref="IListService{T}"/> 
     /// and <see cref="IOptionProvider{T}"/>.
@@ -118,7 +118,7 @@ public static class ServiceCollectionExtensions {
     }
 
     /// <summary>
-    /// Adds a strongly typed <see cref="ListService{TCollection, TItem}"/> to the service 
+    /// Adds a strongly typed <see cref="ListService{TItem}"/> to the service 
     /// collection.  Also registers the service using the interfaces <see cref="IListService{T}"/> 
     /// and <see cref="IOptionProvider{T}"/>.
     /// </summary>
