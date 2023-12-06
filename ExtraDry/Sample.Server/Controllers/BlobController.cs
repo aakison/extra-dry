@@ -29,6 +29,7 @@ public class BlobController : ControllerBase
     [HttpPost("/api/blobs/{uuid}/{filename}")]
     [Produces("application/json")]
     [AllowAnonymous]
+    [SuppressMessage("ApiUsage", "DRY1107:HttpPost, HttpPut and HttpPatch methods should have Consumes attribute", Justification = "Blobs could be any mime type.")]
     public async Task<ResourceReference<Blob>> CreateBlobAsync(Guid uuid, string filename = "")
     {
         var headerUuidStr = Request.Headers[Blob.UuidHeaderName].FirstOrDefault() ?? "";

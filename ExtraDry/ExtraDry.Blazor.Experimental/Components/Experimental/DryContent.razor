@@ -52,8 +52,8 @@
                                 var alignment = $"alignment-{container.Alignment.ToString().ToLowerInvariant()}";
                                 var padding = $"padding-{container.Padding.ToString().ToLowerInvariant()}";
                                 <div class="editor-root @alignment @padding" id="@container.Id"
-                                     @onfocusout="@(args => EditorFocusOut(container))"
-                                     @onfocus="@(args => EditorFocus(section, container))">
+                                     @* @onfocusout="@(args => EditorFocusOut(container))"
+                                     @onfocus="@(args => EditorFocus(section, container))" *@>
                                     <!-- Content injected via JS so Rooster and Blazor don't fight each other... -->
                                 </div>
                             }

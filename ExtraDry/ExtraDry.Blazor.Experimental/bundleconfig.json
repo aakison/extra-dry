@@ -1,0 +1,13 @@
+[
+  {
+    "outputFileName": "wwwroot/js/extra-dry-blazor-module.js",
+    "inputFiles": [
+      //"Components/DryVideoCapture.razor.es5.js",
+      //"Components/DryContent.razor.js",
+    ],
+    "minify": {
+      "enabled": true,
+      "gzip": true
+    }
+  }
+]

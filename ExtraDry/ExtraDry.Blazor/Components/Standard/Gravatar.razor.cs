@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using ExtraDry.Core.Internal;
+using System.Text;
 
 namespace ExtraDry.Blazor;
 
@@ -52,10 +53,7 @@ public partial class Gravatar : ComponentBase, IExtraDryComponent {
         if(string.IsNullOrWhiteSpace(email)) {
             return "00000000000000000000000000000000";
         }
-        var encoder = new UTF8Encoding();
-        using var md5 = new MD5();
-        var hashedBytes = md5.ComputeHash(encoder.GetBytes(email.ToLowerInvariant()));
-        var hash = string.Join("", hashedBytes.Select(e => e.ToString("X2", CultureInfo.InvariantCulture)));
+        var hash = MD5Core.GetHashString(email.ToLowerInvariant());
         return hash.ToLowerInvariant();
     }
 }

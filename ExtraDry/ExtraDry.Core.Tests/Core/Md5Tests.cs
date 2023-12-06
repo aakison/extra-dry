@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Blazor.Tests.Internals;
+﻿using ExtraDry.Core.Internal;
+
+namespace ExtraDry.Core.Tests.Internals;
 
 public class Md5Tests {
 
@@ -8,9 +10,7 @@ public class Md5Tests {
     [InlineData("shae.griffiths@gmail.com", "7286754AAD09B960126C09222700BD8A")]
     public void CorrectHash(string input, string expected)
     {
-        var md5 = new MD5();
-
-        var actual = md5.ComputeStringHash(input);
+        var actual = MD5Core.GetHashString(input);
 
         Assert.Equal(expected, actual);
     }

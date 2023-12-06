@@ -53,6 +53,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.WebJobs", "Sample.We
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Tests", "Sample.Tests\Sample.Tests.csproj", "{75C4867C-65AF-40F0-83A2-54CD91377279}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtraDry.Blazor.Experimental", "ExtraDry.Blazor.Experimental\ExtraDry.Blazor.Experimental.csproj", "{7B9FEC78-072D-4D09-8E26-7A4B07B6FFCF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +113,10 @@ Global
 		{75C4867C-65AF-40F0-83A2-54CD91377279}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75C4867C-65AF-40F0-83A2-54CD91377279}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75C4867C-65AF-40F0-83A2-54CD91377279}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B9FEC78-072D-4D09-8E26-7A4B07B6FFCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B9FEC78-072D-4D09-8E26-7A4B07B6FFCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B9FEC78-072D-4D09-8E26-7A4B07B6FFCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B9FEC78-072D-4D09-8E26-7A4B07B6FFCF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

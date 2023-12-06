@@ -3,8 +3,6 @@
     "outputFileName": "wwwroot/js/extra-dry-blazor-module.js",
     "inputFiles": [
       "wwwroot/js/attribution.js",
-      //"Components/DryVideoCapture.razor.es5.js",
-      //"Components/DryContent.razor.js",
       "Components/Standard/TriCheck.razor.js",
       "Components/Standard/CodeBlock.razor.js",
       "Components/Standard/ComboBox.razor.js"

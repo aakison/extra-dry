@@ -1,19 +1,5 @@
 ﻿[
   {
-    "outputFile": "Components/TODO/DryVideoCapture.razor.es5.js",
-    "inputFile": "Components/TODO/DryVideoCapture.razor.js"
-  },
-  {
-    "outputFile": "Components/TODO/DryVideoCapture.razor.css",
-    "inputFile": "Components/TODO/DryVideoCapture.razor.scss",
-    "minify": { "enabled": false }
-  },
-  {
-    "outputFile": "Components/TODO/DryContent.razor.css",
-    "inputFile": "Components/TODO/DryContent.razor.scss",
-    "minify": { "enabled": false }
-  },
-  {
     "outputFile": "Components/Dry/DryNavigation.razor.css",
     "inputFile": "Components/Dry/DryNavigation.razor.scss",
     "minify": { "enabled": false }

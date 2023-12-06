@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
 
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
@@ -7,10 +7,10 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<PackageId>ExtraDry.Blazor</PackageId>
+		<PackageId>ExtraDry.Blazor.Experimental</PackageId>
 		<Authors>adrian.akison</Authors>
 		<Company>FMI Works</Company>
-		<Description>Extensions to Blazor and DRY libraries to create Blazor client applications with a lower-code footprint.  Use this library in the Blazor project, it will include the Core library.</Description>
+		<Description>Experimental and pre-release features for ExtraDry.Blazor.</Description>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/fmi-works/extra-dry</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/fmi-works/extra-dry.git</RepositoryUrl>
@@ -21,7 +21,6 @@
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>
 
-	<!-- File version is created here and uses Major/Minor version from CI.  Used for cache-busting by ExtraDryJavascriptModule. -->
 	<PropertyGroup>
 		<VersionMajor Condition="'$(VersionMajor)' == ''">0</VersionMajor>
 		<VersionMinor Condition="'$(VersionMinor)' == ''">0</VersionMinor>
@@ -38,7 +37,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Include="wwwroot\js\extra-dry-blazor-module.js" />
+		<EmbeddedResource Include="wwwroot\js\extra-dry-blazor-module.js" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -65,15 +64,35 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\ExtraDry.Core\ExtraDry.Core.csproj" />
+		<ProjectReference Include="..\ExtraDry.Blazor\ExtraDry.Blazor.csproj" />
 	</ItemGroup>
-	
+
 	<Import Project="..\CommonAnalyzers.targets" />
 	<Import Project="..\VulnerabilityFixes.targets" />
 
 	<ItemGroup>
+		<Content Update="wwwroot\img\layout-doubleweightedleft.png">
+			<CopyToOutputDirectory></CopyToOutputDirectory>
+		</Content>
+		<Content Update="wwwroot\img\layout-doubleweightedright.png">
+			<CopyToOutputDirectory></CopyToOutputDirectory>
+		</Content>
+		<Content Update="wwwroot\img\layout-double.png">
+			<CopyToOutputDirectory></CopyToOutputDirectory>
+		</Content>
+		<Content Update="wwwroot\img\layout-single.png">
+			<CopyToOutputDirectory></CopyToOutputDirectory>
+		</Content>
+		<Content Update="wwwroot\img\layout-triple.png">
+			<CopyToOutputDirectory></CopyToOutputDirectory>
+		</Content>
 		<Content Update="_Imports.razor">
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="wwwroot\lib\roosterjs\" />
 	</ItemGroup>
 
 </Project>
