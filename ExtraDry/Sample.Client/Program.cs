@@ -31,18 +31,18 @@ public class Program
         services.AddCrudService<Content>("/api/contents");
         services.AddCrudService<Region>("/api/regions");
 
-        services.AddScoped<IBlobService>(e => 
-            new DryBlobService(e.GetRequiredService<HttpClient>(), "/api/blobs/{0}/{1}") {
-                Scope = BlobScope.Public,
-            }
-        );
-        services.AddBlobService("/api/blobs");
+        services.AddBlobService<Blob>(config => {
+            config.BlobEndpoint = "/api/blobs";
+            config.MaxBlobSize = 1 * 1024 * 1024;
+        });
 
         services.AddScoped<ISubjectViewModel<Employee>, EmployeeViewModel>();
 
         services.AddScoped<AppViewModel>();
 
-        services.AddFileValidation();
+        services.AddFileValidation(config => {
+                config.ValidateExtension = ValidationCondition.Never;
+            });
 
         await builder.Build().RunAsync();
     }

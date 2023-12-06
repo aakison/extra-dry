@@ -98,7 +98,7 @@ public class FileValidationTests {
         validator.ValidateFile(filename, mime, fileBytes);
 
         Assert.False(validator.IsValid);
-        Assert.Throws<ValidationException>(() => validator.ThrowIfNotValid());
+        Assert.Throws<ValidationException>(() => validator.ThrowIfInvalid());
     }
 
     [Theory(Skip = "Refactor to remove file dependency")]
@@ -111,7 +111,7 @@ public class FileValidationTests {
         validator.ValidateFile(filename, mime, fileBytes);
 
         Assert.False(validator.IsValid);
-        var exception = Assert.Throws<ValidationException>(() => validator.ThrowIfNotValid());
+        var exception = Assert.Throws<ValidationException>(() => validator.ThrowIfInvalid());
         Assert.Contains("filename and mime type do not match", exception.Message);
     }
 
@@ -127,7 +127,7 @@ public class FileValidationTests {
         validator.ValidateFile(filename, mime, fileBytes);
 
         Assert.False(validator.IsValid);
-        var exception = Assert.Throws<ValidationException>(() => validator.ThrowIfNotValid());
+        var exception = Assert.Throws<ValidationException>(() => validator.ThrowIfInvalid());
     }
 
     [Theory(Skip = "Refactor to remove file dependency")]
@@ -139,7 +139,7 @@ public class FileValidationTests {
         validator.ValidateFile(filename, mime, fileBytes);
 
         Assert.False(validator.IsValid);
-        Assert.Throws<ValidationException>(() => validator.ThrowIfNotValid());
+        Assert.Throws<ValidationException>(() => validator.ThrowIfInvalid());
     }
 
     [Theory(Skip = "Refactor to remove file dependency")]
@@ -161,7 +161,7 @@ public class FileValidationTests {
         validator.ValidateFile(filename, mime, fileBytes);
 
         Assert.False(validator.IsValid);
-        Assert.Throws<ValidationException>(() => validator.ThrowIfNotValid());
+        Assert.Throws<ValidationException>(() => validator.ThrowIfInvalid());
     }
 
     [Theory(Skip = "Refactor to remove file dependency")]
@@ -218,7 +218,7 @@ public class FileValidationTests {
         validator.ValidateFile(filename, mime, fileBytes);
 
         Assert.False(validator.IsValid);
-        var exception = Assert.Throws<ValidationException>(() => validator.ThrowIfNotValid());
+        var exception = Assert.Throws<ValidationException>(() => validator.ThrowIfInvalid());
     }
 
     [Theory(Skip = "Refactor to remove file dependency")]

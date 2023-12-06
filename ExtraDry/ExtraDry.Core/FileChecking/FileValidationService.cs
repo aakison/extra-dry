@@ -42,7 +42,7 @@ public class FileValidationService
     {
         CheckFileContent = config.CheckMagicBytesAndMimes;
         if(CheckFileContent) {
-            fileService = new FileTypeDefinitionSource(config.FileDatabaseLocation!);
+            fileService = new FileTypeDefinitionSource(config.FileDatabaseLocation);
         }
         else {
             fileService = new FileTypeDefinitionSource("");

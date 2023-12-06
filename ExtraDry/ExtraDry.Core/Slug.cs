@@ -31,6 +31,16 @@ public static class Slug {
     }
 
     /// <summary>
+    /// Given a UUID, create a matching Slug that is slightly more URI friendly.
+    /// </summary>
+    public static string ToSlug(Guid uuid)
+    {
+        return new string(uuid.ToString().Select(SlugChar).ToArray());
+
+        char SlugChar(char c) => char.IsDigit(c) ? "mnorsuvwxz"[c - '0'] : c;
+    }
+
+    /// <summary>
     /// Given a name, with punctuation and mixed case, create a matching Slug.
     /// </summary>
     /// <remarks>

@@ -2,6 +2,10 @@
 
 namespace ExtraDry.Blazor;
 
+/// <summary>
+/// Provides extension methods to simplify the registration of Extra Dry services to the
+/// service collection for dependency injection.
+/// </summary>
 public static class ServiceCollectionExtensions {
 
     /// <summary>
@@ -14,7 +18,7 @@ public static class ServiceCollectionExtensions {
     }
 
     /// <summary>
-    /// Adds a strongly typed CrudService`T to the service collection.
+    /// Adds a strongly typed <see cref="CrudService{T}" /> to the service collection.
     /// </summary>
     public static IServiceCollection AddCrudService<T>(this IServiceCollection services, string endpointTemplate)
     {
@@ -28,7 +32,7 @@ public static class ServiceCollectionExtensions {
     }
 
     /// <summary>
-    /// Adds a strongly typed StatService`T to the service collection.
+    /// Adds a strongly typed <see cref="StatService{T}"/> to the service collection.
     /// </summary>
     public static IServiceCollection AddStatService<T>(this IServiceCollection services, string endpointTemplate)
     {
@@ -42,8 +46,10 @@ public static class ServiceCollectionExtensions {
     }
 
     /// <summary>
-    /// Adds a strongly typed ListService`FilteredCollection`T to the service collection.
-    /// Also registered the service using the interfaces IListService`T and IOptionProvider`T.
+    /// Adds a strongly typed <see cref="ListService{TCollection, TItem}"/> that provides a 
+    /// <see cref="FilteredCollection{T}"/> to the service collection.  Also registers the 
+    /// service using the interfaces <see cref="IListService{T}"/> 
+    /// and <see cref="IOptionProvider{T}"/>.
     /// </summary>
     public static IServiceCollection AddFilteredListService<T>(this IServiceCollection services, string endpointTemplate) 
     {
@@ -65,8 +71,9 @@ public static class ServiceCollectionExtensions {
     }
 
     /// <summary>
-    /// Adds a strongly typed ListService`PagedCollection`T to the service collection.
-    /// Also registered the service using the interfaces IListService`T and IOptionProvider`T.
+    /// Adds a strongly typed <see cref="ListService{TCollection, TItem}"/> to the service 
+    /// collection.  Also registers the service using the interfaces <see cref="IListService{T}"/> 
+    /// and <see cref="IOptionProvider{T}"/>.
     /// </summary>
     public static IServiceCollection AddPagedListService<T>(this IServiceCollection services, string endpointTemplate)
     {
@@ -88,15 +95,20 @@ public static class ServiceCollectionExtensions {
     }
 
 
-    public static IServiceCollection AddBlobService(this IServiceCollection services, string endpointTemplate)
+    /// <summary>
+    /// Adds a strongly typed <see cref="BlobService{TBlob}"/> to the service collection.  Use with
+    /// the built-in Blob class, or a custom class that implements <see cref="IBlob"/>.
+    /// </summary>
+    public static IServiceCollection AddBlobService<T>(this IServiceCollection services, string endpointTemplate) where T : IBlob, new()
     {
-        services.AddBlobService(options => {
+        services.AddBlobService<T>(options => {
             options.BlobEndpoint = endpointTemplate;
         });
         return services;
     }
 
-    public static IServiceCollection AddBlobService(this IServiceCollection services, Action<BlobServiceOptions> config)
+    /// <inheritdoc cref="AddBlobService{T}(IServiceCollection, string)"/>
+    public static IServiceCollection AddBlobService<T>(this IServiceCollection services, Action<BlobServiceOptions> config) where T : IBlob, new()
     {
         var options = new BlobServiceOptions();
         config(options);
@@ -107,8 +119,9 @@ public static class ServiceCollectionExtensions {
 
         services.AddScoped(e => {
             var client = e.GetRequiredService<HttpClient>();
-            var logger = e.GetRequiredService<ILogger<BlobService>>();
-            var service = new BlobService(client, options, logger);
+            var logger = e.GetRequiredService<ILogger<BlobService<T>>>();
+            var validator = e.GetService<FileValidationService>();
+            var service = new BlobService<T>(client, validator, options, logger);
             return service;
         });
         return services;

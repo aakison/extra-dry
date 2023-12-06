@@ -71,6 +71,7 @@
     {
         Filename = e.File.Name;
         FileMimeType = e.File.ContentType;
+        Validator.Clear();
         var errors = Validator.ValidateFile(e.File.Name, e.File.ContentType);
         if(Validator.IsValid) {
             ClientValidation = "Valid";
@@ -79,10 +80,17 @@
             ClientValidation = $"Found {errors.Count()} problems: " + string.Join(", ", errors.Select(e => e.ErrorMessage));
         }
         ServerValidation = "Uploading...";
-        await Task.Delay(1);
+        await Task.Delay(100);
         try {
-            await Blobs.UploadAsync(e.File);
+            var blob = await Blobs.CreateAsync(e.File);
             ServerValidation = "Valid";
+            await Task.Delay(100);
+            ServerValidation = "Downloading...";
+            await Task.Delay(100);
+            var retrieved = await Blobs.RetrieveAsync(blob.Uuid, blob.Slug);
+            ServerValidation = "Downloaded";
+            await Task.Delay(100);
+            ServerValidation = blob.MD5Hash == retrieved.MD5Hash ? "MD5 Hashes Match" : "MD5 Hashes Do Not Match";
         }
         catch(DryException ex) {
             ServerValidation = $"{ex.Message}: {ex.ProblemDetails.Detail}";
@@ -101,6 +109,6 @@
     private FileValidator Validator { get; set; } = null!;
 
     [Inject]
-    private BlobService Blobs { get; set; } = null!;
+    private BlobService<Blob> Blobs { get; set; } = null!;
 
 }

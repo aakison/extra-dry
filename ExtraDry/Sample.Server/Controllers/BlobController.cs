@@ -11,7 +11,7 @@ namespace Sample.Server.Controllers;
 [ApiExplorerSettings(GroupName = ApiGroupNames.SampleApi)]
 [ApiExceptionStatusCodes]
 [SuppressMessage("Usage", "DRY1002:ApiController shouldn't inherit from ControllerBase",
-    Justification = "Controller makes use of ControllerBase functionality for emitting file content.")]
+    Justification = "Blobc Controller makes use of ControllerBase functionality directly managing the Request.")]
 public class BlobController : ControllerBase {
 
     /// <summary>
@@ -23,100 +23,50 @@ public class BlobController : ControllerBase {
     }
 
     /// <summary>
-    /// Provides a paged list of all blobs.
+    /// Creates a Blob with both the given unique key and the user-friendly filename.  
     /// </summary>
-    [HttpGet("api/blobs")]
+    [HttpPost("/api/blobs/{uuid}/{filename}")]
     [Produces("application/json")]
     [AllowAnonymous]
-    public async Task<PagedCollection<BlobInfo>> List([FromQuery] PageQuery query)
+    public async Task<ResourceReference<Blob>> CreateBlobAsync(Guid uuid, string filename = "")
     {
-        return await blobs.List(query);
-    }
-
-    /// <summary>
-    /// Uploads a blob, both BlobInfo and content in a single call.  As the content is delivered as 
-    /// the body of the Request, the BlobInfo must be delivered in the header.
-    /// </summary>
-    [HttpPost("/api/blobs/{uuid}")]
-    [Produces("application/json")]
-    [AllowAnonymous]
-    [SuppressMessage("ApiUsage", "DRY1107:HttpPost, HttpPut and HttpPatch methods should have Consumes attribute", Justification = "Adjusts to multiple mime types and can't explicitly state consumption of */*")]
-    public async Task<ResourceReference<BlobInfo>> CreateBlobAsync(Guid uuid)
-    {
-        var edUuidStr = Request.Headers[BlobInfo.UuidHeaderName].FirstOrDefault();
-        var edUuid = Guid.Parse(edUuidStr ?? "");
-        var mimeType = Request.Headers[BlobInfo.MimeTypeHeaderName].FirstOrDefault() ?? "";
-        var title = Request.Headers[BlobInfo.TitleHeaderName].FirstOrDefault() ?? "";
-        var scopeStr = Request.Headers[BlobInfo.ScopeHeaderName].FirstOrDefault();
-        var scope = Enum.Parse<BlobScope>(scopeStr ?? "");
-        var shaHash = Request.Headers[BlobInfo.ShaHashHeaderName].FirstOrDefault();
-        var slug = Request.Headers[BlobInfo.SlugHeaderName].FirstOrDefault() ?? "";
-
-        if(edUuid != uuid) {
-            throw new DryException("UUID in header does not match UUID in URL");
+        var headerUuidStr = Request.Headers[Blob.UuidHeaderName].FirstOrDefault() ?? "";
+        if(Guid.TryParse(headerUuidStr, out var headerUuid)) {
+            if(headerUuid != uuid) {
+                throw new ArgumentMismatchException("UUID in header does not match UUID in URL", nameof(uuid));
+            }
         }
 
-        var memoryStream = new MemoryStream();
-        await Request.Body.CopyToAsync(memoryStream);
-        var bytes = memoryStream.ToArray();
-        var item = new BlobInfo {
-            MimeType = mimeType,
-            Title = title,
-            Scope = scope,
-            Slug = slug,
-            ShaHash = shaHash ?? "",
-            Size = bytes.Length,
-            Uuid = uuid,
-        };
-        var blob = await blobs.UploadAsync(item, bytes);
-        return new ResourceReference<BlobInfo>(blob);
+        var exemplar = await BlobSerializer.DeserializeBlobAsync<Blob>(Request);
+
+        var blob = await blobs.CreateAsync(exemplar);
+        return new ResourceReference<Blob>(blob);
     }
 
-    ///// <summary>
-    ///// Uploads a file.
-    ///// </summary>
-    //[HttpPost("api/blobs/{scope}")]
-    //[Consumes("multipart/form-data"), Produces("application/json")]
-    //[Authorize(SamplePolicies.SamplePolicy)]
-    //public async Task<ResourceReference<BlobInfo>> CreateBlobAsync(BlobScope scope, [FromQuery] string filename, [FromQuery] string mimeType)
-    //{
-    //    var memoryStream = new MemoryStream();
-    //    await Request.Body.CopyToAsync(memoryStream);
-    //    var bytes = memoryStream.ToArray();
-    //    var item = new BlobInfo {
-    //        MimeType = mimeType,
-    //        Title = filename,
-    //        Scope = scope,
-    //        Size = bytes.Length,
-    //    };
-    //    var blob = await blobs.UploadAsync(item, bytes);
-    //    return new ResourceReference<BlobInfo>(blob);
-    //}
-
     /// <summary>
-    /// Download the content of specified blob.
+    /// Retrieves a Blob with the specified UUID as a file stream and HTTP headers.
     /// </summary>
-    [HttpGet("api/blobs/{uuid}/content")]
-    [Produces("application/octet-stream")]
+    [HttpGet("api/blobs/{uuid}")]
+    [HttpGet("api/blobs/{uuid}/{filename}")]
     [AllowAnonymous]
-    public async Task<FileContentResult> RetrieveAsync(Guid uuid)
+    [SuppressMessage("ApiUsage", "DRY1109:HttpGet methods should have Produces attribute", Justification = "May produce various content types, set using the FileContentResult.")]
+    public async Task RetrieveAsync(Guid uuid, string filename)
     {
         var blob = await blobs.RetrieveAsync(uuid);
-        var content = await blobs.DownloadAsync(blob);
-        return File(content, blob.MimeType);
-    }
+        if(blob.Content == null) {
+            throw new DryException("Missing content.");
+        }
+        //Response.Headers.Add(Blob.LengthHeaderName, blob.Length.ToString());
+        //Response.Headers.Add(Blob.UuidHeaderName, blob.Uuid.ToString());
+        //Response.Headers.Add(Blob.TitleHeaderName, blob.Title);
+        //Response.Headers.Add(Blob.SlugHeaderName, blob.Slug);
+        //Response.Headers.Add(Blob.MD5HashHeaderName, blob.MD5Hash);
+        //Response.Headers.Add(Blob.MimeTypeHeaderName, blob.MimeType);
+        //Response.Body = new MemoryStream(blob.Content);
+        
+        await BlobSerializer.SerializeBlobAsync(Response, blob);
 
-    /// <summary>
-    /// Retrieve a specific blob's information.
-    /// </summary>
-    /// <param name="uuid"></param>
-    /// <returns></returns>
-    [HttpGet("api/blobs/{uuid}")]
-    [Produces("application/json")]
-    [AllowAnonymous]
-    public async Task<BlobInfo> Retrieve(Guid uuid)
-    {
-        return await blobs.RetrieveAsync(uuid);
+        //return File(blob.Content, blob.MimeType);
     }
 
     ///// <summary>
@@ -139,12 +89,12 @@ public class BlobController : ControllerBase {
     /// <summary>
     /// Delete an existing blob.
     /// </summary>
-    [HttpDelete("api/blobs/{uniqueId}")]
-    [Authorize(SamplePolicies.SamplePolicy)]
-    public async Task Delete(Guid uniqueId)
-    {
-        await blobs.DeleteAsync(uniqueId);
-    }
+    //[HttpDelete("api/blobs/{uniqueId}")]
+    //[Authorize(SamplePolicies.SamplePolicy)]
+    //public async Task Delete(Guid uniqueId)
+    //{
+    //    await blobs.DeleteAsync(uniqueId);
+    //}
 
     private readonly BlobService blobs;
 

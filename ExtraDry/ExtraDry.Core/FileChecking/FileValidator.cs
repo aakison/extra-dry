@@ -39,16 +39,31 @@ public class FileValidator
     /// <summary>
     /// A list of validation errors that were encountered while validating the file or files.
     /// </summary>
-    public ReadOnlyCollection<ValidationResult> Errors => ValidationErrors.AsReadOnly();
+    public ReadOnlyCollection<ValidationResult> Errors {
+        get {
+            return ValidationErrors.AsReadOnly();
+        }
+    }
 
     /// <summary>
     /// If the file or files that were validated had any validation errors, then throw a validation exception.
     /// </summary>
-    public void ThrowIfNotValid()
+    public void ThrowIfInvalid()
     {
         if(!IsValid) {
             throw new ValidationException(string.Join(", ", ValidationErrors.Select(e => e.ErrorMessage)));
         }
+    }
+
+    [Obsolete("Use ThrowIfInvalid instead.")]
+    public void ThrowIfNotValid() => ThrowIfInvalid();
+
+    /// <summary>
+    /// Clears the validator of errors so that it can be reused.
+    /// </summary>
+    public void Clear()
+    {
+        ValidationErrors.Clear();
     }
 
     private List<ValidationResult> ValidationErrors { get; } = new();
