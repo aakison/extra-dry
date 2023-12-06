@@ -13,7 +13,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="ExtraDry.Analyzers" Version="0.3.56-alpha">
+		<PackageReference Include="ExtraDry.Analyzers" Version="0.3.57-alpha">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>

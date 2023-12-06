@@ -115,16 +115,16 @@ public class FileValidationTests {
         Assert.Contains("filename and mime type do not match", exception.Message);
     }
 
-    [Theory(Skip = "Refactor to remove file dependency")]
-    [InlineData("bat.bat", "bat.bat", "text/plain")]
-    [InlineData("exe.exe", "exe.exe", "application/x-dosexec")]
-    [InlineData("zip.jar", "zip.zip", "application/java-archive")]
-    [InlineData("file.apk", "word.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")]
-    public void BlacklistFileType(string filename, string filepath, string mime)
+    [Theory]
+    [InlineData("bat.bat")]
+    //[InlineData("exe.exe", "exe.exe", "application/x-dosexec")]
+    //[InlineData("zip.jar", "zip.zip", "application/java-archive")]
+    //[InlineData("file.apk", "word.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")]
+    public void BlacklistFileType(string filekey)
     {
-        var fileBytes = File.ReadAllBytes($"FileUpload/SampleFiles/{filepath}");
+        var file = SampleFiles.GetFile(filekey);
 
-        validator.ValidateFile(filename, mime, fileBytes);
+        validator.ValidateFile(file.Filename, file.MimeType, file.Content);
 
         Assert.False(validator.IsValid);
         var exception = Assert.Throws<ValidationException>(() => validator.ThrowIfInvalid());
