@@ -58,6 +58,12 @@ public partial class Suspense<TModel> : ComponentBase, IExtraDryComponent {
     public IndicatorSize Size { get; set; } = IndicatorSize.Standard;
 
     /// <summary>
+    /// Which Indicator Icons should be displayed. Defaults to true
+    /// </summary>
+    [Parameter]
+    public bool ShowIcon { get; set; } = true;
+
+    /// <summary>
     /// The time span to wait before timing out in milliseconds. Default is 5 seconds
     /// </summary>
     [Parameter]
@@ -83,6 +89,15 @@ public partial class Suspense<TModel> : ComponentBase, IExtraDryComponent {
     protected async override Task OnInitializedAsync()
     {
         await DoLoadData();
+    }
+
+    private IndicatorContext GetContext()
+    {
+        return new IndicatorContext { 
+            Size = Size, 
+            Reload = Refresh, 
+            ShowIcon = ShowIcon 
+        };
     }
 
     private async Task DoLoadData()
