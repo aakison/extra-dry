@@ -15,18 +15,18 @@ public class SampleFile
 public class SampleFiles
 {
     public static SampleFile GetFile(string name) => name switch {
-        "text.txt" => TextFile,
-        "bat.bat" => BatFile,
+        "test.txt" => GoodTextFile,
+        "test.bat" => GoodBatFile,
         _ => throw new ArgumentException($"Unknown file name {name}", nameof(name)),
     };
 
-    public static SampleFile BatFile => new() {
+    public static SampleFile GoodBatFile => new() {
         Filename = "test.bat",
         MimeType = "application/octet-stream",
         Content = Encoding.UTF8.GetBytes("echo hello world")
     };
 
-    public static SampleFile TextFile => new() {
+    public static SampleFile GoodTextFile => new() {
         Filename = "test.txt",
         MimeType = "text/plain",
         Content = Encoding.UTF8.GetBytes("Hello, World!")

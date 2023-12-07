@@ -1,0 +1,21 @@
+﻿@inject IListService<Employee> EmployeeService;
+@inject NavigationManager Navigation;
+
+<h1>Employees</h1>
+
+<DryErrorBoundary>
+    <DryPageQueryView>
+        @*<TableMenu TItem="Employee" />*@
+        <DryFilter TItem="Employee" Affordance="" Icon="theme" ShowPreview="false" />
+        <DryTable TItem="Employee" ViewModel="@this" ItemsService="@EmployeeService" />
+    </DryPageQueryView>
+</DryErrorBoundary>
+
+@code {
+
+    [Command(CommandContext.Default, Icon = "edit", PropertyName = nameof(Employee.Title))]
+    public void Edit(Employee employee)
+    {
+        Navigation.NavigateTo($"/admin/works/employees/list/{employee.Uuid}");
+    }
+}

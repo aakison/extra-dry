@@ -46,7 +46,7 @@ public class FileValidationTests {
     }
 
     [Theory(Skip = "Refactor to remove file dependency")]
-    [InlineData("text.txt", "text/plain")]
+    [InlineData("txt.txt", "text/plain")]
     [InlineData("jpg.jpg", "image/jpeg")]
     [InlineData("png.png", "image/png")]
     [InlineData("rtf.rtf", "text/rtf")]
@@ -103,7 +103,6 @@ public class FileValidationTests {
 
     [Theory(Skip = "Refactor to remove file dependency")]
     [InlineData("doc.docx", "word.docx", "image/jpeg")]
-    [InlineData("file.txt", "text.txt", "image/jpeg")]
     public void MismatchingNameAndMime(string filename, string filepath, string mime)
     {
         var fileBytes = File.ReadAllBytes($"FileUpload/SampleFiles/{filepath}");
@@ -116,7 +115,7 @@ public class FileValidationTests {
     }
 
     [Theory]
-    [InlineData("bat.bat")]
+    [InlineData("test.bat")]
     //[InlineData("exe.exe", "exe.exe", "application/x-dosexec")]
     //[InlineData("zip.jar", "zip.zip", "application/java-archive")]
     //[InlineData("file.apk", "word.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")]
@@ -142,27 +141,46 @@ public class FileValidationTests {
         Assert.Throws<ValidationException>(() => validator.ThrowIfInvalid());
     }
 
-    [Theory(Skip = "Refactor to remove file dependency")]
-    [InlineData("txt", "text.txt", "text.txt", "text/plain")] 
-    [InlineData("docx", "word.docx", "word.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")]
-    [InlineData("docx", "zip.zip", "zip.zip", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")]
-    public void CanConfigureBlacklist(string blackListFileExtension, string filepath, string filename, string mime)
+    [Fact]
+    public void BlacklistBlocksExtension()
     {
-        options = new FileValidationOptions() {
-            ExtensionWhitelist = new List<string> { "txt", "jpg", "png", "rtf", "docx", "docm", "tiff", "doc", "mp4", "html", "zip" },
-            ExtensionBlacklist = new List<BlacklistFileType>() { new() { Extension = blackListFileExtension } },
-            CheckMagicBytesAndMimes = true,
-            FileDatabaseLocation = "FileUpload/FileDatabase.json"
+        var options = new FileValidationOptions() {
+            ExtensionWhitelist = new List<string> { "txt" }, // even if on whitelist...
+            ExtensionBlacklist = new List<BlacklistFileType>() { new() { Extension = "txt" } },
+            ValidateExtension = ValidationCondition.Always,
+            ValidateContent = ValidationCondition.Never,
+            ValidateFilename = ValidationCondition.Never,
         };
-        service = new FileValidationService(options);
-        validator = new FileValidator(service);
+        var service = new FileValidationService(options);
+        var validator = new FileValidator(service);
+        var file = SampleFiles.GetFile("test.txt");
 
-        var fileBytes = File.ReadAllBytes($"FileUpload/SampleFiles/{filepath}");
-        validator.ValidateFile(filename, mime, fileBytes);
+        validator.ValidateFile(file.Filename, file.MimeType, file.Content);
 
         Assert.False(validator.IsValid);
-        Assert.Throws<ValidationException>(() => validator.ThrowIfInvalid());
+        Assert.Throws<ValidationException>(validator.ThrowIfInvalid);
     }
+
+    [Fact]
+    public void BlacklistCanBeIgnoredByConfiguration()
+    {
+        // same as above but BlacklistBlocksExtension but don't validate extension.
+        var options = new FileValidationOptions() {
+            ExtensionWhitelist = new List<string> { "txt" }, // even if on whitelist...
+            ExtensionBlacklist = new List<BlacklistFileType>() { new() { Extension = "txt" } },
+            ValidateExtension = ValidationCondition.Never,
+            ValidateContent = ValidationCondition.Never,
+            ValidateFilename = ValidationCondition.Never,
+        };
+        var service = new FileValidationService(options);
+        var validator = new FileValidator(service);
+        var file = SampleFiles.GetFile("test.txt");
+
+        validator.ValidateFile(file.Filename, file.MimeType, file.Content);
+
+        Assert.True(validator.IsValid);
+    }
+
 
     [Theory(Skip = "Refactor to remove file dependency")]
     [InlineData("docx", "word.docx", "zip.zip", "application/zip")]

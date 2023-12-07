@@ -1,4 +1,6 @@
-﻿namespace Sample.Shared;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Sample.Shared;
 
 public class Employee : IResourceIdentifiers, ICreatingCallback
 {
@@ -41,6 +43,13 @@ public class Employee : IResourceIdentifiers, ICreatingCallback
     /// <remarks>Use for testing nullable dates in Filter conditions.</remarks>
     [Filter]
     public DateTime? TerminationDate { get; set; }
+
+    [NotMapped]
+    [Display(ShortName = "Active")]
+    public bool ActiveEmployee => TerminationDate == null || TerminationDate > DateTime.Now;
+
+    [JsonConverter(typeof(ResourceReferenceConverter<Company>))]
+    public Company? Employer { get; set; }
 
     /// <summary>
     /// The version info which informs the audit log.

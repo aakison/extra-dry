@@ -26,7 +26,10 @@ public class Program
         });
 
         services.AddFilteredListService<Sector>("/api/sectors");
+
         services.AddFilteredListService<Company>("/api/companies");
+        services.AddPagedListService<Employee>("/api/employees");
+
         services.AddFilteredListService<Content>("/api/contents");
 
         services.AddListService<Region>(options => { 
@@ -37,8 +40,6 @@ public class Program
         });
 
         services.AddStatService<Sector>("/api/sectors/stats");
-
-        services.AddPagedListService<Employee>("/api/employees");
 
         services.AddCrudService<Sector>("/api/sectors");
         services.AddCrudService<Company>("/api/companies");

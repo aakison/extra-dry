@@ -95,8 +95,9 @@ public partial class SampleDataService {
         database.SaveChanges();
     }
 
-    public void PopulateEmployees(int count)
+    public async Task PopulateEmployeesAsync(int count)
     {
+        var companies = await database.Companies.Where(e => e.Status == CompanyStatus.Active).ToArrayAsync();
         for(int i = 0; i < count; ++i) {
             var first = PickRandom(firstNames);
             var last = PickRandom(lastNames);
@@ -109,9 +110,11 @@ public partial class SampleDataService {
                 // 20% are no longer employed
                 employee.TerminationDate = DateTime.UtcNow.AddDays(-random.Next(1, 1000));
             }
+            employee.Employer = PickRandom(companies);
+            await employee.OnCreatingAsync();
             database.Employees.Add(employee);
         }
-        database.SaveChanges();
+        await database.SaveChangesAsync();
     }
 
     public void PopulateContents()

@@ -47,6 +47,7 @@ public class AppViewModel {
         new("navigation", "/img/glyphs/compass-sharp-light.svg", "Icons", "glyph"),
         new("reveal", "/img/glyphs/expand-light.svg", "Reveal", "glyph"),
         new("suspense", "/img/glyphs/arrow-rotate-left-light.svg", "Suspense", "glyph"),
+        new("employees", "/img/glyphs/users-light.svg", "Employees", "glyph"),
         new("edit", "fas fa-edit"),
         new("plus", "fas fa-plus"),
         new("filter", "fas fa-filter"),
@@ -252,6 +253,12 @@ public class AppViewModel {
                                 Title = "Companies",
                                 ActiveMatch = "/companies",
                                 NavLink = "/admin/works/companies/list",
+                            },
+                            new() {
+                                Icon = "employees",
+                                Title = "Employees",
+                                ActiveMatch = "/employees",
+                                NavLink = "/admin/works/employees/list",
                             },
                             new() {
                                 Icon = "sectors",

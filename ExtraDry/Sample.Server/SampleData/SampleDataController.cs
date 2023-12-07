@@ -38,7 +38,7 @@ public class SampleDataController {
             samples.PopulateTemplates();
             samples.PopulateServices();
             samples.PopulateCompanies(50);
-            samples.PopulateEmployees(5000);
+            await samples.PopulateEmployeesAsync(5000);
             samples.PopulateContents();
         }
         // Idempotent calls....
