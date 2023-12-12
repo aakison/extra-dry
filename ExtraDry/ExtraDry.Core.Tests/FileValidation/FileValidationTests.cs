@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Core.Tests;
+﻿using System.Reflection;
+
+namespace ExtraDry.Core.Tests;
 
 public class FileValidationTests {
 
@@ -88,6 +90,25 @@ public class FileValidationTests {
     }
 
     [Theory]
+    [InlineData("Ascii.txt")]
+    [InlineData("Unicodé.txt")]
+    [InlineData("!Leet$.txt")]
+    public void CanConfigureForBadFilenames(string filename)
+    {
+        var options = new FileValidationOptions() {
+            FileCleanerAllowedNameCharacters = FilenameCharacters.All,
+            FileCleanerAllowedExtensionCharacters = FilenameCharacters.All,
+            FileCleanerLowercase = false,
+            ValidateContent = ValidationCondition.Never,
+        };
+        var service = new FileValidationService(options);
+
+        var errors = service.ValidateFile(filename, "");
+
+        Assert.Empty(errors);
+    }
+
+    [Theory]
     [InlineData("file1.test-1.txt", "file1.test-1.txt")]
     [InlineData("file1-.test-1.txt", "file1.test-1.txt")]
     [InlineData("123___sad---.html", "123_sad.html")]
@@ -135,15 +156,14 @@ public class FileValidationTests {
     [InlineData(null)]
     [InlineData("")]
     [InlineData("!bat.txt")]
-    [InlineData("te1--xt.txt")]
     [InlineData("j%pg.txt")]
-    [InlineData("rtf-.rtf")]
+    [InlineData("rtf-.rtf")] // False positive, is actually valid.
+    [InlineData("te1--xt.txt")] // False positive, is actually valid.
     [InlineData("text")]
-    public void InvalidFilename(string filename)
+    [InlineData("text.$$$")]
+    public void InvalidFilenameWithDefaultOptions(string filename)
     {
         var validator = OptionedFileValidator(config => {
-                config.ValidateFilename = ValidationCondition.Always;
-                config.ValidateExtension = ValidationCondition.Never;
                 config.ValidateContent = ValidationCondition.Never;
             });
 
@@ -152,18 +172,24 @@ public class FileValidationTests {
         Assert.False(validator.IsValid);
     }
 
-    [Theory(Skip = "Refactor to remove file dependency")]
-    [InlineData("doc.docx", "jpg.jpg", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")]
-    [InlineData("file.txt", "png.png", "text/plain")]
-    public void MismatchingNameAndBytes(string filename, string filepath, string mime)
-    {
-        var fileBytes = File.ReadAllBytes($"FileUpload/SampleFiles/{filepath}");
+    //[Theory]
+    //[InlineData(SampleFiles.GoodDocxFileKey, "jpg.jpg")]
+    ////[InlineData("file.txt", "png.png", "text/plain")]
+    //public void ExtensionDoesNotMatchMimeType(int sample, string badFilename)
+    //{
+    //    var options = new FileValidationOptions() {
+    //        ValidateContent = ValidationCondition.Always,
+    //        ValidateExtension = ValidationCondition.Always,
+    //        ValidateFilename = ValidationCondition.Always,
+    //    };
+    //    options.ExtensionBlacklist.Add(new BlacklistFileType { Extension = "jpg", CheckType = "image/jpeg" });
+    //    var service = new FileValidationService(options);
+    //    var file = SampleFiles.GetFile(sample);
 
-        validator.ValidateFile(filename, mime, fileBytes);
+    //    var errors = service.ValidateFile(badFilename, file.MimeType, file.Content);
 
-        Assert.False(validator.IsValid);
-        Assert.Throws<ValidationException>(() => validator.ThrowIfInvalid());
-    }
+    //    Assert.Single(errors);
+    //}
 
     [Theory(Skip = "Refactor to remove file dependency")]
     [InlineData("doc.docx", "word.docx", "image/jpeg")]
@@ -179,11 +205,11 @@ public class FileValidationTests {
     }
 
     [Theory]
-    [InlineData("test.bat")]
+    [InlineData(SampleFiles.GoodBatFileKey)]
     //[InlineData("exe.exe", "exe.exe", "application/x-dosexec")]
     //[InlineData("zip.jar", "zip.zip", "application/java-archive")]
     //[InlineData("file.apk", "word.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")]
-    public void BlacklistFileType(string filekey)
+    public void BlacklistFileType(int filekey)
     {
         var file = SampleFiles.GetFile(filekey);
 
@@ -217,7 +243,7 @@ public class FileValidationTests {
         };
         var service = new FileValidationService(options);
         var validator = new FileValidator(service);
-        var file = SampleFiles.GetFile("test.txt");
+        var file = SampleFiles.GoodTextFile;
 
         validator.ValidateFile(file.Filename, file.MimeType, file.Content);
 
@@ -238,7 +264,7 @@ public class FileValidationTests {
         };
         var service = new FileValidationService(options);
         var validator = new FileValidator(service);
-        var file = SampleFiles.GetFile("test.txt");
+        var file = SampleFiles.GoodTextFile;
 
         validator.ValidateFile(file.Filename, file.MimeType, file.Content);
 

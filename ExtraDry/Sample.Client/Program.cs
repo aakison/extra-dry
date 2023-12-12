@@ -57,9 +57,7 @@ public class Program
 
         services.AddScoped<AppViewModel>();
 
-        services.AddFileValidation(config => {
-                config.ValidateExtension = ValidationCondition.Never;
-            });
+        services.AddFileValidation();
 
         await builder.Build().RunAsync();
     }

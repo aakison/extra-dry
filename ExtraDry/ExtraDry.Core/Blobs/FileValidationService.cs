@@ -49,6 +49,7 @@ public class FileValidationService : IFileValidationOptions
     public ICollection<string> ExtensionWhitelist => new ReadOnlyCollection<string>(extensionWhitelist);
     private List<string> extensionWhitelist;
 
+    /// <inheritdoc/>
     public ICollection<BlacklistFileType> ExtensionBlacklist => new ReadOnlyCollection<BlacklistFileType>(extensionBlacklist);
     private List<BlacklistFileType> extensionBlacklist;
 
