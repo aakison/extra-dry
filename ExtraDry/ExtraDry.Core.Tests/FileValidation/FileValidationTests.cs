@@ -15,16 +15,76 @@ public class FileValidationTests {
     }
 
     [Theory]
-    [InlineData("good.txt")]
-    [InlineData("Resumè4.docx")]
-    [InlineData("Caractères-accentués.txt")]
-    [InlineData("Sedím-na-stole-a-moja-výška-mi-umožňuje-pohodlne-čítať-knihu.txt")]
-    [InlineData("myArchive.tar.gz")]
-    public void DoesNotAlterGoodFileNames(string inputFilename)
+    [InlineData("good.txt")] // basic correctness
+    [InlineData("MixedCase.txt")] // mixed case
+    [InlineData("Caractères-accentués-Sedím-na-stole-a-moja-výška-mi-umožňuje-pohodlne-čítať-knihu.txt")] // extended characters
+    [InlineData("archive.tar.gz")] // multiple extensions.
+    public void DoesNotAlterUnicodeFileNames(string filename)
     {
+        var options = new FileValidationOptions() {
+            FileCleanerAllowedNameCharacters = FilenameCharacters.UnicodeAlphaNumeric,
+            FileCleanerAllowedExtensionCharacters = FilenameCharacters.All,
+            FileCleanerLowercase = false,
+        };
+        var service = new FileValidationService(options);
+
+        var clean = service.CleanFilename(filename);
+
+        Assert.Equal(filename, clean);
+    }
+
+    [Theory]
+    [InlineData("Bad!Name.txt")]
+    [InlineData("Resumé!.txt")] // extended characters
+    public void InvalidUnicodeFilename(string filename)
+    {
+        var options = new FileValidationOptions() {
+            FileCleanerAllowedNameCharacters = FilenameCharacters.UnicodeAlphaNumeric,
+            FileCleanerAllowedExtensionCharacters = FilenameCharacters.All,
+            FileCleanerLowercase = false,
+            ValidateContent = ValidationCondition.Never,
+        };
+        var service = new FileValidationService(options);
+
+        var errors = service.ValidateFile(filename, "");
+
+        Assert.Single(errors);
+    }
+
+    [Theory]
+    [InlineData("good.txt")] // basic correctness
+    [InlineData("MixedCase.txt")] // mixed case
+    [InlineData("archive.tar.gz")] // multiple extensions.
+    public void DoesNotAlterAsciiFileNames(string inputFilename)
+    {
+        var options = new FileValidationOptions() {
+            FileCleanerAllowedNameCharacters = FilenameCharacters.AsciiAlphaNumeric,
+            FileCleanerAllowedExtensionCharacters = FilenameCharacters.All,
+            FileCleanerLowercase = false,
+        };
+        var service = new FileValidationService(options);
+
         var clean = service.CleanFilename(inputFilename);
 
         Assert.Equal(inputFilename, clean);
+    }
+
+    [Theory]
+    [InlineData("Bad!Name.txt")]
+    [InlineData("Resumé.txt")]
+    public void InvalidAsciiFilename(string filename)
+    {
+        var options = new FileValidationOptions() {
+            FileCleanerAllowedNameCharacters = FilenameCharacters.AsciiAlphaNumeric,
+            FileCleanerAllowedExtensionCharacters = FilenameCharacters.All,
+            FileCleanerLowercase = false,
+            ValidateContent = ValidationCondition.Never,
+        };
+        var service = new FileValidationService(options);
+
+        var errors = service.ValidateFile(filename, "");
+
+        Assert.Single(errors);
     }
 
     [Theory]
@@ -40,6 +100,10 @@ public class FileValidationTests {
     [InlineData("-21938721309781231content.txt", "21938721309781231content.txt")]
     public void AltersFileNameToCorrect(string inputFilename, string expected)
     {
+        var service = new FileValidationService(new FileValidationOptions() {
+            
+        });
+
         var clean = service.CleanFilename(inputFilename);
 
         Assert.Equal(expected, clean);

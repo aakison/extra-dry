@@ -1,68 +1,59 @@
 ﻿using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
 namespace ExtraDry.Core;
 
-public class FileValidationService
+public class FileValidationService : IFileValidationOptions
 {
-    /// <summary>
-    /// File extensions that will be rejected regardless of the whitelist settings
-    /// </summary>
-    private readonly List<string> FileTypeBlacklist = new();
-
-    /// <summary>
-    /// Some files we'd like to reject based off their file extensions, but can't reject off magic bytes becuase they share these with other file types eg docx, zip, jar and apk
-    /// </summary>
-    private readonly List<string> ExtensionOnlyBlacklist = new();
-
-    /// <summary>
-    /// Whitelisted file extensions. Note that blacklist extension duplicates will override this list.
-    /// </summary>
-    public ReadOnlyCollection<string> ExtensionWhitelist => new(extensionWhitelist);
-    private List<string> extensionWhitelist;
-
-    /// <summary>
-    /// XML file types that are checked for script tags
-    /// </summary>
-    private List<string> KnownXmlFileTypes { get; set; } = new() { "xml", "html", "svg" };
-
-    /// <summary>
-    /// Regex used to help clean the filenames.
-    /// </summary>
-    private const string cleaningRegex = @"[^\p{Lu}\p{Ll}\p{Lt}\p{Lm}\p{Lo}\p{Nd}\-_\.]";
-
-    private FileTypeDefinitionSource fileService;
-
-    private readonly bool CheckFileContent;
-
-    public FileValidationService(FileValidationOptions config)
+    public FileValidationService(FileValidationOptions options)
     {
-        CheckFileContent = config.CheckMagicBytesAndMimes;
+        CheckFileContent = options.CheckMagicBytesAndMimes;
         if(CheckFileContent) {
-            fileService = new FileTypeDefinitionSource(config.FileDatabaseLocation!);
+            fileService = new FileTypeDefinitionSource(options.FileDatabaseLocation!);
         }
         else {
             fileService = new FileTypeDefinitionSource("");
         }
-        extensionWhitelist = new List<string>(config.ExtensionWhitelist);
-        ConfigureUploadRestrictions(config);
+        extensionWhitelist = new List<string>(options.ExtensionWhitelist);
+        extensionBlacklist = new List<BlacklistFileType>(options.ExtensionBlacklist);
+        ConfigureUploadRestrictions(options);
 
-        ValidateContent = config.ValidateContent;
-        ValidateExtension = config.ValidateExtension;
-        ValidateFilename = config.ValidateFilename;
+        Options = options;
     }
 
-    /// <inheritdoc cref="FileValidationOptions.ValidateContent" />
-    public ValidationCondition ValidateContent { get; private set; }
+    #region IFileValidationOptions interface
 
-    /// <inheritdoc cref="FileValidationOptions.ValidateExtension" />
-    public ValidationCondition ValidateExtension { get; private set; }
+    /// <inheritdoc/>
+    public ValidationCondition ValidateContent => Options.ValidateContent;
 
-    /// <inheritdoc cref="FileValidationOptions.ValidateFilename" />
-    public ValidationCondition ValidateFilename { get; private set; }
+    /// <inheritdoc/>
+    public ValidationCondition ValidateExtension => Options.ValidateExtension;
+
+    /// <inheritdoc/>
+    public ValidationCondition ValidateFilename => Options.ValidateFilename;
+
+    /// <inheritdoc/>
+    public FilenameCharacters FileCleanerAllowedExtensionCharacters => Options.FileCleanerAllowedExtensionCharacters;
+    
+    /// <inheritdoc/>
+    public FilenameCharacters FileCleanerAllowedNameCharacters => Options.FileCleanerAllowedNameCharacters;
+
+    /// <inheritdoc/>
+    public bool FileCleanerCompressFilename => Options.FileCleanerCompressFilename;
+
+    /// <inheritdoc/>
+    public bool FileCleanerLowercase => Options.FileCleanerLowercase;
+
+    /// <inheritdoc/>
+    public ICollection<string> ExtensionWhitelist => new ReadOnlyCollection<string>(extensionWhitelist);
+    private List<string> extensionWhitelist;
+
+    public ICollection<BlacklistFileType> ExtensionBlacklist => new ReadOnlyCollection<BlacklistFileType>(extensionBlacklist);
+    private List<BlacklistFileType> extensionBlacklist;
+
+    #endregion
 
     /// <summary>
     /// Call in startup of your application to configure the settings for the upload tools;
@@ -71,7 +62,7 @@ public class FileValidationService
     private void ConfigureUploadRestrictions(FileValidationOptions config)
     {
         if(config.ExtensionWhitelist.Count > 0) {
-            extensionWhitelist = config.ExtensionWhitelist;
+            extensionWhitelist = new(config.ExtensionWhitelist);
         }
         else {
             extensionWhitelist = new List<string> { "txt", "jpg", "png", "jpeg" };
@@ -98,39 +89,43 @@ public class FileValidationService
     }
 
     /// <summary>
-    /// Given a filename, this will:
-    ///  - Replace spaces with hyphens
-    ///  - Remove invalid characters and replace with hyphens. 
-    ///  - Ensure the filename begins with a valid character
-    ///  - Trim invalid characters from start and end from filename
+    /// Clean a filename to ensure it is safe to use for web URIs and to transfer to other operating systems.
     /// </summary>
-    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "It will access instance once configuration implemented.")]
     public string CleanFilename(string filename)
     {
         // Sort out the filename part
         var fileOnly = Path.GetFileNameWithoutExtension(filename);
 
         // replace all the invalid characters
-        var cleanedFilename = Regex.Replace(fileOnly, cleaningRegex, "-"); // Replace invalid characters with hyphens
+        var cleanedFilename = FileCleanerAllowedNameCharacters switch {
+            FilenameCharacters.AsciiAlphaNumeric => Regex.Replace(fileOnly, InvalidAsciiCharacterRegex, "-"), 
+            FilenameCharacters.UnicodeAlphaNumeric => Regex.Replace(fileOnly, InvalidUnicodeCharacterRegex, "-"),
+            _ => fileOnly,
+        };
 
-        // collapse duplicate hyphens and underscores
-        cleanedFilename = Regex.Replace(cleanedFilename, @"-+", "-"); // Collapse duplicate hyphens
-        cleanedFilename = Regex.Replace(cleanedFilename, @"_+", "_"); // Collapse duplicate underscores
-        cleanedFilename = Regex.Replace(cleanedFilename, @"[-\.]{2,}", "."); // Collapse -.- combinations to a .
+        if(FileCleanerCompressFilename) {
+            cleanedFilename = Regex.Replace(cleanedFilename, @"-+", "-"); // Collapse duplicate hyphens
+            cleanedFilename = Regex.Replace(cleanedFilename, @"_+", "_"); // Collapse duplicate underscores
+            cleanedFilename = Regex.Replace(cleanedFilename, @"[-\.]{2,}", "."); // Collapse -.- combinations to a .
 
-        // Remove trailing or leading hyphens
-        cleanedFilename = cleanedFilename.Trim('-');
-        cleanedFilename = cleanedFilename.TrimEnd('_');
+            cleanedFilename = cleanedFilename.Trim('-');
+            cleanedFilename = cleanedFilename.TrimEnd('_');
+        }
 
         // Now the file extension, the only extensions that aren't alphanumeric are files that we likely should be rejecting
         // The addition of the hyphen as well allows for wordpress content and other similar proprietary but possible files.
         // https://www.file-extensions.org/extensions/begin-with-special-characters
         // https://www.file-extensions.org/filetype/extension/name/miscellaneous-files
-        var extension = Path.GetExtension(filename).Trim('.');
-        extension = Regex.Replace(extension, @"[^a-zA-Z0-9\-]", string.Empty);
+        var extension = Path.GetExtension(filename).TrimStart('.');
+        var cleanedExtension = FileCleanerAllowedExtensionCharacters switch {
+            FilenameCharacters.AsciiAlphaNumeric => Regex.Replace(extension, InvalidAsciiCharacterRegex, ""),
+            FilenameCharacters.UnicodeAlphaNumeric => Regex.Replace(extension, InvalidUnicodeCharacterRegex, ""),
+            _ => extension,
+        };
 
-        cleanedFilename = $"{cleanedFilename}.{extension}";
-        return cleanedFilename;
+        // TODO: Clean up diacritics? https://stackoverflow.com/questions/249087/how-do-i-remove-diacritics-accents-from-a-string-in-net
+
+        return $"{cleanedFilename}.{cleanedExtension}";
     }
 
     /// <summary>
@@ -290,5 +285,36 @@ public class FileValidationService
         var description = fileTypes.FirstOrDefault(f => !string.IsNullOrEmpty(f.Description))?.Description;
         return description ?? fileTypes.First().Extensions.FirstOrDefault() ?? "unknown";
     }
+
+    /// <summary>
+    /// File extensions that will be rejected regardless of the whitelist settings
+    /// </summary>
+    private readonly List<string> FileTypeBlacklist = new();
+
+    /// <summary>
+    /// Some files we'd like to reject based off their file extensions, but can't reject off magic bytes becuase they share these with other file types eg docx, zip, jar and apk
+    /// </summary>
+    private readonly List<string> ExtensionOnlyBlacklist = new();
+
+    /// <summary>
+    /// XML file types that are checked for script tags
+    /// </summary>
+    private List<string> KnownXmlFileTypes { get; set; } = new() { "xml", "html", "svg" };
+
+    /// <summary>
+    /// Regex that identifies non-letter characters that would not be valid in a Unicode filename.
+    /// </summary>
+    private const string InvalidUnicodeCharacterRegex = @"[^\p{Lu}\p{Ll}\p{Lt}\p{Lm}\p{Lo}\p{Nd}\-_\.]";
+
+    /// <summary>
+    /// Regex that identifies non-letter characters that would not be valid in an Ascii filename.
+    /// </summary>
+    private const string InvalidAsciiCharacterRegex = @"[^a-zA-Z0-9\-_\.]";
+
+    private FileTypeDefinitionSource fileService;
+
+    private readonly bool CheckFileContent;
+
+    private FileValidationOptions Options { get; set; }
 
 }

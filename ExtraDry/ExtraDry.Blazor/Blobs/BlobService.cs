@@ -44,7 +44,7 @@ public class BlobService<TBlob> : IBlobServiceOptions where TBlob : IBlob, new()
         }
 
         if(string.IsNullOrEmpty(blob.Slug)) {
-            var name = validator == null ? blob.Uuid.ToString() : validator.CleanFilename(Path.GetFileName(blob.Title));
+            var name = validator == null ? blob.Uuid.ToString() : validator.CleanFilename(Path.GetFileNameWithoutExtension(blob.Title));
             blob.Slug = $"{Slug.ToSlug(name)}{Path.GetExtension(blob.Title).ToLowerInvariant()}";
         }
 
