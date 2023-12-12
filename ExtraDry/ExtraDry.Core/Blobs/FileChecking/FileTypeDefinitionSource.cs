@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using System.Text.Json;
+﻿using System.Text.Json;
 
 namespace ExtraDry.Core;
 
@@ -12,25 +11,19 @@ internal class FileTypeDefinitionSource {
 
     private static List<FileTypeDefinition> LoadFileDefinitionsFromAssembly(string fileDatabasePath)
     {
-        try {
-            string fileContent = "";
-            if(File.Exists(fileDatabasePath)) {
-                fileContent = File.ReadAllText(fileDatabasePath);
-            }
-            else {
-                var assembly = Assembly.LoadFrom("ExtraDry.Server");
-                var resourceName = "ExtraDry.Server.FileDatabase.json";
-
-                using var stream = assembly.GetManifestResourceStream(resourceName);
-                using var reader = new StreamReader(stream);
-                fileContent = reader.ReadToEnd();
-            }
-            return JsonSerializer.Deserialize<List<FileTypeDefinition>>(fileContent) ?? new List<FileTypeDefinition>();
+        string fileContent = "[]";
+        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+        var server = assemblies.FirstOrDefault(e => e.GetName().Name == "ExtraDry.Server");
+        if(File.Exists(fileDatabasePath)) {
+            fileContent = File.ReadAllText(fileDatabasePath);
         }
-        catch {
-            // Swallow exceptions until we better determine how to load from file.
-            return new List<FileTypeDefinition>();
+        else if(server != null) {
+            var resourceName = "ExtraDry.Server.Blobs.FileDatabase.json";
+            using var stream = server.GetManifestResourceStream(resourceName);
+            using var reader = new StreamReader(stream);
+            fileContent = reader.ReadToEnd();
         }
+        return JsonSerializer.Deserialize<List<FileTypeDefinition>>(fileContent) ?? new();
     }
 
     /// <summary>

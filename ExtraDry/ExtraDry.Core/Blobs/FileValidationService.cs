@@ -19,7 +19,6 @@ public class FileValidationService : IFileValidationOptions
         extensionWhitelist = new List<string>(options.ExtensionWhitelist);
         extensionBlacklist = new List<BlacklistFileType>(options.ExtensionBlacklist);
         ConfigureUploadRestrictions(options);
-
         Options = options;
     }
 

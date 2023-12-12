@@ -17,7 +17,7 @@ public class BlobService {
         dataValidator.ValidateObject(item);
         dataValidator.ThrowIfInvalid();
 
-        validator.ValidateFile(item.Title, item.MimeType, item.Content);
+        validator.ValidateFile(item);
         validator.ThrowIfInvalid();
 
         fakeBlobStorage.Add(item.Uuid, item);

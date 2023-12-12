@@ -31,8 +31,18 @@ public class FileValidator
     }
 
     /// <summary>
+    /// Validates a file referenced by a <see cref="IBlob"/>.  If the file is invalid, the list of 
+    /// invalid reasons is returned.  For multiple file uploads, call this multiple times and 
+    /// retrieve the results fromt the Errors property.
+    /// </summary>
+    public IEnumerable<ValidationResult> ValidateFile(IBlob blob)
+    {
+        return ValidateFile(blob.Slug, blob.MimeType, blob.Content);
+    }
+
+    /// <summary>
     /// Gets a value indicating whether the file (or files) that was validated with 
-    /// <see cref="ValidateFile" /> contain any free from validation errors.
+    /// <see cref="ValidateFile(string, string, byte[])" /> is free of validation errors.
     /// </summary>
     public bool IsValid => ValidationErrors.Count == 0;
 

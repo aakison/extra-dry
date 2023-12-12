@@ -1,32 +1,27 @@
-﻿#nullable enable
+﻿namespace Sample.Server;
 
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
+/// <summary>
+/// Generated program entry point
+/// </summary>
+public class Program
+{
 
-namespace Sample.Server {
     /// <summary>
-    /// Generated program entry point
+    /// Generate main program entry point.
     /// </summary>
-    public class Program
+    /// <param name="args"></param>
+    public static void Main(string[] args)
     {
-
-        /// <summary>
-        /// Generate main program entry point.
-        /// </summary>
-        /// <param name="args"></param>
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
-
-        /// <summary>
-        /// Generated pattern to start application.
-        /// </summary>
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+        CreateHostBuilder(args).Build().Run();
     }
+
+    /// <summary>
+    /// Generated pattern to start application.
+    /// </summary>
+    public static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseStartup<Startup>();
+            });
 }
