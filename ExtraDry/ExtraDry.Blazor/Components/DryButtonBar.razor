@@ -7,7 +7,7 @@
             var className = context.ToString().ToLowerInvariant();
             <div class="@className">
                 @foreach(var command in commands) { 
-                    <DryButton Command="@command" Target="@Target" />
+                    <DryButton Command="@command" Model="@Target" />
                 }
             </div>
         }
