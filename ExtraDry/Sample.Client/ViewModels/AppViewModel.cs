@@ -44,6 +44,7 @@ public class AppViewModel {
         new("button", "/img/glyphs/square-bolt-light.svg", "Icons", "glyph"),
         new("error-boundary", "/img/glyphs/ban-bug-light.svg", "Icons", "glyph"),
         new("theme", "/img/glyphs/pen-swirl-light.svg", "Icons", "glyph"),
+        new("file-validator", "/img/glyphs/file-check-light.svg", "Icons", "glyph"),
         new("navigation", "/img/glyphs/compass-sharp-light.svg", "Icons", "glyph"),
         new("reveal", "/img/glyphs/expand-light.svg", "Reveal", "glyph"),
         new("suspense", "/img/glyphs/arrow-rotate-left-light.svg", "Suspense", "glyph"),
@@ -222,7 +223,7 @@ public class AppViewModel {
                                 NavLink = "/components/special/theme",
                             },
                             new() {
-                                Icon = "theme",
+                                Icon = "file-validator",
                                 Title = "File Validator",
                                 NavLink = "/components/special/file-validator",
                             }
