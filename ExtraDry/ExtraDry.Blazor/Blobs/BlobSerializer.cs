@@ -50,7 +50,12 @@ public static class BlobSerializer
                     property.SetValue(blob, Guid.Parse(headerValue));
                 }
                 else if(property.PropertyType == typeof(int)) {
-                    property.SetValue(blob, int.Parse(headerValue, CultureInfo.InvariantCulture));
+                    if(int.TryParse(headerValue, CultureInfo.InvariantCulture, out var intValue)) {
+                        property.SetValue(blob, intValue);
+                    }
+                    else {
+                        Console.WriteLine($"Unable to deserialize length: {headerValue}");
+                    }
                 }
                 else if(headerAttribute != null) {
                     throw new NotImplementedException("HttpHeaderAttribute only supports string, int, and Guid types.");
@@ -60,14 +65,12 @@ public static class BlobSerializer
                 }
             }
         }
-        blob.Content = await response.Content.ReadAsByteArrayAsync(cancellationToken); ;
+        blob.Content = await response.Content.ReadAsByteArrayAsync(cancellationToken);
+        blob.Length = blob.Content.Length;
         return blob;
 
         string HeaderValue(string headerName)
         {
-            foreach(var x in response.Headers) {
-                Console.WriteLine($"{x.Key}: {x.Value}");
-            }
             response.Headers.TryGetValues(headerName, out var values);
             response.Content.Headers.TryGetValues(headerName, out var moreValues);
             return (values ?? moreValues)?.FirstOrDefault() ?? "";

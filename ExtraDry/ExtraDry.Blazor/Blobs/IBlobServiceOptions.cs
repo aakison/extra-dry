@@ -18,4 +18,12 @@ internal interface IBlobServiceOptions : IHttpClientOptions {
     /// processing time on the client and on the server.  The default is true.
     /// </summary>
     bool ValidateHashOnCreate { get; }
+
+    /// <summary>
+    /// Files on local filesystems allow many characters and patterns that can cause security
+    /// problems on the server or when transferred to a computer running a different operating 
+    /// system.  This will re-write the filename so that it is safe for use on the web, including
+    /// in a URI.  The default is true.
+    /// </summary>
+    bool RewriteWebSafeFilename { get; }
 }

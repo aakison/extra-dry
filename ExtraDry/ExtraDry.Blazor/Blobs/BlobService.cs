@@ -34,6 +34,9 @@ public class BlobService<TBlob> : IBlobServiceOptions where TBlob : IBlob, new()
     /// <inheritdoc/>
     public bool ValidateHashOnCreate => Options.ValidateHashOnCreate;
 
+    /// <inheritdoc/>
+    public bool RewriteWebSafeFilename => Options.RewriteWebSafeFilename;
+
     public async Task CreateAsync(TBlob blob, CancellationToken cancellationToken = default)
     {
         if(blob.Content == null) {
@@ -41,12 +44,8 @@ public class BlobService<TBlob> : IBlobServiceOptions where TBlob : IBlob, new()
         }
 
         if(string.IsNullOrEmpty(blob.Slug)) {
-            if(validator != null) {
-                blob.Slug = validator.CleanFilename(blob.Title);
-            }
-            else {
-                blob.Slug = $"{Slug.ToSlug(blob.Uuid)}{Path.GetExtension(blob.Title).ToLowerInvariant()}";
-            }
+            var name = validator == null ? blob.Uuid.ToString() : validator.CleanFilename(Path.GetFileName(blob.Title));
+            blob.Slug = $"{Slug.ToSlug(name)}{Path.GetExtension(blob.Title).ToLowerInvariant()}";
         }
 
         if(ValidateHashOnCreate) {
@@ -54,6 +53,10 @@ public class BlobService<TBlob> : IBlobServiceOptions where TBlob : IBlob, new()
         }
         else {
             blob.MD5Hash = string.Empty;
+        }
+
+        if(RewriteWebSafeFilename) {
+            blob.Title = validator?.CleanFilename(blob.Title) ?? blob.Title;
         }
 
         blob.Length = blob.Content.Length;
@@ -121,7 +124,6 @@ public class BlobService<TBlob> : IBlobServiceOptions where TBlob : IBlob, new()
         validator.ValidateObject(blob);
         validator.ThrowIfInvalid();
         return blob;
-
     }
 
     private string ApiEndpoint(Guid uuid, string filename)

@@ -27,6 +27,9 @@ public class BlobServiceOptions : IBlobServiceOptions, IValidatableObject {
     /// <inheritdoc/>
     public bool ValidateHashOnCreate { get; set; } = true;
 
+    /// <inheritdoc/>
+    public bool RewriteWebSafeFilename { get; set; } = true;
+
     /// <summary>
     /// Validates the Blob service, enforcing constraints on the properties.
     /// </summary>
