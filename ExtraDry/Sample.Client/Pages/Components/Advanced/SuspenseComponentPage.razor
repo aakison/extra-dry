@@ -27,7 +27,7 @@
     </CodeBlock>
 
     <div style="width: 200px;border: solid 1px;margin-bottom: 10px;">
-        <Suspense TModel="Employee" ItemProvider=@LoadEmployee Size=@IndicatorSize @ref="_childComponent">
+        <Suspense TModel="Employee" ItemProvider=@LoadEmployee Size=@IndicatorSize ShowIcon=@ShowIcon @ref="_childComponent">
             <div>First Name: @context.FirstName</div>
             <div>Last Name: @context.LastName</div>
         </Suspense>
@@ -52,6 +52,11 @@
                 <option value="@(IndicatorSize.Large)">IndicatorSize.Large</option>
             </select>
         </div>
+
+        <div>
+            <label for="showIconCheckBox">Show Icon:</label>
+            <input type="checkbox" id="showIconCheckBox" @bind="@ShowIcon" />
+        </div>
     </form>
 
     <h3>Timeout in component - Other indicators as default</h3>
@@ -71,15 +76,19 @@
     </CodeBlock>
 
     <div style="width: 200px;border: solid 1px;margin-bottom: 10px;">
-        <Suspense TModel="Employee" ItemProvider=@LoadEmployee Size=@IndicatorSize @ref="_childComponent2">
+        <Suspense TModel="Employee" ItemProvider=@LoadEmployee Size=@IndicatorSize TimeoutDuration=500 ShowIcon=@ShowIcon @ref="_childComponent2">
             <ChildContent>
                 <div>First Name: @context.FirstName</div>
                 <div>Last Name: @context.LastName</div>
             </ChildContent>
             <Timeout>
-                <div>
-                    <Icon CssClass=@context.Size.ToString().ToLower() Key="loader-timeout" />
-                </div>
+                @if (ShowIcon)
+                {
+                    <div>
+
+                        <Icon CssClass=@context.Size.ToString().ToLower() Key="loader-timeout" />                    
+                    </div>
+                }
                 <div>Component timeout, <a href="" @onclick=@context.Reload @onclick:preventDefault>try again</a></div>
             </Timeout>
         </Suspense>
@@ -94,7 +103,7 @@
     </CodeBlock>
 
     <div style="width: 200px;border: solid 1px;margin-bottom: 10px;">
-        <Suspense TModel="Employee" ItemProvider=@LoadEmployee Size=@IndicatorSize TimeoutDuration=500 @ref="_childComponent2">
+        <Suspense TModel="Employee" ItemProvider=@LoadEmployee Size=@IndicatorSize ShowIcon=@ShowIcon TimeoutDuration =500 @ref="_childComponent2">
             <div>First Name: @context.FirstName</div>
             <div>Last Name: @context.LastName</div>
         </Suspense>
@@ -161,6 +170,10 @@
     <p>
         The indicators can also be overriden in the <code>Theme</code> using the child fragments <code>&lt;SuspenseFallback&gt;</code>, <code>&lt;SuspenseError&gt;</code> or <code>&lt;SuspenseTimeout&gt;</code>
     </p>
+    <p>
+        The <code>&lt;ShowIcon&gt;</code> Parameter can be set to determine whether Icons should be displayed or not
+    </p>
+    
 </section>
 
 @code {
@@ -168,6 +181,8 @@
     public IndicatorSize IndicatorSize { get; set; } = IndicatorSize.Standard;
     private Suspense<Employee>? _childComponent;
     private Suspense<Employee>? _childComponent2;
+
+    private bool ShowIcon = true;
 
     async Task OnValueChange(ChangeEventArgs e)
     {
