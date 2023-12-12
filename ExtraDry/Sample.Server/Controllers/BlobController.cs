@@ -58,17 +58,9 @@ public class BlobController : ControllerBase
         if(blob.Content == null) {
             throw new DryException("Missing content.");
         }
-        //Response.Headers.Add(Blob.LengthHeaderName, blob.Length.ToString());
-        //Response.Headers.Add(Blob.UuidHeaderName, blob.Uuid.ToString());
-        //Response.Headers.Add(Blob.TitleHeaderName, blob.Title);
-        //Response.Headers.Add(Blob.SlugHeaderName, blob.Slug);
-        //Response.Headers.Add(Blob.MD5HashHeaderName, blob.MD5Hash);
-        //Response.Headers.Add(Blob.MimeTypeHeaderName, blob.MimeType);
-        //Response.Body = new MemoryStream(blob.Content);
+        Response.Headers.Add("Content-Disposition", $"attachment; filename=\"{filename}\"");
         
         await BlobSerializer.SerializeBlobAsync(Response, blob);
-
-        //return File(blob.Content, blob.MimeType);
     }
 
     ///// <summary>

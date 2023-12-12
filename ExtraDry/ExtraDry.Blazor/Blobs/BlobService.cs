@@ -37,6 +37,10 @@ public class BlobService<TBlob> : IBlobServiceOptions where TBlob : IBlob, new()
     /// <inheritdoc/>
     public bool RewriteWebSafeFilename => Options.RewriteWebSafeFilename;
 
+    /// <summary>
+    /// Given an entity implementing <see cref="IBlob"/>, create a new Blob by calling the 
+    /// registered Blob endpoint.  The URI of the blob will be created from the Blob's UUID.
+    /// </summary>
     public async Task CreateAsync(TBlob blob, CancellationToken cancellationToken = default)
     {
         if(blob.Content == null) {
@@ -107,11 +111,20 @@ public class BlobService<TBlob> : IBlobServiceOptions where TBlob : IBlob, new()
         return blob;
     }
 
+    /// <summary>
+    /// Given a Blob's UUID, retrieve the Blob from the server.  The URI for the blob will not
+    /// contain the Blob's filename, so the default filename will be used.  This is suitable for 
+    /// use inside the app, but not ideal for downloading the file.  
+    /// </summary>
     public async Task<TBlob> RetrieveAsync(Guid uuid, CancellationToken cancellationToken = default)
     {
         return await RetrieveAsync(uuid, "unnamed-file", cancellationToken);
     }
 
+    /// <summary>
+    /// Given a Blob's UUID, retrieve the Blob from the server.  The URI for the blob will contain
+    /// the slug provided which improves the URI and allows for downloading files.
+    /// </summary>
     public async Task<TBlob> RetrieveAsync(Guid uuid, string slug, CancellationToken cancellationToken = default)
     {
         var endpoint = ApiEndpoint(uuid, slug);
