@@ -51,6 +51,7 @@ public partial class DryForm<T> : ComponentBase, IExtraDryComponent {
         }
         Description ??= new ViewModelDescription(typeof(T), ViewModel);
         if(Model != null) {
+            Description = new ViewModelDescription(Model.GetType(), ViewModel); // override the Description with the actual Description when we have the Model, which will account for polymorphism issues
             FormDescription = new FormDescription(Description, Model);
         }
     }
