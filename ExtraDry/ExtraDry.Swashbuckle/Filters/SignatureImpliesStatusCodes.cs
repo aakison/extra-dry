@@ -1,12 +1,20 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Azure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Routing;
+using static ExtraDry.Swashbuckle.ExtraDryGenOptions;
 
 namespace ExtraDry.Swashbuckle;
 
 /// <summary>
 /// During construction of the SwaggerGen, use the Attributes to intuit the likely HTTP response error codes.
 /// </summary>
-public class SignatureImpliesStatusCodes : IOperationFilter {
+public class SignatureImpliesStatusCodes : IOperationFilter
+{
+
+    public SignatureImpliesStatusCodes(HttpMethodsOptions options)
+    {
+        this.options = options;
+    }
 
     /// <summary>
     /// Scan through each operation, using attribute signatures to guess the typical client errors that will be surfaced.
@@ -73,16 +81,49 @@ public class SignatureImpliesStatusCodes : IOperationFilter {
             }
         }
 
+        if(options.HttpMethodMapping.TryGetValue(HttpMethod.Get, out var getResponse)) {
+            UpdateResponse<HttpGetAttribute>(operation, attributes, getResponse, "200");
+        }
+
+        if(options.HttpMethodMapping.TryGetValue(HttpMethod.Put, out var putResponse)) {
+            UpdateResponse<HttpPutAttribute>(operation, attributes, putResponse, "200");
+        }
+
+        if(options.HttpMethodMapping.TryGetValue(HttpMethod.Post, out var postResponse)) {
+            UpdateResponse<HttpPostAttribute>(operation, attributes, postResponse, "200");
+        }
+
         var deleteAttributes = attributes.OfType<HttpDeleteAttribute>();
         if(deleteAttributes.Any()) {
-            if(!operation.Responses.ContainsKey("204")) {
-                operation.Responses.Add("204", new OpenApiResponse {
-                    Description = "Success",
+            var responseCode = "204";
+            var responseDescription = "Success";
+            if(options.HttpMethodMapping.TryGetValue(HttpMethod.Delete, out var deleteMapping)) {
+                responseCode = ((int)deleteMapping.HttpStatusCode).ToString();
+                if(!string.IsNullOrEmpty(deleteMapping.Description)) {
+                    responseDescription = deleteMapping.Description;
+                }
+            }
+            if(!operation.Responses.ContainsKey(responseCode)) {
+                operation.Responses.Add(responseCode, new OpenApiResponse {
+                    Description = responseDescription,
                 });
                 operation.Responses.Remove("200");
             }
         }
+    }
 
+    private void UpdateResponse<T>(OpenApiOperation operation, object[] attributes, HttpMethodsOptions.HttpStatusResponse httpStatusResponse, string defaultStatusCode) where T : HttpMethodAttribute
+    {
+        var methodAttributes = attributes.OfType<T>();
+        if(methodAttributes.Any()) {
+            var responseCode = ((int)httpStatusResponse.HttpStatusCode).ToString();
+            var responseDescription = string.IsNullOrEmpty(httpStatusResponse.Description) ? httpStatusResponse.HttpStatusCode.ToString() : httpStatusResponse.Description;
+            operation.Responses.Add(responseCode, new OpenApiResponse {
+                Description = responseDescription,
+                Content = operation.Responses[defaultStatusCode].Content,
+            });
+            operation.Responses.Remove(defaultStatusCode);
+        }
     }
 
     private const string json400 = @"{
@@ -113,4 +154,6 @@ public class SignatureImpliesStatusCodes : IOperationFilter {
             ""detail"": ""The requested resource was not found, no entity with indicated UUID exists."",
             ""instance"": ""localhost""
         }";
+
+    private readonly HttpMethodsOptions options;
 }

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Net;
 
 namespace ExtraDry.Swashbuckle;
 
@@ -20,6 +21,8 @@ public class ExtraDryGenOptions
     /// Options for turning on/off specific filters that augment the OpenAPI document.
     /// </summary>
     public FilterOptions Filters { get; } = new();
+
+    public HttpMethodsOptions HttpMethodsConfig { get; } = new();
 
     public class InstructionPageOptions {
 
@@ -86,5 +89,17 @@ public class ExtraDryGenOptions
         public bool EnableDisplayOnApiControllers { get; set; } = true;
 
     }
-}
 
+    public class HttpMethodsOptions
+    {
+        public void AddMapping(HttpMethod httpMethod, HttpStatusCode httpStatusCode, string description = "") => HttpMethodMapping.Add(httpMethod, new HttpStatusResponse { HttpStatusCode = httpStatusCode, Description = description });
+
+        public IDictionary<HttpMethod, HttpStatusResponse> HttpMethodMapping { get; set; } = new Dictionary<HttpMethod, HttpStatusResponse>();
+
+        public struct HttpStatusResponse
+        {
+            public HttpStatusCode HttpStatusCode { get; set; }
+            public string Description { get; set; }
+        }
+    }
+}
