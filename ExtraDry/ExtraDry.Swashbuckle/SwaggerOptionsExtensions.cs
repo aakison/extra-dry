@@ -35,7 +35,7 @@ public static class SwaggerOptionsExtensions {
         }
 
         if(options.Filters.EnableSignatureStatusCodes) {
-            openapi.OperationFilter<SignatureImpliesStatusCodes>(options.HttpMethodsConfig);
+            openapi.OperationFilter<SignatureImpliesStatusCodes>();
         }
         if(options.Filters.EnableQueryDocumentation) {
             openapi.OperationFilter<QueryDocumentationOperationFilter>();

@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.ObjectPool;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System.Net;
 using System.Text.Json;
 
 namespace ExtraDry.Swashbuckle.Tests.Filters
@@ -21,19 +19,18 @@ namespace ExtraDry.Swashbuckle.Tests.Filters
         [Fact]
         public void CreateObject()
         {
-            var filter = new SignatureImpliesStatusCodes(new ExtraDryGenOptions.HttpMethodsOptions());
+            var filter = new SignatureImpliesStatusCodes();
 
             Assert.NotNull(filter);
         }
 
         [Theory]
-        [MemberData(nameof(ChangeResponseCodeData))]
-        public void ChangeResponseCode(HttpMethod httpMethod, HttpStatusCode newHttpStatusCode, string description, string testMethod, string expectedCode, string expectedDesc)
+        [MemberData(nameof(DefaultResponseCodeData))]
+        public void DefaultResponseCode(HttpMethod httpMethod, string testMethod, string expectedCode, string expectedDesc)
         {
-            var options = new ExtraDryGenOptions.HttpMethodsOptions();
-            options.AddMapping(httpMethod, newHttpStatusCode, description);
-            var filter = new SignatureImpliesStatusCodes(options);
+            var filter = new SignatureImpliesStatusCodes();
             var defaultResponse = new OpenApiResponse();
+            defaultResponse.Description = "Success";
             defaultResponse.Content.Add("Example", new OpenApiMediaType());
             var operation = new OpenApiOperation();
             operation.Responses.Add("200", defaultResponse);
@@ -41,23 +38,22 @@ namespace ExtraDry.Swashbuckle.Tests.Filters
 
             filter.Apply(operation, context);
 
-            Assert.False(operation.Responses.ContainsKey("200"));
             Assert.True(operation.Responses.ContainsKey(expectedCode));
             var newResponse = operation.Responses[expectedCode];
             Assert.NotNull(newResponse.Content);
             Assert.Equal(expectedDesc, newResponse.Description);
         }
 
-        public static IEnumerable<object[]> ChangeResponseCodeData()
+        public static IEnumerable<object[]> DefaultResponseCodeData()
         {
-            yield return new object[] { HttpMethod.Get,     HttpStatusCode.Accepted,        string.Empty,   nameof(DummyController.GetMethod),      "202", "Accepted" };
-            yield return new object[] { HttpMethod.Get,     HttpStatusCode.Found,           "Success",      nameof(DummyController.GetMethod),      "302", "Success" };
-            yield return new object[] { HttpMethod.Put,     HttpStatusCode.ResetContent,    string.Empty,   nameof(DummyController.PutMethod),      "205", "ResetContent" };
-            yield return new object[] { HttpMethod.Put,     HttpStatusCode.MultiStatus,     "Success",      nameof(DummyController.PutMethod),      "207", "Success" };
-            yield return new object[] { HttpMethod.Post,    HttpStatusCode.IMUsed,          string.Empty,   nameof(DummyController.PostMethod),     "226", "IMUsed" };
-            yield return new object[] { HttpMethod.Post,    HttpStatusCode.NoContent,       "Success",      nameof(DummyController.PostMethod),     "204", "Success" };
-            yield return new object[] { HttpMethod.Delete,  HttpStatusCode.Redirect,        string.Empty,   nameof(DummyController.DeleteMethod),   "302", "Success" };
-            yield return new object[] { HttpMethod.Delete,  HttpStatusCode.Accepted,        "Completed",    nameof(DummyController.DeleteMethod),   "202", "Completed" };
+            yield return new object[] { HttpMethod.Get, nameof(DummyController.GetMethod), "200", "Success" };
+            yield return new object[] { HttpMethod.Get, nameof(DummyController.GetMethodWithResponsePayload), "200", "Success" };
+            yield return new object[] { HttpMethod.Put, nameof(DummyController.PutMethod), "200", "Success" };
+            yield return new object[] { HttpMethod.Put, nameof(DummyController.PutMethodWithResponsePayload), "200", "Success" };
+            yield return new object[] { HttpMethod.Post, nameof(DummyController.PostMethod), "201", "Created" };
+            yield return new object[] { HttpMethod.Post, nameof(DummyController.PostMethodWithResponsePayload), "201", "Created" };
+            yield return new object[] { HttpMethod.Delete, nameof(DummyController.DeleteMethod), "204", "Success" };
+            yield return new object[] { HttpMethod.Delete, nameof(DummyController.DeleteMethod), "204", "Success" };
         }
     }
 
@@ -66,11 +62,20 @@ namespace ExtraDry.Swashbuckle.Tests.Filters
         [HttpGet]
         public void GetMethod() { }
 
+        [HttpGet]
+        public object GetMethodWithResponsePayload() => new();
+
         [HttpPut]
         public void PutMethod() { }
 
+        [HttpPut]
+        public object PutMethodWithResponsePayload() => new();
+
         [HttpPost]
         public void PostMethod() { }
+
+        [HttpPost]
+        public object PostMethodWithResponsePayload() => new();
 
         [HttpDelete]
         public void DeleteMethod() { }

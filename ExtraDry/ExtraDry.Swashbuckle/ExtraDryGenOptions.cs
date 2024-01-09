@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Net;
 
 namespace ExtraDry.Swashbuckle;
 
@@ -22,9 +21,8 @@ public class ExtraDryGenOptions
     /// </summary>
     public FilterOptions Filters { get; } = new();
 
-    public HttpMethodsOptions HttpMethodsConfig { get; } = new();
-
-    public class InstructionPageOptions {
+    public class InstructionPageOptions
+    {
 
         public bool Include { get; set; } = true;
 
@@ -40,7 +38,8 @@ public class ExtraDryGenOptions
     /// <summary>
     /// Options that control the inclusion of XML documentation.
     /// </summary>
-    public class DocumentationXmlOptions {
+    public class DocumentationXmlOptions
+    {
 
         /// <summary>
         /// Indicates if the documentation for Extra Dry classes is included (recommended).
@@ -66,7 +65,7 @@ public class ExtraDryGenOptions
         /// Endpoints that take Sort, Filter or Page Queries will have documentation added for
         /// users describing the valid properties for each endpoints query.
         /// </summary>
-        public bool EnableQueryDocumentation { get; set; } = true;  
+        public bool EnableQueryDocumentation { get; set; } = true;
 
         /// <summary>
         /// Properties in schema objects that can be inferred to be read-only are set as read-only 
@@ -88,18 +87,5 @@ public class ExtraDryGenOptions
         /// </summary>
         public bool EnableDisplayOnApiControllers { get; set; } = true;
 
-    }
-
-    public class HttpMethodsOptions
-    {
-        public void AddMapping(HttpMethod httpMethod, HttpStatusCode httpStatusCode, string description = "") => HttpMethodMapping.Add(httpMethod, new HttpStatusResponse { HttpStatusCode = httpStatusCode, Description = description });
-
-        public IDictionary<HttpMethod, HttpStatusResponse> HttpMethodMapping { get; set; } = new Dictionary<HttpMethod, HttpStatusResponse>();
-
-        public struct HttpStatusResponse
-        {
-            public HttpStatusCode HttpStatusCode { get; set; }
-            public string Description { get; set; }
-        }
     }
 }

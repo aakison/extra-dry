@@ -1,6 +1,7 @@
 ﻿using Azure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Routing;
+using System.Net;
 using static ExtraDry.Swashbuckle.ExtraDryGenOptions;
 
 namespace ExtraDry.Swashbuckle;
@@ -10,12 +11,6 @@ namespace ExtraDry.Swashbuckle;
 /// </summary>
 public class SignatureImpliesStatusCodes : IOperationFilter
 {
-
-    public SignatureImpliesStatusCodes(HttpMethodsOptions options)
-    {
-        this.options = options;
-    }
-
     /// <summary>
     /// Scan through each operation, using attribute signatures to guess the typical client errors that will be surfaced.
     /// </summary>
@@ -81,48 +76,22 @@ public class SignatureImpliesStatusCodes : IOperationFilter
             }
         }
 
-        if(options.HttpMethodMapping.TryGetValue(HttpMethod.Get, out var getResponse)) {
-            UpdateResponse<HttpGetAttribute>(operation, attributes, getResponse, "200");
-        }
-
-        if(options.HttpMethodMapping.TryGetValue(HttpMethod.Put, out var putResponse)) {
-            UpdateResponse<HttpPutAttribute>(operation, attributes, putResponse, "200");
-        }
-
-        if(options.HttpMethodMapping.TryGetValue(HttpMethod.Post, out var postResponse)) {
-            UpdateResponse<HttpPostAttribute>(operation, attributes, postResponse, "200");
-        }
-
-        var deleteAttributes = attributes.OfType<HttpDeleteAttribute>();
-        if(deleteAttributes.Any()) {
-            var responseCode = "204";
-            var responseDescription = "Success";
-            if(options.HttpMethodMapping.TryGetValue(HttpMethod.Delete, out var deleteMapping)) {
-                responseCode = ((int)deleteMapping.HttpStatusCode).ToString();
-                if(!string.IsNullOrEmpty(deleteMapping.Description)) {
-                    responseDescription = deleteMapping.Description;
-                }
-            }
-            if(!operation.Responses.ContainsKey(responseCode)) {
-                operation.Responses.Add(responseCode, new OpenApiResponse {
-                    Description = responseDescription,
-                });
-                operation.Responses.Remove("200");
-            }
-        }
+        UpdateResponse<HttpPostAttribute>(operation, attributes, HttpStatusCode.Created);
+        UpdateResponse<HttpDeleteAttribute>(operation, attributes, HttpStatusCode.NoContent, "Success");
     }
 
-    private void UpdateResponse<T>(OpenApiOperation operation, object[] attributes, HttpMethodsOptions.HttpStatusResponse httpStatusResponse, string defaultStatusCode) where T : HttpMethodAttribute
+    private void UpdateResponse<T>(OpenApiOperation operation, object[] attributes, HttpStatusCode httpStatusCode, string? description = null) where T : HttpMethodAttribute
     {
         var methodAttributes = attributes.OfType<T>();
         if(methodAttributes.Any()) {
-            var responseCode = ((int)httpStatusResponse.HttpStatusCode).ToString();
-            var responseDescription = string.IsNullOrEmpty(httpStatusResponse.Description) ? httpStatusResponse.HttpStatusCode.ToString() : httpStatusResponse.Description;
+            var defaultResponseCode = ((int)HttpStatusCode.OK).ToString();
+            var responseCode = ((int)httpStatusCode).ToString();
+            var responseDescription = description ?? httpStatusCode.ToString();
             operation.Responses.Add(responseCode, new OpenApiResponse {
                 Description = responseDescription,
-                Content = operation.Responses[defaultStatusCode].Content,
+                Content = operation.Responses[defaultResponseCode].Content,
             });
-            operation.Responses.Remove(defaultStatusCode);
+            operation.Responses.Remove(defaultResponseCode);
         }
     }
 
@@ -154,6 +123,4 @@ public class SignatureImpliesStatusCodes : IOperationFilter
             ""detail"": ""The requested resource was not found, no entity with indicated UUID exists."",
             ""instance"": ""localhost""
         }";
-
-    private readonly HttpMethodsOptions options;
 }
