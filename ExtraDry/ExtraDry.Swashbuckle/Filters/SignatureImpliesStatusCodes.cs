@@ -1,13 +1,16 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Azure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Routing;
+using System.Net;
+using static ExtraDry.Swashbuckle.ExtraDryGenOptions;
 
 namespace ExtraDry.Swashbuckle;
 
 /// <summary>
 /// During construction of the SwaggerGen, use the Attributes to intuit the likely HTTP response error codes.
 /// </summary>
-public class SignatureImpliesStatusCodes : IOperationFilter {
-
+public class SignatureImpliesStatusCodes : IOperationFilter
+{
     /// <summary>
     /// Scan through each operation, using attribute signatures to guess the typical client errors that will be surfaced.
     /// </summary>
@@ -73,16 +76,23 @@ public class SignatureImpliesStatusCodes : IOperationFilter {
             }
         }
 
-        var deleteAttributes = attributes.OfType<HttpDeleteAttribute>();
-        if(deleteAttributes.Any()) {
-            if(!operation.Responses.ContainsKey("204")) {
-                operation.Responses.Add("204", new OpenApiResponse {
-                    Description = "Success",
-                });
-                operation.Responses.Remove("200");
-            }
-        }
+        UpdateResponse<HttpPostAttribute>(operation, attributes, HttpStatusCode.Created);
+        UpdateResponse<HttpDeleteAttribute>(operation, attributes, HttpStatusCode.NoContent, "Success");
+    }
 
+    private void UpdateResponse<T>(OpenApiOperation operation, object[] attributes, HttpStatusCode httpStatusCode, string? description = null) where T : HttpMethodAttribute
+    {
+        var methodAttributes = attributes.OfType<T>();
+        if(methodAttributes.Any()) {
+            var defaultResponseCode = ((int)HttpStatusCode.OK).ToString();
+            var responseCode = ((int)httpStatusCode).ToString();
+            var responseDescription = description ?? httpStatusCode.ToString();
+            operation.Responses.Add(responseCode, new OpenApiResponse {
+                Description = responseDescription,
+                Content = operation.Responses[defaultResponseCode].Content,
+            });
+            operation.Responses.Remove(defaultResponseCode);
+        }
     }
 
     private const string json400 = @"{

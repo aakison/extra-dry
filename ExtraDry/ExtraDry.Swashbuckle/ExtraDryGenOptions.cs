@@ -21,7 +21,8 @@ public class ExtraDryGenOptions
     /// </summary>
     public FilterOptions Filters { get; } = new();
 
-    public class InstructionPageOptions {
+    public class InstructionPageOptions
+    {
 
         public bool Include { get; set; } = true;
 
@@ -37,7 +38,8 @@ public class ExtraDryGenOptions
     /// <summary>
     /// Options that control the inclusion of XML documentation.
     /// </summary>
-    public class DocumentationXmlOptions {
+    public class DocumentationXmlOptions
+    {
 
         /// <summary>
         /// Indicates if the documentation for Extra Dry classes is included (recommended).
@@ -63,7 +65,7 @@ public class ExtraDryGenOptions
         /// Endpoints that take Sort, Filter or Page Queries will have documentation added for
         /// users describing the valid properties for each endpoints query.
         /// </summary>
-        public bool EnableQueryDocumentation { get; set; } = true;  
+        public bool EnableQueryDocumentation { get; set; } = true;
 
         /// <summary>
         /// Properties in schema objects that can be inferred to be read-only are set as read-only 
@@ -87,4 +89,3 @@ public class ExtraDryGenOptions
 
     }
 }
-
