@@ -116,7 +116,12 @@ public class Startup
         services.AddScoped<IEntityResolver<Sector>, SectorService>();
         services.AddScoped<IExpandoSchemaResolver, TemplateService>();
 
-        services.AddFileValidation();
+        services.AddFileValidation(options => {
+            options.ValidateFilename = ValidationCondition.Always;
+            options.ValidateExtension = ValidationCondition.Never;
+            options.ValidateContent = ValidationCondition.ServerSide;
+            options.ExtensionWhitelist.Add("cs");
+        });
     }
 
     /// <summary>

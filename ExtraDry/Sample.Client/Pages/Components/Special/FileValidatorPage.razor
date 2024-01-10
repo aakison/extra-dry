@@ -3,67 +3,72 @@
 <section>
     <h2>FileValidator</h2>
     <p>
-        The <code>&lt;Theme&gt;</code> component configures sections of the Blazor DOM to have a particular theme.
-    </p>
-    <p>
-        Icons and custom error pages can be configured in areas of the application, although most typical to do entire app.
+        The <code>FileValidator</code> class enables robust client and server validation of files 
+        that are suitable for uploading in typical applications.
     </p>
 </section>
 <section>
     <h3>Basic Usage</h3>
+    <CodeBlock Lang="blazor">
+        &lt;InputFile OnChange="@@LoadFileAsync" />
+
+        @@code {
+            private async Task LoadFileAsync(InputFileChangeEventArgs args)
+            {
+                // Clear injected validator so it can be reused.
+                Validator.Clear();
+
+                // Validate the file using client-side rules.
+                Validator.ValidateFile(args.File);
+                Validator.ThrowIfInvalid();
+
+                // Send to server, which will also validate server-side rules.
+                var blob = await Blobs.CreateAsync(args.File);
+            }
+
+            [Inject]
+            private FileValidator Validator { get; set; } = null!;
+
+            [Inject]
+            private BlobService&lt;Blob> Blobs { get; set; } = null!;
+        }
+    </CodeBlock>
     <InputFile OnChange="@LoadFileAsync" />
     <div>Filename: @Filename</div>
     <div>Mime Type: @FileMimeType</div>
     <div>Client Validation: @ClientValidation</div>
     <div>Server Validation: @ServerValidation</div>
-    <CodeBlock Lang="blazor">
-        &lt;Theme Icons="@@Icons" ErrorComponent="@@typeof(MyCustomErrorComponent)">
-            &lt;main>
-                &lt;!-- // rest of site ... -->
-            &lt;/main>
-        &lt;Theme>
-
-        @@code {
-            public IconInfo[] Icons = new IconInfo[] {
-                // Glyphs or Icons as SVGs
-                new IconInfo("register", "/img/glyphs/registered-light.svg", "Register", "icon"),
-
-                // Glyphs as Fonts (e.g. FontAwesome Free shown here)
-                new IconInfo("edit", "fas fa-edit"),
-
-                // Inherited - Can override default icons.
-                new IconInfo("search", "/img/glyphs/magnifying-glass-light.svg", "Search", "glyph"),
-            };
-        }
-    </CodeBlock>
 </section>
 <section>
     <h3>Configuration</h3>
-    <p>
-        This is a standalone component, no configuration is required.
-    </p>
-    <h5>Semantic Styles</h5>
-    <p>The control does not emit any HTML and cannot be styled.  Child components can capture the theme information using the `ThemeInfo` cascading parameter:</p>
-    <CodeBlock lang="Blazor">
-        @@code {
-            [CascadingParameter]
-            public ThemeInfo Theme { get; set; }
-        }
+    <p>Basic configuration requires the dependency injection of the FileValidator class using an extension method:</p>
+    <CodeBlock lang="C#">
+        services.AddFileValidation();
+    </CodeBlock>
+    <p>Advanced configuration is available when setting up the dependency injection using the options lambda:</p>
+    <CodeBlock Lang="C#">
+        services.AddFileValidation(options => {
+            options.ValidateFilename = ValidationCondition.Always;
+            options.ValidateExtension = ValidationCondition.Never;
+            options.ValidateContent = ValidationCondition.ServerSide;
+            options.ExtensionWhitelist.Add("cs");
+            // etc.
+        });
     </CodeBlock>
 </section>
 <section>
     <h3>Tips &amp; Practices</h3>
     <ul>
-        <li>Read the console in developer tools to see <code>Icon</code> components that don't have associated icons in the Theme.</li>
-        <li></li>
+        <li>The FileValidator will be injected once in the client and once in the server, each can be configured differently.</li>
+        <li>Validation switching can be configured centrally (in a shared project) with some rules only run on the server using the <code>ValidationCondition.ServerSide</code> option.</li>
     </ul>
 </section>
-<section>
+@* <section>
     <h3>See Also</h3>
     <ul>
-        <li><a href="/components/standard/icon">Icon Component</a></li>
+        <li></li>
     </ul>
-</section>
+</section> *@
 
 @code {
 
@@ -72,7 +77,7 @@
         Filename = e.File.Name;
         FileMimeType = e.File.ContentType;
         Validator.Clear();
-        var errors = Validator.ValidateFile(e.File.Name, e.File.ContentType);
+        var errors = Validator.ValidateFile(e.File);
         if(Validator.IsValid) {
             ClientValidation = "Valid";
         }

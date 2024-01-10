@@ -51,8 +51,6 @@ public class Program
             config.MaxBlobSize = 1 * 1024 * 1024;
         });
 
-        services.AddFileValidation();
-
         services.AddScoped<ISubjectViewModel<Employee>, EmployeeViewModel>();
 
         services.AddScoped<AppViewModel>();
