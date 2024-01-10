@@ -19,8 +19,13 @@ public class AuthorizationResponse {
     {
         await next(context);
 
-        if(context.Response.StatusCode == (int)HttpStatusCode.Forbidden) {
-            ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.Forbidden, options.ForbiddenTitle, options.ForbiddenMessage);
+        switch(context.Response.StatusCode) {
+            case (int)HttpStatusCode.Forbidden:
+                ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.Forbidden, options.ForbiddenTitle, options.ForbiddenMessage);
+                break;
+            case (int)HttpStatusCode.Unauthorized:
+                ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.Unauthorized, options.UnauthorizedTitle, options.UnauthorizedMessage);
+                break;
         }
     }
 }
