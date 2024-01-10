@@ -7,7 +7,7 @@ namespace ExtraDry.Core;
 /// The validation is partially performed client-side and a complete validation is performed 
 /// server-side.  Configuration of the file validation rules are done using 
 /// <see cref="FileValidationOptions"/> and the <see cref="FileValidationService"/>.  Use the 
-/// <see cref="ServiceCollectionExtensions.AddFileValidation(Microsoft.Extensions.DependencyInjection.IServiceCollection, Action{ExtraDry.Core.FileValidationOptions}?)"/>
+/// <see cref="ServiceCollectionExtensions.AddFileValidation"/>
 /// extension method register and configure the FileValidator.
 /// </summary>
 public class FileValidator

@@ -20,12 +20,20 @@ public class FileValidationOptions : IFileValidationOptions
     /// Sets a value indicating whether the file service should be checking magic bytes and mime types.
     /// Set to true for server-side validation, and false for client side.
     /// </summary>
+    [Obsolete("Use ValidateContent and ValidateExtension instead")]
     public bool CheckMagicBytesAndMimes { get; set; }
 
     /// <summary>
-    /// If <see cref="CheckMagicBytesAndMimes"/> is set to true, you can optionally set a location for a file database. If left blank, the default will be used.
+    /// If set, defines a file location to load the options from.  Additional option settings are
+    /// applied after the file is read.
     /// </summary>
-    public string? FileDatabaseLocation { get; set; }
+    public string? OptionsFilepath { get; set; }
+
+    [Obsolete("Use OptionsFilepath instead")]
+    public string? FileDatabaseLocation {
+        get => OptionsFilepath;
+        set => OptionsFilepath = value;
+    }
 
     /// <inheritdoc/>
     public ICollection<BlacklistFileType> ExtensionBlacklist { get; set; } = new List<BlacklistFileType>();

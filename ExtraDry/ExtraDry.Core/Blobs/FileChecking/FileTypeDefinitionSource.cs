@@ -53,7 +53,7 @@ internal class FileTypeDefinitionSource {
     /// <summary>
     /// Retrieves filetype definitions where the magic bytes are found in the content
     /// </summary>
-    internal IEnumerable<FileTypeDefinition> GetFileTypeFromBytes(byte[]? content)
+    internal IEnumerable<FileTypeDefinition> GetFileTypeFromContent(byte[]? content)
     {
         if(content == null || content.Length == 0) {
             return Array.Empty<FileTypeDefinition>();

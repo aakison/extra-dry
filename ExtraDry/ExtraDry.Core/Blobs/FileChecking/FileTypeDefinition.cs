@@ -6,17 +6,17 @@
 public class FileTypeDefinition
 {
     /// <summary>
-    /// A human readable description of the file type eg. "Portable Network Graphics Image"
+    /// A human readable description of the file type, e.g. "Portable Network Graphics Image".
     /// </summary>
     public string Description { get; set; } = string.Empty;
 
     /// <summary>
-    /// The file extensions that are associated with this file type. eg ["jpg", "jpeg"]
+    /// The file extensions that are associated with this file type, e.g. ["jpg", "jpeg"].
     /// </summary>
     public List<string> Extensions { get; set; } = new List<string>();
 
     /// <summary>
-    /// The mime types that are associated with this file type. eg ["application/xml"]
+    /// The mime types that are associated with this file type, e.g. ["application/xml"].
     /// </summary>
     public List<string> MimeTypes { get; set; } = new List<string>();
 

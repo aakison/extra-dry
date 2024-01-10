@@ -5,13 +5,23 @@ using System.Text.RegularExpressions;
 
 namespace ExtraDry.Core;
 
+/// <summary>
+/// Core service which provides functionality for validating files against a set of validation
+/// rules.  The validation is partially performed client-side and a complete validation is
+/// performed server-side.  Configuration of the file validation rules are done using the
+/// <see cref="ServiceCollectionExtensions.AddFileValidation"/> extension method during startup.
+/// </summary>
 public class FileValidationService : IFileValidationOptions
 {
+
+    /// <summary>
+    /// Configures the file validation service.  Not recommended to use directly, instead use the
+    /// <see cref="ServiceCollectionExtensions.AddFileValidation"/> extension method during startup.
+    /// </summary>
     public FileValidationService(FileValidationOptions options)
     {
-        CheckFileContent = options.CheckMagicBytesAndMimes;
-        if(CheckFileContent) {
-            fileService = new FileTypeDefinitionSource(options.FileDatabaseLocation!);
+        if(options.OptionsFilepath != null) {
+            fileService = new FileTypeDefinitionSource(options.OptionsFilepath);
         }
         else {
             fileService = new FileTypeDefinitionSource("");
@@ -55,10 +65,6 @@ public class FileValidationService : IFileValidationOptions
 
     #endregion
 
-    /// <summary>
-    /// Call in startup of your application to configure the settings for the upload tools;
-    /// Lists that aren't provided will be set to default values.
-    /// </summary>
     private void ConfigureUploadRestrictions(FileValidationOptions config)
     {
         if(config.ExtensionWhitelist.Count > 0) {
@@ -130,12 +136,11 @@ public class FileValidationService : IFileValidationOptions
 
     /// <summary>
     /// Determines whether a file can be uploaded, by using the following rules
-    /// - The filename must not contain no special characters
-    /// - The filename must not not have an extension that is in our blacklist
-    /// - The filename must be included in our whitelist
+    /// - The filename must not contain special characters
+    /// - The filename must not have an extension that is in the blacklist
+    /// - The filename must have an extension that is in the whitelist
     /// - The magic bytes, filename and mime type must match if present
     /// - If the file type is of a known xml type, it must not contain a script tag
-    /// If all of these are true, then true is returned. Else, a <see cref="DryException"/> with details is thrown
     /// </summary>
     internal IEnumerable<ValidationResult> ValidateFile(string? filename, string? mimetype, byte[]? content = null)
     {
@@ -147,9 +152,6 @@ public class FileValidationService : IFileValidationOptions
 
         var extension = Path.GetExtension(filename).TrimStart('.');
 
-
-        // Get the mime type and file type info from the filename and the content
-        // We don't really use the one from the filename other than to check it matches the content
         var filenameInferredTypes = fileService.GetFileTypeFromFilename(filename);
         var mimeInferredTypes = fileService.GetFileTypeFromMime(mimetype);
 
@@ -162,7 +164,7 @@ public class FileValidationService : IFileValidationOptions
 
         var filenameErrors = ValidateFileFilename(filename).ToList();
         var extensionErrors = ValidateFileExtension(extension).ToList();
-        var contentErrors = ValidateFileContent(content, filenameInferredTypes).ToList();
+        var contentErrors = ValidateFileContent(content, filenameInferredTypes, extension).ToList();
         foreach(var error in contentErrors.Union(extensionErrors).Union(filenameErrors)) {
             yield return error;
         }
@@ -220,7 +222,7 @@ public class FileValidationService : IFileValidationOptions
 
     }
 
-    private IEnumerable<ValidationResult> ValidateFileContent(byte[]? content, IEnumerable<FileTypeDefinition> filenameInferredTypes)
+    private IEnumerable<ValidationResult> ValidateFileContent(byte[]? content, IEnumerable<FileTypeDefinition> filenameInferredTypes, string extension)
     {
         var validate = ValidateContent switch {
             ValidationCondition.Never => false,
@@ -235,7 +237,7 @@ public class FileValidationService : IFileValidationOptions
             yield return new ValidationResult("File content is required", new[] { nameof(content) });
             yield break; // remainder of tests would throw exceptions...
         }
-        var contentInferredTypes = fileService.GetFileTypeFromBytes(content);
+        var contentInferredTypes = fileService.GetFileTypeFromContent(content);
 
         // If the magic bytes filetype is in the bytes blacklist, reject
         var blacklistedType = contentInferredTypes
@@ -254,8 +256,10 @@ public class FileValidationService : IFileValidationOptions
         }
 
         // If it's an xml file check for script tags
-        if(contentInferredTypes.SelectMany(e => e.Extensions).Union(filenameInferredTypes.SelectMany(e => e.Extensions)).Intersect(KnownXmlFileTypes).Any()) {
-            // If it's an xml file check for script tags
+        var extensionAliases = contentInferredTypes.SelectMany(e => e.Extensions)
+            .Union(filenameInferredTypes.SelectMany(e => e.Extensions))
+            .Union(new string[] { extension.ToLowerInvariant() });
+        if(extensionAliases.Intersect(KnownXmlFileTypes).Any()) {
             // Take the first 1000 characters, it's a sanity check, not anti-virus
             var filecontent = Encoding.UTF8.GetString(content.Take(1000).ToArray()); 
             if(filecontent.IndexOf("<script", StringComparison.InvariantCultureIgnoreCase) >= 0) {
@@ -266,7 +270,7 @@ public class FileValidationService : IFileValidationOptions
 
     /// <summary>
     /// Determine if the system is running in a WebAssembly runtime, allowing logic which is 
-    /// conditional on running on the client and/or the server.  
+    /// conditional on running on only the client or the server.  
     /// </summary>
     /// <remarks>
     /// This doesn't seem to be great, but the advice online didn't work.  String comparison seems 

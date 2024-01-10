@@ -46,6 +46,25 @@ public class SampleFiles
         Content = GetBytes("test.docx"),
     };
 
+    public static SampleFile ValidHtmlFile => new() {
+        Filename = "test.html",
+        MimeType = "text/html",
+        Content = Encoding.UTF8.GetBytes(@"<!DOCTYPE html>
+        <html>
+          <body><h1>Hello, World!</h1></body>
+        </html>")
+    };
+
+    public static SampleFile InvalidHtmlFile => new() {
+        Filename = "test.html",
+        MimeType = "text/html",
+        Content = Encoding.UTF8.GetBytes(@"<!DOCTYPE html>
+        <html>
+          <body><h1>Hello, World!</h1></body>
+          <script>alert('hello');</script>
+        </html>")
+    };
+
     private static byte[] GetBytes(string filename)
     {
         var assembly = Assembly.GetExecutingAssembly();
