@@ -3,10 +3,12 @@
 /// <summary>
 /// Options for the file validator service. This is used to configure the file validator service.
 /// </summary>
-public class FileValidationOptions : IFileValidationOptions
+public class FileValidationOptions
 {
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// The whitelist of file extensions that you would like your application to allow
+    /// </summary>
     public ICollection<string> ExtensionWhitelist { get; set; } = new List<string>() {
         "7z", "3ds", "3gp", "ai", "avi", "bak", "bmp", "bz2", "csv", "cxp", "doc", "docx", "dot",
         "dwg", "dwt", "dxf", "eml", "fpx", "gif", "gz", "heic", "html", "iam", "idw", "ifc", "iges",
@@ -35,28 +37,59 @@ public class FileValidationOptions : IFileValidationOptions
         set => OptionsFilepath = value;
     }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// A list of extensions that will form the blacklist of file types that you would like to exclude from your system.
+    /// Leave empty to use a default set
+    /// </summary>
     public ICollection<BlacklistFileType> ExtensionBlacklist { get; set; } = new List<BlacklistFileType>();
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Determines if the <see cref="FileValidator" /> validates the file content.  The default is 
+    /// <see cref="ValidationCondition.ServerSide" /> which runs content validation rules on the 
+    /// server, but not on the blazor client.  This is recommended as the content validation rules
+    /// requires a database of file signatures and mime types that could cause performance issues 
+    /// if downloaded to the client.
+    /// </summary>
     public ValidationCondition ValidateContent { get; set; } = ValidationCondition.ServerSide;
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Determines if the <see cref="FileValidator" /> validates file extensions.  The default is
+    /// <see cref="ValidationCondition.Always" /> which checks extension on both the server and the
+    /// client.  This is recommended as it is a simple check that can be performed on the client.
+    /// </summary>
     public ValidationCondition ValidateExtension { get; set; } = ValidationCondition.Always;
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Determines if the <see cref="FileValidator" /> validates filenames.  The default is
+    /// <see cref="ValidationCondition.Always" /> which checks filenames on both the server and the
+    /// client.  This is recommended as it is a simple check that can be performed on the client.
+    /// </summary>
     public ValidationCondition ValidateFilename { get; set; } = ValidationCondition.Always;
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Determines which characters <see cref="FileValidationService.CleanFilename(string)"/> 
+    /// method will allow in the file extension.  The default is <see cref="FilenameCharacters.AsciiAlphaNumeric"/>
+    /// which allows all Ascii alphanumeric characters.
+    /// </summary>
     public FilenameCharacters FileCleanerAllowedNameCharacters { get; set; } = FilenameCharacters.UnicodeAlphaNumeric;
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Determines which characters <see cref="FileValidationService.CleanFilename(string)"/> 
+    /// method will allow in the filename.  The default is <see cref="FilenameCharacters.UnicodeAlphaNumeric"/>
+    /// which allows all Unicode alphanumeric characters, including diacritic marks (as in resumé).
+    /// </summary>
     public FilenameCharacters FileCleanerAllowedExtensionCharacters { get; set; } = FilenameCharacters.AsciiAlphaNumeric;
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Determines if the <see cref="FileValidationService.CleanFilename(string)"/> method will
+    /// compress the filename by removing duplicate space, periods, and dashes.  The default is true.
+    /// </summary>
     public bool FileCleanerCompressFilename { get; } = true;
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Determines if the <see cref="FileValidationService.CleanFilename(string)"/> method will
+    /// convert the filename to lowercase.  The default is true.
+    /// </summary>
     public bool FileCleanerLowercase { get; set; } = true;
 
 }

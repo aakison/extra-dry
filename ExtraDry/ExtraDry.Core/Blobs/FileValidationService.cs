@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -11,7 +10,7 @@ namespace ExtraDry.Core;
 /// performed server-side.  Configuration of the file validation rules are done using the
 /// <see cref="ServiceCollectionExtensions.AddFileValidation"/> extension method during startup.
 /// </summary>
-public class FileValidationService : IFileValidationOptions
+public class FileValidationService
 {
 
     /// <summary>
@@ -26,54 +25,12 @@ public class FileValidationService : IFileValidationOptions
         else {
             fileService = new FileTypeDefinitionSource("");
         }
-        extensionWhitelist = new List<string>(options.ExtensionWhitelist);
-        extensionBlacklist = new List<BlacklistFileType>(options.ExtensionBlacklist);
         ConfigureUploadRestrictions(options);
         Options = options;
     }
 
-    #region IFileValidationOptions interface
-
-    /// <inheritdoc/>
-    public ValidationCondition ValidateContent => Options.ValidateContent;
-
-    /// <inheritdoc/>
-    public ValidationCondition ValidateExtension => Options.ValidateExtension;
-
-    /// <inheritdoc/>
-    public ValidationCondition ValidateFilename => Options.ValidateFilename;
-
-    /// <inheritdoc/>
-    public FilenameCharacters FileCleanerAllowedExtensionCharacters => Options.FileCleanerAllowedExtensionCharacters;
-    
-    /// <inheritdoc/>
-    public FilenameCharacters FileCleanerAllowedNameCharacters => Options.FileCleanerAllowedNameCharacters;
-
-    /// <inheritdoc/>
-    public bool FileCleanerCompressFilename => Options.FileCleanerCompressFilename;
-
-    /// <inheritdoc/>
-    public bool FileCleanerLowercase => Options.FileCleanerLowercase;
-
-    /// <inheritdoc/>
-    public ICollection<string> ExtensionWhitelist => new ReadOnlyCollection<string>(extensionWhitelist);
-    private List<string> extensionWhitelist;
-
-    /// <inheritdoc/>
-    public ICollection<BlacklistFileType> ExtensionBlacklist => new ReadOnlyCollection<BlacklistFileType>(extensionBlacklist);
-    private List<BlacklistFileType> extensionBlacklist;
-
-    #endregion
-
     private void ConfigureUploadRestrictions(FileValidationOptions config)
     {
-        if(config.ExtensionWhitelist.Count > 0) {
-            extensionWhitelist = new(config.ExtensionWhitelist);
-        }
-        else {
-            extensionWhitelist = new List<string> { "txt", "jpg", "png", "jpeg" };
-        }
-
         FileTypeBlacklist.Clear();
         ExtensionOnlyBlacklist.Clear();
 
@@ -103,13 +60,13 @@ public class FileValidationService : IFileValidationOptions
         var fileOnly = Path.GetFileNameWithoutExtension(filename);
 
         // replace all the invalid characters
-        var cleanedFilename = FileCleanerAllowedNameCharacters switch {
+        var cleanedFilename = Options.FileCleanerAllowedNameCharacters switch {
             FilenameCharacters.AsciiAlphaNumeric => Regex.Replace(fileOnly, InvalidAsciiCharacterRegex, "-"), 
             FilenameCharacters.UnicodeAlphaNumeric => Regex.Replace(fileOnly, InvalidUnicodeCharacterRegex, "-"),
             _ => fileOnly,
         };
 
-        if(FileCleanerCompressFilename) {
+        if(Options.FileCleanerCompressFilename) {
             cleanedFilename = Regex.Replace(cleanedFilename, @"-+", "-"); // Collapse duplicate hyphens
             cleanedFilename = Regex.Replace(cleanedFilename, @"_+", "_"); // Collapse duplicate underscores
             cleanedFilename = Regex.Replace(cleanedFilename, @"[-\.]{2,}", "."); // Collapse -.- combinations to a .
@@ -123,7 +80,7 @@ public class FileValidationService : IFileValidationOptions
         // https://www.file-extensions.org/extensions/begin-with-special-characters
         // https://www.file-extensions.org/filetype/extension/name/miscellaneous-files
         var extension = Path.GetExtension(filename).TrimStart('.');
-        var cleanedExtension = FileCleanerAllowedExtensionCharacters switch {
+        var cleanedExtension = Options.FileCleanerAllowedExtensionCharacters switch {
             FilenameCharacters.AsciiAlphaNumeric => Regex.Replace(extension, InvalidAsciiCharacterRegex, ""),
             FilenameCharacters.UnicodeAlphaNumeric => Regex.Replace(extension, InvalidUnicodeCharacterRegex, ""),
             _ => extension,
@@ -172,7 +129,7 @@ public class FileValidationService : IFileValidationOptions
 
     private IEnumerable<ValidationResult> ValidateFileFilename(string filename)
     {
-        var validate = ValidateFilename switch {
+        var validate = Options.ValidateFilename switch {
             ValidationCondition.Never => false,
             ValidationCondition.Always => true,
             _ => !WebAssemblyRuntime,
@@ -197,7 +154,7 @@ public class FileValidationService : IFileValidationOptions
 
     private IEnumerable<ValidationResult> ValidateFileExtension(string extension)
     {
-        var validate = ValidateExtension switch {
+        var validate = Options.ValidateExtension switch {
             ValidationCondition.Never => false,
             ValidationCondition.Always => true,
             _ => !WebAssemblyRuntime,
@@ -216,7 +173,7 @@ public class FileValidationService : IFileValidationOptions
         }
 
         // If the extension isn't in the whitelist, reject it
-        if(!extensionWhitelist.Contains(extension, StringComparer.OrdinalIgnoreCase)) {
+        if(!Options.ExtensionWhitelist.Contains(extension, StringComparer.OrdinalIgnoreCase)) {
             yield return new ValidationResult($"Provided filename does not belongs to an allowed filetype, '{extension}'");
         }
 
@@ -224,7 +181,7 @@ public class FileValidationService : IFileValidationOptions
 
     private IEnumerable<ValidationResult> ValidateFileContent(byte[]? content, IEnumerable<FileTypeDefinition> filenameInferredTypes, string extension)
     {
-        var validate = ValidateContent switch {
+        var validate = Options.ValidateContent switch {
             ValidationCondition.Never => false,
             ValidationCondition.Always => true,
             _ => !WebAssemblyRuntime,
