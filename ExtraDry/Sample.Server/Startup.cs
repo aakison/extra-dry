@@ -107,7 +107,7 @@ public class Startup
         services.AddScoped<CompanyService>();
         services.AddScoped<ContentsService>();
         services.AddScoped<SectorService>();
-        services.AddScoped<BlobService>();
+        services.AddScoped<InMemoryBlobService>();
         services.AddScoped<RuleEngine>();
         services.AddScoped<RegionService>();
         services.AddScoped<TemplateService>();

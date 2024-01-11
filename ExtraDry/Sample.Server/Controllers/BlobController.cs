@@ -18,7 +18,7 @@ public class BlobController : ControllerBase
     /// <summary>
     /// Standard DI Constructor
     /// </summary>
-    public BlobController(BlobService blobService)
+    public BlobController(InMemoryBlobService blobService)
     {
         blobs = blobService;
     }
@@ -30,6 +30,7 @@ public class BlobController : ControllerBase
     [Produces("application/json")]
     [AllowAnonymous]
     [SuppressMessage("ApiUsage", "DRY1107:HttpPost, HttpPut and HttpPatch methods should have Consumes attribute", Justification = "Blobs could be any mime type.")]
+    [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Ignored but included for consistent consumer experience.")]
     public async Task<ResourceReference<Blob>> CreateBlobAsync(Guid uuid, string filename = "")
     {
         var headerUuidStr = Request.Headers[Blob.UuidHeaderName].FirstOrDefault() ?? "";
@@ -65,33 +66,38 @@ public class BlobController : ControllerBase
         await BlobSerializer.SerializeBlobAsync(Response, blob);
     }
 
-    ///// <summary>
-    ///// Update an existing blob description.
-    ///// </summary>
-    ///// <remarks>
-    ///// Updates information about the indicated blob, to change the blob content use the `/upload` endpoint.
-    ///// </remarks>
-    //[HttpPut("api/blobs/{uniqueId}")]
-    //[Consumes("multipart/form-data")]
-    //[Authorize(SamplePolicies.SamplePolicy)]
-    //public async Task Update(Guid uniqueId, [FromBody] BlobInfo value)
-    //{
-    //    if(uniqueId != value?.Uuid) {
-    //        throw new ArgumentException("ID in URI must match body.", nameof(uniqueId));
-    //    }
-    //    await blobs.UpdateAsync(value);
-    //}
+    /// <summary>
+    /// Update an existing Blob description.
+    /// </summary>
+    [HttpPut("api/blobs/{uuid}")]
+    [HttpPut("api/blobs/{uuid}/{filename}")]
+    [Authorize(SamplePolicies.SamplePolicy)]
+    [SuppressMessage("ApiUsage", "DRY1107:HttpPost, HttpPut and HttpPatch methods should have Consumes attribute", Justification = "Blob controller may consume multiple mime types.")]
+    [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Ignored but included for consistent consumer experience.")]
+    public async Task Update(Guid uuid, string filename = "")
+    {
+        var headerUuidStr = Request.Headers[Blob.UuidHeaderName].FirstOrDefault() ?? "";
+        if(Guid.TryParse(headerUuidStr, out var headerUuid)) {
+            if(headerUuid != uuid) {
+                throw new ArgumentMismatchException("UUID in header does not match UUID in URL", nameof(uuid));
+            }
+        }
+
+        var exemplar = await BlobSerializer.DeserializeBlobAsync<Blob>(Request);
+        await blobs.UpdateAsync(exemplar);
+    }
 
     /// <summary>
     /// Delete an existing blob.
     /// </summary>
-    //[HttpDelete("api/blobs/{uniqueId}")]
-    //[Authorize(SamplePolicies.SamplePolicy)]
-    //public async Task Delete(Guid uniqueId)
-    //{
-    //    await blobs.DeleteAsync(uniqueId);
-    //}
+    [HttpDelete("api/blobs/{uuid}")]
+    [Authorize(SamplePolicies.SamplePolicy)]
+    [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Ignored but included for consistent consumer experience.")]
+    public async Task Delete(Guid uuid, string filename = "")
+    {
+        await blobs.DeleteAsync(uuid);
+    }
 
-    private readonly BlobService blobs;
+    private readonly InMemoryBlobService blobs;
 
 }
