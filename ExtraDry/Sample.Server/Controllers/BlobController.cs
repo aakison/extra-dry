@@ -58,8 +58,10 @@ public class BlobController : ControllerBase
         if(blob.Content == null) {
             throw new DryException("Missing content.");
         }
-        Response.Headers.Add("Content-Disposition", $"attachment; filename=\"{filename}\"");
-        
+        if(!string.IsNullOrEmpty(filename)) {
+            Response.Headers.Add("Content-Disposition", $"attachment; filename=\"{filename}\"");
+        }
+
         await BlobSerializer.SerializeBlobAsync(Response, blob);
     }
 

@@ -7,7 +7,7 @@ namespace ExtraDry.Blazor;
 /// <summary>
 /// Registers a API service for Blobs.  This service is used to upload files to the server.
 /// </summary>
-public class BlobService<TBlob> : IBlobServiceOptions where TBlob : IBlob, new()
+public class BlobService<TBlob> where TBlob : IBlob, new()
 {
     /// <summary>
     /// Create a Blob service with the specified configuration.  This service should not be 
@@ -21,21 +21,6 @@ public class BlobService<TBlob> : IBlobServiceOptions where TBlob : IBlob, new()
         this.logger = logger;
         validator = fileValidation;
     }
-
-    /// <inheritdoc/>
-    public int MaxBlobSize => Options.MaxBlobSize;
-
-    /// <inheritdoc/>
-    public string HttpClientName => Options.HttpClientName;
-
-    /// <inheritdoc/>
-    public Type? HttpClientType => Options.HttpClientType;
-
-    /// <inheritdoc/>
-    public bool ValidateHashOnCreate => Options.ValidateHashOnCreate;
-
-    /// <inheritdoc/>
-    public bool RewriteWebSafeFilename => Options.RewriteWebSafeFilename;
 
     /// <summary>
     /// Given an entity implementing <see cref="IBlob"/>, create a new Blob by calling the 
@@ -52,14 +37,14 @@ public class BlobService<TBlob> : IBlobServiceOptions where TBlob : IBlob, new()
             blob.Slug = $"{Slug.ToSlug(name)}{Path.GetExtension(blob.Title).ToLowerInvariant()}";
         }
 
-        if(ValidateHashOnCreate) {
+        if(Options.ValidateHashOnCreate) {
             blob.MD5Hash = MD5Core.GetHashString(blob.Content);
         }
         else {
             blob.MD5Hash = string.Empty;
         }
 
-        if(RewriteWebSafeFilename) {
+        if(Options.RewriteWebSafeFilename) {
             blob.Title = validator?.CleanFilename(blob.Title) ?? blob.Title;
         }
 
@@ -104,7 +89,7 @@ public class BlobService<TBlob> : IBlobServiceOptions where TBlob : IBlob, new()
             Length = (int)file.Size,
         };
         var memoryStream = new MemoryStream();
-        using var stream = file.OpenReadStream(MaxBlobSize, cancellationToken);
+        using var stream = file.OpenReadStream(Options.MaxBlobSize, cancellationToken);
         await stream.CopyToAsync(memoryStream, cancellationToken);
         blob.Content = memoryStream.ToArray();
         await CreateAsync(blob, cancellationToken);

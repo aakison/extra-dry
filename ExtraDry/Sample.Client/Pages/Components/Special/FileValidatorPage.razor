@@ -38,6 +38,7 @@
     <div>Mime Type: @FileMimeType</div>
     <div>Client Validation: @ClientValidation</div>
     <div>Server Validation: @ServerValidation</div>
+    <div>MD5 Validation: @Md5Validation</div>
 </section>
 <section>
     <h3>Configuration</h3>
@@ -90,12 +91,12 @@
             var blob = await Blobs.CreateAsync(e.File);
             ServerValidation = "Valid";
             await Task.Delay(100);
-            ServerValidation = "Downloading...";
+            Md5Validation = "Downloading...";
             await Task.Delay(100);
             var retrieved = await Blobs.RetrieveAsync(blob.Uuid, blob.Slug);
-            ServerValidation = "Downloaded";
+            Md5Validation = "Downloaded";
             await Task.Delay(100);
-            ServerValidation = blob.MD5Hash == retrieved.MD5Hash ? "MD5 Hashes Match" : "MD5 Hashes Do Not Match";
+            Md5Validation = blob.MD5Hash == retrieved.MD5Hash ? "Valid" : "MD5 Hashes Do Not Match";
         }
         catch(DryException ex) {
             ServerValidation = $"{ex.Message}: {ex.ProblemDetails.Detail}";
@@ -109,6 +110,8 @@
     private string ClientValidation { get; set; } = "";
 
     private string ServerValidation { get; set; } = "";
+
+    private string Md5Validation { get; set; } = "";
 
     [Inject]
     private FileValidator Validator { get; set; } = null!;

@@ -317,8 +317,6 @@ public class FileValidationService : IFileValidationOptions
 
     private FileTypeDefinitionSource fileService;
 
-    private readonly bool CheckFileContent;
-
     private FileValidationOptions Options { get; set; }
 
 }
