@@ -34,7 +34,7 @@ public class FileValidationService
         FileTypeBlacklist.Clear();
         ExtensionOnlyBlacklist.Clear();
 
-        if(config?.ExtensionBlacklist?.Count > 0) {
+        if(config.ExtensionBlacklist?.Count > 0) {
             FileTypeBlacklist.AddRange(config.ExtensionBlacklist.Where(f => f.CheckType == CheckType.BytesAndFilename).Select(f => f.Extension));
             ExtensionOnlyBlacklist.AddRange(config.ExtensionBlacklist.Where(f => f.CheckType == CheckType.FilenameOnly).Select(f => f.Extension));
             ExtensionOnlyBlacklist.AddRange(FileTypeBlacklist);
@@ -49,6 +49,7 @@ public class FileValidationService
             ExtensionOnlyBlacklist.AddRange(FileTypeBlacklist);
             ExtensionOnlyBlacklist.AddRange(new List<string>() { "apk", "jar" });
         }
+        fileService.AddFileDefinitions(config.FileTypeDefinitions);
     }
 
     /// <summary>
@@ -112,9 +113,8 @@ public class FileValidationService
         var filenameInferredTypes = fileService.GetFileTypeFromFilename(filename);
         var mimeInferredTypes = fileService.GetFileTypeFromMime(mimetype);
 
-        // If there's both a filename and a mime type file definition, and they don't match, reject
-        if(mimeInferredTypes.Any() &&
-            filenameInferredTypes.Any() &&
+        // If there's a filename or a mime type file definition, then ensure they match.
+        if((mimeInferredTypes.Any() || filenameInferredTypes.Any()) &&
             !filenameInferredTypes.SelectMany(f => f.MimeTypes).Intersect(mimeInferredTypes.SelectMany(f => f.MimeTypes)).Any()) { 
             yield return new ValidationResult($"Provided filename and mime type do not match, mime type was {GetFileDefinitionDescription(mimeInferredTypes)}, and filename was {GetFileDefinitionDescription(filenameInferredTypes)}");
         }
@@ -142,7 +142,7 @@ public class FileValidationService
             yield return new ValidationResult("Provided filename was null or empty");
         }
 
-        if(filename.Length > 255) {
+        if(filename.Length > Options.FileCleanerMaxLength) {
             yield return new ValidationResult("Provided filename was too long");
         }
 
@@ -244,7 +244,7 @@ public class FileValidationService
     private static string GetFileDefinitionDescription(IEnumerable<FileTypeDefinition> fileTypes)
     {
         var description = fileTypes.FirstOrDefault(f => !string.IsNullOrEmpty(f.Description))?.Description;
-        return description ?? fileTypes.First().Extensions.FirstOrDefault() ?? "unknown";
+        return description ?? fileTypes.FirstOrDefault()?.Extensions?.FirstOrDefault() ?? "unknown";
     }
 
     /// <summary>

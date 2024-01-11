@@ -24,6 +24,7 @@ public class FileValidationServiceTests {
     [Theory]
     [InlineData("Bad!Name.txt")]
     [InlineData("Resumé!.txt")] // extended characters
+    [InlineData("TooLong01234567890123456789.txt")] // too long
     public void InvalidUnicodeFilename(string filename)
     {
         var options = new FileValidationOptions() {
@@ -31,6 +32,7 @@ public class FileValidationServiceTests {
             FileCleanerAllowedExtensionCharacters = FilenameCharacters.All,
             FileCleanerLowercase = false,
             ValidateContent = ValidationCondition.Never,
+            FileCleanerMaxLength = 20,
         };
         var service = new FileValidationService(options);
 
@@ -168,19 +170,29 @@ public class FileValidationServiceTests {
     [Fact]
     public void ExtensionDoesMatchMimeTypeIsValid()
     {
-        var options = new FileValidationOptions();
+        var options = new FileValidationOptions {
+            FileTypeDefinitions = {
+                new FileTypeDefinition("txt", "text/plain"),
+            },
+            ValidateContent = ValidationCondition.Never,
+        };
         var service = new FileValidationService(options);
         var validator = new FileValidator(service);
 
         validator.ValidateFile("filename.txt", "text/plain");
 
-        Assert.False(validator.IsValid);
+        Assert.True(validator.IsValid);
     }
 
     [Fact]
     public void ExtensionDoesntMatchMimeTypeIsInvalid()
     {
-        var options = new FileValidationOptions();
+        var options = new FileValidationOptions {
+            FileTypeDefinitions = {
+                new FileTypeDefinition("txt", "text/plain"),
+            },
+            ValidateContent = ValidationCondition.Never,
+        };
         var service = new FileValidationService(options);
         var validator = new FileValidator(service);
 

@@ -44,6 +44,13 @@ public class FileValidationOptions
     public ICollection<BlacklistFileType> ExtensionBlacklist { get; set; } = new List<BlacklistFileType>();
 
     /// <summary>
+    /// A list of definitions for file types that you would like to check for when uploading a file
+    /// Provides mappings between file extensions, mime types, and 'magic bytes' in the content 
+    /// that indicate the file type.
+    /// </summary>
+    public ICollection<FileTypeDefinition> FileTypeDefinitions { get; set; } = new List<FileTypeDefinition>();
+
+    /// <summary>
     /// Determines if the <see cref="FileValidator" /> validates the file content.  The default is 
     /// <see cref="ValidationCondition.ServerSide" /> which runs content validation rules on the 
     /// server, but not on the blazor client.  This is recommended as the content validation rules
@@ -91,5 +98,10 @@ public class FileValidationOptions
     /// convert the filename to lowercase.  The default is true.
     /// </summary>
     public bool FileCleanerLowercase { get; set; } = true;
+
+    /// <summary>
+    /// The maximum length of a filename, longer files will not be valid.
+    /// </summary>
+    public int FileCleanerMaxLength { get; set; } = 255;
 
 }

@@ -8,11 +8,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Remove="FileValidation\SampleFiles\test.docx" />
+	  <None Remove="Blobs\SampleFiles\test.docx" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Include="FileValidation\SampleFiles\test.docx" />
+	  <EmbeddedResource Include="Blobs\SampleFiles\test.docx" />
 	</ItemGroup>
 
 	<ItemGroup>

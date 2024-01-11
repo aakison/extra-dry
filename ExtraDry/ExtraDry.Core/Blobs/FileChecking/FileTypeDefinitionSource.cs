@@ -29,7 +29,7 @@ internal class FileTypeDefinitionSource {
     /// <summary>
     /// Add file definitions to the default database.
     /// </summary>
-    internal void AddFileDefinitions(List<FileTypeDefinition> fileTypeDefinitions){
+    internal void AddFileDefinitions(IEnumerable<FileTypeDefinition> fileTypeDefinitions){
         FileDefinitions.AddRange(fileTypeDefinitions);
     }
 
