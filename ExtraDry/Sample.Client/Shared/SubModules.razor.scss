@@ -11,9 +11,7 @@ section {
         flex: 0 1 $max-article-width;
         justify-content: center;
         background-color: $var-white;
-        height: $icon-size+2*$margin;
         margin: 0;
-        padding: $margin 0;
 
         img {
             width: $icon-size;

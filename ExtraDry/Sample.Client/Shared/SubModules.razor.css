@@ -7,9 +7,7 @@ section article {
   flex: 0 1 1240px;
   justify-content: center;
   background-color: var(--white);
-  height: 48px;
   margin: 0;
-  padding: 10px 0;
 }
 section article img {
   width: 28px;
