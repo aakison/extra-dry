@@ -80,12 +80,12 @@ public class SignatureImpliesStatusCodes : IOperationFilter
         UpdateResponse<HttpDeleteAttribute>(operation, attributes, HttpStatusCode.NoContent, "Success");
     }
 
-    private void UpdateResponse<T>(OpenApiOperation operation, object[] attributes, HttpStatusCode httpStatusCode, string? description = null) where T : HttpMethodAttribute
+    private static void UpdateResponse<T>(OpenApiOperation operation, object[] attributes, HttpStatusCode httpStatusCode, string? description = null) where T : HttpMethodAttribute
     {
         var methodAttributes = attributes.OfType<T>();
         if(methodAttributes.Any()) {
-            var defaultResponseCode = ((int)HttpStatusCode.OK).ToString();
-            var responseCode = ((int)httpStatusCode).ToString();
+            var defaultResponseCode = ((int)HttpStatusCode.OK).ToString(CultureInfo.InvariantCulture);
+            var responseCode = ((int)httpStatusCode).ToString(CultureInfo.InvariantCulture);
             var responseDescription = description ?? httpStatusCode.ToString();
             operation.Responses.Add(responseCode, new OpenApiResponse {
                 Description = responseDescription,

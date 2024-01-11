@@ -26,7 +26,7 @@ namespace ExtraDry.Swashbuckle.Tests.Filters
 
         [Theory]
         [MemberData(nameof(DefaultResponseCodeData))]
-        public void DefaultResponseCode(HttpMethod httpMethod, string testMethod, string expectedCode, string expectedDesc)
+        public void DefaultResponseCode(string testMethod, string expectedCode, string expectedDesc)
         {
             var filter = new SignatureImpliesStatusCodes();
             var defaultResponse = new OpenApiResponse();
@@ -46,14 +46,14 @@ namespace ExtraDry.Swashbuckle.Tests.Filters
 
         public static IEnumerable<object[]> DefaultResponseCodeData()
         {
-            yield return new object[] { HttpMethod.Get, nameof(DummyController.GetMethod), "200", "Success" };
-            yield return new object[] { HttpMethod.Get, nameof(DummyController.GetMethodWithResponsePayload), "200", "Success" };
-            yield return new object[] { HttpMethod.Put, nameof(DummyController.PutMethod), "200", "Success" };
-            yield return new object[] { HttpMethod.Put, nameof(DummyController.PutMethodWithResponsePayload), "200", "Success" };
-            yield return new object[] { HttpMethod.Post, nameof(DummyController.PostMethod), "201", "Created" };
-            yield return new object[] { HttpMethod.Post, nameof(DummyController.PostMethodWithResponsePayload), "201", "Created" };
-            yield return new object[] { HttpMethod.Delete, nameof(DummyController.DeleteMethod), "204", "Success" };
-            yield return new object[] { HttpMethod.Delete, nameof(DummyController.DeleteMethod), "204", "Success" };
+            yield return new object[] { nameof(DummyController.GetMethod), "200", "Success" };
+            yield return new object[] { nameof(DummyController.GetMethodWithResponsePayload), "200", "Success" };
+            yield return new object[] { nameof(DummyController.PutMethod), "200", "Success" };
+            yield return new object[] { nameof(DummyController.PutMethodWithResponsePayload), "200", "Success" };
+            yield return new object[] { nameof(DummyController.PostMethod), "201", "Created" };
+            yield return new object[] { nameof(DummyController.PostMethodWithResponsePayload), "201", "Created" };
+            yield return new object[] { nameof(DummyController.DeleteMethod), "204", "Success" };
+            yield return new object[] { nameof(DummyController.DeleteMethod), "204", "Success" };
         }
     }
 
