@@ -19,7 +19,7 @@ public class MagicBytes
     /// - If the value is "Bytes", the value is interpreted as a hex-string and that set of bytes is searched for Eg. a java class starting with the bytes represented by the hex string "cafebabe"
     /// - If the value is "Content", the value is interpreted from the content as UTF8, and that set of bytes is searched for. Eg. a Post script file starting with "%!"
     /// </summary>
-    public ByteType Type { get; set; }
+    public MagicByteType Type { get; set; }
 
     /// <summary>
     /// Gets the magic byte value represented as a byte[] that can be searched for within a file
@@ -31,7 +31,7 @@ public class MagicBytes
             if(Value == null) {
                 throw new ArgumentException("Provided magic bytes do not have a value defined");
             }
-            if(Type == ByteType.Bytes) {
+            if(Type == MagicByteType.Bytes) {
                 valueAsByte = HexStringHelper.GetBytesFromString(Value);
             }
             else {

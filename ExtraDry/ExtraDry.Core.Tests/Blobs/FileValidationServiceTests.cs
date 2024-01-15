@@ -120,18 +120,14 @@ public class FileValidationServiceTests {
 
     [Theory]
     [InlineData(SampleFiles.GoodTextFileKey)]
-    //[InlineData("jpg.jpg", "image/jpeg")]
     //[InlineData("png.png", "image/png")]
-    //[InlineData("rtf.rtf", "text/rtf")]
     //[InlineData("word.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")] // interesting use case. .docx magic bytes = .zip magic bytes = .apk magic bytes
     //[InlineData("zip.zip", "application/zip")] // interesting use case. .docx magic bytes = .zip magic bytes = .apk magic bytes
     //[InlineData("Tiff.tiff", "image/tiff")]
-    //[InlineData("doc.doc", "application/msword")]
     //[InlineData("mp4.mp4", "audio/mp4")]
     //[InlineData("mp4.mp4", "audio/aac")]
     //[InlineData("mp4.mp4", "video/mp4")]
-    //[InlineData("html.html", "text/html")]
-    public void ValidToUploadFiles(int fileKey)
+    public void ValidToUploadGoodFiles(int fileKey)
     {
         var file = SampleFiles.GetFile(fileKey);
         var service = new FileValidationService(new FileValidationOptions() {
@@ -231,15 +227,15 @@ public class FileValidationServiceTests {
     public void BlacklistBlocksExtension()
     {
         var options = new FileValidationOptions() {
-            ExtensionWhitelist = new List<string> { "txt" }, // even if on whitelist...
-            ExtensionBlacklist = new List<BlacklistFileType>() { new() { Extension = "txt" } },
+            ExtensionWhitelist = new List<string> { "txt" }, 
+            ExtensionBlacklist = new List<string> { "txt" }, // even if on whitelist...
             ValidateExtension = ValidationCondition.Always,
             ValidateContent = ValidationCondition.Never,
             ValidateFilename = ValidationCondition.Never,
         };
         var service = new FileValidationService(options);
         var validator = new FileValidator(service);
-        var file = SampleFiles.GoodTextFile;
+        var file = SampleFiles.ValidTextFile;
 
         validator.ValidateFile(file.Filename, file.MimeType, file.Content);
 
@@ -253,14 +249,96 @@ public class FileValidationServiceTests {
         // same as above but BlacklistBlocksExtension but don't validate extension.
         var options = new FileValidationOptions() {
             ExtensionWhitelist = new List<string> { "txt" }, // even if on whitelist...
-            ExtensionBlacklist = new List<BlacklistFileType>() { new() { Extension = "txt" } },
+            ExtensionBlacklist = new List<string> { "txt" },
             ValidateExtension = ValidationCondition.Never, // <== blocks blacklist
             ValidateContent = ValidationCondition.Never,
             ValidateFilename = ValidationCondition.Never,
         };
         var service = new FileValidationService(options);
         var validator = new FileValidator(service);
-        var file = SampleFiles.GoodTextFile;
+        var file = SampleFiles.ValidTextFile;
+
+        validator.ValidateFile(file.Filename, file.MimeType, file.Content);
+
+        Assert.True(validator.IsValid);
+    }
+
+    [Fact]
+    public void BlacklistContentRequiresFileTypeDefinition()
+    {
+        var options = new FileValidationOptions() {
+            ContentBlacklist = { "jar" },
+            ValidateExtension = ValidationCondition.Never,
+            ValidateContent = ValidationCondition.Always,
+            ValidateFilename = ValidationCondition.Never,
+        };
+
+        FileValidationService act() => new(options);
+
+        Assert.Throws<InvalidOperationException>((Func<FileValidationService>)act);
+    }
+
+    [Fact]
+    public void BlacklistByContent()
+    {
+        var options = new FileValidationOptions() {
+            FileTypeDefinitions = {
+                new FileTypeDefinition("jar", "application/java-archive", "Java Archive File")  {
+                    MagicBytes = {
+                        new MagicBytes {
+                            Offset = 0,
+                            Value = "PK",
+                            Type = MagicByteType.Content,
+                        },
+                    }
+                }
+            },
+            ContentBlacklist = { "jar" },
+            ValidateExtension = ValidationCondition.Never,
+            ValidateContent = ValidationCondition.Always,
+            ValidateFilename = ValidationCondition.Never,
+        };
+        var service = new FileValidationService(options);
+        var validator = new FileValidator(service);
+        var file = SampleFiles.ValidJarFile;
+
+        validator.ValidateFile("pretending-to-be.txt", "text/plain", file.Content);
+
+        Assert.False(validator.IsValid);
+    }
+
+    [Fact]
+    public void AllowExtensionWhenContentBlacklistedUnderAnotherExtension()
+    {
+        var options = new FileValidationOptions() {
+            FileTypeDefinitions = {
+                new FileTypeDefinition("zip", "application/zip", "Compressed Archive File")  {
+                    MagicBytes = {
+                        new MagicBytes {
+                            Offset = 0,
+                            Value = "PK",
+                            Type = MagicByteType.Content,
+                        },
+                    }
+                },
+                new FileTypeDefinition("jar", "application/java-archive", "Java Archive File")  {
+                    MagicBytes = {
+                        new MagicBytes {
+                            Offset = 0,
+                            Value = "PK",
+                            Type = MagicByteType.Content,
+                        },
+                    }
+                }
+            },
+            ExtensionBlacklist = new List<string>() { "jar" },
+            ValidateExtension = ValidationCondition.Always,
+            ValidateContent = ValidationCondition.Always,
+            ValidateFilename = ValidationCondition.Never,
+        };
+        var service = new FileValidationService(options);
+        var validator = new FileValidator(service);
+        var file = SampleFiles.ValidZipFile;
 
         validator.ValidateFile(file.Filename, file.MimeType, file.Content);
 

@@ -7,15 +7,37 @@ public class FileValidationOptions
 {
 
     /// <summary>
-    /// The whitelist of file extensions that you would like your application to allow
+    /// The whitelist of file extensions that are allowed.  If this is empty, all extensions are 
+    /// allowed.
     /// </summary>
     public ICollection<string> ExtensionWhitelist { get; set; } = new List<string>() {
         "7z", "3ds", "3gp", "ai", "avi", "bak", "bmp", "bz2", "csv", "cxp", "doc", "docx", "dot",
-        "dwg", "dwt", "dxf", "eml", "fpx", "gif", "gz", "heic", "html", "iam", "idw", "ifc", "iges",
-        "ipt", "jpeg", "jpg", "key", "log", "m4a", "m4v", "md", "mht", "mov", "mp3", "mp4",
+        "dwg", "dwt", "dxf", "eml", "fpx", "gif", "gz", "heic", "html", "iam", "idw", "ifc", 
+        "iges", "ipt", "jpeg", "jpg", "key", "log", "m4a", "m4v", "md", "mht", "mov", "mp3", "mp4",
         "mpeg", "mpg", "msg", "nwc", "nwd", "nwf", "obj", "ods", "odt", "oft", "ogg", "pdf", "png",
-        "ppt", "pptm", "pptx", "psd", "rar", "rec", "rfa", "rte", "rtf", "rvt", "shp", "stl", "tar",
-        "tgz", "tif", "tiff", "ttd", "txt", "wav", "xls", "xlsm", "xlsx", "xltm", "zip"
+        "ppt", "pptm", "pptx", "psd", "rar", "rec", "rfa", "rte", "rtf", "rvt", "shp", "stl", 
+        "tar", "tgz", "tif", "tiff", "ttd", "txt", "wav", "xls", "xlsm", "xlsx", "xltm", "zip"
+    };
+    
+    /// <summary>
+    /// The blacklist of file extensions that are rejected. 
+    /// </summary>
+    public ICollection<string> ExtensionBlacklist { get; set; } = new List<string>() {
+        "asp", "aspx", "config", "ashx", "asmx", "aspq", "axd", "cshtm", "cshtml", "rem", "soap", 
+        "vbhtm", "vbhtml", "asa", "cer", "shtml", "jsp", "jspx", "jsw", "jsv", "jspf", "wss", 
+        "do", "action", "bat", "bin", "cmd", "com", "cpl", "exe", "gadget", "inf1", "ins", "inx", 
+        "isu", "job", "jse", "lnk", "msc", "msi", "msp", "mst", "paf", "pif", "ps1", "reg", "rgs", 
+        "scr", "sct", "shb", "shs", "u3p", "vb", "vbe", "vbs", "vbscript", "ws", "wsf", "wsh", 
+        "py", "go", "app", "scpt", "scptd", "apk", "jar", "ipa", "xap", "xpi", "crx", "oex" 
+    };
+
+    /// <summary>
+    /// The list of extensions that are completely rejected based on the content of the file.  The
+    /// extension must also have a content definition provided in the 
+    /// <see cref="FileTypeDefinitions"/> list.
+    /// </summary>
+    public ICollection<string> ContentBlacklist { get; set; } = new List<string>() {
+        "exe", "vbe"
     };
 
     /// <summary>
@@ -38,17 +60,30 @@ public class FileValidationOptions
     }
 
     /// <summary>
-    /// A list of extensions that will form the blacklist of file types that you would like to exclude from your system.
-    /// Leave empty to use a default set
-    /// </summary>
-    public ICollection<BlacklistFileType> ExtensionBlacklist { get; set; } = new List<BlacklistFileType>();
-
-    /// <summary>
     /// A list of definitions for file types that you would like to check for when uploading a file
     /// Provides mappings between file extensions, mime types, and 'magic bytes' in the content 
     /// that indicate the file type.
     /// </summary>
-    public ICollection<FileTypeDefinition> FileTypeDefinitions { get; set; } = new List<FileTypeDefinition>();
+    public ICollection<FileTypeDefinition> FileTypeDefinitions { get; set; } = new List<FileTypeDefinition>() {
+        new("exe", "application/x-dosexec", "DOS/Windows executable (EXE)") {
+            MagicBytes = {
+                new MagicBytes {
+                    Offset = 0,
+                    Value = "MZ",
+                    Type = MagicByteType.Content
+                }
+            }
+        },
+        new("vbe", "application/x-vbscript", "VBScript Encoded script") {
+            MagicBytes = {
+                new MagicBytes {
+                    Offset = 0,
+                    Value = "23407E5E",
+                    Type = MagicByteType.Bytes,
+                }
+            }
+        }
+    };
 
     /// <summary>
     /// Determines if the <see cref="FileValidator" /> validates the file content.  The default is 

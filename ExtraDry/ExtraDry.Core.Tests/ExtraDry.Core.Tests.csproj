@@ -9,10 +9,16 @@
 
 	<ItemGroup>
 	  <None Remove="Blobs\SampleFiles\test.docx" />
+	  <None Remove="Blobs\SampleFiles\test.exe" />
+	  <None Remove="Blobs\SampleFiles\test.jar" />
+	  <None Remove="Blobs\SampleFiles\test.zip" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <EmbeddedResource Include="Blobs\SampleFiles\test.docx" />
+	  <EmbeddedResource Include="Blobs\SampleFiles\test.exe" />
+	  <EmbeddedResource Include="Blobs\SampleFiles\test.jar" />
+	  <EmbeddedResource Include="Blobs\SampleFiles\test.zip" />
 	</ItemGroup>
 
 	<ItemGroup>

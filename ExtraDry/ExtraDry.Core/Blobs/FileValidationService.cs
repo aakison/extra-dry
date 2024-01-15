@@ -10,6 +10,7 @@ namespace ExtraDry.Core;
 /// performed server-side.  Configuration of the file validation rules are done using the
 /// <see cref="ServiceCollectionExtensions.AddFileValidation"/> extension method during startup.
 /// </summary>
+/// <seealso href="https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html"/>
 public class FileValidationService
 {
 
@@ -25,31 +26,12 @@ public class FileValidationService
         else {
             fileService = new FileTypeDefinitionSource("");
         }
-        ConfigureUploadRestrictions(options);
+        fileService.AddFileDefinitions(options.FileTypeDefinitions);
         Options = options;
-    }
-
-    private void ConfigureUploadRestrictions(FileValidationOptions config)
-    {
-        FileTypeBlacklist.Clear();
-        ExtensionOnlyBlacklist.Clear();
-
-        if(config.ExtensionBlacklist?.Count > 0) {
-            FileTypeBlacklist.AddRange(config.ExtensionBlacklist.Where(f => f.CheckType == CheckType.BytesAndFilename).Select(f => f.Extension));
-            ExtensionOnlyBlacklist.AddRange(config.ExtensionBlacklist.Where(f => f.CheckType == CheckType.FilenameOnly).Select(f => f.Extension));
-            ExtensionOnlyBlacklist.AddRange(FileTypeBlacklist);
+        var canValidateContent = options.ContentBlacklist.All(e => options.FileTypeDefinitions.Any(f => f.Extensions.Contains(e)));
+        if(ShouldValidateContent() && !canValidateContent) {
+            throw new InvalidOperationException("Request to block content by extension could not be configured.  Ensure the FileTypeDefinitions contains the magic bytes for the requested file types.");
         }
-        else {
-            FileTypeBlacklist.AddRange(new List<string> {
-                "asp", "aspx", "config", "ashx", "asmx", "aspq", "axd", "cshtm", "cshtml", "rem", "soap", "vbhtm", "vbhtml", "asa", "cer", "shtml", // Pentester Identified, classified under "ASP"
-                "jsp", "jspx", "jsw", "jsv", "jspf", "wss", "do", "action", // Pentester Identified, classified under "JSP"
-                "bat", "bin", "cmd", "com", "cpl", "exe", "gadget", "inf1", "ins", "inx", "isu", "job", "jse", "lnk", "msc", "msi", "msp", "mst", "paf", "pif", "ps1", "reg", "rgs", "scr", "sct", "shb", "shs", "u3p", "vb", "vbe", "vbs", "vbscript", "ws", "wsf", "wsh", // Pentester Identified, classified under "General"
-                "py", "go", "app", "scpt", "scptd" // Additional filetypes.
-            });
-            ExtensionOnlyBlacklist.AddRange(FileTypeBlacklist);
-            ExtensionOnlyBlacklist.AddRange(new List<string>() { "apk", "jar" });
-        }
-        fileService.AddFileDefinitions(config.FileTypeDefinitions);
     }
 
     /// <summary>
@@ -127,6 +109,34 @@ public class FileValidationService
         }
     }
 
+    /// <summary>
+    /// Determine if the system is running in a WebAssembly runtime, allowing logic which is 
+    /// conditional on running on only the client or the server.  
+    /// </summary>
+    /// <remarks>
+    /// This doesn't seem to be great, but the advice online didn't work.  String comparison seems 
+    /// to work, but the underlying `Enum` doesn't contain the actual value.  Presumably the enum 
+    /// is compiled in differently and contains the additional type?
+    /// </remarks>
+    private static bool WebAssemblyRuntime =>
+        RuntimeInformation.OSArchitecture.ToString().Equals("WASM", StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// XML file types that are checked for script tags
+    /// </summary>
+    private List<string> KnownXmlFileTypes { get; set; } = new() { "xml", "html", "svg" };
+
+    private FileValidationOptions Options { get; set; }
+
+    /// <summary>
+    /// Get the file type description to populate error messages.
+    /// </summary>
+    private static string GetFileDefinitionDescription(IEnumerable<FileTypeDefinition> fileTypes)
+    {
+        var description = fileTypes.FirstOrDefault(f => !string.IsNullOrEmpty(f.Description))?.Description;
+        return description ?? fileTypes.FirstOrDefault()?.Extensions?.FirstOrDefault() ?? "unknown";
+    }
+
     private IEnumerable<ValidationResult> ValidateFileFilename(string filename)
     {
         var validate = Options.ValidateFilename switch {
@@ -168,7 +178,7 @@ public class FileValidationService
         }
 
         // Outright reject executable file extensions - even if they're in the whitelist.
-        if(ExtensionOnlyBlacklist.Contains(extension, StringComparer.OrdinalIgnoreCase)) {
+        if(Options.ExtensionBlacklist.Contains(extension, StringComparer.OrdinalIgnoreCase)) {
             yield return new ValidationResult($"Provided filename belongs to a forbidden filetype, '{extension}'");
         }
 
@@ -181,11 +191,7 @@ public class FileValidationService
 
     private IEnumerable<ValidationResult> ValidateFileContent(byte[]? content, IEnumerable<FileTypeDefinition> filenameInferredTypes, string extension)
     {
-        var validate = Options.ValidateContent switch {
-            ValidationCondition.Never => false,
-            ValidationCondition.Always => true,
-            _ => !WebAssemblyRuntime,
-        };
+        bool validate = ShouldValidateContent();
 
         if(!validate) {
             yield break;
@@ -196,19 +202,19 @@ public class FileValidationService
         }
         var contentInferredTypes = fileService.GetFileTypeFromContent(content);
 
-        // If the magic bytes filetype is in the bytes blacklist, reject
-        var blacklistedType = contentInferredTypes
+        // Completely exclude any forbidden file contents, e.g. EXE files
+        var blacklistedContent = contentInferredTypes
             .SelectMany(e => e.Extensions)
-            .Intersect(FileTypeBlacklist, StringComparer.OrdinalIgnoreCase)
-            .FirstOrDefault();
-        if(blacklistedType != null) {
-            yield return new ValidationResult($"Provided file content belongs to a forbidden filetype, {blacklistedType}", new[] { nameof(content) });
+            .Intersect(Options.ContentBlacklist, StringComparer.OrdinalIgnoreCase)
+            .Any();
+        if(blacklistedContent) {
+            yield return new ValidationResult($"Provided file content belongs to a forbidden filetype, {blacklistedContent}", new[] { nameof(content) });
         }
 
         // If there's both a filename and a magic byte type file definition, and they don't match, reject
-        if(contentInferredTypes.Any() && 
-            filenameInferredTypes.Any() && 
-            !filenameInferredTypes.SelectMany(f => f.MimeTypes).Intersect(contentInferredTypes.SelectMany(f => f.MimeTypes)).Any()) { 
+        if(contentInferredTypes.Any() &&
+            filenameInferredTypes.Any() &&
+            !filenameInferredTypes.SelectMany(f => f.MimeTypes).Intersect(contentInferredTypes.SelectMany(f => f.MimeTypes)).Any()) {
             yield return new ValidationResult($"Provided filename and content do not match, {GetFileDefinitionDescription(contentInferredTypes)} vs {GetFileDefinitionDescription(filenameInferredTypes)}", new[] { nameof(content) });
         }
 
@@ -218,50 +224,22 @@ public class FileValidationService
             .Union(new string[] { extension.ToLowerInvariant() });
         if(extensionAliases.Intersect(KnownXmlFileTypes).Any()) {
             // Take the first 1000 characters, it's a sanity check, not anti-virus
-            var filecontent = Encoding.UTF8.GetString(content.Take(1000).ToArray()); 
+            var filecontent = Encoding.UTF8.GetString(content.Take(1000).ToArray());
             if(filecontent.IndexOf("<script", StringComparison.InvariantCultureIgnoreCase) >= 0) {
                 yield return new ValidationResult("Provided file is an XML filetype with protected tags", new[] { nameof(content) });
             }
         }
     }
 
-    /// <summary>
-    /// Determine if the system is running in a WebAssembly runtime, allowing logic which is 
-    /// conditional on running on only the client or the server.  
-    /// </summary>
-    /// <remarks>
-    /// This doesn't seem to be great, but the advice online didn't work.  String comparison seems 
-    /// to work, but the underlying `Enum` doesn't contain the actual value.  Presumably the enum 
-    /// is compiled in differently and contains the additional type?
-    /// </remarks>
-    private static bool WebAssemblyRuntime => 
-        RuntimeInformation.OSArchitecture.ToString().Equals("WASM", StringComparison.OrdinalIgnoreCase);
-        // RuntimeInformation.IsOSPlatform(OSPlatform.Create("WEBASSEMBLY")); -> doesn't seem to work
-
-    /// <summary>
-    /// Get the file type description to populate error messages.
-    /// </summary>
-    private static string GetFileDefinitionDescription(IEnumerable<FileTypeDefinition> fileTypes)
+    private bool ShouldValidateContent()
     {
-        var description = fileTypes.FirstOrDefault(f => !string.IsNullOrEmpty(f.Description))?.Description;
-        return description ?? fileTypes.FirstOrDefault()?.Extensions?.FirstOrDefault() ?? "unknown";
+        return Options.ValidateContent switch {
+            ValidationCondition.Never => false,
+            ValidationCondition.Always => true,
+            _ => !WebAssemblyRuntime,
+        };
     }
-
-    /// <summary>
-    /// File extensions that will be rejected regardless of the whitelist settings
-    /// </summary>
-    private readonly List<string> FileTypeBlacklist = new();
-
-    /// <summary>
-    /// Some files we'd like to reject based off their file extensions, but can't reject off magic bytes becuase they share these with other file types eg docx, zip, jar and apk
-    /// </summary>
-    private readonly List<string> ExtensionOnlyBlacklist = new();
-
-    /// <summary>
-    /// XML file types that are checked for script tags
-    /// </summary>
-    private List<string> KnownXmlFileTypes { get; set; } = new() { "xml", "html", "svg" };
-
+        // RuntimeInformation.IsOSPlatform(OSPlatform.Create("WEBASSEMBLY")); -> doesn't seem to work
     /// <summary>
     /// Regex that identifies non-letter characters that would not be valid in a Unicode filename.
     /// </summary>
@@ -273,7 +251,4 @@ public class FileValidationService
     private const string InvalidAsciiCharacterRegex = @"[^a-zA-Z0-9\-_\.]";
 
     private FileTypeDefinitionSource fileService;
-
-    private FileValidationOptions Options { get; set; }
-
 }
