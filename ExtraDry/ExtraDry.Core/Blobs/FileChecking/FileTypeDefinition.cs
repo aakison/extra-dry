@@ -8,6 +8,9 @@ public class FileTypeDefinition
 {
 
     /// <inheritdoc cref="FileTypeDefinition" />
+    public FileTypeDefinition() { }
+
+    /// <inheritdoc cref="FileTypeDefinition" />
     public FileTypeDefinition(string extension, string mimeType, string description = "")
     {
         Extensions.Add(extension);
