@@ -30,8 +30,7 @@ public class BlobController : ControllerBase
     [Produces("application/json")]
     [AllowAnonymous]
     [SuppressMessage("ApiUsage", "DRY1107:HttpPost, HttpPut and HttpPatch methods should have Consumes attribute", Justification = "Blobs could be any mime type.")]
-    [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Ignored but included for consistent consumer experience.")]
-    public async Task<ResourceReference<Blob>> CreateBlobAsync(Guid uuid, string filename = "")
+    public async Task<ResourceReference<Blob>> CreateBlobAsync(Guid uuid)
     {
         var headerUuidStr = Request.Headers[Blob.UuidHeaderName].FirstOrDefault() ?? "";
         if(Guid.TryParse(headerUuidStr, out var headerUuid)) {
@@ -73,8 +72,7 @@ public class BlobController : ControllerBase
     [HttpPut("api/blobs/{uuid}/{filename}")]
     [Authorize(SamplePolicies.SamplePolicy)]
     [SuppressMessage("ApiUsage", "DRY1107:HttpPost, HttpPut and HttpPatch methods should have Consumes attribute", Justification = "Blob controller may consume multiple mime types.")]
-    [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Ignored but included for consistent consumer experience.")]
-    public async Task Update(Guid uuid, string filename = "")
+    public async Task Update(Guid uuid)
     {
         var headerUuidStr = Request.Headers[Blob.UuidHeaderName].FirstOrDefault() ?? "";
         if(Guid.TryParse(headerUuidStr, out var headerUuid)) {
@@ -91,9 +89,9 @@ public class BlobController : ControllerBase
     /// Delete an existing blob.
     /// </summary>
     [HttpDelete("api/blobs/{uuid}")]
+    [HttpDelete("api/blobs/{uuid}/{filename}")]
     [Authorize(SamplePolicies.SamplePolicy)]
-    [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Ignored but included for consistent consumer experience.")]
-    public async Task Delete(Guid uuid, string filename = "")
+    public async Task Delete(Guid uuid)
     {
         await blobs.DeleteAsync(uuid);
     }

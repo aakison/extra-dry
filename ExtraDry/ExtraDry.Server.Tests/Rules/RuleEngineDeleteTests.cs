@@ -159,9 +159,9 @@ public class RuleEngineDeleteTests {
         Assert.Null(obj.Status);
     }
 
-    private Task FakePrepare(ref int stepStamp) => Task.FromResult(stepStamp = step++);
+    private Task<int> FakePrepare(ref int stepStamp) => Task.FromResult(stepStamp = step++);
 
-    private Task FakeCommit(ref int stepStamp) => Task.FromResult(stepStamp = step++);
+    private Task<int> FakeCommit(ref int stepStamp) => Task.FromResult(stepStamp = step++);
 
     private int step = 1;
 
