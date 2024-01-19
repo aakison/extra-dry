@@ -7,30 +7,27 @@ namespace Sample.Server.Controllers;
 /// <summary>
 /// Manages blob, such as used in Contents.
 /// </summary>
+/// <remarks>
+/// Standard DI Constructor
+/// </remarks>
 [ApiController]
 [ApiExplorerSettings(GroupName = ApiGroupNames.SampleApi)]
 [ApiExceptionStatusCodes]
 [SuppressMessage("Usage", "DRY1002:ApiController shouldn't inherit from ControllerBase",
     Justification = "Controller makes use of ControllerBase functionality for emitting file content.")]
-public class BlobController : ControllerBase
+public class BlobController(
+    InMemoryBlobService blobService) 
+    : ControllerBase
 {
-
-    /// <summary>
-    /// Standard DI Constructor
-    /// </summary>
-    public BlobController(InMemoryBlobService blobService)
-    {
-        blobs = blobService;
-    }
 
     /// <summary>
     /// Creates a Blob with both the given unique key and the user-friendly filename.  
     /// </summary>
-    [HttpPost("/api/blobs/{uuid}/{filename}")]
+    [HttpPost("/api/blobs/{uuid}/{_}")]
     [Produces("application/json")]
     [AllowAnonymous]
     [SuppressMessage("ApiUsage", "DRY1107:HttpPost, HttpPut and HttpPatch methods should have Consumes attribute", Justification = "Blobs could be any mime type.")]
-    public async Task<ResourceReference<Blob>> CreateBlobAsync(Guid uuid)
+    public async Task<ResourceReference<Blob>> CreateBlobAsync(Guid uuid, string _)
     {
         var headerUuidStr = Request.Headers[Blob.UuidHeaderName].FirstOrDefault() ?? "";
         if(Guid.TryParse(headerUuidStr, out var headerUuid)) {
@@ -59,7 +56,7 @@ public class BlobController : ControllerBase
             throw new DryException("Missing content.");
         }
         if(!string.IsNullOrEmpty(filename)) {
-            Response.Headers.Add("Content-Disposition", $"attachment; filename=\"{filename}\"");
+            Response.Headers.Append("Content-Disposition", $"attachment; filename=\"{filename}\"");
         }
 
         await BlobSerializer.SerializeBlobAsync(Response, blob);
@@ -69,10 +66,10 @@ public class BlobController : ControllerBase
     /// Update an existing Blob description.
     /// </summary>
     [HttpPut("api/blobs/{uuid}")]
-    [HttpPut("api/blobs/{uuid}/{filename}")]
+    [HttpPut("api/blobs/{uuid}/{_}")]
     [Authorize(SamplePolicies.SamplePolicy)]
     [SuppressMessage("ApiUsage", "DRY1107:HttpPost, HttpPut and HttpPatch methods should have Consumes attribute", Justification = "Blob controller may consume multiple mime types.")]
-    public async Task Update(Guid uuid)
+    public async Task Update(Guid uuid, string _)
     {
         var headerUuidStr = Request.Headers[Blob.UuidHeaderName].FirstOrDefault() ?? "";
         if(Guid.TryParse(headerUuidStr, out var headerUuid)) {
@@ -89,13 +86,13 @@ public class BlobController : ControllerBase
     /// Delete an existing blob.
     /// </summary>
     [HttpDelete("api/blobs/{uuid}")]
-    [HttpDelete("api/blobs/{uuid}/{filename}")]
+    [HttpDelete("api/blobs/{uuid}/{_}")]
     [Authorize(SamplePolicies.SamplePolicy)]
-    public async Task Delete(Guid uuid)
+    public async Task Delete(Guid uuid, string _)
     {
         await blobs.DeleteAsync(uuid);
     }
 
-    private readonly InMemoryBlobService blobs;
+    private readonly InMemoryBlobService blobs = blobService;
 
 }

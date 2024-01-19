@@ -9,20 +9,17 @@ namespace Sample.Server.SampleData;
 /// <summary>
 /// Manages collections of sectors for companies.
 /// </summary>
+/// <remarks>
+/// Stanard DI Constructor
+/// </remarks>
 [ApiController]
 [ApiExplorerSettings(GroupName = ApiGroupNames.ReferenceCodes)]
 [ApiExceptionStatusCodes]
-public class SampleDataController {
-
-    /// <summary>
-    /// Stanard DI Constructor
-    /// </summary>
-    [SuppressMessage("Usage", "DRY1012:API Controller Classes should not directly use DbContext.", Justification = "Temporary sample data controller.")]
-    public SampleDataController(SampleContext sampleContext, SampleDataService sampleDataService)
-    {
-        context = sampleContext;
-        samples = sampleDataService;
-    }
+[method: SuppressMessage("Usage", "DRY1012:API Controller Classes should not directly use DbContext.", Justification = "Temporary sample data controller.")]
+public class SampleDataController(
+    SampleContext sampleContext, 
+    SampleDataService sampleDataService)
+{
 
     /// <summary>
     /// Load the set of sample data, idempotent so allowed to be anonymous.
@@ -42,7 +39,7 @@ public class SampleDataController {
             samples.PopulateContents();
         }
         // Idempotent calls....
-        await samples.PopulateRegionsAsync(new string[] { "AU", "CA", "GB", "NZ", "US" }, true, false);
+        await samples.PopulateRegionsAsync(["AU", "CA", "GB", "NZ", "US"], true, false);
     }
 
     /// <summary>
@@ -61,8 +58,8 @@ public class SampleDataController {
         return await samples.PopulateRegionsAsync(countryFilter, includeSubdivisions, includeLocalities);
     }
 
-    private readonly SampleContext context;
+    private readonly SampleContext context = sampleContext;
 
-    private readonly SampleDataService samples;
+    private readonly SampleDataService samples = sampleDataService;
 
 }

@@ -58,6 +58,7 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
 
     private string UuidValue => Description.UuidProperty?.GetValue(Item.Item)?.ToString() ?? string.Empty;
 
+    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "False positive, called in razor.")]
     private async Task RowClick(MouseEventArgs _)
     {
         if(Description.ListSelectMode == ListSelectMode.Action) {
@@ -74,6 +75,7 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
         StateHasChanged();
     }
 
+    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "False positive, called in razor.")]
     private async Task RowDoubleClick(MouseEventArgs _)
     {
         if(Description.DefaultCommand != null && Item.Item != null) {
@@ -82,7 +84,8 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
         StateHasChanged();
     }
 
-    private void CheckChanged(ChangeEventArgs args)
+    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "False positive, called in razor.")]
+    private void CheckChanged(ChangeEventArgs _)
     {
         if(IsSelected) {
             Select();

@@ -1,37 +1,27 @@
-﻿#nullable enable
-
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 
-namespace Sample.Server.Security {
+namespace Sample.Server.Security
+{
 
     /// <summary>
     /// A worthless authentication handler that just allows any request to masquarade as an admin.
     /// This is here so that the use of the `[Authorize]` attribute can be demonstrated without implementing a
     /// real security system.
     /// </summary>
-    public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions> {
-
-        /// <summary>
-        /// Standard DI constructor
-        /// </summary>
-        public BasicAuthenticationHandler(
-            IOptionsMonitor<AuthenticationSchemeOptions> options,
-            ILoggerFactory logger,
-            UrlEncoder encoder,
-            ISystemClock clock)
-            : base(options, logger, encoder, clock)
-        {
-        }
+    /// <remarks>
+    /// Standard DI constructor
+    /// </remarks>
+    public class BasicAuthenticationHandler(
+        IOptionsMonitor<AuthenticationSchemeOptions> options,
+        ILoggerFactory logger,
+        UrlEncoder encoder) 
+        : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder) {
 
         /// <summary>
         /// Handles basic authentication by testing against hard-coded admin/admin credentials.
@@ -47,9 +37,9 @@ namespace Sample.Server.Security {
                 return Task.FromResult(AuthenticateResult.Fail("Missing Authorization Header"));
             }
             try {
-                var authHeader = AuthenticationHeaderValue.Parse(value);
+                var authHeader = AuthenticationHeaderValue.Parse(value!);
                 var credentialBytes = Convert.FromBase64String(authHeader.Parameter ?? "");
-                var credentials = Encoding.UTF8.GetString(credentialBytes).Split(new[] { ':' }, 2);
+                var credentials = Encoding.UTF8.GetString(credentialBytes).Split([':'], 2);
                 var username = credentials[0];
                 var password = credentials[1];
                 if(username != "admin" || password != "admin") {
