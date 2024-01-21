@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Sample.Identity.Database": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}
