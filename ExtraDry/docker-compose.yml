@@ -1,0 +1,22 @@
+version: '3.4'
+
+services:
+  sample.identity:
+    build:
+      context: .
+      dockerfile: ./Sample.Identity/Dockerfile
+    ports:
+      - "50080:80"
+      - "50443:443"
+    hostname: "sample.identity"
+    depends_on: [sample.database.stub]
+
+  sample.database.stub:
+    build:
+      context: ./Sample.Database.Stub
+      dockerfile: Dockerfile
+    hostname: "sample.database.stub"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+    ports:
+      - "51433:1433"

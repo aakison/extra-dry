@@ -14,7 +14,7 @@ BEGIN
 END
 GO
 
--- Create User
+-- Create User or update password.
 IF NOT EXISTS (select [Name] from sys.sql_logins where [Name] = 'IdentityApp') 
 BEGIN
     CREATE LOGIN [IdentityApp] WITH PASSWORD = N'$(IdentityAppPassword)'
@@ -28,7 +28,7 @@ GO
 USE [SampleIdentity]
 GO
 
--- Create Roles on Instance.
+-- Create new roles on Instance.
 IF DATABASE_PRINCIPAL_ID('db_executor') IS NULL
 BEGIN
     CREATE ROLE [db_executor]
@@ -46,4 +46,5 @@ GO
 ALTER ROLE [db_datareader] ADD MEMBER [IdentityApp]
 ALTER ROLE [db_datawriter] ADD MEMBER [IdentityApp]
 ALTER ROLE [db_executor] ADD MEMBER [IdentityApp]
+ALTER ROLE [db_ddladmin] ADD MEMBER [IdentityApp]
 GO

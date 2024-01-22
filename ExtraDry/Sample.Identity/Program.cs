@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Sample.Identity;
 using Sample.Identity.Components;
 using Sample.Identity.Components.Account;
 using Sample.Identity.Data;
@@ -22,9 +24,10 @@ builder.Services.AddAuthentication(options => {
 })
     .AddIdentityCookies();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+var appConfig = new AppConfiguration(builder.Configuration);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseSqlServer(appConfig.ConnectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -33,6 +36,10 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
     .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+
+//builder.Services.Configure<AppConfiguration>(builder.Configuration.GetSection("AppConfiguration"));
+//builder.Services.AddScoped(builder => builder.GetRequiredService<IOptions<AppConfiguration>>().Value);
+builder.Services.AddScoped<AppConfiguration>();
 
 var app = builder.Build();
 
