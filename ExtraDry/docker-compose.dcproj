@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" Sdk="Microsoft.Docker.Sdk">
-  <PropertyGroup Label="Globals">
-    <ProjectVersion>2.1</ProjectVersion>
-    <DockerTargetOS>Linux</DockerTargetOS>
-    <DockerPublishLocally>False</DockerPublishLocally>
-    <ProjectGuid>68619e1d-ac8f-4651-8b26-02ae1b8ad845</ProjectGuid>
-    <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
-    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}</DockerServiceUrl>
-    <DockerServiceName>sample.identity</DockerServiceName>
-  </PropertyGroup>
-  <ItemGroup>
-    <None Include="docker-compose.override.yml">
-      <DependentUpon>docker-compose.yml</DependentUpon>
-    </None>
-    <None Include="docker-compose.yml" />
-    <None Include=".dockerignore" />
-    <None Include="Sample.Database.Stub\Dockerfile" />
-    <None Include="Sample.Database.Stub\README.md" />
-    <None Include="Sample.Database.Stub\start.sh" />
-    <None Include="Sample.Database.Stub\setup.sh" />
-    <None Include="Sample.Database.Stub\setup.sql" />
-  </ItemGroup>
+	<PropertyGroup Label="Globals">
+		<ProjectVersion>2.1</ProjectVersion>
+		<DockerTargetOS>Linux</DockerTargetOS>
+		<DockerPublishLocally>False</DockerPublishLocally>
+		<ProjectGuid>68619e1d-ac8f-4651-8b26-02ae1b8ad845</ProjectGuid>
+		<DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
+		<DockerServiceUrl>{Scheme}://localhost:{ServicePort}</DockerServiceUrl>
+		<DockerServiceName>sample.identity</DockerServiceName>
+		<DockerComposeProjectName>sample-project</DockerComposeProjectName>
+	</PropertyGroup>
+	<ItemGroup>
+		<None Include="docker-compose.override.yml">
+			<DependentUpon>docker-compose.yml</DependentUpon>
+		</None>
+		<None Include="docker-compose.yml" />
+		<None Include=".dockerignore" />
+		<None Include="Sample.Database.Stub\Dockerfile" />
+		<None Include="Sample.Database.Stub\README.md" />
+		<None Include="Sample.Database.Stub\start.sh" />
+		<None Include="Sample.Database.Stub\setup.sh" />
+		<None Include="Sample.Database.Stub\setup.sql" />
+	</ItemGroup>
 </Project>
