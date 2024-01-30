@@ -14,7 +14,7 @@
     @foreach(var column in Description.TableProperties) {
         var cssClass = column.DisplayClass;
         var displayValue = column.DisplayValue(Item.Item);
-        var command = Description.DefaultCommandFor(column.Property.Name);
+        var hyperlink = Description.HyperLinkFor(column.Property.Name);
         if(column.HasDiscreteValues) {
             var enumValue = column.GetValue(Item.Item);
             cssClass += $" {enumValue?.ToString()?.ToLowerInvariant()}";
@@ -33,11 +33,12 @@
                     @displayValue
                 </span>
             }
-            else if(command == null) {
+            else if(hyperlink == null) {
                 <span class="@cssClass">@displayValue</span>
             }
             else {
-                <span class="@cssClass"><a href="" @onclick:preventDefault @onclick="async () => await command!.ExecuteAsync(Item.Item)">@displayValue</a></span>
+                var context = @hyperlink.Execute(Item.Item);
+                <span class="@cssClass"><a class="@context?.DisplayClass" href="@context?.Url" title="@context?.AltText">@displayValue</a></span>
             }
         </td>
     }

@@ -12,10 +12,18 @@
 </DryErrorBoundary>
 
 @code {
+    [HyperLink(PropertyName = nameof(Employee.Title))]
+    public HyperLinkContext NavLink(Employee employee)
+    {
+        return new HyperLinkContext
+        {
+            Url = $"/admin/works/employees/list/{employee.Uuid}"
+        };
+    }
 
-    [Command(CommandContext.Default, Icon = "edit", PropertyName = nameof(Employee.Title))]
+    [Command(CommandContext.Default, Icon = "edit")]
     public void Edit(Employee employee)
     {
-        Navigation.NavigateTo($"/admin/works/employees/list/{employee.Uuid}");
+        Navigation.NavigateTo(NavLink(employee).Url);
     }
 }

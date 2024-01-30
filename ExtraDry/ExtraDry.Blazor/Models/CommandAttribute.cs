@@ -45,12 +45,6 @@ public sealed class CommandAttribute : Attribute {
     public string? Category { get; set; }
 
     /// <summary>
-    /// An optional name of a property on the target model which may be bound to this command. For
-    /// example, as a hyperlink in a table view.
-    /// </summary>
-    public string? PropertyName { get; set; }
-
-    /// <summary>
     /// The relative order of this button amongst others. This order is evaluated after groupings 
     /// based on `Context` and `Collapse` settings.
     /// </summary>

@@ -7,21 +7,25 @@
     <DryPageQueryView>
         @*<TableMenu TItem="Company" />*@
         <DryFilter TItem="Company" Affordance="" Icon="theme" ShowPreview="false" />
-        <DryTable TItem="Company" ViewModel="@this" ItemsService="@CompanyService" />
+        <DryTable TItem="Company"  ViewModel="@this" ItemsService="@CompanyService" />
     </DryPageQueryView>
 </DryErrorBoundary>
 
 @code {
-
-    [Command(CommandContext.Default, Icon = "edit", PropertyName = nameof(Company.Title))]
-    public void Edit(Company company)
+    [HyperLink(PropertyName = nameof(Company.Title))]
+    public HyperLinkContext NavLink(Company company)
     {
-        Navigation.NavigateTo($"/admin/works/companies/list/{company.Uuid}");
+        return new HyperLinkContext
+        {
+            Url = $"/admin/works/companies/list/{company.Uuid}",
+            AltText = $"Edit company {company.Title}",
+            DisplayClass = "company-edit-link"
+        };
     }
 
-    [Command]
-    public void DoSomething(IEnumerable<Company> companies)
+    [Command(CommandContext.Default, Icon = "edit")]
+    public void Edit(Company company)
     {
-        
+        Navigation.NavigateTo(NavLink(company)?.Url ?? string.Empty);
     }
 }
