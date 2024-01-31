@@ -3,17 +3,17 @@
 /// <summary>
 /// Context passed through to create a hyper link
 /// </summary>
-public class HyperLinkContext
+public class HyperlinkContext
 {
     /// <summary>
     /// The Url for the hyperlink to reference
     /// </summary>
-    public string Url { get; set; } = string.Empty;
+    public string Href { get; set; } = string.Empty;
 
     /// <summary>
-    /// The alternate text to display on the link
+    /// The tooltip text to display on the link
     /// </summary>
-    public string AltText { get; set; } = string.Empty;
+    public string ToolTipText { get; set; } = string.Empty;
 
     /// <summary>
     /// The display CSS class to attach to the hyperlink

@@ -12,13 +12,13 @@
 </DryErrorBoundary>
 
 @code {
-    [HyperLink(PropertyName = nameof(Company.Title))]
-    public HyperLinkContext NavLink(Company company)
+    [Hyperlink(nameof(Company.Title))]
+    public HyperlinkContext NavLink(Company company)
     {
-        return new HyperLinkContext
+        return new HyperlinkContext
         {
-            Url = $"/admin/works/companies/list/{company.Uuid}",
-            AltText = $"Edit company {company.Title}",
+            Href = $"/admin/works/companies/list/{company.Uuid}",
+            ToolTipText = $"Edit company {company.Title}",
             DisplayClass = "company-edit-link"
         };
     }
@@ -26,6 +26,6 @@
     [Command(CommandContext.Default, Icon = "edit")]
     public void Edit(Company company)
     {
-        Navigation.NavigateTo(NavLink(company)?.Url ?? string.Empty);
+        Navigation.NavigateTo(NavLink(company)?.Href ?? string.Empty);
     }
 }

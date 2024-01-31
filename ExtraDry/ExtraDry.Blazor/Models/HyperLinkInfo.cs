@@ -4,12 +4,12 @@
 /// Represents a hyperlink which wraps a method call and additional information about how to present
 /// the hyperlink using the method's signature.
 /// </summary>
-public partial class HyperLinkInfo
+public partial class HyperlinkInfo
 {
     /// <summary>
     /// Create a `HyperLinkInfo` with a reference to the ViewModel it will execute on and the method to call.
     /// </summary>
-    public HyperLinkInfo(object viewModel, MethodInfo method)
+    public HyperlinkInfo(object viewModel, MethodInfo method)
     {
         ViewModel = viewModel;
         Method = method;
@@ -27,12 +27,12 @@ public partial class HyperLinkInfo
     /// </summary>
     public object ViewModel { get; set; }
 
-    /// <inheritdoc cref="HyperLinkAttribute.PropertyName" />
+    /// <inheritdoc cref="HyperlinkAttribute.PropertyName" />
     public string? PropertyName{ get; set; }
 
-    public HyperLinkContext? Execute(object? arg = null)
+    public HyperlinkContext? Execute(object? arg = null)
     {
-        return Method.Invoke(ViewModel, new object?[] { arg }) as HyperLinkContext;
+        return Method.Invoke(ViewModel, new object?[] { arg }) as HyperlinkContext;
     }
 
     /// <summary>
@@ -40,7 +40,7 @@ public partial class HyperLinkInfo
     /// </summary>
     private void Initialize(MethodInfo method)
     {
-        var attribute = method.GetCustomAttribute<HyperLinkAttribute>();
+        var attribute = method.GetCustomAttribute<HyperlinkAttribute>();
         if(attribute != null) {
             PropertyName = attribute.PropertyName;
         }

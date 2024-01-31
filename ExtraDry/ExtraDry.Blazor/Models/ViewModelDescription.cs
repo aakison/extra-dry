@@ -40,13 +40,13 @@ public class ViewModelDescription {
 
     public Collection<CommandInfo> Commands { get; } = new();
 
-    public Collection<HyperLinkInfo> HyperLinks { get; } = new();
+    public Collection<HyperlinkInfo> HyperLinks { get; } = new();
 
     public CommandInfo? SelectCommand => Commands.FirstOrDefault(e => e.Context == CommandContext.Primary && e.Arguments == CommandArguments.Single);
 
     public CommandInfo? DefaultCommand => Commands.FirstOrDefault(e => e.Context == CommandContext.Default && e.Arguments == CommandArguments.Single);
 
-    public HyperLinkInfo? HyperLinkFor(string propertyName) => HyperLinks.FirstOrDefault(e => e.PropertyName == propertyName);
+    public HyperlinkInfo? HyperLinkFor(string propertyName) => HyperLinks.FirstOrDefault(e => e.PropertyName == propertyName);
 
     public ReadOnlyCollection<CommandInfo> MenuCommands => new(Commands.Where(e => e.Arguments == CommandArguments.None).ToList());
 
@@ -111,8 +111,8 @@ public class ViewModelDescription {
         }
         var viewModelType = viewModel.GetType();
         var methods = viewModelType.GetMethods(BindingFlags.Public | BindingFlags.Instance);
-        var hyperlinks = methods.Where(e => e.GetParameters().Length < 2 && e.GetCustomAttribute<HyperLinkAttribute>() != null);
-        var infos = hyperlinks.Select(e => new HyperLinkInfo(viewModel, e));
+        var hyperlinks = methods.Where(e => e.GetParameters().Length < 2 && e.GetCustomAttribute<HyperlinkAttribute>() != null);
+        var infos = hyperlinks.Select(e => new HyperlinkInfo(viewModel, e));
         foreach(var info in infos) {
             HyperLinks.Add(info);
         }
