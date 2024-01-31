@@ -13,7 +13,7 @@ public class HyperlinkContext
     /// <summary>
     /// The tooltip text to display on the link
     /// </summary>
-    public string TooltipText { get; set; } = string.Empty;
+    public string Title { get; set; } = string.Empty;
 
     /// <summary>
     /// The display CSS class to attach to the hyperlink
