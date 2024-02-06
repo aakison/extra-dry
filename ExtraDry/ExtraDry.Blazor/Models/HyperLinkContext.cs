@@ -5,10 +5,18 @@
 /// </summary>
 public class HyperlinkContext
 {
+    public HyperlinkContext(string href)
+    {
+        if(string.IsNullOrEmpty(href)) { 
+            throw new ArgumentNullException(nameof(href), "The href must be populated");
+        }
+
+        Href = href;
+    }
     /// <summary>
     /// The Url for the hyperlink to reference
     /// </summary>
-    public string Href { get; set; } = string.Empty;
+    public string Href { get; }
 
     /// <summary>
     /// The tooltip text to display on the link

@@ -8,7 +8,6 @@ public class ViewModelDescription {
     {
         ViewModel = viewModel;
         GetReflectedViewModelCommands(viewModel);
-        GetReflectedViewModelHyperLinks(viewModel);
         GetReflectedModel(viewModel.GetType());
         SetListSelectMode();
     }
@@ -17,9 +16,9 @@ public class ViewModelDescription {
     {
         ModelType = modelType;
         ViewModel = viewModel;
+        GetReflectedViewModelHyperLinks(viewModel, modelType);
         GetReflectedModelProperties(modelType);
         GetReflectedViewModelCommands(viewModel);
-        GetReflectedViewModelHyperLinks(viewModel);
         GetReflectedModel(modelType);
         SetListSelectMode();
     }
@@ -104,7 +103,7 @@ public class ViewModelDescription {
         }
     }
 
-    private void GetReflectedViewModelHyperLinks(object viewModel)
+    private void GetReflectedViewModelHyperLinks(object viewModel, Type modelType)
     {
         if(viewModel == null) {
             return;
@@ -112,7 +111,7 @@ public class ViewModelDescription {
         var viewModelType = viewModel.GetType();
         var methods = viewModelType.GetMethods(BindingFlags.Public | BindingFlags.Instance);
         var hyperlinks = methods.Where(e => e.GetParameters().Length < 2 && e.GetCustomAttribute<HyperlinkAttribute>() != null);
-        var infos = hyperlinks.Select(e => new HyperlinkInfo(viewModel, e));
+        var infos = hyperlinks.Select(e => new HyperlinkInfo(viewModel, modelType, e));
         foreach(var info in infos) {
             HyperLinks.Add(info);
         }

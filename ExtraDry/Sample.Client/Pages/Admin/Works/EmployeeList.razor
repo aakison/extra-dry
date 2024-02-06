@@ -15,10 +15,7 @@
     [Hyperlink(nameof(Employee.Title))]
     public HyperlinkContext NavLink(Employee employee)
     {
-        return new HyperlinkContext
-        {
-            Href = $"/admin/works/employees/list/{employee.Uuid}"
-        };
+        return new HyperlinkContext($"/admin/works/employees/list/{employee.Uuid}");
     }
 
     [Command(CommandContext.Default, Icon = "edit")]

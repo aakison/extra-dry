@@ -15,9 +15,8 @@
     [Hyperlink(nameof(Company.Title))]
     public HyperlinkContext NavLink(Company company)
     {
-        return new HyperlinkContext
+        return new HyperlinkContext($"/admin/works/companies/list/{company.Uuid}")
         {
-            Href = $"/admin/works/companies/list/{company.Uuid}",
             Title = $"Edit company {company.Title}",
             DisplayClass = "company-edit-link"
         };
