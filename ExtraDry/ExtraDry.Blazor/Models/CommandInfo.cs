@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Reflection;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace ExtraDry.Blazor.Models;
 
@@ -82,9 +80,6 @@ public partial class CommandInfo {
     /// </summary>
     public string? Affordance { get; set; }
 
-    /// <inheritdoc cref="CommandAttribute.PropertyName" />
-    public string? PropertyName { get; set; }
-
     /// <summary>
     /// The view model that this command is defined as being part of.
     /// Used by `ExecuteAsync` to invoke the command on the correct object instance.
@@ -131,7 +126,6 @@ public partial class CommandInfo {
             Icon = attribute.Icon;
             Context = attribute.Context;
             Category = attribute.Category;
-            PropertyName = attribute.PropertyName;
         }
     }
 
