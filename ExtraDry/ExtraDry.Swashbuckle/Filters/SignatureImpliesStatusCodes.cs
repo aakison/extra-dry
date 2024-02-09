@@ -96,31 +96,37 @@ public class SignatureImpliesStatusCodes : IOperationFilter
     }
 
     private const string json400 = @"{
-            ""statusCode"": 400,
-            ""description"": ""The indicated input could not be parsed as a UUID"",
-            ""display"": ""Invalid request, check inputs."",
-            ""displayCode"": ""0x0F00B75A""
-        }";
+        ""type"": ""https://tools.ietf.org/html/rfc7231#section-6.5.1"",
+        ""title"": ""One or more validation errors occurred."",
+        ""status"": 400,
+        ""traceId"": ""00-f6332b5860f58b4352834c9fee958825-c5984f3fe6af0a5f-00"",
+        ""errors"": {
+            ""UUID"": [
+                ""The indicated input could not be parsed as a UUID.""
+            ]
+        }
+    }";
 
     private const string json401 = @"{
-            ""statusCode"": 401,
-            ""description"": ""The detected authentication mechanism, BasicAuthentication, is not supported.  Please provide a JWT Bearer token."",
-            ""display"": ""Unable to login, please check credentials."",
-            ""displayCode"": ""0x0F0056CA""
-        }";
+        ""type"": ""https://<host>/problems/unauthorized"",
+        ""title"": ""You do not have the necessary authorization to access this resource."",
+        ""status"": 401,
+        ""detail"": ""The resource you're trying to access is restricted. Please ensure you're logged in with the appropriate credentials."",
+        ""instance"": ""/api/addresses/21ce71c0-b396-42bf-aa5a-f72a5fafaa3a""
+    }";
 
     private const string json403 = @"{
-            ""statusCode"": 403,
-            ""description"": ""Valid credentials were supplied by one or more policies were not satisfied."",
-            ""display"": ""Access denied, please check credentials."",
-            ""displayCode"": ""0x0F0082B1""
-        }";
+        ""type"": ""https://<host>/problems/forbidden"",
+        ""title"": ""You do not have the necessary permissions to access this resource."",
+        ""status"": 403,
+        ""detail"": ""Access to this resource is governed by policies that may involve the current state of the entity.  Details on attribute based access conditions can be found in the API Instructions, for endpoint specific details see the endpoint documentation."",
+        ""instance"": ""/api/addresses/21ce71c0-b396-42bf-aa5a-f72a5fafaa3a""
+    }";
 
     private const string json404 = @"{
-            ""type"": ""t"",
-            ""title"": ""title"", 
-            ""status"": 404,
-            ""detail"": ""The requested resource was not found, no entity with indicated UUID exists."",
-            ""instance"": ""localhost""
-        }";
+        ""type"": ""https://<host>/problems/argument-out-of-range-exception"",
+        ""title"": ""Specified argument was out of the range of valid values. (Parameter 'companyId')"",
+        ""status"": 404,
+        ""instance"": ""/api/companies/21ce71c0-b396-42bf-aa5a-f72a5fafaa3a""
+    }";
 }
