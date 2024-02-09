@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Components.Web.Virtualization;
+﻿using ExtraDry.Blazor.Extensions;
+using Microsoft.AspNetCore.Components.Web.Virtualization;
 using System.Collections.ObjectModel;
-using System.Security.AccessControl;
 using System.Text.Json;
 
 namespace ExtraDry.Blazor;
@@ -197,6 +197,7 @@ public class ListService<TItem> : IListService<TItem> {
             var response = Options.HierarchyMethod == HttpMethod.Get
                 ? await http.GetAsync(endpoint, cancellationToken)
                 : await http.PostAsync(endpoint, new StringContent(HierarchyRequestBody(query)), cancellationToken);
+            await response.AssertSuccess(logger);
             var body = await response.Content.ReadAsStringAsync(cancellationToken);
             logger.LogEndpointResult(typeof(TItem), endpoint, body);
             var packedResult = JsonSerializer.Deserialize(body, HierarchyType, JsonSerializerOptions)
@@ -208,7 +209,9 @@ public class ListService<TItem> : IListService<TItem> {
         }
         else {
             logger.LogEndpointCall(typeof(TItem), endpoint);
-            var body = await http.GetStringAsync(endpoint, cancellationToken);
+            var response = await http.GetAsync(endpoint, cancellationToken);
+            await response.AssertSuccess(logger);
+            var body = await response.Content.ReadAsStringAsync(cancellationToken);
             logger.LogEndpointResult(typeof(TItem), endpoint, body);
             var packedResult = JsonSerializer.Deserialize(body, ListType, JsonSerializerOptions)
                 ?? throw new DryException($"Call to endpoint returned nothing or couldn't be converted to a result.");

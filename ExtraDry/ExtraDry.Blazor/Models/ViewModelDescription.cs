@@ -16,6 +16,7 @@ public class ViewModelDescription {
     {
         ModelType = modelType;
         ViewModel = viewModel;
+        GetReflectedViewModelHyperLinks(viewModel, modelType);
         GetReflectedModelProperties(modelType);
         GetReflectedViewModelCommands(viewModel);
         GetReflectedModel(modelType);
@@ -38,11 +39,13 @@ public class ViewModelDescription {
 
     public Collection<CommandInfo> Commands { get; } = new();
 
+    public Collection<HyperlinkInfo> HyperLinks { get; } = new();
+
     public CommandInfo? SelectCommand => Commands.FirstOrDefault(e => e.Context == CommandContext.Primary && e.Arguments == CommandArguments.Single);
 
     public CommandInfo? DefaultCommand => Commands.FirstOrDefault(e => e.Context == CommandContext.Default && e.Arguments == CommandArguments.Single);
 
-    public CommandInfo? DefaultCommandFor(string propertyName) => Commands.FirstOrDefault(e => e.PropertyName == propertyName);
+    public HyperlinkInfo? HyperLinkFor(string propertyName) => HyperLinks.FirstOrDefault(e => e.PropertyName == propertyName);
 
     public ReadOnlyCollection<CommandInfo> MenuCommands => new(Commands.Where(e => e.Arguments == CommandArguments.None).ToList());
 
@@ -97,6 +100,20 @@ public class ViewModelDescription {
             .OrderBy(e => e.Context);
         foreach(var info in infos) {
             Commands.Add(info);
+        }
+    }
+
+    private void GetReflectedViewModelHyperLinks(object viewModel, Type modelType)
+    {
+        if(viewModel == null) {
+            return;
+        }
+        var viewModelType = viewModel.GetType();
+        var methods = viewModelType.GetMethods(BindingFlags.Public | BindingFlags.Instance);
+        var hyperlinks = methods.Where(e => e.GetParameters().Length < 2 && e.GetCustomAttribute<HyperlinkAttribute>() != null);
+        var infos = hyperlinks.Select(e => new HyperlinkInfo(viewModel, modelType, e));
+        foreach(var info in infos) {
+            HyperLinks.Add(info);
         }
     }
 

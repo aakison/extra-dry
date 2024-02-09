@@ -12,16 +12,19 @@
 </DryErrorBoundary>
 
 @code {
-
-    [Command(CommandContext.Default, Icon = "edit", PropertyName = nameof(Company.Title))]
-    public void Edit(Company company)
+    [Hyperlink(nameof(Company.Title))]
+    public HyperlinkContext NavLink(Company company)
     {
-        Navigation.NavigateTo($"/admin/works/companies/list/{company.Uuid}");
+        return new HyperlinkContext($"/admin/works/companies/list/{company.Uuid}")
+        {
+            Title = $"Edit company {company.Title}",
+            DisplayClass = "company-edit-link"
+        };
     }
 
-    [Command]
-    public void DoSomething(IEnumerable<Company> companies)
+    [Command(CommandContext.Default, Icon = "edit")]
+    public void Edit(Company company)
     {
-        
+        Navigation.NavigateTo(NavLink(company)?.Href ?? string.Empty);
     }
 }

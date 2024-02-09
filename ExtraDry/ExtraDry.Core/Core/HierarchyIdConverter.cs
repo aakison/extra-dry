@@ -1,8 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
-namespace Sample.Shared;
+namespace ExtraDry.Core;
 
-public class HierarchyIdConverter : JsonConverter<HierarchyId> {
+/// <summary>
+/// A JSON converter that will serialize a HierarchyId object so that it can be deserialised and used on the front end
+/// </summary>
+public class HierarchyIdConverter : JsonConverter<HierarchyId>
+{
     public override HierarchyId? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         return HierarchyId.Parse(reader.GetString());
