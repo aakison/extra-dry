@@ -1218,7 +1218,7 @@
   {
     "Description": "Comma Seperated Values",
     "Extensions": [ "csv" ],
-    "MimeTypes": [ "text/csv" ],
+    "MimeTypes": [ "text/csv", "application/vnd.ms-excel" ],
     "MagicBytes": []
   },
   {
