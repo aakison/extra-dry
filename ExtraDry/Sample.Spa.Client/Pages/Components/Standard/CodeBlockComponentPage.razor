@@ -1,0 +1,61 @@
+﻿@page "/components/standard/code-block"
+
+<section>
+    <h2>CodeBlock</h2>
+    <p>
+        The <code>&lt;CodeBlock&gt;</code> component displays blocks of code with formatting and syntax highlighting.
+    </p>
+</section>
+<section>
+    <h3>Basic Usage</h3>
+    <CodeBlock Lang="xml">
+        &lt;CodeBlock&gt;
+          @MarkupContent
+        &lt;/CodeBlock&gt;
+    </CodeBlock>
+    <CodeBlock Lang="CSharp">
+        @MarkupContent
+    </CodeBlock>
+    <h5>Try It Out</h5>
+    <form class="tryitout" onsubmit="return false;">
+        <label>Content:</label>
+        <textarea @bind="@Content" rows="3" style="width: 100%"></textarea>
+    </form>
+</section>
+<section>
+    <h3>Configuration</h3>
+    <p>
+        This is a standalone component, no configuration is required.
+    </p>
+    <h5>Semantic Styles</h5>
+    <p>The control is rendered as an <code>&lt;pre&gt;</code> and <code>&lt;code&gt;</code> inside a <code>&lt;div&gt;</code>, with the class "code-block" designed for styling.</p>
+    <CodeBlock lang="HTML">
+        &lt;div class="code-block">
+          &lt;pre>
+            &lt;code>
+              ...
+            &lt;/code>
+          &lt;/pre>
+        &lt;/div>
+    </CodeBlock>
+</section>
+<section>
+    <h3>Tips &amp; Practices</h3>
+    <ul>
+        <li>When entering content, make sure to use HTML escapes for special characters.</li>
+        <li>Use the <code>Lang</code> attribute to force a specific syntax highlighting, if it guesses wrong.  (e.g. C#, HTML, Blazor, Json, Markdown, etc.)</li>
+        <li>The component uses highlight.js for highlighting, see their documentation for style ideas and language support.</li>
+    </ul>
+</section>
+<section>
+    <h3>See Also</h3>
+    <ul>
+        <li><a href="https://github.com/thomasjo/highlight" rel='nofollow noopener noreferrer' target="_blank">Original highlighter package, modified locally for Blazor.</a></li>
+    </ul>
+</section>
+
+@code {
+    public string Content { get; set; } = "var message = \"Hello World\";";
+
+    private MarkupString MarkupContent => (MarkupString)Content.Replace("<", "&lt;");
+}

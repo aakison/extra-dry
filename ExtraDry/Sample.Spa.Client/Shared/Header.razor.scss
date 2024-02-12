@@ -1,0 +1,58 @@
+﻿@import "../wwwroot/css/_constants.scss";
+
+$title-size: 26px;
+
+header {
+    display: flex;
+    justify-content: center;
+    background-color: $var-primary;
+    height: $header-height;
+    min-height: $header-height;
+    margin: 0;
+    padding: $margin;
+
+    article {
+        flex: 0 1 $max-article-width;
+        display: flex;
+        align-items: center;
+        gap: $small-spacing;
+
+        div.waffle {
+            padding: 0;
+            ::deep svg {
+                color: $var-secondary;
+            }
+        }
+
+        div.logo {
+            ::deep img, ::deep svg {
+                width: $logo-size;
+                height: $logo-size;
+            }
+        }
+
+        div.title {
+            display: inline-block;
+            font-weight: 600;
+            font-size: $title-size;
+            line-height: $title-size;
+            color: $var-secondary;
+            margin-left: $padding;
+        }
+
+        div.search {
+            flex: 1 1 auto;
+        }
+
+        ::deep img.glyph, ::deep svg.glyph {
+            width: $icon-size;
+            height: $icon-size;
+            fill: $var-secondary;
+        }
+
+        ::deep div.account img.glyph {
+            margin-right: $margin;
+        }
+    }
+}
+

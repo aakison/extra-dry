@@ -1,0 +1,182 @@
+﻿@import "../wwwroot/css/_constants.scss";
+
+$button-size: 32px;
+$button-margin: 4px;
+$bar-height: $button-size + 2*$button-margin;
+
+div.expandable {
+    transition: height 0.5s;
+
+    &.showing, &.hiding, &.none {
+        height: 0;
+    }
+
+    &.visible {
+        height: auto;
+    }
+}
+
+div.tablemenu {
+    background-color: $var-off-white;
+    height: $bar-height;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+
+    div.viewselect {
+        flex: 1 0 auto;
+    }
+
+    div.buttons {
+        flex: 0 0 auto;
+    }
+
+    ::deep button {
+        border: none;
+        background-color: $var-off-white;
+        width: $button-size;
+        height: $button-size;
+        margin: $button-margin 0;
+        border-radius: $border-radius;
+
+        &[name=Expand], &[name=Compress] {
+            display: none;
+
+            @media #{$desktop-landscape} {
+                display: inline-block;
+            }
+        }
+
+        &:hover {
+            background-color: $var-light;
+        }
+
+        &:active {
+            background-color: $var-off-white;
+            border: solid 2px $var-light;
+        }
+
+        i {
+            color: $var-gray;
+        }
+
+        span {
+            display: none;
+        }
+    }
+}
+
+div.filtermenu {
+    background-color: $var-off-white;
+    height: $bar-height + 2*$margin;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+    background-color: $var-white;
+    padding: 0 $margin;
+    border-bottom: solid $padding $var-off-white;
+
+    ::deep i {
+        color: $var-silver;
+    }
+
+    ::deep button {
+        background-color: transparent;
+        border: none;
+    }
+
+    ::deep form {
+        flex: 1 0 auto;
+
+        div.filters {
+            display: flex;
+            border-radius: 3px;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+
+            input {
+                flex: 1 0 auto;
+            }
+
+            input, input:active, input:hover, input:focus-visible {
+                border: none;
+                outline: none;
+            }
+
+            div.filter {
+                display: flex;
+                align-items: center;
+                margin-right: 10px;
+                gap: 5px;
+            }
+        }
+    }
+}
+
+
+::deep div.filter {
+    padding: $padding $margin;
+    cursor: pointer;
+
+    &:hover {
+        background-color: $var-off-white;
+        border-radius: $padding/2;
+    }
+
+    div.caption {
+        color: $var-gray;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        font-weight: 600;
+
+        label {
+            cursor: pointer;
+            margin-right: $padding;
+        }
+    }
+
+    &.active {
+        div.caption {
+            color: $var-charcoal;
+        }
+    }
+
+    div.form {
+        background: $var-white;
+        border: solid 1px $var-silver;
+        border-radius: $padding;
+        min-width: 200px;
+        min-height: 200px;
+        max-width: 350px;
+        max-height: 800px;
+
+        ul {
+            list-style: none;
+            padding: 0;
+
+            li {
+                padding: $padding $margin;
+
+                &:hover {
+                    background-color: $var-off-white;
+                }
+
+                label {
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+
+                    input {
+                        flex: 0 0 auto;
+                        width: 16px;
+                        height: 16px;
+                        margin-right: $margin;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,30 @@
+﻿@inject IListService<Company> CompanyService;
+@inject NavigationManager Navigation;
+
+<h1>Companies</h1>
+
+<DryErrorBoundary>
+    <DryPageQueryView>
+        @*<TableMenu TItem="Company" />*@
+        <DryFilter TItem="Company" Affordance="" Icon="theme" ShowPreview="false" />
+        <DryTable TItem="Company" ViewModel="@this" ItemsService="@CompanyService" />
+    </DryPageQueryView>
+</DryErrorBoundary>
+
+@code {
+    [Hyperlink(nameof(Company.Title))]
+    public HyperlinkContext NavLink(Company company)
+    {
+        return new HyperlinkContext($"/admin/works/companies/list/{company.Uuid}")
+        {
+            Title = $"Edit company {company.Title}",
+            DisplayClass = "company-edit-link"
+        };
+    }
+
+    [Command(CommandContext.Default, Icon = "edit")]
+    public void Edit(Company company)
+    {
+        Navigation.NavigateTo(NavLink(company)?.Href ?? string.Empty);
+    }
+}

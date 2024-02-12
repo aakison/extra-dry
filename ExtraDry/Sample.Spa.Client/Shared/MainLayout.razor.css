@@ -1,0 +1,18 @@
+﻿section {
+  display: flex;
+  justify-content: center;
+  background-color: var(--off-white);
+}
+section article {
+  background-color: var(--white);
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 1240px;
+}
+section.expanded {
+  padding: 0;
+}
+section.expanded article {
+  max-width: initial;
+}

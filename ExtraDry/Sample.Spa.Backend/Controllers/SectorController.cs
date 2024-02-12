@@ -9,15 +9,9 @@ namespace Sample.Spa.Backend.Controllers;
 [ApiController]
 [ApiExplorerSettings(GroupName = ApiGroupNames.SampleApi)]
 [ApiExceptionStatusCodes]
-public class SectorController {
-       
-    /// <summary>
-    /// Stanard DI Constructor
-    /// </summary>
-    public SectorController(SectorService sectorService)
-    {
-        sectors = sectorService;
-    }
+public class SectorController(
+    SectorService sectors)
+{
 
     /// <summary>
     /// Filtered list of all company services
@@ -79,9 +73,8 @@ public class SectorController {
     /// <returns></returns>
     [HttpGet("api/sectors/stats"), Produces("application/json")]
     [Authorize(SamplePolicies.SamplePolicy)]
-    public async Task<Statistics<Sector>> RetrieveStatsAsync([FromQuery] FilterQuery query) {
+    public async Task<Statistics<Sector>> RetrieveStatsAsync([FromQuery] FilterQuery query)
+    {
         return await sectors.StatsAsync(query);
     }
-
-    private readonly SectorService sectors;
 }

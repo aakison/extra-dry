@@ -1,0 +1,140 @@
+﻿/*@import "_constants.scss";
+
+//
+// Forms that have a summary (should be most), are given the standard summary heading.
+// Color defaults to primary, some forms will want to change this to have special highlights for certain entities.
+//
+form fieldset.summary {
+    border-left: solid $margin $var-primary;
+    padding: $margin/2 $margin;
+    height: 102px;
+
+    legend {
+        display: none;
+    }
+}
+
+//
+// The status line is usually seldom written fields and gets a custom set of visual styles.
+//
+form fieldset.status {
+    background-color: $var-off-white;
+    border-top: solid 1px $var-light;
+    border-bottom: solid 1px $var-light;
+    padding: $margin/2 $margin;
+    height: 70px;
+
+    legend {
+        display: none;
+    }
+
+    div.line {
+        height: 28px;
+        padding: $margin/2;
+    }
+
+    div.field label {
+        color: $var-gray;
+        font-weight: 600;
+        font-size: 12px;
+        width: 80px;
+
+        span:after {
+            content: ":";
+        }
+    }
+
+    select {
+        border: solid 1px transparent;
+        background: transparent;
+        font-weight: 600;
+        appearance: none;
+
+        &:hover {
+            background: $var-white;
+            border: solid 1px $var-gray;
+            appearance: auto;
+        }
+
+        &:focus-visible {
+            outline: none;
+        }
+    }
+}
+
+//
+// Forms are broken into status and description sections, fix the status and scroll the description.
+//
+form {
+    height: 100%;
+
+
+}
+
+//
+// Title property is editable but also should display as a title, make it prominent with hover effects for visual pliancy.
+//
+form div.field.title {
+    label {
+        display: none;
+    }
+
+    input {
+        font-size: 18px;
+        font-weight: 600;
+        border: solid 1px transparent;
+        width: 100%;
+
+        &:hover {
+            border-color: $var-light;
+        }
+
+        &:focus-visible {
+            border-color: $var-info;
+            outline: none;
+        }
+    }
+}
+
+//
+// The form entity info should be abridged and mostly hidden, except for the icon.
+// Then adjust the caption so they don't overlap each other.
+//
+form {
+    .entity-info {
+        height: 0;
+        transform: translate(22px, 8px);
+        color: $var-gray;
+
+        label {
+            display: none;
+        }
+    }
+}
+
+div.field.caption {
+    margin-left: 22px;
+    
+    input {
+        font-weight: 600;
+        font-size: 16px;
+    }
+
+    label span {
+        display: none;
+    }
+
+    input {
+        border: none;
+    }
+}
+
+form {
+    select {
+        option::before {
+            color: red;
+            content: "X";
+        }
+    }
+}
+*/

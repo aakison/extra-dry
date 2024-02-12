@@ -1,0 +1,95 @@
+﻿@page "/components/standard/mini-card"
+
+<section>
+    <h2>MiniCard</h2>
+    <p>
+        The <code>&lt;MiniCard&gt;</code> component consistently displays small cards that represent single entities.
+    </p>
+    <p>
+        The card will always display a title and will optionally display a thumbnail and subtitle.  
+        By default they are arranged with a tall thumbnail to the left and the title and subtitle stacked.
+    </p>
+</section>
+<section>
+    <h3>Basic Usage</h3>
+    <CodeBlock Lang="blazor">
+        &lt;MiniCard Title="@Title" /&gt;
+    </CodeBlock>
+    <p>
+        <MiniCard Title="@Title" />
+    </p>
+    <CodeBlock Lang="blazor">
+        &lt;MiniCard Title="@Title" Subtitle="@Subtitle" Thumbnail="@Thumbnail" /&gt;
+    </CodeBlock>
+    <p>
+        <MiniCard Title="@Title" Subtitle="@Subtitle" Thumbnail="@Thumbnail"  />
+    </p>
+    <h5>Try It Out</h5>
+    <form class="tryitout" onsubmit="return false;">
+        <div>
+            <label>Title:</label>
+            <input type="text" @bind="@Title" />
+        </div>
+        <div>
+            <label>Subtitle:</label>
+            <input type="text" @bind="@Subtitle" />
+        </div>
+        <div>
+            <label>Thumbnail:</label>
+            <input type="text" @bind="@Thumbnail" />
+        </div>
+    </form>
+</section>
+<section>
+    <h3>Configuration</h3>
+    <p>
+        This is a standalone component, no configuration is required.
+    </p>
+    <h5>Semantic Styles</h5>
+    <p>The control is rendered as follows.</p>
+    <CodeBlock lang="HTML">
+        &lt;div class="mini-card thumbnail subtitle ...">
+            &lt;img class="thumbnail" ... />
+            &lt;div class="titles">
+                &lt;span class="title">...&lt;/span>
+                &lt;span class="subtitle">...&lt;/span>
+            &lt;/div>
+        &lt;/div>
+    </CodeBlock>
+    <p>
+        Where:
+        <ul>
+            <li>If Thumbnail is <code>null</code>, then the <code>img</code> tag is not rendered and the class "thumbnail" is not provided.</li>
+            <li>If Subtitle is <code>null</code>, then the subtitle <code>span</code> tag is not rendered and the class "subtitle" is not provided.</li>
+        </ul>
+    </p>
+</section>
+<section>
+    <h3>Tips &amp; Practices</h3>
+    <ul>
+        <li>Note that <code>string.Empty</code> for <code>Thumbnail</code> and <code>Subtitle</code> will render tags with no content.</li>
+        <li>Note that <code>null</code> for <code>Thumbnail</code> and <code>Subtitle</code> will prevent rendering of tags.</li>
+        <li>For alignment the <code>img</code> defaults to <code>max-height</code> and <code>max-width</code> of 40px, use CSS to override.</li>
+        <li>This control has a DRY equivalent, <code>DryMiniCard</code>, prefer that version if possible.</li>
+    </ul>
+</section>
+<section>
+    <h3>See Also</h3>
+    <ul>
+        <li><a href="/components/dry/dry-mini-card"><code>DryMiniCard</code> Component</a></li>
+    </ul>
+</section>
+
+@code {
+
+    private string Title { get; set; } = "Item Title";
+
+    private string Subtitle { get; set; } = "this is the subtitle";
+
+    private string Thumbnail { 
+        get => thumbnail; 
+        set => thumbnail = string.IsNullOrWhiteSpace(value) ? string.Empty : value;
+    }
+    private string thumbnail = "./img/icons/logo.svg";
+
+}

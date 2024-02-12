@@ -2,11 +2,14 @@ using ExtraDry.Core.Models;
 using ExtraDry.Server.DataWarehouse;
 using ExtraDry.Server.EF;
 using ExtraDry.Swashbuckle;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Sample.Spa.Backend;
 using Sample.Spa.Backend.Components;
 using Sample.Spa.Backend.SampleData;
+using Sample.Spa.Backend.Security;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,8 +26,8 @@ builder.Services.AddControllers()
 
 builder.Services.AddSwaggerGen(openapi => {
     openapi.AddExtraDry(options => {
-        //options.XmlComments.Files.Add("Sample.Shared.xml");
-        //options.XmlComments.Files.Add("Sample.Server.Xml");
+        options.XmlComments.Files.Add("Sample.Shared.xml");
+        options.XmlComments.Files.Add("Sample.Spa.Backend.Xml");
     });
     openapi.SwaggerDoc(ApiGroupNames.SampleApi, new OpenApiInfo {
         Version = "v1",
@@ -49,21 +52,20 @@ builder.Services.AddSwaggerGen(openapi => {
         Type = SecuritySchemeType.Http,
         Scheme = "basic",
     });
-    // TODO: openapi.OperationFilter<BasicAuthOperationFilter>();
+    openapi.OperationFilter<BasicAuthOperationFilter>();
 });
 
-// TODO:
-//services.AddAuthentication("WorthlessAuthentication")
-//    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("WorthlessAuthentication", null);
-//services.AddAuthorizationCore(options => SamplePolicies.AddAuthorizationOptions(options));
-//services.AddSingleton<IAuthorizationHandler, SampleAccessHandler>();
+builder.Services.AddAuthentication("WorthlessAuthentication")
+    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("WorthlessAuthentication", null);
+builder.Services.AddAuthorizationCore(options => SamplePolicies.AddAuthorizationOptions(options));
+builder.Services.AddSingleton<IAuthorizationHandler, SampleAccessHandler>();
 
 builder.Services.AddHttpContextAccessor();
 
-//services.AddServiceBusQueue<EntityMessage>(options => {
-//    options.ConnectionStringKey = "WebAppServiceBus";
-//    options.QueueName = "warehouse-update";
-//});
+builder.Services.AddServiceBusQueue<EntityMessage>(options => {
+    options.ConnectionStringKey = "WebAppServiceBus";
+    options.QueueName = "warehouse-update";
+});
 
 builder.Services.AddScoped(services => {
     var connectionString = builder.Configuration.GetConnectionString("WebAppOltpDatabase");

@@ -1,0 +1,80 @@
+﻿@import "../wwwroot/css/_constants.scss";
+
+div {
+    ::deep div.module-menu {
+        /* Main waffle settings. */
+        padding: 0;
+
+        button {
+            padding: 0;
+
+            svg {
+                /* SVG of Waffle fills borders, make a touch smaller so it feels like an icon */
+                width: 0.9*$icon-size;
+                height: 0.9*$icon-size;
+            }
+        }
+
+        /* Drop down menu from main waffle */
+        section.mini-dialog div.mini-dialog {
+            width: 375px - 4*$margin;
+            height: initial;
+            padding-top: 0.5*$margin;
+
+            nav {
+
+                ul {
+                    padding: 0;
+                    flex-direction: column;
+
+                    li {
+                        padding: $margin;
+                        margin: $margin 2*$margin;
+                        border: solid 1px $var-silver;
+                        border-radius: $margin;
+                        display: block;
+
+                        &.active {
+                            border: solid 1px $var-warning;
+                        }
+
+                        img, svg {
+                            margin-right: $margin;
+                            width: $logo-size;
+                            height: $logo-size;
+                            min-width: $logo-size;
+                        }
+
+                        a:link, a:visited, a:hover, a:active {
+                            text-decoration: none;
+                            color: $var-black;
+                        }
+
+                        span {
+                            &.title {
+                                font-size: 18px;
+                                font-weight: 700;
+                            }
+
+                            &.subtitle {
+                                font-size: 12px;
+                                line-height: 14px;
+                                max-height: 28px;
+                                margin-top: 4px;
+                                text-overflow: ellipsis;
+                                overflow: hidden;
+                                -webkit-line-clamp: 2;
+                                display: -webkit-box;
+                                -webkit-box-orient: vertical;
+                            }
+                        }
+                    }
+                }
+            }
+
+            footer {
+                display: none;
+            }
+        }
+    }
+}

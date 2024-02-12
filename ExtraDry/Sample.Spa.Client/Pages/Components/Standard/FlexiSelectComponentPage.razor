@@ -1,0 +1,137 @@
+﻿@page "/components/standard/flexi-select"
+@implements ISubjectViewModel<Employee>
+
+<section>
+    <h2>FlexiSelect</h2>
+    <p>
+        The <code>&lt;FlexiSelect&gt;</code> component is a dialog-based replacement for a select control.
+    </p>
+    <p>
+        The component presents drop-down/pop-up mini-dialog that displays a list of elements.  This is
+        designed to be styled responsively for mobile and desktop.  It support both single- and multi-
+        select and filtering.
+    </p>
+</section>
+<section>
+    <h3>Basic Usage</h3>
+    <h5>No View Model</h5>
+    <CodeBlock Lang="blazor">
+        &lt;FlexiSelect Data="@@Employees" MultiSelect="@MultiSelect" FilterPlaceholder="@FilterPlaceholder" ShowFilterThreshold="@ShowFilterThreshold" Title="@FormTitle" ShowTitle="@ShowTitle" /&gt;
+
+        @@code {
+            private List&lt;Employee&gt; Employees { get; set; } = ...;
+        }
+    </CodeBlock>
+    <FlexiSelect DebugCss="true" Data="@Data" MultiSelect="@MultiSelect" FilterPlaceholder="@FilterPlaceholder" ShowFilterThreshold="@ShowFilterThreshold" Title="@FormTitle" ShowTitle="@ShowTitle" @bind-Value="Value" @bind-Values="Values" />
+    <h5>Bound Values</h5>
+    <h6>Value:</h6>
+    @if(Value != null) {
+        <DryMiniCard Model="@Value" ViewModel="@this" />
+    }
+    <h6>Values:</h6>
+    @if(Values != null) {
+        foreach(var value in Values) {
+            <DryMiniCard Model="@value" ViewModel="@this" />
+        }
+    }
+    <h5>Try It Out</h5>
+    <form class="tryitout" onsubmit="return false;">
+        <div>
+            <label>Title:</label>
+            <input type="text" @bind="FormTitle" />
+        </div>
+        <div>
+            <label>ShowTitle:</label>
+            <input type="checkbox" @bind="ShowTitle" />
+        </div>
+        <div>
+            <label>MultiSelect:</label>
+            <input type="checkbox" @bind="MultiSelect" />
+        </div>
+        <div>
+            <label>ShowFilterThreshold:</label>
+            <input type="number" @bind="ShowFilterThreshold" />
+        </div>
+        <div>
+            <label>FilterPlaceholder:</label>
+            <input type="text" @bind="FilterPlaceholder" />
+        </div>
+    </form>
+</section>
+<section>
+    <h3>Configuration</h3>
+    <p>
+        This is a standalone component, no configuration is required.
+    </p>
+</section>
+<section>
+    <h3>Semantic Styles</h3>
+    <p>The component wraps the <code>Button</code>, <code>MiniCard</code>, and <code>MiniDialog</code> components and styles are the same as it.</p>
+    <CodeBlock Lang="blazor">
+        &lt;div class="flexi-select"&gt;
+            &lt;Button &gt;
+                &lt;MiniCard ... />
+            &lt;Button>
+            &lt;MiniDialog ... />
+        &lt;/div>
+    </CodeBlock>
+</section>
+<section>
+    <h3>Tips &amp; Practices</h3>
+    <ul>
+        <li>The component encapsulates three components, with the <code>Button</code> being visible always, unused attributes are chained to that component.</li>
+    </ul>
+</section>
+<section>
+    <h3>See Also</h3>
+    <ul>
+        <li><a href="/components/standard/mini-card"><code>MiniCard</code> Component</a></li>
+        <li><a href="/components/standard/mini-dialog"><code>MiniDialog</code> Component</a></li>
+        <li><a href="/components/standard/icon"><code>Icon</code> Component</a></li>
+    </ul>
+</section>
+
+@code {
+
+    public string Code(Employee _) => string.Empty;
+
+    public string Title(Employee employee) => $"{employee?.FirstName} {employee?.LastName}";
+
+    public string Subtitle(Employee employee) => employee?.Email ?? "no e-mail on file";
+
+    public string Caption(Employee employee) => $"{employee?.FirstName} {employee?.LastName} ({employee?.Email})";
+
+    public string Icon(Employee employee) => Gravatar.ToGravatarUrl(employee?.Email, 40);
+
+    public string Description(Employee _) => string.Empty;
+
+    private string FormTitle { get; set; } = "Select";
+
+    private bool ShowTitle { get; set; } = true;
+
+    private bool MultiSelect { get; set; }
+
+    private int ShowFilterThreshold { get; set; } = 10;
+
+    private string FilterPlaceholder { get; set; } = "filter";
+
+    private Employee? Value { get; set; }
+
+    private List<Employee?>? Values { get; set; }
+
+    private List<Employee> Data { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        Data.Add(new Employee { FirstName = "Adrian", LastName = "Akison", Email = "adrian.akison@fmiworks.com" });
+        Data.Add(new Employee { FirstName = "David", LastName = "Wilton", Email = "david.wilton@fmiworks.com" });
+        Data.Add(new Employee { FirstName = "Shae", LastName = "Griffiths", Email = "shae.griffiths@fmiworks.com" });
+        Data.Add(new Employee { FirstName = "Sam", LastName = "Camilleri", Email = "sam.camilleri@fmiworks.com" });
+        Data.Add(new Employee { FirstName = "Hai", LastName = "Vu", Email = "hai.vu@fmiworks.com" });
+        Data.Add(new Employee { FirstName = "Jaspal", LastName = "Muker", Email = "jaspal.muker@fmiworks.com" });
+        Data.Add(new Employee { FirstName = "Anthony", LastName = "Pasquale", Email = "antonio.pasquale@fmiworks.com" });
+        Data.Add(new Employee { FirstName = "Wayne", LastName = "Scott", Email = "wayne.scott@fmiworks.com" });
+        Data.Add(new Employee { FirstName = "Kevin", LastName = "Thomas", Email = "kevin.thomase@fmiworks.com" });
+    }
+
+}
