@@ -124,7 +124,7 @@ public class FileValidationService
     /// <summary>
     /// XML file types that are checked for script tags
     /// </summary>
-    private List<string> KnownXmlFileTypes { get; set; } = new() { "xml", "html", "svg" };
+    private List<string> KnownXmlFileTypes { get; set; } = ["xml", "html", "svg"];
 
     private FileValidationOptions Options { get; set; }
 
@@ -225,7 +225,7 @@ public class FileValidationService
         if(extensionAliases.Intersect(KnownXmlFileTypes).Any()) {
             // Take the first 1000 characters, it's a sanity check, not anti-virus
             var filecontent = Encoding.UTF8.GetString(content.Take(1000).ToArray());
-            if(filecontent.IndexOf("<script", StringComparison.InvariantCultureIgnoreCase) >= 0) {
+            if(filecontent.Contains("<script", StringComparison.InvariantCultureIgnoreCase)) {
                 yield return new ValidationResult("Provided file is an XML filetype with protected tags", new[] { nameof(content) });
             }
         }
