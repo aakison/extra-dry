@@ -34,7 +34,7 @@ public class BasicAuthenticationHandler(
             return Task.FromResult(AuthenticateResult.Fail("Missing Authorization Header"));
         }
         try {
-            var authHeader = AuthenticationHeaderValue.Parse(value);
+            var authHeader = AuthenticationHeaderValue.Parse(value.ToString() ?? "");
             var credentialBytes = Convert.FromBase64String(authHeader.Parameter ?? "");
             var credentials = Encoding.UTF8.GetString(credentialBytes).Split([':'], 2);
             var username = credentials[0];

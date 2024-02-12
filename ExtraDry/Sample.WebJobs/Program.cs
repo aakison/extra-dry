@@ -27,7 +27,7 @@ builder.ConfigureAppConfiguration(config => {
     }
 });
 builder.ConfigureWebJobs(config => {
-    config.AddAzureStorageCoreServices();
+    config.AddAzureStorageBlobs();
     config.AddServiceBus();
     config.AddTimers();
 });
