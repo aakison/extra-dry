@@ -9,16 +9,9 @@ namespace Sample.Spa.Backend.Controllers;
 [ApiController]
 [ApiExplorerSettings(GroupName = ApiGroupNames.SampleApi)]
 [ApiExceptionStatusCodes]
-public class ContentsController {
-       
-    /// <summary>
-    /// Standard DI Constructor.
-    /// </summary>
-    /// <param name="contentsService"></param>
-    public ContentsController(ContentsService contentsService)
-    {
-        contents = contentsService;
-    }
+public class ContentsController(
+    ContentsService contents)
+{
 
     /// <summary>
     /// Filtered list of all contents
@@ -90,6 +83,4 @@ public class ContentsController {
     {
         await contents.DeleteAsync(contentId);
     }
-
-    private readonly ContentsService contents;
 }

@@ -245,15 +245,15 @@ public partial class SampleDataService {
     public record Subdivision (string Country, string Code, string Name, string TypeName);
     private readonly Random random = new(123);
 
-    private readonly CompanyStatus[] companyStatuses = { CompanyStatus.Inactive, CompanyStatus.Deleted, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active };
+    private readonly CompanyStatus[] companyStatuses = [CompanyStatus.Inactive, CompanyStatus.Deleted, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active];
 
-    private readonly string[] companyPrefixes = { "High Tide", "Tempest", "Jupiter", "Cyclor", "Ant", "Jungle",
-        "Grotto", "Ace", "Wood", "Ceas", "Jet" };
+    private readonly string[] companyPrefixes = [ "High Tide", "Tempest", "Jupiter", "Cyclor", "Ant", "Jungle",
+        "Grotto", "Ace", "Wood", "Ceas", "Jet" ];
 
-    private readonly string[] companySuffixes = { " Lighting", " Arts", "ation", "arts", "tainment", "search", "gate",
-        "worth", " Microsystems", " Electronics", " King" };
+    private readonly string[] companySuffixes = [ " Lighting", " Arts", "ation", "arts", "tainment", "search", "gate",
+        "worth", " Microsystems", " Electronics", " King" ];
 
-    private readonly string[] firstNames = {"James", "John", "Robert", "Michael", "William", "David", "Richard",
+    private readonly string[] firstNames = ["James", "John", "Robert", "Michael", "William", "David", "Richard",
         "Joseph", "Thomas", "Charles",  "Christopher", "Daniel", "Matthew", "Anthony", "Donald", "Mark",
         "Paul",  "Steven", "Andrew", "Kenneth", "Joshua", "Kevin", "Brian", "George", "Edward", "Ronald",
         "Timothy", "Jason", "Jeffrey", "Ryan", "Jacob", "Gary", "Nicholas", "Eric", "Jonathan", "Stephen",
@@ -263,10 +263,10 @@ public partial class SampleDataService {
         "Sandra", "Ashley", "Dorothy", "Kimberly", "Emily", "Donna", "Michelle", "Carol", "Amanda",
         "Melissa", "Deborah", "Stephanie", "Rebecca", "Laura", "Sharon", "Cynthia", "Kathleen", "Amy",
         "Shirley", "Angela", "Helen", "Anna", "Brenda", "Pamela", "Nicole", "Samantha", "Katherine",
-        "Emma", "Ruth", "Christine", "Catherine", "Debra", "Rachel", "Carolyn", "Janet", "Virginia" };
+        "Emma", "Ruth", "Christine", "Catherine", "Debra", "Rachel", "Carolyn", "Janet", "Virginia" ];
 
 
-    private readonly string[] lastNames = {"Smith", "Johnson", "Williams", "Brown", "Jones", "Miller", "Davis",
+    private readonly string[] lastNames = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Miller", "Davis",
         "Garcia", "Rodriguez", "Wilson", "Martinez", "Anderson", "Taylor", "Thomas", "Hernandez", "Moore",
         "Martin", "Jackson", "Thompson", "White", "Lopez", "Lee", "Gonzalez", "Harris", "Clark", "Lewis",
         "Robinson", "Walker", "Perez", "Hall", "Young", "Allen", "Sanchez", "Wright", "King", "Scott",
@@ -276,7 +276,7 @@ public partial class SampleDataService {
         "Bailey", "Bell", "Gomez", "Kelly", "Howard", "Ward", "Cox", "Diaz", "Richardson", "Wood", "Watson",
         "Brooks", "Bennett", "Gray", "James", "Reyes", "Cruz", "Hughes", "Price", "Myers", "Long", "Foster",
         "Sanders", "Ross", "Morales", "Powell", "Sullivan", "Russell", "Ortiz", "Jenkins", "Gutierrez",
-        "Perry", "Butler", "Barnes", "Fisher" };
+        "Perry", "Butler", "Barnes", "Fisher" ];
 
     private Content Sample => new() {
         Title = "Sample",

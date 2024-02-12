@@ -40,7 +40,7 @@ public class RuleEngineUpdateDictionaryAsyncTests {
         var rules = new RuleEngine(services);
         var source = new Target();
         var destination = new Target();
-        source.NullableValues = new();
+        source.NullableValues = [];
 
         await rules.UpdateAsync(source, destination);
 
@@ -224,12 +224,12 @@ public class RuleEngineUpdateDictionaryAsyncTests {
 
         public string Name { get; set; } = string.Empty;
 
-        public ExpandoValues Values { get; set; } = new();
+        public ExpandoValues Values { get; set; } = [];
 
         public ExpandoValues? NullableValues { get; set; }
 
         [Rules(RuleAction.Ignore)]
-        public ExpandoValues IgnoredValues { get; set; } = new();
+        public ExpandoValues IgnoredValues { get; set; } = [];
 
     }
 

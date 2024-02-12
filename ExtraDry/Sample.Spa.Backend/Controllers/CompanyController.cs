@@ -11,15 +11,9 @@ namespace Sample.Spa.Backend.Controllers;
 [ApiExplorerSettings(GroupName = ApiGroupNames.SampleApi)]
 [ApiExceptionStatusCodes]
 [Display(Name = "The Corporations")]
-public class CompanyController {
-        
-    /// <summary>
-    /// Standard DI Constructor
-    /// </summary>
-    public CompanyController(CompanyService companyService)
-    {
-        companies = companyService;
-    }
+public class CompanyController(
+    CompanyService companies)
+{
 
     /// <summary>
     /// Filtered list of all companies
@@ -100,6 +94,4 @@ public class CompanyController {
     {
         await companies.Delete(companyId);
     }
-
-    private readonly CompanyService companies;
 }

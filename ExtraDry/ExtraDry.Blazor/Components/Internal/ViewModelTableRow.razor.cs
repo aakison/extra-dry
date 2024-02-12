@@ -82,7 +82,7 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
         StateHasChanged();
     }
 
-    private void CheckChanged(ChangeEventArgs args)
+    private void CheckChanged(ChangeEventArgs _)
     {
         if(IsSelected) {
             Select();

@@ -11,17 +11,10 @@ namespace Sample.Spa.Backend.SampleData;
 [ApiController]
 [ApiExplorerSettings(GroupName = ApiGroupNames.ReferenceCodes)]
 [ApiExceptionStatusCodes]
-public class SampleDataController {
-
-    /// <summary>
-    /// Stanard DI Constructor
-    /// </summary>
-    [SuppressMessage("Usage", "DRY1012:API Controller Classes should not directly use DbContext.", Justification = "Temporary sample data controller.")]
-    public SampleDataController(SampleContext sampleContext, SampleDataService sampleDataService)
-    {
-        context = sampleContext;
-        samples = sampleDataService;
-    }
+public class SampleDataController(
+    SampleContext database, 
+    SampleDataService sampleData)
+{
 
     /// <summary>
     /// Load the set of sample data, idempotent so allowed to be anonymous.
@@ -32,16 +25,16 @@ public class SampleDataController {
     [SuppressMessage("ApiUsage", "DRY1114:HttpPost actions should Produces ResourceReference output.", Justification = "Not RESTful")]
     public async Task CreateBaseDataRpcAsync()
     {
-        var shouldLoadSamples = !await context.Sectors.AnyAsync();
+        var shouldLoadSamples = !await database.Sectors.AnyAsync();
         if(shouldLoadSamples) {
-            samples.PopulateTemplates();
-            samples.PopulateServices();
-            samples.PopulateCompanies(50);
-            await samples.PopulateEmployeesAsync(5000);
-            samples.PopulateContents();
+            sampleData.PopulateTemplates();
+            sampleData.PopulateServices();
+            sampleData.PopulateCompanies(50);
+            await sampleData.PopulateEmployeesAsync(5000);
+            sampleData.PopulateContents();
         }
         // Idempotent calls....
-        await samples.PopulateRegionsAsync(new string[] { "AU", "CA", "GB", "NZ", "US" }, true, false);
+        await sampleData.PopulateRegionsAsync(["AU", "CA", "GB", "NZ", "US"], true, false);
     }
 
     /// <summary>
@@ -57,11 +50,6 @@ public class SampleDataController {
     [SuppressMessage("ApiUsage", "DRY1114:HttpPost actions should Produces ResourceReference output.", Justification = "Not RESTful")]
     public async Task<RegionLoadStats> CreateRegionsRpcAsync(string[] countryFilter, bool includeSubdivisions, bool includeLocalities)
     {
-        return await samples.PopulateRegionsAsync(countryFilter, includeSubdivisions, includeLocalities);
+        return await sampleData.PopulateRegionsAsync(countryFilter, includeSubdivisions, includeLocalities);
     }
-
-    private readonly SampleContext context;
-
-    private readonly SampleDataService samples;
-
 }
