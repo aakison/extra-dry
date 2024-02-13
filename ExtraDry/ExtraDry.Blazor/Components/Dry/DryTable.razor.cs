@@ -234,6 +234,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
                 var count = container.ItemInfos.Count;
                 var total = container.Total;
                 QueryBuilder.Level.UpdateMaxLevel(ItemsService.MaxLevel);
+                QueryBuilder.Level.UpdateMinLevel(ItemsService.MinLevel);
 
                 InternalItems.AddRange(container.ItemInfos);
                 InternalItems.AddRange(Enumerable.Range(0, total - count).Select(e => new ListItemInfo<TItem>()));
@@ -259,6 +260,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
                         var count = container.ItemInfos.Count;
                         var total = container.Total;
                         QueryBuilder.Level.UpdateMaxLevel(ItemsService.MaxLevel);
+                        QueryBuilder.Level.UpdateMinLevel(ItemsService.MinLevel);
                         var index = firstIndex;
                         foreach(var item in container.ItemInfos) {
                             var info = InternalItems[index++];
