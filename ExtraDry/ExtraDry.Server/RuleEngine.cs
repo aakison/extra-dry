@@ -12,17 +12,14 @@ namespace ExtraDry.Server;
 /// The rules for overwriting, ignoring, or blocking changes are defined by applying the `RuleAttribute` to each property.
 /// The `RuleEngine` should then be dependency injected into services where its methods will consistently apply business rules.
 /// </summary>
-public class RuleEngine {
-
-    /// <summary>
-    /// Creates a new RuleEngine, typically only called from the DI service.
-    /// The IServiceProvider is used to further discover IEntityResolver objects for cases where the rule engine
-    /// is attempting to link to an existing object.
-    /// </summary>
-    public RuleEngine(IServiceProvider serviceProvider)
-    {
-        services = serviceProvider;
-    }
+/// <remarks>
+/// Creates a new RuleEngine, typically only called from the DI service.
+/// The IServiceProvider is used to further discover IEntityResolver objects for cases where the rule engine
+/// is attempting to link to an existing object.
+/// </remarks>
+public class RuleEngine(
+    IServiceProvider services)
+{
 
     /// <summary>
     /// When copying an object (during create or update) that allows for nested objects, the number
@@ -670,7 +667,6 @@ public class RuleEngine {
 
     }
 
-    private readonly IServiceProvider services;
     private Dictionary<Type, Action<object>> RemoveFunctors { get; set; } = [];
     private Func<Task> CommitFunctor { get; set; } = () => Task.CompletedTask;
 }

@@ -6,40 +6,36 @@ using System.Reflection;
 
 namespace ExtraDry.Server.DataWarehouse;
 
-public class DataFactory {
-
-    public DataFactory(WarehouseModel model, DbContext source, WarehouseContext target, ILogger<DataFactory> iLogger, DataFactoryOptions? options = null)
-    {
-        Model = model;
-        Oltp = source;
-        Olap = target;
-        logger = iLogger;
-        Options = options ?? new();
-    }
-
+public class DataFactory(
+    WarehouseModel model, 
+    DbContext source, 
+    WarehouseContext target, 
+    ILogger<DataFactory> logger, 
+    DataFactoryOptions? options = null)
+{
     public async Task MigrateAsync()
     {
         logger.LogTextInfo("Checking for necessary migrations.");
-        await Olap.Database.MigrateAsync(); // EF Schema
-        foreach(var table in Model.Dimensions.Union(Model.Facts)) {
+        await target.Database.MigrateAsync(); // EF Schema
+        foreach(var table in model.Dimensions.Union(model.Facts)) {
             var schema = JsonSerializer.Serialize(table);
-            var updateInfo = await Olap.TableSyncs.FirstOrDefaultAsync(e => e.Table == table.Name);
+            var updateInfo = await target.TableSyncs.FirstOrDefaultAsync(e => e.Table == table.Name);
             if(updateInfo == null) {
                 logger.LogTableChange("No table, creating new.", table.Name);
-                await Olap.Database.BeginTransactionAsync();
+                await target.Database.BeginTransactionAsync();
                 updateInfo = new DataTableSync { Schema = schema, Table = table.Name, SyncTimestamp = DateTime.MinValue };
-                Olap.TableSyncs.Add(updateInfo);
+                target.TableSyncs.Add(updateInfo);
                 await CreateTargetTable(table, updateInfo);
-                await Olap.Database.CommitTransactionAsync();
+                await target.Database.CommitTransactionAsync();
             }
             else if(updateInfo.Schema != schema) {
                 logger.LogTableChange("Table obsolete, dropping and creating new.", table.Name);
-                await Olap.Database.BeginTransactionAsync();
+                await target.Database.BeginTransactionAsync();
                 updateInfo.Schema = schema;
                 updateInfo.SyncTimestamp = DateTime.MinValue;
                 await DropTargetTable(table);
                 await CreateTargetTable(table, updateInfo);
-                await Olap.Database.CommitTransactionAsync();
+                await target.Database.CommitTransactionAsync();
             }
             else {
                 logger.LogTableChange("No changes detected", table.Name);
@@ -52,7 +48,7 @@ public class DataFactory {
     /// </summary>
     public async Task<int> ProcessBatchAsync(string entity)
     {
-        var tables = Model.Dimensions.Union(Model.Facts).Where(e => e.SourceProperty != null);
+        var tables = model.Dimensions.Union(model.Facts).Where(e => e.SourceProperty != null);
         var count = 0;
         foreach(var table in tables) {
             if(table.EntityType.Name.Equals(entity, StringComparison.OrdinalIgnoreCase)) {
@@ -68,13 +64,13 @@ public class DataFactory {
     public async Task<int> ProcessBatchesAsync()
     {
         await OptionallyApplyMigrationsAsync();
-        var tables = Model.Dimensions.Union(Model.Facts).Where(e => e.SourceProperty != null);
+        var tables = model.Dimensions.Union(model.Facts).Where(e => e.SourceProperty != null);
         var count = 0;
         foreach(var table in tables) {
             count += await ProcessTableBatchAsync(table);
         }
         // TODO: Expand for custom date tables
-        var dateTables = Model.Dimensions.Where(e => e.Generator != null);
+        var dateTables = model.Dimensions.Where(e => e.Generator != null);
         foreach(var table in dateTables) {
             count += await ProcessGeneratorBatchAsync(table);
         }
@@ -89,10 +85,10 @@ public class DataFactory {
             throw new DryException("Can't use method when no generator is defined.");
         }
 
-        var batchStats = await Olap.TableSyncs.FirstOrDefaultAsync(e => e.Table == table.Name)
+        var batchStats = await target.TableSyncs.FirstOrDefaultAsync(e => e.Table == table.Name)
             ?? throw new DryException("Unable to process batch, stats missing, run MigrateAsync() first.");
 
-        var batch = await table.Generator.GetBatchAsync(table, Oltp, Olap, Sql);
+        var batch = await table.Generator.GetBatchAsync(table, source, target, Sql);
 
         if(batch.Count != 0) {
             await UpsertBatch(table, batchStats, batch);
@@ -111,7 +107,7 @@ public class DataFactory {
             return 0; // can't process changes on enums without a source property.
         }
 
-        var batchStats = await Olap.TableSyncs.FirstOrDefaultAsync(e => e.Table == table.Name)
+        var batchStats = await target.TableSyncs.FirstOrDefaultAsync(e => e.Table == table.Name)
             ?? throw new DryException("Unable to process batch, stats missing, run MigrateAsync() first.");
 
         var batch = await GetBatchAfterTimestampAsync(table.SourceProperty, batchStats);
@@ -137,11 +133,11 @@ public class DataFactory {
         foreach(var item in batch) {
             var sql = Upsert(table, item);
             logger.LogTextVerbose($"Executing Upsert SQL: {sql}"); // TODO: remove when tested.
-            await Olap.Database.ExecuteSqlRawAsync(sql);
+            await target.Database.ExecuteSqlRawAsync(sql);
         }
         batchStats.SyncTimestamp =  table.Generator?.GetSyncTimestamp()
             ?? batch.Max(e => GetVersionInfo(e)?.DateModified ?? DateTime.MinValue);
-        await Olap.SaveChangesAsync();
+        await target.SaveChangesAsync();
         logger.LogTextVerbose($"Processed {batch.Count} upserts on [{table.Name}], updating sync timestamp to {batchStats.SyncTimestamp}."); // TODO: remove when tested.
     }
 
@@ -154,7 +150,7 @@ public class DataFactory {
         //      .Take(Options.BatchSize)
         //      .ToListAsync();
         // Dynamic used to access extensions methods manually, then once batch received get out of dynamic hell.
-        var dbSet = (dynamic?)entitiesDbSet.GetValue(Oltp)
+        var dbSet = (dynamic?)entitiesDbSet.GetValue(source)
             ?? throw new DryException("Source context for model must match the source DbContext for the factory.");
         var where = LinqBuilder.WhereVersionModified(dbSet, LinqBuilder.EqualityType.GreaterThan, batchStats.SyncTimestamp);
         var ordered = LinqBuilder.OrderBy(where, "Id");
@@ -172,7 +168,7 @@ public class DataFactory {
         //      .Where(e => e.Version.DateModified == batchStats.SyncTimestamp)
         //      .ToListAsync();
         // Dynamic used to access extensions methods manually, then once batch received get out of dynamic hell.
-        var dbSet = (dynamic?)entitiesDbSet.GetValue(Oltp)
+        var dbSet = (dynamic?)entitiesDbSet.GetValue(source)
             ?? throw new DryException("Source context for model must match the source DbContext for the factory.");
         var where = LinqBuilder.WhereVersionModified(dbSet, LinqBuilder.EqualityType.EqualTo, batchStats.SyncTimestamp);
         var results = await EntityFrameworkQueryableExtensions.ToListAsync(where);
@@ -202,7 +198,7 @@ public class DataFactory {
             var sourceValue = column.PropertyInfo?.GetValue(entity, null);
             var destinationValue = sourceValue == null ? column.Default : column.Converter(sourceValue);
             if(sourceValue != null && column.ColumnType == ColumnType.Integer && (column.PropertyInfo?.PropertyType?.IsClass ?? false)) {
-                var referencedEntity = Model.Dimensions.FirstOrDefault(e => e.EntityType == column.PropertyInfo.PropertyType);
+                var referencedEntity = model.Dimensions.FirstOrDefault(e => e.EntityType == column.PropertyInfo.PropertyType);
                 var valueKey = referencedEntity?.KeyColumn?.PropertyInfo?.GetValue(sourceValue, null);
                 values.Add(column.Name, valueKey ?? destinationValue);
             }
@@ -219,15 +215,15 @@ public class DataFactory {
         logger.LogTableChange("Creating warehouse table", table.Name);
         var sqlTable = Sql.CreateTable(table);
         logger.LogTextVerbose($"Executing Create TAble SQL: {sqlTable}");
-        await Olap.Database.ExecuteSqlRawAsync(sqlTable);
+        await target.Database.ExecuteSqlRawAsync(sqlTable);
         var sqlData = Sql.InsertData(table);
         if(!string.IsNullOrWhiteSpace(sqlData)) {
             logger.LogTextVerbose($"Executing Insert Data SQL: {sqlData}");
             // Enums have static data
-            await Olap.Database.ExecuteSqlRawAsync(sqlData);
+            await target.Database.ExecuteSqlRawAsync(sqlData);
             updateInfo.SyncTimestamp = DateTime.UtcNow;
         }
-        await Olap.SaveChangesAsync();
+        await target.SaveChangesAsync();
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1848:Use the LoggerMessage delegates", Justification = "Remove when tested.")]
@@ -235,8 +231,8 @@ public class DataFactory {
     {
         var sqlDrop = Sql.DropTable(table);
         logger.LogDebug("Executing Drop Table SQL: {Sql}", sqlDrop);
-        await Olap.Database.ExecuteSqlRawAsync(sqlDrop);
-        await Olap.SaveChangesAsync();
+        await target.Database.ExecuteSqlRawAsync(sqlDrop);
+        await target.SaveChangesAsync();
     }
 
     private async Task OptionallyApplyMigrationsAsync()
@@ -249,27 +245,21 @@ public class DataFactory {
 
     private bool migrationsApplied;
 
-    private WarehouseModel Model { get; }
-
-    private DbContext Oltp { get; }
-
-    private WarehouseContext Olap { get; }
-
-    private DataFactoryOptions Options { get; }
-
-    private readonly ILogger<DataFactory> logger;
+    private DataFactoryOptions Options { get; } = options ?? new();
 
     private SqlServerSqlGenerator Sql { get; } = new SqlServerSqlGenerator();
 
 }
 
-public class DataFactory<TModel, TOltpContext, TOlapContext> : DataFactory
+public class DataFactory<TModel, TOltpContext, TOlapContext>(
+    TModel model, 
+    TOltpContext source, 
+    TOlapContext target, 
+    ILogger<DataFactory> logger, 
+    DataFactoryOptions? options = null) 
+    : DataFactory(model, source, target, logger, options)
     where TModel : WarehouseModel
     where TOltpContext : DbContext
-    where TOlapContext : WarehouseContext  {
-
-    public DataFactory(TModel model, TOltpContext source, TOlapContext target, ILogger<DataFactory> logger, DataFactoryOptions? options = null)
-        : base(model, source, target, logger, options)
-    {
-    }
+    where TOlapContext : WarehouseContext  
+{
 }
