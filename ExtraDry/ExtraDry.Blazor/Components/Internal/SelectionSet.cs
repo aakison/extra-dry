@@ -116,7 +116,7 @@ public class SelectionSet {
 
     private bool ExclusiveStorage => MultipleSelect && !inclusiveStorage;
 
-    private readonly List<object> items = new();
+    private readonly List<object> items = [];
 
     public static SelectionSet? Lookup(object key) => key == null ? null : registered.TryGetValue(key, out var value) ? value : null;
 
@@ -133,6 +133,6 @@ public class SelectionSet {
         registered.Remove(key);
     }
 
-    private readonly static Dictionary<object, SelectionSet> registered = new();
+    private readonly static Dictionary<object, SelectionSet> registered = [];
 
 }

@@ -192,7 +192,7 @@ public class DataFactory {
         }
         return value.GetValue(item) as VersionInfo;
     }
-    private Dictionary<Type, PropertyInfo> VersionInfoProperties { get; } = new();
+    private Dictionary<Type, PropertyInfo> VersionInfoProperties { get; } = [];
 
     private string Upsert(Table table, object entity)
     {

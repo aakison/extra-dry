@@ -122,7 +122,7 @@ public static class QueryableExtensions {
             return source;
         }
         var comparison = (source as BaseQueryable<T>)?.ForceStringComparison;
-        return source.WhereFilterConditions(description.FilterProperties.ToArray(), filter.Trim(), comparison);
+        return source.WhereFilterConditions([..description.FilterProperties], filter.Trim(), comparison);
     }
 
     /// <summary>

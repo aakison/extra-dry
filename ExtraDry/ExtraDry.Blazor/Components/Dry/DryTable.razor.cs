@@ -213,7 +213,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
         StateHasChanged();
     }
 
-    private ItemCollection<TItem> InternalItems { get; } = new ItemCollection<TItem>();
+    private ItemCollection<TItem> InternalItems { get; } = [];
 
     private IEnumerable<ListItemInfo<TItem>> ShownItems => InternalItems.Where(e => e.IsShown);
 

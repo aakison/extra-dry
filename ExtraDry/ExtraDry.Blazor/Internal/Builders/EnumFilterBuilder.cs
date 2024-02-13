@@ -8,7 +8,7 @@ public class EnumFilterBuilder : FilterBuilder
     /// <summary>
     /// The list of string values with the names of the enums that have been selected.
     /// </summary>
-    public List<string> Values { get; } = new();
+    public List<string> Values { get; } = [];
 
     /// <inheritdoc cref="FilterBuilder.Build" />
     public override string Build() => Values.Count != 0 ? $"{FilterName}:{QuotedValues}" : "";

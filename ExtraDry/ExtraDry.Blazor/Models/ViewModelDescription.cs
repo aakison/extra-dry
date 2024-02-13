@@ -27,19 +27,19 @@ public class ViewModelDescription {
 
     public Type? ModelType { get; }
 
-    public Collection<PropertyDescription> FormProperties { get; } = new();
+    public Collection<PropertyDescription> FormProperties { get; } = [];
 
-    public Collection<PropertyDescription> TableProperties { get; } = new();
+    public Collection<PropertyDescription> TableProperties { get; } = [];
 
-    public Collection<PropertyDescription> FilterProperties { get; } = new();
+    public Collection<PropertyDescription> FilterProperties { get; } = [];
 
     public PropertyDescription? UuidProperty { get; private set; }
 
     public ListSelectMode ListSelectMode { get; private set; } = ListSelectMode.None;
 
-    public Collection<CommandInfo> Commands { get; } = new();
+    public Collection<CommandInfo> Commands { get; } = [];
 
-    public Collection<HyperlinkInfo> HyperLinks { get; } = new();
+    public Collection<HyperlinkInfo> HyperLinks { get; } = [];
 
     public CommandInfo? SelectCommand => Commands.FirstOrDefault(e => e.Context == CommandContext.Primary && e.Arguments == CommandArguments.Single);
 

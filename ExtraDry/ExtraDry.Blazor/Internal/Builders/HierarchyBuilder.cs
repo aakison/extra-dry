@@ -41,8 +41,8 @@ public class HierarchyBuilder
         CollapseNodes.Clear();
     }
 
-    internal List<string> ExpandNodes { get; } = new();
+    internal List<string> ExpandNodes { get; } = [];
 
-    internal List<string> CollapseNodes { get; } = new();
+    internal List<string> CollapseNodes { get; } = [];
 
 }

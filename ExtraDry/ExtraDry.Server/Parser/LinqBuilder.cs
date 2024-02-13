@@ -144,7 +144,7 @@ internal static class LinqBuilder {
                         terms.Add(keywords.First());
                     }
                     else {
-                        terms.Add(AnyOf(keywords.ToArray()));
+                        terms.Add(AnyOf([.. keywords]));
                     }
                 }
             }
@@ -164,7 +164,7 @@ internal static class LinqBuilder {
             }
         }
         if(terms.Count != 0) {
-            var cnf = AllOf(terms.ToArray());
+            var cnf = AllOf([.. terms]);
             var lambda = Expression.Lambda<Func<T, bool>>(cnf, param);
             return source.Where(lambda);
         }
@@ -246,7 +246,7 @@ internal static class LinqBuilder {
         if(expressions.Count == 0) {
             throw new DryException("Filters that specify a range, must include at least either a lower bound or an upper bound.", "Unable to apply filter. 0x0F30C48A");
         }
-        return expressions.ToArray();
+        return [.. expressions];
 
         static Expression ConstantToExpression(string value, Type type)
         {
@@ -270,7 +270,7 @@ internal static class LinqBuilder {
                 return Enum.Parse(type, value, ignoreCase: true);
             }
             else {
-                var methodInfo = type.GetMethod("Parse", new Type[] { typeof(string) }) 
+                var methodInfo = type.GetMethod("Parse", [typeof(string)]) 
                     ?? throw new DryException($"Can only filter on types that contain a Parse method, type '{type.Name}'.");
                 // Parse contract will have a result and not nullable
                 var result = methodInfo.Invoke(null, new object[] { value })!;
@@ -305,17 +305,17 @@ internal static class LinqBuilder {
         }
     }
 
-    private static MethodInfo StringContainsMethod => typeof(string).GetMethod(nameof(string.Contains), new[] { typeof(string) })!;
+    private static MethodInfo StringContainsMethod => typeof(string).GetMethod(nameof(string.Contains), [typeof(string)])!;
 
-    private static MethodInfo StringEqualsMethod => typeof(string).GetMethod(nameof(string.Equals), new[] { typeof(string) })!;
+    private static MethodInfo StringEqualsMethod => typeof(string).GetMethod(nameof(string.Equals), [typeof(string)])!;
 
-    private static MethodInfo StringStartsWithMethod => typeof(string).GetMethod(nameof(string.StartsWith), new[] { typeof(string) })!;
+    private static MethodInfo StringStartsWithMethod => typeof(string).GetMethod(nameof(string.StartsWith), [typeof(string)])!;
 
-    private static MethodInfo StringContainsWithComparisonMethod => typeof(string).GetMethod(nameof(string.Contains), new[] { typeof(string), typeof(StringComparison) })!;
+    private static MethodInfo StringContainsWithComparisonMethod => typeof(string).GetMethod(nameof(string.Contains), [typeof(string), typeof(StringComparison)])!;
 
-    private static MethodInfo StringEqualsWithComparisonMethod => typeof(string).GetMethod(nameof(string.Equals), new[] { typeof(string), typeof(StringComparison) })!;
+    private static MethodInfo StringEqualsWithComparisonMethod => typeof(string).GetMethod(nameof(string.Equals), [typeof(string), typeof(StringComparison)])!;
 
-    private static MethodInfo StringStartsWithWithComparisonMethod => typeof(string).GetMethod(nameof(string.StartsWith), new[] { typeof(string), typeof(StringComparison) })!;
+    private static MethodInfo StringStartsWithWithComparisonMethod => typeof(string).GetMethod(nameof(string.StartsWith), [typeof(string), typeof(StringComparison)])!;
 
     private enum OrderType {
         OrderBy,

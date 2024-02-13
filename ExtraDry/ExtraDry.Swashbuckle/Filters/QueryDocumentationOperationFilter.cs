@@ -36,7 +36,7 @@ public class QueryDocumentationOperationFilter : IOperationFilter {
 
         var modelDescription = new ModelDescription(returnType);
         if(supportsFiltering) {
-            operation.Description += FilterDescription(modelDescription.FilterProperties.ToArray());
+            operation.Description += FilterDescription([..modelDescription.FilterProperties]);
 
             var filterableQuotedNames = modelDescription.FilterProperties.Select(e => $"`{e.ExternalName}`");
             var filterable = string.Join(", ", filterableQuotedNames);
@@ -46,7 +46,7 @@ public class QueryDocumentationOperationFilter : IOperationFilter {
             }
         }
         if(supportsSorting) {
-            operation.Description += SortDescription(modelDescription.SortProperties.ToArray());
+            operation.Description += SortDescription([..modelDescription.SortProperties]);
 
             var sortableQuotedNames = modelDescription.SortProperties.Select(e => $"`{e.ExternalName}`");
             var sortable = string.Join(", ", sortableQuotedNames);
@@ -58,7 +58,7 @@ public class QueryDocumentationOperationFilter : IOperationFilter {
             }
         }
         if(supportsStatistics) {
-            operation.Description += StatisticsDescription(modelDescription.StatisticsProperties.ToArray());
+            operation.Description += StatisticsDescription([..modelDescription.StatisticsProperties]);
         }
         if(supportsPaging) {
             operation.Description += PagingDescription();

@@ -5,10 +5,13 @@ public partial class DryFilter<TItem> : ComponentBase, IExtraDryComponent {
     public DryFilter()
     {
         ViewModelDescription = new ViewModelDescription(typeof(TItem), this);
-        AllFilters = new List<string> { KeywordsFitlerIdentifier };
-        AllFilters.AddRange(ViewModelDescription.FilterProperties
-            .Where(e => e.HasDiscreteValues)
-            .Select(e => e.Property.Name));
+        AllFilters =
+        [
+            KeywordsFitlerIdentifier,
+            .. ViewModelDescription.FilterProperties
+                .Where(e => e.HasDiscreteValues)
+                .Select(e => e.Property.Name),
+        ];
     }
 
     /// <inheritdoc cref="IExtraDryComponent.CssClass "/>
@@ -47,7 +50,7 @@ public partial class DryFilter<TItem> : ComponentBase, IExtraDryComponent {
     public string SelectPlaceholderPattern { get; set; } = "Select {0}...";
 
     [Parameter]
-    public List<string> VisibleFilters { get; set; } = new();
+    public List<string> VisibleFilters { get; set; } = [];
 
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
@@ -59,12 +62,12 @@ public partial class DryFilter<TItem> : ComponentBase, IExtraDryComponent {
 
     protected void DoFiltersSubmit(DialogEventArgs _)
     {
-        DisplayedFilters = SelectedFilters.ToList();
+        DisplayedFilters = [..SelectedFilters];
     }
 
     protected void DoFiltersCancel(DialogEventArgs _)
     {
-        SelectedFilters = DisplayedFilters.ToList();
+        SelectedFilters = [..DisplayedFilters];
     }
 
     private void DoFiltersReset(MouseEventArgs _)
@@ -74,9 +77,9 @@ public partial class DryFilter<TItem> : ComponentBase, IExtraDryComponent {
 
     private List<string> AllFilters { get; }
 
-    private List<string> SelectedFilters { get; set; } = new();
+    private List<string> SelectedFilters { get; set; } = [];
 
-    private List<string> DisplayedFilters { get; set; } = new();
+    private List<string> DisplayedFilters { get; set; } = [];
 
     private IEnumerable<PropertyDescription> DisplayedEnumFilters => ViewModelDescription.FilterProperties
         .Where(e => e.HasDiscreteValues && IsFilterSelected(e.Property.Name));

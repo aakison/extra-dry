@@ -574,7 +574,7 @@ public class RuleEngine {
             var method = typedEntityResolver.GetMethod("ResolveAsync") 
                 ?? throw new DryException($"Resolver '{type.Name}' object missing method ResolveAsync");
             // Force not-null return as ResolveAsync above is not-null return.
-            dynamic task = method.Invoke(resolver, new object?[] { sourceValue })!;
+            dynamic task = method.Invoke(resolver, [sourceValue])!;
             var result = (await task) as object;
             return (true, result);
         }
@@ -671,6 +671,6 @@ public class RuleEngine {
     }
 
     private readonly IServiceProvider services;
-    private Dictionary<Type, Action<object>> RemoveFunctors { get; set; } = new();
+    private Dictionary<Type, Action<object>> RemoveFunctors { get; set; } = [];
     private Func<Task> CommitFunctor { get; set; } = () => Task.CompletedTask;
 }

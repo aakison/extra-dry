@@ -82,7 +82,7 @@ public class ProblemDetailsController {
 
         Request? request;
         try {
-            request = JsonSerializer.Deserialize<Request>(input, options);
+            request = JsonSerializer.Deserialize<Request>(input, jsonOptions);
         }
         catch(JsonException) {
             // Failure 2 - not JSON at all
@@ -120,7 +120,7 @@ public class ProblemDetailsController {
         public string Congratulations { get; set; } = "You are a true hacker.  Please enjoy a moment of Zen contemplation knowing that this achievement cannot be explained to those who don't understand and will not be appreciated by those that do.";
     }
 
-    private static JsonSerializerOptions options = new JsonSerializerOptions {
+    private static readonly JsonSerializerOptions jsonOptions = new() {
         PropertyNameCaseInsensitive = true,
     };
 

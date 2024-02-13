@@ -98,7 +98,7 @@ public partial class FlexiSelectForm<TItem> : ComponentBase, IExtraDryComponent 
                 await ValueChanged.InvokeAsync(Value);
             }
             if(Values == null) {
-                Values = new();
+                Values = [];
                 foreach(var item in DisplayData) {
                     item.Selected = false;
                 }
@@ -136,7 +136,7 @@ public partial class FlexiSelectForm<TItem> : ComponentBase, IExtraDryComponent 
     }
     private string filter = string.Empty;
 
-    private string[] Filters { get; set; } = Array.Empty<string>();
+    private string[] Filters { get; set; } = [];
 
     private void ApplyFilter(DisplayItemViewModel value)
     {
@@ -244,7 +244,7 @@ public partial class FlexiSelectForm<TItem> : ComponentBase, IExtraDryComponent 
         StateHasChanged();
     }
 
-    private List<DisplayItemViewModel> DisplayData { get; set; } = new();
+    private List<DisplayItemViewModel> DisplayData { get; set; } = [];
 
     /// <summary>
     /// Use as name on radio buttons to get HTML to enforce mutually exclusive selections.

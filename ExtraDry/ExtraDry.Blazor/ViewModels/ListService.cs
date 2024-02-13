@@ -140,21 +140,21 @@ public class ListService<TItem> : IListService<TItem> {
     private static void AddIf(Dictionary<string, List<string>> keys, string key, string[]? values)
     {
         if((values?.Length ?? 0) > 0) {
-            keys.Add(key, values?.ToList() ?? new());
+            keys.Add(key, values?.ToList() ?? []);
         }
     }
 
     private static void AddIf(Dictionary<string, List<string>> keys, string key, string? value)
     {
         if(!string.IsNullOrWhiteSpace(value)) {
-            keys.Add(key, new List<string> { value });
+            keys.Add(key, [value]);
         }
     }
 
     private static void AddIf(Dictionary<string, List<string>> keys, string key, int? value)
     {
         if(value.HasValue && value.Value != 0) {
-            keys.Add(key, new List<string> { $"{value.Value}" });
+            keys.Add(key, [$"{value.Value}"]);
         }
     }
 
