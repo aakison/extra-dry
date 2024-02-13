@@ -35,4 +35,8 @@
 	  </None>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <PackageReference Update="Microsoft.Data.SqlClient" Version="5.1.5" />
+	</ItemGroup>
+
 </Project>

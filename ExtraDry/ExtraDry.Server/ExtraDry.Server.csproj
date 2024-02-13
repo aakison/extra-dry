@@ -38,13 +38,13 @@
 
 	<ItemGroup>
 		<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.12.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.15" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.15" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.15">
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.1">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
 		<PackageReference Include="Pidgin" Version="3.2.1" />
 		<PackageReference Include="System.Linq.Expressions" Version="4.3.0" />
 	</ItemGroup>
@@ -55,5 +55,8 @@
 
 	<Import Project="..\CommonAnalyzers.targets" />
 	<Import Project="..\VulnerabilityFixes.targets" />
+	<ItemGroup>
+	  <PackageReference Update="Microsoft.Data.SqlClient" Version="5.1.5" />
+	</ItemGroup>
 
 </Project>
