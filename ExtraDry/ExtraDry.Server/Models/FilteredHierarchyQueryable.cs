@@ -61,7 +61,7 @@ public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : 
     protected static IQueryable<T> ExpandCollapseHierarchy(IQueryable<T> baseQueryable, IQueryable<T> filteredQueryable, HierarchyQuery query)
     {
         var results = filteredQueryable;
-        if(query.Expand.Any()) {
+        if(query.Expand.Count != 0) {
             results = results.Union(ChildrenOf(query.Expand));
         }
         if(!string.IsNullOrWhiteSpace(query.Filter)) {
@@ -69,7 +69,7 @@ public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : 
             var ancestors = AncestorsOf(filteredQueryable).TagWith(ImproveHierarchyQueryPerformance.Tag);
             results = results.Union(ancestors);
         }
-        if(query.Collapse.Any()) {
+        if(query.Collapse.Count != 0) {
             results = results.Except(DescendantOf(query.Collapse));
         }
         return results;
@@ -123,9 +123,9 @@ public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : 
             Items = items,
             Sort = nameof(IHierarchyEntity<T>.Lineage).ToLowerInvariant(),
             Level = Query.Level,
-            Expand = Query.Expand.Any() ? Query.Expand : null,
-            Collapse = Query.Collapse.Any() ? Query.Collapse : null,
-            Expandable = expandable.Any() ? expandable : null,
+            Expand = Query.Expand.Count != 0 ? Query.Expand : null,
+            Collapse = Query.Collapse.Count != 0 ? Query.Collapse : null,
+            Expandable = expandable.Count != 0 ? expandable : null,
         };  
 
 }

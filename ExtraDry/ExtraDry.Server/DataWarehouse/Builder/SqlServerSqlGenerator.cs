@@ -19,7 +19,7 @@ public class SqlServerSqlGenerator : ISqlGenerator {
     public string DropTable(Table table) =>
         $"DROP TABLE IF EXISTS [{table.Name}]\n";
 
-    public string InsertData(Table table) => !table.Data.Any() ? "" :
+    public string InsertData(Table table) => table.Data.Count == 0 ? "" :
         $"{SqlInsertInto(table)}";
 
     public string Upsert(Table table, int keyValue, Dictionary<string, object> values)

@@ -74,9 +74,7 @@ public class ResourceReferenceSchemaFilter : IDocumentFilter {
                     resourceReferenceType = resourceReferenceType.MakeGenericType(property.PropertyType);
                     var resourceReferenceSchemeaId = DefaultSchemaIdSelector(resourceReferenceType);
                     typeRewrites.Add($"{typeName}.{propertyName}", resourceReferenceSchemeaId);
-                    if(!typeSchema.ContainsKey(resourceReferenceSchemeaId)) {
-                        typeSchema.Add(resourceReferenceSchemeaId, resourceReferenceType);
-                    }
+                    typeSchema.TryAdd(resourceReferenceSchemeaId, resourceReferenceType);
                 }
             }
         }

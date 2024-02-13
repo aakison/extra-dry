@@ -77,7 +77,7 @@ public partial class FlexiSelectForm<TItem> : ComponentBase, IExtraDryComponent 
     protected override async void OnParametersSet()
     {
         int id = 0;
-        if(Data != null && !DisplayData.Any()) {
+        if(Data != null && DisplayData.Count == 0) {
             foreach(var item in Data) {
                 if(item != null) {
                     var displayItem = new DisplayItemViewModel(++id, item);
@@ -141,7 +141,7 @@ public partial class FlexiSelectForm<TItem> : ComponentBase, IExtraDryComponent 
     private void ApplyFilter(DisplayItemViewModel value)
     {
         bool match = true;
-        if(!Filters.Any()) {
+        if(Filters.Length == 0) {
             match = true;
         }
         else if(Filters.Length == 1 && Filters.First().Equals("checked", StringComparison.OrdinalIgnoreCase)) {

@@ -118,7 +118,7 @@ public static class QueryableExtensions {
             return source;
         }
         var description = new ModelDescription(typeof(T));
-        if(!description.FilterProperties.Any()) {
+        if(description.FilterProperties.Count == 0) {
             return source;
         }
         var comparison = (source as BaseQueryable<T>)?.ForceStringComparison;
@@ -152,7 +152,7 @@ public static class QueryableExtensions {
         var token = ContinuationToken.FromString(continuationToken);
         var actualSort = (string.IsNullOrWhiteSpace(token?.Sort) ? sort : null) ?? "";
         var sortProperty = actualSort.TrimStart('+', '-');
-        var ascending = !actualSort.StartsWith("-", StringComparison.Ordinal);
+        var ascending = !actualSort.StartsWith('-');
         var query = source;
         var modelDescription = new ModelDescription(typeof(T));
         if(modelDescription.StabilizerProperty == default) {

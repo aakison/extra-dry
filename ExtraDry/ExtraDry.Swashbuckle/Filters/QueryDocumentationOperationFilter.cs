@@ -88,7 +88,7 @@ Paging is supported using the [standard paging rules](?urls.primaryName=Instruct
 ## Sorting
 Sorting is supported using the [standard sorting rules](?urls.primaryName=Instructions).  The sortable fields for this endpoint are [{DisplaySortProps()}]";
 
-        if(!sortProps.Any()) {
+        if(sortProps.Length == 0) {
             description = "##### This endpoint does not support sorting.  Add [Sort] attribute to sortable properties.";
         }
 
@@ -110,7 +110,7 @@ Statistics are returned from this endpoint using the [standard statistics format
                 _ => "."
             };
         }
-        if(!statsProps.Any()) {
+        if(statsProps.Length == 0) {
             description = "##### This endpoint does not support statistics.  Add [Statistics(...)] attribute on statistics properties.";
         }
         return description;
@@ -140,7 +140,7 @@ Statistics are returned from this endpoint using the [standard statistics format
                 description += "numeric field matches value or range\r\n";
             }
         }
-        if(!filterProps.Any()) {
+        if(filterProps.Length == 0) {
             description = "##### This endpoint does not support filtering.  Add [Filter] attribute to filterable fields.";
         }
         return description;

@@ -51,9 +51,7 @@ public partial class DryFieldset<T> : ComponentBase, IExtraDryComponent {
     private void DeleteItem(object? items, object item)
     {
         Console.WriteLine("DeleteItem");
-        if(items == null) {
-            throw new ArgumentNullException(nameof(items));
-        }
+        ArgumentNullException.ThrowIfNull(items);
         if(items is IList list) {
             Console.WriteLine("  A list");
             list.Remove(item);

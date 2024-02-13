@@ -141,7 +141,7 @@ public partial class FlexiSelect<TItem> : ComponentBase, IExtraDryComponent wher
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "flexi-select", CssClass);
 
-    private bool DisplayContent => ShowPreview && (Value != null || (Values?.Any() ?? false));
+    private bool DisplayContent => ShowPreview && (Value != null || (Values?.Count ?? 0) != 0);
 
     private bool DisplayPlaceholder => !DisplayContent;
 

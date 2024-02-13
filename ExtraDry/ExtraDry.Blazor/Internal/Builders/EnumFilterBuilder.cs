@@ -11,7 +11,7 @@ public class EnumFilterBuilder : FilterBuilder
     public List<string> Values { get; } = new();
 
     /// <inheritdoc cref="FilterBuilder.Build" />
-    public override string Build() => Values.Any() ? $"{FilterName}:{QuotedValues}" : "";
+    public override string Build() => Values.Count != 0 ? $"{FilterName}:{QuotedValues}" : "";
 
     /// <inheritdoc cref="FilterBuilder.Reset" />
     public override void Reset() => Values.Clear();

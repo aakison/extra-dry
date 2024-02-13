@@ -19,7 +19,7 @@ public class SelectionSet {
 
     public void Clear()
     {
-        if(!inclusiveStorage || items.Any()) {
+        if(!inclusiveStorage || items.Count != 0) {
             items.Clear();
             inclusiveStorage = true;
             var args = new SelectionSetChangedEventArgs() { Type = SelectionSetChangedType.Cleared };
@@ -44,7 +44,7 @@ public class SelectionSet {
         }
         else {
             args.Removed.AddRange(items);
-            if(items.Any()) {
+            if(items.Count != 0) {
                 args.Type = SelectionSetChangedType.Changed;
                 items.Clear();
             }
@@ -78,7 +78,7 @@ public class SelectionSet {
 
     public void SelectAll()
     {
-        if(ExclusiveStorage && !items.Any()) {
+        if(ExclusiveStorage && items.Count == 0) {
             return;
         }
         if(MultipleSelect) {
@@ -94,7 +94,7 @@ public class SelectionSet {
 
     public bool Contains(object item) => ExclusiveStorage ? !items.Contains(item) : items.Contains(item);
 
-    public bool Any() => ExclusiveStorage || items.Any();
+    public bool Any() => ExclusiveStorage || items.Count != 0;
 
     /// <summary>
     /// Indicates if a single selection is made, independent of whether multiple or single select mode is on.
@@ -102,7 +102,7 @@ public class SelectionSet {
     [SuppressMessage("Naming", "CA1720:Identifier contains type name", Justification = "Good enough for LINQ, good enough here.")]
     public bool Single() => (!MultipleSelect || inclusiveStorage) && items.Count == 1;
 
-    public bool All() => ExclusiveStorage && !items.Any();
+    public bool All() => ExclusiveStorage && items.Count == 0;
 
     public IEnumerable<object> Items => items.AsEnumerable(); // TODO: Make function that can optionally supply super-set?
 

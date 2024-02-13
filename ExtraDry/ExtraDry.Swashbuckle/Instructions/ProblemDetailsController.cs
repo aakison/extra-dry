@@ -80,9 +80,6 @@ public class ProblemDetailsController {
             throw new DryException(System.Net.HttpStatusCode.BadRequest, "Missing Input", "The input provided did not exist or was just whitespace.");
         }
 
-        var options = new JsonSerializerOptions {
-            PropertyNameCaseInsensitive = true,
-        };
         Request? request;
         try {
             request = JsonSerializer.Deserialize<Request>(input, options);
@@ -122,5 +119,9 @@ public class ProblemDetailsController {
         /// <example>Got to solve the puzzle first...</example>
         public string Congratulations { get; set; } = "You are a true hacker.  Please enjoy a moment of Zen contemplation knowing that this achievement cannot be explained to those who don't understand and will not be appreciated by those that do.";
     }
+
+    private static JsonSerializerOptions options = new JsonSerializerOptions {
+        PropertyNameCaseInsensitive = true,
+    };
 
 }

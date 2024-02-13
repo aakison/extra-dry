@@ -14,9 +14,7 @@ public class HierarchyBuilder
         if(ExpandNodes.Contains(slug)) {
             return false;
         }
-        if(CollapseNodes.Contains(slug)) {
-            CollapseNodes.Remove(slug);
-        }
+        CollapseNodes.Remove(slug);
         ExpandNodes.Add(slug);
         return true;
     }
@@ -29,9 +27,7 @@ public class HierarchyBuilder
         if(CollapseNodes.Contains(slug)) {
             return false;
         }
-        if(ExpandNodes.Contains(slug)) {
-            ExpandNodes.Remove(slug);
-        }
+        ExpandNodes.Remove(slug);
         CollapseNodes.Add(slug);
         return true;
     }

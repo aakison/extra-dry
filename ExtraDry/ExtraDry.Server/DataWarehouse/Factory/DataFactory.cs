@@ -94,7 +94,7 @@ public class DataFactory {
 
         var batch = await table.Generator.GetBatchAsync(table, Oltp, Olap, Sql);
 
-        if(batch.Any()) {
+        if(batch.Count != 0) {
             await UpsertBatch(table, batchStats, batch);
         }
         else {
@@ -116,12 +116,12 @@ public class DataFactory {
 
         var batch = await GetBatchAfterTimestampAsync(table.SourceProperty, batchStats);
 
-        if(batch.Any()) {
+        if(batch.Count != 0) {
             await UpsertBatch(table, batchStats, batch);
 
             var duplicateTimestamps = await GetBatchExactTimestamp(table.SourceProperty, batchStats);
             duplicateTimestamps = duplicateTimestamps.Where(e => !batch.Contains(e)).ToList();
-            if(duplicateTimestamps.Any()) {
+            if(duplicateTimestamps.Count != 0) {
                 await UpsertBatch(table, batchStats, duplicateTimestamps);
             }
         }
@@ -259,7 +259,7 @@ public class DataFactory {
 
     private readonly ILogger<DataFactory> logger;
 
-    private ISqlGenerator Sql { get; } = new SqlServerSqlGenerator();
+    private SqlServerSqlGenerator Sql { get; } = new SqlServerSqlGenerator();
 
 }
 

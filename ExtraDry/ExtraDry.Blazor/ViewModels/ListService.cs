@@ -99,7 +99,7 @@ public class ListService<TItem> : IListService<TItem> {
 
     private static string ConstructPathAndQuery(string path, Dictionary<string, List<string>> keys)
     {
-        if(keys.Any()) {
+        if(keys.Count != 0) {
             var queries = keys.SelectMany(e => e.Value.Select(v => $"{e.Key}={Uri.EscapeDataString(v)}"));
             var query = string.Join("&", queries);
             path = $"{path}?{query}";
@@ -139,7 +139,7 @@ public class ListService<TItem> : IListService<TItem> {
 
     private static void AddIf(Dictionary<string, List<string>> keys, string key, string[]? values)
     {
-        if(values?.Any() ?? false) {
+        if((values?.Length ?? 0) > 0) {
             keys.Add(key, values?.ToList() ?? new());
         }
     }

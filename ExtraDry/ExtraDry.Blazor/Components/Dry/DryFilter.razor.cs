@@ -84,7 +84,7 @@ public partial class DryFilter<TItem> : ComponentBase, IExtraDryComponent {
     private bool DisplayKeywordFilter => IsFilterSelected(KeywordsFitlerIdentifier);
 
     private bool IsFilterSelected(string name) =>
-        !DisplayedFilters.Any() || DisplayedFilters.Contains(name);
+        DisplayedFilters.Count == 0 || DisplayedFilters.Contains(name);
 
     private ViewModelDescription ViewModelDescription { get; set; }
 

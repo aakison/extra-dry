@@ -69,10 +69,10 @@ public partial class CodeBlock : ComponentBase, IExtraDryComponent {
 
     private static void FormatLines(List<string> lines)
     {
-        while(lines.Any() && string.IsNullOrWhiteSpace(lines.First())) {
+        while(lines.Count != 0 && string.IsNullOrWhiteSpace(lines.First())) {
             lines.RemoveAt(0);
         }
-        while(lines.Any() && string.IsNullOrWhiteSpace(lines.Last())) {
+        while(lines.Count != 0 && string.IsNullOrWhiteSpace(lines.Last())) {
             lines.RemoveAt(lines.Count - 1);
         }
         if(lines.Count == 0) {

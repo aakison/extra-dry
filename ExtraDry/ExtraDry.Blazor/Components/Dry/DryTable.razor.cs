@@ -43,7 +43,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
 
     private bool HasRadioColumn => description.ListSelectMode == ListSelectMode.Single;
 
-    private bool HasCommandsColumn => description.ContextCommands.Any();
+    private bool HasCommandsColumn => description.ContextCommands.Count != 0;
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", ModelClass, FilteredClass, StateClass, CssClass);
 

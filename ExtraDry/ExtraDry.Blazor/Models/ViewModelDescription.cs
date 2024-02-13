@@ -125,7 +125,7 @@ public class ViewModelDescription {
         else if(Commands.Where(e => e.Arguments == CommandArguments.Single && e.Context == CommandContext.Primary).Count() == 1) {
             ListSelectMode = ListSelectMode.Action;
         }
-        else if(ContextCommands.Any()) {
+        else if(ContextCommands.Count != 0) {
             ListSelectMode = ListSelectMode.Single;
         }
         else {

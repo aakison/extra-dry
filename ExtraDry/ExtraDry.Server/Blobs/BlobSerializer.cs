@@ -27,7 +27,7 @@ public static class BlobSerializer
             var headerName = property.GetCustomAttribute<HttpHeaderAttribute>()?.Name ?? $"X-Blob-{property.Name}";
             var headerValue = property.GetValue(blob)?.ToString() ?? "";
             if(!string.IsNullOrEmpty(headerValue) || ignore == JsonIgnoreCondition.Never) {
-                response.Headers.Add(headerName, headerValue);
+                response.Headers.Append(headerName, headerValue);
             }
         }
         await response.Body.WriteAsync(blob.Content);

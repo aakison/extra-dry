@@ -542,7 +542,7 @@ public class RuleEngine {
             var destObjects = destinationList.Cast<object>();
             var toRemove = destObjects.Except(sourceEntities).ToList();
             var toAdd = sourceEntities.Except(destObjects).ToList();
-            if(action == RuleAction.Block && (toRemove.Any() || toAdd.Any())) {
+            if(action == RuleAction.Block && (toRemove.Count != 0 || toAdd.Count != 0)) {
                 throw new DryException($"Invalid attempt to change collection property {property.Name}", $"Attempt to change read-only collection property '{property.Name}'");
             }
             foreach(var item in toRemove) {

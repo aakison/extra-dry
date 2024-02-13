@@ -139,7 +139,7 @@ internal static class LinqBuilder {
                         // E.g. when "abc" is passed to an Int32, ignore when part of keyword/wildcard search.
                     }
                 }
-                if(keywords.Any()) {
+                if(keywords.Count != 0) {
                     if(keywords.Count == 1) {
                         terms.Add(keywords.First());
                     }
@@ -163,7 +163,7 @@ internal static class LinqBuilder {
                 terms.Add(EmptySetExpression);
             }
         }
-        if(terms.Any()) {
+        if(terms.Count != 0) {
             var cnf = AllOf(terms.ToArray());
             var lambda = Expression.Lambda<Func<T, bool>>(cnf, param);
             return source.Where(lambda);
@@ -243,7 +243,7 @@ internal static class LinqBuilder {
             };
             expressions.Add(upperBoundExpr);
         }
-        if(!expressions.Any()) {
+        if(expressions.Count == 0) {
             throw new DryException("Filters that specify a range, must include at least either a lower bound or an upper bound.", "Unable to apply filter. 0x0F30C48A");
         }
         return expressions.ToArray();
@@ -282,7 +282,7 @@ internal static class LinqBuilder {
         }
     }
 
-    private static Expression StringExpression(ParameterExpression parameter, PropertyInfo propertyInfo, FilterType filterType, string value, StringComparison? forceStringComparison)
+    private static MethodCallExpression StringExpression(ParameterExpression parameter, PropertyInfo propertyInfo, FilterType filterType, string value, StringComparison? forceStringComparison)
     {
         var property = Expression.Property(parameter, propertyInfo);
         var valueConstant = Expression.Constant(value);

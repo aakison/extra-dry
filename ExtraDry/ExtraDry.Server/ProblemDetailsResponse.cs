@@ -1,7 +1,6 @@
 ﻿using ExtraDry.Core.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System.Diagnostics;
 using System.Globalization;
 using System.Net;
 
@@ -23,7 +22,7 @@ public static class ProblemDetailsResponse {
     private static void RewriteResponse(HttpContext httpContext, string problem, int code, string title, string? details = null)
     {
         var problemDetails = CreateProblemDetails(httpContext, problem, code, title, details);
-        var body = JsonSerializer.Serialize(problemDetails, new JsonSerializerOptions(JsonSerializerDefaults.Web) { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault});
+        var body = JsonSerializer.Serialize(problemDetails, SerializerOptions);
         var response = httpContext.Response;
         response.Clear();
         response.StatusCode = code;
@@ -47,5 +46,8 @@ public static class ProblemDetailsResponse {
 
         return problemDetails;
     }
+
+    private static JsonSerializerOptions SerializerOptions { get; } = 
+        new(JsonSerializerDefaults.Web) { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault };
 
 }

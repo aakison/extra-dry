@@ -61,9 +61,9 @@ public class PagedHierarchyQueryable<T> : FilteredHierarchyQueryable<T> where T 
             Total = total,
             MaxLevels = maxLevels,
             Level = query.Level,
-            Expand = query.Expand.Any() ? query.Expand : null,
-            Collapse = query.Collapse.Any() ? query.Collapse : null,
-            Expandable = expandable.Any() ? expandable : null,
+            Expand = query.Expand.Count != 0 ? query.Expand : null,
+            Collapse = query.Collapse.Count != 0 ? query.Collapse : null,
+            Expandable = expandable.Count != 0 ? expandable : null,
         };
     }
 
