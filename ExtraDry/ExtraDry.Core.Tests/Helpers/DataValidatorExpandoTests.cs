@@ -47,7 +47,7 @@ public class DataValidatorExpandoTests
     [InlineData("Employees", "Yes")] // String when expect Number
     [InlineData("Employees", "10")] // String Number when expect Json Number
     [InlineData("Employees", false)] // Bool when expect Number
-    public void InvalidValue(string key, object value)
+    public void InvalidValue(string key, object? value)
     {
         var validator = new DataValidator();
         var sample = SchemaSample;
@@ -56,25 +56,25 @@ public class DataValidatorExpandoTests
         var success = validator.ValidateObject(sample);
 
         Assert.False(success);
-        Assert.Equal(1, validator.Errors.Count);
+        Assert.Single(validator.Errors);
     }
 
     public class Sample
     {
 
-        public ExpandoValues Values { get; set; } = new();
+        public ExpandoValues Values { get; set; } = [];
 
     }
 
     public static ExpandoSchema Schema => new() {
         TargetType = typeof(Sample).Name,
-        Fields = new List<ExpandoField> {
+        Fields = [
             new() { DataType = ExpandoDataType.Text, Slug = "ABN", MaxLength = 10, IsRequired = true },
             new() { DataType = ExpandoDataType.Text, Slug = "ASX_CODE", MaxLength = 10, IsRequired = false },
             new() { DataType = ExpandoDataType.Boolean, Slug = "IsActive" },
             new() { DataType = ExpandoDataType.Number, Slug = "Employees" },
             new() { DataType = ExpandoDataType.DateTime, Slug = "Incorporated" },
-        }
+        ]
     };
 
     public static Sample SchemaSample {

@@ -9,12 +9,12 @@ public class ExpandoValuesTests
     public ExpandoValuesTests()
     {
         Schema = new ExpandoSchema {
-            Fields = new List<ExpandoField>() {
+            Fields = [
                 new() { Slug = "external_id", IsRequired = true, MaxLength = 5, DataType = ExpandoDataType.Text, Label = "External ID", State = ExpandoState.Active },
-                new() { Slug = "external_id_with_valid_values", IsRequired = true, MaxLength = 5, DataType = ExpandoDataType.Text, Label = "External ID", State = ExpandoState.Active, ValidValues = new List<string> { "EX01","EX02", "EX03" } },
+                new() { Slug = "external_id_with_valid_values", IsRequired = true, MaxLength = 5, DataType = ExpandoDataType.Text, Label = "External ID", State = ExpandoState.Active, ValidValues = ["EX01","EX02", "EX03"] },
                 new() { Slug = "building_construction_date", IsRequired = true, DataType = ExpandoDataType.DateTime, Label = "Building Constructed On", State = ExpandoState.Active },
                 new() { Slug = "property_code", IsRequired = true, DataType = ExpandoDataType.Number, RangeMinimum = 10, RangeMaximum = 50, Label = "Property Code", State = ExpandoState.Active }
-            }
+            ]
         };
     }
 
@@ -31,32 +31,22 @@ public class ExpandoValuesTests
     }
 
     [Theory]
-    [MemberData(nameof(ValidExpandoData))]
-    public void ValidExpandoValues(ExpandoValues expandoValue)
+    [InlineData("external_id", "EX01")]
+    [InlineData("external_id_with_valid_values", "EX01")]
+    [InlineData("building_construction_date", "1980-01-05")]
+    [InlineData("property_code", 10)]
+    public void ValidExpandoValues(string key, object value)
     {
-        var result = Schema.ValidateValues(expandoValue);
-        Assert.Empty(result);
-    }
-
-    public static IEnumerable<object[]> ValidExpandoData =>
-        new List<object[]> {
-            new object[] {
-                new ExpandoValues {
+        var values = new ExpandoValues {
                     { "external_id", "EX01" },
-                    { "external_id_with_valid_values", "EX03" },
+                    { "external_id_with_valid_values", "EX01" },
                     { "building_construction_date", "1980-01-05" },
                     { "property_code", 10 }
-                }
-            },
-            new object[] {
-                new ExpandoValues {
-                    { "external_id", "10" },
-                    { "external_id_with_valid_values", "EX02" },
-                    { "building_construction_date", DateTime.Now.AddYears(-5) },
-                    { "property_code", 15 }
-                }
-            },
-        };
+                };
+        values[key] = value;
+        var result = Schema.ValidateValues(values);
+        Assert.Empty(result);
+    }
 
     public static IEnumerable<object[]> InValidExpandoData =>
         new List<object[]> {

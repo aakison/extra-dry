@@ -54,7 +54,7 @@ public class ExpandoValuesConverterTests
     [InlineData("false", false)] // Boolean => bool
     [InlineData(@"""Huzzah""", "Huzzah")] // Text => string
     [InlineData("null", null)] // Null => null
-    public void CommonTypeExpandoValueRoundtrip(string serialized, object element)
+    public void CommonTypeExpandoValueRoundtrip(string serialized, object? element)
     {
         var json = $@"{{ ""Values"" : {{ ""key"" : {serialized} }} }}";
 
@@ -67,7 +67,7 @@ public class ExpandoValuesConverterTests
     public class Target
     {
 
-        public ExpandoValues Values { get; set; } = new();
+        public ExpandoValues Values { get; set; } = [];
 
     }
 }

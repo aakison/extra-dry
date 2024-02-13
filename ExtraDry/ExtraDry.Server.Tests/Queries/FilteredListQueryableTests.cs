@@ -21,7 +21,7 @@ public class FilteredListQueryableTests {
     [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
-    public async Task EmptyQueriesReturnEverything(string value)
+    public async Task EmptyQueriesReturnEverything(string? value)
     {
         var filter = new FilterQuery { Filter = value };
         var models = Samples.Models;
@@ -228,7 +228,7 @@ public class FilteredListQueryableTests {
     [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
-    public async Task NoFilterWithDefaultLambdaReturnsSet(string value)
+    public async Task NoFilterWithDefaultLambdaReturnsSet(string? value)
     {
         var filter = new FilterQuery { Filter = value };
         var models = Samples.Models;

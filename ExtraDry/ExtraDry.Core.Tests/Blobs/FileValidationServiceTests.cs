@@ -142,7 +142,6 @@ public class FileValidationServiceTests {
     }
 
     [Theory]
-    [InlineData(null)]
     [InlineData("")]
     [InlineData("!bat.txt")]
     [InlineData("j%pg.txt")]

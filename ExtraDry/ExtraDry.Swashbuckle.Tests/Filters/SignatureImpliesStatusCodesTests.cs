@@ -14,18 +14,6 @@ public class SignatureImpliesStatusCodesTests
         schemaRepository = new SchemaRepository();
     }
 
-    public static IEnumerable<object[]> DefaultResponseCodeData()
-    {
-        yield return new object[] { nameof(DummyController.GetMethod), "200", "Success" };
-        yield return new object[] { nameof(DummyController.GetMethodWithResponsePayload), "200", "Success" };
-        yield return new object[] { nameof(DummyController.PutMethod), "200", "Success" };
-        yield return new object[] { nameof(DummyController.PutMethodWithResponsePayload), "200", "Success" };
-        yield return new object[] { nameof(DummyController.PostMethod), "201", "Created" };
-        yield return new object[] { nameof(DummyController.PostMethodWithResponsePayload), "201", "Created" };
-        yield return new object[] { nameof(DummyController.DeleteMethod), "204", "Success" };
-        yield return new object[] { nameof(DummyController.DeleteMethod), "204", "Success" };
-    }
-
     [Fact]
     public void CreateObject()
     {
@@ -35,7 +23,13 @@ public class SignatureImpliesStatusCodesTests
     }
 
     [Theory]
-    [MemberData(nameof(DefaultResponseCodeData))]
+    [InlineData(nameof(DummyController.GetMethod), "200", "Success")]
+    [InlineData(nameof(DummyController.GetMethodWithResponsePayload), "200", "Success")]
+    [InlineData(nameof(DummyController.PutMethod), "200", "Success")]
+    [InlineData(nameof(DummyController.PutMethodWithResponsePayload), "200", "Success")]
+    [InlineData(nameof(DummyController.PostMethod), "201", "Created")]
+    [InlineData(nameof(DummyController.PostMethodWithResponsePayload), "201", "Created")]
+    [InlineData(nameof(DummyController.DeleteMethod), "204", "Success")]
     public void DefaultResponseCode(string testMethod, string expectedCode, string expectedDesc)
     {
         var filter = new SignatureImpliesStatusCodes();

@@ -17,7 +17,7 @@ public class ContentLayoutTests {
 
     [Theory]
     [InlineData("Sections", null)]
-    public void RoundtripLayoutProperties(string propertyName, object propertyValue)
+    public void RoundtripLayoutProperties(string propertyName, object? propertyValue)
     {
         var content = ValidContent;
         var property = content.GetType().GetProperty(propertyName);
@@ -32,7 +32,7 @@ public class ContentLayoutTests {
     [InlineData("Layout", SectionLayout.Single)]
     [InlineData("Theme", ContentTheme.Dark)]
     [InlineData("Containers", null)]
-    public void RoundtripSectionProperties(string propertyName, object propertyValue)
+    public void RoundtripSectionProperties(string propertyName, object? propertyValue)
     {
         var content = ValidContent;
         var section = content.Sections.First();

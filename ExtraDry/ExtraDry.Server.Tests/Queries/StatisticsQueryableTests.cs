@@ -6,7 +6,7 @@ public class StatisticsQueryableTests {
     [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
-    public void UnfilteredStatistics(string value)
+    public void UnfilteredStatistics(string? value)
     {
         var filter = new FilterQuery { Filter = value };
         var models = Samples.Models;
@@ -28,7 +28,7 @@ public class StatisticsQueryableTests {
     [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
-    public async Task UnfilteredStatisticsAsync(string value)
+    public async Task UnfilteredStatisticsAsync(string? value)
     {
         var filter = new FilterQuery { Filter = value };
         var models = Samples.Models;

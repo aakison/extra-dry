@@ -16,7 +16,7 @@ public class SortQueryTests {
     [InlineData("Filter", "not")]
     [InlineData("Sort", null)]
     [InlineData("Sort", "not")]
-    public void RoundtripProperties(string propertyName, object propertyValue)
+    public void RoundtripProperties(string propertyName, object? propertyValue)
     {
         var filter = ValidSortQuery;
         var property = filter.GetType().GetProperty(propertyName);

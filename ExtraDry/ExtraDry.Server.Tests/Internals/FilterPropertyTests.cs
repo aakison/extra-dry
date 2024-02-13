@@ -20,7 +20,7 @@ public class FilterPropertyTests {
     [Theory]
     [InlineData("Property", null)]
     [InlineData("Filter", null)]
-    public void RoundtripProperties(string propertyName, object propertyValue)
+    public void RoundtripProperties(string propertyName, object? propertyValue)
     {
         var filter = FilterProperty;
         var property = filter.GetType().GetProperty(propertyName);

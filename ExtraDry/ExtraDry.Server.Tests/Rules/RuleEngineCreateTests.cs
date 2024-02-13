@@ -158,7 +158,7 @@ public class RuleEngineCreateTests {
     [InlineData(nameof(IgnoreDefaultsEntity.NullableStringValue), null)]
     [InlineData(nameof(IgnoreDefaultsEntity.EnumValue), State.Unknown)] // enum value is 0
     [InlineData(nameof(IgnoreDefaultsEntity.NullableEnumValue), null)]
-    public async Task CreateRuleDefaultsDontOverrideValues(string propertyName, object value)
+    public async Task CreateRuleDefaultsDontOverrideValues(string propertyName, object? value)
     {
         var exemplar = new IgnoreDefaultsEntity();
         var property = exemplar.GetType().GetProperty(propertyName) ?? throw new ArgumentException("Missing property", nameof(propertyName));
@@ -352,12 +352,9 @@ public class ChildEntity {
     internal bool CreatedFromResourceReference => string.IsNullOrEmpty(PropertyTwo);
 }
 
-public class ChildEntityNoDefaultContructor {
-    public ChildEntityNoDefaultContructor(string prop1)
-    {
-        PropertyOne = prop1;
-    }
-    public string PropertyOne { get; set; }
+public class ChildEntityNoDefaultContructor(string prop1)
+{
+    public string PropertyOne { get; set; } = prop1;
     public string? PropertyTwo { get; set; }
     public string? PropertyThree { get; set; }
     public ChildEntity? TestObject { get; set; }

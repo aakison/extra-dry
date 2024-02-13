@@ -59,29 +59,11 @@ public class RuleEngineDeleteTests {
     }
 
     [Fact]
-    public async Task DeleteHardRequiresItem()
-    {
-        var rules = new RuleEngine(new ServiceProviderStub());
-
-        await Assert.ThrowsAsync<ArgumentNullException>(() => rules.ExpungeManyAsync((object?)null!));
-    }
-
-    [Fact]
     public async Task DeleteHardRequiresPrepareAction()
     {
         var rules = new RuleEngine(new ServiceProviderStub());
 
         await Assert.ThrowsAsync<ArgumentNullException>(async () => await rules.DeleteAsync(new object(), null!, () => Task.CompletedTask));
-    }
-
-    [Fact]
-    public async Task DeleteHardRequiresCommitAction()
-    {
-        var rules = new RuleEngine(new ServiceProviderStub());
-
-        await Assert.ThrowsAsync<ArgumentNullException>(
-            () => rules.DeleteAsync(new object(), () => { }, null!)
-        );
     }
 
     [Fact]

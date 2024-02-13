@@ -43,7 +43,7 @@ public class ContinuationTokenTests {
     [Theory]
     [InlineData("")]
     [InlineData(null)]
-    public void CreatesDefaultToken(string serial)
+    public void CreatesDefaultToken(string? serial)
     {
         var token = ContinuationToken.FromString(serial);
 
@@ -123,7 +123,7 @@ public class ContinuationTokenTests {
     [InlineData(null, "")]
     [InlineData("", "")]
     [InlineData("abc", "abc")]
-    public void FilterValueForToken(string input, string expected)
+    public void FilterValueForToken(string? input, string? expected)
     {
         var token = new ContinuationToken(input, "", 12, 13);
         var actual = token.Filter;
@@ -135,7 +135,7 @@ public class ContinuationTokenTests {
     [InlineData(null, "")]
     [InlineData("", "")]
     [InlineData("abc", "abc")]
-    public void SortValueForToken(string input, string expected)
+    public void SortValueForToken(string? input, string expected)
     {
         var token = new ContinuationToken("", input, 12, 13);
         var actual = token.Sort;

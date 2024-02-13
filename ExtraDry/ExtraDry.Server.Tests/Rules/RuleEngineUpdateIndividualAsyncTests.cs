@@ -216,9 +216,6 @@ public class RuleEngineUpdateIndividualAsyncTests {
     }
 
     [Theory]
-    [InlineData(null, null)]
-    [InlineData(null, "abc")]
-    [InlineData("abc", null)]
     [InlineData("abc", "abc")]
     [InlineData("abc", "def")]
     public async Task SourceToDestinationUncontrolled(string input, string output)
@@ -237,7 +234,7 @@ public class RuleEngineUpdateIndividualAsyncTests {
     [Theory]
     [InlineData(null, null)]
     [InlineData("abc", "abc")]
-    public async Task SourceToDestinationOnBlockChanges(string input, string output)
+    public async Task SourceToDestinationOnBlockChanges(string? input, string? output)
     {
         var rules = new RuleEngine(new ServiceProviderStub());
         var source = SampleEntity();

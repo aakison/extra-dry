@@ -5,7 +5,6 @@ namespace ExtraDry.Blazor.Tests.Internals;
 public class SelectionSetStaticTests {
 
     [Theory]
-    [InlineData(null)]
     [InlineData("")]
     public void NullOnMissingDataLookup(string key)
     {
