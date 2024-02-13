@@ -18,6 +18,9 @@ dotnet_diagnostic.CS1591.severity = none #temp until other issues fixed...
 
 # Wish this worked, but with different rule sets it just has too many false-positives...
 #dotnet_diagnostic.IDE0079.severity = none
+# Rule doesn't recognize partial classes, so it's just noise
+dotnet_diagnostic.IDE0051.severity = none
+dotnet_diagnostic.IDE0052.severity = none
 
 # This is just noise as default for web applications is not to return to non-existent UI thread.
 dotnet_diagnostic.CA2007.severity = none # Consider calling ConfigureAwait on the awaited task

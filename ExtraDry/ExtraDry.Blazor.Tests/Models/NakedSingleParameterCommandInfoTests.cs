@@ -1,9 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace ExtraDry.Blazor.Tests.Models;
 
-[SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Accessed via reflection")]
 public class NakedSingleParameterCommandInfoTests {
 
     [Fact]
