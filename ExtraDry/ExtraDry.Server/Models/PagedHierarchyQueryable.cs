@@ -31,7 +31,7 @@ public class PagedHierarchyQueryable<T> : FilteredHierarchyQueryable<T> where T 
         var items = PagedQuery.ToList();
         var stats = statsQuery.Single();
         var children = childrenQuery.ToList();
-        return CreatePagedCollection(items, stats.Total, stats.MaxLevels, children);
+        return CreatePagedCollection(items, stats.Total, stats.MaxLevels, stats.MinLevels, children);
     }
 
     /// <inheritdoc cref="IFilteredQueryable{T}.ToPagedCollectionAsync(CancellationToken)" />
@@ -43,12 +43,12 @@ public class PagedHierarchyQueryable<T> : FilteredHierarchyQueryable<T> where T 
         var items = await ToListAsync(PagedQuery, cancellationToken);
         var stats = await ToSingleAsync(statsQuery, cancellationToken);
         var children = await ToListAsync(childrenQuery, cancellationToken);
-        return CreatePagedCollection(items, stats.Total, stats.MaxLevels, children);
+        return CreatePagedCollection(items, stats.Total, stats.MaxLevels, stats.MinLevels, children);
     }
 
     private new PageHierarchyQuery Query { get; }
 
-    private PagedHierarchyCollection<T> CreatePagedCollection(List<T> items, int total, int maxLevels, List<string> expandable)
+    private PagedHierarchyCollection<T> CreatePagedCollection(List<T> items, int total, int maxLevels, int minLevels, List<string> expandable)
     {
         var query = (Query as PageHierarchyQuery)!;
         var skip = query.Skip;
@@ -60,6 +60,7 @@ public class PagedHierarchyQueryable<T> : FilteredHierarchyQueryable<T> where T 
             Start = previousSkip,
             Total = total,
             MaxLevels = maxLevels,
+            MinLevels = minLevels,
             Level = query.Level,
             Expand = query.Expand.Any() ? query.Expand : null,
             Collapse = query.Collapse.Any() ? query.Collapse : null,
