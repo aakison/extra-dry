@@ -59,11 +59,11 @@ public class RuleEngineDeleteTests {
     }
 
     [Fact]
-    public void DeleteHardRequiresItem()
+    public async Task DeleteHardRequiresItem()
     {
         var rules = new RuleEngine(new ServiceProviderStub());
 
-        Assert.ThrowsAsync<ArgumentNullException>(() => rules.ExpungeManyAsync((object?)null!));
+        await Assert.ThrowsAsync<ArgumentNullException>(() => rules.ExpungeManyAsync((object?)null!));
     }
 
     [Fact]
@@ -75,11 +75,11 @@ public class RuleEngineDeleteTests {
     }
 
     [Fact]
-    public void DeleteHardRequiresCommitAction()
+    public async Task DeleteHardRequiresCommitAction()
     {
         var rules = new RuleEngine(new ServiceProviderStub());
 
-        Assert.ThrowsAsync<ArgumentNullException>(
+        await Assert.ThrowsAsync<ArgumentNullException>(
             () => rules.DeleteAsync(new object(), () => { }, null!)
         );
     }
