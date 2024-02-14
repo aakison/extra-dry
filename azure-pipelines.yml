@@ -23,7 +23,7 @@ variables:
   prereleaseVersion: ''
   semanticVersion: '0.1.0'  
   nugetProjectsGlob: '**/ExtraDry.+(Core|Server|Blazor|Swashbuckle|Blazor.Experimental).csproj' # don't build samples
-  sampleProjectsGlob: '**/Sample.Server.csproj'
+  sampleProjectsGlob: '**/Sample.Spa.Backend.csproj'
   testsGlob: '**/ExtraDry.+(Core|Server|Blazor).Tests.csproj'
   isForDeployment: $[in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/develop', 'refs/heads/release')]
 
