@@ -25,7 +25,7 @@ variables:
   nugetProjectsGlob: '**/ExtraDry.+(Core|Server|Blazor|Swashbuckle|Blazor.Experimental).csproj' # don't build samples
   sampleProjectsGlob: '**/Sample.Spa.Backend.csproj'
   testsGlob: '**/ExtraDry.+(Core|Server|Blazor).Tests.csproj'
-  isForDeployment: $[in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/develop', 'refs/heads/release')]
+  isForDeployment: $[in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/develop', 'refs/heads/release', 'refs/heads/alpha')]
 
 steps:
 - task: UseDotNet@2
