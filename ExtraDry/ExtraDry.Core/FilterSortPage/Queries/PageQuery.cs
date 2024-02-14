@@ -10,11 +10,7 @@ public class PageQuery : SortQuery, IPageQuery
     public int Skip { get; set; }
 
     /// <inheritdoc cref="IPageQuery.Take" />
-    public int Take {
-        get => take <= 0 ? DefaultTake : take;
-        set => take = value;
-    }
-    private int take;
+    public int Take { get; set;}
 
     /// <inheritdoc cref="IPageQuery.Token" />
     public string? Token { get; set; }
