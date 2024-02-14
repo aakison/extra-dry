@@ -9,6 +9,7 @@ trigger:
 - main
 - release
 - develop
+- alpha
 
 pool:
   vmImage: 'windows-latest'
@@ -103,10 +104,10 @@ steps:
       $minorVersion = Coallesce $bits[1] 0
       $patchVersion = Coallesce $bits[2] 0
       $prereleaseVersion = "head" # no semantic meaning
-      if(HeadIsBranch("develop")) {
+      if(HeadIsBranch("develop") -OR HeadIsBranch("alpha")) {
           $prereleaseVersion = "alpha"
       }
-      if(HeadIsBranch("release")) {
+      if(HeadIsBranch("release") -OR HeadIsBranch("beta")) {
           $prereleaseVersion = "beta"
       }
       if(HeadIsBranch("main") -OR HeadIsBranch("master")) {
