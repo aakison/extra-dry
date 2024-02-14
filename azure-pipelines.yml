@@ -104,14 +104,18 @@ steps:
       $majorVersion = Coallesce $bits[0] 1
       $minorVersion = Coallesce $bits[1] 0
       $patchVersion = Coallesce $bits[2] 0
-      $prereleaseVersion = "head" # no semantic meaning
-      if(HeadIsBranch("develop") -OR HeadIsBranch("alpha")) {
+      $prereleaseVersion = 'head' # no semantic meaning
+      $isDevelop = HeadIsBranch('develop')
+      $isAlpha = HeadIsBranch('alpha')
+      $isRelease = HeadIsBranch('release')
+      $isMain = HeadIsBranch('main') 
+      if($isDevelop -OR $isAlpha) {
           $prereleaseVersion = "alpha"
       }
-      if(HeadIsBranch("release") -OR HeadIsBranch("beta")) {
+      if($isRelease) {
           $prereleaseVersion = "beta"
       }
-      if(HeadIsBranch("main") -OR HeadIsBranch("master")) {
+      if($isMain) {
           $prereleaseVersion = ""
       }
       $semanticVersion = "$majorVersion.$minorVersion.$patchVersion-$prereleaseVersion".TrimEnd("-")
