@@ -54,6 +54,7 @@ steps:
   displayName: 'Check NuGet Packages for Vulnerabilities'
   inputs:
     targetType: 'inline'
+    workingDirectory: $(Build.SourcesDirectory)/ExtraDry
     script: |
       $global:failedLines = 0;
       Function Scan-Line-For-Vulnerability {
@@ -66,9 +67,7 @@ steps:
           }
         }
       }
-      cd .\ExtraDry
       dotnet list --vulnerable --include-transitive | Scan-Line-For-Vulnerability
-      cd ..
       if($global:failedLines) {
         Write-Host
         Write-Host "Vulnerabilities in dependant package have been found, please upgrade or replace." -ForegroundColor Red
