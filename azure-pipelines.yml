@@ -29,16 +29,16 @@ variables:
 
 steps:
 - task: UseDotNet@2
-  displayName: 'Install .NET 7.0 SDK'
+  displayName: 'Install .NET 8.0 SDK'
   inputs:
-    version: '7.0.x'
+    version: '8.0.x'
 
 - task: DotNetCoreCLI@2
   displayName: Install Entity Framework
   inputs:
     command: 'custom'
     custom: 'tool'
-    arguments: 'install --global dotnet-ef --version 7.0.14'
+    arguments: 'install --global dotnet-ef --version 8.0.1'
 
 - task: DotNetCoreCLI@2
   displayName: Restore
