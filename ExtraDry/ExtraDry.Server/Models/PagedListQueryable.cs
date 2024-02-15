@@ -31,9 +31,20 @@ public class PagedListQueryable<T> : SortedListQueryable<T>
         var sort = query.Sort;
 
         var lastToken = Token ?? new ContinuationToken(Query.Filter, sort, skip, take);
-        var nextToken = lastToken.Next(skip, take);
         var previousTake = ContinuationToken.ActualTake(Token, take);
         var previousSkip = ContinuationToken.ActualSkip(Token, skip);
+
+        /*
+         *  When a full page of results is not returned then the 'skip' value in the 
+         *  continuation token should be the number of records that have been returned.
+         *  
+         *  As an example; the query results in 13 items, with a skip value of 10 and a take value
+         *  of 5, this would result in 3 items being returned.  Therefore the continuation tokens
+         *  skip and take values should be 13 and 5.
+         */
+        var nextToken = items.Count == previousTake 
+            ? lastToken.Next(skip, take)
+            : new ContinuationToken(Query.Filter, sort, FilteredQuery.Count(), previousTake);
 
         return new PagedCollection<T> {
             Items = items,
@@ -41,7 +52,7 @@ public class PagedListQueryable<T> : SortedListQueryable<T>
             Sort = nextToken.Sort,
             Start = previousSkip,
             Total = FilteredQuery.Count(),
-            ContinuationToken = (previousSkip + items.Count) >= FilteredQuery.Count() ? lastToken.ToString() : nextToken.ToString(),
+            ContinuationToken = nextToken.ToString(),
         };
     }
 }
