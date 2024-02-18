@@ -74,16 +74,20 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     protected override void OnParametersSet()
     {
         AssertItemsMutualExclusivity();
-        resolvedSelection = Selection ?? SelectionSet.Lookup(ViewModel) ?? SelectionSet.Register(ViewModel);
-        resolvedSelection.MultipleSelect = description.ListSelectMode == ListSelectMode.Multiple;
-        resolvedSelection.Changed += ResolvedSelection_Changed;
-        if(QueryBuilder != null) {
+        if(resolvedSelection == null) {
+            resolvedSelection = Selection ?? SelectionSet.Lookup(ViewModel) ?? SelectionSet.Register(ViewModel);
+            resolvedSelection.MultipleSelect = description.ListSelectMode == ListSelectMode.Multiple;
+            resolvedSelection.Changed += ResolvedSelection_Changed;
+        }
+        if(QueryBuilder != null && !queryBuilderEventSet) {
             QueryBuilder.OnChanged += Notify_OnChanged;
+            queryBuilderEventSet = true;
         }
     }
 
     private void ResolvedSelection_Changed(object? sender, SelectionSetChangedEventArgs e)
     {
+        Logger.LogConsoleVerbose("Got selection notification");
         // Checking/unchecking a row could affect the column checkbox...
         StateHasChanged();
     }
@@ -92,7 +96,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
 
     private async void Notify_OnChanged(object? sender, EventArgs e)
     {
-        Console.WriteLine("Got notification");
+        Logger.LogConsoleVerbose("Got notification");
         changing = true;
         StateHasChanged();
         InternalItems.Clear();
@@ -312,11 +316,15 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     public void Dispose()
     {
         GC.SuppressFinalize(this);
-        if(resolvedSelection != null) {
+        if(resolvedSelection != null && resolvedSelectionEventSet) {
             resolvedSelection.Changed -= ResolvedSelection_Changed;
+        }
+        if(QueryBuilder != null && queryBuilderEventSet) {
+            QueryBuilder.OnChanged -= Notify_OnChanged;
         }
     }
 
     private readonly SemaphoreSlim serviceLock = new(1, 1);
-
+    private bool resolvedSelectionEventSet = false;
+    private bool queryBuilderEventSet = false;
 }
