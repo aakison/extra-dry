@@ -19,6 +19,12 @@ public class HierarchyCollection<T> : SortedCollection<T>
     public int MaxLevels { get; set; }
 
     /// <summary>
+    /// The minimum level of the hierarchy for the collection, ignoring any Level filter that may 
+    /// be applied.  
+    /// </summary>
+    public int MinLevels { get; set; }
+
+    /// <summary>
     /// The list of additional nodes, if any, that were expanded.
     /// </summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]

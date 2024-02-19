@@ -108,12 +108,12 @@ public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : 
     {
         return FilteredQuery
             .GroupBy(_ => 1, (_, records) =>
-                new Stats(records.Count(), records.Max(r => r.Lineage.GetLevel() + 1)));
+                new Stats(records.Count(), records.Max(r => r.Lineage.GetLevel() + 1), records.Min(r => r.Lineage.GetLevel() + 1)));
     }
 
     protected IQueryable<T> UnfilteredQuery { get; set; }
 
-    protected record Stats(int Total, int MaxLevels);
+    protected record Stats(int Total, int MaxLevels, int MinLevels);
 
     private new HierarchyQuery Query { get; }
 

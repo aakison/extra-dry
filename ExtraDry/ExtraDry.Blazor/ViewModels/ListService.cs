@@ -51,11 +51,13 @@ public class ListService<TItem> : IListService<TItem> {
                 HierarchyUnpacker = e => (e as PagedHierarchyCollection<TItem>)?.Items ?? new Collection<TItem>();
                 HierarchyCounter = e => (e as PagedHierarchyCollection<TItem>)?.Total ?? 0;
                 HierarchyMaxLevel = e => (e as PagedHierarchyCollection<TItem>)?.MaxLevels ?? 0;
+                HierarchyMinLevel = e => (e as PagedHierarchyCollection<TItem>)?.MinLevels ?? 0;
             }
             else if(options.HierarchyMode == HierarchyServiceMode.Filter) {
                 HierarchyUnpacker = e => (e as HierarchyCollection<TItem>)?.Items ?? new Collection<TItem>();
                 HierarchyCounter = e => (e as HierarchyCollection<TItem>)?.Count ?? 0;
                 HierarchyMaxLevel = e => (e as HierarchyCollection<TItem>)?.MaxLevels ?? 0;
+                HierarchyMinLevel = e => (e as PagedHierarchyCollection<TItem>)?.MinLevels ?? 0;
             }
         }
     }
@@ -78,7 +80,11 @@ public class ListService<TItem> : IListService<TItem> {
 
     private Func<object, int>? HierarchyMaxLevel { get; set; }
 
+    private Func<object, int>? HierarchyMinLevel { get; set; }
+
     public int MaxLevel { get; private set; }
+
+    public int MinLevel { get; private set; }
 
     public JsonSerializerOptions JsonSerializerOptions { get; set; }
 
@@ -205,6 +211,7 @@ public class ListService<TItem> : IListService<TItem> {
             var items = HierarchyUnpacker!(packedResult);
             var total = HierarchyCounter!(packedResult);
             MaxLevel = HierarchyMaxLevel!(packedResult);
+            MinLevel = HierarchyMinLevel!(packedResult);
             return (packedResult, items, total);
         }
         else {

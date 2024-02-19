@@ -161,4 +161,22 @@ public class ContinuationTokenTests {
         Assert.Equal(expectedTake, next.Take);
     }
 
+    [Fact]
+    public void IncrementingNextToken()
+    {
+        var skip = 0;
+        var take = 10;
+
+        var tokenOne = new ContinuationToken("filter", "sort", skip, take);
+        var tokenTwo = tokenOne.Next(0, 0);
+        var tokenThree = tokenTwo.Next(0, 0);
+
+        Assert.Equal(0, tokenOne.Skip);
+        Assert.Equal(10, tokenOne.Take);
+        Assert.Equal(10, tokenTwo.Skip);
+        Assert.Equal(10, tokenTwo.Take);
+        Assert.Equal(20, tokenThree.Skip);
+        Assert.Equal(10, tokenThree.Take);
+    }
+
 }

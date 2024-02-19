@@ -15,7 +15,6 @@ public class PagedListQueryable<T> : SortedListQueryable<T>
         PagedQuery = SortedQuery.Page(pageQuery);
     }
 
-
     /// <inheritdoc cref="IFilteredQueryable{T}.ToPagedCollection"/>
     public PagedCollection<T> ToPagedCollection() =>
         CreatePagedCollection(PagedQuery.ToList());
@@ -31,18 +30,18 @@ public class PagedListQueryable<T> : SortedListQueryable<T>
         var take = query.Take;
         var sort = query.Sort;
 
-        var nextToken = (Token ?? new ContinuationToken(Query.Filter, sort, take, take)).Next(skip, take);
+        var lastToken = Token ?? new ContinuationToken(Query.Filter, sort, skip, take);
+        var nextToken = lastToken.Next(skip, take);
         var previousTake = ContinuationToken.ActualTake(Token, take);
         var previousSkip = ContinuationToken.ActualSkip(Token, skip);
-        var total = items.Count == previousTake ? FilteredQuery.Count() : previousSkip + items.Count;
+
         return new PagedCollection<T> {
             Items = items,
             Filter = nextToken.Filter,
             Sort = nextToken.Sort,
             Start = previousSkip,
-            Total = total,
-            ContinuationToken = nextToken.ToString(),
+            Total = FilteredQuery.Count(),
+            ContinuationToken = (previousSkip + items.Count) >= FilteredQuery.Count() ? lastToken.ToString() : nextToken.ToString(),
         };
     }
-
 }

@@ -45,6 +45,10 @@ public partial class DryFilterEnumSelect : ComponentBase, IExtraDryComponent, ID
                 Filter = new EnumFilterBuilder { FilterName = Property.Property.Name };
                 PageQueryBuilder.Filters.Add(Filter);
             }
+            else {
+                //There is an existing filter, check if we need to sync the FilterSelect Values
+                SyncValues();
+            }
             EnumValues = Property.GetDiscreteValues();
             PageQueryBuilder.OnChanged += PageQueryBuilder_OnChanged;
         }
@@ -54,14 +58,24 @@ public partial class DryFilterEnumSelect : ComponentBase, IExtraDryComponent, ID
     {
         if(filterInSync && !FiltersMatchValues() && Values != null && Filter != null) {
             // component thinks filters in sync but they don't match, process incoming changes.
-            Values.Clear();
-            foreach(var value in Filter.Values) {
-                var vd = EnumValues.FirstOrDefault(e => e.Title == value);
-                if(vd != null) {
-                    Values.Add(vd);
-                }
+            SyncValues();
+        }
+    }
+
+    private void SyncValues()
+    {
+        if(Filter == null) { return; }
+        Values ??= new();
+        
+        Values.Clear();
+        foreach(var value in Filter.Values) {
+            var vd = EnumValues.FirstOrDefault(e => e.Title == value);
+            if(vd != null) {
+                Values.Add(vd);
             }
         }
+
+        StateHasChanged();
     }
 
     /// <summary>

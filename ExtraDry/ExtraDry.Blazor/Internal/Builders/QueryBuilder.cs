@@ -14,13 +14,13 @@ public class QueryBuilder {
     }
 
     /// <summary>
-    /// Event to subscribe to to be notified when the page query has changed and views should 
+    /// Event to subscribe to be notified when the page query has changed and views should 
     /// be refreshed.
     /// </summary>
     public event EventHandler? OnChanged;
 
     /// <summary>
-    /// Manually rebuilds the query and notifices all observers that changes have been made.
+    /// Manually rebuilds the query and notifies all observers that changes have been made.
     /// </summary>
     public void NotifyChanged()
     {
