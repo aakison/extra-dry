@@ -32,7 +32,13 @@ public class ValueDescription : ISubjectViewModel {
 
     public string Description => string.Empty;
 
-    public override bool Equals(object? obj) => (obj as ValueDescription)?.Key == Key;
+    public override bool Equals(object? obj)
+    {
+        if(obj == null) return false;
+        var otherKey = (obj as ValueDescription)?.Key;
+        if(otherKey == null) return false;
+        return otherKey.Equals(Key);
+    }
 
     public override int GetHashCode() => Key.GetHashCode();
 
