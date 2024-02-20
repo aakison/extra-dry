@@ -128,7 +128,8 @@ public class RuleEngine(
         ArgumentNullException.ThrowIfNull(execute);
 
         var result = DeleteResult.NotDeleted;
-        var action = typeof(T).GetCustomAttribute<DeleteRuleAttribute>()?.DeleteAction ?? DeleteAction.Expunge;
+        var rule = typeof(T).GetCustomAttribute<DeleteRuleAttribute>();
+        var action = rule?.DeleteAction ?? DeleteAction.Expunge;
 
         if(item is IDeletingCallback deleting) {
             await deleting.OnDeletingAsync(ref action);
@@ -140,7 +141,7 @@ public class RuleEngine(
                 result = DeleteResult.Recycled;
             }
             else if(action == DeleteAction.Recycle) {
-                throw new DryException("Unable to recycle item.");
+                throw new DryException($"Unable to recycle item by changing property '{rule?.PropertyName}' to '{rule?.DeleteValue}'.");
             }
         }
         if(action == DeleteAction.TryExpunge || action == DeleteAction.Expunge) {

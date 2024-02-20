@@ -2,7 +2,9 @@
 
 /// <summary>
 /// Defines the decorated entities behavior when the RuleEngine's Delete, Expunge, or Undelete 
-/// methods are used on an instantiated object.
+/// methods are used on an instantiated object.  If a action of Expunge is used, the property
+/// is not set and the object is removed from the data store.  If no property is specified, the
+/// only valid action is Expunge.  If a property is specified, the action can be Expunge or Recycle.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 public class DeleteRuleAttribute : Attribute
@@ -11,8 +13,6 @@ public class DeleteRuleAttribute : Attribute
     /// <inheritdoc cref="DeleteRuleAttribute" />
     public DeleteRuleAttribute(DeleteAction deleteAction)
     {
-        // ctor forces user to explicitly declare action, but this constructor only supports Expunge.
-        if(deleteAction != DeleteAction.Expunge) throw new ArgumentException($"To use {deleteAction}, please provide a delete and undelete value", nameof(deleteAction));
         DeleteAction = deleteAction;
         CanUndelete = false;
     }
@@ -20,9 +20,6 @@ public class DeleteRuleAttribute : Attribute
     /// <inheritdoc cref="DeleteRuleAttribute" />
     public DeleteRuleAttribute(DeleteAction deleteAction, string propertyName, object? deleteValue)
     {
-        if(deleteAction == DeleteAction.Expunge) {
-            // Warn that values will be ignored?
-        }
         DeleteAction = deleteAction;
         PropertyName = propertyName;
         DeleteValue = deleteValue;
@@ -32,9 +29,6 @@ public class DeleteRuleAttribute : Attribute
     /// <inheritdoc cref="DeleteRuleAttribute" />
     public DeleteRuleAttribute(DeleteAction deleteAction, string propertyName, object? deleteValue, object? undeleteValue)
     {
-        if(deleteAction == DeleteAction.Expunge) {
-            // Warn that values will be ignored?
-        }
         DeleteAction = deleteAction;
         PropertyName = propertyName;
         DeleteValue = deleteValue;

@@ -64,6 +64,18 @@ public class RuleEngineDeleteAsyncTests {
         Assert.Equal(DeleteResult.Expunged, result);
     }
 
+    [Fact]
+    public async Task ExpungeShouldNotHavePropertyValues()
+    {
+        var rules = new RuleEngine(new ServiceProviderStub());
+        var item = new IncorrectRecyclable();
+        var items = new List<object> { item };
+
+        Task<DeleteResult> lambda() => rules.DeleteAsync(item, () => items.Remove(item), SaveChangesAsync);
+
+        await Assert.ThrowsAsync<DryException>(lambda);
+    }
+
     private async Task SaveChangesAsync()
     {
         state = SaveState.Processing;
@@ -81,6 +93,12 @@ public class RuleEngineDeleteAsyncTests {
 
     [DeleteRule(DeleteAction.Recycle, nameof(Active), false, true)]
     public class SoftDeletable {
+        public bool Active { get; set; } = true;
+    }
+
+    [DeleteRule(DeleteAction.Recycle)]
+    public class IncorrectRecyclable
+    {
         public bool Active { get; set; } = true;
     }
 
