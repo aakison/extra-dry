@@ -316,7 +316,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     public void Dispose()
     {
         GC.SuppressFinalize(this);
-        if(resolvedSelection != null && resolvedSelectionEventSet) {
+        if(resolvedSelection != null) {
             resolvedSelection.Changed -= ResolvedSelection_Changed;
         }
         if(QueryBuilder != null && queryBuilderEventSet) {
@@ -325,6 +325,5 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     }
 
     private readonly SemaphoreSlim serviceLock = new(1, 1);
-    private bool resolvedSelectionEventSet = false;
-    private bool queryBuilderEventSet = false;
+    private bool queryBuilderEventSet;
 }

@@ -69,7 +69,7 @@ public partial class DryFilterEnumSelect : ComponentBase, IExtraDryComponent, ID
         
         Values.Clear();
         foreach(var value in Filter.Values) {
-            var vd = EnumValues.FirstOrDefault(e => e.Title == value);
+            var vd = EnumValues.FirstOrDefault(e => string.Equals(e.Title, value, StringComparison.OrdinalIgnoreCase));
             if(vd != null) {
                 Values.Add(vd);
             }
