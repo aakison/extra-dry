@@ -109,7 +109,7 @@ public class PagedListQueryableTests {
         Assert.NotNull(actual.ContinuationToken);
         var token = ContinuationToken.FromString(actual.ContinuationToken);
         Assert.NotNull(token);
-        Assert.Equal(0, token.Skip);
+        Assert.Equal(13, token.Skip);
         Assert.Equal(15, token.Take);
     }
 
@@ -131,7 +131,7 @@ public class PagedListQueryableTests {
         Assert.NotNull(actual.ContinuationToken);
         var token = ContinuationToken.FromString(actual.ContinuationToken);
         Assert.NotNull(token);
-        Assert.Equal(15, token.Skip);
+        Assert.Equal(13, token.Skip);
         Assert.Equal(5, token.Take);
     }
 
@@ -176,7 +176,7 @@ public class PagedListQueryableTests {
         Assert.False(actual.IsFullCollection);
         var token = ContinuationToken.FromString(actual.ContinuationToken);
         Assert.NotNull(token);
-        Assert.Equal(10, token.Skip);
+        Assert.Equal(13, token.Skip);
         Assert.Equal(5, token.Take);
     }
 
@@ -197,7 +197,7 @@ public class PagedListQueryableTests {
         Assert.False(actual.IsFullCollection);
         var token = ContinuationToken.FromString(actual.ContinuationToken);
         Assert.NotNull(token);
-        Assert.Equal(15, token.Skip);
+        Assert.Equal(13, token.Skip);
         Assert.Equal(5, token.Take);
     }
 
