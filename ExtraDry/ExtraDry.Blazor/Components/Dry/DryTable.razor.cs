@@ -184,18 +184,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
         }
     }
 
-    private bool IsHierarchyList { 
-        get {
-            var listItem = InternalItems.FirstOrDefault(e => e.Item != null);
-            if(listItem == null) {
-                return false;
-            }
-            if(listItem.Item is IHierarchyEntity) {
-                return true;
-            }
-            return false;
-        } 
-    }
+    private bool IsHierarchyList => (InternalItems.FirstOrDefault() as IHierarchyEntity) is not null;
 
     private void SortBy(PropertyDescription property, bool reverseOrder = true)
     {
