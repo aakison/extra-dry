@@ -184,7 +184,12 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
         }
     }
 
-    private bool IsHierarchyList => (InternalItems.FirstOrDefault() as IHierarchyEntity) is not null;
+    private bool IsHierarchyList { 
+        get {
+            var firstEntity = InternalItems.FirstOrDefault(e => e.Item != null);
+            return firstEntity != null && firstEntity.Item is IHierarchyEntity;
+        } 
+    }
 
     private void SortBy(PropertyDescription property, bool reverseOrder = true)
     {
