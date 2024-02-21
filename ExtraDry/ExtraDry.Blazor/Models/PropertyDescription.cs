@@ -16,6 +16,7 @@ public class PropertyDescription {
         IsRequired = Property.GetCustomAttribute<RequiredAttribute>() != null;
         Control = Property.GetCustomAttribute<ControlAttribute>();
         Filter = Property.GetCustomAttribute<FilterAttribute>();
+        Sort = Property.GetCustomAttribute<SortAttribute>();
         FieldCaption = Display?.Name ?? Property.Name;
         ColumnCaption = Display?.ShortName ?? Property.Name;
         Description = Display?.Description;
@@ -61,6 +62,8 @@ public class PropertyDescription {
     public RulesAttribute? Rules { get; }
 
     public FilterAttribute? Filter { get; }
+
+    public SortAttribute? Sort { get; }
 
     /// <summary>
     /// Use FieldLength instead.
