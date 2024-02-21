@@ -186,8 +186,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
 
     private bool IsHierarchyList { 
         get {
-            var firstEntity = InternalItems.FirstOrDefault(e => e.Item != null);
-            return firstEntity != null && firstEntity.Item is IHierarchyEntity;
+            return InternalItems.Any(e => e.Item is IHierarchyEntity);
         } 
     }
 
