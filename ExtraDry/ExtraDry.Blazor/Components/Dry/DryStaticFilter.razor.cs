@@ -16,11 +16,11 @@ public partial class DryStaticFilter : ComponentBase, IExtraDryComponent
     [CascadingParameter]
     public QueryBuilder? QueryBuilder { get; set; }
 
-    protected override Task OnInitializedAsync()
+    protected override void OnParametersSet()
     {
+        base.OnParametersSet();
         if(InitialHierarchyLevel.HasValue) {
             QueryBuilder?.Level.SetInitialLevel(InitialHierarchyLevel.Value);
         }
-        return base.OnInitializedAsync();
     }
 }
