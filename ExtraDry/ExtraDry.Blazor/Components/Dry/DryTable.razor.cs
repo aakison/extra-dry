@@ -184,8 +184,18 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
         }
     }
 
+    private bool IsHierarchyList { 
+        get {
+            return InternalItems.Any(e => e.Item is IHierarchyEntity);
+        } 
+    }
+
     private void SortBy(PropertyDescription property, bool reverseOrder = true)
     {
+        if(IsHierarchyList) {
+            return;
+        }
+
         var sort = property.Property.Name;
         if(sort == QueryBuilder.Sort.SortProperty) {
             if(reverseOrder) {
@@ -246,11 +256,6 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
             }
             if(AllItemsCached(request.StartIndex, request.Count)) {
                 Logger.LogConsoleVerbose("Returning cached results");
-                var count = Math.Min(request.Count, InternalItems.Count);
-                var items = InternalItems.GetRange(request.StartIndex, count);
-                PerformInitialSort();
-
-                return new ItemsProviderResult<ListItemInfo<TItem>>(items, InternalItems.Count);
             }
             else {
                 Logger.LogConsoleVerbose("Loading page of items from remote service.");
@@ -282,7 +287,9 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
             if(InternalItems.Any()) {
                 var count = Math.Min(request.Count, InternalItems.Count);
                 var items = InternalItems.GetRange(request.StartIndex, count);
-                PerformInitialSort();
+                if(!IsHierarchyList) {
+                    PerformInitialSort();
+                }
                 return new ItemsProviderResult<ListItemInfo<TItem>>(items, InternalItems.Count);
             }
             else {
