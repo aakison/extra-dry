@@ -1,11 +1,6 @@
 namespace ExtraDry.Blazor;
-public partial class DryStaticFilter<TItem> : ComponentBase, IExtraDryComponent
+public partial class DryStaticFilter : ComponentBase, IExtraDryComponent
 {
-    public DryStaticFilter()
-    {
-        ViewModelDescription = new ViewModelDescription(typeof(TItem), this);
-    }
-
     /// <inheritdoc cref="IExtraDryComponent.CssClass "/>
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
@@ -17,20 +12,9 @@ public partial class DryStaticFilter<TItem> : ComponentBase, IExtraDryComponent
     [Parameter]
     public int? InitialHierarchyLevel { get; set; }
 
-    [Parameter]
-    public string? TextFilter { get; set; }
-
-    [Parameter]
-    public Dictionary<string,object>? PropertyFilter { get; set; }
-
-
     /// <inheritdoc cref="DryPageQueryView.PageQueryBuilder" />
     [CascadingParameter]
     public QueryBuilder? QueryBuilder { get; set; }
-
-    private ViewModelDescription ViewModelDescription { get; set; }
-
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", "dry-static-filter", CssClass);
 
     protected override Task OnInitializedAsync()
     {
