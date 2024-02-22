@@ -14,6 +14,16 @@ public partial class DryStaticFilter<TItem> : ComponentBase, IExtraDryComponent
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
+    [Parameter]
+    public int? InitialHierarchyLevel { get; set; }
+
+    [Parameter]
+    public string? TextFilter { get; set; }
+
+    [Parameter]
+    public Dictionary<string,object>? PropertyFilter { get; set; }
+
+
     /// <inheritdoc cref="DryPageQueryView.PageQueryBuilder" />
     [CascadingParameter]
     public QueryBuilder? QueryBuilder { get; set; }
@@ -26,4 +36,12 @@ public partial class DryStaticFilter<TItem> : ComponentBase, IExtraDryComponent
     private ViewModelDescription ViewModelDescription { get; set; }
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "dry-static-filter", CssClass);
+
+    protected override Task OnInitializedAsync()
+    {
+        if(InitialHierarchyLevel.HasValue) {
+            QueryBuilder?.Level.SetInitialLevel(InitialHierarchyLevel.Value);
+        }
+        return base.OnInitializedAsync();
+    }
 }
