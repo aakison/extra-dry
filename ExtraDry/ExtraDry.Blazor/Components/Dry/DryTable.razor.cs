@@ -192,7 +192,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
 
     private void SortBy(PropertyDescription property, bool reverseOrder = true)
     {
-        if(IsHierarchyList) {
+        if(IsHierarchyList || property.Sort?.Type == SortType.NotSortable) {
             return;
         }
 
