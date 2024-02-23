@@ -33,9 +33,18 @@ public partial class DryInputMultipleSelect<T> : ComponentBase, IDryInput<T>, IE
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        InitializeList();
-        InitializeOptions();
+        if(!isInitialized) {
+            InitializeList();
+            InitializeOptions();
+            isInitialized = true;
+        }
     }
+
+    /// <summary>
+    /// Used to prevent the InitializeOptions from being called on statechange or paremeter change,
+    /// which causes exceptions due to dictionary key collision
+    /// </summary>
+    private bool isInitialized { get; set; }
 
     [Inject]
     private ILogger<DryInput<T>> Logger { get; set; } = null!;

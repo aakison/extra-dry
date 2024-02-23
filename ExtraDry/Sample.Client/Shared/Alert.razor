@@ -1,0 +1,54 @@
+﻿@using Sample.Shared.Enums
+<div class="alert @CssClass">
+    <div @onclick="Toggle">
+        <span>@Title</span>
+        
+        <Button Icon="close-dialog" Caption="Close" ShowCaption="false" @onclick="CloseDialog"></Button>
+    </div>
+    @if (Expandable)
+    {
+        <div class="content @ContentCssClass">
+            @ChildContent
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string Title { get; set; } = "Alert";
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public Action? CloseMethod { get; set; }
+
+    protected bool Expandable { get; set; } = false;
+
+    protected override void OnParametersSet()
+    {
+        Expandable = ChildContent != null;
+        base.OnParametersSet();
+    }
+
+    private void Toggle()
+    {
+        ContentCssClass = ContentCssClass == "collapsed" ? "expanded" : "collapsed";
+        StateHasChanged();
+    }
+
+    private string ContentCssClass { get; set; } = "collapsed";
+
+    [Parameter]
+    public string CssClass { get; set; } = string.Empty;
+
+    public void CloseDialog()
+    {
+        CloseMethod?.Invoke();
+    }
+
+    private string CssComposite => $"alert {CssClass} {AlertLevel}";
+
+    [Parameter]
+    public AlertLevel AlertLevel { get; set; } = AlertLevel.Warning;
+}

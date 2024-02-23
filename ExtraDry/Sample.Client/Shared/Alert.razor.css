@@ -1,0 +1,13 @@
+﻿.alert {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+}
+.alert .collapsed {
+  height: 0px;
+  overflow: hidden;
+}
+.alert .expanded {
+  height: 40px;
+  overflow: hidden;
+}
