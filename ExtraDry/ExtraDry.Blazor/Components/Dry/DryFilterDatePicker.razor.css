@@ -1,0 +1,24 @@
+﻿::deep > button {
+  display: flex;
+  gap: 5px;
+  border: solid 1px gray;
+  padding: 0 5px;
+  margin: 0;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  background-color: white;
+}
+
+::deep > .items {
+  display: flex;
+  flex-direction: column;
+}
+::deep > .items label, ::deep > .items a {
+  display: flex;
+  justify-content: space-between;
+}
+::deep > .items a {
+  display: flex;
+  justify-content: space-between;
+}

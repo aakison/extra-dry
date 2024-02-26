@@ -9,6 +9,7 @@ public partial class DryFilter<TItem> : ComponentBase, IExtraDryComponent {
         AllFilters.AddRange(ViewModelDescription.FilterProperties
             .Where(e => e.HasDiscreteValues)
             .Select(e => e.Property.Name));
+        AllFilters.AddRange(DisplayDateFilters.Select(e => e.Property.Name));
     }
 
     /// <inheritdoc cref="IExtraDryComponent.CssClass "/>
@@ -80,6 +81,8 @@ public partial class DryFilter<TItem> : ComponentBase, IExtraDryComponent {
 
     private IEnumerable<PropertyDescription> DisplayedEnumFilters => ViewModelDescription.FilterProperties
         .Where(e => e.HasDiscreteValues && IsFilterSelected(e.Property.Name));
+
+    private IEnumerable<PropertyDescription> DisplayDateFilters => ViewModelDescription.FilterProperties.Where(e => e.Property.PropertyType.Name == typeof(DateTime).Name);
 
     private bool DisplayKeywordFilter => IsFilterSelected(KeywordsFitlerIdentifier);
 
