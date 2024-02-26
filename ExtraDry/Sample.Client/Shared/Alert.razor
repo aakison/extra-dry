@@ -1,5 +1,5 @@
 ﻿@using Sample.Shared.Enums
-<div class="alert @CssClass">
+<div class="alert @CssComposite">
     <div @onclick="Toggle">
         <span>@Title</span>
         
@@ -47,7 +47,7 @@
         CloseMethod?.Invoke();
     }
 
-    private string CssComposite => $"alert {CssClass} {AlertLevel}";
+    private string CssComposite => $"alert {CssClass} {AlertLevel.ToString().ToLower()}";
 
     [Parameter]
     public AlertLevel AlertLevel { get; set; } = AlertLevel.Warning;

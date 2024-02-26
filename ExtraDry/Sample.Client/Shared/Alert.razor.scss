@@ -3,9 +3,28 @@
     width: 100%;
     flex-direction: column;
 
+    div{
+        display: flex;
+        align-items: center;
+        padding: 4px;
+        span{
+            display: flex;
+            flex:1;
+            flex-direction: row;
+        }
+    }
+
+    &.warning{
+        background-color: lightpink;
+        border: 2px solid pink;
+        border-radius: 4px;
+    }
+    
+
     .collapsed {
         height: 0px;
         overflow: hidden;
+        padding: 0;
     }
 
     .expanded {

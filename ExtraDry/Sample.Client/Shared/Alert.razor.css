@@ -3,9 +3,25 @@
   width: 100%;
   flex-direction: column;
 }
+.alert div {
+  display: flex;
+  align-items: center;
+  padding: 4px;
+}
+.alert div span {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+}
+.alert.warning {
+  background-color: lightpink;
+  border: 2px solid pink;
+  border-radius: 4px;
+}
 .alert .collapsed {
   height: 0px;
   overflow: hidden;
+  padding: 0;
 }
 .alert .expanded {
   height: 40px;
