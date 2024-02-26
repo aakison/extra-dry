@@ -33,6 +33,9 @@ public partial class DryInputText<T> : ComponentBase, IDryInput<T>, IExtraDryCom
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
+    [Parameter]
+    public bool ReadOnly { get; set; }
+
     protected override void OnParametersSet()
     {
         if(Model == null || Property == null) {
@@ -66,7 +69,7 @@ public partial class DryInputText<T> : ComponentBase, IDryInput<T>, IExtraDryCom
         }
     }
 
-    private bool ReadOnly => EditMode == EditMode.ReadOnly;
+
 
     private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
 
