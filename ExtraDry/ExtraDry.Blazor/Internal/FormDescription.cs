@@ -116,7 +116,7 @@ internal class FormDescription {
     // Use this value when an order is not specified. This value allows for explicitly-ordered fields to be displayed before
     const int OrderNotSpecifiedOffset = 10000;
 
-    private object FieldOrder(PropertyDescription p)
+    private int FieldOrder(PropertyDescription p)
     {
         return p.Order ?? OrderNotSpecifiedOffset + originalPositions.GetValueOrDefault(p.FieldCaption, 0);
     }
