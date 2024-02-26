@@ -67,9 +67,6 @@ internal class FormDescription {
         }
     }
 
-    // Use this value when an order is not specified. This value allows for explicitly-ordered fields to be displayed before
-    const int OrderNotSpecifiedOffset = 10000;
-
     private void ExtendProperties(Collection<PropertyDescription> properties, string fieldsetName, FormGroupType formGroup, object? model, object? parentModel = null)
     {
         foreach(var property in properties.OrderBy(p => FieldOrder(p)) ){            
@@ -116,9 +113,12 @@ internal class FormDescription {
         }
     }
 
+    // Use this value when an order is not specified. This value allows for explicitly-ordered fields to be displayed before
+    const int OrderNotSpecifiedOffset = 10000;
+
     private object FieldOrder(PropertyDescription p)
     {
-        return p.Order ?? 10000 + originalPositions.GetValueOrDefault(p.FieldCaption, 0);
+        return p.Order ?? OrderNotSpecifiedOffset + originalPositions.GetValueOrDefault(p.FieldCaption, 0);
     }
 
     private class ExtendedProperty {
