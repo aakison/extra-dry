@@ -12,8 +12,17 @@ internal class FormDescription {
     public FormDescription(ViewModelDescription description, object model)
     {
         ViewModelDescription = description;
+        LoadOriginalPositions(description.FormProperties);
         ExtendProperties(description.FormProperties, "", FormGroupType.Properties, model);
         BuildFieldsets();
+    }
+
+    private void LoadOriginalPositions(Collection<PropertyDescription> formProperties)
+    {
+        originalPositions.Clear();
+        for(int i = 0; i < formProperties.Count; i++) {
+            originalPositions.Add(formProperties[i].FieldCaption, i);
+        }
     }
 
     public ViewModelDescription ViewModelDescription { get; init; }
@@ -21,6 +30,8 @@ internal class FormDescription {
     public List<FormFieldset> Fieldsets { get; } = new();
 
     private List<ExtendedProperty> ExtendedProperties { get; set; } = new();
+
+    private readonly Dictionary<string, int> originalPositions = new();
 
     private void BuildFieldsets()
     {
@@ -56,9 +67,12 @@ internal class FormDescription {
         }
     }
 
+    // Use this value when an order is not specified. This value allows for explicitly-ordered fields to be displayed before
+    const int OrderNotSpecifiedOffset = 10000;
+
     private void ExtendProperties(Collection<PropertyDescription> properties, string fieldsetName, FormGroupType formGroup, object? model, object? parentModel = null)
     {
-        foreach(var property in properties) {
+        foreach(var property in properties.OrderBy(p => FieldOrder(p)) {            
             var groupName = property.Display?.GroupName ?? "Details";
             if(groupName != string.Empty) {
                 fieldsetName = groupName;
@@ -102,6 +116,10 @@ internal class FormDescription {
         }
     }
 
+    private object FieldOrder(PropertyDescription p)
+    {
+        return p.Order ?? 10000 + originalPositions.GetValueOrDefault(p.FieldCaption, 0);
+    }
 
     private class ExtendedProperty {
         public ExtendedProperty(PropertyDescription property, object target) {
