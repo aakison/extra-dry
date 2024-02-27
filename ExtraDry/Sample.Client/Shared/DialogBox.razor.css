@@ -22,6 +22,7 @@ div.curtain div.dialog.full {
 div.curtain div.dialog.window {
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
   max-width: 1120px;
   margin: 80px 60px;
 }

@@ -33,20 +33,19 @@
         Navigation.NavigateTo(CloseUrl);
     }
 
-    [Command(Icon = "arrow-right")] //"arrow-up-right-and-arrow-down-left-from-center"
     public void MakeFullScreen()
     {
         FullScreen = true;
         StateHasChanged();
     }
-    public CommandInfo MakeFullScreenCommand => new(this, MakeFullScreen);
 
-    [Command(Icon = "arrow-left")] //"arrow-down-left-and-arrow-up-right-to-center"
+    public CommandInfo MakeFullScreenCommand => new(this, MakeFullScreen) { Icon="full-screen" };
+
     public void MakeWindow()
     {
         FullScreen = false;
         StateHasChanged();
     }
-    public CommandInfo MakeWindowCommand => new(this, MakeWindow);
+    public CommandInfo MakeWindowCommand => new(this, MakeWindow) { Icon = "windowed-screen" };
 
 }

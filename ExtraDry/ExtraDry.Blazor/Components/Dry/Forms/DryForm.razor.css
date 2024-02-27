@@ -19,7 +19,6 @@
 
     form div.variable-fieldsets {
       flex: 1 1 auto;
-      overflow-y: auto;
     }
 
     form div.entity-actions {
