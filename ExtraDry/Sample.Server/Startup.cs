@@ -82,10 +82,10 @@ public class Startup
 
         services.AddHttpContextAccessor();
 
-        //services.AddServiceBusQueue<EntityMessage>(options => {
-        //    options.ConnectionStringKey = "WebAppServiceBus";
-        //    options.QueueName = "warehouse-update";
-        //});
+        services.AddServiceBusQueue<EntityMessage>(options => {
+            options.ConnectionStringKey = "WebAppServiceBus";
+            options.QueueName = "warehouse-update";
+        });
 
         services.AddScoped(services => {
             var connectionString = Configuration.GetConnectionString("WebAppOltpDatabase");
@@ -95,9 +95,9 @@ public class Startup
             var accessor = services.GetRequiredService<IHttpContextAccessor>();
             _ = new VersionInfoAspect(context, accessor);
 
-            //var logger = services.GetRequiredService<ILogger<DataWarehouseAspect>>();
-            //var queue = services.GetRequiredService<ServiceBusQueue<EntityMessage>>();
-            //_ = new DataWarehouseAspect(context, queue, logger);
+            var logger = services.GetRequiredService<ILogger<DataWarehouseAspect>>();
+            var queue = services.GetRequiredService<ServiceBusQueue<EntityMessage>>();
+            _ = new DataWarehouseAspect(context, queue, logger);
 
             //_ = new SearchIndexAspect(context, services.GetService<SearchService>());
             return context;
