@@ -33,18 +33,9 @@ public partial class DryInputMultipleSelect<T> : ComponentBase, IDryInput<T>, IE
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        if(!IsInitialized) {
-            InitializeList();
-            InitializeOptions();
-            IsInitialized = true;
-        }
+        InitializeList();
+        InitializeOptions();
     }
-
-    /// <summary>
-    /// Used to prevent the InitializeOptions from being called on statechange or paremeter change,
-    /// which causes exceptions due to dictionary key collision
-    /// </summary>
-    private bool IsInitialized { get; set; }
 
     [Inject]
     private ILogger<DryInput<T>> Logger { get; set; } = null!;
@@ -58,6 +49,10 @@ public partial class DryInputMultipleSelect<T> : ComponentBase, IDryInput<T>, IE
     {
         if(Values == null) {
             AllOptions.Clear();
+            return;
+        }
+        if(AllOptions.Values.Count > 0) {
+            // Already initialised.
             return;
         }
         int index = 100;
