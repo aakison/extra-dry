@@ -16,9 +16,11 @@ public class PropertyDescription {
         IsRequired = Property.GetCustomAttribute<RequiredAttribute>() != null;
         Control = Property.GetCustomAttribute<ControlAttribute>();
         Filter = Property.GetCustomAttribute<FilterAttribute>();
+        Sort = Property.GetCustomAttribute<SortAttribute>();
         FieldCaption = Display?.Name ?? Property.Name;
         ColumnCaption = Display?.ShortName ?? Property.Name;
         Description = Display?.Description;
+        Order = Display?.GetOrder();
         HasDescription = !string.IsNullOrWhiteSpace(Description);
         Size = PredictSize();
         if(HasDiscreteValues) {
@@ -62,6 +64,8 @@ public class PropertyDescription {
 
     public FilterAttribute? Filter { get; }
 
+    public SortAttribute? Sort { get; }
+
     /// <summary>
     /// Use FieldLength instead.
     /// </summary>
@@ -75,6 +79,11 @@ public class PropertyDescription {
     public ControlAttribute? Control { get; }
 
     public string? Description { get; }
+
+    /// <summary>
+    /// The display order, null if it is not present
+    /// </summary>
+    public int? Order { get; set; }
 
     public bool IsRequired { get; }
 

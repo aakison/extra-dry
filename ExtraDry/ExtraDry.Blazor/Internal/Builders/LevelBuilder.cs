@@ -12,6 +12,15 @@ public class LevelBuilder
     /// </summary>
     public int Level { get; set; }
 
+    private int InitialLevel;
+
+    public void SetInitialLevel(int level)
+    {
+        InitialLevel = level;
+        if(Level == 0) {
+            Level = level;
+        }
+    }
     /// <summary>
     /// If known, the maximum level of the hierarchy for the collection, ignoring any Level filter 
     /// that may be applied.
@@ -86,7 +95,7 @@ public class LevelBuilder
 
     public void Reset()
     {
-        Level = 0;
+        Level = InitialLevel;
         MaxLevel = 0;
     }
 }
