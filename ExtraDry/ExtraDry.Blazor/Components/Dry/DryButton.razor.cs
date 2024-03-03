@@ -83,6 +83,8 @@ public partial class DryButton : ComponentBase, IExtraDryComponent {
 
     private bool ShowCaption => !string.IsNullOrWhiteSpace(ResolvedCommand?.Caption) && !(HasIcon && IconOnly);
 
+    private string ButtonCaption => ShowCaption ? ResolvedCommand?.Caption! : string.Empty;
+
     protected override void OnParametersSet()
     {
         if(Command is not null) {
