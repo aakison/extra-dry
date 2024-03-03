@@ -33,12 +33,7 @@
                 </div>
                 <div class="@ModelNameSlug entity-actions">
                     @if(error != null) {
-                        <div class="alert danger">
-                            <h5><i></i> Error</h5>
-                            @error
-                        </div>
-                    }
-                    <DryButtonBar Commands="@Description?.Commands" Target="@Model" />
+                        <DryButtonBar Commands="@Description?.Commands" Target="@Model" />
                 </div>
             }
         </CascadingValue>
