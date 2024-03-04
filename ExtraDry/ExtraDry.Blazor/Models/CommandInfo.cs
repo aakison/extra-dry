@@ -91,11 +91,13 @@ public partial class CommandInfo {
     /// </summary>
     public CommandArguments Arguments { get; set; }
 
+    public string CssClass { get; set; } = string.Empty;
+
     /// <summary>
     /// A CSS class that is added to elements that can trigger the command.
     /// This has no intrinsic meaning but can be used by app to change appearance.
     /// </summary>
-    public string DisplayClass => Context.ToString().ToLowerInvariant();
+    public string DisplayClass => DataConverter.JoinNonEmpty(" ", CssClass, Context.ToString().ToLowerInvariant());
 
     public Func<bool> IsVisible { get; set; } = () => true;
 
@@ -120,6 +122,7 @@ public partial class CommandInfo {
     private void Initialize(MethodInfo method)
     {
         var attribute = method.GetCustomAttribute<CommandAttribute>();
+        CssClass = attribute?.CssClass ?? "";
         Caption = attribute?.Name ?? DefaultName(method.Name);
         Arguments = GetArgumentsType(method);
         if(attribute != null) {

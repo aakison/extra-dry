@@ -68,4 +68,9 @@ public sealed class CommandAttribute : Attribute {
     /// </summary>
     [Obsolete("Use HyperLink attribute instead")]
     public string? PropertyName { get; set; }
+
+    /// <summary>
+    /// The display CSS class to attach to the button.
+    /// </summary>
+    public string? CssClass { get; set; }
 }
