@@ -1,10 +1,11 @@
 ﻿@inject IListService<Company> CompanyService;
 @inject NavigationManager Navigation;
+@inject AppViewModel AppViewModel;
 
 <h1>Companies</h1>
 
 <DryErrorBoundary>
-    <DryPageQueryView>
+    <DryPageQueryView @ref=QueryView>
         @*<TableMenu TItem="Company" />*@
         <DryFilter TItem="Company" Affordance="" Icon="theme" ShowPreview="false" />
         <DryTable TItem="Company" ViewModel="@this" ItemsService="@CompanyService" />
@@ -26,5 +27,17 @@
     public void Edit(Company company)
     {
         Navigation.NavigateTo(NavLink(company)?.Href ?? string.Empty);
+    }
+
+    private DryPageQueryView QueryView { get; set; } = default!;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (AppViewModel.Filter != null && QueryView != null)
+        {
+            QueryView.PageQueryBuilder.ParseFilters(AppViewModel.Filter);
+            AppViewModel.Filter = null;
+        }
+        base.OnAfterRender(firstRender);
     }
 }

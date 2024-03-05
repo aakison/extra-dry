@@ -45,7 +45,6 @@
 	<Import Project="..\VulnerabilityFixes.targets" />
 
 	<ItemGroup>
-		<Folder Include="ViewModels\Admin\" />
 		<Folder Include="wwwroot\fonts\" />
 	</ItemGroup>
 
