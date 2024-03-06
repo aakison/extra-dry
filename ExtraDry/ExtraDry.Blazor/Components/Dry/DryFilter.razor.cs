@@ -82,7 +82,7 @@ public partial class DryFilter<TItem> : ComponentBase, IExtraDryComponent {
     private IEnumerable<PropertyDescription> DisplayedEnumFilters => ViewModelDescription.FilterProperties
         .Where(e => e.HasDiscreteValues && IsFilterSelected(e.Property.Name));
 
-    private IEnumerable<PropertyDescription> DisplayDateFilters => ViewModelDescription.FilterProperties.Where(e => e.Property.PropertyType.Name == typeof(DateTime).Name);
+    private IEnumerable<PropertyDescription> DisplayDateFilters => ViewModelDescription.FilterProperties.Where(e => e.PropertyType == typeof(DateTime));
 
     private bool DisplayKeywordFilter => IsFilterSelected(KeywordsFitlerIdentifier);
 
