@@ -1,0 +1,24 @@
+@namespace ExtraDry.Blazor
+
+<div class="@CssClasses">
+    <Button Caption="@Caption" @onclick="@DoButtonClick" Affordance="@Affordance" />
+    <MiniDialog @ref="MiniDialog" OnSubmit="@SyncWithPageQuery">
+        <Button Caption="Previous" Icon="@PreviousIcon" Enabled="@CanChangeDate" @onclick="@DoPreviousClick" />
+        <Button Caption="Next" Affordance="@NextAffordance" Enabled="@CanChangeDate" @onclick="@DoNextClick" />
+        @foreach (var group in TimeIntervalGroups)
+        {
+            <div class="group">
+                <div>@group.Title</div>
+                <div class="items">
+                    @foreach (var item in group.TimeIntervals)
+                    {
+                        <a @onclick="e => OnIntervalChange(e, item)">
+                            <span>@item.Title</span>
+                            <span>@item.Description</span>
+                        </a>
+                    }
+                </div>
+            </div>
+        }
+    </MiniDialog>
+</div>

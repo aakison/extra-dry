@@ -5,6 +5,11 @@
     "minify": { "enabled": false }
   },
   {
+    "outputFile": "Components/Dry/DryFilterDatePicker.razor.css",
+    "inputFile": "Components/Dry/DryFilterDatePicker.razor.scss",
+    "minify": { "enabled": false }
+  },
+  {
     "outputFile": "Components/Dry/DryFilterEnumSelect.razor.css",
     "inputFile": "Components/Dry/DryFilterEnumSelect.razor.scss",
     "minify": { "enabled": false }
