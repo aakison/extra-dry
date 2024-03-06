@@ -42,6 +42,7 @@ public class PropertyDescription {
             }
         }
         --recursionDepth;
+        PropertyType = Property.PropertyType.IsGenericType && Property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) ? Property.PropertyType.GetGenericArguments()[0] : Property.PropertyType;
     }
 
     /// <summary>
@@ -279,6 +280,12 @@ public class PropertyDescription {
     }
 
     public int? FieldLength => StringLength?.MaximumLength ?? MaxLength?.Length;
+
+    /// <summary>
+    /// Gets the type of the property.  If the property is a nullable type then the inner type is
+    /// returned.
+    /// </summary>
+    public Type PropertyType { get; }
 
     private PropertySize PredictSize()
     {
