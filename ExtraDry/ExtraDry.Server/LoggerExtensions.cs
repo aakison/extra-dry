@@ -36,4 +36,31 @@ internal static partial class LoggerExtensions
     internal static void LogProblemDetails(this ILogger logger, ProblemDetails problem, [CallerMemberName] string? method = null)
         => LogProblemDetails(logger, problem.Status ?? 0, problem.Type ?? "unknown", problem.Instance ?? "unknown", problem.Detail ?? "", method);
 
+    [LoggerMessage(Level = LogLevel.Information, EventId = 60, 
+Message = "Cron job '{Name}' triggered at {Time}")]
+    internal static partial void LogCronJobTrigger(this ILogger logger, string name, string time);
+
+    [LoggerMessage(Level = LogLevel.Information, EventId = 61, Message = "Next Cron Job Occurrence (UTC): {Time}")]
+    internal static partial void LogCronJobNextInfo(this ILogger logger, string time);
+
+    [LoggerMessage(Level = LogLevel.Information, EventId = 62, Message = "Cron Service Stopped")]
+    internal static partial void LogCronServiceStopped(this ILogger logger);
+
+    [LoggerMessage(Level = LogLevel.Information, EventId = 63, Message = "Server Time (UTC): {Time}")]
+    internal static partial void LogServerTime(this ILogger logger, string time);
+
+    [LoggerMessage(Level = LogLevel.Information, EventId = 64, Message = "Cron Service Host Started with {JobCount} jobs")]
+    internal static partial void LogCronServiceStarted(this ILogger logger, int jobCount);
+
+    [LoggerMessage(Level = LogLevel.Information, EventId = 65, Message = "Job '{JobName}' with schedule '{Schedule}' next 3 occurrences:\n\t{Time1}\n\t{Time2}\n\t{Time3}")]
+    internal static partial void LogCronJobNexts(this ILogger logger, string JobName, string schedule, string time1, string time2, string time3);
+
+
+    [LoggerMessage(Level = LogLevel.Information, EventId = 70, Message = "Resolved Configuration for '{Name}':\n\t{List}")]
+    internal static partial void LogConfigurationList(this ILogger logger, string name, string list);
+
+    [LoggerMessage(Level = LogLevel.Warning, EventId = 71, Message = "Configuration Failed Validation:\n\t{Results}")]
+    internal static partial void LogConfigurationValidationError(this ILogger logger, string results);
+
+
 }

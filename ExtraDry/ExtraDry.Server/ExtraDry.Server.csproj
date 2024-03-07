@@ -46,6 +46,7 @@
 		</PackageReference>
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
 		<PackageReference Include="Pidgin" Version="3.2.2" />
+		<PackageReference Include="NCrontab" Version="3.3.3" />
 		<PackageReference Include="System.Linq.Expressions" Version="4.3.0" />
 	</ItemGroup>
 
