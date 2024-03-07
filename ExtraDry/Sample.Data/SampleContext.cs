@@ -3,11 +3,10 @@ using System.Text.Json;
 
 namespace Sample.Data;
 
-public class SampleContext : AspectDbContext {
-
-    public SampleContext(DbContextOptions<SampleContext> options) : base(options)
-    {
-    }
+public class SampleContext(
+    DbContextOptions<SampleContext> options) 
+    : AspectDbContext(options) 
+{
 
     public DbSet<Sector> Sectors { get; set; } = null!;
 

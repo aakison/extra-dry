@@ -62,9 +62,7 @@ public class CompanyController(
     [Authorize(SamplePolicies.SamplePolicy)]
     public async Task Update(Guid uuid, Company value)
     {
-        if(uuid != value?.Uuid) {
-            throw new ArgumentMismatchException("ID in URI must match body.", nameof(uuid));
-        }
+        ArgumentMismatchException.ThrowIfMismatch(uuid, value.Uuid, nameof(uuid));
         await companies.Update(value);
     }
 
@@ -76,13 +74,10 @@ public class CompanyController(
     /// </remarks>
     [HttpPut("api/companies/{slug}"), Consumes("application/json")]
     [Authorize(SamplePolicies.SamplePolicy)]
-    [ApiExplorerSettings(GroupName = ApiGroupNames.InternalUseOnly)]
-    public async Task Update(string slug, Company value)
+    public async Task Update(string slug, Company company)
     {
-        if(slug != value?.Uuid.ToString()) {
-            throw new ArgumentMismatchException("ID in URI must match body.", nameof(slug));
-        }
-        await companies.Update(value);
+        ArgumentMismatchException.ThrowIfMismatch(slug, company.Slug, nameof(slug));
+        await companies.Update(company);
     }
 
     /// <summary>

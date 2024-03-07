@@ -59,17 +59,15 @@ public class ContentsController(
     /// <remarks>
     /// Update the content at the URI, the uniqueId in the URI must match the Id in the payload.
     /// </remarks>
-    /// <param name="contentId"></param>
-    /// <param name="value"></param>
+    /// <param name="uuid"></param>
+    /// <param name="content"></param>
     /// <returns></returns>
-    [HttpPut("api/contents/{contentId}"), Consumes("application/json")]
+    [HttpPut("api/contents/{uuid}"), Consumes("application/json")]
     [Authorize(SamplePolicies.SamplePolicy)]
-    public async Task Update(Guid contentId, Content value)
+    public async Task Update(Guid uuid, Content content)
     {
-        if(contentId != value?.Uuid) {
-            throw new ArgumentMismatchException("ID in URI must match body.", nameof(contentId));
-        }
-        await contents.UpdateAsync(value);
+        ArgumentMismatchException.ThrowIfMismatch(uuid, content.Uuid, nameof(uuid));
+        await contents.UpdateAsync(content);
     }
 
     /// <summary>

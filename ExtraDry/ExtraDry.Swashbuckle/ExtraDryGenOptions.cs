@@ -49,7 +49,7 @@ public class ExtraDryGenOptions
         /// <summary>
         /// The names of the XML document files to add (without paths)
         /// </summary>
-        public List<string> Files { get; set; } = new();
+        public List<string> Files { get; set; } = [];
 
     }
 

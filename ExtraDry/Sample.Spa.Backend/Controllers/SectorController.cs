@@ -47,13 +47,11 @@ public class SectorController(
     /// <summary>
     /// Update an existing company sector
     /// </summary>
-    [HttpPut("api/sectors/{sectorId}"), Consumes("application/json")]
+    [HttpPut("api/sectors/{uuid}"), Consumes("application/json")]
     [Authorize(SamplePolicies.SamplePolicy)]
-    public async Task UpdateAsync(Guid sectorId, Sector value)
+    public async Task UpdateAsync(Guid uuid, Sector value)
     {
-        if(sectorId != value?.Uuid) {
-            throw new ArgumentMismatchException("ID in URI must match body.", nameof(sectorId));
-        }
+        ArgumentMismatchException.ThrowIfMismatch(uuid, value.Uuid, nameof(uuid));
         await sectors.UpdateAsync(value);
     }
 

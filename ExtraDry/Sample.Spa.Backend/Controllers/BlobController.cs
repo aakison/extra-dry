@@ -29,9 +29,7 @@ public class BlobController(
     {
         var headerUuidStr = Request.Headers[Blob.UuidHeaderName].FirstOrDefault() ?? "";
         if(Guid.TryParse(headerUuidStr, out var headerUuid)) {
-            if(headerUuid != uuid) {
-                throw new ArgumentMismatchException("UUID in header does not match UUID in URL", nameof(uuid));
-            }
+            ArgumentMismatchException.ThrowIfMismatch(headerUuid, uuid, nameof(uuid));
         }
 
         var exemplar = await BlobSerializer.DeserializeBlobAsync<Blob>(Request);
@@ -72,9 +70,7 @@ public class BlobController(
     {
         var headerUuidStr = Request.Headers[Blob.UuidHeaderName].FirstOrDefault() ?? "";
         if(Guid.TryParse(headerUuidStr, out var headerUuid)) {
-            if(headerUuid != uuid) {
-                throw new ArgumentMismatchException("UUID in header does not match UUID in URL", nameof(uuid));
-            }
+            ArgumentMismatchException.ThrowIfMismatch(headerUuid, uuid, nameof(uuid));
         }
 
         var exemplar = await BlobSerializer.DeserializeBlobAsync<Blob>(Request);

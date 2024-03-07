@@ -71,16 +71,14 @@ public class EmployeeController {
     /// <remarks>
     /// Update the employee at the URI, the uniqueId in the URI must match the Id in the payload.
     /// </remarks>
-    /// <param name="employeeId"></param>
+    /// <param name="uuid"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    [HttpPut("api/employees/{employeeId}"), Consumes("application/json")]
+    [HttpPut("api/employees/{uuid}"), Consumes("application/json")]
     [Authorize(SamplePolicies.SamplePolicy)]
-    public async Task Update(Guid employeeId, Employee value)
+    public async Task Update(Guid uuid, Employee value)
     {
-        if(employeeId != value?.Uuid) {
-            throw new ArgumentMismatchException("ID in URI must match body.", nameof(employeeId));
-        }
+        ArgumentMismatchException.ThrowIfMismatch(uuid, value.Uuid, nameof(uuid));
         await employees.Update(value);
     }
 

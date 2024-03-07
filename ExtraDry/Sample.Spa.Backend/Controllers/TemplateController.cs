@@ -57,9 +57,7 @@ public class TemplateController {
     [Authorize(SamplePolicies.SamplePolicy)]
     public async Task UpdateAsync(string title, Template value)
     {
-        if(title != value?.Title) {
-            throw new ArgumentMismatchException("Title in URI must match body.", nameof(title));
-        }
+        ArgumentMismatchException.ThrowIfMismatch(title, value.Title, nameof(title));
         await templates.UpdateAsync(value);
     }
 

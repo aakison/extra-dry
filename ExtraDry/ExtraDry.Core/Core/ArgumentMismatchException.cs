@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Core;
+﻿using System;
+
+namespace ExtraDry.Core;
 
 /// <summary>
 /// Represents an exception for an argument that is provided twice and doesn't match. In 
@@ -31,4 +33,25 @@ public sealed class ArgumentMismatchException : ArgumentException
     /// validation exceptions can be shown, but null reference cannot.
     /// </summary>
     public string UserMessage { get; set; } = @"When the {0} of an entity occurs in both the URI and in the body of the of the request, they must be identical.  This happens particularly during an update (POST).";
+
+    /// <summary>
+    /// Throws an exception if UUID parameters do not match.
+    /// </summary>
+    public static void ThrowIfMismatch(Guid uriUuid, Guid? bodyUuid, string paramName)
+    {
+        if(!bodyUuid.HasValue || uriUuid != bodyUuid.Value) {
+            throw new ArgumentMismatchException("UUID in URL does not match UUID in body of request.", paramName);
+        }
+    }
+
+    /// <summary>
+    /// Throws an exception if string parameters do not match.
+    /// </summary>
+    public static void ThrowIfMismatch(string uriString, string? bodyString, string paramName)
+    {
+        if(uriString != bodyString) {
+            throw new ArgumentMismatchException("Parameter in URL does not match parameter in body of request.", paramName);
+        }
+    }
+
 }
