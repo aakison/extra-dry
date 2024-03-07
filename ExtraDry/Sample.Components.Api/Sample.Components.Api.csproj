@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<InvariantGlobalization>true</InvariantGlobalization>
+		<UserSecretsId>9f4693c0-0a95-4e60-8a7d-505cb423444a</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AspNetCore.HealthChecks.CosmosDb" Version="8.0.0" />
+		<PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="8.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.2" />
+		<PackageReference Include="Microsoft.Azure.Cosmos" Version="3.38.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="8.0.2" />
+		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="8.0.2" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\ExtraDry.Server\ExtraDry.Server.csproj" />
+		<ProjectReference Include="..\Sample.Components.Shared\Sample.Components.Shared.csproj" />
+	</ItemGroup>
+
+	<Import Project="..\CommonAnalyzers.targets" />
+	<Import Project="..\VulnerabilityFixes.targets" />
+	<ItemGroup>
+	  <EditorConfigFiles Remove="C:\Users\Adrian\Repos\FmiWorks\extra-dry\ExtraDry\Sample.Components.Api\.editorconfig" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Include="C:\Users\Adrian\Repos\FmiWorks\extra-dry\ExtraDry\Sample.Components.Api\.editorconfig" />
+	</ItemGroup>
+	
+</Project>

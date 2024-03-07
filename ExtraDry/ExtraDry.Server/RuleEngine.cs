@@ -46,10 +46,6 @@ public class RuleEngine(
         }
         await UpdatePropertiesAsync(exemplar, destination, MaxRecursionDepth, e => e.CreateAction);
         if(destination != null) {
-            /*
-             *  Validation is run after the update on the destination to allow for 
-             *  validation that includes linked or resolvable entities.
-             */
             validator = new DataValidator();
             validator.ValidateObject(destination);
             validator.ThrowIfInvalid();

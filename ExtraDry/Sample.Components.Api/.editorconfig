@@ -1,0 +1,5 @@
+[*.cs]
+
+# DRY1017: API Controllers should have group name for OpenAPI.
+# API is a Microservice and the group name is not required.
+dotnet_diagnostic.DRY1017.severity = none

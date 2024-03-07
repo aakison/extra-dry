@@ -279,8 +279,8 @@ public class WarehouseModelBuilder {
 
     private string? Group { get; set; }
 
-    private Dictionary<Type, FactTableBuilder> FactTables { get; } = new();
+    private Dictionary<Type, FactTableBuilder> FactTables { get; } = [];
 
-    private Dictionary<Type, DimensionTableBuilder> DimensionTables { get; } = new();
+    private Dictionary<Type, DimensionTableBuilder> DimensionTables { get; } = [];
 
 }
