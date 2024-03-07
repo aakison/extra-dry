@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "CLI": {
+    "Command Line": {
       "commandName": "Project",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
