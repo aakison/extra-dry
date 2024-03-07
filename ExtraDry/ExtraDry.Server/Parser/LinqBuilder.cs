@@ -1,16 +1,13 @@
-using Microsoft.Azure.Amqp.Framing;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Security.Cryptography;
 
 namespace ExtraDry.Server.Internal;
 
 /// <summary>
 /// A lightweight dynamic linq builder, just enough to satisfy needs of filtering, sorting and paging API result sets.
 /// </summary>
-internal static class LinqBuilder {
+internal static class LinqBuilder
+{
 
     /// <summary>
     /// Sorts the elements of the sequence according to a key which is provided by name instead of a lambda.
@@ -57,8 +54,8 @@ internal static class LinqBuilder {
         Expression expr = arg;
         foreach(string prop in props) {
             var pi = modelDescription.SortProperties.FirstOrDefault(sortProp => string.Equals(sortProp.ExternalName, prop, StringComparison.OrdinalIgnoreCase))?.Property
-                ?? (string.Equals(modelDescription.StabilizerProperty?.ExternalName, prop, StringComparison.OrdinalIgnoreCase) 
-                        ? modelDescription.StabilizerProperty!.Property 
+                ?? (string.Equals(modelDescription.StabilizerProperty?.ExternalName, prop, StringComparison.OrdinalIgnoreCase)
+                        ? modelDescription.StabilizerProperty!.Property
                         : throw new DryException($"Could not find sort property `{prop}`", "Could not apply requested sort"));
             expr = Expression.Property(expr, pi);
             type = pi.PropertyType;
@@ -95,9 +92,9 @@ internal static class LinqBuilder {
             equality == EqualityType.GreaterThan
                 ? Expression.GreaterThan(propertyExpression, dateConstant)
                 : Expression.Equal(propertyExpression, dateConstant);
-        
+
         var lambda = Expression.Lambda<Func<T, bool>>(rangeExpression, param);
-        
+
         return source.Where(lambda);
     }
 
@@ -226,7 +223,7 @@ internal static class LinqBuilder {
         var type = propertyInfo.PropertyType;
         var expressions = new List<Expression>();
         if(!string.IsNullOrWhiteSpace(rule.Values[0])) {
-            var valueExpr = ConstantToExpression(rule.Values[0], type);
+            var valueExpr = type.IsTypeOf<DateTime>() ? DateTimeToExpression(rule, 0, type) : ConstantToExpression(rule.Values[0], type);
             var propertyExpr = Expression.Property(parameter, propertyInfo);
             var lowerBoundExpr = rule.LowerBound switch {
                 BoundRule.Exclusive => Expression.GreaterThan(propertyExpr, valueExpr),
@@ -235,7 +232,7 @@ internal static class LinqBuilder {
             expressions.Add(lowerBoundExpr);
         }
         if(!string.IsNullOrWhiteSpace(rule.Values[1])) {
-            var valueExpr = ConstantToExpression(rule.Values[1], type);
+            var valueExpr = type.IsTypeOf<DateTime>() ? DateTimeToExpression(rule, 1, type) : ConstantToExpression(rule.Values[1], type);
             var propertyExpr = Expression.Property(parameter, propertyInfo);
             var upperBoundExpr = rule.UpperBound switch {
                 BoundRule.Inclusive => Expression.LessThanOrEqual(propertyExpr, valueExpr),
@@ -257,6 +254,59 @@ internal static class LinqBuilder {
             }
             return expression;
         }
+
+        static Expression DateTimeToExpression(FilterRule rule, int index, Type type)
+        {
+            var value = rule.Values[index];
+            try {
+                var boundRule = index == 0 ? rule.LowerBound : rule.UpperBound;
+                var dateParts = value.Split('-');
+                var date = dateParts.Length switch {
+                    1 => CreateDateFromYear(index, boundRule, dateParts),
+                    2 => CreateDateFromYearAndMonth(index, boundRule, dateParts),
+                    3 => new DateTime(Convert.ToInt32(dateParts[0]), Convert.ToInt32(dateParts[1]), Convert.ToInt32(dateParts[2])),
+                    _ => throw new DryException($"Filter expression '{value}' was not of the correct type.", "Unable to apply filter. 0x260A354C"),
+                };
+
+                var expression = (Expression)Expression.Constant(date);
+                if(type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>)) {
+                    // If nullable property, need to convert non nullable values from ParseToType into nullable equivalents.
+                    expression = Expression.Convert(expression, type);
+                }
+                return expression;
+            }
+            catch(Exception e) when(e is not DryException) {
+                throw new DryException($"Filter expression '{value}' was not of the correct type.", "Unable to apply filter. 0x686DDA0C");
+            }
+        }
+    }
+
+    private static DateTime CreateDateFromYear(int index, BoundRule boundRule, string[] dateParts)
+    {
+        int year = Convert.ToInt32(dateParts[0]);
+        int month = (index, boundRule) switch {
+            (0, BoundRule.Inclusive) or (1, BoundRule.Exclusive) => 1,
+            (0, BoundRule.Exclusive) or (1, BoundRule.Inclusive) => 12,
+            (_, _) => 0
+        };
+        int day = (index, boundRule) switch {
+            (0, BoundRule.Inclusive) or (1, BoundRule.Exclusive) => 1,
+            (0, BoundRule.Exclusive) or (1, BoundRule.Inclusive) => 31,
+            (_, _) => 0
+        };
+        return new DateTime(year, month, day);
+    }
+
+    private static DateTime CreateDateFromYearAndMonth(int index, BoundRule boundRule, string[] dateParts)
+    {
+        int year = Convert.ToInt32(dateParts[0]);
+        int month = Convert.ToInt32(dateParts[1]);
+        int day = (index, boundRule) switch {
+            (0, BoundRule.Inclusive) or (1, BoundRule.Exclusive) => 1,
+            (0, BoundRule.Exclusive) or (1, BoundRule.Inclusive) => DateTime.DaysInMonth(year, month),
+            (_, _) => 0
+        };
+        return new DateTime(year, month, day);
     }
 
     private static object ParseToType(Type type, string value)
@@ -270,7 +320,7 @@ internal static class LinqBuilder {
                 return Enum.Parse(type, value, ignoreCase: true);
             }
             else {
-                var methodInfo = type.GetMethod("Parse", new Type[] { typeof(string) }) 
+                var methodInfo = type.GetMethod("Parse", new Type[] { typeof(string) })
                     ?? throw new DryException($"Can only filter on types that contain a Parse method, type '{type.Name}'.");
                 // Parse contract will have a result and not nullable
                 var result = methodInfo.Invoke(null, new object[] { value })!;
@@ -317,7 +367,8 @@ internal static class LinqBuilder {
 
     private static MethodInfo StringStartsWithWithComparisonMethod => typeof(string).GetMethod(nameof(string.StartsWith), new[] { typeof(string), typeof(StringComparison) })!;
 
-    private enum OrderType {
+    private enum OrderType
+    {
         OrderBy,
         ThenBy,
         OrderByDescending,
@@ -325,7 +376,8 @@ internal static class LinqBuilder {
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum EqualityType {
+    public enum EqualityType
+    {
         GreaterThan,
         EqualTo,
     }
