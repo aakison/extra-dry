@@ -33,7 +33,9 @@ public partial class ValidationSummary : ComponentBase, IExtraDryComponent
     public List<string> GetValidationMessages()
     {
         if(ProblemDetails == null || ProblemDetails.Status != (int)HttpStatusCode.BadRequest) {
-            throw Exception;
+            // TODO: How to propogate this exception to a higher ErrorBoundary?
+            // Throwing Exception doesn't get handled by DryErrorBoundary it goes unhandled and the alert at bottom of the screen appears
+            //throw Exception;
         }
         if(!ProblemDetails.Extensions.TryGetValue("errors", out var errors)) { 
             return new(); 
