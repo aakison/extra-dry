@@ -20,6 +20,7 @@ public class PropertyDescription {
         FieldCaption = Display?.Name ?? Property.Name;
         ColumnCaption = Display?.ShortName ?? Property.Name;
         Description = Display?.Description;
+        Order = Display?.GetOrder();
         HasDescription = !string.IsNullOrWhiteSpace(Description);
         Size = PredictSize();
         if(HasDiscreteValues) {
@@ -41,6 +42,7 @@ public class PropertyDescription {
             }
         }
         --recursionDepth;
+        PropertyType = Property.PropertyType.IsGenericType && Property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) ? Property.PropertyType.GetGenericArguments()[0] : Property.PropertyType;
     }
 
     /// <summary>
@@ -78,6 +80,11 @@ public class PropertyDescription {
     public ControlAttribute? Control { get; }
 
     public string? Description { get; }
+
+    /// <summary>
+    /// The display order, null if it is not present
+    /// </summary>
+    public int? Order { get; set; }
 
     public bool IsRequired { get; }
 
@@ -273,6 +280,12 @@ public class PropertyDescription {
     }
 
     public int? FieldLength => StringLength?.MaximumLength ?? MaxLength?.Length;
+
+    /// <summary>
+    /// Gets the type of the property.  If the property is a nullable type then the inner type is
+    /// returned.
+    /// </summary>
+    public Type PropertyType { get; }
 
     private PropertySize PredictSize()
     {
