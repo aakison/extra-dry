@@ -65,12 +65,5 @@
     "minify": {
       "enabled": false
     }
-  },
-  {
-    "outputFile": "Shared/Alert.razor.css",
-    "inputFile": "Shared/Alert.razor.scss",
-    "minify": {
-      "enabled": false
-    }
   }
 ]

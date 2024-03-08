@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Blazor;
+﻿using ExtraDry.Blazor.Components.Internal;
+
+namespace ExtraDry.Blazor;
 
 /// <summary>
 /// Generates a generic form for the creation and updating of a model.  Form layout is based on 
@@ -62,4 +64,5 @@ public partial class DryForm<T> : ComponentBase, IExtraDryComponent {
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "dry-form", ModelNameSlug, CssClass);
 
+    private List<string> AlertMessages { get; set; } = new();
 }

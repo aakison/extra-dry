@@ -4,19 +4,7 @@
 @inject NavigationManager Navigation
 
 <h2>Company</h2>
-<DryForm ViewModel="@this" Model="@company" FixedFieldsets="2">
-    @if (ShowAlert)
-    {
-        <Alert Title="@AlertTitle" AlertLevel="Sample.Shared.Enums.AlertLevel.Warning" CloseMethod="CloseAlert">
-            <ul>
-            @foreach(var msg in AlertMessages)
-            {
-                <li>@msg</li>
-            }
-            </ul>
-        </Alert>
-    }
-</DryForm>
+<DryForm ViewModel="@this" Model="@company" FixedFieldsets="1"></DryForm>
 
 @code {
 
@@ -29,49 +17,11 @@
     {
         company = await Service.RetrieveAsync(Uuid);
     }
-    private bool ShowAlert { get; set; }
-    private string AlertTitle { get; set; } = string.Empty;
-    private List<string> AlertMessages { get; set; } = new();
-
+    
     [Command(CommandContext.Primary, Name = "Save & Close")]
     public async Task SaveAsync(Company company)
     {
-        try{
-            await Service.UpdateAsync(Uuid, company);
-            Navigation.NavigateTo("/admin/works/companies/list");
-        } 
-        catch (DryException ex)
-        {
-            if (!ex.ProblemDetails.Extensions.TryGetValue("errors", out var errors)) { return; }
-
-            AlertMessages.Clear();
-            AlertTitle = ex.ProblemDetails.Title ?? "Oh No!";
-            if (errors is not JsonElement)
-            {
-                return;
-            }
-            var messages = JsonSerializer.Deserialize<Dictionary<string, List<string>>>(errors.ToString() ?? string.Empty);
-            if(messages == null || messages.Keys.Count == 0)
-            {
-                return;
-            }
-            foreach(var group in messages.Keys)
-            {
-                foreach(var error in messages[group])
-                {
-                    AlertMessages.Add($"{group} - {error}");
-                }
-            }
-
-            ShowAlert = true;
-            StateHasChanged();
-        }
+        await Service.UpdateAsync(Uuid, company);
+        Navigation.NavigateTo("/admin/works/companies/list");
     }
-
-    private void CloseAlert()
-    {
-        ShowAlert = false;
-        StateHasChanged();
-    }
-
 }

@@ -1,6 +1,7 @@
 ﻿@namespace ExtraDry.Blazor
 @using ExtraDry.Blazor.Forms
 @using ExtraDry.Blazor.Internal
+@using ExtraDry.Core.Models
 @typeparam T
 
 <form class="@CssClasses" onsubmit="return false;" action="/" method="GET" @attributes="@UnmatchedAttributes">
@@ -8,8 +9,7 @@
         <CascadingValue Value="@this">
             @if(Model == null) {
                 <progress>Loading...</progress>
-            }
-            else {
+            } else {
                 <div class="@ModelNameSlug entity-info">
                     <Icon Key="@Description?.Icon" />
                     <label>@Description?.ModelDisplayName</label>
@@ -31,10 +31,11 @@
                         @ChildContent
                     </div>
                 </div>
-                <div class="@ModelNameSlug entity-actions">
-                    @if(error != null) {
+                <ValidationBoundary>
+                    <div class="@ModelNameSlug entity-actions">
                         <DryButtonBar Commands="@Description?.Commands" Target="@Model" />
-                </div>
+                    </div>
+                </ValidationBoundary>
             }
         </CascadingValue>
     </CascadingValue>

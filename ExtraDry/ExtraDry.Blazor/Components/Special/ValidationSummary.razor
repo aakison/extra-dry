@@ -1,0 +1,15 @@
+﻿@namespace ExtraDry.Blazor
+@using ExtraDry.Core.Models
+
+@if (ProblemDetails != null)
+{
+    <div class="@CssClasses" @attributes="@UnmatchedAttributes">
+        <strong>@ProblemDetails.Title</strong>
+        <ul>
+            @foreach (var msg in @GetValidationMessages())
+            {
+                <li>@msg</li>
+            }
+        </ul>
+    </div>
+}
