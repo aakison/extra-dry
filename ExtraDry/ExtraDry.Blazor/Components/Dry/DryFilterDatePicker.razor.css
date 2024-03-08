@@ -10,15 +10,19 @@
   background-color: white;
 }
 
-::deep > .items {
+::deep.range-buttons {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 }
-::deep > .items label, ::deep > .items a {
-  display: flex;
-  justify-content: space-between;
+::deep.range-buttons button {
+  justify-content: center;
 }
-::deep > .items a {
+
+::deep ul {
+  list-style-type: none;
+  padding-inline-start: 0px;
+}
+::deep ul a {
   display: flex;
   justify-content: space-between;
 }
