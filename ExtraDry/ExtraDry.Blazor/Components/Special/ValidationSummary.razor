@@ -1,15 +1,21 @@
 ﻿@namespace ExtraDry.Blazor
 @using ExtraDry.Core.Models
 
-@if (ProblemDetails != null)
+@if (IsValidationError)
 {
     <div class="@CssClasses" @attributes="@UnmatchedAttributes">
-        <strong>@ProblemDetails.Title</strong>
+        <h4>@ProblemDetails!.Title</h4>
         <ul>
             @foreach (var msg in @GetValidationMessages())
             {
                 <li>@msg</li>
             }
         </ul>
+    </div>
+} 
+else
+{
+    <div class="@CssClasses" @attributes="@UnmatchedAttributes">
+        <h4>A problem has occurred. Please try again</h4>
     </div>
 }

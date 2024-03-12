@@ -28,16 +28,21 @@ public partial class ValidationSummary : ComponentBase, IExtraDryComponent
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "validation-summary", ErrorCss, CssClass);
 
-    private string ErrorCss => ProblemDetails?.Status == null ? "errorXxx" : $"status{ProblemDetails.Status}";
+    private string ErrorCss => IsValidationError ? $"status{ProblemDetails!.Status}": "unexpected-error";
+
+    private bool IsValidationError => ProblemDetails != null && ProblemDetails.Status == (int)HttpStatusCode.BadRequest;
 
     public List<string> GetValidationMessages()
     {
-        if(ProblemDetails == null || ProblemDetails.Status != (int)HttpStatusCode.BadRequest) {
-            // TODO: How to propogate this exception to a higher ErrorBoundary?
-            // Throwing Exception doesn't get handled by DryErrorBoundary it goes unhandled and the alert at bottom of the screen appears
-            //throw Exception;
+        if(!IsValidationError) {
+            // TODO: Propogate non validation exceptions to a higher ErrorBoundary?
+            // Throwing the exception here doesn't get handled by DryErrorBoundary it goes unhandled and
+            // the alert bar at bottom of the screen appears.
+            // For now it's handled by the ValidationSummary to display a "A problem has occurred. Please try again" message
+            // throw Exception;
+            return new();
         }
-        if(!ProblemDetails.Extensions.TryGetValue("errors", out var errors)) { 
+        if(!ProblemDetails!.Extensions.TryGetValue("errors", out var errors)) { 
             return new(); 
         }
 
