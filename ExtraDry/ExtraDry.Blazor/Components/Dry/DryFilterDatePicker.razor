@@ -11,6 +11,7 @@
         <div class="range-buttons" >
             <Button Caption="Previous" Icon="@PreviousIcon" Enabled="@CanChangeDate" @onclick="@DoPreviousClick" />
             <Button Caption="Next" Affordance="@NextAffordance" Enabled="@CanChangeDate" @onclick="@DoNextClick" />
+            <Button Caption="Clear" @onclick="@DoClearClick" />
         </div>
         @foreach (var group in TimeIntervalGroups)
         {
