@@ -89,9 +89,9 @@ public class DateTimeFilterBuilder : FilterBuilder
         return true;
     }
 
-    private string BuildDate(DateTime? date) => date.HasValue ? date.Value.ToString(IsoDateFormat, CultureInfo.InvariantCulture) : string.Empty;
+    private static string BuildDate(DateTime? date) => date.HasValue ? date.Value.ToString(IsoDateFormat, CultureInfo.InvariantCulture) : string.Empty;
 
-    private bool TryParseDateTime(string dateString, out DateTime? date)
+    private static bool TryParseDateTime(string dateString, out DateTime? date)
     {
         date = null;
         var dateTimeParts = dateString.Split('-');
