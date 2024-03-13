@@ -9,30 +9,26 @@
 /// </remarks>
 public class DateTimeFilterBuilder : FilterBuilder
 {
-    public FilterableDateTime? Lower { get; set; }
+    private const string IsoDateFormat = "yyyy-MM-dd";
+
+    public DateTime? Lower { get; set; }
 
     public bool LowerInclusive { get; set; } = true;
 
-    public FilterableDateTime? Upper { get; set; }
+    public DateTime? Upper { get; set; }
 
     public bool UpperInclusive { get; set; } = true;
 
     public void SetDates(DateTime? lower, DateTime? upper)
     {
-        Lower = lower.HasValue ? new FilterableDateTime(lower.Value) : null;
-        Upper = upper.HasValue ? new FilterableDateTime(upper.Value) : null;
-    }
-
-    internal void SetDates(int lowerYear, int? lowerMonth, int upperYear, int? upperMonth)
-    {
-        Lower = new FilterableDateTime(lowerYear, lowerMonth);
-        Upper = new FilterableDateTime(upperYear, upperMonth);
+        Lower = lower;
+        Upper = upper;
     }
 
     ///  <inheritdoc cref="FilterBuilder.Build" />
     public override string Build()
         => Lower != null || Upper != null
-            ? $"{FilterName}:{(LowerInclusive ? "[" : "(")}{Lower?.Build()},{Upper?.Build()}{(UpperInclusive ? "]" : ")")}"
+            ? $"{FilterName}:{(LowerInclusive ? "[" : "(")}{BuildDate(Lower)},{BuildDate(Upper)}{(UpperInclusive ? "]" : ")")}"
             : string.Empty;
 
     ///  <inheritdoc cref="FilterBuilder.Reset" />
@@ -70,16 +66,47 @@ public class DateTimeFilterBuilder : FilterBuilder
             return false;
         }
 
-        FilterName = filterName;
         LowerInclusive = filterValue.StartsWith('[');
         if(!string.IsNullOrEmpty(filterDates[0])) {
-            Lower = FilterableDateTime.TryParseFilterableDateTime(filterDates[0]);
+            if(TryParseDateTime(filterDates[0], out var lower)) {
+                Lower = lower;
+            }
+            else {
+                return false;
+            }
         }
         UpperInclusive = filterValue.EndsWith(']');
         if(!string.IsNullOrEmpty(filterDates[1])) {
-            Upper = FilterableDateTime.TryParseFilterableDateTime(filterDates[1]);
+            if(TryParseDateTime(filterDates[1], out var upper)) {
+                Upper = upper;
+            }
+            else {
+                return false;
+            }
         }
+
+        FilterName = filterName;
         return true;
     }
 
+    private static string BuildDate(DateTime? date) => date.HasValue ? date.Value.ToString(IsoDateFormat, CultureInfo.InvariantCulture) : string.Empty;
+
+    private static bool TryParseDateTime(string dateString, out DateTime? date)
+    {
+        date = null;
+        var dateTimeParts = dateString.Split('-');
+        if(dateTimeParts.Length < 1 || dateTimeParts.Length > 3) {
+            return false;
+        }
+        if(dateTimeParts.Any(part => string.IsNullOrEmpty(part) || !Int32.TryParse(part, out _))) {
+            return false;
+        }
+        try {
+            date = DateTime.ParseExact(dateString, IsoDateFormat, CultureInfo.InvariantCulture);
+            return true;
+        }
+        catch(FormatException) {
+            return false;
+        }
+    }
 }

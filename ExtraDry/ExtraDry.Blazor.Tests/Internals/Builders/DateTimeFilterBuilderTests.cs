@@ -25,7 +25,7 @@ public class DateTimeFilterBuilderTests
     {
         var filter = new DateTimeFilterBuilder {
             FilterName = "Created",
-            Lower = new FilterableDateTime(2023, 12, 18)
+            Lower = new DateTime(2023, 12, 18)
         };
 
         var filterString = filter.Build();
@@ -38,7 +38,7 @@ public class DateTimeFilterBuilderTests
     {
         var filter = new DateTimeFilterBuilder {
             FilterName = "Created",
-            Upper = new FilterableDateTime(2023, 12, 18)
+            Upper = new DateTime(2023, 12, 18)
         };
 
         var filterString = filter.Build();
@@ -51,13 +51,13 @@ public class DateTimeFilterBuilderTests
     {
         var filter = new DateTimeFilterBuilder {
             FilterName = "Created",
-            Lower = new FilterableDateTime(2022, 1, 1),
-            Upper = new FilterableDateTime(2023, 12, 18)
+            Lower = new DateTime(2022, 1, 1),
+            Upper = new DateTime(2023, 12, 18)
         };
 
         var filterString = filter.Build();
 
-        Assert.Equal("Created:[2022-1-1,2023-12-18]", filterString);
+        Assert.Equal("Created:[2022-01-01,2023-12-18]", filterString);
     }
 
     [Fact]
@@ -65,8 +65,8 @@ public class DateTimeFilterBuilderTests
     {
         var filter = new DateTimeFilterBuilder {
             FilterName = "Created",
-            Lower = new FilterableDateTime(2022, 1, 1),
-            Upper = new FilterableDateTime(2023, 12, 18)
+            Lower = new DateTime(2022, 1, 1),
+            Upper = new DateTime(2023, 12, 18)
         };
 
         filter.Reset();
@@ -77,10 +77,10 @@ public class DateTimeFilterBuilderTests
     }
 
     [Theory]
-    [InlineData("Created:[2022,2023]", true, true)]
-    [InlineData("Created:(2022,2023]", false, true)]
-    [InlineData("Created:[2022,2023)", true, false)]
-    [InlineData("Created:(2022,2023)", false, false)]
+    [InlineData("Created:[2022-01-01,2023-01-31]", true, true)]
+    [InlineData("Created:(2022-01-01,2023-01-31]", false, true)]
+    [InlineData("Created:[2022-01-01,2023-01-31)", true, false)]
+    [InlineData("Created:(2022-01-01,2023-01-31)", false, false)]
     public void CanParseFilter(string filterString, bool lowerInclusive, bool upperInclusive)
     {
         var filter = new DateTimeFilterBuilder();
@@ -98,8 +98,8 @@ public class DateTimeFilterBuilderTests
     }
 
     [Theory]
-    [InlineData("Created:[2023,]", true)]
-    [InlineData("Created:(2023,]", false)]
+    [InlineData("Created:[2023-01-01,]", true)]
+    [InlineData("Created:(2023-01-01,]", false)]
     public void CanParseLowerOnlyFilter(string filterString, bool inclusive)
     {
         var filter = new DateTimeFilterBuilder();
@@ -116,8 +116,8 @@ public class DateTimeFilterBuilderTests
     }
 
     [Theory]
-    [InlineData("Created:[,2023]", true)]
-    [InlineData("Created:[,2023)", false)]
+    [InlineData("Created:[,2023-12-31]", true)]
+    [InlineData("Created:[,2023-12-31)", false)]
     public void CanParseUpperOnlyFilter(string filterString, bool inclusive)
     {
         var filter = new DateTimeFilterBuilder();
@@ -134,6 +134,12 @@ public class DateTimeFilterBuilderTests
     }
 
     [Theory]
+    [InlineData("Created:[2023-1,]")]
+    [InlineData("Created:[2023-01,]")]
+    [InlineData("Created:[2023,]")]
+    [InlineData("Created:[2023-2-29,]")]
+    [InlineData("Created:[2023-02-29,]")]
+    [InlineData("Created:[2023-02-2,]")]
     [InlineData(":[2022,2023]")]
     [InlineData("Created[2022,2023]")]
     [InlineData("[2022,2023]")]

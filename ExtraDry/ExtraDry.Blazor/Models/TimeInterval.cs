@@ -128,9 +128,11 @@ public class TimeInterval
     private void SetMonths()
     {
         endDate = DateTimeNow;
-        startDate = Interval == 0 ? endDate : endDate.Value.AddMonths(Interval);
+        startDate = endDate.Value.AddMonths(Interval);
+        startDate = new DateTime(startDate.Value.Year, startDate.Value.Month, 1);
         // If there is an interval then the range excludes this month, i.e. three months before this month.
         endDate = Interval == 0 ? endDate : endDate.Value.AddMonths(-1);
+        endDate = new DateTime(endDate.Value.Year, endDate.Value.Month, DateTime.DaysInMonth(endDate.Value.Year, endDate.Value.Month));
         SetMonthsDescription();
     }
 
@@ -200,8 +202,10 @@ public class TimeInterval
     {
         endDate = DateTimeNow;
         startDate = Interval == 0 ? endDate : endDate.Value.AddYears(Interval);
+        startDate = new DateTime(startDate.Value.Year, 1, 1);
         // If there is an interval then the range excludes this year, i.e. three years before this year.
         endDate = Interval == 0 ? endDate : endDate.Value.AddYears(-1);
+        endDate = new DateTime(endDate.Value.Year, 12, 31);
         SetYearsDescription();
     }
 
@@ -228,17 +232,26 @@ public class TimeInterval
                 break;
             case TimeIntervalType.Months:
                 startDate = startDate?.AddMonths(interval);
-                endDate = endDate?.AddMonths(interval);
+                if(endDate.HasValue) {
+                    endDate = endDate.Value.AddMonths(interval);
+                    endDate = new DateTime(endDate.Value.Year, endDate.Value.Month, DateTime.DaysInMonth(endDate.Value.Year, endDate.Value.Month));
+                }
                 SetMonthsDescription();
                 break;
             case TimeIntervalType.Quarter:
                 startDate = startDate?.AddMonths(interval);
-                endDate = endDate?.AddMonths(interval);
+                if(endDate.HasValue) {
+                    endDate = endDate.Value.AddMonths(interval);
+                    endDate = new DateTime(endDate.Value.Year, endDate.Value.Month, DateTime.DaysInMonth(endDate.Value.Year, endDate.Value.Month));
+                }
                 SetQuarterDescription();
                 break;
             case TimeIntervalType.Years:
                 startDate = startDate?.AddYears(interval);
-                endDate = endDate?.AddYears(interval);
+                if(endDate.HasValue) {
+                    endDate = endDate.Value.AddYears(interval);
+                    endDate = new DateTime(endDate.Value.Year, endDate.Value.Month, DateTime.DaysInMonth(endDate.Value.Year, endDate.Value.Month));
+                }
                 SetYearsDescription();
                 break;
         };
@@ -250,18 +263,14 @@ public class TimeInterval
     {
         switch(Type) {
             case TimeIntervalType.Static:
-            case TimeIntervalType.Days:
                 filter.SetDates(startDate, endDate);
                 break;
+            case TimeIntervalType.Days:
             case TimeIntervalType.Months:
             case TimeIntervalType.Quarter:
-                if(startDate.HasValue && endDate.HasValue) {
-                    filter.SetDates(startDate.Value.Year, startDate.Value.Month, endDate.Value.Year, endDate.Value.Month);
-                }
-                break;
             case TimeIntervalType.Years:
                 if(startDate.HasValue && endDate.HasValue) {
-                    filter.SetDates(startDate.Value.Year, null, endDate.Value.Year, null);
+                    filter.SetDates(startDate, endDate);
                 }
                 break;
             default:
@@ -271,11 +280,11 @@ public class TimeInterval
 
     internal bool TryParseFilter(DateTimeFilterBuilder filter)
     {
-        var parsed = filter switch { { Lower: var lower, Upper: var upper } when !lower.HasValue || !upper.HasValue => TryParseAsStatic(filter),
-            { Lower: var lower, Upper: var upper } when (lower?.IsFullDate ?? false) && (upper?.IsFullDate ?? false) => TryParseAsDays(filter),
-            { Lower: var lower, Upper: var upper } when !(lower?.Month.HasValue ?? false) && !(upper?.Month.HasValue ?? false) => TryParseAsYears(filter),
-            { Lower: var lower, Upper: var upper } when !(lower?.Day.HasValue ?? false) && !(upper?.Day.HasValue ?? false) => TryParseAsMonths(filter),
-            _ => false,
+        var parsed = filter switch {
+            { Lower: var lower, Upper: var upper } when !lower.HasValue || !upper.HasValue => TryParseAsStatic(filter),
+            { Lower: var lower, Upper: var upper } when lower!.Value.Month == 1 && lower!.Value.Day == 1 && upper!.Value.Month == 12 && upper.Value.Day == 31 => TryParseAsYears(filter),
+            { Lower: var lower, Upper: var upper } when lower!.Value.Day == 1 && upper!.Value.Day == DateTime.DaysInMonth(upper.Value.Year, upper.Value.Month) => TryParseAsMonths(filter),
+            _ => TryParseAsDays(filter),
         };
         return parsed;
     }
@@ -285,14 +294,14 @@ public class TimeInterval
         if(!filter.Lower.HasValue && !filter.Upper.HasValue) { return false; }
 
         Type = TimeIntervalType.Static;
-        if(filter.Upper?.IsFullDate ?? false) {
-            endDate = new DateTime(filter.Upper.Value.Year, filter.Upper.Value.Month!.Value, filter.Upper.Value.Day!.Value);
+        if(filter.Upper.HasValue) {
+            endDate = filter.Upper;
             Description = endDate.Value.Date == DateTimeNow.Date ? $"Before today" : $"Before {endDate.Value.ToString("dd MMM yyyy", CultureInfo.InvariantCulture)}";
             return true;
         }
 
-        if(filter.Lower?.IsFullDate ?? false) {
-            startDate = new DateTime(filter.Lower.Value.Year, filter.Lower.Value.Month!.Value, filter.Lower.Value.Day!.Value);
+        if(filter.Lower.HasValue) {
+            startDate = filter.Lower;
             Description = startDate.Value.Date == DateTimeNow.Date ? $"After today" : $"After {startDate.Value.ToString("dd MMM yyyy", CultureInfo.InvariantCulture)}";
             return true;
         }
@@ -301,11 +310,11 @@ public class TimeInterval
 
     private bool TryParseAsDays(DateTimeFilterBuilder filter)
     {
-        if(!(filter.Lower?.IsFullDate ?? false) || !(filter.Upper?.IsFullDate ?? false)) { return false; }
+        if(!(filter.Lower.HasValue) || !(filter.Upper.HasValue)) { return false; }
 
         Type = TimeIntervalType.Days;
-        endDate = new DateTime(filter.Upper.Value.Year, filter.Upper.Value.Month!.Value, filter.Upper.Value.Day!.Value);
-        startDate = new DateTime(filter.Lower.Value.Year, filter.Lower.Value.Month!.Value, filter.Lower.Value.Day!.Value);
+        endDate = filter.Upper;
+        startDate = filter.Lower;
         Interval = (startDate.Value.Date == endDate.Value.Date) ? 0 : startDate.Value.Subtract(endDate.Value.AddDays(1)).Days;
         SetDaysDescription();
 
@@ -314,12 +323,12 @@ public class TimeInterval
 
     private bool TryParseAsMonths(DateTimeFilterBuilder filter)
     {
-        if(!(filter.Lower?.Month.HasValue ?? false) || !(filter.Upper?.Month.HasValue ?? false)) { return false; }
+        if(!(filter.Lower.HasValue) || !(filter.Upper.HasValue)) { return false; }
 
         Type = TimeIntervalType.Months;
-        endDate = new DateTime(filter.Upper.Value.Year, filter.Upper.Value.Month!.Value, 1);
-        startDate = new DateTime(filter.Lower.Value.Year, filter.Lower.Value.Month!.Value, 1);
-        Interval = (startDate.Value.Date == endDate.Value.Date) ? 0 : ((startDate.Value.Year - endDate.Value.Year) * 12) + startDate.Value.Month - (endDate.Value.Month + 1);
+        endDate = filter.Upper;
+        startDate = filter.Lower;
+        Interval = (startDate.Value.Month == endDate.Value.Month) ? 0 : ((startDate.Value.Year - endDate.Value.Year) * 12) + startDate.Value.Month - (endDate.Value.Month + 1);
         SetMonthsDescription();
         
         return true;
@@ -330,9 +339,9 @@ public class TimeInterval
         if(!filter.Lower.HasValue || !filter.Upper.HasValue) { return false; }
 
         Type = TimeIntervalType.Years;
-        endDate = new DateTime(filter.Upper.Value.Year, 1, 1);
-        startDate = new DateTime(filter.Lower.Value.Year, 1, 1);
-        Interval = (startDate.Value.Date == endDate.Value.Date) ? 0 : startDate.Value.Year - (endDate.Value.Year + 1);
+        endDate = filter.Upper;
+        startDate = filter.Lower;
+        Interval = (startDate.Value.Year == endDate.Value.Year) ? 0 : startDate.Value.Year - (endDate.Value.Year + 1);
         SetYearsDescription();
 
         return true;
