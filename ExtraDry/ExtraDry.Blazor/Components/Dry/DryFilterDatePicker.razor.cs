@@ -47,10 +47,7 @@ public partial class DryFilterDatePicker : ComponentBase, IExtraDryComponent, ID
 
     protected MiniDialog? MiniDialog { get; set; }
 
-    /// <summary>
-    /// The caption for the filtered based in the time interval selected.
-    /// </summary>
-    private string Caption => Selected != null ? Selected.Summary : Placeholder;
+    private bool DisplayCaption => Selected == null;
 
     private bool CanChangeDate => Selected != null && Selected.Type != TimeIntervalType.Static;
 
@@ -58,14 +55,9 @@ public partial class DryFilterDatePicker : ComponentBase, IExtraDryComponent, ID
 
     private List<TimeIntervalGroup> TimeIntervalGroups { get; } = new List<TimeIntervalGroup> {
         new() {
-            TimeIntervals = new List<TimeInterval> {
-                new ("All dates", null, null),
-                new ("Before today", null, DateTime.Now)
-            }
-        },
-        new() {
             Title = "Relative dates",
             TimeIntervals = new List<TimeInterval> {
+                new ("Before today", null, DateTime.Now),
                 new (TimeIntervalType.Days, -7, "Last 7 days" ),
                 new (TimeIntervalType.Days, -30, "Last 30 days")
             }
@@ -156,6 +148,14 @@ public partial class DryFilterDatePicker : ComponentBase, IExtraDryComponent, ID
             Selected = Selected.Clone();
         }
         Selected.Next();
+    }
+
+    protected void DoClearClick()
+    {
+        if(Selected == null) { return; }
+
+        Selected = null;
+        Filter?.Reset();
     }
 
     private Task SyncWithPageQuery()

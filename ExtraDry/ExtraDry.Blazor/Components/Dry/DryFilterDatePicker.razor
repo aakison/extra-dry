@@ -1,24 +1,34 @@
 @namespace ExtraDry.Blazor
 
 <div class="@CssClasses">
-    <Button Caption="@Caption" @onclick="@DoButtonClick" Affordance="@Affordance" />
-    <MiniDialog @ref="MiniDialog" OnSubmit="@SyncWithPageQuery">
-        <Button Caption="Previous" Icon="@PreviousIcon" Enabled="@CanChangeDate" @onclick="@DoPreviousClick" />
-        <Button Caption="Next" Affordance="@NextAffordance" Enabled="@CanChangeDate" @onclick="@DoNextClick" />
+    <Button Caption="@Placeholder" @onclick="@DoButtonClick" Affordance="@Affordance" ShowCaption="@DisplayCaption">
+        @if (Selected != null)
+        {
+            <MiniCard CssClass="value only" Title="@Selected?.Summary" />
+        }
+    </Button>
+    <MiniDialog CssClass="@CssClasses" Title="@Placeholder" @ref="MiniDialog" OnSubmit="@SyncWithPageQuery">
+        <div class="range-buttons" >
+            <Button Caption="Previous" Icon="@PreviousIcon" Enabled="@CanChangeDate" @onclick="@DoPreviousClick" />
+            <Button Caption="Next" Affordance="@NextAffordance" Enabled="@CanChangeDate" @onclick="@DoNextClick" />
+            <Button Caption="Clear" @onclick="@DoClearClick" />
+        </div>
         @foreach (var group in TimeIntervalGroups)
         {
-            <div class="group">
-                <div>@group.Title</div>
-                <div class="items">
-                    @foreach (var item in group.TimeIntervals)
-                    {
+            <ul>
+                @if(!string.IsNullOrEmpty(group.Title)) {
+                    <li><h4>@group.Title</h4></li>
+                }
+                @foreach (var item in group.TimeIntervals)
+                {
+                    <li>
                         <a @onclick="e => OnIntervalChange(e, item)">
                             <span>@item.Title</span>
                             <span>@item.Description</span>
                         </a>
-                    }
-                </div>
-            </div>
+                    </li>
+                }
+            </ul>
         }
     </MiniDialog>
 </div>
