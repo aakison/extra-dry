@@ -8,9 +8,11 @@
         }
     </Button>
     <MiniDialog CssClass="@CssClasses" Title="@Placeholder" @ref="MiniDialog" OnSubmit="@SyncWithPageQuery">
-        <div class="range-buttons" >
-            <Button Caption="Previous" Icon="@PreviousIcon" Enabled="@CanChangeDate" @onclick="@DoPreviousClick" />
-            <Button Caption="Next" Affordance="@NextAffordance" Enabled="@CanChangeDate" @onclick="@DoNextClick" />
+        <div class="controls">
+            <div class="range-buttons" >
+                <Button Caption="Previous" Icon="@PreviousIcon" Enabled="@CanChangeDate" @onclick="@DoPreviousClick" />
+                <Button Caption="Next" Affordance="@NextAffordance" Enabled="@CanChangeDate" @onclick="@DoNextClick" />
+            </div>
             <Button Caption="Clear" @onclick="@DoClearClick" />
         </div>
         @foreach (var group in TimeIntervalGroups)
