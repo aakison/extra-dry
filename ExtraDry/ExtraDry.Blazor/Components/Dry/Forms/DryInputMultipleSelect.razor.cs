@@ -51,6 +51,10 @@ public partial class DryInputMultipleSelect<T> : ComponentBase, IDryInput<T>, IE
             AllOptions.Clear();
             return;
         }
+        if(AllOptions.Values.Count > 0) {
+            // Already initialised.
+            return;
+        }
         int index = 100;
         foreach(var value in Values) {
             var key = $"{index++}";

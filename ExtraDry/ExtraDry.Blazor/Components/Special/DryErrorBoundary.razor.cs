@@ -47,11 +47,11 @@ public partial class DryErrorBoundary : ComponentBase, IExtraDryComponent {
     }
 
     // Injected from razor component page.
-    private ExposedErrorBoundary ErrorBoundary { get; set; } = null!;
+    protected ExposedErrorBoundary ErrorBoundary { get; set; } = null!;
 
-    private Type ErrorType => ErrorComponent ?? ThemeInfo?.ErrorComponent ?? typeof(DefaultErrorComponent);
+    protected Type ErrorType => ErrorComponent ?? ThemeInfo?.ErrorComponent ?? typeof(DefaultErrorComponent);
 
-    private Dictionary<string, object?> ErrorParameters {
+    protected Dictionary<string, object?> ErrorParameters {
         get {
             var parameters = new Dictionary<string, object?>() {
                 { nameof(CssClass), CssClass },

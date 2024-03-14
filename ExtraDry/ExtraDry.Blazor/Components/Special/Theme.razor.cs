@@ -37,6 +37,12 @@ public partial class Theme : ComponentBase {
     [Parameter]
     public Type? ErrorComponent { get; set; }
 
+    /// <summary>
+    /// A custom validation error component that is applied and used on any ValidationBoundary instead of the default.
+    /// </summary>
+    [Parameter]
+    public Type? ValidationMessageComponent { get; set; }
+
     /// <inheritdoc cref="Suspense{TModel}.Error" />
     /// <see cref="Suspense{TModel}"/>
     [Parameter]
@@ -58,6 +64,10 @@ public partial class Theme : ComponentBase {
 
         if(ErrorComponent != null) {
             ThemeInfo.ErrorComponent = ErrorComponent;
+        }
+
+        if(ValidationMessageComponent != null) {
+            ThemeInfo.ValidationMessageComponent = ValidationMessageComponent;
         }
 
         if(SuspenseError != null) {

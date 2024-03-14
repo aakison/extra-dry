@@ -24,7 +24,7 @@ public class Company : IResourceIdentifiers {
     [Rules(RuleAction.Ignore)]
     public Guid Uuid { get; set; } = Guid.NewGuid();
 
-    [Display(Name = "Code", GroupName = "Summary")]
+    [Display(Name = "Code", GroupName = "Summary", Order = 1)]
     [Filter(FilterType.Equals)]
     [Rules(CreateAction = RuleAction.Allow, UpdateAction = RuleAction.Block)]
     [Required, StringLength(24)]

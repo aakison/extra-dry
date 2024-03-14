@@ -16,6 +16,13 @@ public class ThemeInfo {
     public Type ErrorComponent { get; set; } = typeof(DefaultErrorComponent);
 
     /// <summary>
+    /// The type of the validation message component that is rendered if a Validation Error is thrown.  Use the 
+    /// <see cref="ValidationBoundary"/> component to catch validation errors and display them using this
+    /// component reference.
+    /// </summary>
+    public Type ValidationMessageComponent { get; set; } = typeof(ValidationSummary);
+
+    /// <summary>
     /// The set of Icons that are currently available in the theme.  This information is used by
     /// <see cref="Icon"/> components and the many other components that compose Icons 
     /// (e.g. <see cref="Button"/>).
