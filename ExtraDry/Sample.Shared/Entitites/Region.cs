@@ -18,7 +18,7 @@ public partial class Region : IHierarchyEntity<Region>, IResourceIdentifiers, IV
     [JsonIgnore]
     public int Id { get; set; }
 
-    /// <inheritdoc cref="IResourceIdentifiers.Uuid" />
+    /// <inheritdoc />
     [Sort(SortType.Sortable)] 
     public Guid Uuid { get; set; } = Guid.NewGuid();
 

@@ -1,16 +1,17 @@
-﻿using ExtraDry.Server.Agents;
-using Microsoft.Extensions.Logging;
+﻿using ExtraDry.Blazor;
+using ExtraDry.Server.Agents;
 
 namespace Sample.Components.Agent;
 
 internal class OptionsDisplayer(
-    AgentOptions options,
-    ILogger<OptionsDisplayer> logger)
+    ILogger<OptionsDisplayer> logger,
+    IListService<Tenant> tenants)
     : ICronJob
 {
-    public Task ExecuteAsync(CancellationToken _)
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        logger.LogInformation("Option View: {option}", options.Test);
-        return Task.CompletedTask;
+        var result = await tenants.GetItemsAsync(new Query(), cancellationToken);
+        logger.LogInformation("Tenant Count: {count}", result.Items.Count());
     }
+
 }

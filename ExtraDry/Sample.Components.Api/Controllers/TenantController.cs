@@ -2,18 +2,24 @@ using ExtraDry.Core;
 using ExtraDry.Server;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Sample.Components.Api.Security;
 using Sample.Components.Api.Services;
 
 namespace Sample.Components.Api.Controllers;
 
+/// <summary>
+/// Endpoints for managing tenants, typically called by Admins.
+/// </summary>
 [ApiController]
 [SkipStatusCodePages]
 [ApiExceptionStatusCodes]
-//[ApiExplorerSettings(GroupName = "Components")]
 public class TenantController(
     TenantService tenants) 
 {
 
+    /// <summary>
+    /// Get a list of all Tenants.
+    /// </summary>
     [HttpGet("/tenants")]
     [Authorize(Policies.Admin)]
     [Produces("application/json")]
@@ -22,6 +28,12 @@ public class TenantController(
         return await tenants.ListTenantsAsync(query);
     }
 
+    /// <summary>
+    /// Create a new TenantSlug.
+    /// </summary>
+    /// <remarks>
+    /// Typically called by agents to create a tenant when events are received indicating new clients.
+    /// </remarks>
     [HttpPost("/tenants")]
     [Authorize(Policies.AdminOrAgent)]
     [Consumes("application/json"), Produces("application/json")]
@@ -32,29 +44,21 @@ public class TenantController(
     }
 
     /// <summary>
-    /// Retrieve a tenant by its UUID.  For efficiency, prefer the slug version of this method.
-    /// </summary>
-    [HttpGet("/tenants/{uuid:guid}")]
-    [Authorize(Policies.Admin)]
-    [Produces("application/json")]
-    public async Task<Tenant> RetrieveTenant(Guid uuid)
-    {
-        return await tenants.RetrieveTenantAsync(uuid);
-    }
-
-    /// <summary>
     /// Retrieve a tenant by its Slug.
     /// </summary>
     [HttpGet("/tenants/{slug}")]
-    [Authorize(Policies.Admin)]
+    [Authorize(Policies.AdminOrAgent)]
     [Produces("application/json")]
     public async Task<Tenant> RetrieveTenant(string slug)
     {
         return await tenants.RetrieveTenantAsync(slug);
     }
 
+    /// <summary>
+    /// Update an existing tenant.
+    /// </summary>
     [HttpPut("/tenants/{slug}")]
-    [Authorize(Policies.Agent)]
+    [Authorize(Policies.AdminOrAgent)]
     [Consumes("application/json"), Produces("application/json")]
     public async Task<ResourceReference<Tenant>> UpdateTenant(string slug, Tenant exemplar)
     {
@@ -65,12 +69,14 @@ public class TenantController(
         return new ResourceReference<Tenant>(tenant);
     }
 
+    /// <summary>
+    /// Delete an existing tenant.
+    /// </summary>
     [HttpDelete("/tenants/{slug}")]
-    [Authorize(Policies.Agent)]
-    public async Task<ResourceReference<Tenant>> DeleteTenant(string slug)
+    [Authorize(Policies.AdminOrAgent)]
+    public async Task DeleteTenant(string slug)
     {
         await tenants.DeleteTenantAsync(slug);
-        return new ResourceReference<Tenant>();
     }
 
 }

@@ -10,7 +10,8 @@ namespace ExtraDry.Server.Internal;
 /// <summary>
 /// A lightweight dynamic linq builder, just enough to satisfy needs of filtering, sorting and paging API result sets.
 /// </summary>
-internal static class LinqBuilder {
+internal static class LinqBuilder
+{
 
     /// <summary>
     /// Sorts the elements of the sequence according to a key which is provided by name instead of a lambda.
@@ -57,8 +58,8 @@ internal static class LinqBuilder {
         Expression expr = arg;
         foreach(string prop in props) {
             var pi = modelDescription.SortProperties.FirstOrDefault(sortProp => string.Equals(sortProp.ExternalName, prop, StringComparison.OrdinalIgnoreCase))?.Property
-                ?? (string.Equals(modelDescription.StabilizerProperty?.ExternalName, prop, StringComparison.OrdinalIgnoreCase) 
-                        ? modelDescription.StabilizerProperty!.Property 
+                ?? (string.Equals(modelDescription.StabilizerProperty?.ExternalName, prop, StringComparison.OrdinalIgnoreCase)
+                        ? modelDescription.StabilizerProperty!.Property
                         : throw new DryException($"Could not find sort property `{prop}`", "Could not apply requested sort"));
             expr = Expression.Property(expr, pi);
             type = pi.PropertyType;
@@ -95,9 +96,9 @@ internal static class LinqBuilder {
             equality == EqualityType.GreaterThan
                 ? Expression.GreaterThan(propertyExpression, dateConstant)
                 : Expression.Equal(propertyExpression, dateConstant);
-        
+
         var lambda = Expression.Lambda<Func<T, bool>>(rangeExpression, param);
-        
+
         return source.Where(lambda);
     }
 
@@ -270,7 +271,7 @@ internal static class LinqBuilder {
                 return Enum.Parse(type, value, ignoreCase: true);
             }
             else {
-                var methodInfo = type.GetMethod("Parse", [typeof(string)]) 
+                var methodInfo = type.GetMethod("Parse", [typeof(string)])
                     ?? throw new DryException($"Can only filter on types that contain a Parse method, type '{type.Name}'.");
                 // Parse contract will have a result and not nullable
                 var result = methodInfo.Invoke(null, new object[] { value })!;
@@ -278,7 +279,7 @@ internal static class LinqBuilder {
             }
         }
         catch {
-            throw new DryException($"Filter expression '{value}' was not of the correct type.", "Unable to apply filter. 0x0F4A10KL");
+            throw new DryException($"Filter expression '{value}' was not of the correct type.", "Unable to apply filter. 0x0F4A1089");
         }
     }
 
@@ -317,7 +318,8 @@ internal static class LinqBuilder {
 
     private static MethodInfo StringStartsWithWithComparisonMethod => typeof(string).GetMethod(nameof(string.StartsWith), [typeof(string), typeof(StringComparison)])!;
 
-    private enum OrderType {
+    private enum OrderType
+    {
         OrderBy,
         ThenBy,
         OrderByDescending,
@@ -325,7 +327,8 @@ internal static class LinqBuilder {
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum EqualityType {
+    public enum EqualityType
+    {
         GreaterThan,
         EqualTo,
     }

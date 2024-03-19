@@ -77,9 +77,10 @@ namespace ExtraDry.Swashbuckle.Instructions;
 /// 
 /// For example, the following are valid range filters:
 /// 
-///   * `year:[2000,2010)` - All years from 2000 up to and excluding 2010.
-///   * `year:[2010,)` - All years from 2010 onwards (no upper bound).
+///   * `year:[2000, 2010)` - All model years (an integer) from 2000 up to and excluding 2010.
+///   * `year:[2000,)` - All model years (an integer) from 2000 on (no upper bound).
 ///   * `date:[2020-01-01T00:00:00,2021-01-01T00:00:00)` - Any time in calendar year 2020.
+///   * `date:[2020-01-01,2020-12-31]` - Any time in calendar year 2020.
 ///   * `age:(,18)` - Any age below 18.
 /// 
 /// ### Filterable Fields

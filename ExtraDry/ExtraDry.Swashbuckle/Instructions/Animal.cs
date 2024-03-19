@@ -15,7 +15,7 @@ public class Animal : IHierarchyEntity<Animal>, IResourceIdentifiers {
     [Key]
     public int Id { get; set; }
 
-    /// <inheritdoc cref="IResourceIdentifiers.Uuid" />
+    /// <inheritdoc />
     public Guid Uuid { get; set; }
 
     /// <summary>

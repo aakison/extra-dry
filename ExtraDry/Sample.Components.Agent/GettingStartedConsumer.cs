@@ -7,9 +7,9 @@ using Microsoft.Extensions.Logging;
 
 public class GettingStartedConsumer(
     ILogger<GettingStartedConsumer> logger)
-    : IConsumer<GettingStarted>
+    : IConsumer<GenericEvent>
 {
-    public Task Consume(ConsumeContext<GettingStarted> context)
+    public Task Consume(ConsumeContext<GenericEvent> context)
     {
         logger.LogInformation("Received Text: {Text}", context.Message.Value);
         return Task.CompletedTask;

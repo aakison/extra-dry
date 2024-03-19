@@ -71,7 +71,7 @@ public static class LoggerExtensions
                 Properties.Add($"{prefix}{property.Name}", property.GetValue(target)?.ToString() ?? "<null>");
             }
             var secureProperties = properties.Where(e => e.GetCustomAttribute<SecretAttribute>() != null);
-            Secrets.AddRange(secureProperties.Select(e => e.GetValue(target)?.ToString() ?? ""));
+            Secrets.AddRange(secureProperties.Select(e => e.GetValue(target)?.ToString() ?? "").Where(e => e.Length > 1));
             var validator = new DataValidator();
             validator.ValidateObject(target);
             foreach(var result in validator.Errors) {

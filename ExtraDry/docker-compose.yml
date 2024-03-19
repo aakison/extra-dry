@@ -1,24 +1,104 @@
-version: '3.4'
+version: '3.9'
+
+name: components-microservice
 
 services:
+
+  sample.components.agent:
+    image: ${DOCKER_REGISTRY-}samplecomponentsagent
+    container_name: components-agent
+    hostname: components-agent
+    build:
+      context: .
+      dockerfile: Sample.Components.Agent/Dockerfile
+    depends_on:
+      - sample.components.api
+      - sample.rabbitmq
+    environment:
+      - AGENTOPTIONS__SERVICEBUS=RabbitMQ
+      - AGENTOPTIONS__RABBITMQ__SERVER=172.20.0.4
+      - AGENTOPTIONS__RABBITMQ__USERNAME=guest
+      - AGENTOPTIONS__RABBITMQ__PASSWORD=guest
+      - AGENTOPTIONS__API__SERVER=172.20.0.42
+      - AGENTOPTIONS__API__PORT=42443
+    ports:
+      - 41080:80
+      - 41443:443
+    networks:
+      backend:
+        ipv4_address: 172.20.0.41
+  
   sample.components.api:
     image: ${DOCKER_REGISTRY-}samplecomponentsapi
+    container_name: components-api
+    hostname: components-api
     build:
       context: .
       dockerfile: Sample.Components.Api/Dockerfile
+    depends_on:
+      - sample.cosmosdb
+      - sample.azurite
+    environment:
+      - APIOPTIONS__COSMOSDB__SERVER=172.20.0.5
+    ports:
+      - 42080:80
+      - 42443:443
+    networks:
+      backend:
+        ipv4_address: 172.20.0.42
 
   # RabbitMQ docker image for local development only.
   # Using image from MassTransit, see https://masstransit.io/quick-starts/rabbitmq
   # Login in http://localhost:15672, with guest/guest.
-  sample.servicebus.stub:
+  sample.rabbitmq:
     image: masstransit/rabbitmq
+    container_name: rabbitmq
+    hostname: rabbitmq
     ports:
-    - 15672:15672
-    - 5672:5672
+      - 15672:15672
+      - 5672:5672
+    networks:
+      backend:
+        ipv4_address: 172.20.0.4
 
-  sample.components.agent:
-    image: ${DOCKER_REGISTRY-}samplecomponentsagent
-    build:
-      context: .
-      dockerfile: Sample.Components.Agent/Dockerfile
+  # Azure CosmosDB Emulator docker image for local development only.
+  # Using image from Microsoft, see https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-develop-emulator?tabs=docker-linux%2Ccsharp&pivots=api-nosql
+  # Either trust certificates or ignore SSL exceptions in browser.
+  # Certificate at https://localhost:8081/_explorer/emulator.pem
+  # Login in https://localhost:8081/_explorer/index.html
+  sample.cosmosdb:
+    image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator
+    container_name: cosmosdb
+    hostname: cosmosdb
+    environment:
+      - AZURE_COSMOS_EMULATOR_PARTITION_COUNT=5 
+      - AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE=true
+    ports:
+      - 8081:8081
+      - 10250-10255:10250-10255
+    networks:
+      backend:
+        ipv4_address: 172.20.0.5
+
+  # Azure Storage Emulator (Azurite) docker image for local development only.
+  # Using image from Microsoft, see https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azurite?tabs=docker-hub%2Cblob-storage
+  sample.azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: azurite
+    hostname: azurite
+    ports:
+    - 10000:10000
+    - 10001:10001
+    - 10002:10002
+    networks:
+      backend:
+        ipv4_address: 172.20.0.6
+
+networks:
+  backend:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 172.20.0.0/16
+         gateway: 172.20.0.1
 

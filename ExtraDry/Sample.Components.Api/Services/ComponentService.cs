@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Sample.Components.Api.Services;
 
+/// <summary>
+/// Standard CRUD services for Components, each requiring a tenant slug for scope.
+/// </summary>
 public class ComponentService(
     ComponentContext database,
     TenantService tenants,
@@ -20,8 +23,7 @@ public class ComponentService(
     {
         var component = await rules.CreateAsync(exemplar);
         var t = await tenants.RetrieveTenantAsync(tenant);
-        component.Partition = t.Partition;
-        component.TenantUuid = t.Uuid;
+        component.TenantSlug = t.Slug;
         database.Components.Add(component);
         await database.SaveChangesAsync();
         return component;

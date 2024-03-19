@@ -2,10 +2,14 @@ using ExtraDry.Core;
 using ExtraDry.Server;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Sample.Components.Api.Security;
 using Sample.Components.Api.Services;
 
 namespace Sample.Components.Api.Controllers;
 
+/// <summary>
+/// Endpoints for managing components, typically called by Agent process.
+/// </summary>
 [ApiController]
 [SkipStatusCodePages]
 [ApiExceptionStatusCodes]
@@ -13,15 +17,25 @@ public class ComponentController(
     ComponentService components) 
 {
 
+    /// <summary>
+    /// Retrieve a paged list of components for a tenant.  Not typically very useful as it doesn't
+    /// apply ABAC and can therefore only be used by Admins.  
+    /// </summary>
     [HttpGet("/{tenant}/components")]
-    [Authorize(Policies.User)]
+    [Authorize(Policies.Admin)]
     [Produces("application/json")]
     public async Task<PagedCollection<Component>> ListComponents(string tenant, [FromQuery] PageQuery query)
     {
         // TODO: Apply ABAC as part of query
-        return await components.ListComponentsAsync(tenant, query);
+        var results = await components.ListComponentsAsync(tenant, query);
+        // TODO: Double-check ABAC filter on results.
+        return results;
     }
 
+    /// <summary>
+    /// Create a new component, enabling the use of `Attachments` and `Conversations` for it.  
+    /// Limited to Agents which populate this from an event feed from other microservices.
+    /// </summary>
     [HttpPost("/{tenant}/components")]
     [Authorize(Policies.Agent)]
     [Consumes("application/json"), Produces("application/json")]
@@ -31,6 +45,9 @@ public class ComponentController(
         return new ResourceReference<Component>(created);
     }
 
+    /// <summary>
+    /// Retrieve a single component by UUID.  
+    /// </summary>
     [HttpGet("/{tenant}/components/{uuid}")]
     [Authorize(Policies.User)]
     [Produces("application/json")]
@@ -41,6 +58,10 @@ public class ComponentController(
         return component;
     }
 
+    /// <summary>
+    /// Updates an existing component.  Limited to Agents which populate this from an event feed 
+    /// from other microservices.
+    /// </summary>
     [HttpPut("/{tenant}/components/{uuid}")]
     [Authorize(Policies.Agent)]
     [Consumes("application/json"), Produces("application/json")]
@@ -51,6 +72,10 @@ public class ComponentController(
         return new ResourceReference<Component>(updated);
     }
 
+    /// <summary>
+    /// Deletes an existing `Component`.  Limited to Agents which populate this from an event feed
+    /// from other microservices.
+    /// </summary>
     [HttpDelete("/{tenant}/components/{uuid}")]
     [Authorize(Policies.Agent)]
     public async Task DeleteComponent(string tenant, Guid uuid)

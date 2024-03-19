@@ -13,35 +13,50 @@ public class ResourceReference
     public ResourceReference() { }
 
     /// <inheritdoc cref="ResourceReference" />
-    public ResourceReference(IResourceIdentifiers target)
+    public ResourceReference(IUniqueIdentifier target)
     {
-        Slug = target.Slug;
+        Type = target.GetType().Name;
         Uuid = target.Uuid;
-        Title = target.Title;
+        if(target is IResourceIdentifiers resource) {
+            Slug = resource.Slug;
+            Title = resource.Title;
+        }
+        if(target is ITenanted tenanted) {
+            Tenant = tenanted.Partition;
+        }
     }
 
     /// <summary>
     /// The type of resource that has been created.
     /// </summary>
-    [Obsolete("Not strictly needed, prune from existing code.")]
+    [ReadOnly(true)]
     public string Type { get; set; } = string.Empty;
 
-    /// <inheritdoc cref="IResourceIdentifiers.Uuid" />
+    /// <inheritdoc />
+    [ReadOnly(true)]
     public Guid Uuid { get; set; } = Guid.Empty;
 
-    /// <inheritdoc cref="IResourceIdentifiers.Slug" />
-    public string Slug { get; set; } = string.Empty;
-
-    /// <inheritdoc cref="IResourceIdentifiers.Title" />
+    /// <inheritdoc />
     [ReadOnly(true)]
-    public string Title { get; set; } = string.Empty;
+    public string? Slug { get; set; }
+
+    /// <inheritdoc />
+    [ReadOnly(true)]
+    public string? Title { get; set; }
+
+    /// <summary>
+    /// The tenant that the resource is assigned to.
+    /// </summary>
+    public string? Tenant { get; set; }
+
+
 }
 
 /// <summary>
 /// A strongly typed version of a ResourceReference to a resource suitable for sending through an 
 /// API, as for example the return value of a Create method.
 /// </summary>
-public class ResourceReference<T> : ResourceReference where T : IResourceIdentifiers
+public class ResourceReference<T> : ResourceReference where T : IUniqueIdentifier
 {
 
     /// <inheritdoc cref="ResourceReference" />

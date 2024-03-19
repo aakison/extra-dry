@@ -34,5 +34,10 @@
 	<ItemGroup>
 	  <None Include="C:\Users\Adrian\Repos\FmiWorks\extra-dry\ExtraDry\Sample.Components.Api\.editorconfig" />
 	</ItemGroup>
+	<ItemGroup>
+	  <None Update="startup.sh">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
 	
 </Project>

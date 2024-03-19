@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Sample.Components.Api.Services;
 
+/// <summary>
+/// Standard CRUD services for Tenants.
+/// </summary>
 public class TenantService(
     ComponentContext database,
     RuleEngine rules)
@@ -18,8 +21,13 @@ public class TenantService(
     public async Task<Tenant> CreateTenantAsync(Tenant exemplar)
     {
         var tenant = await rules.CreateAsync(exemplar);
-        database.Tenants.Add(tenant);
-        await database.SaveChangesAsync();
+        try {
+            database.Tenants.Add(tenant);
+            await database.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex) {
+            throw new ArgumentException($"Tenant '{tenant.Slug}' already exists", ex);
+        }
         return tenant;
     }
 
@@ -35,18 +43,6 @@ public class TenantService(
             ?? throw new ArgumentException($"Tenant '{slug}' not found", nameof(slug));
     }
 
-    public async Task<Tenant?> TryRetrieveTenantAsync(Guid uuid)
-    {
-        var tenant = await database.Tenants.FirstOrDefaultAsync(e => e.Uuid == uuid);
-        return tenant;
-    }
-
-    public async Task<Tenant> RetrieveTenantAsync(Guid uuid)
-    {
-        return await TryRetrieveTenantAsync(uuid)
-            ?? throw new ArgumentException($"Tenant '{uuid}' not found", nameof(uuid));
-    }   
-
     public async Task<Tenant> UpdateTenantAsync(Tenant exemplar)
     {
         var existing = await RetrieveTenantAsync(exemplar.Slug);
@@ -55,15 +51,10 @@ public class TenantService(
         return existing;
     }
 
-    public async Task DeleteTenantAsync(Guid uuid)
-    {
-        var tenant = await RetrieveTenantAsync(uuid);
-        await rules.DeleteAsync(tenant, database.Tenants.Remove(tenant), database.SaveChangesAsync());
-    }
-
     public async Task DeleteTenantAsync(string slug)
     {
         var tenant = await RetrieveTenantAsync(slug);
-        await rules.DeleteAsync(tenant, database.Tenants.Remove(tenant), database.SaveChangesAsync());
+        await rules.DeleteAsync(tenant, () => database.Tenants.Remove(tenant), async () => await database.SaveChangesAsync());
     }
+
 }

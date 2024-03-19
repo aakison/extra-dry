@@ -4,14 +4,8 @@
 /// Represents a resource that has identifiers that are common on the web, in particular through 
 /// RESTful APIs.
 /// </summary>
-public interface IResourceIdentifiers
+public interface IResourceIdentifiers : IUniqueIdentifier
 {
-
-    /// <summary>
-    /// A universally unique identifier for this new resource. It is used in the permalink.
-    /// </summary>
-    /// <example>e8b79f39-3398-4aed-9339-7250166204e5</example>
-    public Guid Uuid { get; set; }
 
     /// <summary>
     /// A user readable reference to the created resource. Used in the URL to access the new 

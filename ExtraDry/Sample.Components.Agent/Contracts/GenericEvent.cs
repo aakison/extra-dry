@@ -1,6 +1,6 @@
 ﻿namespace GettingStarted.Contracts;
 
-public record GettingStarted()
+public record GenericEvent()
 {
     public string Value { get; init; } = "";
 }

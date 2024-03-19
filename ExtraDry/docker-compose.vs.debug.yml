@@ -1,0 +1,4 @@
+ # https://learn.microsoft.com/en-us/visualstudio/containers/docker-compose-properties?view=vs-2022
+services:
+  sample.components.api:
+    entrypoint: "/bin/bash -c './startup.sh && tail -f /dev/null'"
