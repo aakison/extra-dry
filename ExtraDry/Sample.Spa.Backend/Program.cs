@@ -70,11 +70,13 @@ builder.Services.AddServiceBusQueue<EntityMessage>(options => {
 builder.Services.AddScoped(services => {
     var connectionString = builder.Configuration.GetConnectionString("WebAppOltpDatabase");
     var dbOptionsBuilder = new DbContextOptionsBuilder<SampleContext>().UseSqlServer(connectionString, config => config.UseHierarchyId());
-    var context = new SampleContext(dbOptionsBuilder.Options);
+    var context = new SampleContext(dbOptionsBuilder.Options, []);
 
+    // TODO: Inject
     var accessor = services.GetRequiredService<IHttpContextAccessor>();
     _ = new VersionInfoAspect(context, accessor);
 
+    // TODO: Inject
     var logger = services.GetRequiredService<ILogger<DataWarehouseAspect>>();
     var queue = services.GetRequiredService<ServiceBusQueue<EntityMessage>>();
     _ = new DataWarehouseAspect(context, queue, logger);

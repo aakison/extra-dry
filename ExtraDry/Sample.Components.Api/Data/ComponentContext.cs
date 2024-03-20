@@ -8,8 +8,9 @@ namespace Sample.Components.Api.Data;
 /// </summary>
 /// <param name="options"></param>
 public class ComponentContext(
-    DbContextOptions<ComponentContext> options) 
-    : AspectDbContext(options)
+    DbContextOptions<ComponentContext> options,
+    IEnumerable<IDbAspect> aspects) 
+    : AspectDbContext(options, aspects)
 {
 
     /// <summary>

@@ -4,8 +4,9 @@ using System.Text.Json;
 namespace Sample.Data;
 
 public class SampleContext(
-    DbContextOptions<SampleContext> options) 
-    : AspectDbContext(options) 
+    DbContextOptions<SampleContext> options,
+    IEnumerable<IDbAspect> aspects) 
+    : AspectDbContext(options, aspects) 
 {
 
     public DbSet<Sector> Sectors { get; set; } = null!;

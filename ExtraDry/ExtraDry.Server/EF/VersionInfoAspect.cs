@@ -31,11 +31,11 @@ public class VersionInfoAspect {
     /// </summary>
     public VersionInfoAspect(AspectDbContext context, IHttpContextAccessor httpContextAccessor)
     {
-        context.EntitiesChangedEvent += Context_EntitiesChanged;
+        //context.EntitiesChangedEvent += Context_EntitiesChanged;
         VersionInfo.CurrentUsername = () => httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "anonymous";
     }
 
-    private void Context_EntitiesChanged(object sender, EntitiesChangedEventArgs args)
+    private void Context_EntitiesChanged(object sender, EntitiesChanged args)
     {
         VersionInfo.ResetTimestamp();
         var versionType = typeof(VersionInfo);

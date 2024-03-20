@@ -15,10 +15,10 @@ public class DataWarehouseAspect {
         Queue = queue;
         logger = iLogger;
         ExceptionTypes.Add(typeof(VersionInfo));
-        context.EntitiesChangedEvent += Context_EntitiesChanged;
+        //context.EntitiesChangedEvent += Context_EntitiesChanged;
     }
 
-    private async void Context_EntitiesChanged(object sender, EntitiesChangedEventArgs args)
+    private async void Context_EntitiesChanged(object sender, EntitiesChanged args)
     {
         var entities = args.EntitiesAdded.Union(args.EntitiesModified);
         var types = entities.Select(e => e.GetType()).Distinct().Except(ExceptionTypes);
@@ -37,7 +37,7 @@ public class DataWarehouseAspect {
     /// This might be expanded to allow for user selection of types, or by assembly declared, DbSet usage, etc.
     /// For now, just use for VersionInfo...
     /// </summary>
-    private List<Type> ExceptionTypes { get; } = new();
+    private List<Type> ExceptionTypes { get; } = [];
 
     private ServiceBusQueue<EntityMessage> Queue { get; }
 

@@ -45,18 +45,14 @@ builder.Services.AddSwaggerGen(options => {
     }
     });
 });
+
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped(services => {
-    var options = services.GetRequiredService<ApiOptions>();
-    var optionsBuilder = new DbContextOptionsBuilder<ComponentContext>()
-        .UseCosmos(options.CosmosDb.Endpoint, options.CosmosDb.AuthKey, options.CosmosDb.DatabaseName);
-    var context = new ComponentContext(optionsBuilder.Options);
-
-    var accessor = services.GetRequiredService<IHttpContextAccessor>();
-    _ = new RevisionAspect(context, accessor);
-
-    return context;
+builder.Services.AddRevisionAspect();
+builder.Services.AddAuditAspect();
+builder.Services.AddDbContext<ComponentContext>(config => {
+    config.UseCosmos(options.CosmosDb.Endpoint, options.CosmosDb.AuthKey, options.CosmosDb.DatabaseName);
 });
+
 builder.Services.AddAuthentication()
     .AddJwtBearer();
 builder.Services.AddAuthorization();

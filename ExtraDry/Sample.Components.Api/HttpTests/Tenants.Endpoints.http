@@ -38,7 +38,7 @@ Accept: application/json
 ### UPDATE tenant plan, ensure UUID optional.
 PUT {{HostAddress}}/tenants/acme-corp
 Content-Type: application/json
-Authorization: Bearer {{AdminRoleToken}}
+Authorization: Bearer {{AgentRoleToken}}
 Accept: application/json
 
 {

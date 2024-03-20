@@ -2,30 +2,31 @@
 
 namespace ExtraDry.Server.EF;
 
-public class RevisionAspect(
+/// <summary>
+/// A database aspect that automatically populates the audit fields on entities that implement IAudited.
+/// </summary>
+public class AuditAspect(
     IHttpContextAccessor httpContextAccessor,
-    RevisionAspectOptions options) 
+    AuditAspectOptions options) 
     : IDbAspect 
 {
 
+    /// <inheritdoc/>
     public void EntitiesChanging(EntitiesChanged args)
     {
         // no-op
     }
 
+    /// <inheritdoc/>
     public void EntitiesChanged(EntitiesChanged args)
     {
-        var hasExclusedRole = options.ExcludedRoles.Any(e => httpContextAccessor.HttpContext?.User?.IsInRole(e) ?? false);
-        if(hasExclusedRole) {
-            return;
-        }
         var entities = args.EntitiesAdded.Union(args.EntitiesModified);
         var username = GetClaim(options.UsernameClaim) ?? options.UsernameDefault;
         var timestamp = args.Timestamp;
         foreach(var entity in entities) {
-            if(entity is IRevisioned revisioned) {
-                revisioned.Revision.User = username;
-                revisioned.Revision.Timestamp = timestamp;
+            if(entity is IAudited audited) {
+                audited.Audit.User = username;
+                audited.Audit.Timestamp = timestamp;
             }
         }
     }
