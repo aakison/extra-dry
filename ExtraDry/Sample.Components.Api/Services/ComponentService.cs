@@ -23,7 +23,7 @@ public class ComponentService(
     {
         var component = await rules.CreateAsync(exemplar);
         var t = await tenants.RetrieveTenantAsync(tenant);
-        component.TenantSlug = t.Slug;
+        component.Tenant = t.Slug;
         database.Components.Add(component);
         await database.SaveChangesAsync();
         return component;

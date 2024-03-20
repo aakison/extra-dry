@@ -17,7 +17,7 @@ internal class AgentService(
         var component = new Component() {
             Description = "description",
             Slug = "slug-123",
-            TenantSlug = "second",
+            Tenant = "second",
             Title = "title",
             Type = "Component",
         };

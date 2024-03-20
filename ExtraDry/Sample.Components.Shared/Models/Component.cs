@@ -11,14 +11,14 @@ public class Component : IResourceIdentifiers, ITenanted, IAudited, IRevisioned
 {
     /// <inheritdoc/>
     public string Partition { 
-        get => TenantSlug;
+        get => Tenant;
         set { }
     }
 
     /// <summary>
     /// The tenant that the component is associated with.
     /// </summary>
-    public string TenantSlug { get; set; } = "";
+    public string Tenant { get; set; } = "";
 
     /// <inheritdoc/>
     [Key]

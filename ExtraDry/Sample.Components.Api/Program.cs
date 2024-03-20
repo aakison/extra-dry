@@ -57,11 +57,12 @@ builder.Services.AddAuthentication()
     .AddJwtBearer();
 builder.Services.AddAuthorization();
 
+builder.Services.AddAuthorizationExtensions();
 builder.Services.AddAuthorizationBuilder()
-  .AddPolicy(Policies.User, policy => policy.RequireUserName("Adrian"))
-  .AddPolicy(Policies.Admin, policy => policy.RequireRole("admin"))
-  .AddPolicy(Policies.Agent, policy => policy.RequireRole("agent"))
-  .AddPolicy(Policies.AdminOrAgent, policy => policy.RequireAssertion(e => e.User.IsInRole("admin") || e.User.IsInRole("agent")));
+    .AddPolicy(Policies.User, policy => policy.RequireRole("user").RequireRouteMatchesClaim("tenant", "stakeholder", "manager"))
+    .AddPolicy(Policies.Admin, policy => policy.RequireRole("admin"))
+    .AddPolicy(Policies.Agent, policy => policy.RequireRole("agent"))
+    .AddPolicy(Policies.AdminOrAgent, policy => policy.RequireAssertion(e => e.User.IsInRole("admin") || e.User.IsInRole("agent")));
 
 builder.Services.AddSingleton(sp => {
     var options = sp.GetRequiredService<ApiOptions>();

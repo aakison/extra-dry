@@ -29,7 +29,7 @@ public class TenantController(
     }
 
     /// <summary>
-    /// Create a new TenantSlug.
+    /// Create a new Tenant.
     /// </summary>
     /// <remarks>
     /// Typically called by agents to create a tenant when events are received indicating new clients.

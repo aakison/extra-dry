@@ -59,7 +59,7 @@ builder.Services.AddMassTransit(config => {
 //    options.DefaultRequestHeaders.Add("Accepts", "application/json");
 //});
 
-//builder.Services.AddListService<TenantSlug>(options => {
+//builder.Services.AddListService<Tenant>(options => {
 //    options.HttpClientName = "api";
 //    options.ListEndpoint = "tenants";
 //    options.ListMode = ListServiceMode.FullCollection;

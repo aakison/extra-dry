@@ -35,7 +35,7 @@ public class ComponentContext(
 
     /// <summary>
     /// A single CosmosDB container is created for all entities.  The parition key is taken from 
-    /// the ITenanted interface's Partition property.  This should be the TenantSlug slug for 
+    /// the ITenanted interface's Partition property.  This should be the Tenant slug for 
     /// everything.
     /// </summary>
     protected override void OnModelCreating(ModelBuilder modelBuilder)

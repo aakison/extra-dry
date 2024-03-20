@@ -7,7 +7,7 @@ POST {{HostAddress}}/:initialize
 Authorization: Bearer {{AdminRoleToken}}
 Accept: application/json
 
-### Create a new tenant if it doesn't exist...
+### CREATE a new tenant
 POST {{HostAddress}}/tenants
 Content-Type: application/json
 Authorization: Bearer {{AdminRoleToken}}
@@ -15,24 +15,24 @@ Accept: application/json
 
 {
   "uuid": "4BE4E0B8-AABE-4C48-A5E9-47F07106FC9E",
-  "slug": "tenant-1",
-  "title": "Tenant 1",
+  "slug": "acme-corp",
+  "title": "Acme Corp Pty Ltd",
   "plan": "Premium"
 }
 
-### Get list of components for a tenant
-GET {{HostAddress}}/baypogyiq/components
+### LIST components for a tenant
+GET {{HostAddress}}/acme-corp/components
 Accept: application/json
 Authorization: Bearer {{AdminRoleToken}}
 
-### Create a new component for a tenant, requires Agent as that is the
-### only process that should be running this.
-POST {{HostAddress}}/tenant-1/components
+### CREATE component for a tenant, requires Agent role.
+POST {{HostAddress}}/acme-corp/components
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{AgentRoleToken}}
 
 {
+  "tenant": "acme-corp",
   "uuid": "CADB12F7-07F0-4BE6-B92C-9FB0A4217CC1",
   "slug": "component-2",
   "code": "INV-2",
@@ -40,6 +40,45 @@ Authorization: Bearer {{AgentRoleToken}}
   "description": "A sample invoice",
   "keywords": "sample invoice 12345 and stuff",
   "fullText": "All the words",
-  "discriminator": "Component"
+  "discriminator": "Component",
+  "type": "Invoice"
 }
 
+### RETRIEVE component for a tenant as USER
+GET {{HostAddress}}/acme-corp/components/cadb12f7-07f0-4be6-b92c-9fb0a4217cc1
+Accept: application/json
+Authorization: Bearer {{UserRoleToken}}
+
+### RETRIEVE component for a tenant as MANAGER
+GET {{HostAddress}}/acme-corp/components/cadb12f7-07f0-4be6-b92c-9fb0a4217cc1
+Accept: application/json
+Authorization: Bearer {{ManagerRoleToken}}
+
+### RETRIEVE component for a tenant as AGENT / FAIL
+GET {{HostAddress}}/acme-corp/components/cadb12f7-07f0-4be6-b92c-9fb0a4217cc1
+Accept: application/json
+Authorization: Bearer {{AgentRoleToken}}
+
+### UPDATE component for a tenant, requires Agent role.
+PUT {{HostAddress}}/acme-corp/components/cadb12f7-07f0-4be6-b92c-9fb0a4217cc1
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{AgentRoleToken}}
+
+{
+  "tenant": "acme-corp",
+  "uuid": "CADB12F7-07F0-4BE6-B92C-9FB0A4217CC1",
+  "slug": "component-2",
+  "code": "INV-2",
+  "title": "Invoice #12345",
+  "description": "The changed name of the sample invoice",
+  "keywords": "sample invoice 12345 and stuff",
+  "fullText": "All the words",
+  "discriminator": "Component",
+  "type": "Invoice"
+}
+
+### DELETE component for a tenant, requires Agent role.
+DELETE {{HostAddress}}/acme-corp/components/cadb12f7-07f0-4be6-b92c-9fb0a4217cc1
+Accept: application/json
+Authorization: Bearer {{AgentRoleToken}}
