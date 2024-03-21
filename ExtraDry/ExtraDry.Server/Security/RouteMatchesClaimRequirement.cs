@@ -19,4 +19,14 @@ public class RouteMatchesClaimRequirement : IAuthorizationRequirement
     /// </summary>
     public string[] ClaimKeys { get; set; } = [];
 
+    /// <summary>
+    /// When matching the claim value, which portion of the claim value should be used.
+    /// </summary>
+    public ClaimValueMatch ClaimValueMatch { get; set; } = ClaimValueMatch.Exact;
+
+    /// <summary>
+    /// If a user has a role that is in this list, the requirement is satisfied.
+    /// </summary>
+    public string[] RoleOverrides { get; set; } = [];
+
 }

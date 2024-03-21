@@ -59,7 +59,7 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddAuthorizationExtensions();
 builder.Services.AddAuthorizationBuilder()
-    .AddPolicy(Policies.User, policy => policy.RequireRole("user").RequireRouteMatchesClaim("tenant", "stakeholder", "manager"))
+    .AddPolicy(Policies.User, policy => policy.RequireRouteMatchesClaim("tenant", ["stakeholder", "manager", "vendor"], ClaimValueMatch.LastPath, roleOverrides: ["admin", "agent"]))
     .AddPolicy(Policies.Admin, policy => policy.RequireRole("admin"))
     .AddPolicy(Policies.Agent, policy => policy.RequireRole("agent"))
     .AddPolicy(Policies.AdminOrAgent, policy => policy.RequireAssertion(e => e.User.IsInRole("admin") || e.User.IsInRole("agent")));

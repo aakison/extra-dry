@@ -2,24 +2,6 @@
 GET {{HostAddress}}/healthcheck
 Accept: application/json
 
-### Initialize the API, especially the CosmosDB container
-POST {{HostAddress}}/:initialize
-Authorization: Bearer {{AdminRoleToken}}
-Accept: application/json
-
-### CREATE a new tenant
-POST {{HostAddress}}/tenants
-Content-Type: application/json
-Authorization: Bearer {{AdminRoleToken}}
-Accept: application/json
-
-{
-  "uuid": "4BE4E0B8-AABE-4C48-A5E9-47F07106FC9E",
-  "slug": "acme-corp",
-  "title": "Acme Corp Pty Ltd",
-  "plan": "Premium"
-}
-
 ### LIST components for a tenant
 GET {{HostAddress}}/acme-corp/components
 Accept: application/json
@@ -54,7 +36,12 @@ GET {{HostAddress}}/acme-corp/components/cadb12f7-07f0-4be6-b92c-9fb0a4217cc1
 Accept: application/json
 Authorization: Bearer {{ManagerRoleToken}}
 
-### RETRIEVE component for a tenant as AGENT / FAIL
+### RETRIEVE component for a tenant as VENDOR
+GET {{HostAddress}}/acme-corp/components/cadb12f7-07f0-4be6-b92c-9fb0a4217cc1
+Accept: application/json
+Authorization: Bearer {{VendorRoleToken}}
+
+### RETRIEVE component for a tenant as AGENT
 GET {{HostAddress}}/acme-corp/components/cadb12f7-07f0-4be6-b92c-9fb0a4217cc1
 Accept: application/json
 Authorization: Bearer {{AgentRoleToken}}
