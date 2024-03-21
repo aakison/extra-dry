@@ -152,7 +152,7 @@ public class FilteredHierarchyQueryableTests {
         Assert.Null(actual.Expand);
         Assert.Null(actual.Collapse);
         Assert.Equal(4, actual.Count);
-        Assert.Equal(expected, actual.Items);
+        Assert.Equal(expected.ToArray(), actual.Items.ToArray());
     }
 
 }
