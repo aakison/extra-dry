@@ -7,7 +7,7 @@ namespace Sample.Components;
 /// The component is a type of cross-functional entity that supports common functional
 /// requirements of Attachments, Conversations, Searching and Tagging.
 /// </summary>
-public class Component : IResourceIdentifiers, ITenanted, IAudited, IRevisioned
+public class Component : IResourceIdentifiers, ITenanted, IAudited, IRevisioned, IAttributed
 {
     /// <inheritdoc/>
     public string Partition { 

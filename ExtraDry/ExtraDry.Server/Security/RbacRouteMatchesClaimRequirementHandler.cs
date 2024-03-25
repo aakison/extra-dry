@@ -6,16 +6,16 @@ using System.Security.Claims;
 namespace ExtraDry.Server;
 
 /// <summary>
-/// Checkes the <see cref="RouteMatchesClaimRequirement"/> for a tenant route parameter to match a 
+/// Checkes the <see cref="RbacRouteMatchesClaimRequirement"/> for a tenant route parameter to match a 
 /// claim value.
 /// </summary>
-public class RouteMatchesClaimRequirementHandler(
+public class RbacRouteMatchesClaimRequirementHandler(
     IHttpContextAccessor httpContextAccessor) 
-    : AuthorizationHandler<RouteMatchesClaimRequirement>
+    : AuthorizationHandler<RbacRouteMatchesClaimRequirement>
 {
 
     /// <inheritdoc />
-    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, RouteMatchesClaimRequirement requirement)
+    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, RbacRouteMatchesClaimRequirement requirement)
     {
         var httpContext = httpContextAccessor.HttpContext;
         if(httpContext == null) {

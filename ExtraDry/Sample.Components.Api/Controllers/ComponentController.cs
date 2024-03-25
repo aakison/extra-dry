@@ -16,7 +16,7 @@ namespace Sample.Components.Api.Controllers;
 [ApiExceptionStatusCodes]
 public class ComponentController(
     ComponentService components,
-    AttributeAuthorization abac
+    AbacAuthorization abac
     ) 
 {
 
@@ -45,7 +45,7 @@ public class ComponentController(
     public async Task<ResourceReference<Component>> CreateComponent(string tenant, Component component)
     {
         var created = await components.CreateComponentAsync(tenant, component);
-        //abac.AssertAuthorized(created, AbacOperation.Create);
+        abac.AssertAuthorized(created, AbacOperation.Create);
         return new ResourceReference<Component>(created);
     }
 
@@ -58,6 +58,7 @@ public class ComponentController(
     public async Task<Component> ReadComponent(string tenant, Guid uuid)
     {
         var component = await components.RetrieveComponentAsync(tenant, uuid);
+        abac.AssertAuthorized(component, AbacOperation.Read);
         return component;
     }
 

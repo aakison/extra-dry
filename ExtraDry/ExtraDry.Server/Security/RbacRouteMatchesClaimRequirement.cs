@@ -5,7 +5,7 @@ namespace ExtraDry.Server;
 /// <summary>
 /// Requirement that the route parameter in a URI matches a claim value associated with the user.
 /// </summary>
-public class RouteMatchesClaimRequirement : IAuthorizationRequirement
+public class RbacRouteMatchesClaimRequirement : IAuthorizationRequirement
 {
 
     /// <summary>

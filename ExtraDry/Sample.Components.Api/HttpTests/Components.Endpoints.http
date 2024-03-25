@@ -23,28 +23,31 @@ Authorization: Bearer {{AgentRoleToken}}
   "keywords": "sample invoice 12345 and stuff",
   "fullText": "All the words",
   "discriminator": "Component",
-  "type": "Invoice"
+  "type": "Invoice",
+  "Attributes": {
+    "AssignedUser": "Bob"
+  }
 }
 
-### RETRIEVE component for a tenant as USER
+### RETRIEVE component as AGENT (via Role)
 GET {{HostAddress}}/acme-corp/components/cadb12f7-07f0-4be6-b92c-9fb0a4217cc1
 Accept: application/json
-Authorization: Bearer {{UserRoleToken}}
+Authorization: Bearer {{AgentRoleToken}}
 
-### RETRIEVE component for a tenant as MANAGER
+### RETRIEVE component as MANAGER (via Claim only)
 GET {{HostAddress}}/acme-corp/components/cadb12f7-07f0-4be6-b92c-9fb0a4217cc1
 Accept: application/json
 Authorization: Bearer {{ManagerRoleToken}}
+
+### RETRIEVE component as USER (via Claim & Attribute)
+GET {{HostAddress}}/acme-corp/components/cadb12f7-07f0-4be6-b92c-9fb0a4217cc1
+Accept: application/json
+Authorization: Bearer {{UserRoleToken}}
 
 ### RETRIEVE component for a tenant as VENDOR
 GET {{HostAddress}}/acme-corp/components/cadb12f7-07f0-4be6-b92c-9fb0a4217cc1
 Accept: application/json
 Authorization: Bearer {{VendorRoleToken}}
-
-### RETRIEVE component for a tenant as AGENT
-GET {{HostAddress}}/acme-corp/components/cadb12f7-07f0-4be6-b92c-9fb0a4217cc1
-Accept: application/json
-Authorization: Bearer {{AgentRoleToken}}
 
 ### UPDATE component for a tenant, requires Agent role.
 PUT {{HostAddress}}/acme-corp/components/cadb12f7-07f0-4be6-b92c-9fb0a4217cc1
@@ -62,7 +65,10 @@ Authorization: Bearer {{AgentRoleToken}}
   "keywords": "sample invoice 12345 and stuff",
   "fullText": "All the words",
   "discriminator": "Component",
-  "type": "Invoice"
+  "type": "Invoice",
+  "Attributes": {
+    "AssignedUser": "Alice"
+  }
 }
 
 ### DELETE component for a tenant, requires Agent role.

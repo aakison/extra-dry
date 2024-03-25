@@ -1,6 +1,8 @@
 ﻿using ExtraDry.Server.Security;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ExtraDry.Server;
 
@@ -13,24 +15,27 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Register the common authorization handlers for use in the application.
     /// </summary>
-    public static IServiceCollection AddAuthorizationExtensions(this IServiceCollection services)
+    public static IServiceCollection AddRbacExtensions(this IServiceCollection services)
     {
-        services.AddSingleton<IAuthorizationHandler, RouteMatchesClaimRequirementHandler>();
+        services.AddSingleton<IAuthorizationHandler, RbacRouteMatchesClaimRequirementHandler>();
         return services;
     }
 
-    public static IServiceCollection AddAttributeAuthorization(this IServiceCollection services, Action<AttributeAuthorizationOptions>? configure = null)
+    /// <summary>
+    /// Register the extensions that allows using ABAC rules from options, enabling the 
+    /// <see cref="AbacAuthorization"/> service for simple ABAC checks in controllers.
+    /// </summary>
+    public static IServiceCollection AddAbacExtensions(this IServiceCollection services, Action<AbacOptions>? config = null)
     {
-        var options = new AttributeAuthorizationOptions();
-        configure?.Invoke(options);
-        services.AddSingleton(options);
-        services.AddSingleton<AttributeAuthorization>();
+        services.AddSingleton(services => {
+            var options = new AbacOptions();
+            var configuration = services.GetRequiredService<IConfiguration>();
+            configuration.GetSection(AbacOptions.SectionName).Bind(options);
+            config?.Invoke(options);
+            return options;
+        });
+        services.AddSingleton<AbacAuthorization>();
         return services;
     }
 
-}
-
-public class AttributeAuthorizationOptions
-{
-    //public bool Enable { get; set; }
 }

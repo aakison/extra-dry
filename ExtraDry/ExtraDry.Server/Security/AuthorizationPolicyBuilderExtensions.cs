@@ -13,7 +13,7 @@ public static class AuthorizationPolicyBuilderExtensions
     /// </summary>
     public static AuthorizationPolicyBuilder RequireRouteMatchesClaim(this AuthorizationPolicyBuilder builder, string routeParameter, string[] claimKeys, ClaimValueMatch match = ClaimValueMatch.Exact, string[]? roleOverrides = null)
     {
-        builder.AddRequirements(new RouteMatchesClaimRequirement {
+        builder.AddRequirements(new RbacRouteMatchesClaimRequirement {
             RouteParameter = routeParameter,
             ClaimKeys = claimKeys,
             ClaimValueMatch = match,

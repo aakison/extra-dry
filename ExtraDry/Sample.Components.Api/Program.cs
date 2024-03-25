@@ -4,9 +4,6 @@ using ExtraDry.Server.EF;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Azure.Cosmos;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Sample.Components.Api;
 using Sample.Components.Api.Options;
@@ -21,10 +18,6 @@ var builder = WebApplication.CreateBuilder(args);
 var apiOptions = new ApiOptions();
 builder.Configuration.Bind(ApiOptions.SectionName, apiOptions);
 builder.Services.AddSingleton(apiOptions);
-
-var authOptions = new AuthorizationOptions();
-builder.Configuration.Bind(AuthorizationOptions.SectionName, authOptions);
-builder.Services.AddSingleton(authOptions);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -60,8 +53,8 @@ builder.Services.AddAuthentication()
     .AddJwtBearer();
 builder.Services.AddAuthorization();
 
-builder.Services.AddAuthorizationExtensions();
-builder.Services.AddAttributeAuthorization();
+builder.Services.AddRbacExtensions();
+builder.Services.AddAbacExtensions();
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy(Policies.User, policy => policy.RequireRouteMatchesClaim("tenant", ["stakeholder", "manager", "vendor"], ClaimValueMatch.LastPath, roleOverrides: ["admin", "agent"]))
     .AddPolicy(Policies.Admin, policy => policy.RequireRole("admin"))
@@ -104,7 +97,5 @@ host.MapControllers();
 
 var logger = host.Services.GetRequiredService<ILogger<Program>>();
 logger.LogProperties(apiOptions);
-//logger.LogProperties(authOptions);
-authOptions.Dump(logger);
 
 host.Run();

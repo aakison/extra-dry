@@ -15,6 +15,4 @@ public partial class ApiOptions
     /// <inheritdoc cref="CosmosDbOptions" />
     public CosmosDbOptions CosmosDb { get; set; } = new();
 
-    //public AuthorizationOptions Authorization { get; set; } = new();
-
 }
