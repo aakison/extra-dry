@@ -26,12 +26,12 @@ public class ComponentContext(
     /// <summary>
     /// The Metadata for the Components in the system.
     /// </summary>
-    public DbSet<Metadata> Metadata { get; set; } = null!;
+    //public DbSet<Metadata> Metadata { get; set; } = null!;
 
     /// <summary>
     /// The Attachments for the Components in the system.
     /// </summary>
-    public DbSet<Attachment> Attachments { get; set; } = null!;
+    //public DbSet<Attachment> Attachments { get; set; } = null!;
 
     /// <summary>
     /// A single CosmosDB container is created for all entities.  The parition key is taken from 
@@ -44,8 +44,8 @@ public class ComponentContext(
         modelBuilder.HasDefaultContainer("Components");
         modelBuilder.Entity<Tenant>().HasPartitionKey(e => e.Partition);
         modelBuilder.Entity<Component>().HasPartitionKey(e => e.Partition);
-        modelBuilder.Entity<Attachment>().HasPartitionKey(e => e.Partition);
-        modelBuilder.Entity<Metadata>().HasPartitionKey(e => e.Partition);
+        //modelBuilder.Entity<Attachment>().HasPartitionKey(e => e.Partition);
+        //modelBuilder.Entity<Metadata>().HasPartitionKey(e => e.Partition);
     }
 
 }

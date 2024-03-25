@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using ExtraDry.Server.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ExtraDry.Server;
@@ -18,4 +19,18 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    public static IServiceCollection AddAttributeAuthorization(this IServiceCollection services, Action<AttributeAuthorizationOptions>? configure = null)
+    {
+        var options = new AttributeAuthorizationOptions();
+        configure?.Invoke(options);
+        services.AddSingleton(options);
+        services.AddSingleton<AttributeAuthorization>();
+        return services;
+    }
+
+}
+
+public class AttributeAuthorizationOptions
+{
+    //public bool Enable { get; set; }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Filters;
 using System.ComponentModel;
 using System.Net;
 using System.Security;
@@ -6,7 +7,8 @@ using System.Security;
 namespace ExtraDry.Server;
 
 [AttributeUsage(AttributeTargets.Class)]
-public class ApiExceptionStatusCodesAttribute : ExceptionFilterAttribute {
+public class ApiExceptionStatusCodesAttribute : ExceptionFilterAttribute 
+{
 
     public override Task OnExceptionAsync(ExceptionContext context)
     {
@@ -39,8 +41,11 @@ public class ApiExceptionStatusCodesAttribute : ExceptionFilterAttribute {
             ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.BadRequest, 
                 dryException.ProblemDetails.Title, dryException.ProblemDetails.Detail);
         }
+        else if(context.Exception is UnauthorizedAccessException) {
+            ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.Forbidden);
+        }
         else {
-            ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.InternalServerError);
+            ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.InternalServerError, context.Exception.Message, context.Exception.StackTrace);
         }
         context.ExceptionHandled = true;
     }

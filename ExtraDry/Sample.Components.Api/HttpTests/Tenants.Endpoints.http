@@ -4,7 +4,7 @@ Accept: application/json
 
 ### Valid request with User Token
 GET {{HostAddress}}/version/
-Authorization: Bearer {{UserRoleToken}}
+Authorization: Bearer {{AdminRoleToken}}
 Accept: application/json
 
 ### Initialize the API, especially the CosmosDB container

@@ -38,8 +38,13 @@ public class CosmosDbOptions
     public string DatabaseName { get; set; } = "Components";
 
     /// <summary>
-    /// The fully qualified endpoint that the CosmosDB server is listening on, constructed form other settings.
+    /// The fully qualified endpoint that the CosmosDB server is listening on, constructed from other settings.
     /// </summary>
     public string Endpoint => $"https://{Server}:{Port}/";
+
+    /// <summary>
+    /// The fully qualified connection string for the CosmosDB account, constructed from other settings.
+    /// </summary>
+    public string ConnectionString => $"AccountEndpoint={Endpoint};AccountKey={AuthKey};";
 
 }

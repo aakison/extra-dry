@@ -34,9 +34,18 @@ public class MetaController(
     [SuppressMessage("ApiUsage", "DRY1114:HttpPost actions should Produces ResourceReference output.", Justification = "RPC Style")]
     public async Task InitializeCommand()
     {
-        logger.LogStaticInformation("Initializing database");
-        await cosmos.CreateDatabaseIfNotExistsAsync(options.CosmosDb.DatabaseName, 400);
-        await database.Database.EnsureCreatedAsync();
+        try {
+            logger.LogStaticInformation("Initializing database");
+            if(options == null) {
+                logger.LogStaticInformation("");
+                return;
+            }
+            await cosmos.CreateDatabaseIfNotExistsAsync(options.CosmosDb.DatabaseName, 400);
+            await database.Database.EnsureCreatedAsync();
+        }
+        catch(Exception ex) {
+            logger.LogStaticInformation(ex.Message);
+        }
     }
 
     /// <summary>
@@ -44,7 +53,7 @@ public class MetaController(
     /// requires authorization.
     /// </summary>
     [HttpGet("/version")]
-    [Authorize(Policies.User)]
+    [Authorize(Policies.Admin)]
     [Produces("application/json")]
     public Version RetrieveVersion()
     {

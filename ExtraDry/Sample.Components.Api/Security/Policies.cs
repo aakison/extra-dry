@@ -6,7 +6,7 @@
 internal static class Policies
 {
     /// <summary>
-    /// The user role policy name, for users with a tenant.
+    /// The user role policy name, for users in a tenant.
     /// </summary>
     public const string User = "User";
 

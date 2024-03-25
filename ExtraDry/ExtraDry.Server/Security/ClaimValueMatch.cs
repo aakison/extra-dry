@@ -3,6 +3,7 @@
 /// <summary>
 /// The method to use to match a claim value for <see cref="RouteMatchesClaimRequirement"/> policies.
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ClaimValueMatch
 {
     /// <summary>

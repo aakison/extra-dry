@@ -5,6 +5,7 @@ using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Sample.Components.Api;
@@ -17,9 +18,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 // Collect options, all stored in ApiOptions for both dependency injection and local use.
-builder.Services.Configure<ApiOptions>(builder.Configuration.GetSection(ApiOptions.SectionName));
-builder.Services.AddSingleton(e => e.GetRequiredService<IOptions<ApiOptions>>().Value);
-var options = builder.Configuration.GetSection(ApiOptions.SectionName).Get<ApiOptions>() ?? new();
+var apiOptions = new ApiOptions();
+builder.Configuration.Bind(ApiOptions.SectionName, apiOptions);
+builder.Services.AddSingleton(apiOptions);
+
+var authOptions = new AuthorizationOptions();
+builder.Configuration.Bind(AuthorizationOptions.SectionName, authOptions);
+builder.Services.AddSingleton(authOptions);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -49,15 +54,14 @@ builder.Services.AddSwaggerGen(options => {
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddRevisionAspect();
 builder.Services.AddAuditAspect();
-builder.Services.AddDbContext<ComponentContext>(config => {
-    config.UseCosmos(options.CosmosDb.Endpoint, options.CosmosDb.AuthKey, options.CosmosDb.DatabaseName);
-});
+builder.Services.AddCosmos<ComponentContext>(apiOptions.CosmosDb.ConnectionString, apiOptions.CosmosDb.DatabaseName);
 
 builder.Services.AddAuthentication()
     .AddJwtBearer();
 builder.Services.AddAuthorization();
 
 builder.Services.AddAuthorizationExtensions();
+builder.Services.AddAttributeAuthorization();
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy(Policies.User, policy => policy.RequireRouteMatchesClaim("tenant", ["stakeholder", "manager", "vendor"], ClaimValueMatch.LastPath, roleOverrides: ["admin", "agent"]))
     .AddPolicy(Policies.Admin, policy => policy.RequireRole("admin"))
@@ -99,6 +103,8 @@ host.UseAuthorization();
 host.MapControllers();
 
 var logger = host.Services.GetRequiredService<ILogger<Program>>();
-logger.LogProperties(options);
+logger.LogProperties(apiOptions);
+//logger.LogProperties(authOptions);
+authOptions.Dump(logger);
 
 host.Run();

@@ -5,11 +5,6 @@
 # downloads the certificate and adds it to the trusted certificates; enabling SSL between the API
 # and the CosmosDB emulator.
 
-# Install Curl as it isn't part of ASPNET image
-echo "Installing Curl"
-apt-get update
-apt-get -y install curl
-
 # Find the IP address and URL for the CosmosDB emulator (certificate only works with IP address)
 #cosmosip=$(getent ahostsv4 cosmosdb | grep STREAM | head -n 1 | awk '{print $1}')
 cosmoscerturl="https://cosmosdb:8081/_explorer/emulator.pem"

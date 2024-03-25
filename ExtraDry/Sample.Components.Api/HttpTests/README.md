@@ -20,7 +20,7 @@ The following script will set up the user-secret for the different tokens requir
 ```PowerShell
 $output = dotnet user-jwts create --name Bob --claim "stakeholder=acme-corp"
 $token = $output.Split(' ')[-1]
-dotnet user-secrets set "Tokens:UserRole" $token
+dotnet user-secrets set "Tokens:StakeholderRole" $token
 
 $output = dotnet user-jwts create --name Connie --claim "manager=acme-corp"
 $token = $output.Split(' ')[-1]
@@ -29,6 +29,10 @@ dotnet user-secrets set "Tokens:ManagerRole" $token
 $output = dotnet user-jwts create --name Eric --claim "vendor=electrical-group@acme-corp"
 $token = $output.Split(' ')[-1]
 dotnet user-secrets set "Tokens:VendorRole" $token
+
+$output = dotnet user-jwts create --role user --name Bob"
+$token = $output.Split(' ')[-1]
+dotnet user-secrets set "Tokens:UserRole" $token
 
 $output = dotnet user-jwts create --role admin --name Alice
 $token = $output.Split(' ')[-1]

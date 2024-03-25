@@ -1,5 +1,6 @@
 using ExtraDry.Core;
 using ExtraDry.Server;
+using ExtraDry.Server.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sample.Components.Api.Security;
@@ -14,7 +15,9 @@ namespace Sample.Components.Api.Controllers;
 [SkipStatusCodePages]
 [ApiExceptionStatusCodes]
 public class ComponentController(
-    ComponentService components) 
+    ComponentService components,
+    AttributeAuthorization abac
+    ) 
 {
 
     /// <summary>
@@ -42,6 +45,7 @@ public class ComponentController(
     public async Task<ResourceReference<Component>> CreateComponent(string tenant, Component component)
     {
         var created = await components.CreateComponentAsync(tenant, component);
+        //abac.AssertAuthorized(created, AbacOperation.Create);
         return new ResourceReference<Component>(created);
     }
 
@@ -51,10 +55,9 @@ public class ComponentController(
     [HttpGet("/{tenant}/components/{uuid}")]
     [Authorize(Policies.User)]
     [Produces("application/json")]
-    public async Task<Component> RetrieveComponent(string tenant, Guid uuid)
+    public async Task<Component> ReadComponent(string tenant, Guid uuid)
     {
         var component = await components.RetrieveComponentAsync(tenant, uuid);
-        //Authorization.AssertAuthorized(); // TODO: Check ABAC attribute rules.
         return component;
     }
 

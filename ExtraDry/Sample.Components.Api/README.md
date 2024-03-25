@@ -39,7 +39,7 @@ The API uses the built-in .NET Core configuration system, which chains a `appset
 
 The `Options` directory has a nested model for all options, which also provides validation rules to facilitate configuration of CD.  *Remember not to store secrets in the configuration files, use user-secrets instead*.
 
-The options can be dependecy injected into any class using either `IOptions<ApiOptions>` or just `ApiOptions` (as hot reloading is not allowed in CD scenarios).
+The options can be dependecy injected into any class using `ApiOptions` (as hot reloading is not allowed in CD scenarios, `IOptions` is not used).
 
 Logging of options is the first thing done when the host is started using the Extra Dry properties loggin extensions.  Decorate options that contain secrets with the `Secret` attribute to prevent them from being logged by the extensions (this is a very lightweight version of the redaction mechanism for dotnet).
 
