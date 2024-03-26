@@ -20,8 +20,16 @@ public class AbacPolicy
     /// </summary>
     public List<string> Types { get; set; } = [];
 
+    /// <summary>
+    /// The set of operations that this policy applies to when assessing ABAC authorization of
+    /// resources.  If empty, the policy applies to all types.
+    /// </summary>
     public List<AbacOperation> Operations { get; set; } = [];
 
+    /// <summary>
+    /// The disjunctive set of conditions that can satisfy this policy.  If any one of the
+    /// conditions is met, the policy is satisfied.  If empty, the policy will always fail.
+    /// </summary>
     public List<string> Conditions { get; set; } = [];
 
 }

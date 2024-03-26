@@ -1,7 +1,6 @@
 ﻿using ExtraDry.Server.Security;
 using Microsoft.AspNetCore.Routing;
 using System.Security.Claims;
-using System.Linq;
 
 namespace ExtraDry.Server.Tests.Security;
 
@@ -98,7 +97,7 @@ public class AbacAuthorizationTests
             },
             Policies = [
                 new AbacPolicy {
-                    Types = [ "Fake1", "TestTarget", "Fake2"],
+                    Types = ["Fake1", "TestTarget", "Fake2"],
                     Operations = [AbacOperation.Read],
                     Conditions = ["IsAgent"]
                 }
@@ -148,8 +147,8 @@ public class AbacAuthorizationTests
     {
         var options = new AbacOptions() {
             Conditions = {
-                { "IsStakeholder", new AbacCondition() { 
-                    Claims = new Dictionary<string, string>() { { "stakeholder", claimValue } } 
+                { "IsStakeholder", new AbacCondition() {
+                    Claims = new Dictionary<string, string>() { { "stakeholder", claimValue } }
                 } },
             },
             Policies = [
@@ -190,7 +189,7 @@ public class AbacAuthorizationTests
             ],
         };
         var abac = new AbacAuthorization(options, null!, null!);
-        var user = User([], new Dictionary<string, string> { 
+        var user = User([], new Dictionary<string, string> {
             { "stakeholder", "acme-corp" },
             { "sub", "Bob" }
         });
@@ -257,7 +256,7 @@ public class AbacAuthorizationTests
             ],
         };
         var abac = new AbacAuthorization(options, null!, null!);
-        var user = User([ "Agent", "Admin" ], []);
+        var user = User(["Agent", "Admin"], []);
         var route = Route([]);
         var target = new TestTarget();
 
@@ -289,6 +288,115 @@ public class AbacAuthorizationTests
         };
         var abac = new AbacAuthorization(options, null!, null!);
         var user = User(["Agent"], []);
+        var route = Route([]);
+        var target = new TestTarget();
+
+        var authorized = abac.IsAuthorized(user, route, target, AbacOperation.Read);
+
+        Assert.False(authorized);
+    }
+
+    [Theory]
+    [InlineData("Admin", false)]
+    [InlineData("Agent", true)]
+    public void EmptyPolicyTypeListAppliesToAllTypes(string role, bool shouldAuthorize)
+    {
+        var options = new AbacOptions() {
+            Conditions = {
+                { "IsAgent", new AbacCondition() { Roles = ["Agent"] } },
+                { "IsAdmin", new AbacCondition() { Roles = ["Admin"] } },
+            },
+            Policies = [
+                new AbacPolicy {
+                    Types = [], // <-- applies to all types
+                    Operations = [AbacOperation.Read],
+                    Conditions = ["IsAgent"]
+                }
+            ],
+        };
+        var abac = new AbacAuthorization(options, null!, null!);
+        var user = User([role], []);
+        var route = Route([]);
+        var target = new TestTarget();
+
+        var authorized = abac.IsAuthorized(user, route, target, AbacOperation.Read);
+
+        Assert.Equal(shouldAuthorize, authorized);
+    }
+
+    [Theory]
+    [InlineData("Admin", false)]
+    [InlineData("Agent", true)]
+    public void EmptyPolicyOperationListAppliesToAllOperations(string role, bool shouldAuthorize)
+    {
+        var options = new AbacOptions() {
+            Conditions = {
+                { "IsAgent", new AbacCondition() { Roles = ["Agent"] } },
+                { "IsAdmin", new AbacCondition() { Roles = ["Admin"] } },
+            },
+            Policies = [
+                new AbacPolicy {
+                    Types = ["TestTarget"],
+                    Operations = [], // <-- applies to all operations
+                    Conditions = ["IsAgent"]
+                }
+            ],
+        };
+        var abac = new AbacAuthorization(options, null!, null!);
+        var user = User([role], []);
+        var route = Route([]);
+        var target = new TestTarget();
+
+        var authorized = abac.IsAuthorized(user, route, target, AbacOperation.Read);
+
+        Assert.Equal(shouldAuthorize, authorized);
+    }
+
+    [Fact]
+    public void EmptyConditionListFails()
+    {
+        var options = new AbacOptions() {
+            Conditions = {
+                { "IsAgent", new AbacCondition() { Roles = ["Agent"] } },
+                { "IsAdmin", new AbacCondition() { Roles = ["Admin"] } },
+            },
+            Policies = [
+                new AbacPolicy {
+                    Types = ["TestTarget"],
+                    Operations = [AbacOperation.Read],
+                    Conditions = []  // <-- forces fail
+                }
+            ],
+        };
+        var abac = new AbacAuthorization(options, null!, null!);
+        var user = User(["Agent", "Admin"], []);
+        var route = Route([]);
+        var target = new TestTarget();
+
+        var authorized = abac.IsAuthorized(user, route, target, AbacOperation.Read);
+
+        Assert.False(authorized);
+    }
+
+    [Fact]
+    public void InvalidPropetyFails()
+    {
+        var options = new AbacOptions() {
+            Conditions = {
+                { "IsReviewer", new AbacCondition() {
+                    Attributes = new Dictionary<string, string>() { { "ReviewingUser", "Bob" } } // <-- invalid property
+                } },
+            },
+            Policies = [
+                new AbacPolicy {
+                    Types = ["TestTarget"],
+                    Operations = [AbacOperation.Read],
+                    Conditions = [ "IsReviewer" ] 
+                }
+            ],
+        };
+        var abac = new AbacAuthorization(options, null!, null!);
+        var user = User(["Agent", "Admin"], []);
         var route = Route([]);
         var target = new TestTarget();
 

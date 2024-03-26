@@ -43,7 +43,10 @@ public class AbacAuthorization(
     internal List<AbacPolicy> GetMatchingPolicies(object target, AbacOperation operation)
     {
         var type = options.AbacTypeResolver(target);
-        var policies = options.Policies.Where(e => e.Types.Contains(type) && e.Operations.Contains(operation)).ToList();
+        var policies = options.Policies.Where(e => 
+            (e.Types.Count == 0 || e.Types.Contains(type)) && 
+            (e.Operations.Count == 0 || e.Operations.Contains(operation)))
+            .ToList();
         return policies;
     }
 

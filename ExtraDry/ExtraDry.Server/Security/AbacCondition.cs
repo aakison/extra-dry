@@ -1,8 +1,9 @@
 ﻿namespace ExtraDry.Server.Security;
 
 /// <summary>
-/// A condition for an Attribute Based Access Control policy.  All properties must be met for the 
-/// condition to be true.  To create an 'allow anonymous' condition, leave all properties empty.
+/// A 'conjunctive' condition for an Attribute Based Access Control (ABAC) policy.  All properties 
+/// must be met for the condition to be true.  To create an 'allow anonymous' condition, leave all 
+/// properties empty.
 /// </summary>
 public class AbacCondition
 {
