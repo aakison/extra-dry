@@ -73,6 +73,7 @@ public class ComponentController(
     {
         ArgumentMismatchException.ThrowIfMismatch(uuid, component.Uuid, nameof(uuid));
         var updated = await components.UpdateComponentAsync(tenant, component);
+        abac.AssertAuthorized(updated, AbacOperation.Update);
         return new ResourceReference<Component>(updated);
     }
 
@@ -84,6 +85,8 @@ public class ComponentController(
     [Authorize(Policies.Agent)]
     public async Task DeleteComponent(string tenant, Guid uuid)
     {
+        var toDelete = await components.RetrieveComponentAsync(tenant, uuid);
+        abac.AssertAuthorized(toDelete, AbacOperation.Delete);
         await components.DeleteComponentAsync(tenant, uuid);
     }
 
