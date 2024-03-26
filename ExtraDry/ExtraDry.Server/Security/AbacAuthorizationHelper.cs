@@ -1,37 +1,21 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Azure.Amqp.Framing;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Routing;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 
 namespace ExtraDry.Server.Security;
 
-public class AbacAuthorization(
-    AbacOptions options,
-    IHttpContextAccessor contextAccessor,
-    ILogger<AbacAuthorization> logger)
-{
-
-    public bool IsAuthorized(object target, AbacOperation operation)
-    {
-        var user = contextAccessor.HttpContext?.User;
-        var route = contextAccessor.HttpContext?.Request.RouteValues;
-        return IsAuthorized(user, route, target, operation);
-    }
-
-    public void AssertAuthorized(object target, AbacOperation operation)
-    {
-        if(IsAuthorized(target, operation) == false) {
-            throw new UnauthorizedAccessException();
-        }
-    }
+/// <summary>
+/// Internal class that has all the actual logic for combining a set of AbacOptions, a user, 
+/// a route, and a target object; and then determining if the user has access to a resource.
+/// Broken into it's own class to allow for easier testing.
+/// </summary>
+internal class AbacAuthorizationHelper(AbacOptions options) { 
 
     internal bool IsAuthorized(ClaimsPrincipal? user, RouteValueDictionary? route, object target, AbacOperation operation)
     {
         var abacPolicies = GetMatchingPolicies(target, operation);
         if(abacPolicies.Count == 0) {
-            logger.LogError(@"No ABAC policies found for {Operation} on {Target}", operation, typeof(Target).Name);
+            //logger.LogError(@"No ABAC policies found for {Operation} on {Target}", operation, typeof(Target).Name);
             return false;
         }
         if(abacPolicies.All(e => SatisfiesPolicy(user, route, target, e))) {
@@ -40,7 +24,7 @@ public class AbacAuthorization(
         return false;
     }
 
-    internal List<AbacPolicy> GetMatchingPolicies(object target, AbacOperation operation)
+    private List<AbacPolicy> GetMatchingPolicies(object target, AbacOperation operation)
     {
         var type = options.AbacTypeResolver(target);
         var policies = options.Policies.Where(e => 
@@ -50,13 +34,13 @@ public class AbacAuthorization(
         return policies;
     }
 
-    internal List<AbacCondition> GetPolicyConditions(AbacPolicy policy)
+    private List<AbacCondition> GetPolicyConditions(AbacPolicy policy)
     {
         var conditions = policy.Conditions.Select(e => options.Conditions[e]).ToList();
         return conditions;
     }
 
-    internal static bool SatisfiesCondition(ClaimsPrincipal? user, RouteValueDictionary? route, object target, AbacCondition condition)
+    private static bool SatisfiesCondition(ClaimsPrincipal? user, RouteValueDictionary? route, object target, AbacCondition condition)
     {
         if(condition.AllowAnonymous) {
             return true;
@@ -72,7 +56,7 @@ public class AbacAuthorization(
         return false;
     }
 
-    internal static string Expand(string value, ClaimsPrincipal? user, RouteValueDictionary? route, object target)
+    private static string Expand(string value, ClaimsPrincipal? user, RouteValueDictionary? route, object target)
     {
         var expanded = value;
         if(expanded.Contains("{user.") && user != null) {
@@ -104,7 +88,7 @@ public class AbacAuthorization(
 
     private const string SoapUniqueNameClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
 
-    internal bool SatisfiesPolicy(ClaimsPrincipal? user, RouteValueDictionary? route, object target, AbacPolicy policy)
+    private bool SatisfiesPolicy(ClaimsPrincipal? user, RouteValueDictionary? route, object target, AbacPolicy policy)
     {
         var conditions = GetPolicyConditions(policy);
         if(conditions.Any(e => SatisfiesCondition(user, route, target, e))) {

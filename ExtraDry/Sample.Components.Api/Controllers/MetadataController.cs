@@ -26,7 +26,7 @@ namespace Sample.Components.Api.Controllers;
 //    public async Task<Metadata> RetrieveMetadata(string tenant, Guid uuid)
 //    {
 //        var component = await components.RetrieveComponentAsync(tenant, uuid);
-//        //Authorization.AssertAuthorized(); // TODO: Check ABAC attribute rules.
+//        //Authorization.AssertAuthorizedAsync(); // TODO: Check ABAC attribute rules.
 //        var result = await metadata.RetrieveMetadataAsync(component);
 //        return result;
 //    }
@@ -40,7 +40,7 @@ namespace Sample.Components.Api.Controllers;
 //    public async Task UpdateMetadata(string tenant, Guid uuid, Metadata exemplar)
 //    {
 //        var component = await components.RetrieveComponentAsync(tenant, uuid);
-//        //Authorization.AssertAuthorized(); // TODO: Check ABAC attribute rules.
+//        //Authorization.AssertAuthorizedAsync(); // TODO: Check ABAC attribute rules.
 //        await metadata.UpdateMetadataAsync(component, exemplar);
 //    }
 

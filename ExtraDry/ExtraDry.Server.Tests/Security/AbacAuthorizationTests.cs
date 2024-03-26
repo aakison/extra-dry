@@ -22,7 +22,7 @@ public class AbacAuthorizationTests
                 }
             ],
         };
-        var abac = new AbacAuthorization(options, null!, null!);
+        var abac = new AbacAuthorizationHelper(options);
         var user = User([], []);
         var route = Route([]);
         var target = new TestTarget();
@@ -47,7 +47,7 @@ public class AbacAuthorizationTests
                 }
             ],
         };
-        var abac = new AbacAuthorization(options, null!, null!);
+                var abac = new AbacAuthorizationHelper(options);
         var user = User(["Agent"], []);
         var route = Route([]);
         var target = new TestTarget();
@@ -78,7 +78,7 @@ public class AbacAuthorizationTests
                 }
             ],
         };
-        var abac = new AbacAuthorization(options, null!, null!);
+                var abac = new AbacAuthorizationHelper(options);
         var user = User(["Agent"], []);
         var route = Route([]);
         var target = new TestTarget();
@@ -103,7 +103,7 @@ public class AbacAuthorizationTests
                 }
             ],
         };
-        var abac = new AbacAuthorization(options, null!, null!);
+                var abac = new AbacAuthorizationHelper(options);
         var user = User(["Agent"], []);
         var route = Route([]);
         var target = new TestTarget();
@@ -128,7 +128,7 @@ public class AbacAuthorizationTests
                 }
             ],
         };
-        var abac = new AbacAuthorization(options, null!, null!);
+                var abac = new AbacAuthorizationHelper(options);
         var user = User(["Agent"], []);
         var route = Route([]);
         var target = new TestTarget();
@@ -159,7 +159,7 @@ public class AbacAuthorizationTests
                 }
             ],
         };
-        var abac = new AbacAuthorization(options, null!, null!);
+                var abac = new AbacAuthorizationHelper(options);
         var user = User([], new Dictionary<string, string> { { "stakeholder", "acme-corp" } });
         var route = Route(new Dictionary<string, string?> { { "tenant", "acme-corp" } });
         var target = new TestTarget();
@@ -188,7 +188,7 @@ public class AbacAuthorizationTests
                 }
             ],
         };
-        var abac = new AbacAuthorization(options, null!, null!);
+                var abac = new AbacAuthorizationHelper(options);
         var user = User([], new Dictionary<string, string> {
             { "stakeholder", "acme-corp" },
             { "sub", "Bob" }
@@ -221,7 +221,7 @@ public class AbacAuthorizationTests
                 }
             ],
         };
-        var abac = new AbacAuthorization(options, null!, null!);
+                var abac = new AbacAuthorizationHelper(options);
         var user = User([], new Dictionary<string, string> {
             { "stakeholder", "acme-corp" },
             { "sub", "Bob" }
@@ -255,7 +255,7 @@ public class AbacAuthorizationTests
                 }
             ],
         };
-        var abac = new AbacAuthorization(options, null!, null!);
+                var abac = new AbacAuthorizationHelper(options);
         var user = User(["Agent", "Admin"], []);
         var route = Route([]);
         var target = new TestTarget();
@@ -286,7 +286,7 @@ public class AbacAuthorizationTests
                 }
             ],
         };
-        var abac = new AbacAuthorization(options, null!, null!);
+                var abac = new AbacAuthorizationHelper(options);
         var user = User(["Agent"], []);
         var route = Route([]);
         var target = new TestTarget();
@@ -314,7 +314,7 @@ public class AbacAuthorizationTests
                 }
             ],
         };
-        var abac = new AbacAuthorization(options, null!, null!);
+                var abac = new AbacAuthorizationHelper(options);
         var user = User([role], []);
         var route = Route([]);
         var target = new TestTarget();
@@ -342,7 +342,7 @@ public class AbacAuthorizationTests
                 }
             ],
         };
-        var abac = new AbacAuthorization(options, null!, null!);
+                var abac = new AbacAuthorizationHelper(options);
         var user = User([role], []);
         var route = Route([]);
         var target = new TestTarget();
@@ -368,7 +368,7 @@ public class AbacAuthorizationTests
                 }
             ],
         };
-        var abac = new AbacAuthorization(options, null!, null!);
+                var abac = new AbacAuthorizationHelper(options);
         var user = User(["Agent", "Admin"], []);
         var route = Route([]);
         var target = new TestTarget();
@@ -395,7 +395,7 @@ public class AbacAuthorizationTests
                 }
             ],
         };
-        var abac = new AbacAuthorization(options, null!, null!);
+                var abac = new AbacAuthorizationHelper(options);
         var user = User(["Agent", "Admin"], []);
         var route = Route([]);
         var target = new TestTarget();
@@ -406,13 +406,13 @@ public class AbacAuthorizationTests
     }
 
     private ClaimsPrincipal User(string[] roles, Dictionary<string, string> claims) => 
-        new ClaimsPrincipal(new ClaimsIdentity(
+        new(new ClaimsIdentity(
             roles.Select(e => new Claim(ClaimTypes.Role, e))
             .Union(claims.Select(e => new Claim(e.Key, e.Value)))            
         ));
 
     private RouteValueDictionary Route(Dictionary<string, string?> routes) => 
-        new RouteValueDictionary(
+        new(
             routes.Select(e => KeyValuePair.Create(e.Key, e.Value))
             .Union([ KeyValuePair.Create("controller", "TestController"), KeyValuePair.Create("action", "TestEntity") ])
         );

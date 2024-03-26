@@ -16,8 +16,7 @@ namespace Sample.Components.Api.Controllers;
 [ApiExceptionStatusCodes]
 public class ComponentController(
     ComponentService components,
-    AbacAuthorization abac
-    ) 
+    IAuthorizationService auth) 
 {
 
     /// <summary>
@@ -45,7 +44,6 @@ public class ComponentController(
     public async Task<ResourceReference<Component>> CreateComponent(string tenant, Component component)
     {
         var created = await components.CreateComponentAsync(tenant, component);
-        abac.AssertAuthorized(created, AbacOperation.Create);
         return new ResourceReference<Component>(created);
     }
 
@@ -58,7 +56,7 @@ public class ComponentController(
     public async Task<Component> ReadComponent(string tenant, Guid uuid)
     {
         var component = await components.RetrieveComponentAsync(tenant, uuid);
-        abac.AssertAuthorized(component, AbacOperation.Read);
+        await auth.AssertAuthorizedAsync(component, AbacRequirement.Read);
         return component;
     }
 
@@ -73,7 +71,7 @@ public class ComponentController(
     {
         ArgumentMismatchException.ThrowIfMismatch(uuid, component.Uuid, nameof(uuid));
         var updated = await components.UpdateComponentAsync(tenant, component);
-        abac.AssertAuthorized(updated, AbacOperation.Update);
+        await auth.AssertAuthorizedAsync(updated, AbacRequirement.Update);
         return new ResourceReference<Component>(updated);
     }
 
@@ -85,8 +83,7 @@ public class ComponentController(
     [Authorize(Policies.Agent)]
     public async Task DeleteComponent(string tenant, Guid uuid)
     {
-        var toDelete = await components.RetrieveComponentAsync(tenant, uuid);
-        abac.AssertAuthorized(toDelete, AbacOperation.Delete);
+        // No ABAC, agents can do whatever they want.
         await components.DeleteComponentAsync(tenant, uuid);
     }
 

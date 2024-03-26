@@ -18,6 +18,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddRbacExtensions(this IServiceCollection services)
     {
         services.AddSingleton<IAuthorizationHandler, RbacRouteMatchesClaimRequirementHandler>();
+        services.AddSingleton<IAuthorizationHandler, AbacRequirementHandler>();
         return services;
     }
 
@@ -34,7 +35,7 @@ public static class ServiceCollectionExtensions
             config?.Invoke(options);
             return options;
         });
-        services.AddSingleton<AbacAuthorization>();
+        //services.AddSingleton<AbacAuthorization>();
         return services;
     }
 

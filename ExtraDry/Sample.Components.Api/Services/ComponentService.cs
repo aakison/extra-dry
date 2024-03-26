@@ -64,12 +64,7 @@ public class ComponentService(
     public async Task DeleteComponentAsync(string tenant, Guid uuid)
     {
         var existing = await RetrieveComponentAsync(tenant, uuid);
-        await rules.DeleteAsync(tenant, database.Components.Remove(existing), database.SaveChangesAsync());
+        await rules.DeleteAsync(existing, () => database.Components.Remove(existing), async () => await database.SaveChangesAsync());
     }
 
-    public async Task DeleteComponentAsync(string tenant, string slug)
-    {
-        var existing = await RetrieveComponentAsync(tenant, slug);
-        await rules.DeleteAsync(tenant, database.Components.Remove(existing), database.SaveChangesAsync());
-    }
 }
