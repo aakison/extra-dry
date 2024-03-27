@@ -1,5 +1,6 @@
 ﻿using ExtraDry.Server.Security;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -13,29 +14,19 @@ public static class ServiceCollectionExtensions
 {
 
     /// <summary>
-    /// Register the common authorization handlers for use in the application.
-    /// </summary>
-    public static IServiceCollection AddRbacExtensions(this IServiceCollection services)
-    {
-        services.AddSingleton<IAuthorizationHandler, RbacRouteMatchesClaimRequirementHandler>();
-        services.AddSingleton<IAuthorizationHandler, AbacRequirementHandler>();
-        return services;
-    }
-
-    /// <summary>
-    /// Register the extensions that allows using ABAC rules from options, enabling the 
-    /// <see cref="AbacAuthorization"/> service for simple ABAC checks in controllers.
+    /// Register the extensions that allows using ABAC rules from options.  
     /// </summary>
     public static IServiceCollection AddAbacExtensions(this IServiceCollection services, Action<AbacOptions>? config = null)
     {
-        services.AddSingleton(services => {
+        services.AddSingleton(provider => {
             var options = new AbacOptions();
-            var configuration = services.GetRequiredService<IConfiguration>();
+            var configuration = provider.GetRequiredService<IConfiguration>();
             configuration.GetSection(AbacOptions.SectionName).Bind(options);
             config?.Invoke(options);
             return options;
         });
-        //services.AddSingleton<AbacAuthorization>();
+        services.AddSingleton<IAuthorizationHandler, RbacRouteMatchesClaimRequirementHandler>();
+        services.AddSingleton<IAuthorizationHandler, AbacRequirementHandler>();
         return services;
     }
 

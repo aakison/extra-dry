@@ -97,13 +97,13 @@ public class AbacAuthorizationTests
             },
             Policies = [
                 new AbacPolicy {
-                    Types = ["Fake1", "TestTarget", "Fake2"],
+                    Types = ["Fake1", "TestTarget", "Fake2"], // <-- TestTarget is in the list, but not the whole list.
                     Operations = [AbacOperation.Read],
                     Conditions = ["IsAgent"]
                 }
             ],
         };
-                var abac = new AbacAuthorizationHelper(options);
+        var abac = new AbacAuthorizationHelper(options);
         var user = User(["Agent"], []);
         var route = Route([]);
         var target = new TestTarget();

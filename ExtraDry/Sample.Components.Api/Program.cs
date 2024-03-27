@@ -2,6 +2,7 @@ using ExtraDry.Server;
 using ExtraDry.Server.Agents;
 using ExtraDry.Server.EF;
 using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Azure.Cosmos;
 using Microsoft.OpenApi.Models;
@@ -53,7 +54,6 @@ builder.Services.AddAuthentication()
     .AddJwtBearer();
 builder.Services.AddAuthorization();
 
-builder.Services.AddRbacExtensions();
 builder.Services.AddAbacExtensions();
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy(Policies.User, policy => policy.RequireRouteMatchesClaim("tenant", ["stakeholder", "manager", "vendor"], ClaimValueMatch.LastPath, roleOverrides: ["admin", "agent"]))
