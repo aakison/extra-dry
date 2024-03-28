@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace ExtraDry.Server;
+namespace ExtraDry.Server.Security;
 
 /// <summary>
 /// Requirement that the route parameter in a URI matches a claim value associated with the user.

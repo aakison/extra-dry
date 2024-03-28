@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server;
+﻿namespace ExtraDry.Server.Security;
 
 /// <summary>
 /// The method to use to match a claim value for <see cref="RbacRouteMatchesClaimRequirement"/> policies.

@@ -1,9 +1,7 @@
 ﻿using ExtraDry.Server.Security;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace ExtraDry.Server;
 
@@ -27,6 +25,7 @@ public static class ServiceCollectionExtensions
         });
         services.AddSingleton<IAuthorizationHandler, RbacRouteMatchesClaimRequirementHandler>();
         services.AddSingleton<IAuthorizationHandler, AbacRequirementHandler>();
+        services.AddSingleton<IAuthorizationHandler, RbacRequirementHandler>();
         return services;
     }
 

@@ -1,15 +1,34 @@
-﻿using Microsoft.Extensions.Logging;
+﻿namespace ExtraDry.Server.Security;
 
-namespace ExtraDry.Server.Security;
-
+/// <summary>
+/// Collection of options for Attribute-Based Access Control (ABAC) rules.  These are typically
+/// defined in appsettings.json but could be configured and registered from any source.
+/// </summary>
 public class AbacOptions : IValidatableObject
 {
+    /// <summary>
+    /// When binding from configuration, this is the section name to use.
+    /// </summary>
     public const string SectionName = "Authorization";
 
+    /// <summary>
+    /// The conditions that can be used by policies, indexed by name.  Allows conditions to be
+    /// reused across multiple policies, simplifying the configuration.
+    /// </summary>
     public Dictionary<string, AbacCondition> Conditions { get; init; } = [];
 
+    /// <summary>
+    /// The policies that define the rules for access control.  Policies are matched based on type
+    /// and operation and all matching policies must be satisfied for access to be granted.
+    /// </summary>
     public List<AbacPolicy> Policies { get; init; } = [];
 
+    /// <summary>
+    /// The type resolver function that is used to determine the type of an object for ABAC rules.
+    /// By default, the type is matched to the object's class name.  For cross-cutting concerns,
+    /// such as attributes, the type may be taken from a discriminator property.  The function 
+    /// should be modified to return the appropriate type name for the target object.
+    /// </summary>
     public Func<object?, string> AbacTypeResolver { get; set; }
         = (object? target) => target == null ? "null" : target.GetType().Name;
 

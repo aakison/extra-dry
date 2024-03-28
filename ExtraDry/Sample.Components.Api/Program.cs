@@ -56,7 +56,8 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddAbacExtensions();
 builder.Services.AddAuthorizationBuilder()
-    .AddPolicy(Policies.User, policy => policy.RequireRouteMatchesClaim("tenant", ["stakeholder", "manager", "vendor"], ClaimValueMatch.LastPath, roleOverrides: ["admin", "agent"]))
+    //.AddPolicy(Policies.User, policy => policy.RequireRouteMatchesClaim("tenant", ["stakeholder", "manager", "vendor"], ClaimValueMatch.LastPath, roleOverrides: ["admin", "agent"]))
+    .AddPolicy(Policies.User, policy => policy.AddRbacRequirement("User"))
     .AddPolicy(Policies.Admin, policy => policy.RequireRole("admin"))
     .AddPolicy(Policies.Agent, policy => policy.RequireRole("agent"))
     .AddPolicy(Policies.AdminOrAgent, policy => policy.RequireAssertion(e => e.User.IsInRole("admin") || e.User.IsInRole("agent")));

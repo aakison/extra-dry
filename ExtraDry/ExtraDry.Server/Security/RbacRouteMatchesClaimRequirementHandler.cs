@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using System.Security.Claims;
 
-namespace ExtraDry.Server;
+namespace ExtraDry.Server.Security;
 
 /// <summary>
 /// Checkes the <see cref="RbacRouteMatchesClaimRequirement"/> for a tenant route parameter to match a 

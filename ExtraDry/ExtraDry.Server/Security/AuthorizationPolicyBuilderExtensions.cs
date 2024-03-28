@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using ExtraDry.Server.Security;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ExtraDry.Server;
 
@@ -9,7 +10,7 @@ public static class AuthorizationPolicyBuilderExtensions
 {
 
     /// <summary>
-    /// Build a <see cref="AuthorizationPolicyBuilder"/> that requires a claim to match a route parameter.
+    /// Build a policy that requires a claim to match a route parameter to user claims.
     /// </summary>
     public static AuthorizationPolicyBuilder RequireRouteMatchesClaim(this AuthorizationPolicyBuilder builder, string routeParameter, string[] claimKeys, ClaimValueMatch match = ClaimValueMatch.Exact, string[]? roleOverrides = null)
     {
@@ -19,6 +20,15 @@ public static class AuthorizationPolicyBuilderExtensions
             ClaimValueMatch = match,
             RoleOverrides = roleOverrides ?? [],
         });
+        return builder;
+    }
+
+    /// <summary>
+    /// Build a policy that matches a configurable policy claim.
+    /// </summary>
+    public static AuthorizationPolicyBuilder AddRbacRequirement(this AuthorizationPolicyBuilder builder, string abacPolicyName)
+    {
+        builder.AddRequirements(new RbacRequirement(abacPolicyName));
         return builder;
     }
 

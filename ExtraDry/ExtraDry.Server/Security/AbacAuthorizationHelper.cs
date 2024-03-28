@@ -11,6 +11,10 @@ namespace ExtraDry.Server.Security;
 /// </summary>
 internal class AbacAuthorizationHelper(AbacOptions options) { 
 
+    /// <summary>
+    /// Looks up the policies that match the target object and operation, returning true if 
+    /// all policies succeed.
+    /// </summary>
     internal bool IsAuthorized(ClaimsPrincipal? user, RouteValueDictionary? route, object target, AbacOperation operation)
     {
         var abacPolicies = GetMatchingPolicies(target, operation);
@@ -18,7 +22,20 @@ internal class AbacAuthorizationHelper(AbacOptions options) {
             //logger.LogError(@"No ABAC policies found for {Operation} on {Target}", operation, typeof(Target).Name);
             return false;
         }
-        if(abacPolicies.All(e => SatisfiesPolicy(user, route, target, e))) {
+        if(abacPolicies.All(e => IsAuthorized(user, route, target, e))) {
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Applies the indicated policy to the target object and operation, returning true if 
+    /// it succeeds.
+    /// </summary>
+    internal bool IsAuthorized(ClaimsPrincipal? user, RouteValueDictionary? route, object target, AbacPolicy policy)
+    {
+        var conditions = GetPolicyConditions(policy);
+        if(conditions.Any(e => SatisfiesCondition(user, route, target, e))) {
             return true;
         }
         return false;
@@ -87,15 +104,6 @@ internal class AbacAuthorizationHelper(AbacOptions options) {
     private const string SoapSubClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name";
 
     private const string SoapUniqueNameClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
-
-    private bool SatisfiesPolicy(ClaimsPrincipal? user, RouteValueDictionary? route, object target, AbacPolicy policy)
-    {
-        var conditions = GetPolicyConditions(policy);
-        if(conditions.Any(e => SatisfiesCondition(user, route, target, e))) {
-            return true;
-        }
-        return false;
-    }
 
     [SuppressMessage("Performance", "CA1854:Prefer the 'IDictionary.TryGetValue(TKey, out TValue)' method", Justification = "False positive.")]
     private static bool HasAttribute(object target, string key, string value)
