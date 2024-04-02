@@ -55,6 +55,7 @@ steps:
   inputs:
     targetType: 'inline'
     workingDirectory: $(Build.SourcesDirectory)/ExtraDry
+    ignoreLASTEXITCODE: true
     script: |
       $global:failedLines = 0;
       $global:invalidProjectFound = $false;
