@@ -55,7 +55,6 @@ steps:
   inputs:
     targetType: 'inline'
     workingDirectory: $(Build.SourcesDirectory)/ExtraDry
-    ignoreLASTEXITCODE: true
     script: |
       $global:failedLines = 0;
       $global:invalidProjectFound = $false;
@@ -87,7 +86,7 @@ steps:
         exit 1
       }
       if(($LASTEXITCODE -eq 1) -AND $global:invalidProjectFound) {
-        exit 0;
+        $global:LASTEXITCODE = 0;
       }
 
 - task: PowerShell@2
