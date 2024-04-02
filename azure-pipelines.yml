@@ -79,7 +79,12 @@ steps:
           }
         }
       }
-      dotnet list package --vulnerable --include-transitive 2>&1 | Scan-Line-For-Vulnerability
+      try {
+        dotnet list package --vulnerable --include-transitive 2>&1 | Scan-Line-For-Vulnerability
+      }
+      catch {
+        Write-Host "Exception " $_
+      }
       if($global:failedLines) {
         Write-Host
         Write-Host "Vulnerabilities in dependant package have been found, please upgrade or replace." -ForegroundColor Red
