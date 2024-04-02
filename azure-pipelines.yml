@@ -57,22 +57,35 @@ steps:
     workingDirectory: $(Build.SourcesDirectory)/ExtraDry
     script: |
       $global:failedLines = 0;
+      $global:invalidProjectFound = $false;
       Function Scan-Line-For-Vulnerability {
         [CmdletBinding()]
         Param([Parameter(ValueFromPipeline)] $line)
         process {
-          Write-Host $line
-          if($line.Contains(" Critical ") -OR $line.Contains(" Moderate ") -OR $line.Contains(" High ")) {
-            $global:failedLines = $global:failedLines + 1
+          if($line -is [System.Management.Automation.ErrorRecord]) {
+            $errorRec = $line -as [System.Management.Automation.ErrorRecord]
+            Write-host $errorRec.Exception.Message
+            # dotnet list errors if there is a dcproj in the solution. Capture if there is so we can ignore the error.
+            # See: https://github.com/NuGet/Home/issues/12520
+            if($errorRec.Exception.Message.Contains(".dcproj")) {
+              $global:invalidProjectFound = $true
+            }
+          }
+          else {
+            Write-Host $line
+            if($line.Contains(" Critical ") -OR $line.Contains(" Moderate ") -OR $line.Contains(" High ")) {
+              $global:failedLines = $global:failedLines + 1
+            }
           }
         }
       }
-      dotnet list package --vulnerable --include-transitive | Scan-Line-For-Vulnerability
+      dotnet list package --vulnerable --include-transitive 2>&1 | Scan-Line-For-Vulnerability
       if($global:failedLines) {
         Write-Host
         Write-Host "Vulnerabilities in dependant package have been found, please upgrade or replace." -ForegroundColor Red
         exit 1
       }
+      exit ((($LASTEXITCODE -eq 1) -AND $global:invalidProjectFound) ? 0 : $LASTEXITCODE)
 
 - task: PowerShell@2
   name: GitSemVer
