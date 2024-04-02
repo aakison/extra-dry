@@ -84,6 +84,11 @@ steps:
       }
       catch {
         Write-Host "Exception " $_
+        # dotnet list errors if there is a dcproj in the solution. Capture if there is so we can ignore the error.
+        # See: https://github.com/NuGet/Home/issues/12520
+        if($_.Message.Contains(".dcproj")) {
+          $global:invalidProjectFound = $true
+        }
       }
       if($global:failedLines) {
         Write-Host
