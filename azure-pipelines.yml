@@ -62,14 +62,16 @@ steps:
         [CmdletBinding()]
         Param([Parameter(ValueFromPipeline)] $line)
         process {
-          Write-Host $line
-          if($line.Contains(" Critical ") -OR $line.Contains(" Moderate ") -OR $line.Contains(" High ")) {
-            $global:failedLines = $global:failedLines + 1
+          if($line -isnot [System.Management.Automation.ErrorRecord]) {
+            Write-Host $line
+            if($line.Contains(" Critical ") -OR $line.Contains(" Moderate ") -OR $line.Contains(" High ")) {
+              $global:failedLines = $global:failedLines + 1
+            }
           }
         }
       }
       try {
-        dotnet list package --vulnerable --include-transitive | Scan-Line-For-Vulnerability
+        dotnet list package --vulnerable --include-transitive 2>&1 | Scan-Line-For-Vulnerability
       }
       catch {
         # dotnet list errors if there is a dcproj in the solution. Capture if there is so we can ignore the error.
