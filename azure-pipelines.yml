@@ -85,9 +85,14 @@ steps:
         Write-Host "Vulnerabilities in dependant package have been found, please upgrade or replace." -ForegroundColor Red
         exit 1
       }
+      Write-Host $LASTEXITCODE
+      Write-Host $global:invalidProjectFound
       if(($LASTEXITCODE -eq 1) -AND $global:invalidProjectFound) {
-        $global:LASTEXITCODE = 0;
+        $error.Clear()
+        $global:LASTEXITCODE = 0
+        exit 0
       }
+      Write-Host $LASTEXITCODE
 
 - task: PowerShell@2
   name: GitSemVer
