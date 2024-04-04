@@ -1,0 +1,25 @@
+﻿@namespace ExtraDry.Blazor
+@inherits DryErrorBoundary
+
+<ExposedErrorBoundary @ref="@ErrorBoundary">
+    <ChildContent>
+        @ChildContent
+    </ChildContent>
+    <ErrorContent>
+        @if (MessageRenderMode == ValidationRenderMode.Before || MessageRenderMode == ValidationRenderMode.InsteadOf)
+        {
+            <DynamicComponent Type="@ValidationMessageType" Parameters="@ErrorParameters" />
+        }
+
+        @if (MessageRenderMode != ValidationRenderMode.InsteadOf)
+        {
+            @ChildContent
+        }
+        
+            
+        @if (MessageRenderMode == ValidationRenderMode.After)
+        {
+            <DynamicComponent Type="@ValidationMessageType" Parameters="@ErrorParameters" />
+        }
+    </ErrorContent>
+</ExposedErrorBoundary>

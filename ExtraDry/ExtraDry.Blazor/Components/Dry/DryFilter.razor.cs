@@ -1,17 +1,15 @@
-﻿namespace ExtraDry.Blazor;
+namespace ExtraDry.Blazor;
 
 public partial class DryFilter<TItem> : ComponentBase, IExtraDryComponent {
 
     public DryFilter()
     {
         ViewModelDescription = new ViewModelDescription(typeof(TItem), this);
-        AllFilters =
-        [
-            KeywordsFitlerIdentifier,
-            .. ViewModelDescription.FilterProperties
-                .Where(e => e.HasDiscreteValues)
-                .Select(e => e.Property.Name),
-        ];
+        AllFilters = new List<string> { KeywordsFitlerIdentifier };
+        AllFilters.AddRange(ViewModelDescription.FilterProperties
+            .Where(e => e.HasDiscreteValues)
+            .Select(e => e.Property.Name));
+        AllFilters.AddRange(DisplayDateFilters.Select(e => e.Property.Name));
     }
 
     /// <inheritdoc cref="IExtraDryComponent.CssClass "/>
@@ -83,6 +81,8 @@ public partial class DryFilter<TItem> : ComponentBase, IExtraDryComponent {
 
     private IEnumerable<PropertyDescription> DisplayedEnumFilters => ViewModelDescription.FilterProperties
         .Where(e => e.HasDiscreteValues && IsFilterSelected(e.Property.Name));
+
+    private IEnumerable<PropertyDescription> DisplayDateFilters => ViewModelDescription.FilterProperties.Where(e => e.PropertyType == typeof(DateTime));
 
     private bool DisplayKeywordFilter => IsFilterSelected(KeywordsFitlerIdentifier);
 

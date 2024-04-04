@@ -33,6 +33,8 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
+    private string LevelCss => Item.Item is IHierarchyEntity ? $"level-{Item.GroupDepth}" : "";
+
     protected override void OnParametersSet()
     {
         if(Description == null) {
@@ -50,7 +52,7 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
 
     private string SelectedClass => IsSelected ? "selected" : "";
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass, ClickableClass, SelectedClass);
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass, ClickableClass, SelectedClass, LevelCss);
 
     private string RadioButtonScope => $"{Description.GetHashCode()}";
 

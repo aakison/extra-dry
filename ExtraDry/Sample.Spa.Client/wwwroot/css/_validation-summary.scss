@@ -1,0 +1,12 @@
+@import "_constants.scss";
+
+.validation-summary {
+    padding: $medium-spacing;
+    background-color: $var-danger-light;
+
+    h4 {
+        margin: 0px;
+        font-size: 15px;
+        line-height: 17px; // ~ +40%
+    }
+}

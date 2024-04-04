@@ -24,7 +24,7 @@ public class Company : IResourceIdentifiers {
     [Rules(RuleAction.Ignore)]
     public Guid Uuid { get; set; } = Guid.NewGuid();
 
-    [Display(Name = "Code", GroupName = "Summary")]
+    [Display(Name = "Code", GroupName = "Summary", Order = 1)]
     [Filter(FilterType.Equals)]
     [Rules(CreateAction = RuleAction.Allow, UpdateAction = RuleAction.Block)]
     [Required, StringLength(24)]
@@ -85,7 +85,9 @@ public class Company : IResourceIdentifiers {
     [Precision(18, 2)]
     public decimal SalesMargin { get; set; }
 
-    [Display]
+    [Filter]
+    [Display(Name = "Incorporation Date", ShortName = "Inc Date")]
+    [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
     public DateTime IncorporationDate { get; set; }
 
     [Display]

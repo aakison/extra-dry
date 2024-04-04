@@ -57,6 +57,7 @@ public class ProblemDetails
     /// using the built-in JSON or XML formatters.
     /// </remarks>
     [JsonExtensionData]
-    public IDictionary<string, object> Extensions { get; } = new Dictionary<string, object>(StringComparer.Ordinal);
+    [JsonInclude]
+    public IDictionary<string, object> Extensions { get; private set; } = new Dictionary<string, object>(StringComparer.Ordinal);
 
 }

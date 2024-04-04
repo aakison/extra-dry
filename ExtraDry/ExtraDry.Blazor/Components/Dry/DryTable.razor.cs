@@ -1,4 +1,4 @@
-﻿using ExtraDry.Blazor.Components.Internal;
+using ExtraDry.Blazor.Components.Internal;
 using Microsoft.AspNetCore.Components.Web.Virtualization;
 
 namespace ExtraDry.Blazor;
@@ -284,18 +284,20 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
                     }
                 }
             }
+            ItemsProviderResult<ListItemInfo<TItem>> result;
             if(InternalItems.Any()) {
                 var count = Math.Min(request.Count, InternalItems.Count);
                 var items = InternalItems.GetRange(request.StartIndex, count);
                 if(!IsHierarchyList) {
                     PerformInitialSort();
                 }
-                return new ItemsProviderResult<ListItemInfo<TItem>>(items, InternalItems.Count);
+                result = new ItemsProviderResult<ListItemInfo<TItem>>(items, InternalItems.Count);
             }
             else {
-                var x = new ItemsProviderResult<ListItemInfo<TItem>>();
-                return x;
+                result = new();
             }
+            firstLoadCompleted = true;
+            return result;
         }
         catch(OperationCanceledException) {
             // KLUDGE: The CancellationTokenSource is initiated in the Virtualize component, but
@@ -306,7 +308,6 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
         }
         finally {
             serviceLock.Release();
-            firstLoadCompleted = true;
             StateHasChanged(); // update classes affected by InternalItems
         }
         
