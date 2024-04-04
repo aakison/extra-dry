@@ -5,11 +5,14 @@ public partial class DryFilter<TItem> : ComponentBase, IExtraDryComponent {
     public DryFilter()
     {
         ViewModelDescription = new ViewModelDescription(typeof(TItem), this);
-        AllFilters = new List<string> { KeywordsFitlerIdentifier };
-        AllFilters.AddRange(ViewModelDescription.FilterProperties
-            .Where(e => e.HasDiscreteValues)
-            .Select(e => e.Property.Name));
-        AllFilters.AddRange(DisplayDateFilters.Select(e => e.Property.Name));
+        AllFilters = 
+        [
+            KeywordsFitlerIdentifier,
+            .. ViewModelDescription.FilterProperties
+                .Where(e => e.HasDiscreteValues)
+                .Select(e => e.Property.Name),
+            .. DisplayDateFilters.Select(e => e.Property.Name)
+        ];
     }
 
     /// <inheritdoc cref="IExtraDryComponent.CssClass "/>
