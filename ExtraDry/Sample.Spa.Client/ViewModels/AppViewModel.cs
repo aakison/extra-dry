@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 
 namespace Sample.Spa.Client;
 
 public class AppViewModel(
     NavigationManager navigation)
 {
+
+    public string[]? Filter { get; set; }
+
     public Menu Menu {
         get {
             menu ??= CreateMenu();
@@ -19,6 +22,8 @@ public class AppViewModel(
         new("select", "/img/glyphs/chevron-down-light.svg", "Collapse", "glyph"),
         new("expand", "/img/glyphs/chevron-right-light.svg", "Expand", "glyph"),
         new("collapse", "/img/glyphs/chevron-down-light.svg", "Collapse", "glyph"),
+        new("back", "fas fa-chevron-left"),
+        new("forward", "fas fa-chevron-right"),
 
         // Body glyphs
         new("register", "/img/glyphs/registered-light.svg", "Register", "glyph"),

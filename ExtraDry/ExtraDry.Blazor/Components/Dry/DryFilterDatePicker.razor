@@ -1,0 +1,36 @@
+@namespace ExtraDry.Blazor
+
+<div class="@CssClasses">
+    <Button Caption="@Placeholder" @onclick="@DoButtonClick" Affordance="@Affordance" ShowCaption="@DisplayCaption">
+        @if (Selected != null)
+        {
+            <MiniCard CssClass="value only" Title="@Selected?.Summary" />
+        }
+    </Button>
+    <MiniDialog CssClass="@CssClasses" Title="@Placeholder" @ref="MiniDialog" OnSubmit="@SyncWithPageQuery">
+        <div class="controls">
+            <div class="range-buttons" >
+                <Button Caption="Previous" Icon="@PreviousIcon" Enabled="@CanChangeDate" @onclick="@DoPreviousClick" />
+                <Button Caption="Next" Affordance="@NextAffordance" Enabled="@CanChangeDate" @onclick="@DoNextClick" />
+            </div>
+            <Button Caption="Clear" @onclick="@DoClearClick" />
+        </div>
+        @foreach (var group in TimeIntervalGroups)
+        {
+            <ul>
+                @if(!string.IsNullOrEmpty(group.Title)) {
+                    <li><h4>@group.Title</h4></li>
+                }
+                @foreach (var item in group.TimeIntervals)
+                {
+                    <li>
+                        <a @onclick="e => OnIntervalChange(e, item)">
+                            <span>@item.Title</span>
+                            <span>@item.Description</span>
+                        </a>
+                    </li>
+                }
+            </ul>
+        }
+    </MiniDialog>
+</div>
