@@ -48,4 +48,8 @@
 		<Folder Include="wwwroot\fonts\" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <PackageReference Update="Azure.Identity" Version="1.11.1" />
+	</ItemGroup>
+
 </Project>
