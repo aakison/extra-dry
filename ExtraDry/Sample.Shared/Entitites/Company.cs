@@ -14,7 +14,7 @@ public enum OwnershipStructure
 [Format(Icon = "company")]
 [FactTable, DimensionTable]
 [DeleteRule(DeleteAction.Recycle, nameof(Status), CompanyStatus.Deleted, CompanyStatus.Active)]
-public class Company : IResourceIdentifiers {
+public class Company : IResourceIdentifiers, IViewModelDisplayName {
 
     [Key]
     [JsonIgnore]
@@ -108,4 +108,6 @@ public class Company : IResourceIdentifiers {
 
     [JsonPropertyName("fields")]
     public ExpandoValues CustomFields { get; set; } = new();
+
+    public string DisplayName<T>(T model) => model is Company company ? $"Company - {company.Slug}" : string.Empty;
 }
