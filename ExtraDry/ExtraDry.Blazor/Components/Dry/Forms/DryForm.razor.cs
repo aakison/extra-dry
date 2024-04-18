@@ -62,6 +62,14 @@ public partial class DryForm<T> : ComponentBase, IExtraDryComponent {
 
     internal FormDescription? FormDescription { get; set; }
 
+    internal string GetEntityInfoDisplayName()
+    {
+        if(Model is IViewModelDisplayName viewModelDisplayName) {
+            return viewModelDisplayName.DisplayName(Model);
+        }
+        return Description?.ModelDisplayName ?? string.Empty;
+    }
+
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "dry-form", ModelNameSlug, CssClass);
 
     private List<string> AlertMessages { get; set; } = new();
