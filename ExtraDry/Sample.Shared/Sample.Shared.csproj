@@ -28,9 +28,4 @@
 	  <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <PackageReference Update="Azure.Identity" Version="1.11.0" />
-	  <PackageReference Update="Microsoft.Data.SqlClient" Version="5.1.5" />
-	</ItemGroup>
-
 </Project>
