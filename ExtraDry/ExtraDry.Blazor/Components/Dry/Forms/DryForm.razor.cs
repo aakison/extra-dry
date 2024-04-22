@@ -46,8 +46,8 @@ public partial class DryForm<T> : ComponentBase, IExtraDryComponent {
     internal string GetEntityInfoDisplayName()
     {
         string displayName = string.Empty;
-        if(ViewModel is IViewModelDisplayName viewModelDisplayName) {
-            displayName = viewModelDisplayName.DisplayName(ViewModel);
+        if(ViewModel is IViewModelCaption viewModelDisplayName) {
+            displayName = viewModelDisplayName.Caption(ViewModel);
         }
         return string.IsNullOrEmpty(displayName) ? Description?.ModelDisplayName ?? string.Empty : displayName;
     }

@@ -1,5 +1,5 @@
 ﻿@using System.Text.Json
-@implements IViewModelDisplayName
+@implements IViewModelCaption
 @inject CrudService<Company> Service
 @inject NavigationManager Navigation
 
@@ -25,5 +25,5 @@
         Navigation.NavigateTo("/admin/works/companies/list");
     }
 
-    public string DisplayName<T>(T model) => model is CompanyEdit companyEdit && companyEdit.company != null ? $"Company - {companyEdit.company.Slug}" : string.Empty;
+    public string Caption<T>(T model) => model is CompanyEdit companyEdit && companyEdit.company != null ? $"Company - {companyEdit.company.Slug}" : string.Empty;
 }
