@@ -75,9 +75,4 @@
 		</Content>
 	</ItemGroup>
 
-	<ItemGroup>
-	  <PackageReference Update="Azure.Identity" Version="1.11.0" />
-	  <PackageReference Update="Microsoft.Data.SqlClient" Version="5.1.5" />
-	</ItemGroup>
-
 </Project>
