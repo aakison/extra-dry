@@ -43,13 +43,13 @@ public partial class DryForm<T> : ComponentBase, IExtraDryComponent {
     [Inject]
     private ILogger<DryForm<T>> Logger { get; set; } = null!;
 
-    internal string GetEntityInfoDisplayName()
+    internal string GetEntityInfoCaption()
     {
-        string displayName = string.Empty;
-        if(ViewModel is IViewModelCaption viewModelDisplayName) {
-            displayName = viewModelDisplayName.Caption(ViewModel);
+        string caption = string.Empty;
+        if(ViewModel is IViewModelCaption viewModelCaption) {
+            caption = viewModelCaption.Caption(ViewModel);
         }
-        return string.IsNullOrEmpty(displayName) ? Description?.ModelDisplayName ?? string.Empty : displayName;
+        return string.IsNullOrEmpty(caption) ? Description?.ModelDisplayName ?? string.Empty : caption;
     }
 
     protected override void OnParametersSet()
