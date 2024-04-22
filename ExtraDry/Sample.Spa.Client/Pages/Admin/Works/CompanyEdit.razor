@@ -1,4 +1,5 @@
 ﻿@using System.Text.Json
+@implements IViewModelDisplayName
 @inject CrudService<Company> Service
 @inject NavigationManager Navigation
 
@@ -16,11 +17,13 @@
     {
         company = await Service.RetrieveAsync(Uuid);
     }
-    
+
     [Command(CommandContext.Primary, Name = "Save & Close")]
     public async Task SaveAsync(Company company)
     {
         await Service.UpdateAsync(Uuid, company);
         Navigation.NavigateTo("/admin/works/companies/list");
     }
+
+    public string DisplayName<T>(T model) => model is CompanyEdit companyEdit && companyEdit.company != null ? $"Company - {companyEdit.company.Slug}" : string.Empty;
 }

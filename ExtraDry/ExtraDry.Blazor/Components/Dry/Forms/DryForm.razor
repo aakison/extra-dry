@@ -12,7 +12,7 @@
             } else {
                 <div class="@ModelNameSlug entity-info">
                     <Icon Key="@Description?.Icon" />
-                    <label>@Description?.ModelDisplayName</label>
+                    <label>@GetEntityInfoDisplayName()</label>
                 </div>
                 <div class="@ModelNameSlug fixed-fieldsets">
                     @foreach(var fieldset in FormDescription?.Fieldsets?.Take(FixedFieldsets) ?? Array.Empty<FormFieldset>()) {
