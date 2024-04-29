@@ -16,11 +16,13 @@ public enum OwnershipStructure
 [DeleteRule(DeleteAction.Recycle, nameof(Status), CompanyStatus.Deleted, CompanyStatus.Active)]
 public class Company : IResourceIdentifiers {
 
+    [Display(AutoGenerateField = false)]
     [Key]
     [JsonIgnore]
     [Rules(RuleAction.Ignore)]
     public int Id { get; set; }
 
+    [Display(AutoGenerateField = false)]
     [Rules(RuleAction.Ignore)]
     public Guid Uuid { get; set; } = Guid.NewGuid();
 
@@ -86,7 +88,7 @@ public class Company : IResourceIdentifiers {
     public decimal SalesMargin { get; set; }
 
     [Filter]
-    [Display(Name = "Incorporation Date", ShortName = "Inc Date")]
+    [Display(Name = "Incorporation Date", ShortName = "Inc Date", AutoGenerateField = false)]
     [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
     public DateTime IncorporationDate { get; set; }
 
@@ -106,6 +108,7 @@ public class Company : IResourceIdentifiers {
     [JsonIgnore]
     public VersionInfo Version { get; set; } = new VersionInfo();
 
+    [Display(AutoGenerateField = false)]
     [JsonPropertyName("fields")]
     public ExpandoValues CustomFields { get; set; } = new();
 }

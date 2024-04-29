@@ -1,4 +1,4 @@
-﻿// Global styles that are applied across the entire site.
+// Global styles that are applied across the entire site.
 @import "_constants.scss";
 
 @font-face {
@@ -38,7 +38,7 @@ html, body {
 // Ensure it's at the app level and not the body so dialog boxes can put a curtain over them.
 //
 body {
-    overflow-y: hidden;
+    overflow-y: scroll;
 
     div#app {
         overflow-y: scroll;
