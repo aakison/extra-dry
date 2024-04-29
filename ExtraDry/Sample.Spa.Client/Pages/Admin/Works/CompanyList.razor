@@ -1,4 +1,5 @@
-﻿@inject IListService<Company> CompanyService;
+@inject IListService<Company> CompanyListService;
+@inject CrudService<Company> CompanyCrudService;
 @inject NavigationManager Navigation;
 @inject AppViewModel AppViewModel;
 
@@ -8,11 +9,13 @@
     <DryPageQueryView @ref=QueryView>
         @*<TableMenu TItem="Company" />*@
         <DryFilter TItem="Company" Affordance="" Icon="theme" ShowPreview="false" />
-        <DryTable TItem="Company" ViewModel="@this" ItemsService="@CompanyService" />
+        <DryTable TItem="Company" ViewModel="@this" ItemsService="@CompanyListService" @ref="companyTable" />
     </DryPageQueryView>
 </DryErrorBoundary>
 
 @code {
+    private DryTable<Company> companyTable = null!;
+
     [Hyperlink(nameof(Company.Title))]
     public HyperlinkContext NavLink(Company company)
     {
@@ -39,5 +42,29 @@
             AppViewModel.Filter = null;
         }
         base.OnAfterRender(firstRender);
+    }
+
+    private async Task CompanyStateHasChanged(Guid uuid)
+    {
+        var updatedCompany = await CompanyCrudService.RetrieveAsync(uuid);
+        if (updatedCompany == null) {
+            return;
+        }
+        var shownCompany = companyTable.ShownItems.FirstOrDefault(itemInfo => itemInfo.Item?.Uuid == uuid);
+        if(shownCompany?.Item == null) {
+            return;            
+        }
+        shownCompany.Item = updatedCompany;
+        StateHasChanged();
+    }
+
+    protected override void OnInitialized()
+    {
+        AppViewModel.OnChange += CompanyStateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        AppViewModel.OnChange -= CompanyStateHasChanged;
     }
 }
