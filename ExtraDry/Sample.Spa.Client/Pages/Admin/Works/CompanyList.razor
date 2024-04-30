@@ -50,12 +50,7 @@
         if (updatedCompany == null) {
             return;
         }
-        var shownCompany = companyTable.ShownItems.FirstOrDefault(itemInfo => itemInfo.Item?.Uuid == uuid);
-        if(shownCompany?.Item == null) {
-            return;            
-        }
-        shownCompany.Item = updatedCompany;
-        StateHasChanged();
+        companyTable.RefreshItem(updatedCompany);
     }
 
     protected override void OnInitialized()
