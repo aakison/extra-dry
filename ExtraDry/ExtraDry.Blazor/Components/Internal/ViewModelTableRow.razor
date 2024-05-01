@@ -12,7 +12,7 @@
             break;
     }
     @foreach(var column in Description.TableProperties) {
-        var cssClass = column.DisplayClass;
+        var cssClass = column.ItemDisplayClass(Item.Item);
         var displayValue = column.DisplayValue(Item.Item);
         var hyperlink = Description.HyperLinkFor(column.Property.Name);
         if(column.HasDiscreteValues) {
