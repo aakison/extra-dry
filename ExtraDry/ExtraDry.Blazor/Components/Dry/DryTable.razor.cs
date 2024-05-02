@@ -231,7 +231,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
 
     private IEnumerable<ListItemInfo<TItem>> ShownItems => InternalItems.Where(e => e.IsShown);
 
-    public void RefreshItem(TItem updatedItem, IEqualityComparer<TItem>? comparer = null)
+    public bool TryRefreshItem(TItem updatedItem, IEqualityComparer<TItem>? comparer = null)
     {
         var itemInfo = (comparer, updatedItem) switch {
             (var c, _) when c is not null => InternalItems.FirstOrDefault(itemInfo => c.Equals(itemInfo.Item, updatedItem)),
@@ -239,9 +239,10 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
             (_, _) => throw new DryException($"Refreshing requires {nameof(TItem)} to implement {nameof(IUniqueIdentifier)} or an {nameof(IEqualityComparer)} to be provided.")
         };
         if( itemInfo == null ) { 
-            return;
+            return false;
         }
         itemInfo.Item = updatedItem;
+        return true;
     }
 
     private async ValueTask<ItemsProviderResult<ListItemInfo<TItem>>> GetItemsAsync(ItemsProviderRequest request)
