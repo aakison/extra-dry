@@ -100,9 +100,9 @@ public class PropertyDescription {
             return string.Empty;
         }
         try {
-            var value = Property?.GetValue(item);
+            var value = Property?.GetValue(item); 
             if(value == null) {
-                return "null";
+                return Format?.NullDisplayText ?? "null";
             }
             if(HasDiscreteValues && discreteDisplayAttributes.TryGetValue((int)value, out var display)) {
                 value = display?.GetName() ?? value;
@@ -193,6 +193,18 @@ public class PropertyDescription {
             }
             return $"{typeClass} {Property.Name.ToLowerInvariant()}";
         }
+    }
+
+    public string ItemDisplayClass(object? item)
+    {
+        var typeClass = DisplayClass;
+        var value = Property?.GetValue(item);
+
+        if(value == null) {
+            typeClass = $"{typeClass} null";
+        }
+
+        return typeClass;
     }
 
     public bool HasDiscreteValues {
