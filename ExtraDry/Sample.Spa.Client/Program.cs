@@ -3,8 +3,6 @@ using Sample.Spa.Client;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-Console.WriteLine("Huzzah");
-
 builder.Logging
     .SetMinimumLevel(LogLevel.Debug)
     .AddFilter("Microsoft.AspNetCore.Components.RenderTree.*", LogLevel.None);
@@ -48,8 +46,6 @@ services.AddBlobService<Blob>(config => {
 services.AddScoped<ISubjectViewModel<Employee>, EmployeeViewModel>();
 
 builder.Services.AddScoped<AppViewModel>();
-
-Console.WriteLine("Huzzah 2");
 
 services.AddFileValidation();
 

@@ -2,11 +2,15 @@ using Microsoft.AspNetCore.Components;
 
 namespace Sample.Spa.Client;
 
-public class AppViewModel(
-    NavigationManager navigation)
+public class AppViewModel(NavigationManager navigation)
 {
+    public delegate Task StateChangeAction(Guid uuid);
 
     public string[]? Filter { get; set; }
+
+    public event StateChangeAction? OnChange;
+
+    public async Task NotifyStateChanged(Guid uuid) => await (OnChange?.Invoke(uuid) ?? Task.CompletedTask);
 
     public Menu Menu {
         get {
@@ -86,7 +90,7 @@ public class AppViewModel(
     ];
 
 
-    private Menu CreateMenu() => new() { 
+    private Menu CreateMenu() => new() {
         Icon = "modules",
         Title = "Yellow Jacket",
         Children = [
@@ -184,7 +188,7 @@ public class AppViewModel(
                         Title = "DRY Components",
                         ActiveMatch = "/components/dry",
                         NavLink = "/components/dry/dry-mini-card",
-                        Children = [ 
+                        Children = [
                             new() {
                                 Icon = "button",
                                 Title = "Button",

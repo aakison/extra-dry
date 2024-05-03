@@ -11,6 +11,9 @@
     [Parameter]
     public Guid Uuid { get; set; }
 
+    [Inject]
+    private AppViewModel AppViewModel { get; set; } = null!;
+
     private Company? company;
 
     protected override async Task OnInitializedAsync()
@@ -22,6 +25,7 @@
     public async Task SaveAsync(Company company)
     {
         await Service.UpdateAsync(Uuid, company);
+        await AppViewModel.NotifyStateChanged(Uuid);
         Navigation.NavigateTo("/admin/works/companies/list");
     }
 

@@ -1,10 +1,4 @@
-﻿/*! Bootstrap modified using color injected via sass */
-/*
- * Re-compilation of bootstrap.scss file with custom overrides.
- * This is the approved way to handle color changes to bootstrap.
- * See https://getbootstrap.com/docs/5.0/customize/sass/#maps-and-loops
- */
-html, body {
+﻿html, body {
   margin: 0;
   padding: 0;
 }
@@ -67,7 +61,7 @@ html, body {
 }
 
 body {
-  overflow-y: hidden;
+  overflow-y: scroll;
 }
 body div#app {
   overflow-y: scroll;
@@ -575,4 +569,14 @@ form.tryitout input[type=checkbox] {
   flex: 1 1 1px;
   display: flex;
   justify-content: end;
+}
+
+.validation-summary {
+  padding: 16px;
+  background-color: var(--danger-light);
+}
+.validation-summary h4 {
+  margin: 0px;
+  font-size: 15px;
+  line-height: 17px;
 }
