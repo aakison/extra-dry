@@ -53,29 +53,29 @@ public partial class DryFilterDatePicker : ComponentBase, IExtraDryComponent, ID
 
     private DateTimeFilterBuilder? Filter { get; set; }
 
-    private List<TimeIntervalGroup> TimeIntervalGroups { get; } = new List<TimeIntervalGroup> {
+    private List<TimeIntervalGroup> TimeIntervalGroups { get; } = [
         new() {
             Title = "Relative dates",
-            TimeIntervals = new List<TimeInterval> {
+            TimeIntervals = [
                 new ("Before today", null, DateTime.Now),
                 new (TimeIntervalType.Days, -7, "Last 7 days" ),
                 new (TimeIntervalType.Days, -30, "Last 30 days")
-            }
+            ]
         },
         new() {
             Title = "Calendar months",
-            TimeIntervals = new List<TimeInterval> {
+            TimeIntervals = [
                 new (TimeIntervalType.Months, "This month"),
-                new (TimeIntervalType.Quarter, "This quarter"),
+                new (TimeIntervalType.Quarters, "This quarter"),
                 new (TimeIntervalType.Years, "This year"),
                 new (TimeIntervalType.Months, -1, "Last month"),
-                new (TimeIntervalType.Quarter, -1, "Last quarter"),
+                new (TimeIntervalType.Quarters, -1, "Last quarter"),
                 new (TimeIntervalType.Months, -3, "Last 3 months"),
                 new (TimeIntervalType.Months, -6, "Last 6 months"),
                 new (TimeIntervalType.Months, -12, "Last 12 months"),
-            }
+            ]
         }
-    };
+    ];
 
     private TimeInterval? Selected { get; set; }
 

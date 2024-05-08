@@ -54,16 +54,16 @@ public class TimeInterval
     public void Previous()
     {
         var interval = Interval == 0 
-            ? Type == TimeIntervalType.Quarter ? -3 : -1
-            : Type == TimeIntervalType.Quarter ? Interval * 3 : Interval;
+            ? Type == TimeIntervalType.Quarters ? -3 : -1
+            : Type == TimeIntervalType.Quarters ? Interval * 3 : Interval;
         MoveDates(interval);
     }
 
     public void Next()
     {
         var interval = Interval == 0 
-            ? Type == TimeIntervalType.Quarter ? 3 : 1
-            : Type == TimeIntervalType.Quarter ? PositiveInterval * 3 : PositiveInterval;
+            ? Type == TimeIntervalType.Quarters ? 3 : 1
+            : Type == TimeIntervalType.Quarters ? PositiveInterval * 3 : PositiveInterval;
         MoveDates(interval);
     }
 
@@ -84,7 +84,7 @@ public class TimeInterval
             case TimeIntervalType.Months:
                 SetMonths();
                 break;
-            case TimeIntervalType.Quarter:
+            case TimeIntervalType.Quarters:
                 SetQuarter();
                 break;
             case TimeIntervalType.Years:
@@ -238,7 +238,7 @@ public class TimeInterval
                 }
                 SetMonthsDescription();
                 break;
-            case TimeIntervalType.Quarter:
+            case TimeIntervalType.Quarters:
                 startDate = startDate?.AddMonths(interval);
                 if(endDate.HasValue) {
                     endDate = endDate.Value.AddMonths(interval);
@@ -267,7 +267,7 @@ public class TimeInterval
                 break;
             case TimeIntervalType.Days:
             case TimeIntervalType.Months:
-            case TimeIntervalType.Quarter:
+            case TimeIntervalType.Quarters:
             case TimeIntervalType.Years:
                 if(startDate.HasValue && endDate.HasValue) {
                     filter.SetDates(startDate, endDate);

@@ -16,8 +16,8 @@ csharp_space_after_keywords_in_control_flow_statements = false
 
 dotnet_diagnostic.CS1591.severity = none #temp until other issues fixed...
 
-# Wish this worked, but with different rule sets it just has too many false-positives...
-#dotnet_diagnostic.IDE0079.severity = none
+# Wish this worked, but with different rule sets and different target frameworks, it just has too many false-positives...
+dotnet_diagnostic.IDE0079.severity = none
 # Rule doesn't recognize partial classes, so it's just noise
 dotnet_diagnostic.IDE0051.severity = none
 dotnet_diagnostic.IDE0052.severity = none

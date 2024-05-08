@@ -108,7 +108,7 @@ public class CrudService<T>(
             return url;
         }
         catch(FormatException ex) {
-            var argsFormatted = string.Join(',', args?.Select(e => e?.ToString()) ?? Array.Empty<string>());
+            var argsFormatted = string.Join(',', args?.Select(e => e?.ToString()) ?? []);
             logger.LogFormattingError(typeof(T), options.CrudEndpoint, argsFormatted, ex, method);
             throw new DryException("Error occurred connecting to server", "This is a mis-configuration and not a user error, please see the console output for more information.");
         }

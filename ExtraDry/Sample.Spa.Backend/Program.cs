@@ -73,10 +73,6 @@ builder.Services.AddScoped(services => {
     var context = new SampleContext(dbOptionsBuilder.Options, []);
 
     // TODO: Inject
-    var accessor = services.GetRequiredService<IHttpContextAccessor>();
-    _ = new VersionInfoAspect(context, accessor);
-
-    // TODO: Inject
     var logger = services.GetRequiredService<ILogger<DataWarehouseAspect>>();
     var queue = services.GetRequiredService<ServiceBusQueue<EntityMessage>>();
     _ = new DataWarehouseAspect(context, queue, logger);

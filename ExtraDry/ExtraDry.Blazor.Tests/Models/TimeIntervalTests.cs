@@ -331,7 +331,7 @@ public class TimeIntervalTests
     [InlineData(-4, "Jan-Mar 2023")]
     public void QuarterIntervalCreate(int quarter, string expectedDescription)
     {
-        var timeInterval = new TestableTimeInterval(TimeIntervalType.Quarter, quarter, quarter.ToString(CultureInfo.InvariantCulture));
+        var timeInterval = new TestableTimeInterval(TimeIntervalType.Quarters, quarter, quarter.ToString(CultureInfo.InvariantCulture));
 
         Assert.NotNull(timeInterval);
         Assert.Equal(quarter.ToString(CultureInfo.InvariantCulture), timeInterval.Title);
@@ -346,7 +346,7 @@ public class TimeIntervalTests
     [InlineData(0, 4, "Jan-Mar 2023", "Created:[2023-01-01,2023-03-31]")]
     public void QuarterIntervalPrevious(int quarter, int offset, string expectedDescription, string expectedFilter)
     {
-        var timeInterval = new TestableTimeInterval(TimeIntervalType.Quarter, 0, "0");
+        var timeInterval = new TestableTimeInterval(TimeIntervalType.Quarters, 0, "0");
 
         for(int i = 0; i < offset; i++) {
             timeInterval.Previous();
@@ -367,7 +367,7 @@ public class TimeIntervalTests
     [InlineData(0, 4, "Jan-Mar 2025")]
     public void QuarterIntervalNext(int quarter, int offset, string expectedDescription)
     {
-        var timeInterval = new TestableTimeInterval(TimeIntervalType.Quarter, 0, "0");
+        var timeInterval = new TestableTimeInterval(TimeIntervalType.Quarters, 0, "0");
 
         for(int i = 0; i < offset; i++) {
             timeInterval.Next();
@@ -387,7 +387,7 @@ public class TimeIntervalTests
     [InlineData(-4, "Created:[2023-01-01,2023-03-31]")]
     public void QuarterIntervalSetFilter(int quarter, string expectedFilter)
     {
-        var timeInterval = new TestableTimeInterval(TimeIntervalType.Quarter, quarter, quarter.ToString(CultureInfo.InvariantCulture));
+        var timeInterval = new TestableTimeInterval(TimeIntervalType.Quarters, quarter, quarter.ToString(CultureInfo.InvariantCulture));
 
         timeInterval.SetFilter(filter);
 

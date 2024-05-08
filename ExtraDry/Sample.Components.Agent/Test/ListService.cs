@@ -27,34 +27,34 @@ public class ListService<TItem> : IListService<TItem> {
         if(options.ListEndpoint != string.Empty) {
             if(options.ListMode == ListServiceMode.FilterSortAndPage) {
                 ListType = typeof(PagedCollection<TItem>);
-                ListUnpacker = e => (e as PagedCollection<TItem>)?.Items ?? new Collection<TItem>();
+                ListUnpacker = e => (e as PagedCollection<TItem>)?.Items ?? [];
                 ListCounter = e => (e as PagedCollection<TItem>)?.Total ?? 0;
             }
             else if(options.ListMode == ListServiceMode.FilterAndSort) {
                 ListType = typeof(SortedCollection<TItem>);
-                ListUnpacker = e => (e as SortedCollection<TItem>)?.Items ?? new Collection<TItem>();
+                ListUnpacker = e => (e as SortedCollection<TItem>)?.Items ?? [];
                 ListCounter = e => (e as SortedCollection<TItem>)?.Count ?? 0;
             }
             else if(options.ListMode == ListServiceMode.Filter) {
                 ListType = typeof(FilteredCollection<TItem>);
-                ListUnpacker = e => (e as FilteredCollection<TItem>)?.Items ?? new Collection<TItem>();
+                ListUnpacker = e => (e as FilteredCollection<TItem>)?.Items ?? [];
                 ListCounter = e => (e as FilteredCollection<TItem>)?.Count ?? 0;
             }
             else {
-                ListUnpacker = e => e as ICollection<TItem> ?? new Collection<TItem>();
+                ListUnpacker = e => e as ICollection<TItem> ?? [];
                 ListCounter = e => ListUnpacker(e)?.Count ?? 0;
             }
         }
         if(options.HierarchyEndpoint != string.Empty) {
             if(options.HierarchyMode == HierarchyServiceMode.FilterAndPage) {
                 HierarchyType = typeof(PagedHierarchyCollection<TItem>);
-                HierarchyUnpacker = e => (e as PagedHierarchyCollection<TItem>)?.Items ?? new Collection<TItem>();
+                HierarchyUnpacker = e => (e as PagedHierarchyCollection<TItem>)?.Items ?? [];
                 HierarchyCounter = e => (e as PagedHierarchyCollection<TItem>)?.Total ?? 0;
                 HierarchyMaxLevel = e => (e as PagedHierarchyCollection<TItem>)?.MaxLevels ?? 0;
                 HierarchyMinLevel = e => (e as PagedHierarchyCollection<TItem>)?.MinLevels ?? 0;
             }
             else if(options.HierarchyMode == HierarchyServiceMode.Filter) {
-                HierarchyUnpacker = e => (e as HierarchyCollection<TItem>)?.Items ?? new Collection<TItem>();
+                HierarchyUnpacker = e => (e as HierarchyCollection<TItem>)?.Items ?? [];
                 HierarchyCounter = e => (e as HierarchyCollection<TItem>)?.Count ?? 0;
                 HierarchyMaxLevel = e => (e as HierarchyCollection<TItem>)?.MaxLevels ?? 0;
                 HierarchyMinLevel = e => (e as PagedHierarchyCollection<TItem>)?.MinLevels ?? 0;

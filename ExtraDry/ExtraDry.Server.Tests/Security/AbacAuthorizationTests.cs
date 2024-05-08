@@ -405,13 +405,13 @@ public class AbacAuthorizationTests
         Assert.False(authorized);
     }
 
-    private ClaimsPrincipal User(string[] roles, Dictionary<string, string> claims) => 
+    private static ClaimsPrincipal User(string[] roles, Dictionary<string, string> claims) => 
         new(new ClaimsIdentity(
             roles.Select(e => new Claim(ClaimTypes.Role, e))
             .Union(claims.Select(e => new Claim(e.Key, e.Value)))            
         ));
 
-    private RouteValueDictionary Route(Dictionary<string, string?> routes) => 
+    private static RouteValueDictionary Route(Dictionary<string, string?> routes) => 
         new(
             routes.Select(e => KeyValuePair.Create(e.Key, e.Value))
             .Union([ KeyValuePair.Create("controller", "TestController"), KeyValuePair.Create("action", "TestEntity") ])

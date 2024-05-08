@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -189,6 +190,7 @@ public class FileValidationService
 
     }
 
+    [SuppressMessage("Usage", "CA2249:Consider using 'string.Contains' instead of 'string.IndexOf'", Justification = "Doesn't work for .NET Framework 4.8 target, fix when Framework no longer supported.")]
     private IEnumerable<ValidationResult> ValidateFileContent(byte[]? content, IEnumerable<FileTypeDefinition> filenameInferredTypes, string extension)
     {
         bool validate = ShouldValidateContent();
@@ -197,7 +199,7 @@ public class FileValidationService
             yield break;
         }
         if(content == null || content.Length == 0) {
-            yield return new ValidationResult("File content is required", new[] { nameof(content) });
+            yield return new ValidationResult("File content is required", [nameof(content)]);
             yield break; // remainder of tests would throw exceptions...
         }
         var contentInferredTypes = fileService.GetFileTypeFromContent(content);
@@ -208,14 +210,14 @@ public class FileValidationService
             .Intersect(Options.ContentBlacklist, StringComparer.OrdinalIgnoreCase)
             .Any();
         if(blacklistedContent) {
-            yield return new ValidationResult($"Provided file content belongs to a forbidden filetype, {blacklistedContent}", new[] { nameof(content) });
+            yield return new ValidationResult($"Provided file content belongs to a forbidden filetype, {blacklistedContent}", [nameof(content)]);
         }
 
         // If there's both a filename and a magic byte type file definition, and they don't match, reject
         if(contentInferredTypes.Any() &&
             filenameInferredTypes.Any() &&
             !filenameInferredTypes.SelectMany(f => f.MimeTypes).Intersect(contentInferredTypes.SelectMany(f => f.MimeTypes)).Any()) {
-            yield return new ValidationResult($"Provided filename and content do not match, {GetFileDefinitionDescription(contentInferredTypes)} vs {GetFileDefinitionDescription(filenameInferredTypes)}", new[] { nameof(content) });
+            yield return new ValidationResult($"Provided filename and content do not match, {GetFileDefinitionDescription(contentInferredTypes)} vs {GetFileDefinitionDescription(filenameInferredTypes)}", [nameof(content)]);
         }
 
         // If it's an xml file check for script tags
@@ -226,7 +228,7 @@ public class FileValidationService
             // Take the first 1000 characters, it's a sanity check, not anti-virus
             var filecontent = Encoding.UTF8.GetString(content.Take(1000).ToArray());
             if(filecontent.IndexOf("<script", StringComparison.InvariantCultureIgnoreCase) >= 0) {
-                yield return new ValidationResult("Provided file is an XML filetype with protected tags", new[] { nameof(content) });
+                yield return new ValidationResult("Provided file is an XML filetype with protected tags", [nameof(content)]);
             }
         }
     }
