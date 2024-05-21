@@ -10,7 +10,7 @@ internal static class FilterParser {
     {
         var parsed = Filters.Parse(filter);
         if(!parsed.Success) {
-            throw new DryException($"Invalid filter expression '{filter}' resulted in '{parsed.Error}'", "Unable to apply filter. 0x0F947CB5");
+            throw new DryException($"Invalid filter expression '{filter}' resulted in '{parsed.Error}'", "Unable to apply filter.");
         }
         return parsed.Value;
     }
