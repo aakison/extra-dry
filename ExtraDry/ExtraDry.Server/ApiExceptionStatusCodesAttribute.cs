@@ -38,7 +38,8 @@ public class ApiExceptionStatusCodesAttribute : ExceptionFilterAttribute
         }
         else if(context.Exception is DryException dryException) {
             // TODO: better handling here...
-            ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.BadRequest, 
+            int code = dryException.ProblemDetails.Status ?? (int)HttpStatusCode.BadRequest;
+            ProblemDetailsResponse.RewriteResponse(context, (HttpStatusCode)code, 
                 dryException.ProblemDetails.Title, dryException.ProblemDetails.Detail);
         }
         else if(context.Exception is UnauthorizedAccessException) {
