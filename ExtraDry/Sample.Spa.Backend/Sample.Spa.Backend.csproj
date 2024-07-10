@@ -17,8 +17,8 @@
 		<ProjectReference Include="..\ExtraDry.Swashbuckle\ExtraDry.Swashbuckle.csproj" />
 		<ProjectReference Include="..\Sample.Data\Sample.Data.csproj" />
 		<ProjectReference Include="..\Sample.Spa.Client\Sample.Spa.Client.csproj" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.1" />
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.7" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
 		<ProjectReference Include="..\Sample.Data\Sample.Data.csproj" />
 		<ProjectReference Include="..\Sample.Shared\Sample.Shared.csproj" />
 	</ItemGroup>
