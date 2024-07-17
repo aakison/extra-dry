@@ -24,7 +24,7 @@ public static class SwaggerOptionsExtensions {
         }
 
         if(options.XmlComments.IncludeExtraDryDocuments) {
-            foreach(var docfile in new string[] { "ExtraDry.Core.Xml", "ExtraDry.Swashbuckle.xml" }) {
+            foreach(var docfile in new string[] { "ExtraDry.Core.xml", "ExtraDry.Swashbuckle.xml" }) {
                 var webAppXml = Path.Combine(AppContext.BaseDirectory, docfile);
                 openapi.IncludeXmlComments(webAppXml, includeControllerXmlComments: true);
             }
