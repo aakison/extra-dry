@@ -124,7 +124,7 @@ steps:
       $isDevelop = HeadIsBranch('develop')
       $isRelease = HeadIsBranch('release')
       $isMain = HeadIsBranch('main') 
-      if($isDevelop) {
+      if($isDevelop) {  
           $prereleaseVersion = "alpha"
       }
       if($isRelease) {
