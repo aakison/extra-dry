@@ -174,6 +174,10 @@ internal static class LinqBuilder
 
     private static void AddTerms(ParameterExpression param, List<Expression> terms, FilterRule rule, FilterProperty property, StringComparison? forceStringComparison)
     {
+        if(rule.Values is []) {
+            throw new DryException("Filter expression for property was not provided.", $"Unable to apply filter for Property '{property.Property.Name}'. Make sure there are no spaces after '{property.Property.Name}:'  0x0F4042BE");
+        }
+
         if(property.Property.PropertyType == typeof(string)) {
             var fields = rule.Values.Select(e => StringExpression(param, property.Property, property.Filter.Type, e, forceStringComparison)).ToArray();
             terms.Add(AnyOf(fields));
@@ -274,12 +278,12 @@ internal static class LinqBuilder
                 var methodInfo = type.GetMethod("Parse", [typeof(string)])
                     ?? throw new DryException($"Can only filter on types that contain a Parse method, type '{type.Name}'.");
                 // Parse contract will have a result and not nullable
-                var result = methodInfo.Invoke(null, new object[] { value })!;
+                var result = methodInfo.Invoke(null, [value])!;
                 return result;
             }
         }
         catch {
-            throw new DryException($"Filter expression '{value}' was not of the correct type.", "Unable to apply filter. 0x0F4A1089");
+            throw new DryException("Filter expression was not of the correct type.", $"Unable to apply filter. Could not cast value '{value}' to type '{type.Name}'. 0x0F4A1089");
         }
     }
 
