@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Routing;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 
 namespace ExtraDry.Server.Security;
 
@@ -65,8 +66,18 @@ internal class AbacAuthorizationHelper(AbacOptions options) {
         if(user == null) {
             return false;
         }
-        if(condition.Roles.All(user.IsInRole) && 
-            condition.Claims.All(e => user.HasClaim(e.Key, Expand(e.Value, user, route, target))) &&
+        if(condition.Roles.All(user.IsInRole) &&
+            condition.Claims.All(claim => {
+                return user.HasClaim(c => {
+                    if(c.Type != claim.Key) return false;
+                    var value = Expand(claim.Value, user, route, target);
+                    if(value.StartsWith('/')) {
+                        var regex = new Regex(value.TrimStart('/').TrimEnd('/'));
+                        return regex.IsMatch(c.Value);
+                    }
+                    return c.Value == value;
+                });
+            }) &&
             condition.Attributes.All(e => HasAttribute(target, e.Key, Expand(e.Value, user, route, target)))) {
             return true;
         }
