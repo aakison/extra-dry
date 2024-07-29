@@ -182,10 +182,10 @@ public class SlugTests
     [InlineData("吴语 [吳語]")]
     public void CodeSlugWithOnlyNonLatinCharacters(string input)
     {
-        var defaultSlugPattern = "\\w{5}\\-\\w{7}";
+        // Without a ToUnique, the slug returned should be what the original processing returns.
         var slug = Slug.ToCodeSlug(input);
 
-        Assert.Matches(defaultSlugPattern, slug);
+        Assert.Equal(string.Empty, slug);
     }
 
     [Theory]
@@ -194,7 +194,7 @@ public class SlugTests
     [InlineData("吴语 [吳語]")]
     public async Task AsyncCodeSlugWithOnlyNonLatinCharacters(string input)
     {
-        var defaultSlugPattern = "\\w{5}\\-\\w{7}";
+        var defaultSlugPattern = @"\w{5}\-\w{7}";
         var slug = await Slug.ToUniqueSlugAsync(input, 20 , slug => GetAsyncList(slug, input));
 
         Assert.Matches(defaultSlugPattern, slug);
@@ -206,7 +206,7 @@ public class SlugTests
     [InlineData("Chinese [吳語]", "Chinese")]
     public void CodeSlugWithMixedNonLatinCharactersIsNotDefaulted(string input, string expected)
     {
-        var defaultSlugPattern = "\\w{5}\\-\\w{7}";
+        var defaultSlugPattern = @"\w{5}\-\w{7}";
         var slug = Slug.ToCodeSlug(input);
 
         Assert.DoesNotMatch(defaultSlugPattern, slug);
@@ -220,7 +220,7 @@ public class SlugTests
     [InlineData("Chinese [吳語]", "Chinese")]
     public async Task CodeSlugWithMixedNonLatinCharactersIsDifferentiated(string input, string expected)
     {
-        var defaultSlugPattern = "\\w{5}\\-\\w{7}";
+        var defaultSlugPattern = @"\w{5}\-\w{7}";
         var slug = await Slug.ToUniqueCodeSlugAsync(input, 20, slug => GetAsyncList(slug, expected));
 
         Assert.DoesNotMatch(defaultSlugPattern, slug);

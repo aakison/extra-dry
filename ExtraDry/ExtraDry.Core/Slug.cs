@@ -187,7 +187,7 @@ public static class Slug
     /// <remarks>
     /// Used instead of char.IsLetterOrDigit becuase that doesn't discriminate on charater set, which can allow invalid characters for urls
     /// </remarks>
-    private static bool IsLatinLetterOrDigit(char c)
+    private static bool IsAsciiLetterOrDigit(char c)
     {
         return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9');
     }
@@ -202,7 +202,7 @@ public static class Slug
         var hiddenCharacters = ".'"; // exclude to contract abbreviations and possessives.
         name = RemoveCommonNameSuffixes(name);
         foreach(var c in name) {
-            if(IsLatinLetterOrDigit(c) ) {
+            if(IsAsciiLetterOrDigit(c)) {
                 sb.Append(lowercase ? char.ToLowerInvariant(c) : c);
             }
             else if(okCharacters.Contains(c)) {
@@ -213,9 +213,6 @@ public static class Slug
             }
         }
         name = sb.ToString();
-        if(name.All(c => c == '-')) {  // If the name is composed of only invalid characters, generate a random slug replacement.
-            name = $"{RandomWebString(5)}-{RandomWebString(7)}";
-        }
         name = name.Replace("--", "-");
         name = name.Replace("--", "-");
         name = name.TrimEnd('-');
@@ -225,17 +222,33 @@ public static class Slug
     private static string ToUnique(IEnumerable<string> existing, string stem)
     {
         var candidate = stem;
+        var hasValidStemCondition = stem.Any(c => c != '-');  // If the name is empty or is composed of only invalid characters, generate a random slug replacement rather than appending.
+        if(!hasValidStemCondition) {
+            candidate = GenerateGenericSlug();
+        }
         while(existing.Contains(candidate)) {
-            candidate = $"{stem}-{RandomWebString(5)}";
+            candidate = hasValidStemCondition ? $"{stem}-{RandomWebString(5)}" : GenerateGenericSlug();
         }
         return candidate;
+    }
+
+    /// <summary>
+    /// Returns a generic slug in the format aaaaa-aaaaaaa, for use when the provided stem is not valid.
+    /// </summary>
+    private static string GenerateGenericSlug()
+    {
+        return $"{RandomWebString(5)}-{RandomWebString(7)}";
     }
 
     private static async Task<string> ToUniqueAsync(Func<string, Task<bool>> existsAsync, string stem)
     {
         var candidate = stem;
+        var hasValidStemCondition = stem.Any(c => c != '-');  // If the name is empty or is composed of only invalid characters, generate a random slug replacement rather than appending.
+        if(!hasValidStemCondition) {
+            candidate = GenerateGenericSlug();
+        }
         while(await existsAsync(candidate)) {
-            candidate = $"{stem}-{RandomWebString(5)}";
+            candidate = hasValidStemCondition ? $"{stem}-{RandomWebString(5)}" : GenerateGenericSlug();
         }
         return candidate;
     }
