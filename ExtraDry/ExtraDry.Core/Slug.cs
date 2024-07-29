@@ -181,6 +181,17 @@ public static class Slug
         return RandomCharacters(count, characters);
     }
 
+    /// <summary>
+    /// Used to determine if a character can be used in a slug.
+    /// </summary>
+    /// <remarks>
+    /// Used instead of char.IsLetterOrDigit becuase that doesn't discriminate on charater set, which can allow invalid characters for urls
+    /// </remarks>
+    private static bool IsAsciiLetterOrDigit(char c)
+    {
+        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9');
+    }
+
     private static string ToSlugInternal(string name, bool lowercase = true, string okCharacters = @"_")
     {
         if(string.IsNullOrWhiteSpace(name)) {
@@ -191,7 +202,7 @@ public static class Slug
         var hiddenCharacters = ".'"; // exclude to contract abbreviations and possessives.
         name = RemoveCommonNameSuffixes(name);
         foreach(var c in name) {
-            if(char.IsLetterOrDigit(c)) {
+            if(IsAsciiLetterOrDigit(c)) {
                 sb.Append(lowercase ? char.ToLowerInvariant(c) : c);
             }
             else if(okCharacters.Contains(c)) {
@@ -210,18 +221,32 @@ public static class Slug
 
     private static string ToUnique(IEnumerable<string> existing, string stem)
     {
-        var candidate = stem;
+        // If the name has any non-hyphen characters, we'll use that as the stem. Else we'll generate a generic slug
+        var hasValidStemCondition = stem.Any(IsAsciiLetterOrDigit);
+        var candidate = hasValidStemCondition ? stem : GenerateGenericSlug();
+
         while(existing.Contains(candidate)) {
-            candidate = $"{stem}-{RandomWebString(5)}";
+            candidate = hasValidStemCondition ? $"{stem}-{RandomWebString(5)}" : GenerateGenericSlug();
         }
         return candidate;
     }
 
+    /// <summary>
+    /// Returns a generic slug in the format aaaaa-aaaaaaa, for use when the provided stem is not valid.
+    /// </summary>
+    private static string GenerateGenericSlug()
+    {
+        return $"{RandomWebString(5)}-{RandomWebString(7)}";
+    }
+
     private static async Task<string> ToUniqueAsync(Func<string, Task<bool>> existsAsync, string stem)
     {
-        var candidate = stem;
+        // If the name has any non-hyphen characters, we'll use that as the stem. Else we'll generate a generic slug
+        var hasValidStemCondition = stem.Any(IsAsciiLetterOrDigit);
+        var candidate = hasValidStemCondition ? stem : GenerateGenericSlug();
+
         while(await existsAsync(candidate)) {
-            candidate = $"{stem}-{RandomWebString(5)}";
+            candidate = hasValidStemCondition ? $"{stem}-{RandomWebString(5)}" : GenerateGenericSlug();
         }
         return candidate;
     }

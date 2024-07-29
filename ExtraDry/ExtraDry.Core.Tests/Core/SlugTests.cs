@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Core.Tests;
+﻿using System.Text.RegularExpressions;
+
+namespace ExtraDry.Core.Tests;
 
 public class SlugTests
 {
@@ -171,6 +173,58 @@ public class SlugTests
 
         Assert.NotEqual(expected, slug);
         Assert.StartsWith(expected, slug);
+        Assert.Equal(expected.Length + 6, slug.Length);
+    }
+
+    [Theory]
+    [InlineData("٠ ١ ٢ ٣ ٤ ٥ ٦ ٧ ٨ ٩")]
+    [InlineData("🧟💩")]
+    [InlineData("吴语 [吳語]")]
+    public void CodeSlugWithOnlyNonLatinCharacters(string input)
+    {
+        // Without a ToUnique, the slug returned should be what the original processing returns.
+        var slug = Slug.ToCodeSlug(input);
+
+        Assert.Equal(string.Empty, slug);
+    }
+
+    [Theory]
+    [InlineData("٠ ١ ٢ ٣ ٤ ٥ ٦ ٧ ٨ ٩")]
+    [InlineData("🧟💩")]
+    [InlineData("吴语 [吳語]")]
+    public async Task AsyncCodeSlugWithOnlyNonLatinCharacters(string input)
+    {
+        var defaultSlugPattern = @"\w{5}\-\w{7}";
+        var slug = await Slug.ToUniqueSlugAsync(input, 20 , slug => GetAsyncList(slug, input));
+
+        Assert.Matches(defaultSlugPattern, slug);
+    }
+
+    [Theory]
+    [InlineData("٠ ١ ٢ ٣ ٤ ٥ Arabic", "---Arabic")]
+    [InlineData("Tough💩", "Tough")]
+    [InlineData("Chinese [吳語]", "Chinese")]
+    public void CodeSlugWithMixedNonLatinCharactersIsNotDefaulted(string input, string expected)
+    {
+        var defaultSlugPattern = @"\w{5}\-\w{7}";
+        var slug = Slug.ToCodeSlug(input);
+
+        Assert.DoesNotMatch(defaultSlugPattern, slug);
+        Assert.Equal(expected, slug);
+    }
+
+
+    [Theory]
+    [InlineData("٠ ١ ٢ ٣ ٤ ٥ Arabic", "---Arabic")]
+    [InlineData("Tough💩", "Tough")]
+    [InlineData("Chinese [吳語]", "Chinese")]
+    public async Task CodeSlugWithMixedNonLatinCharactersIsDifferentiated(string input, string expected)
+    {
+        var defaultSlugPattern = @"\w{5}\-\w{7}";
+        var slug = await Slug.ToUniqueCodeSlugAsync(input, 20, slug => GetAsyncList(slug, expected));
+
+        Assert.DoesNotMatch(defaultSlugPattern, slug);
+        Assert.NotEqual(expected, slug);
         Assert.Equal(expected.Length + 6, slug.Length);
     }
     #endregion
