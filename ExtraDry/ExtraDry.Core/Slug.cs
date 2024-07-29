@@ -181,6 +181,17 @@ public static class Slug
         return RandomCharacters(count, characters);
     }
 
+    /// <summary>
+    /// Used to determine if a character can be used in a slug.
+    /// </summary>
+    /// <remarks>
+    /// Used instead of char.IsLetterOrDigit becuase that doesn't discriminate on charater set, which can allow invalid characters for urls
+    /// </remarks>
+    private static bool IsLatinLetterOrDigit(char c)
+    {
+        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9');
+    }
+
     private static string ToSlugInternal(string name, bool lowercase = true, string okCharacters = @"_")
     {
         if(string.IsNullOrWhiteSpace(name)) {
@@ -191,7 +202,7 @@ public static class Slug
         var hiddenCharacters = ".'"; // exclude to contract abbreviations and possessives.
         name = RemoveCommonNameSuffixes(name);
         foreach(var c in name) {
-            if(char.IsLetterOrDigit(c)) {
+            if(IsLatinLetterOrDigit(c) ) {
                 sb.Append(lowercase ? char.ToLowerInvariant(c) : c);
             }
             else if(okCharacters.Contains(c)) {
@@ -202,6 +213,9 @@ public static class Slug
             }
         }
         name = sb.ToString();
+        if(name.All(c => c == '-')) {  // If the name is composed of only invalid characters, generate a random slug replacement.
+            name = $"{RandomWebString(5)}-{RandomWebString(7)}";
+        }
         name = name.Replace("--", "-");
         name = name.Replace("--", "-");
         name = name.TrimEnd('-');
