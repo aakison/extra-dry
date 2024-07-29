@@ -3,22 +3,20 @@
 /// <summary>
 /// Indicates that the specified method, typically on a ViewModel, is a valid command.
 /// </summary>
+/// <remarks>
+/// Flag the method as a command with the specified functional command context.
+/// </remarks>
 [AttributeUsage(AttributeTargets.Method)]
-public sealed class CommandAttribute : Attribute {
-
-    /// <summary>
-    /// Flag the method as a command with the specified functional command context.
-    /// </summary>
-    public CommandAttribute(CommandContext context = CommandContext.Alternate)
-    {
-        Context = context;
-    }
+public sealed class CommandAttribute(
+    CommandContext context = CommandContext.Alternate) 
+    : Attribute 
+{
 
     /// <summary>
     /// The context of the command, typically `Alternate`.  On forms, one command should 
     /// be `Primary`.
     /// </summary>
-    public CommandContext Context { get; set; } 
+    public CommandContext Context { get; set; } = context;
 
     /// <summary>
     /// The name of the command which is displayed on the button. If not set, the name is inferred 

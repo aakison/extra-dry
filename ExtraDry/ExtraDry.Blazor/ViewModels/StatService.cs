@@ -13,21 +13,17 @@ namespace ExtraDry.Blazor;
 /// ProblemDetails are not present, then a trivial attempt to unpack the arbitrary response 
 /// payload will be made.
 /// </summary>
-public class StatService<T> {
-
-    /// <summary>
-    /// Create a stat service with the specified configuration. This service should not be 
-    /// manually added to the IServiceCollection.  Instead, use the AddCrudService`T 
-    /// extension method.
-    /// </summary>
-    public StatService(HttpClient client, StatServiceOptions options, ILogger<StatService<T>> logger)
-    {
-        http = client;
-        Options = options;
-        this.logger = logger;
-    }
-
-    public StatServiceOptions Options { get; }
+/// <remarks>
+/// Create a stat service with the specified configuration. This service should not be 
+/// manually added to the IServiceCollection.  Instead, use the AddCrudService`T 
+/// extension method.
+/// </remarks>
+public class StatService<T>(
+    HttpClient client, 
+    StatServiceOptions options, 
+    ILogger<StatService<T>> logger)
+{
+    public StatServiceOptions Options { get; } = options;
 
     /// <summary>
     /// Retrieves the Statistics of the Entity
@@ -38,7 +34,7 @@ public class StatService<T> {
     {
         var endpoint = ApiEndpoint(filter);
         logger.LogEndpointCall(typeof(T), endpoint);
-        var response = await http.GetAsync(endpoint, cancellationToken);
+        var response = await client.GetAsync(endpoint, cancellationToken);
         await response.AssertSuccess(logger);
         var body = await response.Content.ReadAsStringAsync(cancellationToken);
         logger.LogEndpointResult(typeof(T), endpoint, body);
@@ -60,7 +56,4 @@ public class StatService<T> {
             throw new DryException("Error occurred connecting to server", "This is a mis-configuration and not a user error, please see the console output for more information.");
         }
     }
-    private readonly HttpClient http;
-
-    private readonly ILogger<StatService<T>> logger;
 }

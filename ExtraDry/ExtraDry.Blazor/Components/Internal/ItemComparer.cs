@@ -1,22 +1,17 @@
 ﻿namespace ExtraDry.Blazor.Components.Internal;
 
-internal class ItemComparer<T> : IComparer<ListItemInfo<T>> {
+internal class ItemComparer<T>(
+    PropertyDescription property, 
+    bool ascending) 
+    : IComparer<ListItemInfo<T>> 
+{
+    public PropertyDescription Property { get; } = property;
 
-    public ItemComparer(PropertyDescription property, bool ascending)
-    {
-        Property = property;
-        Ascending = ascending;
-        scale = ascending ? 1 : -1;
-        propertyIsEnum = property.HasDiscreteValues;
-    }
+    public bool Ascending { get; } = ascending;
 
-    public PropertyDescription Property { get; }
+    private readonly int scale = ascending ? 1 : -1;
 
-    public bool Ascending { get; }
-
-    private readonly int scale;
-
-    private readonly bool propertyIsEnum;
+    private readonly bool propertyIsEnum = property.HasDiscreteValues;
 
     /// <summary>
     /// Compare the two elements using the `Property` and sort order.

@@ -15,21 +15,17 @@ using Microsoft.Extensions.Logging;
 /// unwrapped and throw in the body of a DryException.  If ProblemDetails are not present, then a 
 /// trivial attempt to unpack the arbitrary response payload will be made.
 /// </summary>
-public class CrudService<T> {
-
-    /// <summary>
-    /// Create a CRUD service with the specified configuration.  This service should not be 
-    /// manually added to the IServiceCollection.  Instead, use the AddCrudService`T 
-    /// extension method.
-    /// </summary>
-    public CrudService(HttpClient client, CrudServiceOptions options, ILogger<CrudService<T>> logger)
-    {
-        http = client;
-        Options = options;
-        this.logger = logger;
-    }
-
-    public CrudServiceOptions Options { get; }
+/// <remarks>
+/// Create a CRUD service with the specified configuration.  This service should not be 
+/// manually added to the IServiceCollection.  Instead, use the AddCrudService`T 
+/// extension method.
+/// </remarks>
+public class CrudService<T>(
+    HttpClient client, 
+    CrudServiceOptions options, 
+    ILogger<CrudService<T>> logger)
+{
+    public CrudServiceOptions Options { get; } = options;
 
     [Obsolete("Inject arguments into HtttpClient derived type")]
     public async Task CreateAsync(T item, params object[] args)
@@ -38,7 +34,7 @@ public class CrudService<T> {
         using var content = new StringContent(json, Encoding.UTF8, "application/json");
         var endpoint = ApiEndpoint(nameof(CreateAsync), string.Empty, args);
         logger.LogEndpointCall(typeof(T), endpoint);
-        var response = await http.PostAsync(endpoint, content);
+        var response = await client.PostAsync(endpoint, content);
         await response.AssertSuccess(logger);
     }
 
@@ -48,7 +44,7 @@ public class CrudService<T> {
         using var content = new StringContent(json, Encoding.UTF8, "application/json");
         var endpoint = ApiEndpoint(nameof(CreateAsync), string.Empty);
         logger.LogEndpointCall(typeof(T), endpoint);
-        var response = await http.PostAsync(endpoint, content, cancellationToken);
+        var response = await client.PostAsync(endpoint, content, cancellationToken);
         await response.AssertSuccess(logger);
     }
 
@@ -57,7 +53,7 @@ public class CrudService<T> {
     {
         var endpoint = ApiEndpoint(nameof(RetrieveAsync), key, args);
         logger.LogEndpointCall(typeof(T), endpoint);
-        var response = await http.GetAsync(endpoint);
+        var response = await client.GetAsync(endpoint);
         await response.AssertSuccess(logger);
         var item = await response.Content.ReadFromJsonAsync<T>();
         return item;
@@ -67,7 +63,7 @@ public class CrudService<T> {
     {
         var endpoint = ApiEndpoint(nameof(RetrieveAsync), key);
         logger.LogEndpointCall(typeof(T), endpoint);
-        var response = await http.GetAsync(endpoint, cancellationToken);
+        var response = await client.GetAsync(endpoint, cancellationToken);
         await response.AssertSuccess(logger);
         var item = await response.Content.ReadFromJsonAsync<T>(cancellationToken: cancellationToken);
         return item;
@@ -78,7 +74,7 @@ public class CrudService<T> {
     {
         var endpoint = ApiEndpoint(nameof(UpdateAsync), key, args);
         logger.LogEndpointCall(typeof(T), endpoint);
-        var response = await http.PutAsJsonAsync(endpoint, item);
+        var response = await client.PutAsJsonAsync(endpoint, item);
         await response.AssertSuccess(logger);
     }
 
@@ -86,7 +82,7 @@ public class CrudService<T> {
     {
         var endpoint = ApiEndpoint(nameof(UpdateAsync), key);
         logger.LogEndpointCall(typeof(T), endpoint);
-        var response = await http.PutAsJsonAsync(endpoint, item, cancellationToken);
+        var response = await client.PutAsJsonAsync(endpoint, item, cancellationToken);
         await response.AssertSuccess(logger);
     }
 
@@ -95,7 +91,7 @@ public class CrudService<T> {
     {
         var endpoint = ApiEndpoint(nameof(DeleteAsync), key, args);
         logger.LogEndpointCall(typeof(T), endpoint);
-        var response = await http.DeleteAsync(endpoint);
+        var response = await client.DeleteAsync(endpoint);
         await response.AssertSuccess(logger);
     }
 
@@ -103,7 +99,7 @@ public class CrudService<T> {
     {
         var endpoint = ApiEndpoint(nameof(DeleteAsync), key);
         logger.LogEndpointCall(typeof(T), endpoint);
-        var response = await http.DeleteAsync(endpoint, cancellationToken);
+        var response = await client.DeleteAsync(endpoint, cancellationToken);
         await response.AssertSuccess(logger);
     }
 
@@ -120,8 +116,4 @@ public class CrudService<T> {
             throw new DryException("Error occurred connecting to server", "This is a mis-configuration and not a user error, please see the console output for more information.");
         }
     }
-
-    private readonly HttpClient http;
-
-    private readonly ILogger<CrudService<T>> logger;
 }

@@ -7,20 +7,18 @@ namespace ExtraDry.Blazor;
 /// <summary>
 /// Registers a API service for Blobs.  This service is used to upload files to the server.
 /// </summary>
-public class BlobService<TBlob> where TBlob : IBlob, new()
+/// <remarks>
+/// Create a Blob service with the specified configuration.  This service should not be 
+/// manually added to the IServiceCollection.  Instead, use the <see cref="ServiceCollectionExtensions.AddBlobService(Microsoft.Extensions.DependencyInjection.IServiceCollection, Action{BlobServiceOptions})" />
+/// extension method.
+/// </remarks>
+public class BlobService<TBlob>(
+    HttpClient client, 
+    FileValidationService? fileValidation, 
+    BlobServiceOptions options, 
+    ILogger<BlobService<TBlob>> logger) 
+    where TBlob : IBlob, new()
 {
-    /// <summary>
-    /// Create a Blob service with the specified configuration.  This service should not be 
-    /// manually added to the IServiceCollection.  Instead, use the <see cref="ServiceCollectionExtensions.AddBlobService(Microsoft.Extensions.DependencyInjection.IServiceCollection, Action{BlobServiceOptions})" />
-    /// extension method.
-    /// </summary>
-    public BlobService(HttpClient client, FileValidationService? fileValidation, BlobServiceOptions options, ILogger<BlobService<TBlob>> logger)
-    {
-        http = client;
-        Options = options;
-        this.logger = logger;
-        validator = fileValidation;
-    }
 
     /// <summary>
     /// Given an entity implementing <see cref="IBlob"/>, create a new Blob by calling the 
@@ -33,25 +31,25 @@ public class BlobService<TBlob> where TBlob : IBlob, new()
         }
 
         if(string.IsNullOrEmpty(blob.Slug)) {
-            var name = validator == null ? blob.Uuid.ToString() : validator.CleanFilename(Path.GetFileNameWithoutExtension(blob.Title));
+            var name = fileValidation == null ? blob.Uuid.ToString() : fileValidation.CleanFilename(Path.GetFileNameWithoutExtension(blob.Title));
             blob.Slug = $"{Slug.ToSlug(name)}{Path.GetExtension(blob.Title).ToLowerInvariant()}";
         }
 
-        if(Options.ValidateHashOnCreate) {
+        if(options.ValidateHashOnCreate) {
             blob.MD5Hash = MD5Core.GetHashString(blob.Content);
         }
         else {
             blob.MD5Hash = string.Empty;
         }
 
-        if(Options.RewriteWebSafeFilename) {
-            blob.Title = validator?.CleanFilename(blob.Title) ?? blob.Title;
+        if(options.RewriteWebSafeFilename) {
+            blob.Title = fileValidation?.CleanFilename(blob.Title) ?? blob.Title;
         }
 
         blob.Length = blob.Content.Length;
         using var bytes = BlobSerializer.SerializeBlob(blob);
         var endpoint = ApiEndpoint(blob.Uuid, blob.Slug);
-        var response = await http.PostAsync(endpoint, bytes, cancellationToken);
+        var response = await client.PostAsync(endpoint, bytes, cancellationToken);
         await response.AssertSuccess(logger);
     }
 
@@ -89,7 +87,7 @@ public class BlobService<TBlob> where TBlob : IBlob, new()
             Length = (int)file.Size,
         };
         var memoryStream = new MemoryStream();
-        using var stream = file.OpenReadStream(Options.MaxBlobSize, cancellationToken);
+        using var stream = file.OpenReadStream(options.MaxBlobSize, cancellationToken);
         await stream.CopyToAsync(memoryStream, cancellationToken);
         blob.Content = memoryStream.ToArray();
         await CreateAsync(blob, cancellationToken);
@@ -113,7 +111,7 @@ public class BlobService<TBlob> where TBlob : IBlob, new()
     public async Task<TBlob> RetrieveAsync(Guid uuid, string slug, CancellationToken cancellationToken = default)
     {
         var endpoint = ApiEndpoint(uuid, slug);
-        var response = await http.GetAsync(endpoint, cancellationToken);
+        var response = await client.GetAsync(endpoint, cancellationToken);
         await response.AssertSuccess(logger);
 
         var blob = await BlobSerializer.DeserializeBlobAsync<TBlob>(response, cancellationToken);
@@ -127,19 +125,11 @@ public class BlobService<TBlob> where TBlob : IBlob, new()
     private string ApiEndpoint(Guid uuid, string filename)
     {
         try {
-            var url = $"{Options.BlobEndpoint}/{uuid}/{filename}".TrimEnd('/');
+            var url = $"{options.BlobEndpoint}/{uuid}/{filename}".TrimEnd('/');
             return url;
         }
         catch(FormatException ex) {
             throw new DryException("Error occurred connecting to server", $"This is a mis-configuration and not a user error, please see the console output for more information.  Error: {ex.Message}");
         }
     }
-
-    private BlobServiceOptions Options { get; }
-
-    private readonly HttpClient http;
-
-    private readonly ILogger<BlobService<TBlob>> logger;
-
-    private readonly FileValidationService? validator;
 }

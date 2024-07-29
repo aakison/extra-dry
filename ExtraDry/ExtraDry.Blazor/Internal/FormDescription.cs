@@ -121,17 +121,15 @@ internal class FormDescription {
         return p.Order ?? OrderNotSpecifiedOffset + originalPositions.GetValueOrDefault(p.FieldCaption, 0);
     }
 
-    private class ExtendedProperty {
-        public ExtendedProperty(PropertyDescription property, object target) {
-            Property = property;
-            Target = target;
-        }
-
+    private class ExtendedProperty(
+        PropertyDescription property, 
+        object target)
+    {
         public string FieldsetTitle { get; set; } = string.Empty;
         public FormGroupType GroupType { get; set; }
         public PropertySize Length { get; set; }
-        public PropertyDescription? Property { get; set; }
-        public object Target { get; set; }
+        public PropertyDescription? Property { get; set; } = property;
+        public object Target { get; set; } = target;
         public object? ParentTarget { get; set; }
         public bool CommandRow { get; set; }
     }
