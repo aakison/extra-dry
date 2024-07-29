@@ -221,11 +221,10 @@ public static class Slug
 
     private static string ToUnique(IEnumerable<string> existing, string stem)
     {
-        var candidate = stem;
-        var hasValidStemCondition = stem.Any(c => c != '-');  // If the name is empty or is composed of only invalid characters, generate a random slug replacement rather than appending.
-        if(!hasValidStemCondition) {
-            candidate = GenerateGenericSlug();
-        }
+        // If the name has any non-hyphen characters, we'll use that as the stem. Else we'll generate a generic slug
+        var hasValidStemCondition = stem.Any(IsAsciiLetterOrDigit);
+        var candidate = hasValidStemCondition ? stem : GenerateGenericSlug();
+
         while(existing.Contains(candidate)) {
             candidate = hasValidStemCondition ? $"{stem}-{RandomWebString(5)}" : GenerateGenericSlug();
         }
@@ -242,11 +241,10 @@ public static class Slug
 
     private static async Task<string> ToUniqueAsync(Func<string, Task<bool>> existsAsync, string stem)
     {
-        var candidate = stem;
-        var hasValidStemCondition = stem.Any(c => c != '-');  // If the name is empty or is composed of only invalid characters, generate a random slug replacement rather than appending.
-        if(!hasValidStemCondition) {
-            candidate = GenerateGenericSlug();
-        }
+        // If the name has any non-hyphen characters, we'll use that as the stem. Else we'll generate a generic slug
+        var hasValidStemCondition = stem.Any(IsAsciiLetterOrDigit);
+        var candidate = hasValidStemCondition ? stem : GenerateGenericSlug();
+
         while(await existsAsync(candidate)) {
             candidate = hasValidStemCondition ? $"{stem}-{RandomWebString(5)}" : GenerateGenericSlug();
         }
