@@ -9,7 +9,6 @@ trigger:
 - main
 - release
 - develop
-- alpha
 
 pool:
   vmImage: 'windows-latest'
@@ -25,7 +24,7 @@ variables:
   nugetProjectsGlob: '**/ExtraDry.+(Core|Server|Blazor|Swashbuckle|Blazor.Experimental).csproj' # don't build samples
   sampleProjectsGlob: '**/Sample.Spa.Backend.csproj'
   testsGlob: '**/ExtraDry.+(Core|Server|Blazor).Tests.csproj'
-  isForDeployment: $[in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/develop', 'refs/heads/release', 'refs/heads/alpha')]
+  isForDeployment: $[in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/develop', 'refs/heads/release')]
 
 steps:
 - task: UseDotNet@2
@@ -123,10 +122,9 @@ steps:
       $patchVersion = Coallesce $bits[2] 0
       $prereleaseVersion = 'head' # no semantic meaning
       $isDevelop = HeadIsBranch('develop')
-      $isAlpha = HeadIsBranch('alpha')
       $isRelease = HeadIsBranch('release')
       $isMain = HeadIsBranch('main') 
-      if($isDevelop -OR $isAlpha) {
+      if($isDevelop) {
           $prereleaseVersion = "alpha"
       }
       if($isRelease) {
