@@ -37,5 +37,5 @@ internal class FilterRule {
 
     public string PropertyName { get; private set; }
 
-    public List<string> Values { get; } = new List<string>();
+    public List<string> Values { get; } = [];
 }
