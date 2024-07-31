@@ -232,7 +232,7 @@ public static class QueryableExtensions {
     /// <summary>
     /// The stabilization method to be used in queryable sorting.
     /// </summary>
-    static private SortStabilization SortStabilization => SortStabilization.AlwaysAddKey;
+    static private SortStabilization SortStabilization => Options.Stabilization;
 
     private const string MissingStabilizerErrorMessage = "Sort requires that a single EF key is uniquely defined to stabalize the sort, even if another sort property is present.  Use a single unique key following EF conventions";
 
