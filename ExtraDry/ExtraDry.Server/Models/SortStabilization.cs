@@ -15,13 +15,13 @@
         /// This is useful for cases where your data store may not support sorting by 2 columns simultaneously.
         /// For an unsorted list, this will use the provider defaults to stabilize the returned list
         /// </summary>
-        ProviderDefaultsOnly = 1,
+        ProviderDefaultsOnly,
 
         /// <summary>
         /// When retrieving list from a data store this will not use a secondary column to provide a stabilized sort
         /// This is useful for cases where your data store may not support sorting by 2 columns simultaneously.
         /// For an unsorted list, this will use the models Key property to stabilize the sort.
         /// </summary>
-        AddKeyWhenUnsorted = 2
+        AddKeyWhenUnsorted
     }
 }

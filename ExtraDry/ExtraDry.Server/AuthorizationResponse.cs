@@ -4,16 +4,11 @@ using System.Net;
 
 namespace ExtraDry.Server;
 
-public class AuthorizationResponse {
+public class AuthorizationResponse(RequestDelegate next, ExtraDryOptions options)
+{
 
-    private readonly RequestDelegate next;
-    private readonly ExtraDryOptions options;
-
-    public AuthorizationResponse(RequestDelegate next, IOptions<ExtraDryOptions> options)
-    {
-        this.next = next;
-        this.options = options.Value;
-    }
+    private readonly RequestDelegate next = next;
+    private readonly ExtraDryOptions options = options;
 
     public async Task InvokeAsync(HttpContext context)
     {

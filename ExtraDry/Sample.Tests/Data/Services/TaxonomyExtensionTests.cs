@@ -27,7 +27,7 @@
 //        var arrangeContext = new SampleContext(builder);
 //        context = new SampleContext(builder);
 
-//        var rules = new RuleEngine(new ServiceProviderStub());
+//        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
 
 //        regions = new RegionService(arrangeContext, rules);
 //        regions = new RegionService(context, rules);

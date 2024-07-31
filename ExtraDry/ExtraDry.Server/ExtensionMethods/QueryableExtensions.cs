@@ -12,12 +12,6 @@ namespace ExtraDry.Server;
 /// </summary>
 public static class QueryableExtensions {
 
-    static QueryableExtensions()
-    {
-        var options = StaticServiceProvider.Provider?.GetService<IOptions<ExtraDryOptions>>()?.Value ?? new ExtraDryOptions();
-        SortStabilization = options.Stabilization;
-    }
-
     public static FilteredListQueryable<T> QueryWith<T>(this IQueryable<T> source, FilterQuery query, Expression<Func<T, bool>>? defaultFilter = null) where T : class
     {
         return new FilteredListQueryable<T>(source.AsNoTracking(), query, defaultFilter);
@@ -162,12 +156,12 @@ public static class QueryableExtensions {
         var ascending = !actualSort.StartsWith('-');
         var query = source;
         var modelDescription = new ModelDescription(typeof(T));
-        if(modelDescription.StabilizerProperty == default) {
+        if (modelDescription.StabilizerProperty == default) {
             throw new DryException(MissingStabilizerErrorMessage, SortErrorUserMessage);
         }
-        if(!string.IsNullOrWhiteSpace(actualSort)) {
+        if (!string.IsNullOrWhiteSpace(actualSort)) {
             // If set to always add key, we add a secondary sort to stabilize the sort
-            if(SortStabilization == SortStabilization.AlwaysAddKey) {
+            if (SortStabilization == SortStabilization.AlwaysAddKey) {
                 query = ascending ?
                     query.OrderBy(sortProperty).ThenBy(modelDescription.StabilizerProperty.ExternalName) :
                     query.OrderByDescending(sortProperty).ThenByDescending(modelDescription.StabilizerProperty.ExternalName);
@@ -179,7 +173,9 @@ public static class QueryableExtensions {
         }
         else {
             // For anything other than ProviderDefaultsOnly, add a default sort for stabilization.
-            if(SortStabilization != SortStabilization.ProviderDefaultsOnly) {
+            if (SortStabilization == SortStabilization.AddKeyWhenUnsorted ||
+                SortStabilization == SortStabilization.AlwaysAddKey)
+            {
                 query = query.OrderBy(modelDescription.StabilizerProperty.ExternalName);
             }
         }
@@ -230,10 +226,12 @@ public static class QueryableExtensions {
         return await baseQuery.ToBaseCollectionInternalAsync(cancellationToken); 
     }
 
+    static internal ExtraDryOptions Options { get; set; } = new ExtraDryOptions();
+
     /// <summary>
     /// The stabilization method to be used in queryable sorting.
     /// </summary>
-    static internal SortStabilization SortStabilization = SortStabilization.AlwaysAddKey;
+    static private SortStabilization SortStabilization => Options?.Stabilization ?? SortStabilization.AlwaysAddKey;
 
     private const string MissingStabilizerErrorMessage = "Sort requires that a single EF key is uniquely defined to stabalize the sort, even if another sort property is present.  Use a single unique key following EF conventions";
 

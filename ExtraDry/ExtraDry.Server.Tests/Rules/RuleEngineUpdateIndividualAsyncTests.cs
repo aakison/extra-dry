@@ -5,7 +5,7 @@ public class RuleEngineUpdateIndividualAsyncTests {
     [Fact]
     public async Task IdentityUnchanged()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var source = SampleEntity();
         source.Id = 0;
         var destination = SampleEntity();
@@ -24,7 +24,7 @@ public class RuleEngineUpdateIndividualAsyncTests {
     [Fact]
     public async Task BlockChangesThrowsException()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var source = SampleEntity();
         var destination = SampleEntity();
         source.HoursWorked = 2;
@@ -35,7 +35,7 @@ public class RuleEngineUpdateIndividualAsyncTests {
     [Fact]
     public async Task IgnoreChanges()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var source = SampleEntity();
         var destination = SampleEntity();
         source.IgnoreChangesAmount = 2.34m;
@@ -49,7 +49,7 @@ public class RuleEngineUpdateIndividualAsyncTests {
     [Fact]
     public async Task JsonIgnoreChanges()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var source = SampleEntity();
         var destination = SampleEntity();
         source.JsonIgnored = "different";
@@ -63,7 +63,7 @@ public class RuleEngineUpdateIndividualAsyncTests {
     [Fact]
     public async Task JsonIgnoreChangesWithConditionFakout()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var source = SampleEntity();
         var destination = SampleEntity();
         source.JsonIgnoredFakeOut = "different";
@@ -77,7 +77,7 @@ public class RuleEngineUpdateIndividualAsyncTests {
     [Fact]
     public async Task UndecoratedDefaultsToAllow()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var source = SampleEntity();
         var destination = SampleEntity();
         source.UndecoratedName = "Alice";
@@ -90,7 +90,7 @@ public class RuleEngineUpdateIndividualAsyncTests {
     [Fact]
     public async Task IgnoreDefaultsValueTypeChangeValue()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var source = SampleEntity();
         var destination = SampleEntity();
         source.DefaultIgnoredReal = 123;
@@ -103,7 +103,7 @@ public class RuleEngineUpdateIndividualAsyncTests {
     //[Fact]
     //public async Task IgnoreDefaultsValueTypeIgnoresDefaults()
     //{
-    //    var rules = new RuleEngine(new ServiceProviderStub());
+    //    var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
     //    var source = SampleEntity();
     //    var destination = SampleEntity();
     //    source.DefaultIgnoredReal = 0;
@@ -117,7 +117,7 @@ public class RuleEngineUpdateIndividualAsyncTests {
     [Fact]
     public async Task IgnoreDefaultsReferenceTypeIgnoresDefaults()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var source = SampleEntity();
         var destination = SampleEntity();
         source.DefaultIgnoredString = null;
@@ -131,7 +131,7 @@ public class RuleEngineUpdateIndividualAsyncTests {
     [Fact]
     public async Task IgnoreDefaultsReferenceTypeChanges()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var source = SampleEntity();
         var destination = SampleEntity();
         source.DefaultIgnoredString = "else";
@@ -145,7 +145,7 @@ public class RuleEngineUpdateIndividualAsyncTests {
     [Fact]
     public async Task ExplicitAllowChanges()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var source = SampleEntity();
         var destination = SampleEntity();
         source.ChangeableUuid = Guid.NewGuid();
@@ -159,7 +159,7 @@ public class RuleEngineUpdateIndividualAsyncTests {
     [Fact]
     public async Task DestinationNotNull()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var source = SampleEntity();
         var destination = SampleEntity();
 
@@ -169,7 +169,7 @@ public class RuleEngineUpdateIndividualAsyncTests {
     [Fact]
     public async Task SourceNotNull()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var source = SampleEntity();
         var destination = SampleEntity();
 
@@ -181,7 +181,7 @@ public class RuleEngineUpdateIndividualAsyncTests {
     [InlineData(ActiveType.Active)]
     public async Task UpdateDeletePropertyToNonDeletedValue(ActiveType activeType)
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var source = SampleEntity();
         var target = SampleEntity();
         source.Active = activeType;
@@ -194,7 +194,7 @@ public class RuleEngineUpdateIndividualAsyncTests {
     [Fact]
     public async Task UpdateDeletePropertyToDeletedValueThrows()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var source = SampleEntity();
         var target = SampleEntity();
         source.Active = ActiveType.Deleted;
@@ -205,7 +205,7 @@ public class RuleEngineUpdateIndividualAsyncTests {
     [Fact]
     public async Task UpdateSecondStatusPropertyToDeletedValueShouldNotThrow()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var source = SampleEntity();
         var target = SampleEntity();
         source.ChildStatus = ActiveType.Deleted;
@@ -220,7 +220,7 @@ public class RuleEngineUpdateIndividualAsyncTests {
     [InlineData("abc", "def")]
     public async Task SourceToDestinationUncontrolled(string input, string output)
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var source = SampleEntity();
         var destination = SampleEntity();
         source.UndecoratedName = input;
@@ -236,7 +236,7 @@ public class RuleEngineUpdateIndividualAsyncTests {
     [InlineData("abc", "abc")]
     public async Task SourceToDestinationOnBlockChanges(string? input, string? output)
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var source = SampleEntity();
         var destination = SampleEntity();
         source.BlockChangesString = input;

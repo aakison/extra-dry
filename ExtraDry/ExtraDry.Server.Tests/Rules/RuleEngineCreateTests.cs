@@ -4,7 +4,7 @@ public class RuleEngineCreateTests {
     [Fact]
     public async Task CreateRequiresItem()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
 
         await Assert.ThrowsAsync<ArgumentNullException>(async () => await rules.CreateAsync((object?)null));
     }
@@ -12,7 +12,7 @@ public class RuleEngineCreateTests {
     [Fact]
     public async Task CreateWithValueTypesByDefault()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var exemplar = new Entity {
             DefaultInteger = 123,
             DefaultString = "Hello World",
@@ -32,7 +32,7 @@ public class RuleEngineCreateTests {
     [Fact]
     public async Task CreateWithValueTypes()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var exemplar = new Entity {
             IntegerTest = 123,
             StringTest = "Hello World",
@@ -52,7 +52,7 @@ public class RuleEngineCreateTests {
     [Fact]
     public async Task CreateWithReferenceTypeByDefault()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var exemplar = new Entity {
             DefaultTestObject = new() {
                 PropertyOne = "John Doe",
@@ -74,7 +74,7 @@ public class RuleEngineCreateTests {
     [Fact]
     public async Task CreateWithReferenceType()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var exemplar = new Entity {
             TestObject = new() {
                 PropertyOne = "John Doe",
@@ -96,7 +96,7 @@ public class RuleEngineCreateTests {
     [Fact]
     public async Task CreateWithReferenceTypeByCreateDescendants()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var exemplar = new Entity {
             DesendantsTestObject = new() {
                 TestObject = new()
@@ -115,7 +115,7 @@ public class RuleEngineCreateTests {
     [Fact]
     public async Task CreateValidatableWithReferenceTypeByCreateDescendants()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var exemplar = new ValidatableEntity {
             DesendantsTestObject = new() {
                 TestObject = new() { PropertyOne = "IgnoreThis" }
@@ -134,7 +134,7 @@ public class RuleEngineCreateTests {
     [Fact]
     public async Task CreateWithIgnore()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var exemplar = new Entity {
             IgnoredProp = 123,
             IgnoredChild = new()
@@ -163,7 +163,7 @@ public class RuleEngineCreateTests {
         var exemplar = new IgnoreDefaultsEntity();
         var property = exemplar.GetType().GetProperty(propertyName) ?? throw new ArgumentException("Missing property", nameof(propertyName));
         property.SetValue(exemplar, value);
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
 
         var actual = await rules.CreateAsync(exemplar);
 
@@ -183,7 +183,7 @@ public class RuleEngineCreateTests {
         var exemplar = new IgnoreDefaultsEntity();
         var property = exemplar.GetType().GetProperty(propertyName) ?? throw new ArgumentException("Missing Property", nameof(propertyName));
         property.SetValue(exemplar, value);
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
 
         var actual = await rules.CreateAsync(exemplar);
 
@@ -194,7 +194,7 @@ public class RuleEngineCreateTests {
     [Fact]
     public async Task CreateWithJsonIgnore()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var exemplar = new Entity {
             JsonIgnoredProp = 123,
             JsonIgnoredChild = new()
@@ -210,7 +210,7 @@ public class RuleEngineCreateTests {
     [Fact]
     public async Task CreateFailsOnExplicitValueTypePropertyBlock()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var exemplar = new BlockedPropertiesEntity { CreateBlockString = "abc" };
 
         await Assert.ThrowsAsync<DryException>(async () => await rules.CreateAsync(exemplar));
@@ -219,7 +219,7 @@ public class RuleEngineCreateTests {
     [Fact]
     public async Task CreateFailsOnImplicitValueTypePropertyBlock()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var exemplar = new BlockedPropertiesEntity { DefaultBlockString = "abc" };
 
         await Assert.ThrowsAsync<DryException>(async () => await rules.CreateAsync(exemplar));
@@ -231,7 +231,7 @@ public class RuleEngineCreateTests {
     //[Fact]
     //public async Task CreateFailsOnExplicitObjectPropertyBlock()
     //{
-    //    var rules = new RuleEngine(new ServiceProviderStub());
+    //    var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
     //    var exemplar = new BlockedPropertiesEntity { BlockTestObject = new ChildEntity() };
 
     //    await Assert.ThrowsAsync<DryException>(async () => await rules.CreateAsync(exemplar));

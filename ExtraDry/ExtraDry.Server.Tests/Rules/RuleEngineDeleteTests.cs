@@ -8,7 +8,7 @@ public class RuleEngineDeleteTests {
     [Fact]
     public async Task DeleteRequiresItem()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
 
         await Assert.ThrowsAsync<ArgumentNullException>(async () => await rules.DeleteAsync((object?)null, () => { }, () => Task.CompletedTask));
     }
@@ -16,7 +16,7 @@ public class RuleEngineDeleteTests {
     [Fact]
     public async Task DeleteSoftDeletesByDefault()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var obj = new SoftDeletable();
 
         var result = await rules.DeleteAsync(obj, () => { }, () => Task.CompletedTask);
@@ -28,7 +28,7 @@ public class RuleEngineDeleteTests {
     [Fact]
     public async Task DeleteHardDeleteBackup()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var obj = new SoftDeletable();
         var deleted = false;
 
@@ -41,7 +41,7 @@ public class RuleEngineDeleteTests {
     [Fact]
     public async Task DeleteRecycleRequiresItem()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
 
         await Assert.ThrowsAsync<ArgumentNullException>(async () => await rules.DeleteAsync((object?)null!, () => Task.CompletedTask, () => Task.CompletedTask));
     }
@@ -49,7 +49,7 @@ public class RuleEngineDeleteTests {
     [Fact]
     public async Task DeleteRecycleChangesActive()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var obj = new SoftDeletable();
 
         var result = await rules.DeleteAsync(obj, () => { }, () => Task.CompletedTask);
@@ -61,7 +61,7 @@ public class RuleEngineDeleteTests {
     [Fact]
     public async Task DeleteHardRequiresPrepareAction()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
 
         await Assert.ThrowsAsync<ArgumentNullException>(async () => await rules.DeleteAsync(new object(), null!, () => Task.CompletedTask));
     }
@@ -69,7 +69,7 @@ public class RuleEngineDeleteTests {
     [Fact]
     public async Task DeleteHardPrepareCommitCycle()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         int prepared = 0;
         int committed = 0;
 
@@ -83,7 +83,7 @@ public class RuleEngineDeleteTests {
     [Fact]
     public async Task DeleteHardFailHardAndSoft()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var result = await rules.DeleteAsync(new object(), () => { }, () => throw new NotImplementedException());
         Assert.Equal(DeleteResult.NotDeleted, result);
     }
@@ -91,7 +91,7 @@ public class RuleEngineDeleteTests {
     [Fact]
     public async Task DeleteSoftFallback()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var obj = new SoftDeletable();
         var callCount = 0;
 
@@ -107,7 +107,7 @@ public class RuleEngineDeleteTests {
     [Fact]
     public async Task RecycleDoesntChangeOtherValues()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var obj = new SoftDeletable();
         var original = obj.Unchanged;
         var unruled = obj.UnRuled;
@@ -122,7 +122,7 @@ public class RuleEngineDeleteTests {
     [Fact]
     public async Task SoftDeleteOnInvalidValueException()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var obj = new BadDeleteValueDeletable();
 
         async Task lambda() => await rules.DeleteAsync(obj, () => { }, () => Task.CompletedTask);
@@ -133,7 +133,7 @@ public class RuleEngineDeleteTests {
     [Fact]
     public async Task NullIsValidDeleteValue()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var obj = new ObjectDeletable();
 
         await rules.DeleteAsync(obj, () => { }, () => Task.CompletedTask);

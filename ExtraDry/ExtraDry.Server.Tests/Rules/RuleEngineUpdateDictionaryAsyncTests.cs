@@ -9,7 +9,7 @@ public class RuleEngineUpdateDictionaryAsyncTests {
     public async Task IdentityUnchanged()
     {
         var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var guid = Guid.NewGuid();
         var source = new Target { };
         var destination = new Target { Uuid = guid };
@@ -23,7 +23,7 @@ public class RuleEngineUpdateDictionaryAsyncTests {
     public async Task NullSourceLeavesNullDestination()
     {
         var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Target();
         var destination = new Target();
         Assert.Null(source.NullableValues);
@@ -37,7 +37,7 @@ public class RuleEngineUpdateDictionaryAsyncTests {
     public async Task SourceCreatesDestinationWhenNull()
     {
         var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Target();
         var destination = new Target();
         source.NullableValues = [];
@@ -57,7 +57,7 @@ public class RuleEngineUpdateDictionaryAsyncTests {
     public async Task ValueCreatedWhenNotInDestination(object value)
     {
         var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Target();
         var destination = new Target();
         source.Values.Add("key", value);
@@ -72,7 +72,7 @@ public class RuleEngineUpdateDictionaryAsyncTests {
     public async Task ValueReplacedWhenInDestination()
     {
         var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Target();
         var destination = new Target();
         source.Values.Add("key", "value");
@@ -88,7 +88,7 @@ public class RuleEngineUpdateDictionaryAsyncTests {
     public async Task MissingValueIgnoredWhenInDestination()
     {
         var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Target();
         var destination = new Target();
         destination.Values.Add("key", "old-value");
@@ -103,7 +103,7 @@ public class RuleEngineUpdateDictionaryAsyncTests {
     public async Task NullValueNoEffectWhenNotInDestination()
     {
         var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Target();
         var destination = new Target();
         source.Values.Add("key", null);
@@ -118,7 +118,7 @@ public class RuleEngineUpdateDictionaryAsyncTests {
     public async Task NullValueRemovesWhenInDestination()
     {
         var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Target();
         var destination = new Target();
         source.Values.Add("key", null);
@@ -134,7 +134,7 @@ public class RuleEngineUpdateDictionaryAsyncTests {
     public async Task IgnoreValueLeavesDestination()
     {
         var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Target();
         var destination = new Target();
         source.IgnoredValues.Add("key", "value");
@@ -150,7 +150,7 @@ public class RuleEngineUpdateDictionaryAsyncTests {
     public async Task ArraysAreNotAllowed()
     {
         var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Target();
         var destination = new Target();
         var list = new List<string> { "value1", "value2" };
@@ -165,7 +165,7 @@ public class RuleEngineUpdateDictionaryAsyncTests {
     public async Task ComplexObjectsAreNotAllowed()
     {
         var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Target();
         var destination = new Target();
         var obj = new { subKey = "value1", anotherKey = "value2" };
@@ -187,7 +187,7 @@ public class RuleEngineUpdateDictionaryAsyncTests {
     public async Task JsonObjectTypeMapping(string element, object expected)
     {
         var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var json = $"{{ \"Values\" : {{ \"key\" : {element} }} }}";
         var source = JsonSerializer.Deserialize<Target>(json);
         var destination = new Target();
@@ -202,7 +202,7 @@ public class RuleEngineUpdateDictionaryAsyncTests {
     public async Task JsonObjectNullTypeMapping()
     {
         var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var json = "{ \"Values\" : { \"key\" : null } }";
         var source = JsonSerializer.Deserialize<Target>(json);
         var destination = new Target();
