@@ -1,5 +1,7 @@
 ﻿using ExtraDry.Server.Internal;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System.Linq.Expressions;
 
 namespace ExtraDry.Server;
@@ -9,7 +11,13 @@ namespace ExtraDry.Server;
 /// and paging API result sets.
 /// </summary>
 public static class QueryableExtensions {
-    
+
+    static QueryableExtensions()
+    {
+        var options = StaticServiceProvider.Provider?.GetService<IOptions<ExtraDryOptions>>()?.Value ?? new ExtraDryOptions();
+        SortStabilization = options.Stabilization;
+    }
+
     public static FilteredListQueryable<T> QueryWith<T>(this IQueryable<T> source, FilterQuery query, Expression<Func<T, bool>>? defaultFilter = null) where T : class
     {
         return new FilteredListQueryable<T>(source.AsNoTracking(), query, defaultFilter);
@@ -145,7 +153,6 @@ public static class QueryableExtensions {
     /// </summary>
     /// <param name="source">The queryable source, typically from EF, this is from `DbSet.AsQueryable()`</param>
     /// <param name="sort">The name of the property to sort by (optional, case insensitive)</param>
-    /// <param name="ascending">Indicates if the order is ascending or not (optional, default true)</param>
     /// <param name="continuationToken">If this is not a new request, the token passed back from the previous request to maintain stability (optional)</param>
     internal static IQueryable<T> Sort<T>(this IQueryable<T> source, string? sort, string? continuationToken)
     {
@@ -159,12 +166,22 @@ public static class QueryableExtensions {
             throw new DryException(MissingStabilizerErrorMessage, SortErrorUserMessage);
         }
         if(!string.IsNullOrWhiteSpace(actualSort)) {
-            query = ascending ? 
-                query.OrderBy(sortProperty).ThenBy(modelDescription.StabilizerProperty.ExternalName) : 
-                query.OrderByDescending(sortProperty).ThenByDescending(modelDescription.StabilizerProperty.ExternalName);
+            // If set to always add key, we add a secondary sort to stabilize the sort
+            if(SortStabilization == SortStabilization.AlwaysAddKey) {
+                query = ascending ?
+                    query.OrderBy(sortProperty).ThenBy(modelDescription.StabilizerProperty.ExternalName) :
+                    query.OrderByDescending(sortProperty).ThenByDescending(modelDescription.StabilizerProperty.ExternalName);
+            } else {
+                query = ascending ?
+                    query.OrderBy(sortProperty) :
+                    query.OrderByDescending(sortProperty);
+            }
         }
         else {
-            query = query.OrderBy(modelDescription.StabilizerProperty.ExternalName);
+            // For anything other than ProviderDefaultsOnly, add a default sort for stabilization.
+            if(SortStabilization != SortStabilization.ProviderDefaultsOnly) {
+                query = query.OrderBy(modelDescription.StabilizerProperty.ExternalName);
+            }
         }
         return query;
     }
@@ -212,6 +229,11 @@ public static class QueryableExtensions {
         var baseQuery = new BaseQueryable<T>(source);
         return await baseQuery.ToBaseCollectionInternalAsync(cancellationToken); 
     }
+
+    /// <summary>
+    /// The stabilization method to be used in queryable sorting.
+    /// </summary>
+    static internal SortStabilization SortStabilization = SortStabilization.AlwaysAddKey;
 
     private const string MissingStabilizerErrorMessage = "Sort requires that a single EF key is uniquely defined to stabalize the sort, even if another sort property is present.  Use a single unique key following EF conventions";
 

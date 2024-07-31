@@ -9,4 +9,6 @@ public class ExtraDryOptions {
     public string? UnauthorizedTitle { get; set; }
 
     public string? UnauthorizedMessage { get; set; }
+
+    public SortStabilization Stabilization { get; set; }
 }
