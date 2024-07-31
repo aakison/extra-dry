@@ -19,9 +19,7 @@ namespace ExtraDry.Server;
 /// </remarks>
 public class RuleEngine(
     IServiceProvider services,
-#pragma warning disable CS9113 // Parameter is unread. Justification: This will be used in the future. In the meantime it being referenced will force it to be resolved, allowing SortStabilization to work.
-    ExtraDryOptions options)
-#pragma warning restore CS9113 // Parameter is unread.
+    ExtraDryOptions _)
 {
 
     /// <summary>

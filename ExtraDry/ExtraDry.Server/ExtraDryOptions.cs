@@ -15,5 +15,5 @@ public class ExtraDryOptions {
 
     public string? UnauthorizedMessage { get; set; }
 
-    public SortStabilization Stabilization { get; set; }
+    public SortStabilization Stabilization { get; set; } = SortStabilization.AlwaysAddKey;
 }
