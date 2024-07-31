@@ -6,7 +6,7 @@ public class RuleEngineUpdateCollectionAsyncTests {
     public async Task IdentityUnchanged()
     {
         var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var guid = Guid.NewGuid();
         var source = new Parent { Child = new Child { Uuid = guid } };
         var destination = new Parent { Child = new Child { Uuid = guid } };
@@ -21,7 +21,7 @@ public class RuleEngineUpdateCollectionAsyncTests {
     public async Task ChildAddedWhenNotPresent()
     {
         var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var guid = Guid.NewGuid();
         var source = new Parent { Child = new Child { Uuid = guid } };
         var destination = new Parent { Child = null };
@@ -37,7 +37,7 @@ public class RuleEngineUpdateCollectionAsyncTests {
     public async Task ChildReplacesWhenPresent()
     {
         var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var guid = Guid.NewGuid();
         var source = new Parent { Child = new Child { Uuid = guid } };
         var destination = new Parent { Child = new Child { Uuid = Guid.NewGuid() } };
@@ -53,7 +53,7 @@ public class RuleEngineUpdateCollectionAsyncTests {
     public async Task ChildMatchesFromDatabase()
     {
         var services = new ServiceProviderStubWithChildResolver();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var guid = Guid.NewGuid();
         var databaseMatch = new Child { Uuid = guid, Name = "InDatabase" };
         services.ChildResolver.AddChild(databaseMatch);
@@ -72,7 +72,7 @@ public class RuleEngineUpdateCollectionAsyncTests {
     public async Task ChildrenCopyToNull()
     {
         var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Parent { Children = new List<Child> {
             new() { Uuid = Guid.NewGuid(), Name = "Child1" },
             new() { Uuid = Guid.NewGuid(), Name = "Child2" },
@@ -93,7 +93,7 @@ public class RuleEngineUpdateCollectionAsyncTests {
     public async Task ChildrenCopyToEmpty()
     {
         var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Parent {
             Children = new List<Child> {
             new() { Uuid = Guid.NewGuid(), Name = "Child1" },
@@ -116,7 +116,7 @@ public class RuleEngineUpdateCollectionAsyncTests {
     public async Task ChildrenCopyOverwritesExisting()
     {
         var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Parent {
             Children = new List<Child> {
                 new() { Uuid = Guid.NewGuid(), Name = "Child3" },
@@ -144,7 +144,7 @@ public class RuleEngineUpdateCollectionAsyncTests {
     public async Task ChildrenCopyRemovesExtras()
     {
         var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var guid = Guid.NewGuid();
         var source = new Parent {
             Children = new List<Child> {
@@ -171,7 +171,7 @@ public class RuleEngineUpdateCollectionAsyncTests {
     public async Task ChildrenCopyAddsExtra()
     {
         var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var guid = Guid.NewGuid();
         var source = new Parent {
             Children = new List<Child> {
@@ -199,7 +199,7 @@ public class RuleEngineUpdateCollectionAsyncTests {
     public async Task ChildrenCopyNullClearsCollection()
     {
         var services = new ServiceProviderStubWithChildResolver();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Parent { };
         var destination = new Parent {
             Children = new List<Child> {
@@ -218,7 +218,7 @@ public class RuleEngineUpdateCollectionAsyncTests {
     public async Task ChildrenCopyEmptyClearsCollection()
     {
         var services = new ServiceProviderStubWithChildResolver();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Parent { Children = new List<Child>() };
         var destination = new Parent {
             Children = new List<Child> {
@@ -237,7 +237,7 @@ public class RuleEngineUpdateCollectionAsyncTests {
     public async Task IgnoreChildrenDoesNothing()
     {
         var services = new ServiceProviderStubWithChildResolver();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Parent {
             IgnoredChildren = new List<Child> {
                 new() { Uuid = Guid.NewGuid(), Name = "Child1" },
@@ -263,7 +263,7 @@ public class RuleEngineUpdateCollectionAsyncTests {
     public async Task IgnoreDefaultsChildrenReplaces()
     {
         var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Parent {
             IgnoredDefaultsChildren = new List<Child> {
                 new() { Uuid = Guid.NewGuid(), Name = "Child1" },
@@ -290,7 +290,7 @@ public class RuleEngineUpdateCollectionAsyncTests {
     public async Task IgnoreDefaultsChildrenIgnoresNull()
     {
         var services = new ServiceProviderStubWithChildResolver();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Parent {
             IgnoredDefaultsChildren = null
         };
@@ -313,7 +313,7 @@ public class RuleEngineUpdateCollectionAsyncTests {
     public async Task IgnoreDefaultsChildrenEmptysWhenCollectionEmpty()
     {
         var services = new ServiceProviderStubWithChildResolver();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Parent {
             IgnoredDefaultsChildren = new List<Child>(),
         };
@@ -334,7 +334,7 @@ public class RuleEngineUpdateCollectionAsyncTests {
     public async Task BlockChangesCollectionsBothEmptyOk()
     {
         var services = new ServiceProviderStubWithChildResolver();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Parent {
             BlockedChildren = new List<Child>(),
         };
@@ -352,7 +352,7 @@ public class RuleEngineUpdateCollectionAsyncTests {
     public async Task BlockChangesCollectionsBothNullOk()
     {
         var services = new ServiceProviderStubWithChildResolver();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Parent {
             BlockedChildren = null,
         };
@@ -369,7 +369,7 @@ public class RuleEngineUpdateCollectionAsyncTests {
     public async Task BlockChangesCollectionsBothSameOk()
     {
         var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var guid1 = Guid.NewGuid();
         var guid2 = Guid.NewGuid();
         var source = new Parent {
@@ -398,7 +398,7 @@ public class RuleEngineUpdateCollectionAsyncTests {
     public async Task BlockChangesEmptyOverwriteThrows()
     {
         var services = new ServiceProviderStubWithChildResolver();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Parent {
             BlockedChildren = new List<Child>()
         };
@@ -416,7 +416,7 @@ public class RuleEngineUpdateCollectionAsyncTests {
     public async Task BlockChangesNullOverwriteThrows()
     {
         var services = new ServiceProviderStubWithChildResolver();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Parent {
             BlockedChildren = null
         };
@@ -434,7 +434,7 @@ public class RuleEngineUpdateCollectionAsyncTests {
     public async Task BlockChangesDifferentSetOverwriteThrows()
     {
         var services = new ServiceProviderStubWithChildResolver();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Parent {
             BlockedChildren = new List<Child> {
                 new() { Uuid = Guid.NewGuid(), Name = "Child1" },

@@ -18,7 +18,8 @@ namespace ExtraDry.Server;
 /// is attempting to link to an existing object.
 /// </remarks>
 public class RuleEngine(
-    IServiceProvider services)
+    IServiceProvider services,
+    ExtraDryOptions _)
 {
 
     /// <summary>

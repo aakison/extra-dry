@@ -6,7 +6,7 @@ public class RuleEngineUpdateTreeAsyncTests {
     public async Task IdentityUnchanged()
     {
         var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var guid = Guid.NewGuid();
         var gcguid = Guid.NewGuid();
         var source = new Parent(guid, "Child", gcguid, "Grandchild");
@@ -22,7 +22,7 @@ public class RuleEngineUpdateTreeAsyncTests {
     public async Task ChildAddedWhenNotPresent()
     {
         var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var guid = Guid.NewGuid();
         var source = new Parent { Child = new Child { Uuid = guid } };
         var destination = new Parent { Child = null! };
@@ -37,7 +37,7 @@ public class RuleEngineUpdateTreeAsyncTests {
     public async Task ChildCopyDoesntCopyIgnore()
     {
         var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var guid = Guid.NewGuid();
         var gcguid = Guid.NewGuid();
         var source = new Parent(guid, "Child", gcguid, "Grandchild");
@@ -57,7 +57,7 @@ public class RuleEngineUpdateTreeAsyncTests {
     public async Task ChildCopyExceptionOnBlock()
     {
         var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var guid = Guid.NewGuid();
         var gcguid = Guid.NewGuid();
         var source = new Parent(guid, "Child", gcguid, "Grandchild");
@@ -72,7 +72,7 @@ public class RuleEngineUpdateTreeAsyncTests {
     public async Task GrandchildCopyRecursion()
     {
         var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var guid = Guid.NewGuid();
         var gcguid = Guid.NewGuid();
         var source = new Parent(guid, "Child", gcguid, "Grandchild");
@@ -90,7 +90,7 @@ public class RuleEngineUpdateTreeAsyncTests {
     public async Task ProtectionFromTreeCycles()
     {
         var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var malformed = new Malformed();
         malformed.Child = malformed;
         var destination = new Malformed();
@@ -102,7 +102,7 @@ public class RuleEngineUpdateTreeAsyncTests {
     public async Task ExceptionOnTooDeepATree()
     {
         var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services);
+        var rules = new RuleEngine(services, new ExtraDryOptions());
         var guid = Guid.NewGuid();
         var gcguid = Guid.NewGuid();
         var source = new Parent(guid, "Child", gcguid, "Grandchild");

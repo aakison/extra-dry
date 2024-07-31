@@ -5,7 +5,7 @@ public class RuleEngineDeleteAsyncTests {
     [Fact]
     public async Task EntityFrameworkStyleDeleteSoftExecutesSoft()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var item = new SoftDeletable();
         var items = new List<SoftDeletable> { item };
 
@@ -19,7 +19,7 @@ public class RuleEngineDeleteAsyncTests {
     [Fact]
     public async Task EntityFrameworkStyleDeleteExecutesHard()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         
         var item = new object();
         var items = new List<object> { item };
@@ -33,7 +33,7 @@ public class RuleEngineDeleteAsyncTests {
     [Fact]
     public async Task EntityFrameworkStyleHardDelete()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var item = new object();
         var items = new List<object> { item };
 
@@ -47,7 +47,7 @@ public class RuleEngineDeleteAsyncTests {
     [Fact]
     public async Task EntityFrameworkStyleHardDeleteAsyncPrepare()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var item = new object();
         var items = new List<object> { item };
 
@@ -67,7 +67,7 @@ public class RuleEngineDeleteAsyncTests {
     [Fact]
     public async Task ExpungeShouldNotHavePropertyValues()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var item = new IncorrectRecyclable();
         var items = new List<object> { item };
 

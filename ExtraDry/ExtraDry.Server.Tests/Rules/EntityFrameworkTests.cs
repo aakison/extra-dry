@@ -5,7 +5,7 @@ public class EntityFrameworkTests {
     [Fact]
     public async Task ExpungeUserWithoutAddress() {
         var database = GetPopulatedDatabase();
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var user = database.Users.First(e => e.Name == "Homeless");
 
         await rules.ExpungeAsync(user, () => database.Remove(user), async () => await MockSaveChangesAsync(database));
@@ -17,7 +17,7 @@ public class EntityFrameworkTests {
     public async Task ExpungeUserWithAddress()
     {
         var database = GetPopulatedDatabase();
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var user = database.Users.First(e => e.Name == "Homebody");
 
         await rules.ExpungeAsync(user, () => database.Remove(user), async () => await MockSaveChangesAsync(database));
@@ -29,7 +29,7 @@ public class EntityFrameworkTests {
     public async Task DeleteWithRecycleAddress()
     {
         var database = GetPopulatedDatabase();
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var address = database.Addresses.First(e => e.Line == "123 Any Street");
 
         var result = await rules.DeleteAsync(address, () => database.Remove(address), async () => await MockSaveChangesAsync(database));
@@ -42,7 +42,7 @@ public class EntityFrameworkTests {
     public async Task HardDeleteAddressWithLinkedUserDoesNotDelete()
     {
         var database = GetPopulatedDatabase();
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
 
         var address = database.Addresses.First(e => e.Line == "123 Any Street");
 
@@ -59,7 +59,7 @@ public class EntityFrameworkTests {
     public async Task DeleteAddressWithLinkedUserSoftDeletes()
     {
         var database = GetPopulatedDatabase();
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
 
         var address = database.Addresses.First(e => e.Line == "123 Any Street");
 
@@ -76,7 +76,7 @@ public class EntityFrameworkTests {
     public async Task HardDeleteMutipleEntitiesMissingRemoveThrowsException()
     {
         var database = GetPopulatedDatabase();
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
 
         var address = database.Addresses.First(e => e.Line == "123 Any Street");
         var user = database.Users.First(e => e.Name == "Homebody");
@@ -92,7 +92,7 @@ public class EntityFrameworkTests {
     public async Task HardDeleteMutipleEntities()
     {
         var database = GetPopulatedDatabase();
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
 
         var address = database.Addresses.First(e => e.Line == "Vacant");
         var user = database.Users.First(e => e.Name == "Homebody");
@@ -112,7 +112,7 @@ public class EntityFrameworkTests {
     public async Task HardDeleteMutipleEntitiesWithNull()
     {
         var database = GetPopulatedDatabase();
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
 
         var address = database.Addresses.First(e => e.Line == "Vacant");
         var user = database.Users.First(e => e.Name == "Homebody");

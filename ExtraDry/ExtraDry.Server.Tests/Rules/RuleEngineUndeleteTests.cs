@@ -7,7 +7,7 @@ public class RuleEngineUndeleteTests {
     [Fact]
     public async Task DeleteRequiresItem()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
 
         async Task lambda() => await rules.RestoreAsync((object?)null);
 
@@ -17,7 +17,7 @@ public class RuleEngineUndeleteTests {
     [Fact]
     public async Task UndeleteWorksOnEnum()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var obj = new SoftDeletable();
         await rules.DeleteAsync(obj, () => { }, () => Task.CompletedTask);
 
@@ -29,7 +29,7 @@ public class RuleEngineUndeleteTests {
     [Fact]
     public async Task NotDeletableDoesNothing()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var obj = new NotDeletable();
 
         var result = await rules.RestoreAsync(obj);
@@ -40,7 +40,7 @@ public class RuleEngineUndeleteTests {
     [Fact]
     public async Task NotUndeletableDoesNothing()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var obj = new NotUndeletable();
         await rules.DeleteAsync(obj, () => { }, () => Task.CompletedTask);
 
@@ -52,7 +52,7 @@ public class RuleEngineUndeleteTests {
     [Fact]
     public async Task BadPropertyException()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var obj = new BadProperty();
 
         async Task lambda() => await rules.RestoreAsync(obj);
@@ -63,7 +63,7 @@ public class RuleEngineUndeleteTests {
     [Fact]
     public async Task NotProperlyDeletedDontUndelete()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var obj = new SoftDeletable();
 
         var result = await rules.RestoreAsync(obj);
@@ -74,7 +74,7 @@ public class RuleEngineUndeleteTests {
     [Fact]
     public async Task BadUndeleteValueException()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var obj = new BadUndeleteValue();
         await rules.DeleteAsync(obj, () => { }, () => Task.CompletedTask);
 
@@ -86,7 +86,7 @@ public class RuleEngineUndeleteTests {
     [Fact]
     public async Task NullIsValidUndeleteValue()
     {
-        var rules = new RuleEngine(new ServiceProviderStub());
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var obj = new NullUndelete();
         await rules.DeleteAsync(obj, () => { }, () => Task.CompletedTask);
 

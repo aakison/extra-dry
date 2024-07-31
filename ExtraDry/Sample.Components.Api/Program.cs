@@ -19,7 +19,9 @@ var builder = WebApplication.CreateBuilder(args);
 var apiOptions = new ApiOptions();
 builder.Configuration.Bind(ApiOptions.SectionName, apiOptions);
 builder.Services.AddSingleton(apiOptions);
-
+builder.Services.AddExtraDry(options => {
+    options.Stabilization = SortStabilization.ProviderDefaultsOnly;
+});
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => {
