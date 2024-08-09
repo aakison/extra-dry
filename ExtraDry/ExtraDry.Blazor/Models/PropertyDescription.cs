@@ -43,6 +43,7 @@ public class PropertyDescription {
         }
         --recursionDepth;
         PropertyType = Property.PropertyType.IsGenericType && Property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) ? Property.PropertyType.GetGenericArguments()[0] : Property.PropertyType;
+        InputType = Property.GetCustomAttribute<InputFormatAttribute>()?.DataTypeOverride ?? PropertyType;
     }
 
     /// <summary>
@@ -298,6 +299,8 @@ public class PropertyDescription {
     /// returned.
     /// </summary>
     public Type PropertyType { get; }
+
+    public Type InputType { get; }
 
     private PropertySize PredictSize()
     {

@@ -69,7 +69,7 @@
                 }
             }
         }
-        else if (Property.PropertyType == typeof(DateTime) || Property.PropertyType == typeof(TimeOnly) || Property.PropertyType == typeof(DateOnly))
+        else if (Property.InputType == typeof(DateTime) || Property.InputType == typeof(TimeOnly) || Property.InputType == typeof(DateOnly))
         {
             <DryInputDateTime CssClass="@CssClasses" Model="@Model" Property="@Property" ReadOnly="@ReadOnly" />
         }

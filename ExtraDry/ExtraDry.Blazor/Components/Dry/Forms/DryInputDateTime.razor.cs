@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Blazor.Forms;
+﻿using Newtonsoft.Json.Linq;
+
+namespace ExtraDry.Blazor.Forms;
 
 public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDryComponent
 {
@@ -32,8 +34,30 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
         if(Model == null || Property == null) {
             return;
         }
-        var prop = Property.GetValue(Model);
-        Value = prop is DateTime ? ((DateTime)prop).ToLocalTime().ToString("yyyy-MM-ddThh:mm", CultureInfo.InvariantCulture) : "";
+        
+        Value = DisplayMode switch {
+            "date" => StringValue("yyyy-MM-dd"),
+            "time" => StringValue("HH:mm"),
+            _ => StringValue("yyyy-MM-ddTHH:mm")
+        };
+    }
+
+    private string StringValue(string format)
+    {
+        var prop = Property?.GetValue(Model);
+        if (Property == null || prop == null) { 
+            return string.Empty; 
+        }
+        if(Property.PropertyType == typeof(DateTime)) {
+            return ((DateTime)prop).ToLocalTime().ToString(format, CultureInfo.InvariantCulture);
+        }
+        else if(Property.PropertyType == typeof(DateOnly)) {
+            return ((DateOnly)prop).ToString(format, CultureInfo.InvariantCulture);
+        }
+        else if (Property.PropertyType == typeof(TimeOnly)) {
+            return ((TimeOnly)prop).ToString(format, CultureInfo.InvariantCulture);
+        }
+        return prop?.ToString() ?? string.Empty;
     }
 
     private async Task HandleChange(ChangeEventArgs args)
@@ -42,8 +66,20 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
             return;
         }
         var value = args.Value;
-        if(DateTime.TryParse(value?.ToString(), out var datetime)) {
-            Property.SetValue(Model, datetime.ToUniversalTime());
+        if(Property.PropertyType == typeof(DateTime)) {
+            if(DateTime.TryParse(value?.ToString(), out var datetime)) {
+                Property.SetValue(Model, datetime.ToUniversalTime());
+            }
+        } 
+        else if(Property.PropertyType == typeof(DateOnly)) {
+            if(DateOnly.TryParse(value?.ToString(), out var dateOnly)) {
+                Property.SetValue(Model, dateOnly);
+            }
+        }
+        else if(Property.PropertyType == typeof(TimeOnly)) {
+            if (TimeOnly.TryParse(value?.ToString(),out var timeOnly)) {
+                Property.SetValue(Model, timeOnly);
+            }
         }
 
         var task = OnChange?.InvokeAsync(args);
@@ -54,6 +90,19 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
 
     [Parameter]
     public bool ReadOnly { get; set; }
+
+    private string DisplayMode {
+        get {
+            if(Property?.InputType == typeof(DateOnly)) {
+                return "date";
+            }
+            else if(Property?.InputType == typeof(TimeOnly)) {
+                return "time";
+            }
+            return "datetime-local";
+        }
+    }
+        
 
     private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
 
