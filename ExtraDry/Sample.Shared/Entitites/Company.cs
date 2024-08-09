@@ -88,8 +88,9 @@ public class Company : IResourceIdentifiers {
     public decimal SalesMargin { get; set; }
 
     [Filter]
-    [Display(Name = "Incorporation Date", ShortName = "Inc Date", AutoGenerateField = false)]
+    [Display(Name = "Incorporation Date", ShortName = "Inc Date", AutoGenerateField = true)]
     [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
+    [InputFormat(DataTypeOverride = typeof(DateOnly))]
     public DateTime IncorporationDate { get; set; }
 
     [Display]

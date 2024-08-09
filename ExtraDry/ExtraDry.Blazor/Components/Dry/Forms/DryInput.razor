@@ -69,6 +69,10 @@
                 }
             }
         }
+        else if (Property.PropertyType == typeof(DateTime) || Property.PropertyType == typeof(TimeOnly) || Property.PropertyType == typeof(DateOnly))
+        {
+            <DryInputDateTime CssClass="@CssClasses" Model="@Model" Property="@Property" ReadOnly="@ReadOnly" />
+        }
         else if(Property.HasTextRepresentation) {
             if(Property.FieldLength > 256) {
                 var rows = Math.Min(Property.FieldLength / 100 ?? 1, 10);

@@ -81,6 +81,8 @@ builder.Services.AddScoped(services => {
     return context;
 });
 
+builder.Services.AddExtraDry();
+
 builder.Services.AddScoped<EmployeeService>();
 builder.Services.AddScoped<CompanyService>();
 builder.Services.AddScoped<ContentsService>();

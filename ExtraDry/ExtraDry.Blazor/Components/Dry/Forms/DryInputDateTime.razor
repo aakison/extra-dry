@@ -1,0 +1,4 @@
+﻿@namespace ExtraDry.Blazor.Forms
+@typeparam T
+
+<input class="@CssClasses" title="@Property?.FieldCaption" type="datetime-local" value="@Value" readonly="@ReadOnly" @onchange="HandleChange" @attributes="@UnmatchedAttributes" />
