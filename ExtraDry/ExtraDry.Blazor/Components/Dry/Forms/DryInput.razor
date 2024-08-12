@@ -78,6 +78,9 @@
                 <DryInputText CssClass="@CssClasses" Model="@Model" Property="@Property" ReadOnly="@ReadOnly"/>
             }
         } 
+        else if (Property.HasNumericRepresentation) {
+            <DryInputNumeric CssClass="@CssClasses" Model="@Model" Property="@Property" ReadOnly="@ReadOnly" />
+        }
         else if(LookupProviderOptions != null) {
             var selectedValue = Property.GetValue(Model);
             @if(Property.HasArrayValues) {

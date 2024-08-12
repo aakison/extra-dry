@@ -221,9 +221,16 @@ public class PropertyDescription {
 
     private readonly Dictionary<int, DisplayAttribute?> discreteDisplayAttributes = new();
 
+    public bool HasNumericRepresentation {
+        get {
+            var types = new List<Type> { typeof(decimal), typeof(decimal?), typeof(int), typeof(int?), typeof(float) };
+            return types.Contains(Property.PropertyType);
+        }
+    }
+
     public bool HasTextRepresentation {
         get {
-            var types = new List<Type> { typeof(decimal), typeof(decimal?), typeof(string), typeof(Uri) };
+            var types = new List<Type> { typeof(string), typeof(Uri) };
             return types.Contains(Property.PropertyType) || Property.PropertyType.IsEnum;
         }
     }

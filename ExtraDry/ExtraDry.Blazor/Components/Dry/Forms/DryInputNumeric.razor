@@ -1,0 +1,4 @@
+﻿@namespace ExtraDry.Blazor.Forms
+@typeparam T
+
+<input class="@CssClasses" title="@Property?.FieldCaption" type="number" value="@Value" step="@Step" readonly="@ReadOnly" placeholder="@Property?.Display?.Prompt" min="@MinValue" max="@MaxValue" @onchange="HandleChange" @attributes="@UnmatchedAttributes" />
