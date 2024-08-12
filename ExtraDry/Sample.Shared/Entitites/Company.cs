@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sample.Shared;
@@ -88,8 +89,7 @@ public class Company : IResourceIdentifiers {
     public decimal SalesMargin { get; set; }
 
     [Filter]
-    [Display(Name = "Incorporation Date", ShortName = "Inc Date", AutoGenerateField = false)]
-    [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
+    [Display(Name = "Incorporation Date", ShortName = "Inc Date")]
     public DateTime IncorporationDate { get; set; }
 
     [Display]
