@@ -29,12 +29,16 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
+    /// <inheritdoc/>
+    [Parameter]
+    public bool ReadOnly { get; set; }
+
     protected override void OnParametersSet()
     {
         if(Model == null || Property == null) {
             return;
         }
-        
+
         Value = DisplayMode switch {
             "date" => StringValue("yyyy-MM-dd"),
             "time" => StringValue("HH:mm"),
@@ -45,8 +49,8 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
     private string StringValue(string format)
     {
         var prop = Property?.GetValue(Model);
-        if (Property == null || prop == null) { 
-            return string.Empty; 
+        if(Property == null || prop == null) {
+            return string.Empty;
         }
         if(Property.PropertyType == typeof(DateTime)) {
             return ((DateTime)prop).ToLocalTime().ToString(format, CultureInfo.InvariantCulture);
@@ -54,7 +58,7 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
         else if(Property.PropertyType == typeof(DateOnly)) {
             return ((DateOnly)prop).ToString(format, CultureInfo.InvariantCulture);
         }
-        else if (Property.PropertyType == typeof(TimeOnly)) {
+        else if(Property.PropertyType == typeof(TimeOnly)) {
             return ((TimeOnly)prop).ToString(format, CultureInfo.InvariantCulture);
         }
         return prop?.ToString() ?? string.Empty;
@@ -70,14 +74,14 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
             if(DateTime.TryParse(value?.ToString(), out var datetime)) {
                 Property.SetValue(Model, datetime.ToUniversalTime());
             }
-        } 
+        }
         else if(Property.PropertyType == typeof(DateOnly)) {
             if(DateOnly.TryParse(value?.ToString(), out var dateOnly)) {
                 Property.SetValue(Model, dateOnly);
             }
         }
         else if(Property.PropertyType == typeof(TimeOnly)) {
-            if (TimeOnly.TryParse(value?.ToString(),out var timeOnly)) {
+            if(TimeOnly.TryParse(value?.ToString(), out var timeOnly)) {
                 Property.SetValue(Model, timeOnly);
             }
         }
@@ -87,9 +91,6 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
             await task;
         }
     }
-
-    [Parameter]
-    public bool ReadOnly { get; set; }
 
     private string DisplayMode {
         get {
@@ -102,7 +103,7 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
             return "datetime-local";
         }
     }
-        
+
 
     private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
 
