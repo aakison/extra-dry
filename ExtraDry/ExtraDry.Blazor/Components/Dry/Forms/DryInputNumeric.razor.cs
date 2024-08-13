@@ -86,20 +86,23 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
         }
     }
 
-    private decimal Step {
+    private bool IsIntegral{
         get {
-            // A precision would solve this issue, however, there is no precision outside EF attributes, so we assume either 0 or 2.
-            var types = new List<Type> { typeof(decimal), typeof(decimal?), typeof(float) };
+            var types = new List<Type> { typeof(int), typeof(int?) };
             if(Property?.PropertyType == null) {
-                return 1m;
+                return false;
             }
-
             if(types.Contains(Property.PropertyType)) {
-                return 0.01m;
+                return true;
             }
-            return 1m;
+            return false;
         }
     }
+
+    /// <summary>
+    /// It'd be fantastic to use a precision attribute, however that lives within EF, which isn't in core ExtraDry, so we assume either integer or 2 decimal places.
+    /// </summary>
+    private decimal Step => IsIntegral? 1m : 0.01m;
 
     private static decimal? GetValueFromAttributes(object? range, decimal? decimalRange)
     {
@@ -117,6 +120,8 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
             return null;
         }
     }
+
+    private string Prefix => Property?.Property?.GetCustomAttribute<InputFormatAttribute>()?.UnitSymbol ?? string.Empty;
 
     private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
 

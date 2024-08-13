@@ -1,4 +1,11 @@
 ﻿@namespace ExtraDry.Blazor.Forms
 @typeparam T
 
-<input class="@CssClasses" title="@Property?.FieldCaption" type="number" value="@Value" step="@Step" readonly="@ReadOnly" placeholder="@Property?.Display?.Prompt" min="@MinValue" max="@MaxValue" @onchange="HandleChange" @attributes="@UnmatchedAttributes" />
+<div class="numeric-input">
+    @if(Prefix != string.Empty){
+        <div class="numeric-prefix">
+            <span>@Prefix</span>
+        </div>
+    }
+    <input class="@CssClasses" title="@Property?.FieldCaption" type="number" value="@Value" step="@Step" readonly="@ReadOnly" placeholder="@Property?.Display?.Prompt" min="@MinValue" max="@MaxValue" @onchange="HandleChange" @attributes="@UnmatchedAttributes" />
+</div>

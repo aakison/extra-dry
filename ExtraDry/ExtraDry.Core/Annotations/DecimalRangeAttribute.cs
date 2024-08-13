@@ -4,6 +4,7 @@
 /// Validates a decimal value as being within the given range.  Functionally the same as the 
 /// <see cref="RangeAttribute"/> but works for decimals.
 /// </summary>
+[Obsolete()]
 public class DecimalRangeAttribute : ValidationAttribute
 {
 
