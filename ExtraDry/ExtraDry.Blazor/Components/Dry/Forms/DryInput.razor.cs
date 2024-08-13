@@ -169,13 +169,18 @@ public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryC
         }
         var validator = new DataValidator();
         if(validator.ValidateProperties(Model, Property.Property.Name)) {
-            validationMessage = "";
-            valid = true;
+            SetValidation(true, string.Empty);
         }
         else {
-            validationMessage = string.Join("; ", validator.Errors.Select(e => e.ErrorMessage));
-            valid = false;
+            SetValidation(false, string.Join("; ", validator.Errors.Select(e => e.ErrorMessage)));
         }
+    }
+
+    private void SetValidation(bool propIsValid, string message)
+    {
+        validationMessage = message;
+        valid = propIsValid;
+        StateHasChanged();
     }
 
 }
