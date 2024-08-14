@@ -1,4 +1,14 @@
 ﻿@namespace ExtraDry.Blazor.Forms
 @typeparam T
 
-<input class="@CssClasses" title="@Property?.FieldCaption" type="@DisplayMode" value="@Value" readonly="@ReadOnly" @onchange="HandleChange" @attributes="@UnmatchedAttributes" />
+<div class="datetime-input">
+    @if (Icon != string.Empty)
+    {
+        <Icon Key="@Icon" />
+    }
+    <input class="@CssClasses" title="@Property?.FieldCaption" type="@DisplayMode" value="@Value" readonly="@ReadOnly" @onchange="HandleChange" @attributes="@UnmatchedAttributes" />
+    @if (Affordance != string.Empty)
+    {
+        <Icon Key="@Affordance" />
+    }
+</div>

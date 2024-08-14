@@ -83,10 +83,15 @@ public class AppViewModel(NavigationManager navigation)
         new("api-module", "/img/icons/api-icon.svg", "Integration APIs", "icon"),
         new("overdue", "/img/icons/overdue.svg", "Overdue", "icon", SvgRenderType.Document),
 
-        //Loader icons
+        // Loader icons
         new("loader-error", "fa fa-circle-exclamation"),
         new("loader-timeout", "fa fa-rotate-right"),
 
+        // Input Icons
+        new("dollar-sign", "fa fa-dollar-sign"),
+        new("percent", "fa fa-percent"),
+        new("calendar", "fa fa-calendar"),
+        new("clock", "fa fa-clock"),
     ];
 
 

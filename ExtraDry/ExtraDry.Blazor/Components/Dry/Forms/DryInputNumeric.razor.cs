@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 using System.Reflection.Metadata;
+using System.Text.RegularExpressions;
 
 namespace ExtraDry.Blazor.Forms;
 
@@ -61,7 +62,8 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
         if(Property == null || Model == null) {
             return;
         }
-        var value = args.Value;
+        var value = args?.Value?.ToString() ?? "";
+        value = Regex.Replace(value, @"[^\d.,]", "");
         Property.SetValue(Model, value);
 
         var task = OnChange?.InvokeAsync(args);
@@ -121,7 +123,8 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
         }
     }
 
-    private string Prefix => Property?.Property?.GetCustomAttribute<InputFormatAttribute>()?.UnitSymbol ?? string.Empty;
+    private string Icon => Property?.Property?.GetCustomAttribute<InputFormatAttribute>()?.Icon ?? string.Empty;
+    private string Affordance => Property?.Property?.GetCustomAttribute<InputFormatAttribute>()?.Affordance ?? string.Empty;
 
     private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
 

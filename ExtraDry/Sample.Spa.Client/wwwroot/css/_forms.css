@@ -1,59 +1,183 @@
-﻿form fieldset.summary {
-  border-left: solid 10px var(--primary);
-  padding: 5px 10px;
-  height: 102px;
-}
-form fieldset.summary legend {
-  display: none;
+﻿/*@import "_constants.scss";
+
+//
+// Forms that have a summary (should be most), are given the standard summary heading.
+// Color defaults to primary, some forms will want to change this to have special highlights for certain entities.
+//
+form fieldset.summary {
+    border-left: solid $margin $var-primary;
+    padding: $margin/2 $margin;
+    height: 102px;
+
+    legend {
+        display: none;
+    }
 }
 
+//
+// The status line is usually seldom written fields and gets a custom set of visual styles.
+//
 form fieldset.status {
-  background-color: var(--off-white);
-  border-top: solid 1px var(--light);
-  border-bottom: solid 1px var(--light);
-  padding: 5px 10px;
-  height: 70px;
+    background-color: $var-off-white;
+    border-top: solid 1px $var-light;
+    border-bottom: solid 1px $var-light;
+    padding: $margin/2 $margin;
+    height: 70px;
+
+    legend {
+        display: none;
+    }
+
+    div.line {
+        height: 28px;
+        padding: $margin/2;
+    }
+
+    div.field label {
+        color: $var-gray;
+        font-weight: 600;
+        font-size: 12px;
+        width: 80px;
+
+        span:after {
+            content: ":";
+        }
+    }
+
+    select {
+        border: solid 1px transparent;
+        background: transparent;
+        font-weight: 600;
+        appearance: none;
+
+        &:hover {
+            background: $var-white;
+            border: solid 1px $var-gray;
+            appearance: auto;
+        }
+
+        &:focus-visible {
+            outline: none;
+        }
+    }
 }
-form fieldset.status legend {
-  display: none;
+
+//
+// Forms are broken into status and description sections, fix the status and scroll the description.
+//
+form {
+    height: 100%;
+
+
 }
-form fieldset.status div.line {
-  height: 28px;
-  padding: 5px;
+
+//
+// Title property is editable but also should display as a title, make it prominent with hover effects for visual pliancy.
+//
+form div.field.title {
+    label {
+        display: none;
+    }
+
+    input {
+        font-size: 18px;
+        font-weight: 600;
+        border: solid 1px transparent;
+        width: 100%;
+
+        &:hover {
+            border-color: $var-light;
+        }
+
+        &:focus-visible {
+            border-color: $var-info;
+            outline: none;
+        }
+    }
 }
-form fieldset.status div.field label {
-  color: var(--gray);
-  font-weight: 600;
-  font-size: 12px;
-  width: 80px;
+
+//
+// The form entity info should be abridged and mostly hidden, except for the icon.
+// Then adjust the caption so they don't overlap each other.
+//
+form {
+    .entity-info {
+        height: 0;
+        transform: translate(22px, 8px);
+        color: $var-gray;
+
+        label {
+            display: none;
+        }
+    }
 }
-form fieldset.status div.field label span:after {
-  content: ":";
-}
-form fieldset.status select {
-  border: solid 1px transparent;
-  background: transparent;
-  font-weight: 600;
-  appearance: none;
-}
-form fieldset.status select:hover {
-  background: var(--white);
-  border: solid 1px var(--gray);
-  appearance: auto;
-}
-form fieldset.status select:focus-visible {
-  outline: none;
+
+div.field.caption {
+    margin-left: 22px;
+
+    input {
+        font-weight: 600;
+        font-size: 16px;
+    }
+
+    label span {
+        display: none;
+    }
+
+    input {
+        border: none;
+    }
 }
 
 form {
+    select {
+        option::before {
+            color: red;
+            content: "X";
+        }
+    }
+}
+*/
+.numeric-input,
+.datetime-input {
   display: flex;
-  flex-direction: column;
-  height: 100%;
+  border: solid 1px black;
+  border-radius: 2px;
+  position: relative;
 }
-form .status-properties {
-  flex: 0 0 auto;
+.numeric-input:focus-within,
+.datetime-input:focus-within {
+  outline: -webkit-focus-ring-color auto 1px;
 }
-form .description-properties {
-  flex: 1 1 auto;
-  overflow-y: auto;
+.numeric-input i,
+.datetime-input i {
+  padding: 5px;
+}
+.numeric-input input,
+.datetime-input input {
+  text-align: right;
+  width: 100%;
+  border: none;
+}
+.numeric-input input:focus, .numeric-input input:focus-visible,
+.datetime-input input:focus,
+.datetime-input input:focus-visible {
+  outline: none;
+}
+.numeric-input input::-webkit-outer-spin-button, .numeric-input input::-webkit-inner-spin-button, .numeric-input input::-webkit-calendar-picker-indicator,
+.datetime-input input::-webkit-outer-spin-button,
+.datetime-input input::-webkit-inner-spin-button,
+.datetime-input input::-webkit-calendar-picker-indicator {
+  /*-webkit-appearance: none;
+  margin: 0;
+  display: none;*/
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: auto;
+  height: auto;
+  color: transparent;
+  background: transparent;
 }

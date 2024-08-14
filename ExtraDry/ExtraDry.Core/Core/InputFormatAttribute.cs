@@ -13,7 +13,12 @@ public class InputFormatAttribute : Attribute
     public Type? DataTypeOverride { get; set; }
 
     /// <summary>
-    /// For numeric inputs a unit is often needed to be displayed in the input to show the meaning of the value (eg. $, £, ℃, m)
+    /// 
     /// </summary>
-    public string? UnitSymbol { get; set; }
+    public string? Icon { get; set; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public string? Affordance { get; set; }
 }

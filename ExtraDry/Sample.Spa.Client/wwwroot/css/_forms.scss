@@ -138,3 +138,51 @@ form {
     }
 }
 */
+
+.numeric-input,
+.datetime-input {
+    display: flex;
+    border: solid 1px black;
+    border-radius: 2px;
+    position: relative;
+
+    &:focus-within {
+        outline: -webkit-focus-ring-color auto 1px;
+    }
+
+    i {
+        padding: 5px;
+    }
+
+    input {
+        text-align: right;
+        width: 100%;
+        border: none;
+
+        &:focus,
+        &:focus-visible {
+            outline: none;
+        }
+
+        &::-webkit-outer-spin-button,
+        &::-webkit-inner-spin-button,
+        &::-webkit-calendar-picker-indicator {
+            // This styling will just hide the calendar icon
+            /*-webkit-appearance: none;
+            margin: 0;
+            display: none;*/
+            // Allows for user interactions with the whole input, including icon and afforance to pop up date/time selector as if they had clicked the now hidden icon;
+            // Note: the containing div will need to be set to position relative to contain the absolute position.
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: auto;
+            height: auto;
+            color: transparent;
+            background: transparent;
+        }
+    }
+}
+

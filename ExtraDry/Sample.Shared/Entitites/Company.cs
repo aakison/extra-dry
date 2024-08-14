@@ -82,14 +82,18 @@ public class Company : IResourceIdentifiers {
 
     [Display]
     [Precision(18, 2)]
+    [InputFormat(Icon = "dollar-sign", Affordance = "loader-error")]
     public decimal AnnualRevenue { get; set; }
 
-    [Display]
+    [Display(Prompt = "0.00")]
+    [Range(0, 120)]
     [Precision(18, 2)]
+    [InputFormat(Icon = "percent")]
     public decimal SalesMargin { get; set; }
 
     [Filter]
     [Display(Name = "Incorporation Date", ShortName = "Inc Date")]
+    [InputFormat(Affordance = "calendar")]
     public DateTime IncorporationDate { get; set; }
 
     [Display]

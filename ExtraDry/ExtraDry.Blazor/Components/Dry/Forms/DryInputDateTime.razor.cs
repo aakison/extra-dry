@@ -117,6 +117,9 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
     }
 
 
+    private string Icon => Property?.Property?.GetCustomAttribute<InputFormatAttribute>()?.Icon ?? string.Empty;
+    private string Affordance => Property?.Property?.GetCustomAttribute<InputFormatAttribute>()?.Affordance ?? string.Empty;
+
     private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", ReadOnlyCss, CssClass);

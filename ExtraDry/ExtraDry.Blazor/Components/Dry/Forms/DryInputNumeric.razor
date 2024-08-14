@@ -2,10 +2,12 @@
 @typeparam T
 
 <div class="numeric-input">
-    @if(Prefix != string.Empty){
-        <div class="numeric-prefix">
-            <span>@Prefix</span>
-        </div>
+    @if(Icon != string.Empty){
+        <Icon Key="@Icon"/>
     }
-    <input class="@CssClasses" title="@Property?.FieldCaption" type="number" value="@Value" step="@Step" readonly="@ReadOnly" placeholder="@Property?.Display?.Prompt" min="@MinValue" max="@MaxValue" @onchange="HandleChange" @attributes="@UnmatchedAttributes" />
+    <input class="@CssClasses" title="@Property?.FieldCaption" type="text" value="@Value" step="@Step" readonly="@ReadOnly" placeholder="@Property?.Display?.Prompt" min="@MinValue" max="@MaxValue" pattern="\d*" inputmode="numeric" @onchange="HandleChange" @attributes="@UnmatchedAttributes" />
+    @if (Affordance != string.Empty)
+    {
+        <Icon Key="@Affordance" />
+    }
 </div>
