@@ -57,69 +57,36 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
         }
     }
 
-    private async Task HandleChange(ChangeEventArgs args)
+    /// <summary>
+    /// Becuase we are mutating the value that is displayed within the handle change (to strip or calculate values), we need to implement differently
+    /// The OnChange functionality will not allow for this (there is a hack to assign the backing field to null, then sleep, then repopulate) so using the binding functionality is the recommended way
+    /// https://github.com/dotnet/aspnetcore/issues/17099
+    /// </summary>
+    private void HandleChange(string newValue)
     {
         if(Property == null || Model == null) {
             return;
         }
-        var value = args?.Value?.ToString() ?? "";
-        value = Regex.Replace(value, @"[^\d.,]", "");
+
+        // In the future, if we are to allow basic calculations in numeric fields, this is where that would go.
+        // Note that this will run synchronously in the setter of Value and therefore needs to be quick.
+
+        var value = Regex.Replace(newValue, @"[^\d.,]", "");
         Property.SetValue(Model, value);
 
-        var task = OnChange?.InvokeAsync(args);
+        var dec = decimal.Parse(value, CultureInfo.CurrentCulture);
+        if(Property.InputFormat == typeof(int)) {
+            _Value = dec.ToString("#,#", CultureInfo.CurrentCulture);
+        }
+        else {
+            _Value = dec.ToString("#,#.##", CultureInfo.CurrentCulture);
+        }
+    }
+
+    private async Task CallOnChange() { 
+        var task = OnChange?.InvokeAsync();
         if(task != null) {
             await task;
-        }
-    }
-
-    private decimal? MinValue {
-        get {
-            var range = Property?.Property?.GetCustomAttribute<RangeAttribute>()?.Minimum;
-            var decimalRange = Property?.Property?.GetCustomAttribute<DecimalRangeAttribute>()?.Minimum;
-            return GetValueFromAttributes(range, decimalRange);
-        }
-    }
-
-    private decimal? MaxValue {
-        get {
-            var range = Property?.Property?.GetCustomAttribute<RangeAttribute>()?.Maximum;
-            var decimalRange = Property?.Property?.GetCustomAttribute<DecimalRangeAttribute>()?.Maximum;
-            return GetValueFromAttributes(range, decimalRange);
-        }
-    }
-
-    private bool IsIntegral{
-        get {
-            var types = new List<Type> { typeof(int), typeof(int?) };
-            if(Property?.PropertyType == null) {
-                return false;
-            }
-            if(types.Contains(Property.PropertyType)) {
-                return true;
-            }
-            return false;
-        }
-    }
-
-    /// <summary>
-    /// It'd be fantastic to use a precision attribute, however that lives within EF, which isn't in core ExtraDry, so we assume either integer or 2 decimal places.
-    /// </summary>
-    private decimal Step => IsIntegral? 1m : 0.01m;
-
-    private static decimal? GetValueFromAttributes(object? range, decimal? decimalRange)
-    {
-        if(range == null && decimalRange == null) {
-            return null;
-        }
-        if(decimalRange != null) {
-            return decimalRange.Value;
-        }
-
-        try {
-            return Convert.ToDecimal(range, CultureInfo.InvariantCulture);
-        }
-        catch {
-            return null;
         }
     }
 
@@ -130,6 +97,14 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", ReadOnlyCss, CssClass);
 
-    private string Value { get; set; } = "";
+    private string _Value = string.Empty;
+    private string Value {
+        get {
+            return _Value;
+        }
+        set {
+            HandleChange(value);
+        }
+    }
 
 }
