@@ -72,14 +72,18 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
         // Note that this will run synchronously in the setter of Value and therefore needs to be quick.
 
         var value = Regex.Replace(newValue, @"[^\d.,]", "");
-        Property.SetValue(Model, value);
+        
 
         var dec = decimal.Parse(value, CultureInfo.CurrentCulture);
+
+        // Future enhancement: Allow for the consumer to provide the display format. 
         if(Property.InputFormat == typeof(int)) {
             _Value = dec.ToString("#,#", CultureInfo.CurrentCulture);
+            Property.SetValue(Model, int.Parse(value, CultureInfo.InvariantCulture));
         }
         else {
-            _Value = dec.ToString("#,#.##", CultureInfo.CurrentCulture);
+            _Value = dec.ToString("#,#.00", CultureInfo.CurrentCulture);
+            Property.SetValue(Model, value);
         }
     }
 

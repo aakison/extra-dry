@@ -5,7 +5,7 @@
     @if(Icon != string.Empty){
         <Icon Key="@Icon"/>
     }
-    <input class="@CssClasses" title="@Property?.FieldCaption" type="text" value="@Value" step="@Step" readonly="@ReadOnly" placeholder="@Property?.Display?.Prompt" min="@MinValue" max="@MaxValue" pattern="\d*" inputmode="numeric" @onchange="HandleChange" @attributes="@UnmatchedAttributes" />
+    <input class="@CssClasses" title="@Property?.FieldCaption" type="text" @bind="@Value" @bind:after="CallOnChange" readonly="@ReadOnly" placeholder="@Property?.Display?.Prompt" pattern="\d*" inputmode="numeric" @attributes="@UnmatchedAttributes" />
     @if (Affordance != string.Empty)
     {
         <Icon Key="@Affordance" />
