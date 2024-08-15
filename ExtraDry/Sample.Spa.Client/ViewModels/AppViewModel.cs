@@ -90,8 +90,6 @@ public class AppViewModel(NavigationManager navigation)
         // Input Icons
         new("dollar-sign", "fa fa-dollar-sign"),
         new("percent", "fa fa-percent"),
-        new("calendar", "fa fa-calendar"),
-        new("clock", "fa fa-clock"),
     ];
 
 
