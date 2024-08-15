@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Globalization;
-
 namespace ExtraDry.Blazor;
 
-public class PropertyDescription {
+public class PropertyDescription
+{
 
     public PropertyDescription(PropertyInfo property)
     {
@@ -16,6 +14,7 @@ public class PropertyDescription {
         IsRequired = Property.GetCustomAttribute<RequiredAttribute>() != null;
         Control = Property.GetCustomAttribute<ControlAttribute>();
         Filter = Property.GetCustomAttribute<FilterAttribute>();
+        InputFormat = Property.GetCustomAttribute<InputFormatAttribute>();
         Sort = Property.GetCustomAttribute<SortAttribute>();
         FieldCaption = Display?.Name ?? Property.Name;
         ColumnCaption = Display?.ShortName ?? Property.Name;
@@ -43,7 +42,6 @@ public class PropertyDescription {
         }
         --recursionDepth;
         PropertyType = Property.PropertyType.IsGenericType && Property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) ? Property.PropertyType.GetGenericArguments()[0] : Property.PropertyType;
-        InputFormat = Property.GetCustomAttribute<InputFormatAttribute>()?.DataTypeOverride ?? PropertyType;
     }
 
     /// <summary>
@@ -65,6 +63,8 @@ public class PropertyDescription {
     public RulesAttribute? Rules { get; }
 
     public FilterAttribute? Filter { get; }
+
+    public InputFormatAttribute? InputFormat { get; }
 
     public SortAttribute? Sort { get; }
 
@@ -101,7 +101,7 @@ public class PropertyDescription {
             return string.Empty;
         }
         try {
-            var value = Property?.GetValue(item); 
+            var value = Property?.GetValue(item);
             if(value == null) {
                 return Format?.NullDisplayText ?? "null";
             }
@@ -236,6 +236,13 @@ public class PropertyDescription {
         }
     }
 
+    public bool HasDateTimeRepresentation {
+        get {
+            var types = new List<Type> { typeof(DateTime), typeof(DateTime?), typeof(DateOnly), typeof(DateOnly?), typeof(TimeOnly), typeof(TimeOnly?) };
+            return types.Contains(InputType);
+        }
+    }
+
     public bool HasBooleanValues {
         get {
             var types = new List<Type> { typeof(bool), typeof(bool?) };
@@ -307,7 +314,11 @@ public class PropertyDescription {
     /// </summary>
     public Type PropertyType { get; }
 
-    public Type InputFormat { get; }
+    /// <summary>
+    /// Returns the type of the property as it should be displayed to users during input.  This
+    /// may vary slightly (e.g. PropertyType is DateTime, where the InputType is DateOnly).
+    /// </summary>
+    public Type InputType => InputFormat?.DataTypeOverride ?? PropertyType;
 
     private PropertySize PredictSize()
     {

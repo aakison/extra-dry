@@ -69,8 +69,7 @@
                 }
             }
         }
-        else if (Property.InputFormat == typeof(DateTime) || Property.InputFormat == typeof(TimeOnly) || Property.InputFormat == typeof(DateOnly))
-        {
+        else if(Property.HasDateTimeRepresentation) {
             <DryInputDateTime CssClass="@CssClasses" Model="@Model" Property="@Property" ReadOnly="@ReadOnly" SetValidation="@SetValidation" />
         }
         else if(Property.HasTextRepresentation) {
@@ -82,7 +81,7 @@
                 <DryInputText CssClass="@CssClasses" Model="@Model" Property="@Property" ReadOnly="@ReadOnly"/>
             }
         } 
-        else if (Property.HasNumericRepresentation) {
+        else if(Property.HasNumericRepresentation) {
             <DryInputNumeric CssClass="@CssClasses" Model="@Model" Property="@Property" ReadOnly="@ReadOnly" />
         }
         else if(LookupProviderOptions != null) {

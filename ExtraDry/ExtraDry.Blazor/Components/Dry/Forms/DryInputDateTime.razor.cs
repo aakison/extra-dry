@@ -1,7 +1,14 @@
-﻿using Newtonsoft.Json.Linq;
+﻿namespace ExtraDry.Blazor.Forms;
 
-namespace ExtraDry.Blazor.Forms;
-
+/// <summary>
+/// A DRY wrapper around a datetime-local, date, or time input field.  Prefer the use of 
+/// <see cref="DryInput{T}"/> instead of this component as it is more flexible and supports more 
+/// data types.
+/// </summary>
+/// <typeparam name="T">
+/// The type of the Model that the input renders a property for.  Supports DateTime, DateOnly, and
+/// TimeOnly.
+/// </typeparam>
 public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDryComponent
 {
 
@@ -67,8 +74,6 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
         return prop?.ToString() ?? string.Empty;
     }
 
-
-
     private async Task HandleChange(ChangeEventArgs args)
     {
         if(Property == null || Model == null) {
@@ -104,25 +109,28 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
         }
     }
 
-    private string DisplayMode {
-        get {
-            if(Property?.InputFormat == typeof(DateOnly)) {
-                return "date";
-            }
-            else if(Property?.InputFormat == typeof(TimeOnly)) {
-                return "time";
-            }
-            return "datetime-local";
-        }
-    }
+    private string DisplayMode => Property?.InputType switch {
+        Type t when t == typeof(DateOnly) => "date",
+        Type t when t == typeof(DateOnly?) => "date",
+        Type t when t == typeof(TimeOnly) => "time",
+        Type t when t == typeof(TimeOnly?) => "time",
+        _ => "datetime-local"
+    };
 
+    private string Icon => Property?.InputFormat?.Icon ?? "";
 
-    private string Icon => Property?.Property?.GetCustomAttribute<InputFormatAttribute>()?.Icon ?? string.Empty;
-    private string Affordance => Property?.Property?.GetCustomAttribute<InputFormatAttribute>()?.Affordance ?? string.Empty;
+    private string Affordance => Property?.InputFormat?.Affordance
+        ?? Property?.InputType switch {
+            Type t when t == typeof(DateOnly) => "select-date",
+            Type t when t == typeof(DateOnly?) => "select-date",
+            Type t when t == typeof(TimeOnly) => "select-time",
+            Type t when t == typeof(TimeOnly?) => "select-time",
+            _ => "select-datetime"
+        };
 
-    private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
+    private string ReadOnlyCss => ReadOnly ? "readonly" : "";
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", ReadOnlyCss, CssClass);
 
-    private string Value { get; set; } = string.Empty;
+    private string Value { get; set; } = "";
 }

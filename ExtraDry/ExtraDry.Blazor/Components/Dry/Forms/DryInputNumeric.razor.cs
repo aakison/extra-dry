@@ -77,7 +77,7 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
         var dec = decimal.Parse(value, CultureInfo.CurrentCulture);
 
         // Future enhancement: Allow for the consumer to provide the display format. 
-        if(Property.InputFormat == typeof(int)) {
+        if(Property.InputType == typeof(int)) {
             _Value = dec.ToString("#,#", CultureInfo.CurrentCulture);
             Property.SetValue(Model, int.Parse(value, CultureInfo.InvariantCulture));
         }
