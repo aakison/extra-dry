@@ -81,23 +81,27 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
         }
         var value = args.Value;
         var valid = false;
-        if(Property.PropertyType == typeof(DateTime)) {
+        if(Property.PropertyType == typeof(DateTime) || Property.PropertyType == typeof(DateTime?)) {
             if(DateTime.TryParse(value?.ToString(), out var datetime)) {
                 Property.SetValue(Model, datetime.ToUniversalTime());
                 valid = true;
             } 
         }
-        else if(Property.PropertyType == typeof(DateOnly)) {
+        else if(Property.PropertyType == typeof(DateOnly) || Property.PropertyType == typeof(DateOnly?)) {
             if(DateOnly.TryParse(value?.ToString(), out var dateOnly)) {
                 Property.SetValue(Model, dateOnly);
                 valid = true;
             }
         }
-        else if(Property.PropertyType == typeof(TimeOnly)) {
+        else if(Property.PropertyType == typeof(TimeOnly) || Property.PropertyType == typeof(TimeOnly?)) {
             if(TimeOnly.TryParse(value?.ToString(), out var timeOnly)) {
                 Property.SetValue(Model, timeOnly);
                 valid = true;
             }
+        }
+        else if(Property.PropertyType == typeof(string)) {
+            Property.SetValue(Model, value);
+            valid = true;
         }
         if(SetValidation != null) {
             SetValidation(valid, valid ? string.Empty : $"Value is not a valid {Property.PropertyType.Name}");
