@@ -97,7 +97,7 @@ public class DataConverter
     /// </summary>
     public static string JoinNonEmpty(string separator, params string?[] args)
     {
-        return string.Join(separator, args.Where(e => !string.IsNullOrWhiteSpace(e)));
+        return string.Join(separator, args.Where(e => !string.IsNullOrWhiteSpace(e)).Select(e => e!.Trim()));
     }
 
 }
