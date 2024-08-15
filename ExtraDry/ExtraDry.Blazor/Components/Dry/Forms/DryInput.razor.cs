@@ -9,7 +9,7 @@ public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryC
 
     /// <inheritdoc />
     [Parameter]
-    public string CssClass { get; set; } = string.Empty;
+    public string CssClass { get; set; } = "";
     
     /// <inheritdoc />
     [Parameter, EditorRequired]
@@ -24,7 +24,7 @@ public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryC
     /// specify the name of the property to use.
     /// </summary>
     [Parameter]
-    public string PropertyName { get; set; } = string.Empty;
+    public string PropertyName { get; set; } = "";
 
     /// <inheritdoc />
     [Parameter]

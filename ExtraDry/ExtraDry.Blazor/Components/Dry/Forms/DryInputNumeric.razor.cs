@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
-using System.Reflection.Metadata;
+﻿using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
 
 namespace ExtraDry.Blazor.Forms;

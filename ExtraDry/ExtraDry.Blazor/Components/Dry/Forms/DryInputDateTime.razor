@@ -1,14 +1,12 @@
 ﻿@namespace ExtraDry.Blazor.Forms
 @typeparam T
 
-<div class="datetime-input">
-    @if (Icon != string.Empty)
-    {
-        <Icon Key="@Icon" />
+<div class="@CssClasses" onclick="this.getElementsByTagName('input')[0].showPicker()">
+    @if(Icon != "") {
+        <Icon CssClass="icon" Key="@Icon" />
     }
-    <input class="@CssClasses" title="@Property?.FieldCaption" type="@DisplayMode" value="@Value" readonly="@ReadOnly" @onchange="HandleChange" @attributes="@UnmatchedAttributes" />
-    @if (Affordance != string.Empty)
-    {
-        <Icon Key="@Affordance" />
+    <input class="value" title="@Property?.FieldCaption" type="@DisplayMode" value="@Value" readonly="@ReadOnly" @onchange="HandleChange" @attributes="@UnmatchedAttributes" />
+    @if(Affordance != "") {
+        <Icon CssClass="affordance" Key="@Affordance" />
     }
 </div>

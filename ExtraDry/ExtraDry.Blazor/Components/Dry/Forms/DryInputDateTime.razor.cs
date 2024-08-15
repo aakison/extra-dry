@@ -130,7 +130,7 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
 
     private string ReadOnlyCss => ReadOnly ? "readonly" : "";
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", ReadOnlyCss, CssClass);
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", DisplayMode, ReadOnlyCss);
 
     private string Value { get; set; } = "";
 }
