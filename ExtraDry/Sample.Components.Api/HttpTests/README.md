@@ -30,7 +30,7 @@ $output = dotnet user-jwts create --name Eric --claim "vendor=electrical-group@a
 $token = $output.Split(' ')[-1]
 dotnet user-secrets set "Tokens:VendorRole" $token
 
-$output = dotnet user-jwts create --role user --name Bob"
+$output = dotnet user-jwts create --role user --name Bob
 $token = $output.Split(' ')[-1]
 dotnet user-secrets set "Tokens:UserRole" $token
 
