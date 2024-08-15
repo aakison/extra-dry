@@ -191,6 +191,12 @@ table col.commands {
 table tbody td.commands {
   padding-right: 10px;
 }
+table tbody td.commands .contextCommands {
+  display: flex;
+}
+table tbody td.commands .contextCommands button {
+  min-width: initial;
+}
 
 table tbody tr:hover {
   background-color: var(--off-white);
