@@ -92,9 +92,26 @@ public class Company : IResourceIdentifiers {
     public decimal SalesMargin { get; set; }
 
     [Filter]
-    [Display(Name = "Incorporation Date", ShortName = "Inc Date")]
-    [InputFormat(Affordance = "calendar")]
+    [Display(Name = "Incorporation Date", ShortName = "Inc Date", Description = "Date stored as DateTime, informed by InputFormat")]
+    [InputFormat(DataTypeOverride = typeof(DateOnly))]
     public DateTime IncorporationDate { get; set; }
+
+    [Display(Name = "Dissolution Date", ShortName = "Diss Date", Description = "Date stored as DateTime?, informed by InputFormat")]
+    [InputFormat(DataTypeOverride = typeof(DateOnly))]
+    public DateTime? DissolutionDate { get; set; }
+
+    [Display(Name = "Start of Business Hours", ShortName = "Opens", Description = "Time stored as TimeOnly, informed by type")]
+    public TimeOnly StartOfBusinessHours { get; set; }
+
+    [Display(Name = "End of Business Hours", ShortName = "Closes", Description = "Time stored as TimeOnly?, informed by type")]
+    public TimeOnly? EndOfBusinessHours { get; set; }
+
+    [Display(Name = "CEO Birthday Holiday", ShortName = "CEO Bday", Description = "Date stored as DateOnly, informed by type")]
+    public DateOnly CeoBirthdayHoliday { get; set; }
+
+    [Display(Name = "Last Trademark Review", ShortName = "Trademark", Description = "Date stored as String, informed by InputFormat")]
+    [InputFormat(DataTypeOverride = typeof(DateOnly))]
+    public string LastTrademarkReview { get; set; } = "";
 
     [Display]
     [Rules(RuleAction.Allow)]
