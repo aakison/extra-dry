@@ -71,11 +71,11 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
         }
         var str = (Property.PropertyType, ActualInputType) switch {
             (Type pt, _) when pt == typeof(DateTime) 
-                => ((DateTime)property).ToLocalTime().ToString("O", CultureInfo.InvariantCulture),
+                => ((DateTime)property).ToLocalTime().ToString(DateTimeFormat, CultureInfo.InvariantCulture),
             (Type pt, _) when pt == typeof(DateOnly) 
-                => ((DateOnly)property).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                => ((DateOnly)property).ToString(DateOnlyFormat, CultureInfo.InvariantCulture),
             (Type pt, _) when pt == typeof(TimeOnly) 
-                => ((TimeOnly)property).ToString("HH:mm", CultureInfo.InvariantCulture),
+                => ((TimeOnly)property).ToString(TimeOnlyFormat, CultureInfo.InvariantCulture),
             _ => property?.ToString() ?? string.Empty
         };
         DateTime? tempDateTime = null;
@@ -134,7 +134,7 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
 
     private const string TimeOnlyFormat = "HH:mm:ss";
 
-    private const string DateTimeFormat = "O";
+    private const string DateTimeFormat = "yyyy-MM-ddTHH:mm:ss";
 
     private string TimeZone { get; set; } = "";
 

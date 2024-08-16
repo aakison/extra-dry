@@ -46,7 +46,7 @@ public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryC
         Property ??= typeof(T).GetProperty(PropertyName) is PropertyInfo prop ? new PropertyDescription(prop) : null;
         if(Property?.Rules?.UpdateAction == RuleAction.Block) {
         }
-        else if(Property?.HasTextRepresentation == false) {
+        else if(Property?.HasTextRepresentation == false && Property?.HasDateTimeRepresentation == false && Property.HasNumericRepresentation == false) {
             await FetchLookupProviderOptions();
         }
     }
@@ -61,7 +61,9 @@ public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryC
             _ => true,
         };
 
-    private bool Editable => EditMode == EditMode.Create || EditMode == EditMode.Update && RulesAllowUpdate;
+    private bool HasSetter => Property?.Property.CanWrite ?? false;
+
+    private bool Editable => EditMode == EditMode.Create || EditMode == EditMode.Update && RulesAllowUpdate && HasSetter;
 
     private bool ReadOnly => !Editable;
 

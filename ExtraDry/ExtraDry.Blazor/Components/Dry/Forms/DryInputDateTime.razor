@@ -6,7 +6,7 @@
         <Icon CssClass="icon" Key="@Icon" />
     }
     <input class="value" title="@InputTitle" type="@HtmlDisplayMode" value="@Value" readonly="@ReadOnly" @onchange="HandleChange" @attributes="@UnmatchedAttributes" />
-    @if(Affordance != "") {
+    @if(Affordance != "" && !ReadOnly) {
         <Icon CssClass="affordance" Key="@Affordance" onclick="this.parentNode.getElementsByTagName('input')[0].showPicker()" />
     }
 </div>

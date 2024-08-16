@@ -41,3 +41,15 @@ div ::deep img, div ::deep i {
   width: 16px;
   height: 16px;
 }
+
+/*
+    Styling for the element to be readonly
+*/
+div input {
+    background-color: transparent;
+}
+
+div.readonly {
+    background-color: #efefef;
+}
+

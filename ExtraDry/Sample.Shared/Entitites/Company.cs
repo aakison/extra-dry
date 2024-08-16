@@ -108,6 +108,8 @@ public class Company : IResourceIdentifiers {
     [Display(Name = "CEO Birthday Holiday", ShortName = "CEO Bday", Description = "Date stored as DateOnly, informed by type")]
     public DateOnly CeoBirthdayHoliday { get; set; }
 
+    public DateTime Timestamp { get; } = DateTime.UtcNow;
+
     [Display(Name = "Last Trademark Review", ShortName = "Trademark", Description = "Date stored as String, informed by InputFormat")]
     [InputFormat(DataTypeOverride = typeof(DateOnly))]
     public string LastTrademarkReview { get; set; } = "";
