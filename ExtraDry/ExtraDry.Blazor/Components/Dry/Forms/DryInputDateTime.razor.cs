@@ -99,6 +99,7 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
         else {
             throw new NotImplementedException("Unsupported property type, can't convert to DateTime");
         }
+
         var result = "1970-01-01";
         if(ActualInputType == typeof(DateTime)) {
             result = tempDateTime?.ToString(DateTimeFormat, CultureInfo.InvariantCulture);
@@ -112,6 +113,20 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
         else {
             throw new NotImplementedException("Unsupported Actual InputType, can't convert to string representation.");
         }
+
+        if(ActualInputType == typeof(DateTime)) {
+            if(tempDateTime == null) {
+                TimeZone = "";
+            }
+            else if(tempDateTime.Value.Kind == DateTimeKind.Utc) {
+                TimeZone = "UTC";
+            }
+            else {
+                var tz = TimeZoneInfo.Local;
+                TimeZone = tz.IsDaylightSavingTime(tempDateTime.Value) ? tz.DaylightName : tz.StandardName;
+            }
+        }
+
         return result ?? "";
     }
 
@@ -120,6 +135,13 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
     private const string TimeOnlyFormat = "HH:mm:ss";
 
     private const string DateTimeFormat = "O";
+
+    private string TimeZone { get; set; } = "";
+
+    private string TimeZoneDisplay => TimeZone == "" ? "" : $" ({TimeZone})";
+
+    private string InputTitle => $"{Property?.FieldCaption} {TimeZoneDisplay}";
+
 
     private async Task HandleChange(ChangeEventArgs args)
     {
