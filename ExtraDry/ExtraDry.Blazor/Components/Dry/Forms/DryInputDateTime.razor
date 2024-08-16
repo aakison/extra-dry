@@ -3,7 +3,7 @@
 
 <div class="@CssClasses">
     @if(Icon != "") {
-        <Icon CssClass="icon" Key="@Icon" />
+        <Icon CssClass="context" Key="@Icon" />
     }
     <input class="value" title="@InputTitle" type="@HtmlDisplayMode" value="@Value" readonly="@ReadOnly" @onchange="HandleChange" @attributes="@UnmatchedAttributes" onkeydown="@DisableSpaceWhenReadOnlyHack" />
     @if(Affordance != "" && !ReadOnly) {

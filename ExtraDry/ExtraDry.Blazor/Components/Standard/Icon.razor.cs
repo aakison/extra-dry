@@ -96,6 +96,8 @@ public partial class Icon : ComponentBase, IExtraDryComponent {
             new("select-date", $"{glyphPath}/calendar-day-light.svg", "Select Date", "affordance", SvgRenderType.Reference),
             new("select-datetime", $"{glyphPath}/calendar-clock-light.svg", "Select Date/Time", "affordance", SvgRenderType.Reference),
             new("select-time", $"{glyphPath}/clock-light.svg", "Select Time", "affordance", SvgRenderType.Reference),
+
+            new("currency", $"{glyphPath}/dollar-sign-light.svg", "Enter dollar amount", "affordance", SvgRenderType.Reference),
         }).ToDictionary(e => e.Key, e => e);
 
     private static readonly IconInfo placeholderIcon = new("placeholder", $"{glyphPath}/loading-placeholder.svg", "Placeholder", "glyph");

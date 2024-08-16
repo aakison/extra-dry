@@ -87,9 +87,6 @@ public class AppViewModel(NavigationManager navigation)
         new("loader-error", "fa fa-circle-exclamation"),
         new("loader-timeout", "fa fa-rotate-right"),
 
-        // Input Icons
-        new("dollar-sign", "fa fa-dollar-sign"),
-        new("percent", "fa fa-percent"),
     ];
 
 

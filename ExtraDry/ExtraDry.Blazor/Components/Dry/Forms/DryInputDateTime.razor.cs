@@ -65,6 +65,7 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
 
     [Inject]
     private ILogger<DryInputDateTime<T>> Logger { get; set; } = null!;
+
     private string TimeZone { get; set; } = "";
 
     private string TimeZoneDisplay => TimeZone == "" ? "" : $" ({TimeZone})";
@@ -99,7 +100,7 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
 
     private string ReadOnlyCss => ReadOnly ? "readonly" : "";
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", HtmlDisplayMode, ReadOnlyCss);
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", HtmlDisplayMode, ReadOnlyCss, CssClass);
 
     private string Value { get; set; } = "";
 

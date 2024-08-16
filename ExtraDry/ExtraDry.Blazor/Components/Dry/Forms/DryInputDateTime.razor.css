@@ -5,26 +5,19 @@ div {
   border: solid 1px black;
   display: flex;
   align-items: center;
-  border-radius: 3px;
-  height: 24px;
+  border-radius: var(--input-rounding);
   padding: 0 4px;
 }
 
   div input {
     flex: 1 1 auto;
     border: none;
+    background-color: transparent;
   }
 
   div input:focus, div input:focus-visible {
     outline: none;
   }
-
-/*
-    Browser user-agents make it monospace, make sure to inherit font from ancestor (e.g. body).
-*/
-div input {
-  font-family: inherit;
-}
 
 /*
     Hide the default calendar input icon, replace with a custom icon.
@@ -35,20 +28,8 @@ div input::-webkit-calendar-picker-indicator {
 }
 
 /*
-    Style for the custom calendar icon.
-*/
-div ::deep img, div ::deep i {
-  width: 16px;
-  height: 16px;
-}
-
-/*
     Styling for the element to be readonly
 */
-div input {
-    background-color: transparent;
-}
-
 div.readonly {
     background-color: #efefef;
 }

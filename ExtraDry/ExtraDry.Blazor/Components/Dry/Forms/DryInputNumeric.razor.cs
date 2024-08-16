@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 namespace ExtraDry.Blazor.Forms;
 
 /// <summary>
-/// A DRY wrapper around a text input field. Prefer the use of <see cref="DryInput{T}" /> instead
+/// A DRY wrapper around a numeric input field. Prefer the use of <see cref="DryInput{T}" /> instead
 /// of this component as it is more flexible and supports more data types.
 /// </summary>
 public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDryComponent
@@ -36,6 +36,13 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
     [Parameter]
     public bool ReadOnly { get; set; }
 
+    /// <summary>
+    /// Event that is raised when the input is validated using internal rules. Does not check
+    /// global rules that might be set on the model using data annotations.
+    /// </summary>
+    [Parameter]
+    public EventCallback<ValidationEventArgs> OnValidation { get; set; }
+
     protected override void OnParametersSet()
     {
         if(Model == null || Property == null) {
@@ -47,13 +54,13 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
     [Inject]
     private ILogger<DryInput<T>> Logger { get; set; } = null!;
 
-    private string Icon => Property?.Property?.GetCustomAttribute<InputFormatAttribute>()?.Icon ?? string.Empty;
+    private string Icon => Property?.InputFormat?.Icon ?? "";
 
-    private string Affordance => Property?.Property?.GetCustomAttribute<InputFormatAttribute>()?.Affordance ?? string.Empty;
+    private string Affordance => Property?.InputFormat?.Affordance ?? "";
 
     private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", ReadOnlyCss, CssClass);
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", ReadOnlyCss, CssClass);
 
     private string Value {
         get {
@@ -68,16 +75,8 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
 
     private string Placeholder => Property?.Display?.Prompt ?? "";
 
-    private async Task InvokeOnChange(ChangeEventArgs args)
-    {
-        var task = OnChange?.InvokeAsync(args);
-        if(task != null) {
-            await task;
-        }
-    }
-
     /// <summary>
-    /// Becuase we are mutating the value that is displayed within the handle change (to strip or
+    /// Because we are mutating the value that is displayed within the handle change (to strip or
     /// calculate values), we need to implement differently The OnChange functionality will not
     /// allow for this (there is a hack to assign the backing field to null, then sleep, then
     /// repopulate) so using the binding functionality is the recommended way

@@ -3,7 +3,7 @@
 
 <div class="@CssClasses">
     @if(Icon != "") {
-        <Icon CssClass="icon" Key="@Icon"/>
+        <Icon CssClass="context" Key="@Icon"/>
     }
     <input class="value" title="@InputTitle" type="text" @bind="@Value" @bind:after="CallOnChange" readonly="@ReadOnly" placeholder="@Placeholder" pattern="\d*" inputmode="numeric" @attributes="@UnmatchedAttributes" />
     @if(Affordance != "" && !ReadOnly) {

@@ -30,6 +30,8 @@
   --dark: hsl(0deg, 0%, 30%);
   --charcoal: hsl(0deg, 0%, 10%);
   --black: hsl(0deg, 0%, 5%);
+  --icon-tiny: 16px;
+  --input-rounding: 3px;
 }
 
 @font-face {

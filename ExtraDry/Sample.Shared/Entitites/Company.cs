@@ -80,9 +80,8 @@ public class Company : IResourceIdentifiers {
     [Rules(RuleAction.IgnoreDefaults)]
     public string ContactEmail { get; set; } = "";
 
-    [Display]
     [Precision(18, 2)]
-    [InputFormat(Icon = "dollar-sign", Affordance = "loader-error")]
+    [InputFormat(Icon = "currency")]
     public decimal AnnualRevenue { get; set; }
 
     [Display(Prompt = "0.00")]
