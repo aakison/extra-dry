@@ -71,7 +71,7 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
         }
         var str = (Property.PropertyType, ActualInputType) switch {
             (Type pt, _) when pt == typeof(DateTime) 
-                => ((DateTime)property).ToLocalTime().ToString("yyyy-MM-ddTHH:mm", CultureInfo.InvariantCulture),
+                => ((DateTime)property).ToLocalTime().ToString("O", CultureInfo.InvariantCulture),
             (Type pt, _) when pt == typeof(DateOnly) 
                 => ((DateOnly)property).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
             (Type pt, _) when pt == typeof(TimeOnly) 
@@ -101,13 +101,13 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
         }
         var result = "1970-01-01";
         if(ActualInputType == typeof(DateTime)) {
-            result = tempDateTime?.ToString("yyyy-MM-ddTHH:mm", CultureInfo.InvariantCulture);
+            result = tempDateTime?.ToString(DateTimeFormat, CultureInfo.InvariantCulture);
         }
         else if(ActualInputType == typeof(DateOnly)) {
-            result = tempDateTime?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+            result = tempDateTime?.ToString(DateOnlyFormat, CultureInfo.InvariantCulture);
         }
         else if(ActualInputType == typeof(TimeOnly)) {
-            result = tempDateTime?.ToString("HH:mm", CultureInfo.InvariantCulture);
+            result = tempDateTime?.ToString(TimeOnlyFormat, CultureInfo.InvariantCulture);
         }
         else {
             throw new NotImplementedException("Unsupported Actual InputType, can't convert to string representation.");
@@ -115,35 +115,72 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
         return result ?? "";
     }
 
+    private const string DateOnlyFormat = "yyyy-MM-dd";
+
+    private const string TimeOnlyFormat = "HH:mm:ss";
+
+    private const string DateTimeFormat = "O";
+
     private async Task HandleChange(ChangeEventArgs args)
     {
         if(Property == null || Model == null) {
             return;
         }
-        var value = args.Value;
+        Value = args.Value?.ToString() ?? "";
         var valid = false;
-        if(Property.PropertyType == typeof(DateTime)) {
-            if(DateTime.TryParse(value?.ToString(), out var datetime)) {
+        if(Property.PropertyType == typeof(DateTime) && ActualInputType == typeof(DateTime)) {
+            if(DateTime.TryParse(Value, out var datetime)) {
                 Property.SetValue(Model, datetime.ToUniversalTime());
                 valid = true;
             } 
         }
+        else if(Property.PropertyType == typeof(DateTime) && ActualInputType == typeof(DateOnly)) {
+            if(DateOnly.TryParse(Value, out var dateOnly)) {
+                var dateTime = dateOnly.ToDateTime(new TimeOnly());
+                Property.SetValue(Model, dateTime);
+                valid = true;
+            }
+        }
+        else if(Property.PropertyType == typeof(DateTime) && ActualInputType == typeof(TimeOnly)) {
+            if(TimeOnly.TryParse(Value, out var timeOnly)) {
+                var dateTime = new DateOnly().ToDateTime(timeOnly);
+                Property.SetValue(Model, dateTime);
+                valid = true;
+            }
+        }
+        else if(Property.PropertyType == typeof(string) && ActualInputType == typeof(DateTime)) {
+            if(DateTime.TryParse(Value, out var datetime)) {
+                Property.SetValue(Model, datetime.ToUniversalTime().ToString(DateTimeFormat));
+                valid = true;
+            }
+        }
+        else if(Property.PropertyType == typeof(string) && ActualInputType == typeof(DateOnly)) {
+            if(DateOnly.TryParse(Value, out var dateOnly)) {
+                var dateTime = dateOnly.ToString(DateOnlyFormat, CultureInfo.InvariantCulture);
+                Property.SetValue(Model, dateTime);
+                valid = true;
+            }
+        }
+        else if(Property.PropertyType == typeof(string) && ActualInputType == typeof(TimeOnly)) {
+            if(TimeOnly.TryParse(Value, out var timeOnly)) {
+                var dateTime = timeOnly.ToString(TimeOnlyFormat, CultureInfo.InvariantCulture);
+                Property.SetValue(Model, dateTime);
+                valid = true;
+            }
+        }
         else if(Property.PropertyType == typeof(DateOnly)) {
-            if(DateOnly.TryParse(value?.ToString(), out var dateOnly)) {
+            if(DateOnly.TryParse(Value, out var dateOnly)) {
                 Property.SetValue(Model, dateOnly);
                 valid = true;
             }
         }
         else if(Property.PropertyType == typeof(TimeOnly)) {
-            if(TimeOnly.TryParse(value?.ToString(), out var timeOnly)) {
+            if(TimeOnly.TryParse(Value, out var timeOnly)) {
                 Property.SetValue(Model, timeOnly);
                 valid = true;
             }
         }
-        else if(Property.PropertyType == typeof(string)) {
-            Property.SetValue(Model, value);
-            valid = true;
-        }
+
         if(SetValidation != null) {
             SetValidation(valid, valid ? string.Empty : $"Value is not a valid {Property.PropertyType.Name}");
         }

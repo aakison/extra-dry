@@ -97,7 +97,6 @@ public class Company : IResourceIdentifiers {
     public DateTime IncorporationDate { get; set; }
 
     [Display(Name = "Dissolution Date", ShortName = "Diss Date", Description = "Date stored as DateTime?, informed by InputFormat")]
-    [InputFormat(DataTypeOverride = typeof(DateOnly))]
     public DateTime? DissolutionDate { get; set; }
 
     [Display(Name = "Start of Business Hours", ShortName = "Opens", Description = "Time stored as TimeOnly, informed by type")]
