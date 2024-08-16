@@ -48,30 +48,71 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
         if(Model == null || Property == null) {
             return;
         }
-
-        Value = DisplayMode switch {
-            "date" => StringValue("yyyy-MM-dd"),
-            "time" => StringValue("HH:mm"),
-            _ => StringValue("yyyy-MM-ddTHH:mm")
+        SetActualInputType();
+        Value = HtmlDisplayMode switch {
+            "date" => ConvertModelPropertyToString(),
+            "time" => ConvertModelPropertyToString(),
+            _ => ConvertModelPropertyToString()
         };
     }
 
-    private string StringValue(string format)
+    [Inject]
+    private ILogger<DryInputDateTime<T>> Logger { get; set; } = null!;
+
+    private static List<Type> SupportedPropertyTypes => [typeof(DateTime), typeof(DateOnly), typeof(TimeOnly), typeof(string)];
+
+    private static List<Type> SupportedDisplayTypes => [typeof(DateTime), typeof(DateOnly), typeof(TimeOnly)];
+
+    private string ConvertModelPropertyToString()
     {
-        var prop = Property?.GetValue(Model);
-        if(Property == null || prop == null) {
+        var property = Property?.GetValue(Model);
+        if(Property == null || property == null) {
             return string.Empty;
         }
-        if(Property.PropertyType == typeof(DateTime)) {
-            return ((DateTime)prop).ToLocalTime().ToString(format, CultureInfo.InvariantCulture);
+        var str = (Property.PropertyType, ActualInputType) switch {
+            (Type pt, _) when pt == typeof(DateTime) 
+                => ((DateTime)property).ToLocalTime().ToString("yyyy-MM-ddTHH:mm", CultureInfo.InvariantCulture),
+            (Type pt, _) when pt == typeof(DateOnly) 
+                => ((DateOnly)property).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+            (Type pt, _) when pt == typeof(TimeOnly) 
+                => ((TimeOnly)property).ToString("HH:mm", CultureInfo.InvariantCulture),
+            _ => property?.ToString() ?? string.Empty
+        };
+        DateTime? tempDateTime = null;
+        if(property is DateTime dateTime) {
+            tempDateTime = ActualInputType == typeof(DateTime) ? dateTime.ToLocalTime() : dateTime;
         }
-        else if(Property.PropertyType == typeof(DateOnly)) {
-            return ((DateOnly)prop).ToString(format, CultureInfo.InvariantCulture);
+        else if(property is DateOnly dateOnly) {
+            tempDateTime = dateOnly.ToDateTime(new TimeOnly());
         }
-        else if(Property.PropertyType == typeof(TimeOnly)) {
-            return ((TimeOnly)prop).ToString(format, CultureInfo.InvariantCulture);
+        else if(property is TimeOnly timeOnly) {
+            tempDateTime = new DateOnly().ToDateTime(timeOnly);
         }
-        return prop?.ToString() ?? string.Empty;
+        else if(property is string stringDate) {
+            if(DateTime.TryParse(stringDate, out var dt)) {
+                tempDateTime = dt;
+            }
+            else { 
+                Logger.LogError("Unable to parse string date {StringDate}, rendering field without date/time.", stringDate);
+            }
+        }
+        else {
+            throw new NotImplementedException("Unsupported property type, can't convert to DateTime");
+        }
+        var result = "1970-01-01";
+        if(ActualInputType == typeof(DateTime)) {
+            result = tempDateTime?.ToString("yyyy-MM-ddTHH:mm", CultureInfo.InvariantCulture);
+        }
+        else if(ActualInputType == typeof(DateOnly)) {
+            result = tempDateTime?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+        }
+        else if(ActualInputType == typeof(TimeOnly)) {
+            result = tempDateTime?.ToString("HH:mm", CultureInfo.InvariantCulture);
+        }
+        else {
+            throw new NotImplementedException("Unsupported Actual InputType, can't convert to string representation.");
+        }
+        return result ?? "";
     }
 
     private async Task HandleChange(ChangeEventArgs args)
@@ -81,19 +122,19 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
         }
         var value = args.Value;
         var valid = false;
-        if(Property.PropertyType == typeof(DateTime) || Property.PropertyType == typeof(DateTime?)) {
+        if(Property.PropertyType == typeof(DateTime)) {
             if(DateTime.TryParse(value?.ToString(), out var datetime)) {
                 Property.SetValue(Model, datetime.ToUniversalTime());
                 valid = true;
             } 
         }
-        else if(Property.PropertyType == typeof(DateOnly) || Property.PropertyType == typeof(DateOnly?)) {
+        else if(Property.PropertyType == typeof(DateOnly)) {
             if(DateOnly.TryParse(value?.ToString(), out var dateOnly)) {
                 Property.SetValue(Model, dateOnly);
                 valid = true;
             }
         }
-        else if(Property.PropertyType == typeof(TimeOnly) || Property.PropertyType == typeof(TimeOnly?)) {
+        else if(Property.PropertyType == typeof(TimeOnly)) {
             if(TimeOnly.TryParse(value?.ToString(), out var timeOnly)) {
                 Property.SetValue(Model, timeOnly);
                 valid = true;
@@ -113,11 +154,41 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
         }
     }
 
-    private string DisplayMode => Property?.InputType switch {
+    /// <summary>
+    /// The actual input type based on the property type and input type.  This is typically the 
+    /// requested InputType unless the conversion is not possible.  
+    /// </summary>
+    private Type ActualInputType { get; set; } = typeof(DateTime);
+
+    private void SetActualInputType() { 
+        if(Property == null) {
+            throw new InvalidOperationException("Do not call this method until after OnParametersSet");
+        }
+        ActualInputType = Property.InputType; // default unless a problem...
+        if(!SupportedDisplayTypes.Contains(Property.InputType)) {
+            Logger.LogWarning("Invalid input type override, DryInputDateTime does not support {InputType}", Property.InputType.Name);
+            ActualInputType = Property.PropertyType; // override to PropertyType
+        }
+        if(Property.PropertyType == typeof(DateOnly) && Property.InputType == typeof(DateTime)
+            || Property.PropertyType == typeof(TimeOnly) && Property.InputType == typeof(DateTime)
+            || Property.PropertyType == typeof(TimeOnly) && Property.InputType == typeof(DateOnly)
+            || Property.PropertyType == typeof(DateOnly) && Property.InputType == typeof(TimeOnly)
+            ) {
+            Logger.LogWarning("Invalid cast operation requested, DryInputDateTime cannot save a {InputType} as a {PropertyType}", Property.InputType.Name, Property.PropertyType.Name);
+            ActualInputType = Property.PropertyType; // override to PropertyType
+        }
+        if(!SupportedPropertyTypes.Contains(Property.PropertyType)) {
+            Logger.LogWarning("Invalid property type, DryInputDateTime does not support {PropertyType}", Property.PropertyType.Name);
+            ActualInputType = typeof(DateTime); // override to DateTime to display field
+        }
+    }
+
+    /// <summary>
+    /// Type that is emitted with the HTML input element, for browser support of dates and times.
+    /// </summary>
+    private string HtmlDisplayMode => ActualInputType switch {
         Type t when t == typeof(DateOnly) => "date",
-        Type t when t == typeof(DateOnly?) => "date",
         Type t when t == typeof(TimeOnly) => "time",
-        Type t when t == typeof(TimeOnly?) => "time",
         _ => "datetime-local"
     };
 
@@ -134,7 +205,7 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
 
     private string ReadOnlyCss => ReadOnly ? "readonly" : "";
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", DisplayMode, ReadOnlyCss);
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", HtmlDisplayMode, ReadOnlyCss);
 
     private string Value { get; set; } = "";
 }
