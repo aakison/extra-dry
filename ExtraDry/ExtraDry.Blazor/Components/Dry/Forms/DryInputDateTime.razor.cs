@@ -40,8 +40,12 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
     [Parameter]
     public bool ReadOnly { get; set; }
 
+    /// <summary>
+    /// Event that is raised when the input is validated using internal rules.  Does not check
+    /// global rules that might be set on the model using data annotations.
+    /// </summary>
     [Parameter]
-    public Action<bool, string>? SetValidation { get; set; }
+    public EventCallback<ValidationEventArgs> OnValidation { get; set; }
 
     protected override void OnParametersSet()
     {
@@ -172,7 +176,7 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
         }
         else if(Property.PropertyType == typeof(string) && ActualInputType == typeof(DateTime)) {
             if(DateTime.TryParse(Value, out var datetime)) {
-                Property.SetValue(Model, datetime.ToUniversalTime().ToString(DateTimeFormat));
+                Property.SetValue(Model, datetime.ToUniversalTime().ToString(DateTimeFormat, CultureInfo.InvariantCulture));
                 valid = true;
             }
         }
@@ -203,9 +207,11 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
             }
         }
 
-        if(SetValidation != null) {
-            SetValidation(valid, valid ? string.Empty : $"Value is not a valid {Property.PropertyType.Name}");
-        }
+        await OnValidation.InvokeAsync(new ValidationEventArgs { 
+            IsValid = valid, 
+            MemberName = Property.PropertyType.Name,
+            Message = valid ? string.Empty : $"Value is not a valid {Property.PropertyType.Name}",
+        });
 
         var task = OnChange?.InvokeAsync(args);
         if(task != null) {

@@ -70,7 +70,7 @@
             }
         }
         else if(Property.HasDateTimeRepresentation) {
-            <DryInputDateTime Model="@Model" Property="@Property" ReadOnly="@ReadOnly" SetValidation="@SetValidation" />
+            <DryInputDateTime Model="@Model" Property="@Property" ReadOnly="@ReadOnly" OnValidation="@ValidationChanged" />
         }
         else if(Property.HasTextRepresentation) {
             if(Property.FieldLength > 256) {
@@ -99,8 +99,8 @@
         }
         else { 
         }
-        @if(!valid) {
-            <span class="validation @CssClasses">@validationMessage</span>
+        @if(!Valid) {
+            <span class="validation @CssClasses">@ValidationMessage</span>
         }
     }
 </div>

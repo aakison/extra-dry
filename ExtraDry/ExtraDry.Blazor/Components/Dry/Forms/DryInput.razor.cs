@@ -69,9 +69,9 @@ public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryC
 
     private string Value => Property?.DisplayValue(Model) ?? "";
 
-    private string validationMessage = "";
+    private string ValidationMessage { get; set; } = "";
 
-    private bool valid = true;
+    private bool Valid { get; set; } = true;
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "field", SizeClass, Property?.DisplayClass, StateCss, ValidCss, CssClass);
 
@@ -116,7 +116,7 @@ public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryC
         (_, _) => "readonly",
     };
 
-    private string ValidCss => valid ? " valid" : " invalid";
+    private string ValidCss => Valid ? " valid" : " invalid";
 
     private string HtmlDescription => TextDescription.Replace("-", "&#8209;"); // non-breaking-hyphen.
 
@@ -171,17 +171,23 @@ public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryC
         }
         var validator = new DataValidator();
         if(validator.ValidateProperties(Model, Property.Property.Name)) {
-            SetValidation(true, string.Empty);
+            UpdateValidationUI(true, string.Empty);
         }
         else {
-            SetValidation(false, string.Join("; ", validator.Errors.Select(e => e.ErrorMessage)));
+            UpdateValidationUI(false, string.Join("; ", validator.Errors.Select(e => e.ErrorMessage)));
         }
     }
 
-    private void SetValidation(bool propIsValid, string message)
+    private Task ValidationChanged(ValidationEventArgs validation)
     {
-        validationMessage = message;
-        valid = propIsValid;
+        UpdateValidationUI(validation.IsValid, validation.Message);
+        return Task.CompletedTask;
+    }
+
+    private void UpdateValidationUI(bool valid, string message)
+    {
+        ValidationMessage = message;
+        Valid = valid;
         StateHasChanged();
     }
 
