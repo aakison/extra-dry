@@ -1,9 +1,9 @@
 ﻿@namespace ExtraDry.Blazor.Forms
 @typeparam T
 
-<div class="numeric-input">
+<div class="@CssClasses">
     @if(Icon != string.Empty){
-        <Icon Key="@Icon"/>
+        <Icon CssClass="icon" Key="@Icon"/>
     }
     <input class="@CssClasses" title="@Property?.FieldCaption" type="text" @bind="@Value" @bind:after="CallOnChange" readonly="@ReadOnly" placeholder="@Property?.Display?.Prompt" pattern="\d*" inputmode="numeric" @attributes="@UnmatchedAttributes" />
     @if (Affordance != string.Empty)

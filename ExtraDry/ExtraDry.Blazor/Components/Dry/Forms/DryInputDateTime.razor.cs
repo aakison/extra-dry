@@ -97,7 +97,7 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
                 tempDateTime = dt;
             }
             else { 
-                Logger.LogError("Unable to parse string date {StringDate}, rendering field without date/time.", stringDate);
+                Logger.LogWarning("Unable to parse string date {StringDate}, rendering field without date/time.", stringDate);
             }
         }
         else {
@@ -273,4 +273,10 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", HtmlDisplayMode, ReadOnlyCss);
 
     private string Value { get; set; } = "";
+
+    /// <summary>
+    /// Browser enables space to get dialog on date/time but doesn't disable it when the field is 
+    /// readonly.  This hack disables the space key when the field is readonly.
+    /// </summary>
+    private string DisableSpaceWhenReadOnlyHack => ReadOnly ? @"if(event.code == 'Space') return false;" : "";
 }
