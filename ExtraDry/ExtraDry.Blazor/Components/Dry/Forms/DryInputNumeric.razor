@@ -2,12 +2,11 @@
 @typeparam T
 
 <div class="@CssClasses">
-    @if(Icon != string.Empty){
+    @if(Icon != "") {
         <Icon CssClass="icon" Key="@Icon"/>
     }
-    <input class="@CssClasses" title="@Property?.FieldCaption" type="text" @bind="@Value" @bind:after="CallOnChange" readonly="@ReadOnly" placeholder="@Property?.Display?.Prompt" pattern="\d*" inputmode="numeric" @attributes="@UnmatchedAttributes" />
-    @if (Affordance != string.Empty)
-    {
-        <Icon Key="@Affordance" />
+    <input class="value" title="@InputTitle" type="text" @bind="@Value" @bind:after="CallOnChange" readonly="@ReadOnly" placeholder="@Placeholder" pattern="\d*" inputmode="numeric" @attributes="@UnmatchedAttributes" />
+    @if(Affordance != "" && !ReadOnly) {
+        <Icon CssClass="affordance" Key="@Affordance" />
     }
 </div>

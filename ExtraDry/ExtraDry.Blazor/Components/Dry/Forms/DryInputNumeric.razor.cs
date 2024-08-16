@@ -4,12 +4,11 @@ using System.Text.RegularExpressions;
 namespace ExtraDry.Blazor.Forms;
 
 /// <summary>
-/// A DRY wrapper around a text input field.  Prefer the use of <see cref="DryInput{T}"/> 
-/// instead of this component as it is more flexible and supports more data types.
+/// A DRY wrapper around a text input field. Prefer the use of <see cref="DryInput{T}" /> instead
+/// of this component as it is more flexible and supports more data types.
 /// </summary>
 public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDryComponent
 {
-
     /// <inheritdoc />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
@@ -48,6 +47,27 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
     [Inject]
     private ILogger<DryInput<T>> Logger { get; set; } = null!;
 
+    private string Icon => Property?.Property?.GetCustomAttribute<InputFormatAttribute>()?.Icon ?? string.Empty;
+
+    private string Affordance => Property?.Property?.GetCustomAttribute<InputFormatAttribute>()?.Affordance ?? string.Empty;
+
+    private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
+
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", ReadOnlyCss, CssClass);
+
+    private string Value {
+        get {
+            return _Value;
+        }
+        set {
+            HandleChange(value);
+        }
+    }
+
+    private string InputTitle => Property?.FieldCaption ?? "";
+
+    private string Placeholder => Property?.Display?.Prompt ?? "";
+
     private async Task InvokeOnChange(ChangeEventArgs args)
     {
         var task = OnChange?.InvokeAsync(args);
@@ -57,8 +77,10 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
     }
 
     /// <summary>
-    /// Becuase we are mutating the value that is displayed within the handle change (to strip or calculate values), we need to implement differently
-    /// The OnChange functionality will not allow for this (there is a hack to assign the backing field to null, then sleep, then repopulate) so using the binding functionality is the recommended way
+    /// Becuase we are mutating the value that is displayed within the handle change (to strip or
+    /// calculate values), we need to implement differently The OnChange functionality will not
+    /// allow for this (there is a hack to assign the backing field to null, then sleep, then
+    /// repopulate) so using the binding functionality is the recommended way
     /// https://github.com/dotnet/aspnetcore/issues/17099
     /// </summary>
     private void HandleChange(string newValue)
@@ -67,15 +89,15 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
             return;
         }
 
-        // In the future, if we are to allow basic calculations in numeric fields, this is where that would go.
-        // Note that this will run synchronously in the setter of Value and therefore needs to be quick.
+        // In the future, if we are to allow basic calculations in numeric fields, this is where
+        // that would go. Note that this will run synchronously in the setter of Value and
+        // therefore needs to be quick.
 
         var value = Regex.Replace(newValue, @"[^\d.,]", "");
-        
 
         var dec = decimal.Parse(value, CultureInfo.CurrentCulture);
 
-        // Future enhancement: Allow for the consumer to provide the display format. 
+        // Future enhancement: Allow for the consumer to provide the display format.
         if(Property.InputType == typeof(int)) {
             _Value = dec.ToString("#,#", CultureInfo.CurrentCulture);
             Property.SetValue(Model, int.Parse(value, CultureInfo.InvariantCulture));
@@ -86,28 +108,12 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
         }
     }
 
-    private async Task CallOnChange() { 
+    private async Task CallOnChange()
+    {
         var task = OnChange?.InvokeAsync();
         if(task != null) {
             await task;
         }
     }
-
-    private string Icon => Property?.Property?.GetCustomAttribute<InputFormatAttribute>()?.Icon ?? string.Empty;
-    private string Affordance => Property?.Property?.GetCustomAttribute<InputFormatAttribute>()?.Affordance ?? string.Empty;
-
-    private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
-
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", ReadOnlyCss, CssClass);
-
     private string _Value = string.Empty;
-    private string Value {
-        get {
-            return _Value;
-        }
-        set {
-            HandleChange(value);
-        }
-    }
-
 }

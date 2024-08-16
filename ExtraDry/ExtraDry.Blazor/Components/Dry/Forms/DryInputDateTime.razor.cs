@@ -1,17 +1,16 @@
 ﻿namespace ExtraDry.Blazor.Forms;
 
 /// <summary>
-/// A DRY wrapper around a datetime-local, date, or time input field.  Prefer the use of 
-/// <see cref="DryInput{T}"/> instead of this component as it is more flexible and supports more 
-/// data types.
+/// A DRY wrapper around a datetime-local, date, or time input field. Prefer the use of <see
+/// cref="DryInput{T}" /> instead of this component as it is more flexible and supports more data
+/// types.
 /// </summary>
 /// <typeparam name="T">
-/// The type of the Model that the input renders a property for.  Supports DateTime, DateOnly, and
+/// The type of the Model that the input renders a property for. Supports DateTime, DateOnly, and
 /// TimeOnly.
 /// </typeparam>
 public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDryComponent
 {
-
     /// <inheritdoc />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
@@ -36,12 +35,12 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     [Parameter]
     public bool ReadOnly { get; set; }
 
     /// <summary>
-    /// Event that is raised when the input is validated using internal rules.  Does not check
+    /// Event that is raised when the input is validated using internal rules. Does not check
     /// global rules that might be set on the model using data annotations.
     /// </summary>
     [Parameter]
@@ -60,12 +59,55 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
         };
     }
 
-    [Inject]
-    private ILogger<DryInputDateTime<T>> Logger { get; set; } = null!;
-
     private static List<Type> SupportedPropertyTypes => [typeof(DateTime), typeof(DateOnly), typeof(TimeOnly), typeof(string)];
 
     private static List<Type> SupportedDisplayTypes => [typeof(DateTime), typeof(DateOnly), typeof(TimeOnly)];
+
+    [Inject]
+    private ILogger<DryInputDateTime<T>> Logger { get; set; } = null!;
+    private string TimeZone { get; set; } = "";
+
+    private string TimeZoneDisplay => TimeZone == "" ? "" : $" ({TimeZone})";
+
+    private string InputTitle => $"{Property?.FieldCaption} {TimeZoneDisplay}";
+
+    /// <summary>
+    /// The actual input type based on the property type and input type. This is typically the
+    /// requested InputType unless the conversion is not possible.
+    /// </summary>
+    private Type ActualInputType { get; set; } = typeof(DateTime);
+
+    /// <summary>
+    /// Type that is emitted with the HTML input element, for browser support of dates and times.
+    /// </summary>
+    private string HtmlDisplayMode => ActualInputType switch {
+        Type t when t == typeof(DateOnly) => "date",
+        Type t when t == typeof(TimeOnly) => "time",
+        _ => "datetime-local"
+    };
+
+    private string Icon => Property?.InputFormat?.Icon ?? "";
+
+    private string Affordance => Property?.InputFormat?.Affordance
+        ?? Property?.InputType switch {
+            Type t when t == typeof(DateOnly) => "select-date",
+            Type t when t == typeof(DateOnly?) => "select-date",
+            Type t when t == typeof(TimeOnly) => "select-time",
+            Type t when t == typeof(TimeOnly?) => "select-time",
+            _ => "select-datetime"
+        };
+
+    private string ReadOnlyCss => ReadOnly ? "readonly" : "";
+
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", HtmlDisplayMode, ReadOnlyCss);
+
+    private string Value { get; set; } = "";
+
+    /// <summary>
+    /// Browser enables space to get dialog on date/time but doesn't disable it when the field is
+    /// readonly. This hack disables the space key when the field is readonly.
+    /// </summary>
+    private string DisableSpaceWhenReadOnlyHack => ReadOnly ? @"if(event.code == 'Space') return false;" : "";
 
     private string ConvertModelPropertyToString()
     {
@@ -74,11 +116,11 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
             return string.Empty;
         }
         var str = (Property.PropertyType, ActualInputType) switch {
-            (Type pt, _) when pt == typeof(DateTime) 
+            (Type pt, _) when pt == typeof(DateTime)
                 => ((DateTime)property).ToLocalTime().ToString(DateTimeFormat, CultureInfo.InvariantCulture),
-            (Type pt, _) when pt == typeof(DateOnly) 
+            (Type pt, _) when pt == typeof(DateOnly)
                 => ((DateOnly)property).ToString(DateOnlyFormat, CultureInfo.InvariantCulture),
-            (Type pt, _) when pt == typeof(TimeOnly) 
+            (Type pt, _) when pt == typeof(TimeOnly)
                 => ((TimeOnly)property).ToString(TimeOnlyFormat, CultureInfo.InvariantCulture),
             _ => property?.ToString() ?? string.Empty
         };
@@ -96,7 +138,7 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
             if(DateTime.TryParse(stringDate, out var dt)) {
                 tempDateTime = dt;
             }
-            else { 
+            else {
                 Logger.LogWarning("Unable to parse string date {StringDate}, rendering field without date/time.", stringDate);
             }
         }
@@ -134,19 +176,6 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
         return result ?? "";
     }
 
-    private const string DateOnlyFormat = "yyyy-MM-dd";
-
-    private const string TimeOnlyFormat = "HH:mm:ss";
-
-    private const string DateTimeFormat = "yyyy-MM-ddTHH:mm:ss";
-
-    private string TimeZone { get; set; } = "";
-
-    private string TimeZoneDisplay => TimeZone == "" ? "" : $" ({TimeZone})";
-
-    private string InputTitle => $"{Property?.FieldCaption} {TimeZoneDisplay}";
-
-
     private async Task HandleChange(ChangeEventArgs args)
     {
         if(Property == null || Model == null) {
@@ -158,7 +187,7 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
             if(DateTime.TryParse(Value, out var datetime)) {
                 Property.SetValue(Model, datetime.ToUniversalTime());
                 valid = true;
-            } 
+            }
         }
         else if(Property.PropertyType == typeof(DateTime) && ActualInputType == typeof(DateOnly)) {
             if(DateOnly.TryParse(Value, out var dateOnly)) {
@@ -207,8 +236,8 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
             }
         }
 
-        await OnValidation.InvokeAsync(new ValidationEventArgs { 
-            IsValid = valid, 
+        await OnValidation.InvokeAsync(new ValidationEventArgs {
+            IsValid = valid,
             MemberName = Property.PropertyType.Name,
             Message = valid ? string.Empty : $"Value is not a valid {Property.PropertyType.Name}",
         });
@@ -219,13 +248,8 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
         }
     }
 
-    /// <summary>
-    /// The actual input type based on the property type and input type.  This is typically the 
-    /// requested InputType unless the conversion is not possible.  
-    /// </summary>
-    private Type ActualInputType { get; set; } = typeof(DateTime);
-
-    private void SetActualInputType() { 
+    private void SetActualInputType()
+    {
         if(Property == null) {
             throw new InvalidOperationException("Do not call this method until after OnParametersSet");
         }
@@ -248,35 +272,9 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
         }
     }
 
-    /// <summary>
-    /// Type that is emitted with the HTML input element, for browser support of dates and times.
-    /// </summary>
-    private string HtmlDisplayMode => ActualInputType switch {
-        Type t when t == typeof(DateOnly) => "date",
-        Type t when t == typeof(TimeOnly) => "time",
-        _ => "datetime-local"
-    };
+    private const string DateOnlyFormat = "yyyy-MM-dd";
 
-    private string Icon => Property?.InputFormat?.Icon ?? "";
+    private const string TimeOnlyFormat = "HH:mm:ss";
 
-    private string Affordance => Property?.InputFormat?.Affordance
-        ?? Property?.InputType switch {
-            Type t when t == typeof(DateOnly) => "select-date",
-            Type t when t == typeof(DateOnly?) => "select-date",
-            Type t when t == typeof(TimeOnly) => "select-time",
-            Type t when t == typeof(TimeOnly?) => "select-time",
-            _ => "select-datetime"
-        };
-
-    private string ReadOnlyCss => ReadOnly ? "readonly" : "";
-
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", HtmlDisplayMode, ReadOnlyCss);
-
-    private string Value { get; set; } = "";
-
-    /// <summary>
-    /// Browser enables space to get dialog on date/time but doesn't disable it when the field is 
-    /// readonly.  This hack disables the space key when the field is readonly.
-    /// </summary>
-    private string DisableSpaceWhenReadOnlyHack => ReadOnly ? @"if(event.code == 'Space') return false;" : "";
+    private const string DateTimeFormat = "yyyy-MM-ddTHH:mm:ss";
 }
