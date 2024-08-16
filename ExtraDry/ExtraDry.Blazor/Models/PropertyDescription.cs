@@ -309,8 +309,8 @@ public class PropertyDescription
     public int? FieldLength => StringLength?.MaximumLength ?? MaxLength?.Length;
 
     /// <summary>
-    /// Gets the type of the property.  If the property is a nullable type then the inner type is
-    /// returned.
+    /// Gets the type of the property.  If the property is a nullable type (e.g. 
+    /// Nullable&lt;DateTime&gt; or DateTime?) then the inner type is returned (e.g. DateTime).
     /// </summary>
     public Type PropertyType { get; }
 
