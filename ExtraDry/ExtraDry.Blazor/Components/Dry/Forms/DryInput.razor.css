@@ -5,15 +5,17 @@
 div {
   display: flex;
   flex-direction: column;
+  gap: var(--spacing-tiny);
 }
 
   div > label {
-    flex: 0 0 22px;
+    flex: 0 0 auto;
     font-size: var(--text-small);
   }
 
     div > label + span { /* description span, when rendered */
       flex: 0 0 auto;
+      font-size: var(--text-tiny);
       color: var(--info-dark);
     }
 

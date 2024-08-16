@@ -32,6 +32,14 @@
   --black: hsl(0deg, 0%, 5%);
   --icon-tiny: 16px;
   --input-rounding: 3px;
+  --text-tiny: calc(var(--text-normal) - 3px);
+  --text-small: calc(var(--text-normal) - 2px);
+  --text-normal: 16px;
+  --text-large: calc(var(--text-normal) + 2px);
+  --spacing-tiny: calc(0.5 * var(--spacing-small));
+  --spacing-small: 8px;
+  --spacing-medium: calc(2 * var(--spacing-small));
+  --spacing-large: calc(3 * var(--spacing-small));
 }
 
 @font-face {
