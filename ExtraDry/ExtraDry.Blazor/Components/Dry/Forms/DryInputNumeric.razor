@@ -5,7 +5,7 @@
     @if(Icon != "") {
         <Icon CssClass="context" Key="@Icon"/>
     }
-    <input class="value" title="@InputTitle" type="text" @bind="@Value" @bind:after="CallOnChange" readonly="@ReadOnly" placeholder="@Placeholder" pattern="\d*" inputmode="numeric" @attributes="@UnmatchedAttributes" />
+    <input class="value" title="@InputTitle" type="text" @bind="@Value" @bind:after="CallOnChange" readonly="@ReadOnly" placeholder="@PlaceholderDisplay" pattern="\d*" inputmode="numeric" @attributes="@UnmatchedAttributes" onkeydown="@DisableInvalidCharacters" />
     @if(Affordance != "" && !ReadOnly) {
         <Icon CssClass="affordance" Key="@Affordance" />
     }

@@ -73,7 +73,10 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
 
     private string InputTitle => Property?.FieldCaption ?? "";
 
-    private string Placeholder => Property?.Display?.Prompt ?? "";
+    [Parameter]
+    public string? Placeholder { get; set; }
+
+    private string PlaceholderDisplay => Placeholder ?? Property?.Display?.Prompt ?? "";
 
     /// <summary>
     /// Because we are mutating the value that is displayed within the handle change (to strip or
@@ -94,7 +97,9 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
 
         var value = Regex.Replace(newValue, @"[^\d.,]", "");
 
-        var dec = decimal.Parse(value, CultureInfo.CurrentCulture);
+        if(!decimal.TryParse(value, CultureInfo.CurrentCulture, out var dec)) {
+            dec = 0;
+        }
 
         // Future enhancement: Allow for the consumer to provide the display format.
         if(Property.InputType == typeof(int)) {
@@ -102,7 +107,7 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
             Property.SetValue(Model, int.Parse(value, CultureInfo.InvariantCulture));
         }
         else {
-            _Value = dec.ToString("#,#.00", CultureInfo.CurrentCulture);
+            _Value = dec.ToString("#,0.00", CultureInfo.CurrentCulture);
             Property.SetValue(Model, value);
         }
     }
@@ -114,5 +119,12 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
             await task;
         }
     }
-    private string _Value = string.Empty;
+
+    private string _Value = "";
+
+    /// <summary>
+    /// Only allow digits, commas, periods and navigation keys. 
+    /// </summary>
+    private static string DisableInvalidCharacters => @"if(!(/[0-9.,]/.test(event.key) || event.key == 'Backspace' || event.key == 'Delete' || event.key == 'ArrowLeft' || event.key == 'ArrowRight' || event.key == 'Tab')) return false;";
+
 }
