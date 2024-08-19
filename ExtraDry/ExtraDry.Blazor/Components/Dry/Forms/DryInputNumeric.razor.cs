@@ -41,7 +41,8 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
         if(Model == null || Property == null) {
             return;
         }
-        Value = Property.DisplayValue(Model);
+        var objValue = Property.GetValue(Model) ?? 0.0m;
+        Value = DisplayValue((decimal)objValue);
     }
 
     [Inject]
@@ -72,8 +73,16 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
 
         var valid = false;
         if(decimal.TryParse(value, CultureInfo.CurrentCulture, out var decimalValue)) {
-            Value = DisplayValue(decimalValue);
             SetProperty(decimalValue);
+            var newValue = DisplayValue(decimalValue);
+            if(Value == newValue) {
+                // rare case where Value property doesn't change because of formatting issues.  E.g. 123.45 written as 1,2,3.45 won't trigger Value change refresh.
+                Value = $" {newValue}"; // stringly different but minimize UI flicker
+                StateHasChanged();
+                await Task.Delay(1); // let the UI update
+            }
+            Value = newValue;
+            StateHasChanged();
             valid = true;
         }
         else {
@@ -128,7 +137,7 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
         }
     }
 
-    private string Value = "";
+    private string Value { get; set; } = "";
 
     /// <summary>
     /// Only allow digits, commas, periods and navigation keys. 
