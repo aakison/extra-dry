@@ -250,6 +250,8 @@ public class PropertyDescription
         }
     }
 
+    public bool HasFreshnessRepresentation => Property.PropertyType == typeof(UserTimestamp);
+
     public IList<ValueDescription> GetDiscreteValues()
     {
         var values = new List<ValueDescription>();

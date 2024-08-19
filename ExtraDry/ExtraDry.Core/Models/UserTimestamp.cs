@@ -1,5 +1,4 @@
 ﻿namespace ExtraDry.Core;
-
 /// <summary>
 /// Represents an event in time that was initiated by a user, system, or agent.
 /// </summary>

@@ -20,7 +20,7 @@
     public async Task SaveAsync(Employee employee)
     {
         await EmployeeService.UpdateAsync(Uuid, employee);
-        Navigation.NavigateTo("/employees/list");
+        Navigation.NavigateTo("/admin/works/employees/list");
     }
 
 }

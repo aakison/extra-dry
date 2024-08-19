@@ -37,6 +37,7 @@ services.AddCrudService<Sector>("/api/sectors");
 services.AddCrudService<Company>("/api/companies");
 services.AddCrudService<Content>("/api/contents");
 services.AddCrudService<Region>("/api/regions");
+services.AddCrudService<Employee>("/api/employees");
 
 services.AddBlobService<Blob>(config => {
     config.BlobEndpoint = "/api/blobs";

@@ -1,0 +1,27 @@
+﻿/*
+    Basic design and style for a numeric input with a div surrounding the input.
+*/
+div {
+  border: solid 1px black;
+  display: flex;
+  align-items: center;
+  border-radius: var(--input-rounding);
+  padding: 0 4px;
+}
+
+  div input {
+    flex: 1 1 auto;
+    border: none;
+    background-color: transparent;
+  }
+
+    div input:focus, div input:focus-visible {
+      outline: none;
+    }
+
+/* 
+    Numeric fields should be right aligned (actually decimal, but close enough)
+*/
+  div input {
+    text-align: right;
+  }
