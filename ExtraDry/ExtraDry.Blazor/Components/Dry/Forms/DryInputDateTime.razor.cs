@@ -105,10 +105,11 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
     private string Value { get; set; } = "";
 
     /// <summary>
-    /// Browser enables space to get dialog on date/time but doesn't disable it when the field is
-    /// readonly. This hack disables the space key when the field is readonly.
+    /// Browser enables space to get dialog on date/time but doesn't disable it when the field is 
+    /// readonly. This hack disables the space key when the field is readonly.  It also disables 
+    /// the up and down arrows which would scroll the page.
     /// </summary>
-    private string DisableSpaceWhenReadOnlyHack => ReadOnly ? @"if(event.code == 'Space') return false;" : "";
+    private string DisableSpaceWhenReadOnlyHack => ReadOnly ? @"if(event.code == 'Space' || event.code == 'ArrowUp' || event.code == 'ArrowDown') return false;" : "";
 
     private string ConvertModelPropertyToString()
     {
