@@ -60,6 +60,7 @@ public class AppViewModel(NavigationManager navigation)
         new("full-screen", "fas fa-expand-alt"),
         new("windowed-screen", "fas fa-compress-alt"),
         new("chevron-down", "fas fa-chevron-down"),
+        new("trash", "fas fa-trash-can"),
 
         // Buttcons and affordances:
         new("close-dialog", "/img/glyphs/xmark-light.svg", "Close", "glyph"),
