@@ -33,8 +33,16 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
+    /// <inheritdoc cref="DryInput{T}.ReadOnly" />
     [Parameter]
     public bool ReadOnly { get; set; }
+
+    /// <summary>
+    /// Event that is raised when the input is validated using internal rules. Does not check
+    /// global rules that might be set on the model using data annotations.
+    /// </summary>
+    [Parameter]
+    public EventCallback<ValidationEventArgs> OnValidation { get; set; }
 
     protected override void OnParametersSet()
     {
@@ -44,6 +52,11 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
         var objValue = Property.GetValue(Model) ?? 0.0m;
         Value = DisplayValue((decimal)objValue);
     }
+
+    /// <summary>
+    /// Only allow digits, commas, periods and navigation keys. 
+    /// </summary>
+    private static string DisableInvalidCharacters => @"if(!(/[0-9.,]/.test(event.key) || event.key == 'Backspace' || event.key == 'Delete' || event.key == 'ArrowLeft' || event.key == 'ArrowRight' || event.key == 'Tab')) return false;";
 
     [Inject]
     private ILogger<DryInput<T>> Logger { get; set; } = null!;
@@ -58,10 +71,7 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
 
     private string InputTitle => Property?.FieldCaption ?? "";
 
-    [Parameter]
-    public string? Placeholder { get; set; }
-
-    private string PlaceholderDisplay => Placeholder ?? Property?.Display?.Prompt ?? "";
+    private string Value { get; set; } = "";
 
     private async Task HandleChange(ChangeEventArgs args)
     {
@@ -120,15 +130,6 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
         };
         Property.SetValue(Model, value);
     }
-
-    /// <summary>
-    /// Event that is raised when the input is validated using internal rules. Does not check
-    /// global rules that might be set on the model using data annotations.
-    /// </summary>
-    [Parameter]
-    public EventCallback<ValidationEventArgs> OnValidation { get; set; }
-
-
     private async Task CallOnChange()
     {
         var task = OnChange?.InvokeAsync();
@@ -136,12 +137,4 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
             await task;
         }
     }
-
-    private string Value { get; set; } = "";
-
-    /// <summary>
-    /// Only allow digits, commas, periods and navigation keys. 
-    /// </summary>
-    private static string DisableInvalidCharacters => @"if(!(/[0-9.,]/.test(event.key) || event.key == 'Backspace' || event.key == 'Delete' || event.key == 'ArrowLeft' || event.key == 'ArrowRight' || event.key == 'Tab')) return false;";
-
 }

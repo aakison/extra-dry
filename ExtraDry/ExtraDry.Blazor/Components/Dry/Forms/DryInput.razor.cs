@@ -65,6 +65,9 @@ public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryC
 
     private bool Editable => EditMode == EditMode.Create || EditMode == EditMode.Update && RulesAllowUpdate && HasSetter;
 
+    /// <summary>
+    /// Indicates if the input component is read-only.
+    /// </summary>
     private bool ReadOnly => !Editable;
 
     private string Value => Property?.DisplayValue(Model) ?? "";
