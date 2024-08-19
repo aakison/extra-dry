@@ -9,7 +9,7 @@ public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryC
 
     /// <inheritdoc />
     [Parameter]
-    public string CssClass { get; set; } = string.Empty;
+    public string CssClass { get; set; } = "";
     
     /// <inheritdoc />
     [Parameter, EditorRequired]
@@ -24,7 +24,7 @@ public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryC
     /// specify the name of the property to use.
     /// </summary>
     [Parameter]
-    public string PropertyName { get; set; } = string.Empty;
+    public string PropertyName { get; set; } = "";
 
     /// <inheritdoc />
     [Parameter]
@@ -46,7 +46,7 @@ public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryC
         Property ??= typeof(T).GetProperty(PropertyName) is PropertyInfo prop ? new PropertyDescription(prop) : null;
         if(Property?.Rules?.UpdateAction == RuleAction.Block) {
         }
-        else if(Property?.HasTextRepresentation == false) {
+        else if(Property?.HasTextRepresentation == false && Property?.HasDateTimeRepresentation == false && Property.HasNumericRepresentation == false) {
             await FetchLookupProviderOptions();
         }
     }
@@ -61,15 +61,20 @@ public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryC
             _ => true,
         };
 
-    private bool Editable => EditMode == EditMode.Create || EditMode == EditMode.Update && RulesAllowUpdate;
+    private bool HasSetter => Property?.Property.CanWrite ?? false;
 
+    private bool Editable => EditMode == EditMode.Create || EditMode == EditMode.Update && RulesAllowUpdate && HasSetter;
+
+    /// <summary>
+    /// Indicates if the input component is read-only.
+    /// </summary>
     private bool ReadOnly => !Editable;
 
     private string Value => Property?.DisplayValue(Model) ?? "";
 
-    private string validationMessage = "";
+    private string ValidationMessage { get; set; } = "";
 
-    private bool valid = true;
+    private bool Valid { get; set; } = true;
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "field", SizeClass, Property?.DisplayClass, StateCss, ValidCss, CssClass);
 
@@ -114,7 +119,7 @@ public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryC
         (_, _) => "readonly",
     };
 
-    private string ValidCss => valid ? " valid" : " invalid";
+    private string ValidCss => Valid ? " valid" : " invalid";
 
     private string HtmlDescription => TextDescription.Replace("-", "&#8209;"); // non-breaking-hyphen.
 
@@ -169,13 +174,24 @@ public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryC
         }
         var validator = new DataValidator();
         if(validator.ValidateProperties(Model, Property.Property.Name)) {
-            validationMessage = "";
-            valid = true;
+            UpdateValidationUI(true, string.Empty);
         }
         else {
-            validationMessage = string.Join("; ", validator.Errors.Select(e => e.ErrorMessage));
-            valid = false;
+            UpdateValidationUI(false, string.Join("; ", validator.Errors.Select(e => e.ErrorMessage)));
         }
+    }
+
+    private Task ValidationChanged(ValidationEventArgs validation)
+    {
+        UpdateValidationUI(validation.IsValid, validation.Message);
+        return Task.CompletedTask;
+    }
+
+    private void UpdateValidationUI(bool valid, string message)
+    {
+        ValidationMessage = message;
+        Valid = valid;
+        StateHasChanged();
     }
 
 }

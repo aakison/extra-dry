@@ -30,6 +30,16 @@
   --dark: hsl(0deg, 0%, 30%);
   --charcoal: hsl(0deg, 0%, 10%);
   --black: hsl(0deg, 0%, 5%);
+  --icon-tiny: 16px;
+  --input-rounding: 3px;
+  --text-tiny: calc(var(--text-normal) - 3px);
+  --text-small: calc(var(--text-normal) - 2px);
+  --text-normal: 16px;
+  --text-large: calc(var(--text-normal) + 2px);
+  --spacing-tiny: calc(0.5 * var(--spacing-small));
+  --spacing-small: 8px;
+  --spacing-medium: calc(2 * var(--spacing-small));
+  --spacing-large: calc(3 * var(--spacing-small));
 }
 
 @font-face {
@@ -359,6 +369,50 @@ form {
     }
 }
 */
+.numeric-input,
+.datetime-input {
+  display: flex;
+  border: solid 1px black;
+  border-radius: 2px;
+  position: relative;
+}
+.numeric-input:focus-within,
+.datetime-input:focus-within {
+  outline: -webkit-focus-ring-color auto 1px;
+}
+.numeric-input i,
+.datetime-input i {
+  padding: 5px;
+}
+.numeric-input input,
+.datetime-input input {
+  text-align: right;
+  width: 100%;
+  border: none;
+}
+.numeric-input input:focus, .numeric-input input:focus-visible,
+.datetime-input input:focus,
+.datetime-input input:focus-visible {
+  outline: none;
+}
+.numeric-input input::-webkit-outer-spin-button, .numeric-input input::-webkit-inner-spin-button, .numeric-input input::-webkit-calendar-picker-indicator,
+.datetime-input input::-webkit-outer-spin-button,
+.datetime-input input::-webkit-inner-spin-button,
+.datetime-input input::-webkit-calendar-picker-indicator {
+  /*-webkit-appearance: none;
+  margin: 0;
+  display: none;*/
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: auto;
+  height: auto;
+  color: transparent;
+  background: transparent;
+}
+
 div.error h3 {
   display: none;
 }

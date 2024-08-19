@@ -1,0 +1,12 @@
+﻿@namespace ExtraDry.Blazor.Forms
+@typeparam T
+
+<div class="@CssClasses" @attributes="@UnmatchedAttributes">
+    @if(Icon != "") {
+        <Icon CssClass="context" Key="@Icon"/>
+    }
+    <input class="value" title="@InputTitle" type="text" value="@Value" @onchange="HandleChange" readonly="@ReadOnly" pattern="\d*" inputmode="numeric" onkeydown="@DisableInvalidCharacters" />
+    @if(Affordance != "" && !ReadOnly) {
+        <Icon CssClass="affordance" Key="@Affordance" />
+    }
+</div>

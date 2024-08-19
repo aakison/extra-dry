@@ -7,7 +7,7 @@
         <progress>loading...</progress>
     }
     else {
-        <label class="@CssClasses" @onclick="ToggleDescription" title="@TextDescription">
+        <label class="title" @onclick="ToggleDescription" title="@TextDescription">
             <span class="caption">@Property.FieldCaption</span>
             @* TODO: These old icon styles don't work, what to do with them? *@
             @if(Property.HasDescription) {
@@ -26,7 +26,7 @@
             }
         </label>
         @if(HasDescription && ShowDescription) {
-            <span class="description @CssClasses">@((MarkupString)HtmlDescription)</span>
+            <span class="description">@((MarkupString)HtmlDescription)</span>
         }
         @if(Property.HasBooleanValues) {
             var value = ((bool?)Property.GetValue(Model) ?? false) == true;
@@ -69,6 +69,9 @@
                 }
             }
         }
+        else if(Property.HasDateTimeRepresentation) {
+            <DryInputDateTime Model="@Model" Property="@Property" ReadOnly="@ReadOnly" OnValidation="@ValidationChanged" />
+        }
         else if(Property.HasTextRepresentation) {
             if(Property.FieldLength > 256) {
                 var rows = Math.Min(Property.FieldLength / 100 ?? 1, 10);
@@ -78,6 +81,9 @@
                 <DryInputText CssClass="@CssClasses" Model="@Model" Property="@Property" ReadOnly="@ReadOnly"/>
             }
         } 
+        else if(Property.HasNumericRepresentation) {
+            <DryInputNumeric CssClass="@CssClasses" Model="@Model" Property="@Property" ReadOnly="@ReadOnly" OnValidation="@ValidationChanged" />
+        }
         else if(LookupProviderOptions != null) {
             var selectedValue = Property.GetValue(Model);
             @if(Property.HasArrayValues) {
@@ -89,12 +95,12 @@
         }
         else if(ReadOnly) {
             var selectedValue = Property.GetValue(Model);
-            <span class="@CssClasses">@selectedValue?.ToString()</span>
+            <span class="readonly">@selectedValue?.ToString()</span>
         }
         else { 
         }
-        @if(!valid) {
-            <span class="validation @CssClasses">@validationMessage</span>
+        @if(!Valid) {
+            <span class="validation">@ValidationMessage</span>
         }
     }
 </div>

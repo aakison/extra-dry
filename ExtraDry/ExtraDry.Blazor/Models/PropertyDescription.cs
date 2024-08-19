@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Globalization;
-
 namespace ExtraDry.Blazor;
 
-public class PropertyDescription {
+public class PropertyDescription
+{
 
     public PropertyDescription(PropertyInfo property)
     {
@@ -16,6 +14,7 @@ public class PropertyDescription {
         IsRequired = Property.GetCustomAttribute<RequiredAttribute>() != null;
         Control = Property.GetCustomAttribute<ControlAttribute>();
         Filter = Property.GetCustomAttribute<FilterAttribute>();
+        InputFormat = Property.GetCustomAttribute<InputFormatAttribute>();
         Sort = Property.GetCustomAttribute<SortAttribute>();
         FieldCaption = Display?.Name ?? Property.Name;
         ColumnCaption = Display?.ShortName ?? Property.Name;
@@ -65,6 +64,8 @@ public class PropertyDescription {
 
     public FilterAttribute? Filter { get; }
 
+    public InputFormatAttribute? InputFormat { get; }
+
     public SortAttribute? Sort { get; }
 
     /// <summary>
@@ -100,7 +101,7 @@ public class PropertyDescription {
             return string.Empty;
         }
         try {
-            var value = Property?.GetValue(item); 
+            var value = Property?.GetValue(item);
             if(value == null) {
                 return Format?.NullDisplayText ?? "null";
             }
@@ -221,10 +222,24 @@ public class PropertyDescription {
 
     private readonly Dictionary<int, DisplayAttribute?> discreteDisplayAttributes = new();
 
+    public bool HasNumericRepresentation {
+        get {
+            var types = new List<Type> { typeof(decimal), typeof(decimal?), typeof(int), typeof(int?), typeof(float) };
+            return types.Contains(Property.PropertyType);
+        }
+    }
+
     public bool HasTextRepresentation {
         get {
-            var types = new List<Type> { typeof(decimal), typeof(decimal?), typeof(string), typeof(Uri) };
+            var types = new List<Type> { typeof(string), typeof(Uri) };
             return types.Contains(Property.PropertyType) || Property.PropertyType.IsEnum;
+        }
+    }
+
+    public bool HasDateTimeRepresentation {
+        get {
+            var types = new List<Type> { typeof(DateTime), typeof(DateTime?), typeof(DateOnly), typeof(DateOnly?), typeof(TimeOnly), typeof(TimeOnly?) };
+            return types.Contains(InputType);
         }
     }
 
@@ -234,6 +249,8 @@ public class PropertyDescription {
             return types.Contains(Property.PropertyType);
         }
     }
+
+    public bool HasFreshnessRepresentation => Property.PropertyType == typeof(UserTimestamp);
 
     public IList<ValueDescription> GetDiscreteValues()
     {
@@ -268,6 +285,9 @@ public class PropertyDescription {
                     return StringToDecimal(strValue) ?? 0m;
                 }
             }
+            else if(value is decimal) {
+                return value;
+            }
             else {
                 throw new NotImplementedException();
             }
@@ -294,10 +314,16 @@ public class PropertyDescription {
     public int? FieldLength => StringLength?.MaximumLength ?? MaxLength?.Length;
 
     /// <summary>
-    /// Gets the type of the property.  If the property is a nullable type then the inner type is
-    /// returned.
+    /// Gets the type of the property.  If the property is a nullable type (e.g. 
+    /// Nullable&lt;DateTime&gt; or DateTime?) then the inner type is returned (e.g. DateTime).
     /// </summary>
     public Type PropertyType { get; }
+
+    /// <summary>
+    /// Returns the type of the property as it should be displayed to users during input.  This
+    /// may vary slightly (e.g. PropertyType is DateTime, where the InputType is DateOnly).
+    /// </summary>
+    public Type InputType => InputFormat?.DataTypeOverride ?? PropertyType;
 
     private PropertySize PredictSize()
     {

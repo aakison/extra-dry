@@ -88,7 +88,7 @@ public partial class DryNavigation : ComponentBase, IExtraDryComponent, IDisposa
     /// </summary>
     private Menu? DisplayMenu => Menu?.ActiveMenu(Navigation.Uri, MenuDepth);
 
-    private Menu[] DisplayMenus => DisplayMenu?.Children ?? Array.Empty<Menu>();
+    private Menu[] DisplayMenus => DisplayMenu?.Children ?? [];
 
     /// <summary>
     /// If any of the menu items has a group declared, then render with groups.

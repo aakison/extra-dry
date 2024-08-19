@@ -28,6 +28,9 @@ dotnet_diagnostic.CA2007.severity = none # Consider calling ConfigureAwait on th
 # Would be nice if this wasn't global, but conflicts on VB "shared" keyword
 dotnet_diagnostic.CA1716.severity = none # Identifiers should not match keywords
 
+# Adding delegates on blazor side increases memory pressure and bandwidth, don't accept this advice until tested.
+dotnet_diagnostic.CA1848.severity = none # For improved performance, use ILogger delegates
+
 [*.{cshtml,xml,html,css}]
 indent_style = space
 indent_size = 2

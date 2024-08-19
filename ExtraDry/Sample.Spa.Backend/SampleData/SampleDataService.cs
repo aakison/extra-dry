@@ -51,7 +51,7 @@ public partial class SampleDataService {
                             DataType = ExpandoDataType.Text, 
                             Label = "Stock Code", 
                             Slug = "asx_code",  
-                            IsRequired = true, 
+                            IsRequired = false, 
                             MaxLength = 10, 
                             State = ExpandoState.Active 
                         },

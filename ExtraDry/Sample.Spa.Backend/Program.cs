@@ -57,7 +57,7 @@ builder.Services.AddSwaggerGen(openapi => {
 
 builder.Services.AddAuthentication("WorthlessAuthentication")
     .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("WorthlessAuthentication", null);
-//builder.Services.AddAuthorizationCore(options => SamplePolicies.AddAuthorizationOptions(options));
+builder.Services.AddAuthorizationCore(SamplePolicies.AddAuthorizationOptions);
 builder.Services.AddSingleton<IAuthorizationHandler, SampleAccessHandler>();
 
 builder.Services.AddHttpContextAccessor();
