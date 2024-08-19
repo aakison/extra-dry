@@ -244,6 +244,11 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
             Message = valid ? string.Empty : $"Value is not a valid {Property.PropertyType.Name}",
         });
 
+        await InvokeOnChange(args);
+    }
+
+    private async Task InvokeOnChange(ChangeEventArgs args)
+    {
         var task = OnChange?.InvokeAsync(args);
         if(task != null) {
             await task;

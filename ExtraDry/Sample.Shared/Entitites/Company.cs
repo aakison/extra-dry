@@ -84,10 +84,9 @@ public class Company : IResourceIdentifiers {
     [InputFormat(Icon = "currency")]
     public decimal AnnualRevenue { get; set; }
 
-    [Display(Prompt = "0.00")]
+    [Display(Prompt = "0.00", Description = "Clamped to range [0, 120]")]
     [Range(0, 120)]
     [Precision(18, 2)]
-    [InputFormat(Icon = "percent")]
     public decimal SalesMargin { get; set; }
 
     [Filter]

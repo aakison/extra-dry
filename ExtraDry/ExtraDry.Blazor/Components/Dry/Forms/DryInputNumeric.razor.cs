@@ -1,5 +1,4 @@
 ﻿using System.Reflection.Metadata;
-using System.Text.RegularExpressions;
 
 namespace ExtraDry.Blazor.Forms;
 
@@ -93,7 +92,8 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
             }
             Value = newValue;
             StateHasChanged();
-            valid = true;
+            valid = AssertValid();
+            await InvokeOnChange(new ChangeEventArgs { Value = decimalValue });
         }
         else {
             valid = false;
@@ -104,6 +104,15 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
             Message = valid ? string.Empty : $"Not a valid number.",
         });
 
+    }
+
+    private bool AssertValid()
+    {
+        bool valid = true;
+        var validator = new DataValidator();
+        validator.ValidateProperties(Model!, Property!.Property.Name);
+        valid = validator.Errors.Count == 0;
+        return valid;
     }
 
     private string DisplayValue(decimal decimalValue)
@@ -130,9 +139,10 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
         };
         Property.SetValue(Model, value);
     }
-    private async Task CallOnChange()
+
+    private async Task InvokeOnChange(ChangeEventArgs args)
     {
-        var task = OnChange?.InvokeAsync();
+        var task = OnChange?.InvokeAsync(args);
         if(task != null) {
             await task;
         }
