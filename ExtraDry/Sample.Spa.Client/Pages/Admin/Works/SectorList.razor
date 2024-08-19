@@ -1,12 +1,18 @@
 ﻿@inject IListService<Sector> SectorService;
+@inject CrudService<Sector> SectorCrudService;
 @inject NavigationManager Navigation;
 
 <DryPageQueryView>
     <TableMenu TItem="Sector" />
-    <DryTable TItem="Sector" ViewModel="@this" ItemsService="@SectorService" />
+    <DryTable TItem="Sector" ViewModel="@this" ItemsService="@SectorService" @ref="SectorTable" />
 </DryPageQueryView>
 
 @code {
+
+    private DryTable<Sector> SectorTable = null!;
+
+    [Inject]
+    private IJSRuntime Runtime { get; set; } = null!;
 
     [Command(CommandContext.Alternate, Icon = "edit")]
     public void Edit(Sector sector)
@@ -14,4 +20,17 @@
         Navigation.NavigateTo($"/admin/works/sectors/list/{sector.Uuid}");
     }
 
+    [Command(CommandContext.Default, Icon = "trash")]
+    public async Task Delete(Sector sector)
+    {
+        bool confirmed = await Runtime.InvokeAsync<bool>("confirm", $"Are you sure you want to delete sector {sector.Title}?");
+        if (confirmed)
+        {
+            await SectorCrudService.DeleteAsync(sector.Uuid);
+            if (SectorTable != null)
+            {
+                await SectorTable.TryRemoveItemAsync(sector);
+            }
+        }
+    }
 }

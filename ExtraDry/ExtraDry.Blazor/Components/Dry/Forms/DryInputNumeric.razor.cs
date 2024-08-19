@@ -1,5 +1,4 @@
 ﻿using System.Reflection.Metadata;
-using System.Text.RegularExpressions;
 
 namespace ExtraDry.Blazor.Forms;
 
@@ -33,6 +32,7 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
+    /// <inheritdoc cref="DryInput{T}.ReadOnly" />
     [Parameter]
     public bool ReadOnly { get; set; }
 
@@ -48,8 +48,14 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
         if(Model == null || Property == null) {
             return;
         }
-        Value = Property.DisplayValue(Model);
+        var objValue = Property.GetValue(Model) ?? 0.0m;
+        Value = DisplayValue((decimal)objValue);
     }
+
+    /// <summary>
+    /// Only allow digits, commas, periods and navigation keys. 
+    /// </summary>
+    private static string DisableInvalidCharacters => @"if(!(/[0-9.,]/.test(event.key) || event.key == 'Backspace' || event.key == 'Delete' || event.key == 'ArrowLeft' || event.key == 'ArrowRight' || event.key == 'Tab')) return false;";
 
     [Inject]
     private ILogger<DryInput<T>> Logger { get; set; } = null!;
@@ -62,69 +68,83 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", ReadOnlyCss, CssClass);
 
-    private string Value {
-        get {
-            return _Value;
-        }
-        set {
-            HandleChange(value);
-        }
-    }
-
     private string InputTitle => Property?.FieldCaption ?? "";
 
-    [Parameter]
-    public string? Placeholder { get; set; }
+    private string Value { get; set; } = "";
 
-    private string PlaceholderDisplay => Placeholder ?? Property?.Display?.Prompt ?? "";
-
-    /// <summary>
-    /// Because we are mutating the value that is displayed within the handle change (to strip or
-    /// calculate values), we need to implement differently The OnChange functionality will not
-    /// allow for this (there is a hack to assign the backing field to null, then sleep, then
-    /// repopulate) so using the binding functionality is the recommended way
-    /// https://github.com/dotnet/aspnetcore/issues/17099
-    /// </summary>
-    private void HandleChange(string newValue)
+    private async Task HandleChange(ChangeEventArgs args)
     {
         if(Property == null || Model == null) {
             return;
         }
 
-        // In the future, if we are to allow basic calculations in numeric fields, this is where
-        // that would go. Note that this will run synchronously in the setter of Value and
-        // therefore needs to be quick.
+        var value = args.Value?.ToString()?.Replace(",", "") ?? "";
 
-        var value = Regex.Replace(newValue, @"[^\d.,]", "");
-
-        if(!decimal.TryParse(value, CultureInfo.CurrentCulture, out var dec)) {
-            dec = 0;
-        }
-
-        // Future enhancement: Allow for the consumer to provide the display format.
-        if(Property.InputType == typeof(int)) {
-            _Value = dec.ToString("#,#", CultureInfo.CurrentCulture);
-            Property.SetValue(Model, int.Parse(value, CultureInfo.InvariantCulture));
+        var valid = false;
+        if(decimal.TryParse(value, CultureInfo.CurrentCulture, out var decimalValue)) {
+            SetProperty(decimalValue);
+            var newValue = DisplayValue(decimalValue);
+            if(Value == newValue) {
+                // rare case where Value property doesn't change because of formatting issues.  E.g. 123.45 written as 1,2,3.45 won't trigger Value change refresh.
+                Value = $" {newValue}"; // stringly different but minimize UI flicker
+                StateHasChanged();
+                await Task.Delay(1); // let the UI update
+            }
+            Value = newValue;
+            StateHasChanged();
+            valid = AssertValid();
+            await InvokeOnChange(new ChangeEventArgs { Value = decimalValue });
         }
         else {
-            _Value = dec.ToString("#,0.00", CultureInfo.CurrentCulture);
-            Property.SetValue(Model, value);
+            valid = false;
         }
+        await OnValidation.InvokeAsync(new ValidationEventArgs {
+            IsValid = valid,
+            MemberName = Property.PropertyType.Name,
+            Message = valid ? string.Empty : $"Not a valid number.",
+        });
+
     }
 
-    private async Task CallOnChange()
+    private bool AssertValid()
     {
-        var task = OnChange?.InvokeAsync();
+        bool valid = true;
+        var validator = new DataValidator();
+        validator.ValidateProperties(Model!, Property!.Property.Name);
+        valid = validator.Errors.Count == 0;
+        return valid;
+    }
+
+    private string DisplayValue(decimal decimalValue)
+    {
+        if(Property == null || Model == null) {
+            return "";
+        }
+        return Property.InputType switch {
+            Type t when t == typeof(int) => decimalValue.ToString("#,#", CultureInfo.CurrentCulture),
+            Type t when t == typeof(decimal) => decimalValue.ToString("#,0.00", CultureInfo.CurrentCulture),
+            _ => throw new NotImplementedException("Could not map type to property."),
+        };
+    }
+
+    private void SetProperty(decimal decimalValue)
+    {
+        if(Property == null || Model == null) {
+            return;
+        }
+        var value = Property.PropertyType switch {
+            Type t when t == typeof(int) => (int)decimalValue,
+            Type t when t == typeof(decimal) => decimalValue,
+            _ => throw new NotImplementedException("Could not map type to property."),
+        };
+        Property.SetValue(Model, value);
+    }
+
+    private async Task InvokeOnChange(ChangeEventArgs args)
+    {
+        var task = OnChange?.InvokeAsync(args);
         if(task != null) {
             await task;
         }
     }
-
-    private string _Value = "";
-
-    /// <summary>
-    /// Only allow digits, commas, periods and navigation keys. 
-    /// </summary>
-    private static string DisableInvalidCharacters => @"if(!(/[0-9.,]/.test(event.key) || event.key == 'Backspace' || event.key == 'Delete' || event.key == 'ArrowLeft' || event.key == 'ArrowRight' || event.key == 'Tab')) return false;";
-
 }

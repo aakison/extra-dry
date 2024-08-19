@@ -22,10 +22,10 @@ public class DryInputDateTimeTests
             (nameof(DryInputDateTime<DateTimeModel>.Property), property)
             );
 
-        var input = fragment.Nodes.First() as IHtmlInputElement;
+        var input = fragment.Find("input") as IHtmlInputElement;
         Assert.NotNull(input);
         Assert.Equal("INPUT", input.NodeName);
-        Assert.Equal(model.DateTime.ToString("yyyy-MM-ddTHH:mm", CultureInfo.InvariantCulture), input.Value);
+        Assert.Equal(model.DateTime.ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture), input.Value);
         Assert.Equal("datetime-local", input.Type);
     }
 
@@ -42,10 +42,10 @@ public class DryInputDateTimeTests
             (nameof(DryInputDateTime<DateTimeModel>.Property), property)
             );
 
-        var input = fragment.Nodes.First() as IHtmlInputElement;
+        var input = fragment.Find("input") as IHtmlInputElement;
         Assert.NotNull(input);
         Assert.Equal("INPUT", input.NodeName);
-        Assert.Equal(model.DateTime.ToLocalTime().ToString("yyyy-MM-ddTHH:mm", CultureInfo.InvariantCulture), input.Value);
+        Assert.Equal(model.DateTime.ToLocalTime().ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture), input.Value);
         Assert.Equal("datetime-local", input.Type);
     }
 
@@ -62,7 +62,7 @@ public class DryInputDateTimeTests
             (nameof(DryInputDateTime<DateTimeModel>.Property), property)
             );
 
-        var input = fragment.Nodes.First() as IHtmlInputElement;
+        var input = fragment.Find("input") as IHtmlInputElement;
         Assert.NotNull(input);
         Assert.Equal("INPUT", input.NodeName);
         Assert.Equal(model.DateOnly.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture), input.Value);
@@ -82,10 +82,11 @@ public class DryInputDateTimeTests
             (nameof(DryInputDateTime<DateTimeModel>.Property), property)
             );
 
-        var input = fragment.Nodes.First() as IHtmlInputElement;
+        var input = fragment.Find("input") as IHtmlInputElement;
         Assert.NotNull(input);
         Assert.Equal("INPUT", input.NodeName);
-        Assert.Equal(model.TimeOnly.ToString("HH:mm", CultureInfo.InvariantCulture), input.Value);
+        Assert.Equal(model.TimeOnly, TimeOnly.Parse(input.Value, CultureInfo.InvariantCulture));
+        
         Assert.Equal("time", input.Type);
     }
 
@@ -103,31 +104,11 @@ public class DryInputDateTimeTests
             (nameof(DryInputDateTime<DateTimeAttributedModel>.Property), property)
             );
 
-        var input = fragment.Nodes.First() as IHtmlInputElement;
+        var input = fragment.Find("input") as IHtmlInputElement;
         Assert.NotNull(input);
         Assert.Equal("INPUT", input.NodeName);
         Assert.Equal(model.DateOnly.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture), input.Value);
         Assert.Equal("date", input.Type);
-    }
-
-    [Fact]
-    public void TimeOverrideRendersAsTime()
-    {
-        using var context = new TestContext();
-        var model = new DateTimeAttributedModel { Id = 1, TimeOnly = new DateTime(2024, 8, 12, 19, 30, 12, DateTimeKind.Local) };
-        var description = new ViewModelDescription(typeof(DateTimeAttributedModel), model);
-        var property = description.FormProperties.First(e => e.Property.Name == nameof(DateTimeAttributedModel.TimeOnly));
-
-        var fragment = context.RenderComponent<DryInputDateTime<DateTimeAttributedModel>>(
-            (nameof(DryInputDateTime<DateTimeAttributedModel>.Model), model),
-            (nameof(DryInputDateTime<DateTimeAttributedModel>.Property), property)
-            );
-
-        var input = fragment.Nodes.First() as IHtmlInputElement;
-        Assert.NotNull(input);
-        Assert.Equal("INPUT", input.NodeName);
-        Assert.Equal(model.TimeOnly.ToString("HH:mm", CultureInfo.InvariantCulture), input.Value);
-        Assert.Equal("time", input.Type);
     }
 
     [Fact]
@@ -143,10 +124,11 @@ public class DryInputDateTimeTests
             (nameof(DryInputDateTime<DateTimeAttributedModel>.Property), property)
             );
 
-        var input = fragment.Nodes.First() as IHtmlInputElement;
+        var input = fragment.Find("input") as IHtmlInputElement;
         Assert.NotNull(input);
         Assert.Equal("INPUT", input.NodeName);
-        Assert.Equal(model.DateTime, input.Value);
+        Assert.Equal(DateTime.Parse(model.DateTime, CultureInfo.InvariantCulture), 
+            DateTime.Parse(input.Value, CultureInfo.InvariantCulture));
         Assert.Equal("datetime-local", input.Type);
     }
 

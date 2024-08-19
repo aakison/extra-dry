@@ -285,6 +285,9 @@ public class PropertyDescription
                     return StringToDecimal(strValue) ?? 0m;
                 }
             }
+            else if(value is decimal) {
+                return value;
+            }
             else {
                 throw new NotImplementedException();
             }

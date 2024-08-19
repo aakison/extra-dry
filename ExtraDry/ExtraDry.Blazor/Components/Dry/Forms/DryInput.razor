@@ -85,7 +85,7 @@
             }
         } 
         else if(Property.HasNumericRepresentation) {
-            <DryInputNumeric CssClass="@CssClasses" Model="@Model" Property="@Property" ReadOnly="@ReadOnly" />
+            <DryInputNumeric CssClass="@CssClasses" Model="@Model" Property="@Property" ReadOnly="@ReadOnly" OnValidation="@ValidationChanged" />
         }
         else if(LookupProviderOptions != null) {
             var selectedValue = Property.GetValue(Model);
@@ -98,12 +98,12 @@
         }
         else if(ReadOnly) {
             var selectedValue = Property.GetValue(Model);
-            <span class="@CssClasses">@selectedValue?.ToString()</span>
+            <span class="readonly">@selectedValue?.ToString()</span>
         }
         else { 
         }
         @if(!Valid) {
-            <span class="validation @CssClasses">@ValidationMessage</span>
+            <span class="validation">@ValidationMessage</span>
         }
     }
 </div>

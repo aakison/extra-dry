@@ -35,7 +35,7 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
-    /// <inheritdoc />
+    /// <inheritdoc cref="DryInput{T}.ReadOnly" />
     [Parameter]
     public bool ReadOnly { get; set; }
 
@@ -105,10 +105,11 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
     private string Value { get; set; } = "";
 
     /// <summary>
-    /// Browser enables space to get dialog on date/time but doesn't disable it when the field is
-    /// readonly. This hack disables the space key when the field is readonly.
+    /// Browser enables space to get dialog on date/time but doesn't disable it when the field is 
+    /// readonly. This hack disables the space key when the field is readonly.  It also disables 
+    /// the up and down arrows which would scroll the page.
     /// </summary>
-    private string DisableSpaceWhenReadOnlyHack => ReadOnly ? @"if(event.code == 'Space') return false;" : "";
+    private string DisableSpaceWhenReadOnlyHack => ReadOnly ? @"if(event.code == 'Space' || event.code == 'ArrowUp' || event.code == 'ArrowDown') return false;" : "";
 
     private string ConvertModelPropertyToString()
     {
@@ -243,6 +244,11 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
             Message = valid ? string.Empty : $"Value is not a valid {Property.PropertyType.Name}",
         });
 
+        await InvokeOnChange(args);
+    }
+
+    private async Task InvokeOnChange(ChangeEventArgs args)
+    {
         var task = OnChange?.InvokeAsync(args);
         if(task != null) {
             await task;
