@@ -36,13 +36,6 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
     [Parameter]
     public bool ReadOnly { get; set; }
 
-    /// <summary>
-    /// Event that is raised when the input is validated using internal rules. Does not check
-    /// global rules that might be set on the model using data annotations.
-    /// </summary>
-    [Parameter]
-    public EventCallback<ValidationEventArgs> OnValidation { get; set; }
-
     protected override void OnParametersSet()
     {
         if(Model == null || Property == null) {
@@ -62,15 +55,6 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", ReadOnlyCss, CssClass);
 
-    private string Value {
-        get {
-            return _Value;
-        }
-        set {
-            HandleChange(value);
-        }
-    }
-
     private string InputTitle => Property?.FieldCaption ?? "";
 
     [Parameter]
@@ -78,39 +62,63 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
 
     private string PlaceholderDisplay => Placeholder ?? Property?.Display?.Prompt ?? "";
 
-    /// <summary>
-    /// Because we are mutating the value that is displayed within the handle change (to strip or
-    /// calculate values), we need to implement differently The OnChange functionality will not
-    /// allow for this (there is a hack to assign the backing field to null, then sleep, then
-    /// repopulate) so using the binding functionality is the recommended way
-    /// https://github.com/dotnet/aspnetcore/issues/17099
-    /// </summary>
-    private void HandleChange(string newValue)
+    private async Task HandleChange(ChangeEventArgs args)
     {
         if(Property == null || Model == null) {
             return;
         }
 
-        // In the future, if we are to allow basic calculations in numeric fields, this is where
-        // that would go. Note that this will run synchronously in the setter of Value and
-        // therefore needs to be quick.
+        var value = args.Value?.ToString()?.Replace(",", "") ?? "";
 
-        var value = Regex.Replace(newValue, @"[^\d.,]", "");
-
-        if(!decimal.TryParse(value, CultureInfo.CurrentCulture, out var dec)) {
-            dec = 0;
-        }
-
-        // Future enhancement: Allow for the consumer to provide the display format.
-        if(Property.InputType == typeof(int)) {
-            _Value = dec.ToString("#,#", CultureInfo.CurrentCulture);
-            Property.SetValue(Model, int.Parse(value, CultureInfo.InvariantCulture));
+        var valid = false;
+        if(decimal.TryParse(value, CultureInfo.CurrentCulture, out var decimalValue)) {
+            Value = DisplayValue(decimalValue);
+            SetProperty(decimalValue);
+            valid = true;
         }
         else {
-            _Value = dec.ToString("#,0.00", CultureInfo.CurrentCulture);
-            Property.SetValue(Model, value);
+            valid = false;
         }
+        await OnValidation.InvokeAsync(new ValidationEventArgs {
+            IsValid = valid,
+            MemberName = Property.PropertyType.Name,
+            Message = valid ? string.Empty : $"Not a valid number.",
+        });
+
     }
+
+    private string DisplayValue(decimal decimalValue)
+    {
+        if(Property == null || Model == null) {
+            return "";
+        }
+        return Property.InputType switch {
+            Type t when t == typeof(int) => decimalValue.ToString("#,#", CultureInfo.CurrentCulture),
+            Type t when t == typeof(decimal) => decimalValue.ToString("#,0.00", CultureInfo.CurrentCulture),
+            _ => throw new NotImplementedException("Could not map type to property."),
+        };
+    }
+
+    private void SetProperty(decimal decimalValue)
+    {
+        if(Property == null || Model == null) {
+            return;
+        }
+        var value = Property.PropertyType switch {
+            Type t when t == typeof(int) => (int)decimalValue,
+            Type t when t == typeof(decimal) => decimalValue,
+            _ => throw new NotImplementedException("Could not map type to property."),
+        };
+        Property.SetValue(Model, value);
+    }
+
+    /// <summary>
+    /// Event that is raised when the input is validated using internal rules. Does not check
+    /// global rules that might be set on the model using data annotations.
+    /// </summary>
+    [Parameter]
+    public EventCallback<ValidationEventArgs> OnValidation { get; set; }
+
 
     private async Task CallOnChange()
     {
@@ -120,7 +128,7 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
         }
     }
 
-    private string _Value = "";
+    private string Value = "";
 
     /// <summary>
     /// Only allow digits, commas, periods and navigation keys. 

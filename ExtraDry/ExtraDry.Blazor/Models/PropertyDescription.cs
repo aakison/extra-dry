@@ -250,6 +250,8 @@ public class PropertyDescription
         }
     }
 
+    public bool HasFreshnessRepresentation => Property.PropertyType == typeof(UserTimestamp);
+
     public IList<ValueDescription> GetDiscreteValues()
     {
         var values = new List<ValueDescription>();
@@ -282,6 +284,9 @@ public class PropertyDescription
                 else {
                     return StringToDecimal(strValue) ?? 0m;
                 }
+            }
+            else if(value is decimal) {
+                return value;
             }
             else {
                 throw new NotImplementedException();
