@@ -82,6 +82,20 @@ public class DryInputBase<T> : ComponentBase, IDryInput<T>, IExtraDryComponent
         Affordance == "" ? Property?.InputFormat?.Affordance ?? "" : Affordance;
 
     /// <summary>
+    /// The title for the input field.  If not set, the field caption from the property is used.
+    /// </summary>
+    [Parameter]
+    public string Title { get; set; } = "";
+
+    /// <summary>
+    /// The title for the control, resolved from the component parameter, or the InputFormat on the property.
+    /// </summary>
+    protected string ResolvedTitle => 
+        Title == ""
+        ? Property?.FieldCaption ?? ""
+        : Title;
+
+    /// <summary>
     /// Retrieve the event args by calling <see cref="ValidateProperty" />.
     /// </summary>
     protected async Task InvokeOnValidationAsync(ValidationEventArgs args)

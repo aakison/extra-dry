@@ -37,7 +37,10 @@ public partial class DryInputDateTime<T> : DryInputBase<T>
 
     private string TimeZoneDisplay => TimeZone == "" ? "" : $" ({TimeZone})";
 
-    private string InputTitle => $"{Property?.FieldCaption} {TimeZoneDisplay}";
+    /// <summary>
+    /// Override the base ResolvedTitle to include the time zone display.
+    /// </summary>
+    private new string ResolvedTitle => $"{base.ResolvedTitle}{TimeZoneDisplay}";
 
     /// <summary>
     /// The actual input type based on the property type and input type. This is typically the

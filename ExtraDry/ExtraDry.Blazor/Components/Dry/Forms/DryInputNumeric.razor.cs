@@ -31,8 +31,6 @@ public partial class DryInputNumeric<T> : DryInputBase<T>
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", ReadOnlyCss, CssClass);
 
-    private string InputTitle => Property?.FieldCaption ?? "";
-
     private string Value { get; set; } = "";
 
     private async Task HandleChange(ChangeEventArgs args)

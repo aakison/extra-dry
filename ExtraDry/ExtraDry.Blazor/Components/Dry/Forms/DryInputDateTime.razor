@@ -6,7 +6,7 @@
     @if(ResolvedIcon != "") {
         <Icon CssClass="context" Key="@ResolvedIcon" />
     }
-    <input class="value" title="@InputTitle" type="@HtmlDisplayMode" value="@Value" readonly="@ReadOnly" @onchange="HandleChange" onkeydown="@DisableSpaceWhenReadOnlyHack" />
+    <input class="value" title="@ResolvedTitle" type="@HtmlDisplayMode" value="@Value" readonly="@ReadOnly" @onchange="HandleChange" onkeydown="@DisableSpaceWhenReadOnlyHack" />
     @if(ResolvedAffordance != "" && !ReadOnly) {
         <Icon CssClass="affordance" Key="@ResolvedAffordance" onclick="this.parentNode.getElementsByTagName('input')[0].showPicker()" />
     }
