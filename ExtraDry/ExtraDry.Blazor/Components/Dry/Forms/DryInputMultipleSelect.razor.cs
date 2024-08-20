@@ -20,7 +20,7 @@ public partial class DryInputMultipleSelect<T> : ComponentBase, IDryInput<T>, IE
 
     /// <inheritdoc />
     [Parameter]
-    public EventCallback<ChangeEventArgs>? OnChange { get; set; }
+    public EventCallback<ChangeEventArgs> OnChange { get; set; }
 
     /// <inheritdoc />
     [CascadingParameter]
@@ -100,7 +100,7 @@ public partial class DryInputMultipleSelect<T> : ComponentBase, IDryInput<T>, IE
 
     private async Task InvokeOnChange(ChangeEventArgs args)
     {
-        var task = OnChange?.InvokeAsync(args);
+        var task = OnChange.InvokeAsync(args);
         if(task != null) {
             await task;
         }

@@ -28,7 +28,7 @@ public partial class DryInputSingleSelect<T> : ComponentBase, IDryInput<T>, IExt
 
     /// <inheritdoc />
     [Parameter]
-    public EventCallback<ChangeEventArgs>? OnChange { get; set; }
+    public EventCallback<ChangeEventArgs> OnChange { get; set; }
 
     /// <inheritdoc cref="Blazor.EditMode" />
     [CascadingParameter]
@@ -62,10 +62,7 @@ public partial class DryInputSingleSelect<T> : ComponentBase, IDryInput<T>, IExt
 
     private async Task InvokeOnChange(ChangeEventArgs args)
     {
-        var task = OnChange?.InvokeAsync(args);
-        if(task != null) {
-            await task;
-        }
+        await OnChange.InvokeAsync(args);
     }
 
     private bool ReadOnly => EditMode == EditMode.ReadOnly;

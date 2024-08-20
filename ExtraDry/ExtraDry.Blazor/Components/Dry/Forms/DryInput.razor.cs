@@ -28,7 +28,7 @@ public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryC
 
     /// <inheritdoc />
     [Parameter]
-    public EventCallback<ChangeEventArgs>? OnChange { get; set; }
+    public EventCallback<ChangeEventArgs> OnChange { get; set; }
 
     /// <inheritdoc />
     [CascadingParameter]
@@ -140,7 +140,7 @@ public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryC
         Console.WriteLine($"Model: {Model} to Value: {value}");
         Property.SetValue(Model, value);
         Validate();
-        var task = OnChange?.InvokeAsync(args);
+        var task = OnChange.InvokeAsync(args);
         if(task != null) {
             await task;
         }
@@ -160,7 +160,7 @@ public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryC
         Validate();
         // Ignore that it's a physical click and treat like value change for listeners.
         var changeEventArgs = new ChangeEventArgs { Value = value };
-        var task = OnChange?.InvokeAsync(changeEventArgs);
+        var task = OnChange.InvokeAsync(changeEventArgs);
         if(task != null) {
             await task;
         }

@@ -6,42 +6,12 @@ namespace ExtraDry.Blazor.Forms;
 /// A DRY wrapper around a numeric input field. Prefer the use of <see cref="DryInput{T}" /> instead
 /// of this component as it is more flexible and supports more data types.
 /// </summary>
-public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDryComponent
+public partial class DryInputNumeric<T> : DryInputBase<T>
 {
-    /// <inheritdoc />
-    [Parameter]
-    public string CssClass { get; set; } = string.Empty;
-
-    /// <inheritdoc />
-    [Parameter, EditorRequired]
-    public T? Model { get; set; }
-
-    /// <inheritdoc />
-    [Parameter, EditorRequired]
-    public PropertyDescription? Property { get; set; }
-
-    /// <inheritdoc />
-    [Parameter]
-    public EventCallback<ChangeEventArgs>? OnChange { get; set; }
-
-    /// <inheritdoc cref="Blazor.EditMode" />
-    [CascadingParameter]
-    public EditMode EditMode { get; set; } = EditMode.Create;
-
-    /// <inheritdoc />
-    [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
     /// <inheritdoc cref="DryInput{T}.ReadOnly" />
     [Parameter]
     public bool ReadOnly { get; set; }
-
-    /// <summary>
-    /// Event that is raised when the input is validated using internal rules. Does not check
-    /// global rules that might be set on the model using data annotations.
-    /// </summary>
-    [Parameter]
-    public EventCallback<ValidationEventArgs> OnValidation { get; set; }
 
     protected override void OnParametersSet()
     {
@@ -92,27 +62,14 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
             }
             Value = newValue;
             StateHasChanged();
-            valid = AssertValid();
-            await InvokeOnChange(new ChangeEventArgs { Value = decimalValue });
+            valid = ValidateProperty();
+            await InvokeOnChangeAsync(new ChangeEventArgs { Value = decimalValue });
         }
         else {
             valid = false;
         }
-        await OnValidation.InvokeAsync(new ValidationEventArgs {
-            IsValid = valid,
-            MemberName = Property.PropertyType.Name,
-            Message = valid ? string.Empty : $"Not a valid number.",
-        });
 
-    }
-
-    private bool AssertValid()
-    {
-        bool valid = true;
-        var validator = new DataValidator();
-        validator.ValidateProperties(Model!, Property!.Property.Name);
-        valid = validator.Errors.Count == 0;
-        return valid;
+        await InvokeOnValidationAsync(valid);
     }
 
     private string DisplayValue(decimal decimalValue)
@@ -140,11 +97,4 @@ public partial class DryInputNumeric<T> : ComponentBase, IDryInput<T>, IExtraDry
         Property.SetValue(Model, value);
     }
 
-    private async Task InvokeOnChange(ChangeEventArgs args)
-    {
-        var task = OnChange?.InvokeAsync(args);
-        if(task != null) {
-            await task;
-        }
-    }
 }

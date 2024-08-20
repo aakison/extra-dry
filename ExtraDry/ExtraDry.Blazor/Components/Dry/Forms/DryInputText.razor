@@ -1,4 +1,7 @@
 ﻿@namespace ExtraDry.Blazor.Forms
 @typeparam T
+@inherits DryInputBase<T>
 
-<input class="@CssClasses" title="@Property?.FieldCaption" type="text" value="@Value" readonly="@ReadOnly" placeholder="@Property?.Display?.Prompt" @onchange="HandleChange" @attributes="@UnmatchedAttributes" />
+<div class="@CssClasses" @attributes="@UnmatchedAttributes">
+    <input class="value" title="@Property?.FieldCaption" type="text" value="@Value" readonly="@ReadOnly" placeholder="@Placeholder" @onchange="HandleChange" />
+</div>

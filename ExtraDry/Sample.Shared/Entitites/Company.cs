@@ -75,7 +75,6 @@ public class Company : IResourceIdentifiers {
     [Rules(RuleAction.IgnoreDefaults)]
     public string ContactPhone { get; set; } = "";
 
-    [Display]
     [EmailAddress, StringLength(100)]
     [Rules(RuleAction.IgnoreDefaults)]
     public string ContactEmail { get; set; } = "";

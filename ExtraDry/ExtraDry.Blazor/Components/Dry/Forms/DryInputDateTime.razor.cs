@@ -9,42 +9,12 @@
 /// The type of the Model that the input renders a property for. Supports DateTime, DateOnly, and
 /// TimeOnly.
 /// </typeparam>
-public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDryComponent
+public partial class DryInputDateTime<T> : DryInputBase<T>
 {
-    /// <inheritdoc />
-    [Parameter]
-    public string CssClass { get; set; } = string.Empty;
-
-    /// <inheritdoc />
-    [Parameter, EditorRequired]
-    public T? Model { get; set; }
-
-    /// <inheritdoc />
-    [Parameter, EditorRequired]
-    public PropertyDescription? Property { get; set; }
-
-    /// <inheritdoc />
-    [Parameter]
-    public EventCallback<ChangeEventArgs>? OnChange { get; set; }
-
-    /// <inheritdoc cref="Blazor.EditMode" />
-    [CascadingParameter]
-    public EditMode EditMode { get; set; } = EditMode.Create;
-
-    /// <inheritdoc />
-    [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
     /// <inheritdoc cref="DryInput{T}.ReadOnly" />
     [Parameter]
     public bool ReadOnly { get; set; }
-
-    /// <summary>
-    /// Event that is raised when the input is validated using internal rules. Does not check
-    /// global rules that might be set on the model using data annotations.
-    /// </summary>
-    [Parameter]
-    public EventCallback<ValidationEventArgs> OnValidation { get; set; }
 
     protected override void OnParametersSet()
     {
@@ -185,74 +155,62 @@ public partial class DryInputDateTime<T> : ComponentBase, IDryInput<T>, IExtraDr
         }
         Value = args.Value?.ToString() ?? "";
         var valid = false;
+        object? newValue = null;
         if(Property.PropertyType == typeof(DateTime) && ActualInputType == typeof(DateTime)) {
             if(DateTime.TryParse(Value, out var datetime)) {
-                Property.SetValue(Model, datetime.ToUniversalTime());
+                newValue = datetime.ToUniversalTime();
                 valid = true;
             }
         }
         else if(Property.PropertyType == typeof(DateTime) && ActualInputType == typeof(DateOnly)) {
             if(DateOnly.TryParse(Value, out var dateOnly)) {
                 var dateTime = dateOnly.ToDateTime(new TimeOnly());
-                Property.SetValue(Model, dateTime);
+                newValue = dateTime;
                 valid = true;
             }
         }
         else if(Property.PropertyType == typeof(DateTime) && ActualInputType == typeof(TimeOnly)) {
             if(TimeOnly.TryParse(Value, out var timeOnly)) {
-                var dateTime = new DateOnly().ToDateTime(timeOnly);
-                Property.SetValue(Model, dateTime);
+                newValue = new DateOnly().ToDateTime(timeOnly);
                 valid = true;
             }
         }
         else if(Property.PropertyType == typeof(string) && ActualInputType == typeof(DateTime)) {
             if(DateTime.TryParse(Value, out var datetime)) {
-                Property.SetValue(Model, datetime.ToUniversalTime().ToString(DateTimeFormat, CultureInfo.InvariantCulture));
+                newValue = datetime.ToUniversalTime().ToString(DateTimeFormat, CultureInfo.InvariantCulture);
                 valid = true;
             }
         }
         else if(Property.PropertyType == typeof(string) && ActualInputType == typeof(DateOnly)) {
             if(DateOnly.TryParse(Value, out var dateOnly)) {
-                var dateTime = dateOnly.ToString(DateOnlyFormat, CultureInfo.InvariantCulture);
-                Property.SetValue(Model, dateTime);
+                newValue = dateOnly.ToString(DateOnlyFormat, CultureInfo.InvariantCulture);
                 valid = true;
             }
         }
         else if(Property.PropertyType == typeof(string) && ActualInputType == typeof(TimeOnly)) {
             if(TimeOnly.TryParse(Value, out var timeOnly)) {
-                var dateTime = timeOnly.ToString(TimeOnlyFormat, CultureInfo.InvariantCulture);
-                Property.SetValue(Model, dateTime);
+                newValue = timeOnly.ToString(TimeOnlyFormat, CultureInfo.InvariantCulture);
                 valid = true;
             }
         }
         else if(Property.PropertyType == typeof(DateOnly)) {
             if(DateOnly.TryParse(Value, out var dateOnly)) {
-                Property.SetValue(Model, dateOnly);
+                newValue = dateOnly;
                 valid = true;
             }
         }
         else if(Property.PropertyType == typeof(TimeOnly)) {
             if(TimeOnly.TryParse(Value, out var timeOnly)) {
-                Property.SetValue(Model, timeOnly);
+                newValue = timeOnly;
                 valid = true;
             }
         }
 
-        await OnValidation.InvokeAsync(new ValidationEventArgs {
-            IsValid = valid,
-            MemberName = Property.PropertyType.Name,
-            Message = valid ? string.Empty : $"Value is not a valid {Property.PropertyType.Name}",
-        });
-
-        await InvokeOnChange(args);
-    }
-
-    private async Task InvokeOnChange(ChangeEventArgs args)
-    {
-        var task = OnChange?.InvokeAsync(args);
-        if(task != null) {
-            await task;
+        if(valid) {
+            Property.SetValue(Model, newValue);
+            await InvokeOnChangeAsync(newValue);
         }
+        await InvokeOnValidationAsync(valid);
     }
 
     private void SetActualInputType()

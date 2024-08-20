@@ -1,5 +1,6 @@
 ﻿@namespace ExtraDry.Blazor.Forms
 @typeparam T
+@inherits DryInputBase<T>
 
 <div class="@CssClasses" @attributes="@UnmatchedAttributes">
     @if(Icon != "") {
