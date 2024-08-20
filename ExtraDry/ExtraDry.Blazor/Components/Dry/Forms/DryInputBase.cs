@@ -45,13 +45,18 @@ public class DryInputBase<T> : ComponentBase, IDryInput<T>, IExtraDryComponent
     [Parameter]
     public EventCallback<ValidationEventArgs> OnValidation { get; set; }
 
-    protected async Task InvokeOnValidationAsync(bool valid)
+    /// <summary>
+    /// Logger for DryInput controls, shares space with DryInput for consistency in logging 
+    /// messages between a component and its children.
+    /// </summary>
+    [Inject]
+    protected ILogger<DryInput<T>> Logger { get; set; } = null!;
+
+    /// <summary>
+    /// Retrieve the event args by calling <see cref="ValidateProperty" />.
+    /// </summary>
+    protected async Task InvokeOnValidationAsync(ValidationEventArgs args)
     {
-        var args = new ValidationEventArgs {
-            IsValid = valid,
-            MemberName = Property!.PropertyType.Name,
-            Message = valid ? string.Empty : $"Value is not a valid {Property.PropertyType.Name}",
-        };
         await OnValidation.InvokeAsync(args);
     }
 
@@ -66,14 +71,21 @@ public class DryInputBase<T> : ComponentBase, IDryInput<T>, IExtraDryComponent
     /// <summary>
     /// Checks the property against the data annotations and returns true if the property is valid.
     /// </summary>
-    /// <returns>true if property is valid</returns>
-    protected bool ValidateProperty()
+    /// <returns>True if property is valid</returns>
+    protected ValidationEventArgs ValidateProperty()
     {
-        bool valid = true;
+        var args = new ValidationEventArgs {
+            IsValid = true,
+            MemberName = Property!.Property.Name,
+            Message = "",
+        };
         var validator = new DataValidator();
         validator.ValidateProperties(Model!, Property!.Property.Name);
-        valid = validator.Errors.Count == 0;
-        return valid;
+        args.IsValid = validator.Errors.Count == 0;
+        if(!args.IsValid) {
+            args.Message = validator.Errors.FirstOrDefault()?.ErrorMessage ?? "Value is not valid";
+        }
+        return args;
     }
 
 }

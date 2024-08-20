@@ -27,9 +27,6 @@ public partial class DryInputNumeric<T> : DryInputBase<T>
     /// </summary>
     private static string DisableInvalidCharacters => @"if(!(/[0-9.,]/.test(event.key) || event.key == 'Backspace' || event.key == 'Delete' || event.key == 'ArrowLeft' || event.key == 'ArrowRight' || event.key == 'Tab')) return false;";
 
-    [Inject]
-    private ILogger<DryInput<T>> Logger { get; set; } = null!;
-
     private string Icon => Property?.InputFormat?.Icon ?? "";
 
     private string Affordance => Property?.InputFormat?.Affordance ?? "";
@@ -50,7 +47,6 @@ public partial class DryInputNumeric<T> : DryInputBase<T>
 
         var value = args.Value?.ToString()?.Replace(",", "") ?? "";
 
-        var valid = false;
         if(decimal.TryParse(value, CultureInfo.CurrentCulture, out var decimalValue)) {
             SetProperty(decimalValue);
             var newValue = DisplayValue(decimalValue);
@@ -62,14 +58,18 @@ public partial class DryInputNumeric<T> : DryInputBase<T>
             }
             Value = newValue;
             StateHasChanged();
-            valid = ValidateProperty();
+            var validation = ValidateProperty();
             await InvokeOnChangeAsync(new ChangeEventArgs { Value = decimalValue });
+            await InvokeOnValidationAsync(validation);
         }
         else {
-            valid = false;
+            var validation = new ValidationEventArgs() { 
+                IsValid = false, 
+                MemberName = Property.Property.Name, 
+                Message = "Invalid number format." 
+            };
+            await InvokeOnValidationAsync(validation);
         }
-
-        await InvokeOnValidationAsync(valid);
     }
 
     private string DisplayValue(decimal decimalValue)

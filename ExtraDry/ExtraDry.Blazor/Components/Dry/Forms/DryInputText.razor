@@ -3,5 +3,11 @@
 @inherits DryInputBase<T>
 
 <div class="@CssClasses" @attributes="@UnmatchedAttributes">
+    @if(Icon != "") {
+        <Icon CssClass="context" Key="@Icon"/>
+    }
     <input class="value" title="@Property?.FieldCaption" type="text" value="@Value" readonly="@ReadOnly" placeholder="@Placeholder" @onchange="HandleChange" />
+    @if(Affordance != "" && !ReadOnly) {
+        <Icon CssClass="affordance" Key="@Affordance" />
+    }
 </div>

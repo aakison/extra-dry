@@ -11,8 +11,6 @@ public partial class DryInputText<T> : DryInputBase<T> {
     [Parameter]
     public bool ReadOnly { get; set; }
 
-    private string Placeholder => Property?.Display?.Prompt ?? "";
-
     protected override void OnParametersSet()
     {
         if(Model == null || Property == null) {
@@ -21,8 +19,17 @@ public partial class DryInputText<T> : DryInputBase<T> {
         Value = Property.DisplayValue(Model);
     }
 
-    [Inject]
-    private ILogger<DryInput<T>> Logger { get; set; } = null!;
+    private string Placeholder => Property?.Display?.Prompt ?? "";
+
+    private string Icon => Property?.InputFormat?.Icon ?? "";
+
+    private string Affordance => Property?.InputFormat?.Affordance ?? "";
+
+    private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
+
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", ReadOnlyCss, CssClass);
+
+    private string Value { get; set; } = "";
 
     private async Task InvokeOnChange(ChangeEventArgs args)
     {
@@ -41,11 +48,4 @@ public partial class DryInputText<T> : DryInputBase<T> {
         await InvokeOnChangeAsync(value);
         await InvokeOnValidationAsync(valid);
     }
-
-    private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
-
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", ReadOnlyCss, CssClass);
-
-    private string Value { get; set; } = "";
-
 }

@@ -33,9 +33,6 @@ public partial class DryInputDateTime<T> : DryInputBase<T>
 
     private static List<Type> SupportedDisplayTypes => [typeof(DateTime), typeof(DateOnly), typeof(TimeOnly)];
 
-    [Inject]
-    private ILogger<DryInputDateTime<T>> Logger { get; set; } = null!;
-
     private string TimeZone { get; set; } = "";
 
     private string TimeZoneDisplay => TimeZone == "" ? "" : $" ({TimeZone})";
@@ -154,63 +151,73 @@ public partial class DryInputDateTime<T> : DryInputBase<T>
             return;
         }
         Value = args.Value?.ToString() ?? "";
-        var valid = false;
+        var parseValid = false;
         object? newValue = null;
         if(Property.PropertyType == typeof(DateTime) && ActualInputType == typeof(DateTime)) {
             if(DateTime.TryParse(Value, out var datetime)) {
                 newValue = datetime.ToUniversalTime();
-                valid = true;
+                parseValid = true;
             }
         }
         else if(Property.PropertyType == typeof(DateTime) && ActualInputType == typeof(DateOnly)) {
             if(DateOnly.TryParse(Value, out var dateOnly)) {
                 var dateTime = dateOnly.ToDateTime(new TimeOnly());
                 newValue = dateTime;
-                valid = true;
+                parseValid = true;
             }
         }
         else if(Property.PropertyType == typeof(DateTime) && ActualInputType == typeof(TimeOnly)) {
             if(TimeOnly.TryParse(Value, out var timeOnly)) {
                 newValue = new DateOnly().ToDateTime(timeOnly);
-                valid = true;
+                parseValid = true;
             }
         }
         else if(Property.PropertyType == typeof(string) && ActualInputType == typeof(DateTime)) {
             if(DateTime.TryParse(Value, out var datetime)) {
                 newValue = datetime.ToUniversalTime().ToString(DateTimeFormat, CultureInfo.InvariantCulture);
-                valid = true;
+                parseValid = true;
             }
         }
         else if(Property.PropertyType == typeof(string) && ActualInputType == typeof(DateOnly)) {
             if(DateOnly.TryParse(Value, out var dateOnly)) {
                 newValue = dateOnly.ToString(DateOnlyFormat, CultureInfo.InvariantCulture);
-                valid = true;
+                parseValid = true;
             }
         }
         else if(Property.PropertyType == typeof(string) && ActualInputType == typeof(TimeOnly)) {
             if(TimeOnly.TryParse(Value, out var timeOnly)) {
                 newValue = timeOnly.ToString(TimeOnlyFormat, CultureInfo.InvariantCulture);
-                valid = true;
+                parseValid = true;
             }
         }
         else if(Property.PropertyType == typeof(DateOnly)) {
             if(DateOnly.TryParse(Value, out var dateOnly)) {
                 newValue = dateOnly;
-                valid = true;
+                parseValid = true;
             }
         }
         else if(Property.PropertyType == typeof(TimeOnly)) {
             if(TimeOnly.TryParse(Value, out var timeOnly)) {
                 newValue = timeOnly;
-                valid = true;
+                parseValid = true;
             }
         }
 
-        if(valid) {
+
+        if(parseValid) {
             Property.SetValue(Model, newValue);
+            var validation = ValidateProperty();
             await InvokeOnChangeAsync(newValue);
+            await InvokeOnValidationAsync(validation);
         }
-        await InvokeOnValidationAsync(valid);
+        else {
+            var validation = new ValidationEventArgs {
+                IsValid = false,
+                MemberName = Property.Property.Name,
+                Message = $"Invalid date/time format",
+            };
+            await InvokeOnValidationAsync(validation);
+        }
     }
 
     private void SetActualInputType()
