@@ -27,8 +27,6 @@ public partial class DryInputNumeric<T> : DryInputBase<T>
     /// </summary>
     private static string DisableInvalidCharacters => @"if(!(/[0-9.,]/.test(event.key) || event.key == 'Backspace' || event.key == 'Delete' || event.key == 'ArrowLeft' || event.key == 'ArrowRight' || event.key == 'Tab')) return false;";
 
-    private string Icon => Property?.InputFormat?.Icon ?? "";
-
     private string Affordance => Property?.InputFormat?.Affordance ?? "";
 
     private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;

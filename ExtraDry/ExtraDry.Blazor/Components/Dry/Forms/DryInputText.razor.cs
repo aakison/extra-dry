@@ -19,10 +19,6 @@ public partial class DryInputText<T> : DryInputBase<T> {
         Value = Property.DisplayValue(Model);
     }
 
-    private string Placeholder => Property?.Display?.Prompt ?? "";
-
-    private string Icon => Property?.InputFormat?.Icon ?? "";
-
     private string Affordance => Property?.InputFormat?.Affordance ?? "";
 
     private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;

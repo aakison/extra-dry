@@ -4,7 +4,7 @@
 
 <div class="@CssClasses" @attributes="@UnmatchedAttributes">
     @if(Icon != "") {
-        <Icon CssClass="context" Key="@Icon"/>
+        <Icon CssClass="context" Key="@ResolvedIcon"/>
     }
     <input class="value" title="@InputTitle" type="text" value="@Value" @onchange="HandleChange" readonly="@ReadOnly" pattern="\d*" inputmode="numeric" onkeydown="@DisableInvalidCharacters" />
     @if(Affordance != "" && !ReadOnly) {

@@ -46,11 +46,34 @@ public class DryInputBase<T> : ComponentBase, IDryInput<T>, IExtraDryComponent
     public EventCallback<ValidationEventArgs> OnValidation { get; set; }
 
     /// <summary>
+    /// The icon to display next to the input field.  If not set, the icon from the property's
+    /// InputFormat is used.  If that is not set, no icon is displayed.
+    /// </summary>
+    [Parameter]
+    public string Icon { get; set; } = "";
+
+    /// <summary>
+    /// The actual icon to display, resolved from the property's InputFormat or the Icon parameter.
+    /// </summary>
+    protected string ResolvedIcon => 
+        !string.IsNullOrEmpty(Icon) 
+        ? Icon 
+        : Property?.InputFormat?.Icon ?? "";
+
+    /// <summary>
     /// Logger for DryInput controls, shares space with DryInput for consistency in logging 
     /// messages between a component and its children.
     /// </summary>
     [Inject]
     protected ILogger<DryInput<T>> Logger { get; set; } = null!;
+
+    [Parameter]
+    public string Placeholder { get; set; } = "";
+
+    protected string ResolvedPlaceholder => 
+        !string.IsNullOrEmpty(Placeholder) 
+        ? Placeholder
+        : Property?.Display?.Prompt ?? "";
 
     /// <summary>
     /// Retrieve the event args by calling <see cref="ValidateProperty" />.

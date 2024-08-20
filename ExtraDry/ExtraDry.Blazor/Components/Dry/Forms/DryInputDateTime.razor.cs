@@ -54,8 +54,6 @@ public partial class DryInputDateTime<T> : DryInputBase<T>
         _ => "datetime-local"
     };
 
-    private string Icon => Property?.InputFormat?.Icon ?? "";
-
     private string Affordance => Property?.InputFormat?.Affordance
         ?? Property?.InputType switch {
             Type t when t == typeof(DateOnly) => "select-date",
