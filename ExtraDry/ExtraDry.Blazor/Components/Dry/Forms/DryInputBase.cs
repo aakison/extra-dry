@@ -56,9 +56,7 @@ public class DryInputBase<T> : ComponentBase, IDryInput<T>, IExtraDryComponent
     /// The actual icon to display, resolved from the property's InputFormat or the Icon parameter.
     /// </summary>
     protected string ResolvedIcon => 
-        !string.IsNullOrEmpty(Icon) 
-        ? Icon 
-        : Property?.InputFormat?.Icon ?? "";
+        Icon == "" ? Property?.InputFormat?.Icon ?? "" : Icon;
 
     /// <summary>
     /// Logger for DryInput controls, shares space with DryInput for consistency in logging 
@@ -71,9 +69,17 @@ public class DryInputBase<T> : ComponentBase, IDryInput<T>, IExtraDryComponent
     public string Placeholder { get; set; } = "";
 
     protected string ResolvedPlaceholder => 
-        !string.IsNullOrEmpty(Placeholder) 
-        ? Placeholder
-        : Property?.Display?.Prompt ?? "";
+        Placeholder == "" ? Property?.Display?.Prompt ?? "" : Placeholder;
+
+    /// <summary>
+    /// The icon key for the affordance on the control.  Overrides the default or the value in the
+    /// property's InputFormat.
+    /// </summary>
+    [Parameter]
+    public string Affordance { get; set; } = "";
+
+    protected string ResolvedAffordance => 
+        Affordance == "" ? Property?.InputFormat?.Affordance ?? "" : Affordance;
 
     /// <summary>
     /// Retrieve the event args by calling <see cref="ValidateProperty" />.

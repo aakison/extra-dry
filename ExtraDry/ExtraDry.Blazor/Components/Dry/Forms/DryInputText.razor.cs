@@ -19,8 +19,6 @@ public partial class DryInputText<T> : DryInputBase<T> {
         Value = Property.DisplayValue(Model);
     }
 
-    private string Affordance => Property?.InputFormat?.Affordance ?? "";
-
     private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", ReadOnlyCss, CssClass);

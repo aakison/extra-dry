@@ -54,14 +54,18 @@ public partial class DryInputDateTime<T> : DryInputBase<T>
         _ => "datetime-local"
     };
 
-    private string Affordance => Property?.InputFormat?.Affordance
+    private new string ResolvedAffordance => 
+        Affordance == ""
+        
+        ? Property?.InputFormat?.Affordance
         ?? Property?.InputType switch {
             Type t when t == typeof(DateOnly) => "select-date",
             Type t when t == typeof(DateOnly?) => "select-date",
             Type t when t == typeof(TimeOnly) => "select-time",
             Type t when t == typeof(TimeOnly?) => "select-time",
             _ => "select-datetime"
-        };
+        }
+        : Affordance;
 
     private string ReadOnlyCss => ReadOnly ? "readonly" : "";
 

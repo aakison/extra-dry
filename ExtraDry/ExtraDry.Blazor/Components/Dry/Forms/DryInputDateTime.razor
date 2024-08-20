@@ -3,11 +3,11 @@
 @inherits DryInputBase<T>
 
 <div class="@CssClasses" @attributes="@UnmatchedAttributes">
-    @if(Icon != "") {
+    @if(ResolvedIcon != "") {
         <Icon CssClass="context" Key="@ResolvedIcon" />
     }
     <input class="value" title="@InputTitle" type="@HtmlDisplayMode" value="@Value" readonly="@ReadOnly" @onchange="HandleChange" onkeydown="@DisableSpaceWhenReadOnlyHack" />
-    @if(Affordance != "" && !ReadOnly) {
-        <Icon CssClass="affordance" Key="@Affordance" onclick="this.parentNode.getElementsByTagName('input')[0].showPicker()" />
+    @if(ResolvedAffordance != "" && !ReadOnly) {
+        <Icon CssClass="affordance" Key="@ResolvedAffordance" onclick="this.parentNode.getElementsByTagName('input')[0].showPicker()" />
     }
 </div>
