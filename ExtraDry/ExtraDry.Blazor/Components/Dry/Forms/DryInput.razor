@@ -53,20 +53,9 @@
                     }
                 </div>
             }
-            else { 
-                @if(ReadOnly) {
-                    <select class="@CssClasses readonly" disabled title="@Property.FieldCaption">
-                        <option value="@selectedValue?.ToString()" selected>@selectedValue?.ToString()</option>
-                    </select>
-                } 
-                else { 
-                    <select class="@CssClasses" @onchange="HandleChange" title="@Property.FieldCaption" >
-                        @foreach(var value in Property.GetDiscreteValues()) {
-                            var selected = value.Key.ToString() == selectedValue?.ToString(); // force object to enum compare
-                            <option value="@value.Key" selected="@selected">@value.Title</option>
-                        }
-                    </select>
-                }
+            else {
+                var values = Property.GetDiscreteValues().ToList();
+                <DryInputFlexiSelect Model="@Model" Property="@Property" ReadOnly="@ReadOnly" OnValidation="@ValidationChanged" />
             }
         }
         else if(Property.HasDateTimeRepresentation) {
