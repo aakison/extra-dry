@@ -1,10 +1,15 @@
-﻿namespace ExtraDry.Blazor;
+﻿namespace ExtraDry.Core;
 
 /// <summary>
 /// A semantic description of the size of a property, used to determine how to layout forms.
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum PropertySize {
+
+    /// <summary>
+    /// Size is calculated based on the property details.
+    /// </summary>
+    Calculated = 0,
 
     /// <summary>
     /// A small property, such as an int field, small enough to fit four fields on a single line.

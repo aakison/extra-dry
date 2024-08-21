@@ -1,4 +1,4 @@
-﻿
+
 namespace ExtraDry.Core;
 
 /// <summary>
@@ -13,12 +13,14 @@ public class InputFormatAttribute : Attribute
     public Type? DataTypeOverride { get; set; }
 
     /// <summary>
-    /// The icon to be used in the display of this propertys input, typically on the left of the input
+    /// The icon to be used in the display of this property's input, typically on the left of the input
     /// </summary>
     public string? Icon { get; set; }
 
     /// <summary>
-    /// The affordance icon to be used in the display of this propertys input, typically on the right of the input.
+    /// The affordance icon to be used in the display of this property's input, typically on the right of the input.
     /// </summary>
     public string? Affordance { get; set; }
+
+    public PropertySize Size { get; set; } = PropertySize.Calculated;
 }

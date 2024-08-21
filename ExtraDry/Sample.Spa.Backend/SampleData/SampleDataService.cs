@@ -74,6 +74,7 @@ public partial class SampleDataService {
                     Uuid = PseudoRandomGuid(),
                     Slug = Slug.RandomWebString(6),
                     Title = name,
+                    Description = name,
                     PrimarySector = PickRandom(services),
                     Status = PickRandom(companyStatuses),
                     AnnualRevenue = random.Next(1_000_000, 3_000_000),

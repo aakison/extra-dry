@@ -1,4 +1,3 @@
-﻿using System.Collections;
 using System.Collections.ObjectModel;
 
 namespace ExtraDry.Blazor.Internal;
@@ -106,7 +105,7 @@ internal class FormDescription {
                 ExtendedProperties.Add(new ExtendedProperty(property, model) { 
                     FieldsetTitle = fieldsetName,
                     GroupType = formGroup,
-                    Length = property.Size,
+                    Length = property.Length,
                     ParentTarget = parentModel,
                 });
             }

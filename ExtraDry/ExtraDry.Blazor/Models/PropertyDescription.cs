@@ -93,7 +93,18 @@ public class PropertyDescription
 
     public PropertyInfo Property { get; set; }
 
-    public PropertySize Size { get; set; }
+    /// <summary>
+    /// The calculated size of the property.
+    /// </summary>
+    public PropertySize Size { get; private set; }
+
+    /// <summary>
+    /// The amount of the line that the property should consume.
+    /// </summary>
+    /// <remarks>
+    /// Takes into account any consumer overrides.
+    /// </remarks>
+    public PropertySize Length => (InputFormat is not null && InputFormat.Size != PropertySize.Calculated) ? InputFormat.Size : Size;
 
     public string DisplayValue(object? item)
     {

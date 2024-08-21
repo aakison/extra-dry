@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sample.Shared;
@@ -77,10 +76,11 @@ public class Company : IResourceIdentifiers {
 
     [EmailAddress, StringLength(100)]
     [Rules(RuleAction.IgnoreDefaults)]
+    [InputFormat(Size = PropertySize.Jumbo)]
     public string ContactEmail { get; set; } = "";
 
     [Precision(18, 2)]
-    [InputFormat(Icon = "currency")]
+    [InputFormat(Icon = "currency", Size = PropertySize.Calculated)]
     public decimal AnnualRevenue { get; set; }
 
     [Display(Prompt = "0.00", Description = "Clamped to range [0, 120]")]
