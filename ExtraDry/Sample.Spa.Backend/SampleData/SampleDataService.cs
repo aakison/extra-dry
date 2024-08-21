@@ -151,7 +151,7 @@ public partial class SampleDataService {
         }
         database.ChangeTracker.Clear();
 
-        if(includeSubdivisions) {
+        if(includeSubdivisions || includeLocalities) {
             await PopulateSubdivisions(items);
         }
 
