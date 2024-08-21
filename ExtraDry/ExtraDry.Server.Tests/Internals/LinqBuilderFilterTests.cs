@@ -11,7 +11,7 @@ public class LinqBuilderFilterTests {
         var linqWhere = SampleData.Where(e => e.FirstName == "Bob").ToList();
         var filterProperty = GetFilterProperty<Datum>(nameof(Datum.FirstName));
 
-        var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "firstname:Bob").ToList();
+        var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions([filterProperty], "firstname:Bob").ToList();
 
         Assert.Equal(linqWhere, linqBuilderWhere);
     }
@@ -22,7 +22,7 @@ public class LinqBuilderFilterTests {
         var linqWhere = SampleData.Where(e => e.FirstName == "Bob" || e.FirstName == "Alice").ToList();
         var filterProperty = GetFilterProperty<Datum>(nameof(Datum.FirstName));
 
-        var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "firstname:Bob|Alice").ToList();
+        var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions([filterProperty], "firstname:Bob|Alice").ToList();
 
         Assert.Equal(linqWhere, linqBuilderWhere);
     }
@@ -33,7 +33,8 @@ public class LinqBuilderFilterTests {
         var linqWhere = SampleData.Where(e => e.FirstName == "Bob" || e.FirstName == "Alice").ToList();
         var filterProperty = GetFilterProperty<Datum>(nameof(Datum.FirstName));
 
-        var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "firstname:Bob firstname:Alice").ToList();
+        var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(
+            [filterProperty], "firstname:Bob firstname:Alice").ToList();
 
         Assert.Equal(linqWhere, linqBuilderWhere);
     }
@@ -44,7 +45,7 @@ public class LinqBuilderFilterTests {
         var linqWhere = SampleData.Where(e => e.Keywords.Contains("beta")).ToList();
         var filterProperty = GetFilterProperty<Datum>(nameof(Datum.Keywords));
 
-        var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "keywords:beta").ToList();
+        var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions([filterProperty], "keywords:beta").ToList();
 
         Assert.Equal(linqWhere, linqBuilderWhere);
     }
@@ -55,7 +56,7 @@ public class LinqBuilderFilterTests {
         var linqWhere = SampleData.Where(e => e.Number == 222).ToList();
         var filterProperty = GetFilterProperty<Datum>(nameof(Datum.Number));
 
-        var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "number:222").ToList();
+        var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions([filterProperty], "number:222").ToList();
 
         Assert.Equal(linqWhere, linqBuilderWhere);
     }
@@ -66,7 +67,7 @@ public class LinqBuilderFilterTests {
         var linqWhere = SampleData.Where(e => e.Number == 222 || e.Number == 111).ToList();
         var filterProperty = GetFilterProperty<Datum>(nameof(Datum.Number));
 
-        var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "number:222|111").ToList();
+        var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions([filterProperty], "number:222|111").ToList();
 
         Assert.Equal(linqWhere, linqBuilderWhere);
     }
@@ -79,7 +80,7 @@ public class LinqBuilderFilterTests {
         var lastName = GetFilterProperty<Datum>(nameof(Datum.LastName));
         var number = GetFilterProperty<Datum>(nameof(Datum.Number));
 
-        var linqBuilderWhere = SampleDataWithDuplicateNames.AsQueryable().WhereFilterConditions(new FilterProperty[] { firstName, lastName, number }, "number:[100,200)").ToList();
+        var linqBuilderWhere = SampleDataWithDuplicateNames.AsQueryable().WhereFilterConditions([firstName, lastName, number], "number:[100,200)").ToList();
 
         Assert.Equal(linqWhere, linqBuilderWhere);
     }
@@ -99,7 +100,7 @@ public class LinqBuilderFilterTests {
         var lastName = GetFilterProperty<Datum>(nameof(Datum.LastName));
         var number = GetFilterProperty<Datum>(nameof(Datum.Number));
 
-        var linqBuilderWhere = SampleDataWithDuplicateNames.AsQueryable().WhereFilterConditions(new FilterProperty[] { firstName, lastName, number }, filter).ToList();
+        var linqBuilderWhere = SampleDataWithDuplicateNames.AsQueryable().WhereFilterConditions([firstName, lastName, number], filter).ToList();
 
         Assert.Equal(2, linqBuilderWhere.Count);
     }
@@ -116,7 +117,7 @@ public class LinqBuilderFilterTests {
         var status = GetFilterProperty<Datum>(nameof(Datum.Status));
         var firstName = GetFilterProperty<Datum>(nameof(Datum.FirstName));
 
-        var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { status, firstName }, filter).ToList();
+        var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions([status, firstName], filter).ToList();
 
         Assert.Equal(count, linqBuilderWhere.Count);
     }
@@ -128,7 +129,7 @@ public class LinqBuilderFilterTests {
         var lastName = GetFilterProperty<Datum>(nameof(Datum.LastName));
         var number = GetFilterProperty<Datum>(nameof(Datum.Number));
 
-        Assert.Throws<DryException>(() => SampleDataWithDuplicateNames.AsQueryable().WhereFilterConditions(new FilterProperty[] { firstName, lastName, number }, "lastname:[coa,coo]").ToList());
+        Assert.Throws<DryException>(() => SampleDataWithDuplicateNames.AsQueryable().WhereFilterConditions([firstName, lastName, number], "lastname:[coa,coo]").ToList());
     }
 
     [Fact]
@@ -141,7 +142,7 @@ public class LinqBuilderFilterTests {
         var name = GetFilterProperty<SimpleDatum>(nameof(SimpleDatum.Name));
         var filter = "Alice";
 
-        var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { name }, filter).ToList();
+        var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions([name], filter).ToList();
 
         Assert.Single(linqBuilderWhere);
         Assert.Equal("Alice", linqBuilderWhere.First().Name);
@@ -178,19 +179,19 @@ public class LinqBuilderFilterTests {
         Inactive,
     }
 
-    private readonly List<Datum> SampleData = new() {
+    private readonly List<Datum> SampleData = [
         new Datum { FirstName = "Charlie", LastName = "Coase", Number = 111, Keywords = "alpha beta gamma", Status = DatumType.Active },
         new Datum { FirstName = "Alice", LastName = "Cooper", Number = 333, Keywords = "beta gamma delta", Status = DatumType.Active  },
         new Datum { FirstName = "Bob", LastName = "Barker", Number = 222, Keywords = "gamma delta epsilon", Status = DatumType.Inactive  },
-    };
+    ];
 
-    private readonly List<Datum> SampleDataWithDuplicateNames = new() {
+    private readonly List<Datum> SampleDataWithDuplicateNames = [
         new Datum { FirstName = "Charlie", LastName = "Coase", Number = 111},
         new Datum { FirstName = "Alice", LastName = "Cooper", Number = 333 },
         new Datum { FirstName = "Bob", LastName = "Barker", Number = 222 },
         new Datum { FirstName = "Alice", LastName = "Barker", Number = 123 },
         new Datum { FirstName = "Bob", LastName = "Ross", Number = 321 },
-    };
+    ];
 
     public class SimpleDatum {
         [Filter(FilterType.Equals)]

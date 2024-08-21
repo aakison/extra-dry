@@ -27,6 +27,6 @@ internal class FormFieldset {
     /// <summary>
     /// The groups that are inside this fieldset.
     /// </summary>
-    public List<FormGroup> Groups { get; } = new();
+    public List<FormGroup> Groups { get; } = [];
 
 }

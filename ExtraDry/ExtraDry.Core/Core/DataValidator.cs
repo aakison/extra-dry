@@ -85,5 +85,5 @@ public class DataValidator
     /// <summary>
     /// A list of all errors found by this data validator for all validation calls.
     /// </summary>
-    public IList<ValidationResult> Errors { get; } = new List<ValidationResult>();
+    public IList<ValidationResult> Errors { get; } = [];
 }

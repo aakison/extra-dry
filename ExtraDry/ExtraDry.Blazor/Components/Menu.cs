@@ -47,7 +47,7 @@ public class Menu : ISubjectViewModel {
     /// A set of menus that are dependant or refine the current menu.  Typically used as a sub-menu
     /// that is revealed based on a parent-menu being selected.
     /// </summary>
-    public Menu[] Children { get; set; } = Array.Empty<Menu>();
+    public Menu[] Children { get; set; } = [];
 
     /// <summary>
     /// Not used.

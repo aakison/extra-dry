@@ -230,7 +230,7 @@ public partial class DryContent : ComponentBase {
             }
         }
     }
-    private readonly List<Guid> roosterIsCanonical = new();
+    private readonly List<Guid> roosterIsCanonical = [];
 
     private async Task EditorFocusOut(ContentContainer container)
     {

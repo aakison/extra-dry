@@ -23,7 +23,7 @@ internal class FileTypeDefinitionSource {
             using var reader = new StreamReader(stream);
             fileContent = reader.ReadToEnd();
         }
-        return JsonSerializer.Deserialize<List<FileTypeDefinition>>(fileContent) ?? new();
+        return JsonSerializer.Deserialize<List<FileTypeDefinition>>(fileContent) ?? [];
     }
 
     /// <summary>
@@ -56,7 +56,7 @@ internal class FileTypeDefinitionSource {
     internal IEnumerable<FileTypeDefinition> GetFileTypeFromContent(byte[]? content)
     {
         if(content == null || content.Length == 0) {
-            return Array.Empty<FileTypeDefinition>();
+            return [];
         }
         return FileDefinitions.Where(m => IsMatch(content, m.MagicBytes));
     }

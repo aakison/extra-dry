@@ -76,7 +76,7 @@ public class FileValidator
         ValidationErrors.Clear();
     }
 
-    private List<ValidationResult> ValidationErrors { get; } = new();
+    private List<ValidationResult> ValidationErrors { get; } = [];
 
     private readonly FileValidationService validator;
 

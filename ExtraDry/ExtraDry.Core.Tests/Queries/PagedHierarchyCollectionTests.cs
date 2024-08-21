@@ -64,8 +64,8 @@ public class PagedHierarchyCollectionTests
             Filter = "filter",
             Sort = "sort",
             Level = 3,
-            Expand = new List<string> { "one", "two" },
-            Collapse = new List<string> { "three", "four" },
+            Expand = ["one", "two"],
+            Collapse = ["three", "four"],
             Start = 5,
             Total = 10
         };
@@ -95,8 +95,8 @@ public class PagedHierarchyCollectionTests
             Filter = "filter",
             Sort = "sort",
             Level = 3,
-            Expand = new List<string> { "one", "two" },
-            Collapse = new List<string> { "three", "four" },
+            Expand = ["one", "two"],
+            Collapse = ["three", "four"],
             Start = 5,
             Total = 10
         };

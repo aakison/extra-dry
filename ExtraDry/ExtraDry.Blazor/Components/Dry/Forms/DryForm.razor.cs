@@ -73,5 +73,5 @@ public partial class DryForm<T> : ComponentBase, IExtraDryComponent {
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "dry-form", ModelNameSlug, CssClass);
 
-    private List<string> AlertMessages { get; set; } = new();
+    private List<string> AlertMessages { get; set; } = [];
 }

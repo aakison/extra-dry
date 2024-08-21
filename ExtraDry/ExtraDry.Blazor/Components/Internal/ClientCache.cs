@@ -40,6 +40,6 @@ internal class ClientCache<TKey, TItem>(
         }
     }
 
-    private readonly Dictionary<TKey, CacheEntry> entries = new();
+    private readonly Dictionary<TKey, CacheEntry> entries = [];
 
 }

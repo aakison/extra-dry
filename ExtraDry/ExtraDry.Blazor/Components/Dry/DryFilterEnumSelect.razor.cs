@@ -65,7 +65,7 @@ public partial class DryFilterEnumSelect : ComponentBase, IExtraDryComponent, ID
     private void SyncValues()
     {
         if(Filter == null) { return; }
-        Values ??= new();
+        Values ??= [];
         
         Values.Clear();
         foreach(var value in Filter.Values) {

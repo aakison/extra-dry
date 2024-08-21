@@ -53,7 +53,7 @@ public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryC
 
     private Dictionary<string, object>? LookupProviderOptions { get; set; }
 
-    private List<object> LookupValues => LookupProviderOptions?.Values?.ToList() ?? new();
+    private List<object> LookupValues => LookupProviderOptions?.Values?.ToList() ?? [];
 
     private bool RulesAllowUpdate => Property?.Rules?.UpdateAction switch {
             RuleAction.Block => false,
@@ -99,9 +99,9 @@ public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryC
         if(optionProvider != null) {
             var method = typedOptionProvider.GetMethod("GetItemsAsync");
             var token = new CancellationTokenSource().Token;
-            dynamic task = method!.Invoke(optionProvider, new object[] { token })!;
+            dynamic task = method!.Invoke(optionProvider, [token])!;
             var optList = (await task).Items as ICollection;
-            var options = optList?.Cast<object>()?.ToList() ?? new();
+            var options = optList?.Cast<object>()?.ToList() ?? [];
             LookupProviderOptions = options
                 .Select((e, i) => new { Key = i, Item = e })
                 .ToDictionary(e => e.Key.ToString(CultureInfo.InvariantCulture), e => e.Item);

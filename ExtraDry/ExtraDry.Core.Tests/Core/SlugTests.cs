@@ -40,7 +40,7 @@ public class SlugTests
     [Fact]
     public void UniqueSlugWithTheLotNoMatch()
     {
-        var slug = Slug.ToUniqueCodeSlug("This is a test @6!%4 _- tHINGS!", 15, new List<string> { "foo", "this-is-a" });
+        var slug = Slug.ToUniqueCodeSlug("This is a test @6!%4 _- tHINGS!", 15, ["foo", "this-is-a"]);
 
         Assert.Equal("This-is-a", slug);
     }
@@ -85,7 +85,7 @@ public class SlugTests
     [Fact]
     public void UniqueTitleSlugWithTheLotNoMatch()
     {
-        var slug = Slug.ToUniqueTitleSlug("This is a test @6!%4 _- tHINGS!", 15, new List<string> { "foo", "This-is-a" });
+        var slug = Slug.ToUniqueTitleSlug("This is a test @6!%4 _- tHINGS!", 15, ["foo", "This-is-a"]);
 
         Assert.Equal("this-is-a", slug);
     }
@@ -94,7 +94,7 @@ public class SlugTests
     public void UniqueTitleSlugWithTheLotWithMatch()
     {
         var expected = "this-is-a";
-        var slug = Slug.ToUniqueTitleSlug("This is a test @6!%4 _- tHINGS!", 15, new List<string> { "foo", expected });
+        var slug = Slug.ToUniqueTitleSlug("This is a test @6!%4 _- tHINGS!", 15, ["foo", expected]);
 
         Assert.NotEqual(expected, slug);
         Assert.StartsWith(expected, slug);
@@ -141,7 +141,7 @@ public class SlugTests
     [Fact]
     public void UniqueCodeSlugWithTheLotNoMatch()
     {
-        var slug = Slug.ToUniqueCodeSlug("This is a test @6!%4 _- tHINGS!", 15, new List<string> { "foo", "this-is-a" });
+        var slug = Slug.ToUniqueCodeSlug("This is a test @6!%4 _- tHINGS!", 15, ["foo", "this-is-a"]);
 
         Assert.Equal("This-is-a", slug);
     }
@@ -150,7 +150,7 @@ public class SlugTests
     public void UniqueCodeSlugWithTheLotWithMatch()
     {
         var expected = "This-is-a";
-        var slug = Slug.ToUniqueCodeSlug("This is a test @6!%4 _- tHINGS!", 15, new List<string> { "foo", expected });
+        var slug = Slug.ToUniqueCodeSlug("This is a test @6!%4 _- tHINGS!", 15, ["foo", expected]);
 
         Assert.NotEqual(expected, slug);
         Assert.StartsWith(expected, slug);
@@ -233,13 +233,13 @@ public class SlugTests
     [Fact]
     public void ToUniqueTitleSlugMaxLengthLessThan6()
     {
-        Assert.Throws<ArgumentOutOfRangeException>(() => Slug.ToUniqueTitleSlug("This is a test @6!%4 _- tHINGS!", 5, new List<string> { "foo", "This-is-a" }));
+        Assert.Throws<ArgumentOutOfRangeException>(() => Slug.ToUniqueTitleSlug("This is a test @6!%4 _- tHINGS!", 5, ["foo", "This-is-a"]));
     }
 
     [Fact]
     public void ToUniqueTitleSlugMaxLengthBiggerThanName()
     {
-        var slug = Slug.ToUniqueTitleSlug("This", 50, new List<string> { "foo", "This-is-a" });
+        var slug = Slug.ToUniqueTitleSlug("This", 50, ["foo", "This-is-a"]);
 
         Assert.Equal("this", slug);
     }

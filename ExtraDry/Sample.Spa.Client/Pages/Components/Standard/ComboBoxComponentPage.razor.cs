@@ -28,7 +28,7 @@ public partial class ComboBoxComponentPage : ComponentBase, IListItemViewModel<S
 
     private Sector? AdvancedValue { get; set; }
 
-    private List<Sector> Data { get; set; } = new();
+    private List<Sector> Data { get; set; } = [];
 
     private SectorListService SectorService { get; set; } = new();
 
@@ -176,7 +176,7 @@ public partial class ComboBoxComponentPage : ComponentBase, IListItemViewModel<S
 
         public int MinLevel { get; set; }
 
-        private List<Sector> Sectors { get; set; } = new();
+        private List<Sector> Sectors { get; set; } = [];
 
         public async ValueTask<ItemsProviderResult<Sector>> GetItemsAsync(CancellationToken cancellationToken = default)
         {

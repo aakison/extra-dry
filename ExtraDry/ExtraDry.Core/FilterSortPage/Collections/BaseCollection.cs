@@ -19,7 +19,7 @@ public class BaseCollection<T>
     /// <summary>
     /// The actual collection of items.
     /// </summary>
-    public IList<T> Items { get; set; } = new List<T>();
+    public IList<T> Items { get; set; } = [];
 
     /// <summary>
     /// Create a new <see cref="BaseCollection{T}" /> with the items cast to a base class or interface.

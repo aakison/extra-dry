@@ -28,6 +28,6 @@ public class DataDistribution
     /// The list of discrete values and the associated count of their occurences.
     /// </summary>
     /// <example>{"electrical" : 1, "plumbing" : 2}</example>
-    public Dictionary<string, int> Counts { get; } = new();
+    public Dictionary<string, int> Counts { get; } = [];
 
 }

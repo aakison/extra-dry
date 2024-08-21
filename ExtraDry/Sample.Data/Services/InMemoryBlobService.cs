@@ -57,7 +57,7 @@ public class InMemoryBlobService
         validator.ThrowIfInvalid();
     }
 
-    private static readonly Dictionary<Guid, Blob> memoryBlobStore = new();
+    private static readonly Dictionary<Guid, Blob> memoryBlobStore = [];
 
     private readonly RuleEngine rules;
 

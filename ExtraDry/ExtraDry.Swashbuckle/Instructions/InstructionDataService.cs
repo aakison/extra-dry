@@ -113,7 +113,7 @@ public class InstructionDataService {
         }
     }
 
-    private readonly List<Automobile> automobiles = new() {
+    private readonly List<Automobile> automobiles = [
         new Automobile { Make = "Toyota", Model = "Avalon", Year = 1994, Market = "North America and China", Description = "Full-size sedan mainly produced and marketed in North America and China. Hybrid powertrain is available. All-wheel drive models are exclusively sold in North America." },
         new Automobile { Make = "Toyota", Model = "Camry", Year = 1982, Market = "Global", Description = "Mid-size sedan (D-segment) marketed globally. Hybrid powertrain is optional." },
         new Automobile { Make = "Toyota", Model = "Mirai", Year = 2014, Market = "Global", Description = "Fuel-cell/hydrogen executive sedan." },
@@ -140,9 +140,9 @@ public class InstructionDataService {
         new Automobile { Make = "Honda", Model = "Shuttle", Year = 2011, Market = "Japan", Description = "Two-row station wagon version of the Fit/Jazz mainly for the Japanese market. Hybrid available." },
         new Automobile { Make = "Honda", Model = "CR-V", Year = 1995, Market = "Global", Description = "Compact crossover SUV. Available as a two-row and three-row in select markets. Hybrid and PHEV available." },
         new Automobile { Make = "Honda", Model = "Pilot", Year = 2002, Market = "North America", Description = "Three-row mid-size crossover SUV mainly for the North American market." },
-    };
+    ];
 
-    private readonly List<string> affirmations = new() {
+    private readonly List<string> affirmations = [
         "I experience gratitude for everything I have in my life",
         "I always receive exactly what I ask for and appreciate that",
         "My life is filled with an abundance of goodness",
@@ -168,6 +168,6 @@ public class InstructionDataService {
         "I am a channel for love and healing",
         "Everything I need comes to me",
         "All is well in my life",
-    };
+    ];
 
 }

@@ -133,7 +133,7 @@ public class ModelDescriptionTests {
 
         public object Entity { get; set; } = new();
 
-        public ICollection<object> Collection { get; set; } = new List<object>();
+        public ICollection<object> Collection { get; set; } = [];
 
         [JsonIgnore]
         public string Ignored { get; set; } = string.Empty;

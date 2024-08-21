@@ -220,7 +220,7 @@ public class PropertyDescription
 
     public bool HasArrayValues => typeof(IEnumerable).IsAssignableFrom(Property.PropertyType) && !typeof(string).IsAssignableFrom(Property.PropertyType);
 
-    private readonly Dictionary<int, DisplayAttribute?> discreteDisplayAttributes = new();
+    private readonly Dictionary<int, DisplayAttribute?> discreteDisplayAttributes = [];
 
     public bool HasNumericRepresentation {
         get {

@@ -89,7 +89,7 @@ public class LinqBuilderTests {
         var linqWhere = SampleData.Where(e => e.FirstName == "Bob").ToList();
 
         var filterProperty = GetFilterProperty("FirstName");
-        var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "firstname:Bob").ToList();
+        var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions([filterProperty], "firstname:Bob").ToList();
 
         Assert.Equal(linqWhere, linqBuilderWhere);
     }
@@ -111,7 +111,7 @@ public class LinqBuilderTests {
         var linqWhere = SampleData.Where(e => e.LastName.StartsWith("Bark", StringComparison.Ordinal)).ToList();
 
         var filterProperty = GetFilterProperty("LastName");
-        var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { filterProperty }, "LastName:Bark").ToList();
+        var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions([filterProperty], "LastName:Bark").ToList();
 
         Assert.Equal(linqWhere, linqBuilderWhere);
     }
@@ -123,7 +123,7 @@ public class LinqBuilderTests {
 
         var firstName = GetFilterProperty("FirstName");
         var lastName = GetFilterProperty("LastName");
-        var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(new FilterProperty[] { firstName, lastName }, "firstname:Bob lastname:Bark").ToList();
+        var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions([firstName, lastName], "firstname:Bob lastname:Bark").ToList();
 
         Assert.Equal(linqWhere, linqBuilderWhere);
     }
@@ -157,11 +157,11 @@ public class LinqBuilderTests {
         public string InternalName { get; set; } = string.Empty;
     }
 
-    private readonly List<Datum> SampleData = new() {
+    private readonly List<Datum> SampleData = [
         new Datum { FirstName = "Charlie", LastName = "Coase", Number = 111, InternalName = "Chuck" },
         new Datum { FirstName = "Alice", LastName = "Cooper", Number = 333, InternalName = "Al" },
         new Datum { FirstName = "Bob", LastName = "Barker", Number = 222, InternalName = "Bobby" },
-    };
+    ];
 
     //private readonly List<Datum> SampleDataWithDuplicateNames = new() {
     //    new Datum { FirstName = "Charlie", LastName = "Coase", Number = 111},

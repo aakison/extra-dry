@@ -18,7 +18,7 @@ public class SignatureImpliesStatusCodes : IOperationFilter
     {
         var schema = context.SchemaGenerator.GenerateSchema(typeof(Core.Models.ProblemDetails), context.SchemaRepository);
 
-        var attributes = context.MethodInfo.GetCustomAttributes(true) ?? Array.Empty<object>();
+        var attributes = context.MethodInfo.GetCustomAttributes(true) ?? [];
 
         var consumesAttributes = attributes.OfType<ConsumesAttribute>();
         if(operation.Parameters.Any() || consumesAttributes.Any()) {

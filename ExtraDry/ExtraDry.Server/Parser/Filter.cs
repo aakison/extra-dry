@@ -15,6 +15,6 @@ internal class Filter {
         }
     }
 
-    public List<FilterRule> Rules { get; } = new List<FilterRule>();
+    public List<FilterRule> Rules { get; } = [];
 
 }
