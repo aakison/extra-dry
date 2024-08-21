@@ -22,7 +22,7 @@ public class ExpandoSchema : IValidatableObject
     {
         var slugs = Fields.Select(e => e.Slug);
         if(slugs.Count() != slugs.Distinct().Count()) {
-            yield return new ValidationResult("Duplicate Slugs found.", new[] { nameof(ExpandoField.Slug) });
+            yield return new ValidationResult("Duplicate Slugs found.", [nameof(ExpandoField.Slug)]);
         }
     }
 

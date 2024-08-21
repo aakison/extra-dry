@@ -324,7 +324,7 @@ public class ValidatableEntity : IValidatableObject {
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         if(DesendantsTestObject != null && !DesendantsTestObject.CreatedFromResourceReference && DesendantsTestObject.PropertyOne == "IgnoreThis") {
-            yield return new ValidationResult($"The {nameof(DesendantsTestObject)} is not valid.", new[] { nameof(DesendantsTestObject) });
+            yield return new ValidationResult($"The {nameof(DesendantsTestObject)} is not valid.", [nameof(DesendantsTestObject)]);
         }
     }
 }

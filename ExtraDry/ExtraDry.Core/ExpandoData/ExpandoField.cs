@@ -100,21 +100,21 @@ public class ExpandoField
 
         if(IsRequired) {
             if(value == null) {
-                results.Add(new ValidationResult($"{Label} is required, can't remove from fields.", new[] { Label }));
+                results.Add(new ValidationResult($"{Label} is required, can't remove from fields.", [Label]));
             }
             else if(value is string str && str == string.Empty) {
-                results.Add(new ValidationResult($"{Label} is required, can't be empty.", new[] { Label }));
+                results.Add(new ValidationResult($"{Label} is required, can't be empty.", [Label]));
             }
         }
 
         var stringVal = value?.ToString();
         if(stringVal != null) {
             if(MaxLength > 0 && stringVal.Length > MaxLength) {
-                results.Add(new ValidationResult($"{Label} exceeds Maxlength.", new[] { Label }));
+                results.Add(new ValidationResult($"{Label} exceeds Maxlength.", [Label]));
             }
 
             if(ValidValues != null && ValidValues.Count != 0 && !ValidValues!.Contains(stringVal)) {
-                results.Add(new ValidationResult($"{Label} does not exist in list of ValidValues.", new[] { Label }));
+                results.Add(new ValidationResult($"{Label} does not exist in list of ValidValues.", [Label]));
             }
         }
 
@@ -128,12 +128,12 @@ public class ExpandoField
         switch(DataType) {
             case ExpandoDataType.Boolean:
                 if(value is not bool) {
-                    results.Add(new ValidationResult($"{Label} does not match the DataType, expected 'true' or 'false'.", new[] { Label }));
+                    results.Add(new ValidationResult($"{Label} does not match the DataType, expected 'true' or 'false'.", [Label]));
                 }
                 break;
             case ExpandoDataType.DateTime:
                 if(!DateTime.TryParse(value.ToString(), out var _)) {
-                    results.Add(new ValidationResult($"{Label} does not match the DataType set.", new[] { Label }));
+                    results.Add(new ValidationResult($"{Label} does not match the DataType set.", [Label]));
                 }
                 break;
             case ExpandoDataType.Number:
@@ -144,12 +144,12 @@ public class ExpandoField
                     ValidateNumber(dNumber, ref results);
                 }
                 else {
-                    results.Add(new ValidationResult($"{Label} does not match the DataType, expected number.", new[] { Label }));
+                    results.Add(new ValidationResult($"{Label} does not match the DataType, expected number.", [Label]));
                 }
                 break;
             case ExpandoDataType.Text:
                 if(value is not string) {
-                    results.Add(new ValidationResult($"{Label} does not match the DataType, expected string literal.", new[] { Label }));
+                    results.Add(new ValidationResult($"{Label} does not match the DataType, expected string literal.", [Label]));
                 }
                 break;
         }
@@ -158,17 +158,17 @@ public class ExpandoField
     private void ValidateNumber(double number, ref List<ValidationResult> results)
     {
         if(RangeMinimum.HasValue && double.TryParse(RangeMinimum.ToString(), out double intRangeMin) && number < intRangeMin) {
-            results.Add(new ValidationResult($"{Label} does not meet RangeMinimum set.", new[] { Label }));
+            results.Add(new ValidationResult($"{Label} does not meet RangeMinimum set.", [Label]));
         }
 
         if(RangeMaximum.HasValue && double.TryParse(RangeMaximum.ToString(), out double intRangeMax) && number > intRangeMax) {
-            results.Add(new ValidationResult($"{Label} exceeds RangeMaximum set.", new[] { Label }));
+            results.Add(new ValidationResult($"{Label} exceeds RangeMaximum set.", [Label]));
         }
 
         if(ValidValues != null && ValidValues.Count > 0) {
             var intValidValues = ValidValues.ConvertAll(s => double.TryParse(s, out double x) ? x : 0);
             if(!intValidValues.Contains(number)) {
-                results.Add(new ValidationResult($"{Label} does not exist in list of ValidValues.", new[] { Label }));
+                results.Add(new ValidationResult($"{Label} does not exist in list of ValidValues.", [Label]));
             }
         }
     }

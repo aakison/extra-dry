@@ -107,8 +107,8 @@ public class MeasureBuilder : ColumnBuilder {
         return isMeasure;
     }
 
-    private static readonly Type[] measureTypes = new Type[] { typeof(decimal), typeof(float), typeof(int),
-        typeof(double), typeof(long), typeof(short), typeof(uint), typeof(sbyte) };
+    private static readonly Type[] measureTypes = [ typeof(decimal), typeof(float), typeof(int),
+        typeof(double), typeof(long), typeof(short), typeof(uint), typeof(sbyte) ];
 
     protected override bool IsValidColumnType(ColumnType type)
     {

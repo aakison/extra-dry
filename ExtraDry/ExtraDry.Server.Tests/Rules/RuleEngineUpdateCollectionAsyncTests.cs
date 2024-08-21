@@ -490,7 +490,7 @@ public class RuleEngineUpdateCollectionAsyncTests {
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if(Child != default && !Child.CreatedFromResourceReference && Child.Name == "PreviousChild") {
-                yield return new ValidationResult($"The {nameof(Child)} is not valid.", new[] { nameof(Child) });
+                yield return new ValidationResult($"The {nameof(Child)} is not valid.", [nameof(Child)]);
             }
         }
     }

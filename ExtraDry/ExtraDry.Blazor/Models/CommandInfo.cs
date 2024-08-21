@@ -106,8 +106,8 @@ public partial class CommandInfo {
     /// </summary>
     public async Task ExecuteAsync(object? arg = null) {
         object?[]? args = Arguments switch {
-            CommandArguments.Single => new object?[] { arg },
-            CommandArguments.Multiple => new object?[] { GetStrongTypedSubset(arg) },
+            CommandArguments.Single => [arg],
+            CommandArguments.Multiple => [GetStrongTypedSubset(arg)],
             _ => null,
         };
         var result = Method.Invoke(ViewModel, args);
