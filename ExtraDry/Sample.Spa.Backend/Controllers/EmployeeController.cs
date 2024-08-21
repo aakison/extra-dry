@@ -4,21 +4,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace Sample.Spa.Backend.Controllers;
 
 /// <summary>
-/// Manages colleciton of employees.
+/// Manages collection of employees.
 /// </summary>
 [ApiController]
 [ApiExplorerSettings(GroupName = ApiGroupNames.SampleApi)]
 [ApiExceptionStatusCodes]
-public class EmployeeController {
-       
-    /// <summary>
-    /// Standard DI Constructor
-    /// </summary>
-    /// <param name="employeeService"></param>
-    public EmployeeController(EmployeeService employeeService)
-    {
-        employees = employeeService;
-    }
+public class EmployeeController(
+    EmployeeService employeeService)
+{
 
     /// <summary>
     /// Paginated list of all employees
@@ -34,7 +27,7 @@ public class EmployeeController {
     [AllowAnonymous]
     public async Task<PagedCollection<Employee>> List([FromQuery] PageQuery query)
     {
-        return await employees.List(query);
+        return await employeeService.List(query);
     }
 
     /// <summary>
@@ -49,7 +42,7 @@ public class EmployeeController {
     [Authorize(SamplePolicies.SamplePolicy)]
     public async Task<ResourceReference<Employee>> CreateAsync(Employee value)
     {
-        var employee = await employees.CreateAsync(value);
+        var employee = await employeeService.CreateAsync(value);
         return new ResourceReference<Employee>(employee);
     }
 
@@ -62,7 +55,7 @@ public class EmployeeController {
     [AllowAnonymous]
     public async Task<Employee> Retrieve(Guid employeeId)
     {
-        return await employees.RetrieveAsync(employeeId);
+        return await employeeService.RetrieveAsync(employeeId);
     }
 
     /// <summary>
@@ -79,7 +72,7 @@ public class EmployeeController {
     public async Task Update(Guid uuid, Employee value)
     {
         ArgumentMismatchException.ThrowIfMismatch(uuid, value.Uuid, nameof(uuid));
-        await employees.Update(value);
+        await employeeService.Update(value);
     }
 
     /// <summary>
@@ -91,8 +84,6 @@ public class EmployeeController {
     [Authorize(SamplePolicies.SamplePolicy)]
     public async Task Delete(Guid employeeId)
     {
-        await employees.Delete(employeeId);
-    } 
-
-    private readonly EmployeeService employees;
+        await employeeService.Delete(employeeId);
+    }
 }

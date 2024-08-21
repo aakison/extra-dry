@@ -1,25 +1,22 @@
 ﻿namespace Sample.Data.Services;
 
-public class SectorService : IEntityResolver<Sector> {
-
-    public SectorService(SampleContext sampleContext, RuleEngine ruleEngine)
-    {
-        database = sampleContext;
-        rules = ruleEngine;
-    }
-
+public class SectorService(
+    SampleContext sampleContext, 
+    RuleEngine ruleEngine) 
+    : IEntityResolver<Sector> 
+{
     public async Task<FilteredCollection<Sector>> ListAsync(SortQuery query)
     {
-        return await database.Sectors
+        return await sampleContext.Sectors
             .QueryWith(query, e => e.State == SectorState.Active)
             .ToFilteredCollectionAsync();
     }
 
     public async Task<Sector> CreateAsync(Sector exemplar)
     {
-        var sector = await rules.CreateAsync(exemplar);
-        database.Sectors.Add(sector);
-        await database.SaveChangesAsync();
+        var sector = await ruleEngine.CreateAsync(exemplar);
+        sampleContext.Sectors.Add(sector);
+        await sampleContext.SaveChangesAsync();
         return sector;
     }
 
@@ -30,7 +27,7 @@ public class SectorService : IEntityResolver<Sector> {
 
     public async Task<Sector?> TryRetrieveAsync(Guid uuid)
     {
-        return await database.Sectors.FirstOrDefaultAsync(e => e.Uuid == uuid);
+        return await sampleContext.Sectors.FirstOrDefaultAsync(e => e.Uuid == uuid);
     }
 
     public async Task<Sector> RetrieveAsync(Guid uuid)
@@ -42,26 +39,21 @@ public class SectorService : IEntityResolver<Sector> {
     public async Task<Sector> UpdateAsync(Sector exemplar)
     {
         var existing = await RetrieveAsync(exemplar.Uuid);
-        await rules.UpdateAsync(exemplar, existing);
-        await database.SaveChangesAsync();
+        await ruleEngine.UpdateAsync(exemplar, existing);
+        await sampleContext.SaveChangesAsync();
         return existing;
     }
 
     public async Task DeleteAsync(Guid uuid)
     {
         var existing = await RetrieveAsync(uuid);
-        await rules.DeleteAsync(existing, () => database.Sectors.Remove(existing), async () => await database.SaveChangesAsync());
+        await ruleEngine.DeleteAsync(existing, () => sampleContext.Sectors.Remove(existing), async () => await sampleContext.SaveChangesAsync());
     }
     
     public async Task<Statistics<Sector>> StatsAsync(FilterQuery query)
     {
-        return await database.Sectors
+        return await sampleContext.Sectors
             .QueryWith(query)
             .ToStatisticsAsync();
     }
-
-    private readonly SampleContext database;
-
-    private readonly RuleEngine rules;
-
 }

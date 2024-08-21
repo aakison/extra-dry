@@ -6,42 +6,38 @@ using System.Text.RegularExpressions;
 
 namespace Sample.Spa.Backend.SampleData;
 
-public partial class SampleDataService {
-
-    public SampleDataService(SampleContext sampleContext, RegionService regionService)
-    {
-        database = sampleContext;
-        regions = regionService;
-    }
-
+public partial class SampleDataService(
+    SampleContext sampleContext, 
+    RegionService regionService)
+{
     public void PopulateServices()
     {
-        database.Sectors.Add(new Sector { 
+        sampleContext.Sectors.Add(new Sector { 
             State = SectorState.Active,  
             Title = "Standard Electrical Services",
             Description = "Provide licensed electrical works for commercial and residential buildings",
         });
-        database.Sectors.Add(new Sector {
+        sampleContext.Sectors.Add(new Sector {
             State = SectorState.Active,
             Title = "Standard Plumbing Services",
             Description = "Provide licensed plumbing services for commercial and residential buildings",
         });
-        database.Sectors.Add(new Sector {
+        sampleContext.Sectors.Add(new Sector {
             State = SectorState.Active,
             Title = "Cleaners",
             Description = "Provide general cleaning services",
         });
-        database.Sectors.Add(new Sector {
+        sampleContext.Sectors.Add(new Sector {
             State = SectorState.Inactive,
             Title = "Fax Machine Repair",
             Description = "Provides routine maintenance and consulting services on getting the most from the latest in high-tech gear",
         });
-        database.SaveChanges();
+        sampleContext.SaveChanges();
     }
 
     public void PopulateTemplates()
     {
-        database.Templates.Add(
+        sampleContext.Templates.Add(
             new Template {
                 Uuid = PseudoRandomGuid(),
                 Schema = new ExpandoSchema {
@@ -63,7 +59,7 @@ public partial class SampleDataService {
     public void PopulateCompanies(int count)
     {
         var trademarks = new List<string>();
-        var services = database.Sectors.ToArray();
+        var services = sampleContext.Sectors.ToArray();
         while(trademarks.Count < count) {
             var first = PickRandom(companyPrefixes);
             var last = PickRandom(companySuffixes);
@@ -89,15 +85,15 @@ public partial class SampleDataService {
                 }
                 //company.Videos.Add(new Video { Title = "Huzzah 1", Uri = "https://www.example.com/huzzah1" });
                 //company.Videos.Add(new Video { Title = "Huzzah 2", Uri = "https://www.example.com/huzzah2" });
-                database.Companies.Add(company);
+                sampleContext.Companies.Add(company);
             }
         }
-        database.SaveChanges();
+        sampleContext.SaveChanges();
     }
 
     public async Task PopulateEmployeesAsync(int count)
     {
-        var companies = await database.Companies.Where(e => e.Status == CompanyStatus.Active).ToArrayAsync();
+        var companies = await sampleContext.Companies.Where(e => e.Status == CompanyStatus.Active).ToArrayAsync();
         for(int i = 0; i < count; ++i) {
             var first = PickRandom(firstNames);
             var last = PickRandom(lastNames);
@@ -112,15 +108,15 @@ public partial class SampleDataService {
             }
             employee.Employer = PickRandom(companies);
             await employee.OnCreatingAsync();
-            database.Employees.Add(employee);
+            sampleContext.Employees.Add(employee);
         }
-        await database.SaveChangesAsync();
+        await sampleContext.SaveChangesAsync();
     }
 
     public void PopulateContents()
     {
-        database.Contents.Add(Sample);
-        database.SaveChanges();
+        sampleContext.Contents.Add(Sample);
+        sampleContext.SaveChanges();
     }
 
     private T PickRandom<T>(T[] candidates) => candidates[random.Next(0, candidates.Length)];
@@ -138,7 +134,7 @@ public partial class SampleDataService {
         using var reader = new StreamReader(@".\SampleData\Countries.csv", Encoding.GetEncoding("ISO-8859-1"));
         using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
         var countries = csv.GetRecords<Country>().ToList();
-        var re = await regions.ListAsync(new PageQuery { Take = int.MaxValue });
+        var re = await regionService.ListAsync(new PageQuery { Take = int.MaxValue });
         var items = re.Items.ToList();
         var world = await PopulateWorldAsync(items);
 
@@ -149,7 +145,7 @@ public partial class SampleDataService {
                 maxSibling = countryRegion.Lineage;
             }
         }
-        database.ChangeTracker.Clear();
+        sampleContext.ChangeTracker.Clear();
 
         if(includeSubdivisions || includeLocalities) {
             await PopulateSubdivisions(items);
@@ -199,7 +195,7 @@ public partial class SampleDataService {
                 Uuid = Guid.NewGuid(),
             };
             knownRegions.Add(subRegion);
-            await regions.CreateAsync(subRegion);
+            await regionService.CreateAsync(subRegion);
         }
         return subRegion;
     }
@@ -218,7 +214,7 @@ public partial class SampleDataService {
                 Uuid = Guid.NewGuid(),
             };
             knownRegions.Add(countryRegion);
-            await regions.CreateAsync(countryRegion);
+            await regionService.CreateAsync(countryRegion);
         }
         return countryRegion;
     }
@@ -236,7 +232,7 @@ public partial class SampleDataService {
                 Uuid = Guid.NewGuid(),
             };
             knownRegions.Add(world);
-            await regions.CreateAsync(world);
+            await regionService.CreateAsync(world);
         }
         return world;
     }
@@ -330,10 +326,6 @@ public partial class SampleDataService {
             }
         }
     };
-
-    private readonly SampleContext database;
-
-    private readonly RegionService regions;
 
     [GeneratedRegex("(\\[.*\\])|(\\(.*\\))")]
     private static partial Regex RemoveSubdivisionName();

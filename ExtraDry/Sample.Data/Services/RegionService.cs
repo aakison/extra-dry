@@ -1,18 +1,13 @@
-﻿using System.Globalization;
+﻿namespace Sample.Data.Services;
 
-namespace Sample.Data.Services;
-
-public class RegionService : IEntityResolver<Region> {
-
-    public RegionService(SampleContext sampleContext, RuleEngine ruleEngine)
-    {
-        database = sampleContext;
-        rules = ruleEngine;
-    }
-
+public class RegionService(
+    SampleContext sampleContext,
+    RuleEngine ruleEngine)
+    : IEntityResolver<Region>
+{
     public async Task<PagedCollection<Region>> ListAsync(PageQuery query)
     {
-        return await database.Regions
+        return await sampleContext.Regions
             .Include(e => e.Parent)
             .QueryWith(query)
             .ToPagedCollectionAsync();
@@ -20,7 +15,7 @@ public class RegionService : IEntityResolver<Region> {
 
     public async Task<PagedHierarchyCollection<Region>> ListHierarchyAsync(PageHierarchyQuery query)
     {
-        return await database.Regions
+        return await sampleContext.Regions
             .Include(e => e.Parent)
             .QueryWith(query)
             .ToPagedHierarchyCollectionAsync();
@@ -29,7 +24,7 @@ public class RegionService : IEntityResolver<Region> {
     public async Task<BaseCollection<Region>> ListChildrenAsync(string code)
     {
         var region = await RetrieveAsync(code);
-        return await database.Regions
+        return await sampleContext.Regions
             .Where(e => e.Lineage!.IsDescendantOf(region.Lineage) && e.Lineage.GetLevel() == region.Lineage.GetLevel() + 1)
             .Include(e => e.Parent)
             .ToBaseCollectionAsync();
@@ -37,7 +32,7 @@ public class RegionService : IEntityResolver<Region> {
 
     public async Task<Region> CreateAsync(Region exemplar)
     {
-        var region = await rules.CreateAsync(exemplar);
+        var region = await ruleEngine.CreateAsync(exemplar);
         Region? parent = null;
         if(exemplar.Level != RegionLevel.Global) {
             if(exemplar.Parent == null) {
@@ -50,14 +45,14 @@ public class RegionService : IEntityResolver<Region> {
         }
 
         await SetParent(region, parent);
-        database.Regions.Add(region);
-        await database.SaveChangesAsync();
+        sampleContext.Regions.Add(region);
+        await sampleContext.SaveChangesAsync();
         return region;
     }
 
     public async Task<Region?> TryRetrieveAsync(string code)
     {
-        return await database.Regions
+        return await sampleContext.Regions
             .Include(e => e.Parent)
             .FirstOrDefaultAsync(e => e.Slug == code);
     }
@@ -89,28 +84,28 @@ public class RegionService : IEntityResolver<Region> {
 
             await SetParent(existing, existing.Parent);
         }
-        await rules.UpdateAsync(item, existing);
-        await database.SaveChangesAsync();
+        await ruleEngine.UpdateAsync(item, existing);
+        await sampleContext.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(string code)
     {
         var existing = await RetrieveAsync(code);
-        await rules.DeleteAsync(existing, () => database.Regions.Remove(existing), () => database.SaveChangesAsync());
+        await ruleEngine.DeleteAsync(existing, () => sampleContext.Regions.Remove(existing), () => sampleContext.SaveChangesAsync());
     }
 
     public async Task RestoreAsync(string code)
     {
         var existing = await RetrieveAsync(code);
-        await rules.RestoreAsync(existing);
-        await database.SaveChangesAsync();
+        await ruleEngine.RestoreAsync(existing);
+        await sampleContext.SaveChangesAsync();
     }
 
     private async Task SetParent(Region child, Region? parent)
     {
         if(parent == null) { return; }
 
-        if(database.Regions.Any(e => e.Uuid == child.Uuid && e.Lineage.IsDescendantOf(parent.Lineage))) {
+        if(sampleContext.Regions.Any(e => e.Uuid == child.Uuid && e.Lineage.IsDescendantOf(parent.Lineage))) {
             // Already a child of this entity in the DB, so lets not set it again, it'll change the sort and make the lineage numbers climb.
             return;
         }
@@ -120,7 +115,7 @@ public class RegionService : IEntityResolver<Region> {
         }
         child.Parent = parent;
 
-        var maxChildLineage = await database.Regions.Where(e => e.Lineage!.IsDescendantOf(parent.Lineage)).MaxAsync(c => c.Lineage);
+        var maxChildLineage = await sampleContext.Regions.Where(e => e.Lineage!.IsDescendantOf(parent.Lineage)).MaxAsync(c => c.Lineage);
         if(maxChildLineage == HierarchyId.GetRoot() || maxChildLineage == parent.Lineage) {
             // If this is the first child of the parent, pass null as the first param for GetDescendant
             maxChildLineage = null;
@@ -133,8 +128,4 @@ public class RegionService : IEntityResolver<Region> {
     {
         return await TryRetrieveAsync(exemplar.Slug);
     }
-
-    private readonly SampleContext database;
-
-    private readonly RuleEngine rules;
 }

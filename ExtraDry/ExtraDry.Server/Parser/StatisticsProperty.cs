@@ -6,18 +6,14 @@ namespace ExtraDry.Server.Internal;
 /// Represents information about a property on an Entity that is decorated with StatisticsAttribute
 /// in the ModelDescription.
 /// </summary>
-internal class StatisticsProperty {
+internal class StatisticsProperty(
+    PropertyInfo property, 
+    string externalName, 
+    Stats stats)
+{
+    public PropertyInfo Property { get; } = property;
 
-    public StatisticsProperty(PropertyInfo property, string externalName, Stats stats)
-    {
-        Property = property;
-        Stats = stats;
-        ExternalName = externalName;
-    }
+    public Stats Stats { get; } = stats;
 
-    public PropertyInfo Property { get; }
-
-    public Stats Stats { get; }
-
-    public string ExternalName { get; }
+    public string ExternalName { get; } = externalName;
 }

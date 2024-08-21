@@ -1,25 +1,21 @@
 ﻿namespace Sample.Data.Services;
 
-public class ContentsService {
-
-    public ContentsService(SampleContext sampleContext, RuleEngine ruleEngine)
-    {
-        database = sampleContext;
-        rules = ruleEngine;
-    }
-
+public class ContentsService(
+    SampleContext sampleContext, 
+    RuleEngine ruleEngine)
+{
     public async Task<FilteredCollection<Content>> ListAsync(FilterQuery query)
     {
-        return await database.Contents
+        return await sampleContext.Contents
             .Select(e => new Content { Uuid = e.Uuid, Title = e.Title })
             .QueryWith(query).ToFilteredCollectionAsync();
     }
 
     public async Task<Content> CreateAsync(Content item)
     {
-        var content = await rules.CreateAsync(item);
-        database.Contents.Add(content);
-        await database.SaveChangesAsync();
+        var content = await ruleEngine.CreateAsync(item);
+        sampleContext.Contents.Add(content);
+        await sampleContext.SaveChangesAsync();
         return content;
     }
 
@@ -31,24 +27,19 @@ public class ContentsService {
 
     public async Task<Content?> TryRetrieveAsync(Guid uniqueId)
     {
-        return await database.Contents.FirstOrDefaultAsync(e => e.Uuid == uniqueId);
+        return await sampleContext.Contents.FirstOrDefaultAsync(e => e.Uuid == uniqueId);
     }
 
     public async Task UpdateAsync(Content item)
     {
         var existing = await RetrieveAsync(item.Uuid);
-        await rules.UpdateAsync(item, existing);
-        await database.SaveChangesAsync();
+        await ruleEngine.UpdateAsync(item, existing);
+        await sampleContext.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(Guid uniqueId)
     {
         var existing = await RetrieveAsync(uniqueId);
-        await rules.DeleteAsync(existing, () => database.Contents.Remove(existing), async () => await database.SaveChangesAsync());
+        await ruleEngine.DeleteAsync(existing, () => sampleContext.Contents.Remove(existing), async () => await sampleContext.SaveChangesAsync());
     }
-
-    private readonly SampleContext database;
-
-    private readonly RuleEngine rules;
-
 }
