@@ -81,19 +81,19 @@
                 <textarea class="@CssClasses" rows="@rows" readonly="@ReadOnly" placeholder="@Property.Display?.Prompt" @onchange="HandleChange">@Value</textarea>
             }
             else { 
-                <DryInputText CssClass="@CssClasses" Model="@Model" Property="@Property" ReadOnly="@ReadOnly"/>
+                <DryInputText Model="@Model" Property="@Property" ReadOnly="@ReadOnly" OnValidation="@ValidationChanged"/>
             }
         } 
         else if(Property.HasNumericRepresentation) {
-            <DryInputNumeric CssClass="@CssClasses" Model="@Model" Property="@Property" ReadOnly="@ReadOnly" OnValidation="@ValidationChanged" />
+            <DryInputNumeric Model="@Model" Property="@Property" ReadOnly="@ReadOnly" OnValidation="@ValidationChanged" />
         }
         else if(LookupProviderOptions != null) {
             var selectedValue = Property.GetValue(Model);
             @if(Property.HasArrayValues) {
-                <DryInputMultipleSelect CssClass="@CssClasses" Model="@Model" Property="@Property" Values="@LookupValues" />
+                <DryInputMultipleSelect Model="@Model" Property="@Property" Values="@LookupValues" />
             }
             else { 
-                <DryInputSingleSelect CssClass="@CssClasses" Model="@Model" Property="@Property" Values="@LookupValues" />
+                <DryInputSingleSelect Model="@Model" Property="@Property" Values="@LookupValues" />
             }
         }
         else if(ReadOnly) {

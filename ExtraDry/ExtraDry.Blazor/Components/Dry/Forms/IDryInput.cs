@@ -21,7 +21,7 @@ public interface IDryInput<T> : IExtraDryComponent
     /// <summary>
     /// Event for handling changes to the input.
     /// </summary>
-    EventCallback<ChangeEventArgs>? OnChange { get; set; }
+    EventCallback<ChangeEventArgs> OnChange { get; set; }
 
     /// <inheritdoc cref="Blazor.EditMode"/>
     EditMode EditMode { get; set; }

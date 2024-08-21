@@ -1,12 +1,13 @@
 ﻿@namespace ExtraDry.Blazor.Forms
 @typeparam T
+@inherits DryInputBase<T>
 
 <div class="@CssClasses" @attributes="@UnmatchedAttributes">
-    @if(Icon != "") {
-        <Icon CssClass="context" Key="@Icon"/>
+    @if(ResolvedIcon != "") {
+        <Icon CssClass="context" Key="@ResolvedIcon"/>
     }
-    <input class="value" title="@InputTitle" type="text" value="@Value" @onchange="HandleChange" readonly="@ReadOnly" pattern="\d*" inputmode="numeric" onkeydown="@DisableInvalidCharacters" />
-    @if(Affordance != "" && !ReadOnly) {
-        <Icon CssClass="affordance" Key="@Affordance" />
+    <input class="value" title="@ResolvedTitle" type="text" value="@Value" @onchange="HandleChange" readonly="@ReadOnly" pattern="\d*" inputmode="numeric" onkeydown="@DisableInvalidCharacters" />
+    @if(ResolvedAffordance != "" && !ReadOnly) {
+        <Icon CssClass="affordance" Key="@ResolvedAffordance" />
     }
 </div>
