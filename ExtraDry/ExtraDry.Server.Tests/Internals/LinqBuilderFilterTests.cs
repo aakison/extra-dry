@@ -178,19 +178,19 @@ public class LinqBuilderFilterTests {
         Inactive,
     }
 
-    private readonly List<Datum> SampleData = new() {
+    private readonly List<Datum> SampleData = [
         new Datum { FirstName = "Charlie", LastName = "Coase", Number = 111, Keywords = "alpha beta gamma", Status = DatumType.Active },
         new Datum { FirstName = "Alice", LastName = "Cooper", Number = 333, Keywords = "beta gamma delta", Status = DatumType.Active  },
         new Datum { FirstName = "Bob", LastName = "Barker", Number = 222, Keywords = "gamma delta epsilon", Status = DatumType.Inactive  },
-    };
+    ];
 
-    private readonly List<Datum> SampleDataWithDuplicateNames = new() {
+    private readonly List<Datum> SampleDataWithDuplicateNames = [
         new Datum { FirstName = "Charlie", LastName = "Coase", Number = 111},
         new Datum { FirstName = "Alice", LastName = "Cooper", Number = 333 },
         new Datum { FirstName = "Bob", LastName = "Barker", Number = 222 },
         new Datum { FirstName = "Alice", LastName = "Barker", Number = 123 },
         new Datum { FirstName = "Bob", LastName = "Ross", Number = 321 },
-    };
+    ];
 
     public class SimpleDatum {
         [Filter(FilterType.Equals)]

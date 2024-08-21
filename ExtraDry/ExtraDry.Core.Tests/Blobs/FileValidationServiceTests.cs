@@ -226,8 +226,8 @@ public class FileValidationServiceTests {
     public void BlacklistBlocksExtension()
     {
         var options = new FileValidationOptions() {
-            ExtensionWhitelist = new List<string> { "txt" }, 
-            ExtensionBlacklist = new List<string> { "txt" }, // even if on whitelist...
+            ExtensionWhitelist = ["txt"], 
+            ExtensionBlacklist = ["txt"], // even if on whitelist...
             ValidateExtension = ValidationCondition.Always,
             ValidateContent = ValidationCondition.Never,
             ValidateFilename = ValidationCondition.Never,
@@ -247,8 +247,8 @@ public class FileValidationServiceTests {
     {
         // same as above but BlacklistBlocksExtension but don't validate extension.
         var options = new FileValidationOptions() {
-            ExtensionWhitelist = new List<string> { "txt" }, // even if on whitelist...
-            ExtensionBlacklist = new List<string> { "txt" },
+            ExtensionWhitelist = ["txt"], // even if on whitelist...
+            ExtensionBlacklist = ["txt"],
             ValidateExtension = ValidationCondition.Never, // <== blocks blacklist
             ValidateContent = ValidationCondition.Never,
             ValidateFilename = ValidationCondition.Never,
@@ -330,7 +330,7 @@ public class FileValidationServiceTests {
                     }
                 }
             },
-            ExtensionBlacklist = new List<string>() { "jar" },
+            ExtensionBlacklist = ["jar"],
             ValidateExtension = ValidationCondition.Always,
             ValidateContent = ValidationCondition.Always,
             ValidateFilename = ValidationCondition.Never,

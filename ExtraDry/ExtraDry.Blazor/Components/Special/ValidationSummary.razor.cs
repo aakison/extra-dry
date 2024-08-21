@@ -40,19 +40,19 @@ public partial class ValidationSummary : ComponentBase, IExtraDryComponent
             // the alert bar at bottom of the screen appears.
             // For now it's handled by the ValidationSummary to display a "A problem has occurred. Please try again" message
             // throw Exception;
-            return new();
+            return [];
         }
         if(!ProblemDetails!.Extensions.TryGetValue("errors", out var errors)) { 
-            return new(); 
+            return []; 
         }
 
         var alertMessages = new List<string>();
         if(errors is not JsonElement) {
-            return new();
+            return [];
         }
         var messages = JsonSerializer.Deserialize<Dictionary<string, List<string>>>(errors.ToString() ?? string.Empty);
         if(messages == null || messages.Keys.Count == 0) {
-            return new();
+            return [];
         }
         foreach(var group in messages.Keys) {
             foreach(var error in messages[group]) {

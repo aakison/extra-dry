@@ -28,7 +28,7 @@ internal class FilterRule {
     public FilterRule(string propertyName, string value)
     {
         PropertyName = propertyName;
-        Values = new List<string> { value };
+        Values = [value];
     }
 
     public BoundRule LowerBound { get; } = BoundRule.None;

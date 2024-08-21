@@ -16,7 +16,7 @@ public class ExpandoSchema : IValidatableObject
     /// <summary>
     /// A collection of fields contained in the schema.
     /// </summary>
-    public List<ExpandoField> Fields { get; set; } = new();
+    public List<ExpandoField> Fields { get; set; } = [];
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {

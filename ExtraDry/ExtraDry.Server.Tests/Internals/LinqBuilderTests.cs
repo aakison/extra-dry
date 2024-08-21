@@ -157,11 +157,11 @@ public class LinqBuilderTests {
         public string InternalName { get; set; } = string.Empty;
     }
 
-    private readonly List<Datum> SampleData = new() {
+    private readonly List<Datum> SampleData = [
         new Datum { FirstName = "Charlie", LastName = "Coase", Number = 111, InternalName = "Chuck" },
         new Datum { FirstName = "Alice", LastName = "Cooper", Number = 333, InternalName = "Al" },
         new Datum { FirstName = "Bob", LastName = "Barker", Number = 222, InternalName = "Bobby" },
-    };
+    ];
 
     //private readonly List<Datum> SampleDataWithDuplicateNames = new() {
     //    new Datum { FirstName = "Charlie", LastName = "Coase", Number = 111},

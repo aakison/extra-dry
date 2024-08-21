@@ -110,7 +110,7 @@ public partial class DryInputMultipleSelect<T> : ComponentBase, IDryInput<T>, IE
 
     private bool BlankSelected { get; set; } = true;
 
-    private Dictionary<string, OptionInfo> AllOptions { get; } = new Dictionary<string, OptionInfo>();
+    private Dictionary<string, OptionInfo> AllOptions { get; } = [];
 
     private IEnumerable<OptionInfo> SelectedOptions => AllOptions.Values.Where(e => e.Selected == true);
 

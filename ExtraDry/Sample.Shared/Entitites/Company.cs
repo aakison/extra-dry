@@ -64,7 +64,7 @@ public class Company : IResourceIdentifiers {
 
     [Display]
     [Rules(RuleAction.Link)]
-    public List<Sector> AdditionalSectors { get; set; } = new();
+    public List<Sector> AdditionalSectors { get; set; } = [];
 
     [Rules(RuleAction.Allow)]
     [Filter]
@@ -129,5 +129,5 @@ public class Company : IResourceIdentifiers {
 
     [Display(AutoGenerateField = false)]
     [JsonPropertyName("fields")]
-    public ExpandoValues CustomFields { get; set; } = new();
+    public ExpandoValues CustomFields { get; set; } = [];
 }

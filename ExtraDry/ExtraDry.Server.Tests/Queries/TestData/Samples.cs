@@ -5,7 +5,7 @@ namespace ExtraDry.Server.Tests;
 
 public static class Samples {
 
-    public static List<Model> Models => new() {
+    public static List<Model> Models => [
         new Model { Id = 1, Name = "Alpha", Soundex = "A410", Type = ModelType.Greek, Notes = "Common with phonetic" },
         new Model { Id = 2, Name = "Beta", Soundex = "B300", Type = ModelType.Greek },
         new Model { Id = 3, Name = "Gamma", Soundex = "G500", Type = ModelType.Greek },
@@ -19,7 +19,7 @@ public static class Samples {
         new Model { Id = 11, Name = "Echo", Soundex = "E200", Type = ModelType.Phonetic },
         new Model { Id = 12, Name = "Foxtrot", Soundex = "F236", Type = ModelType.Phonetic },
         new Model { Id = 13, Name = "Foxxy", Soundex = "F200", Type = ModelType.Hendrix, Notes = "Jimi" },
-    };
+    ];
 
 
     public static List<Region> Regions {
@@ -49,7 +49,7 @@ public static class Samples {
                 var brisRegion = new Region { Parent = qldRegion, Slug = "AU-QLD-Brisbane", Title = "Brisbane", Description = "Brisbane", Level = RegionLevel.Subdivision, Lineage = HierarchyId.Parse("/1/2/1/") };
                 var redRegion = new Region { Parent = qldRegion, Slug = "AU-QLD-Redlands", Title = "Redlands", Description = "City of Redlands", Level = RegionLevel.Subdivision, Lineage = HierarchyId.Parse("/1/2/2/") };
 
-                regions = new List<Region> { allRegions, auRegion, nzRegion, vicRegion, qldRegion, nswRegion, actRegion, tasRegion, saRegion, ntRegion, waRegion, aukRegion, tkiRegion, melbRegion, brisRegion, redRegion };
+                regions = [allRegions, auRegion, nzRegion, vicRegion, qldRegion, nswRegion, actRegion, tasRegion, saRegion, ntRegion, waRegion, aukRegion, tkiRegion, melbRegion, brisRegion, redRegion];
             }
             return regions;
         }

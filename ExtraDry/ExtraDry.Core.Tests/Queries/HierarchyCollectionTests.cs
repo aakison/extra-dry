@@ -60,8 +60,8 @@ public class HierarchyCollectionTests
             Filter = "filter",
             Sort = "sort",
             Level = 3,
-            Expand = new List<string> { "one", "two" },
-            Collapse = new List<string> { "three", "four" },
+            Expand = ["one", "two"],
+            Collapse = ["three", "four"],
         };
         var item = new Payload { Pay = "pay", Load = "load" };
         target.Items.Add(item);
@@ -87,8 +87,8 @@ public class HierarchyCollectionTests
             Filter = "filter",
             Sort = "sort",
             Level = 3,
-            Expand = new List<string> { "one", "two" },
-            Collapse = new List<string> { "three", "four" },
+            Expand = ["one", "two"],
+            Collapse = ["three", "four"],
         };
         var item = new Payload { Pay = "pay", Load = "load" };
         target.Items.Add(item);

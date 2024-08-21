@@ -23,7 +23,7 @@ internal class FileTypeDefinitionSource {
             using var reader = new StreamReader(stream);
             fileContent = reader.ReadToEnd();
         }
-        return JsonSerializer.Deserialize<List<FileTypeDefinition>>(fileContent) ?? new();
+        return JsonSerializer.Deserialize<List<FileTypeDefinition>>(fileContent) ?? [];
     }
 
     /// <summary>

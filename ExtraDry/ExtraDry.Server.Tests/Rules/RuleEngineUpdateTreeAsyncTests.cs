@@ -184,7 +184,7 @@ public class RuleEngineUpdateTreeAsyncTests {
             Database.Add(item.Uuid, item);
         }
 
-        private Dictionary<Guid, Child> Database { get; set; } = new();
+        private Dictionary<Guid, Child> Database { get; set; } = [];
 
     }
 

@@ -15,7 +15,7 @@ internal class MemberAccessVisitor : ExpressionVisitor {
         declaringType = forType;
     }
 
-    public IList<string> PropertyNames { get; } = new List<string>();
+    public IList<string> PropertyNames { get; } = [];
 
     protected override Expression VisitMember(MemberExpression node)
     {

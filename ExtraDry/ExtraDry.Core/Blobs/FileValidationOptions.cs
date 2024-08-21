@@ -10,35 +10,33 @@ public class FileValidationOptions
     /// The whitelist of file extensions that are allowed.  If this is empty, all extensions are 
     /// allowed.
     /// </summary>
-    public ICollection<string> ExtensionWhitelist { get; set; } = new List<string>() {
+    public ICollection<string> ExtensionWhitelist { get; set; } = [
         "7z", "3ds", "3gp", "ai", "avi", "bak", "bmp", "bz2", "csv", "cxp", "doc", "docx", "dot",
         "dwg", "dwt", "dxf", "eml", "fpx", "gif", "gz", "heic", "html", "iam", "idw", "ifc", 
         "iges", "ipt", "jpeg", "jpg", "key", "log", "m4a", "m4v", "md", "mht", "mov", "mp3", "mp4",
         "mpeg", "mpg", "msg", "nwc", "nwd", "nwf", "obj", "ods", "odt", "oft", "ogg", "pdf", "png",
         "ppt", "pptm", "pptx", "psd", "rar", "rec", "rfa", "rte", "rtf", "rvt", "shp", "stl", 
         "tar", "tgz", "tif", "tiff", "ttd", "txt", "wav", "xls", "xlsm", "xlsx", "xltm", "zip"
-    };
+    ];
     
     /// <summary>
     /// The blacklist of file extensions that are rejected. 
     /// </summary>
-    public ICollection<string> ExtensionBlacklist { get; set; } = new List<string>() {
+    public ICollection<string> ExtensionBlacklist { get; set; } = [
         "asp", "aspx", "config", "ashx", "asmx", "aspq", "axd", "cshtm", "cshtml", "rem", "soap", 
         "vbhtm", "vbhtml", "asa", "cer", "shtml", "jsp", "jspx", "jsw", "jsv", "jspf", "wss", 
         "do", "action", "bat", "bin", "cmd", "com", "cpl", "exe", "gadget", "inf1", "ins", "inx", 
         "isu", "job", "jse", "lnk", "msc", "msi", "msp", "mst", "paf", "pif", "ps1", "reg", "rgs", 
         "scr", "sct", "shb", "shs", "u3p", "vb", "vbe", "vbs", "vbscript", "ws", "wsf", "wsh", 
         "py", "go", "app", "scpt", "scptd", "apk", "jar", "ipa", "xap", "xpi", "crx", "oex" 
-    };
+    ];
 
     /// <summary>
     /// The list of extensions that are completely rejected based on the content of the file.  The
     /// extension must also have a content definition provided in the 
     /// <see cref="FileTypeDefinitions"/> list.
     /// </summary>
-    public ICollection<string> ContentBlacklist { get; set; } = new List<string>() {
-        "exe", "vbe"
-    };
+    public ICollection<string> ContentBlacklist { get; set; } = [ "exe", "vbe" ];
 
     /// <summary>
     /// Sets a value indicating whether the file service should be checking magic bytes and mime types.
@@ -64,7 +62,7 @@ public class FileValidationOptions
     /// Provides mappings between file extensions, mime types, and 'magic bytes' in the content 
     /// that indicate the file type.
     /// </summary>
-    public ICollection<FileTypeDefinition> FileTypeDefinitions { get; set; } = new List<FileTypeDefinition>() {
+    public ICollection<FileTypeDefinition> FileTypeDefinitions { get; set; } = [
         new("exe", "application/x-dosexec", "DOS/Windows executable (EXE)") {
             MagicBytes = {
                 new MagicBytes {
@@ -83,7 +81,7 @@ public class FileValidationOptions
                 }
             }
         }
-    };
+    ];
 
     /// <summary>
     /// Determines if the <see cref="FileValidator" /> validates the file content.  The default is 

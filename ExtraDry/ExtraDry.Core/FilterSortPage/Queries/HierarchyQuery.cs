@@ -17,11 +17,11 @@ public class HierarchyQuery : FilterQuery
     /// <summary>
     /// The list of slugs for the specific entities to expand.
     /// </summary>
-    public List<string> Expand { get; set; } = new();
+    public List<string> Expand { get; set; } = [];
 
     /// <summary>
     /// The list of slugs for the specific entities to collapse.
     /// </summary>
-    public List<string> Collapse { get; set; } = new();
+    public List<string> Collapse { get; set; } = [];
 
 }

@@ -31,7 +31,7 @@ public class Table {
     /// <summary>
     /// The set of columns for this table.
     /// </summary>
-    public List<Column> Columns { get; } = new List<Column>();
+    public List<Column> Columns { get; } = [];
 
     public IDataGenerator? Generator { get; init; }
 
@@ -48,7 +48,7 @@ public class Table {
     /// Enums will create all of there data here and won't change while the program is running.
     /// Dimensions and facts will typically have no base data.
     /// </summary>
-    public List<Dictionary<string, object>> Data { get; } = new List<Dictionary<string, object>>();
+    public List<Dictionary<string, object>> Data { get; } = [];
 
     /// <summary>
     /// An accessor to easily fetch the key column from the list of columns.

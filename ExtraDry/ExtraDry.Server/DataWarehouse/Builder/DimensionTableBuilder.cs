@@ -83,7 +83,7 @@ public abstract class DimensionTableBuilder : TableBuilder {
     public ReadOnlyCollection<Dictionary<ColumnBuilder, object>> Data {
         get => new(baseData);
     }
-    private readonly List<Dictionary<ColumnBuilder, object>> baseData = new();
+    private readonly List<Dictionary<ColumnBuilder, object>> baseData = [];
 
     internal override bool HasColumnNamed(string name) => 
         KeyBuilder?.ColumnName == name || AttributeBuilders.Values.Any(e => e.ColumnName == name);
@@ -111,7 +111,7 @@ public abstract class DimensionTableBuilder : TableBuilder {
     // May be null when subclassed by DateDimensionTable
     private DimensionTableAttribute? DimensionTableAttribute { get; set; }
 
-    private Dictionary<string, AttributeBuilder> AttributeBuilders { get; } = new();
+    private Dictionary<string, AttributeBuilder> AttributeBuilders { get; } = [];
 
 }
 

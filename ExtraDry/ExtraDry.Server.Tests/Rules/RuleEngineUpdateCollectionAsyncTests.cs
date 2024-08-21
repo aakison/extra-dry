@@ -73,10 +73,10 @@ public class RuleEngineUpdateCollectionAsyncTests {
     {
         var services = new ServiceProviderStub();
         var rules = new RuleEngine(services, new ExtraDryOptions());
-        var source = new Parent { Children = new List<Child> {
+        var source = new Parent { Children = [
             new() { Uuid = Guid.NewGuid(), Name = "Child1" },
             new() { Uuid = Guid.NewGuid(), Name = "Child2" },
-        }};
+        ]};
         var destination = new Parent { };
 
         await rules.UpdateAsync(source, destination);
@@ -95,12 +95,12 @@ public class RuleEngineUpdateCollectionAsyncTests {
         var services = new ServiceProviderStub();
         var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Parent {
-            Children = new List<Child> {
+            Children = [
             new() { Uuid = Guid.NewGuid(), Name = "Child1" },
             new() { Uuid = Guid.NewGuid(), Name = "Child2" },
-        }
+        ]
         };
-        var destination = new Parent { Children = new List<Child>() };
+        var destination = new Parent { Children = [] };
 
         await rules.UpdateAsync(source, destination);
 
@@ -118,16 +118,16 @@ public class RuleEngineUpdateCollectionAsyncTests {
         var services = new ServiceProviderStub();
         var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Parent {
-            Children = new List<Child> {
+            Children = [
                 new() { Uuid = Guid.NewGuid(), Name = "Child3" },
                 new() { Uuid = Guid.NewGuid(), Name = "Child4" },
-            }
+            ]
         };
         var destination = new Parent {
-            Children = new List<Child> {
+            Children = [
                 new() { Uuid = Guid.NewGuid(), Name = "Child1" },
                 new() { Uuid = Guid.NewGuid(), Name = "Child2" },
-            }
+            ]
         };
 
         await rules.UpdateAsync(source, destination);
@@ -147,16 +147,16 @@ public class RuleEngineUpdateCollectionAsyncTests {
         var rules = new RuleEngine(services, new ExtraDryOptions());
         var guid = Guid.NewGuid();
         var source = new Parent {
-            Children = new List<Child> {
+            Children = [
                 new() { Uuid = guid, Name = "Child1" },
-            }
+            ]
         };
         var destination = new Parent {
-            Children = new List<Child> {
+            Children = [
                 new() { Uuid = Guid.NewGuid(), Name = "Child2" },
                 new() { Uuid = guid, Name = "Child1" },
                 new() { Uuid = Guid.NewGuid(), Name = "Child3" },
-            }
+            ]
         };
 
         await rules.UpdateAsync(source, destination);
@@ -174,15 +174,15 @@ public class RuleEngineUpdateCollectionAsyncTests {
         var rules = new RuleEngine(services, new ExtraDryOptions());
         var guid = Guid.NewGuid();
         var source = new Parent {
-            Children = new List<Child> {
+            Children = [
                 new() { Uuid = guid, Name = "Child New Name" },
                 new() { Uuid = Guid.NewGuid(), Name = "Child2" },
-            }
+            ]
         };
         var destination = new Parent {
-            Children = new List<Child> {
+            Children = [
                 new() { Uuid = guid, Name = "Child Original Name" },
-            }
+            ]
         };
         var originalObject = destination.Children.First();
 
@@ -202,10 +202,10 @@ public class RuleEngineUpdateCollectionAsyncTests {
         var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Parent { };
         var destination = new Parent {
-            Children = new List<Child> {
+            Children = [
                 new() { Uuid = Guid.NewGuid(), Name = "Child1" },
                 new() { Uuid = Guid.NewGuid(), Name = "Child2" },
-            }
+            ]
         };
 
         await rules.UpdateAsync(source, destination);
@@ -219,12 +219,12 @@ public class RuleEngineUpdateCollectionAsyncTests {
     {
         var services = new ServiceProviderStubWithChildResolver();
         var rules = new RuleEngine(services, new ExtraDryOptions());
-        var source = new Parent { Children = new List<Child>() };
+        var source = new Parent { Children = [] };
         var destination = new Parent {
-            Children = new List<Child> {
+            Children = [
                 new() { Uuid = Guid.NewGuid(), Name = "Child1" },
                 new() { Uuid = Guid.NewGuid(), Name = "Child2" },
-            }
+            ]
         };
 
         await rules.UpdateAsync(source, destination);
@@ -239,16 +239,16 @@ public class RuleEngineUpdateCollectionAsyncTests {
         var services = new ServiceProviderStubWithChildResolver();
         var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Parent {
-            IgnoredChildren = new List<Child> {
+            IgnoredChildren = [
                 new() { Uuid = Guid.NewGuid(), Name = "Child1" },
                 new() { Uuid = Guid.NewGuid(), Name = "Child2" },
-            }
+            ]
         };
         var destination = new Parent {
-            IgnoredChildren = new List<Child> {
+            IgnoredChildren = [
                 new() { Uuid = Guid.NewGuid(), Name = "Child3" },
                 new() { Uuid = Guid.NewGuid(), Name = "Child4" },
-            }
+            ]
         };
 
         await rules.UpdateAsync(source, destination);
@@ -265,16 +265,16 @@ public class RuleEngineUpdateCollectionAsyncTests {
         var services = new ServiceProviderStub();
         var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Parent {
-            IgnoredDefaultsChildren = new List<Child> {
+            IgnoredDefaultsChildren = [
                 new() { Uuid = Guid.NewGuid(), Name = "Child1" },
                 new() { Uuid = Guid.NewGuid(), Name = "Child2" },
-            }
+            ]
         };
         var destination = new Parent {
-            IgnoredDefaultsChildren = new List<Child> {
+            IgnoredDefaultsChildren = [
                 new() { Uuid = Guid.NewGuid(), Name = "Child3" },
                 new() { Uuid = Guid.NewGuid(), Name = "Child4" },
-            }
+            ]
         };
 
         await rules.UpdateAsync(source, destination);
@@ -295,10 +295,10 @@ public class RuleEngineUpdateCollectionAsyncTests {
             IgnoredDefaultsChildren = null
         };
         var destination = new Parent {
-            IgnoredDefaultsChildren = new List<Child> {
+            IgnoredDefaultsChildren = [
                 new() { Uuid = Guid.NewGuid(), Name = "Child3" },
                 new() { Uuid = Guid.NewGuid(), Name = "Child4" },
-            }
+            ]
         };
 
         await rules.UpdateAsync(source, destination);
@@ -315,13 +315,13 @@ public class RuleEngineUpdateCollectionAsyncTests {
         var services = new ServiceProviderStubWithChildResolver();
         var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Parent {
-            IgnoredDefaultsChildren = new List<Child>(),
+            IgnoredDefaultsChildren = [],
         };
         var destination = new Parent {
-            IgnoredDefaultsChildren = new List<Child> {
+            IgnoredDefaultsChildren = [
                 new() { Uuid = Guid.NewGuid(), Name = "Child3" },
                 new() { Uuid = Guid.NewGuid(), Name = "Child4" },
-            }
+            ]
         };
 
         await rules.UpdateAsync(source, destination);
@@ -336,10 +336,10 @@ public class RuleEngineUpdateCollectionAsyncTests {
         var services = new ServiceProviderStubWithChildResolver();
         var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Parent {
-            BlockedChildren = new List<Child>(),
+            BlockedChildren = [],
         };
         var destination = new Parent {
-            BlockedChildren = new List<Child>(),
+            BlockedChildren = [],
         };
 
         await rules.UpdateAsync(source, destination);
@@ -373,16 +373,16 @@ public class RuleEngineUpdateCollectionAsyncTests {
         var guid1 = Guid.NewGuid();
         var guid2 = Guid.NewGuid();
         var source = new Parent {
-            BlockedChildren = new List<Child> {
+            BlockedChildren = [
                 new() { Uuid = guid1, Name = "Child3" },
                 new() { Uuid = guid2, Name = "Child4" },
-            }
+            ]
         };
         var destination = new Parent {
-            BlockedChildren = new List<Child> {
+            BlockedChildren = [
                 new() { Uuid = guid1, Name = "Child3" },
                 new() { Uuid = guid2, Name = "Child4" },
-            }
+            ]
         };
 
         await rules.UpdateAsync(source, destination);
@@ -400,13 +400,13 @@ public class RuleEngineUpdateCollectionAsyncTests {
         var services = new ServiceProviderStubWithChildResolver();
         var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Parent {
-            BlockedChildren = new List<Child>()
+            BlockedChildren = []
         };
         var destination = new Parent {
-            BlockedChildren = new List<Child> {
+            BlockedChildren = [
                 new() { Uuid = Guid.NewGuid(), Name = "Child3" },
                 new() { Uuid = Guid.NewGuid(), Name = "Child4" },
-            }
+            ]
         };
 
         await Assert.ThrowsAsync<DryException>(async () => await rules.UpdateAsync(source, destination));
@@ -421,10 +421,10 @@ public class RuleEngineUpdateCollectionAsyncTests {
             BlockedChildren = null
         };
         var destination = new Parent {
-            BlockedChildren = new List<Child> {
+            BlockedChildren = [
                 new() { Uuid = Guid.NewGuid(), Name = "Child3" },
                 new() { Uuid = Guid.NewGuid(), Name = "Child4" },
-            }
+            ]
         };
 
         await Assert.ThrowsAsync<DryException>(async () => await rules.UpdateAsync(source, destination));
@@ -436,16 +436,16 @@ public class RuleEngineUpdateCollectionAsyncTests {
         var services = new ServiceProviderStubWithChildResolver();
         var rules = new RuleEngine(services, new ExtraDryOptions());
         var source = new Parent {
-            BlockedChildren = new List<Child> {
+            BlockedChildren = [
                 new() { Uuid = Guid.NewGuid(), Name = "Child1" },
                 new() { Uuid = Guid.NewGuid(), Name = "Child2" },
-            }
+            ]
         };
         var destination = new Parent {
-            BlockedChildren = new List<Child> {
+            BlockedChildren = [
                 new() { Uuid = Guid.NewGuid(), Name = "Child3" },
                 new() { Uuid = Guid.NewGuid(), Name = "Child4" },
-            }
+            ]
         };
 
         await Assert.ThrowsAsync<DryException>(async () => await rules.UpdateAsync(source, destination));
@@ -507,7 +507,7 @@ public class RuleEngineUpdateCollectionAsyncTests {
             Database.Add(item.Uuid, item);
         }
 
-        private Dictionary<Guid, Child> Database { get; set; } = new();
+        private Dictionary<Guid, Child> Database { get; set; } = [];
 
     }
 
