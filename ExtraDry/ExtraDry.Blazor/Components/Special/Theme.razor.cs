@@ -92,7 +92,7 @@ public partial class Theme : ComponentBase {
             return;
         }
         ThemeInfo.Loading = true;
-        Icons ??= Array.Empty<IconInfo>();
+        Icons ??= [];
         if(Http == null) {
             Logger.LogConsoleError("Theme requires an HttpClient to load SVG icons, please register one in DI.");
             return;
@@ -168,6 +168,6 @@ public partial class Theme : ComponentBase {
 
     private IEnumerable<IconInfo> SvgIcons => Icons
         ?.Where(e => !string.IsNullOrEmpty(e.SvgDatabaseBody))
-        ?? Array.Empty<IconInfo>();
+        ?? [];
 }
 

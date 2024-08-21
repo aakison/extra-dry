@@ -56,7 +56,7 @@ internal class FileTypeDefinitionSource {
     internal IEnumerable<FileTypeDefinition> GetFileTypeFromContent(byte[]? content)
     {
         if(content == null || content.Length == 0) {
-            return Array.Empty<FileTypeDefinition>();
+            return [];
         }
         return FileDefinitions.Where(m => IsMatch(content, m.MagicBytes));
     }

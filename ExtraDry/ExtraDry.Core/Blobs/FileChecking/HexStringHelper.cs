@@ -19,7 +19,7 @@ internal static class HexStringHelper {
     public static byte[] GetBytesFromString(string hexstring)
     {
         if(string.IsNullOrEmpty(hexstring)) {
-            return Array.Empty<byte>();
+            return [];
         }
         if(hexstring.Length % 2 != 0) {
             throw new ArgumentException("Hex String must be an even number of characters");
