@@ -21,7 +21,7 @@ public partial class DryInputText<T> : DryInputBase<T> {
 
     private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", ReadOnlyCss, CssClass);
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", "text", ReadOnlyCss, CssClass);
 
     private string Value { get; set; } = "";
 
