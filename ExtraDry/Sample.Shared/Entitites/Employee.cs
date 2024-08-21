@@ -7,6 +7,7 @@ public class Employee : IResourceIdentifiers, ICreatingCallback, IRevisioned
     [Key]
     [Rules(RuleAction.Block)]
     [JsonIgnore]
+    [Display(AutoGenerateField = false)]
     public int Id { get; set; }
 
     [Rules(RuleAction.Block)]
