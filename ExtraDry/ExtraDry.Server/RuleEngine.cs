@@ -7,19 +7,20 @@ using System.Reflection;
 namespace ExtraDry.Server;
 
 /// <summary>
-/// Provides business rule logic for Creating, Updating and Deleting objects from untrusted sources.
-/// The untrusted source is usually an object deserialized from JSON from an API or MVC call.
-/// The rules for overwriting, ignoring, or blocking changes are defined by applying the `RuleAttribute` to each property.
-/// The `RuleEngine` should then be dependency injected into services where its methods will consistently apply business rules.
+/// Provides business rule logic for Creating, Updating and Deleting objects from untrusted 
+/// sources. The untrusted source is usually an object deserialized from JSON from an API or MVC 
+/// call. The rules for overwriting, ignoring, or blocking changes are defined by applying the 
+/// `RuleAttribute` to each property. The `RuleEngine` should then be dependency injected into 
+/// services where its methods will consistently apply business rules.
 /// </summary>
 /// <remarks>
-/// Creates a new RuleEngine, typically only called from the DI service.
-/// The IServiceProvider is used to further discover IEntityResolver objects for cases where the rule engine
-/// is attempting to link to an existing object.
+/// Creates a new RuleEngine, typically only called from the DI service. The IServiceProvider is 
+/// used to further discover IEntityResolver objects for cases where the rule engine is attempting 
+/// to link to an existing object.
 /// </remarks>
 public class RuleEngine(
     IServiceProvider services,
-    ExtraDryOptions _)
+    ExtraDryOptions options)
 {
 
     /// <summary>
@@ -666,5 +667,13 @@ public class RuleEngine(
     }
 
     private Dictionary<Type, Action<object>> RemoveFunctors { get; set; } = [];
+
     private Func<Task> CommitFunctor { get; set; } = () => Task.CompletedTask;
+
+    /// <summary>
+    /// Use for options for the Rule Engine.  Note is also used to ensure the options are loaded for
+    /// other components that dynamically rely on the options.  As RuleEngine is a singleton, it 
+    /// will ensure the options are loaded at startup.
+    /// </summary>
+    private ExtraDryOptions Options { get; } = options;
 }
