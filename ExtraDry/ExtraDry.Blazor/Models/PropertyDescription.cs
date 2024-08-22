@@ -16,8 +16,8 @@ public class PropertyDescription
         Filter = Property.GetCustomAttribute<FilterAttribute>();
         InputFormat = Property.GetCustomAttribute<InputFormatAttribute>();
         Sort = Property.GetCustomAttribute<SortAttribute>();
-        FieldCaption = Display?.Name ?? Property.Name;
-        ColumnCaption = Display?.ShortName ?? Property.Name;
+        FieldCaption = Display?.Name ?? DataConverter.CamelCaseToTitleCase(Property.Name);
+        ColumnCaption = Display?.ShortName ?? DataConverter.CamelCaseToTitleCase(Property.Name);
         Description = Display?.Description;
         Order = Display?.GetOrder();
         HasDescription = !string.IsNullOrWhiteSpace(Description);
@@ -52,8 +52,18 @@ public class PropertyDescription
 
     public ViewModelDescription? ChildModel { get; private set; }
 
+    /// <summary>
+    /// When rendered as an input component, the label for the input field. This may be set in the 
+    /// <see cref="DisplayAttribute.Name" />, or will default to a title-case version of the 
+    /// property name.
+    /// </summary>
     public string FieldCaption { get; set; }
 
+    /// <summary>
+    /// When rendered as a table colun, the label for the table header.  This may be set in the
+    /// <see cref="DisplayAttribute.ShortName" />, or will default to a title-case version of the
+    /// property name.
+    /// </summary>
     public string ColumnCaption { get; set; }
 
     public DisplayAttribute? Display { get; }
