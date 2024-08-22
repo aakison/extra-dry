@@ -1,0 +1,4 @@
+[*.cs]
+# Index and Range required for C# 8.0 are not supported in the .NET 4.8 build target.
+# When updating to no longer support .NET 4.8, remove this rule.
+dotnet_diagnostic.IDE0057.severity = none

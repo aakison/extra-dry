@@ -6,18 +6,13 @@
 /// and sent to the server as HTTP headers.  To override the default header names, use this
 /// attribute.  If the attribute is not used, the header name will be X-Blob-{PropertyName}.
 /// </summary>
+/// <inheritdoc cref="HttpHeaderAttribute" />
 [AttributeUsage(AttributeTargets.Property)]
-public class HttpHeaderAttribute : Attribute
+public class HttpHeaderAttribute(string name) : Attribute
 {
-
-    /// <inheritdoc cref="HttpHeaderAttribute" />
-    public HttpHeaderAttribute(string name)
-    {
-        Name = name;
-    }
 
     /// <summary>
     /// The name of the HTTP header to use for this property.
     /// </summary>
-    public string Name { get; }
+    public string Name { get; } = name;
 }

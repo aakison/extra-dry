@@ -10,7 +10,7 @@ namespace ExtraDry.Server.DataWarehouse;
 /// </summary>
 public class DataWarehouseAspect {
 
-    public DataWarehouseAspect(AspectDbContext context, ServiceBusQueue<EntityMessage> queue, ILogger<DataWarehouseAspect> iLogger)
+    public DataWarehouseAspect(AspectDbContext _, ServiceBusQueue<EntityMessage> queue, ILogger<DataWarehouseAspect> iLogger)
     {
         Queue = queue;
         logger = iLogger;
@@ -18,7 +18,7 @@ public class DataWarehouseAspect {
         //context.EntitiesChangedEvent += Context_EntitiesChanged;
     }
 
-    private async void Context_EntitiesChanged(object sender, EntitiesChanged args)
+    private async void Context_EntitiesChanged(object _, EntitiesChanged args)
     {
         var entities = args.EntitiesAdded.Union(args.EntitiesModified);
         var types = entities.Select(e => e.GetType()).Distinct().Except(ExceptionTypes);

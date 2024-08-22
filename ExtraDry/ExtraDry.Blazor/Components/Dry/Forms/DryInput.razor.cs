@@ -183,13 +183,15 @@ public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryC
 
     private Task ValidationChanged(ValidationEventArgs validation)
     {
+        var message = validation.Message;
         UpdateValidationUI(validation.IsValid, validation.Message);
         return Task.CompletedTask;
     }
 
     private void UpdateValidationUI(bool valid, string message)
     {
-        ValidationMessage = message;
+        // Remove common redundant portions of messages
+        ValidationMessage = ValidationSummary.FormatMessage(Property!.Property.Name, message);
         Valid = valid;
         StateHasChanged();
     }
