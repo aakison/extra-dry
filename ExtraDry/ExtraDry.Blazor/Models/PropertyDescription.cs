@@ -98,14 +98,6 @@ public class PropertyDescription
     /// </summary>
     public PropertySize Size { get; private set; }
 
-    /// <summary>
-    /// The amount of the line that the property should consume.
-    /// </summary>
-    /// <remarks>
-    /// Takes into account any consumer overrides.
-    /// </remarks>
-    public PropertySize Length => (InputFormat is not null && InputFormat.Size != PropertySize.Calculated) ? InputFormat.Size : Size;
-
     public string DisplayValue(object? item)
     {
         if(item == null) {
@@ -339,6 +331,10 @@ public class PropertyDescription
     private PropertySize PredictSize()
     {
         if(Property.PropertyType == typeof(string)) {
+            var overrideSize = InputFormat?.GetSize();
+            if(overrideSize.HasValue) {
+                return overrideSize.Value;
+            }
             var length = FieldLength ?? 1000;
             if(length <= 25) {
                 return PropertySize.Small;

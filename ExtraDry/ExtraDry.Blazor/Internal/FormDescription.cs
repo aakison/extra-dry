@@ -105,7 +105,7 @@ internal class FormDescription {
                 ExtendedProperties.Add(new ExtendedProperty(property, model) { 
                     FieldsetTitle = fieldsetName,
                     GroupType = formGroup,
-                    Length = property.Length,
+                    Length = property.Size,
                     ParentTarget = parentModel,
                 });
             }

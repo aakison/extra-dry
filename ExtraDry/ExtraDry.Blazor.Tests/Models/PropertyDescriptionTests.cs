@@ -8,50 +8,57 @@ public class PropertyDescriptionTests
     [Fact]
     public void CreateObject()
     {
-        var propertyDescription = new PropertyDescription(typeof(SizeAndLengthTestModel).GetProperty(nameof(SizeAndLengthTestModel.Unset))!);
+        var propertyDescription = new PropertyDescription(typeof(SizeTestModel).GetProperty(nameof(SizeTestModel.Unset))!);
 
         Assert.NotNull(propertyDescription);
     }
 
-    #region Size and Length tests
+    #region Size tests
 
     [Theory]
-    [InlineData(nameof(SizeAndLengthTestModel.Unset), PropertySize.Jumbo)]
-    [InlineData(nameof(SizeAndLengthTestModel.SmallStringLength), PropertySize.Small)]
-    [InlineData(nameof(SizeAndLengthTestModel.MediumStringLength), PropertySize.Medium)]
-    [InlineData(nameof(SizeAndLengthTestModel.LargeStringLength), PropertySize.Large)]
-    [InlineData(nameof(SizeAndLengthTestModel.JumboStringLength), PropertySize.Jumbo)]
-    [InlineData(nameof(SizeAndLengthTestModel.SmallMaxLength), PropertySize.Small)]
-    [InlineData(nameof(SizeAndLengthTestModel.MediumMaxLength), PropertySize.Medium)]
-    [InlineData(nameof(SizeAndLengthTestModel.LargeMaxLength), PropertySize.Large)]
-    [InlineData(nameof(SizeAndLengthTestModel.JumboMaxLength), PropertySize.Jumbo)]
-    public void SizeAndLength(string propertyName, PropertySize expectedSize)
+    [InlineData(nameof(SizeTestModel.Unset), PropertySize.Jumbo)]
+    [InlineData(nameof(SizeTestModel.SmallStringLength), PropertySize.Small)]
+    [InlineData(nameof(SizeTestModel.MediumStringLength), PropertySize.Medium)]
+    [InlineData(nameof(SizeTestModel.LargeStringLength), PropertySize.Large)]
+    [InlineData(nameof(SizeTestModel.JumboStringLength), PropertySize.Jumbo)]
+    [InlineData(nameof(SizeTestModel.SmallMaxLength), PropertySize.Small)]
+    [InlineData(nameof(SizeTestModel.MediumMaxLength), PropertySize.Medium)]
+    [InlineData(nameof(SizeTestModel.LargeMaxLength), PropertySize.Large)]
+    [InlineData(nameof(SizeTestModel.JumboMaxLength), PropertySize.Jumbo)]
+    public void Size(string propertyName, PropertySize expectedSize)
     {
-        var propertyDescription = new PropertyDescription(typeof(SizeAndLengthTestModel).GetProperty(propertyName)!);
+        var propertyDescription = new PropertyDescription(typeof(SizeTestModel).GetProperty(propertyName)!);
 
         Assert.Equal(expectedSize, propertyDescription.Size);
-        Assert.Equal(expectedSize, propertyDescription.Length);
+        //Assert.Equal(expectedSize, propertyDescription.Length);
     }
 
     [Theory]
-    [InlineData(nameof(SizeAndLengthTestModel.UnsetSetSmall), PropertySize.Jumbo, PropertySize.Small)]
-    [InlineData(nameof(SizeAndLengthTestModel.SmallStringLengthSetMedium), PropertySize.Small, PropertySize.Medium)]
-    [InlineData(nameof(SizeAndLengthTestModel.MediumStringLengthSetLarge), PropertySize.Medium, PropertySize.Large)]
-    [InlineData(nameof(SizeAndLengthTestModel.LargeStringLengthSetJumbo), PropertySize.Large, PropertySize.Jumbo)]
-    [InlineData(nameof(SizeAndLengthTestModel.JumboStringLengthSetSmall), PropertySize.Jumbo, PropertySize.Small)]
-    [InlineData(nameof(SizeAndLengthTestModel.SmallMaxLengthSetMedium), PropertySize.Small, PropertySize.Medium)]
-    [InlineData(nameof(SizeAndLengthTestModel.MediumMaxLengthSetLarge), PropertySize.Medium, PropertySize.Large)]
-    [InlineData(nameof(SizeAndLengthTestModel.LargeMaxLengthSetJumbo), PropertySize.Large, PropertySize.Jumbo)]
-    [InlineData(nameof(SizeAndLengthTestModel.JumboMaxLengthSetSmall), PropertySize.Jumbo, PropertySize.Small)]
-    public void SizeAndLengthWithOverride(string propertyName, PropertySize expectedSize, PropertySize expectedLength)
+    [InlineData(nameof(SizeTestModel.UnsetSetSmall), PropertySize.Small)]
+    [InlineData(nameof(SizeTestModel.SmallStringLengthSetMedium), PropertySize.Medium)]
+    [InlineData(nameof(SizeTestModel.MediumStringLengthSetLarge), PropertySize.Large)]
+    [InlineData(nameof(SizeTestModel.LargeStringLengthSetJumbo), PropertySize.Jumbo)]
+    [InlineData(nameof(SizeTestModel.JumboStringLengthSetSmall), PropertySize.Small)]
+    [InlineData(nameof(SizeTestModel.SmallMaxLengthSetMedium), PropertySize.Medium)]
+    [InlineData(nameof(SizeTestModel.MediumMaxLengthSetLarge), PropertySize.Large)]
+    [InlineData(nameof(SizeTestModel.LargeMaxLengthSetJumbo), PropertySize.Jumbo)]
+    [InlineData(nameof(SizeTestModel.JumboMaxLengthSetSmall), PropertySize.Small)]
+    public void SizeWithOverride(string propertyName, PropertySize expectedSize)
     {
-        var propertyDescription = new PropertyDescription(typeof(SizeAndLengthTestModel).GetProperty(propertyName)!);
+        var propertyDescription = new PropertyDescription(typeof(SizeTestModel).GetProperty(propertyName)!);
 
         Assert.Equal(expectedSize, propertyDescription.Size);
-        Assert.Equal(expectedLength, propertyDescription.Length);
     }
 
-    private class SizeAndLengthTestModel
+    [Fact]
+    public void SizeNotSet()
+    {
+        var propertyDescription = new PropertyDescription(typeof(SizeTestModel).GetProperty(nameof(SizeTestModel.NotSet))!);
+
+        Assert.Equal(PropertySize.Jumbo, propertyDescription.Size);
+    }
+
+    private class SizeTestModel
     {
         public string Unset { get; set; } = string.Empty;
 
@@ -117,6 +124,9 @@ public class PropertyDescriptionTests
         [InputFormat(Size = PropertySize.Small)]
         public string JumboMaxLengthSetSmall { get; set; } = string.Empty;
 #pragma warning restore DRY1310 // Prefer the use of StringLength instead of MaxLength.
+
+        [InputFormat()]
+        public string NotSet { get; set; } = string.Empty;
 
     }
 

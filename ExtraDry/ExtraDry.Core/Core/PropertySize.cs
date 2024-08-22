@@ -7,11 +7,6 @@
 public enum PropertySize {
 
     /// <summary>
-    /// Size is calculated based on the property details.
-    /// </summary>
-    Calculated = 0,
-
-    /// <summary>
     /// A small property, such as an int field, small enough to fit four fields on a single line.
     /// </summary>
     Small = 1,

@@ -80,7 +80,7 @@ public class Company : IResourceIdentifiers {
     public string ContactEmail { get; set; } = "";
 
     [Precision(18, 2)]
-    [InputFormat(Icon = "currency", Size = PropertySize.Calculated)]
+    [InputFormat(Icon = "currency")]
     public decimal AnnualRevenue { get; set; }
 
     [Display(Prompt = "0.00", Description = "Clamped to range [0, 120]")]
