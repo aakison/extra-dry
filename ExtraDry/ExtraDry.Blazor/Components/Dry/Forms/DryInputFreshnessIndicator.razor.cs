@@ -24,20 +24,18 @@ public partial class DryInputFreshnessIndicator<T> : DryInputBase<T>
         var userGuid = ((UserTimestamp)property).User;
         var timeStamp = ((UserTimestamp)property).Timestamp;
 
-        var user = "Unknown";
-
-        //if(userService != null && Guid.TryParse(userGuid, out Guid guid)) {
-        //    var identityUser = await userService.RetrieveAsync(userGuid);
-        //    if(identityUser != null) {
-        //        user = identityUser.UserName;
-        //    }
-        //}
+        var user = "";
+        Value = $"updated {DataConverter.DateToRelativeTime(timeStamp)}";
+        
+        if(DisplayNameProvider != null) {
+            user = await DisplayNameProvider.ResolveDisplayNameAsync(userGuid);
+        }
+        else {
+            user = userGuid;
+        }
 
         Value = $"{user} updated {DataConverter.DateToRelativeTime(timeStamp)}";
     }
-
-    //[Inject]
-    //private CrudService<T>? userService { get; set; }
 
     private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
 
@@ -45,4 +43,6 @@ public partial class DryInputFreshnessIndicator<T> : DryInputBase<T>
 
     private string? Value { get; set; } = "";
 
+    [Inject]
+    public IDisplayNameProvider? DisplayNameProvider { get; set; }
 }

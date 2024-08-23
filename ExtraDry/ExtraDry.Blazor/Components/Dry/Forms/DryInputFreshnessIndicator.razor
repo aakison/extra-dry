@@ -7,9 +7,7 @@
     {
         <Icon CssClass="context" Key="@ResolvedIcon" />
     }
-    <input class="value" title="@ResolvedTitle" type="text" value="@Value" readonly="@ReadOnly" />
-    @if (ResolvedAffordance != "" && !ReadOnly)
-    {
-        <Icon CssClass="affordance" Key="@ResolvedAffordance" />
-    }
+    <span class="value">
+        @Value
+    </span>
 </div>

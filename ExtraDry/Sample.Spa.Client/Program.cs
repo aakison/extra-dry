@@ -45,6 +45,7 @@ services.AddBlobService<Blob>(config => {
 });
 
 services.AddScoped<ISubjectViewModel<Employee>, EmployeeViewModel>();
+services.AddScoped<IDisplayNameProvider, DisplayNameProvider>();
 
 builder.Services.AddScoped<AppViewModel>();
 

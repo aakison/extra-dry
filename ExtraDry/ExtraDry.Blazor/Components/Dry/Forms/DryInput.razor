@@ -73,7 +73,7 @@
             <DryInputDateTime Model="@Model" Property="@Property" ReadOnly="@ReadOnly" OnValidation="@ValidationChanged" />
         }
         else if(Property.HasFreshnessRepresentation) {
-            <DryInputFreshnessIndicator Model="@Model" Property="@Property" ReadOnly="@ReadOnly" OnValidation="@ValidationChanged" />
+            <DryInputFreshnessIndicator Model="@Model" Property="@Property" ReadOnly="@ReadOnly" />
         }
         else if(Property.HasTextRepresentation) {
             if(Property.FieldLength > 256) {
