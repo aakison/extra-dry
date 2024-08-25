@@ -39,6 +39,7 @@ public class SampleContext(
 
         modelBuilder.Entity<Company>().OwnsOne(e => e.Version);
         modelBuilder.Entity<Employee>().OwnsOne(e => e.Version);
+        modelBuilder.Entity<Employee>().OwnsOne(e => e.Revision);
         modelBuilder.Entity<Region>().OwnsOne(e => e.Version);
         modelBuilder.Entity<Sector>().OwnsOne(e => e.Version);
         modelBuilder.Entity<Content>().OwnsOne(e => e.Version);

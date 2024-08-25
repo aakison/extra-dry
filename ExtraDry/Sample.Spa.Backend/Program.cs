@@ -83,6 +83,7 @@ builder.Services.AddScoped(services => {
 
 builder.Services.AddExtraDry();
 
+
 builder.Services.AddScoped<EmployeeService>();
 builder.Services.AddScoped<CompanyService>();
 builder.Services.AddScoped<ContentsService>();
@@ -95,6 +96,8 @@ builder.Services.AddScoped<SampleDataService>();
 
 builder.Services.AddScoped<IEntityResolver<Sector>, SectorService>();
 builder.Services.AddScoped<IExpandoSchemaResolver, TemplateService>();
+
+builder.Services.AddRevisionAspect();
 
 builder.Services.AddFileValidation(options => {
     options.ValidateFilename = ValidationCondition.Always;
