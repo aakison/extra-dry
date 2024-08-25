@@ -2,6 +2,8 @@
 @typeparam T
 @inherits DryInputBase<T>
 
-<FlexiSelect CssClass="@CssClasses" Data="@EnumValues" MultiSelect="true" Placeholder="@Placeholder" Title="@Placeholder"
-        @bind-Values="Values" ShowThumbnail="false" ShowSubtitle="false" 
-        Icon="@ResolvedIcon" @attributes="@UnmatchedAttributes" />
+<div class="@CssClasses" @attributes="@UnmatchedAttributes">
+    <FlexiSelect Data="@EnumValues" MultiSelect="@MultiSelect" Placeholder="@Placeholder" Title="@Placeholder"
+        @bind-Value="Value" @bind-Values="Values" ShowThumbnail="false" ShowSubtitle="false" ShowSubmitButton="@MultiSelect"
+        OnSubmit="HandleChange" Icon="@ResolvedIcon" @attributes="@UnmatchedAttributes" DebugCss="true" LoseFocusAction="MiniDialogAction.Disabled" />
+</div>

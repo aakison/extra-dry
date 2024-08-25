@@ -23,7 +23,6 @@ public class AppViewModel(NavigationManager navigation)
     public IconInfo[] Icons { get; } = [
         // Inherited - override default icons with lighter versions.
         new("search", "/img/glyphs/magnifying-glass-light.svg", "Search", "glyph"),
-        new("select", "/img/glyphs/chevron-down-light.svg", "Collapse", "glyph"),
         new("expand", "/img/glyphs/chevron-right-light.svg", "Expand", "glyph"),
         new("collapse", "/img/glyphs/chevron-down-light.svg", "Collapse", "glyph"),
         new("back", "fas fa-chevron-left"),

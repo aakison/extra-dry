@@ -7,21 +7,9 @@ namespace ExtraDry.Blazor.Forms;
 /// instead of this component as it is more flexible and supports more data types.
 /// </summary>
 public partial class DryInputSingleSelect<T> 
-    : ComponentBase, IDryInput<T>, IExtraDryComponent 
+    : DryInputBase<T>, IDryInput<T>, IExtraDryComponent 
     where T : class
 {
-
-    /// <inheritdoc />
-    [Parameter]
-    public string CssClass { get; set; } = string.Empty;
-
-    /// <inheritdoc />
-    [Parameter, EditorRequired]
-    public T Model { get; set; } = null!;
-
-    /// <inheritdoc />
-    [Parameter, EditorRequired]
-    public PropertyDescription Property { get; set; } = null!;
 
     /// <summary>
     /// Set of values to select from, any object can be used and the ToString values are displayed.

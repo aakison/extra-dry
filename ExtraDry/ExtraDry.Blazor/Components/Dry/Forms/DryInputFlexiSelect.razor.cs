@@ -6,46 +6,41 @@ namespace ExtraDry.Blazor.Forms;
 /// A DRY wrapper around a text input field.  Prefer the use of <see cref="DryInput{T}"/> 
 /// instead of this component as it is more flexible and supports more data types.
 /// </summary>
-public partial class DryInputFlexiSelect<T> : DryInputBase<T> {
+public partial class DryInputFlexiSelect<T>
+    : DryInputBase<T>
+    where T : class
+{
 
     [Parameter]
     public bool ReadOnly { get; set; }
 
     protected override void OnParametersSet()
     {
-        if(Model == null || Property == null) {
-            return;
-        }
         EnumValues = Property.GetDiscreteValues();
-        
-        //Value = Property.DisplayValue(Model);
+        var objValue = Property.GetValue(Model);
+        Value = EnumValues.FirstOrDefault(e => e.Key.Equals(objValue));
     }
 
     private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", ReadOnlyCss, CssClass);
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", ReadOnlyCss, CssClass);
 
     private IList<ValueDescription> EnumValues { get; set; } = Array.Empty<ValueDescription>();
+
+    private bool MultiSelect => Property.HasArrayValues;
 
     private ValueDescription? Value { get; set; }
 
     private List<ValueDescription>? Values { get; set; }
 
-    private async Task InvokeOnChange(ChangeEventArgs args)
+    private async Task HandleChange(DialogEventArgs args)
     {
-        await OnChange.InvokeAsync(args);
-    }
-
-    private async Task HandleChange(ChangeEventArgs args)
-    {
-        if(Property == null || Model == null) {
-            return;
-        }
-        var value = args.Value;
-        Property.SetValue(Model, value);
+        //var value = args.Value;
+        Logger.LogWarning("Value Saved: {Value}", Value);
+        Property.SetValue(Model, Value?.Key);
         var valid = ValidateProperty();
 
-        await InvokeOnChangeAsync(value);
+        await InvokeOnChangeAsync(Value?.Key);
         await InvokeOnValidationAsync(valid);
     }
 }
