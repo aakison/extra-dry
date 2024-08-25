@@ -44,5 +44,5 @@ public partial class DryInputFreshnessIndicator<T> : DryInputBase<T>
     private string? Value { get; set; } = "";
 
     [Inject]
-    public IDisplayNameProvider? DisplayNameProvider { get; set; }
+    private IDisplayNameProvider? DisplayNameProvider { get; set; }
 }
