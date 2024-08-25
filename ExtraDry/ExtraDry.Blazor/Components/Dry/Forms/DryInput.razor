@@ -61,6 +61,9 @@
         else if(Property.HasDateTimeRepresentation) {
             <DryInputDateTime Model="@Model" Property="@Property" ReadOnly="@ReadOnly" OnValidation="@ValidationChanged" />
         }
+        else if(Property.HasFreshnessRepresentation) {
+            <DryInputFreshnessIndicator Model="@Model" Property="@Property" ReadOnly="@ReadOnly" />
+        }
         else if(Property.HasTextRepresentation) {
             if(Property.FieldLength > 256) {
                 var rows = Math.Min(Property.FieldLength / 100 ?? 1, 10);

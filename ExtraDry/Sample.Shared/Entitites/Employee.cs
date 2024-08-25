@@ -2,11 +2,12 @@
 
 namespace Sample.Shared;
 
-public class Employee : IResourceIdentifiers, ICreatingCallback
+public class Employee : IResourceIdentifiers, ICreatingCallback, IRevisioned
 {
     [Key]
     [Rules(RuleAction.Block)]
     [JsonIgnore]
+    [Display(AutoGenerateField = false)]
     public int Id { get; set; }
 
     [Rules(RuleAction.Block)]
@@ -56,6 +57,10 @@ public class Employee : IResourceIdentifiers, ICreatingCallback
     /// </summary>
     [JsonIgnore]
     public VersionInfo Version { get; set; } = new VersionInfo();
+
+    /// <inheritdoc cref="IRevisioned.Revision" />
+    [Rules(RuleAction.Ignore)]
+    public UserTimestamp Revision { get; set; } = new();
 
     public override string ToString() => $"{FirstName} {LastName}";
 
