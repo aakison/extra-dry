@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sample.Shared;
@@ -64,7 +63,7 @@ public class Company : IResourceIdentifiers {
 
     [Display]
     [Rules(RuleAction.Link)]
-    public List<Sector> AdditionalSectors { get; set; } = new();
+    public List<Sector> AdditionalSectors { get; set; } = [];
 
     [Rules(RuleAction.Allow)]
     [Filter]
@@ -86,7 +85,7 @@ public class Company : IResourceIdentifiers {
     [Display(Prompt = "0.00", Description = "Clamped to range [0, 120]")]
     [Range(0, 120)]
     [Precision(18, 2)]
-    public decimal SalesMargin { get; set; }
+    public decimal? SalesMargin { get; set; }
 
     [Filter]
     [Display(Name = "Incorporation Date", ShortName = "Inc Date", Description = "Date stored as DateTime, informed by InputFormat")]
@@ -111,6 +110,12 @@ public class Company : IResourceIdentifiers {
     [InputFormat(DataTypeOverride = typeof(DateOnly))]
     public string LastTrademarkReview { get; set; } = "";
 
+    public int NumberOfEmployees { get; set; }
+
+    [Display(Description = "Nullable int field with 'none' as display value for null")]
+    [DisplayFormat(NullDisplayText = "none")]
+    public int? NumberOfContractors { get; set; }
+
     [Display]
     [Rules(RuleAction.Allow)]
     public BankingDetails BankingDetails { get; set; } = new BankingDetails();
@@ -129,5 +134,5 @@ public class Company : IResourceIdentifiers {
 
     [Display(AutoGenerateField = false)]
     [JsonPropertyName("fields")]
-    public ExpandoValues CustomFields { get; set; } = new();
+    public ExpandoValues CustomFields { get; set; } = [];
 }

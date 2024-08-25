@@ -9,7 +9,9 @@
 /// The type of the Model that the input renders a property for. Supports DateTime, DateOnly, and
 /// TimeOnly.
 /// </typeparam>
-public partial class DryInputDateTime<T> : DryInputBase<T>
+public partial class DryInputDateTime<T> 
+    : DryInputBase<T> 
+    where T : class
 {
 
     /// <inheritdoc cref="DryInput{T}.ReadOnly" />
@@ -89,15 +91,6 @@ public partial class DryInputDateTime<T> : DryInputBase<T>
         if(Property == null || property == null) {
             return string.Empty;
         }
-        var str = (Property.PropertyType, ActualInputType) switch {
-            (Type pt, _) when pt == typeof(DateTime)
-                => ((DateTime)property).ToLocalTime().ToString(DateTimeFormat, CultureInfo.InvariantCulture),
-            (Type pt, _) when pt == typeof(DateOnly)
-                => ((DateOnly)property).ToString(DateOnlyFormat, CultureInfo.InvariantCulture),
-            (Type pt, _) when pt == typeof(TimeOnly)
-                => ((TimeOnly)property).ToString(TimeOnlyFormat, CultureInfo.InvariantCulture),
-            _ => property?.ToString() ?? string.Empty
-        };
         DateTime? tempDateTime = null;
         if(property is DateTime dateTime) {
             tempDateTime = ActualInputType == typeof(DateTime) ? dateTime.ToLocalTime() : dateTime;
@@ -120,7 +113,7 @@ public partial class DryInputDateTime<T> : DryInputBase<T>
             throw new NotImplementedException("Unsupported property type, can't convert to DateTime");
         }
 
-        var result = "1970-01-01";
+        string? result;
         if(ActualInputType == typeof(DateTime)) {
             result = tempDateTime?.ToString(DateTimeFormat, CultureInfo.InvariantCulture);
         }

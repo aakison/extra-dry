@@ -77,13 +77,19 @@ namespace Sample.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("NumberOfContractors")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NumberOfEmployees")
+                        .HasColumnType("int");
+
                     b.Property<int>("Ownership")
                         .HasColumnType("int");
 
                     b.Property<int?>("PrimarySectorId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("SalesMargin")
+                    b.Property<decimal?>("SalesMargin")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 

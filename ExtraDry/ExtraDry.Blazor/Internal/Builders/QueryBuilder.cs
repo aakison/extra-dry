@@ -65,7 +65,7 @@ public class QueryBuilder
     /// A list of all filterable items that this page query supports.  These supports any filter
     /// concept that can be bound to such as free-text, enum select lists, etc.
     /// </summary>
-    public List<FilterBuilder> Filters { get; } = new();
+    public List<FilterBuilder> Filters { get; } = [];
 
     /// <summary>
     /// A generic text filter that can be applied.  This is typically just words written by users

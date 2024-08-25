@@ -2,17 +2,20 @@
 
 namespace ExtraDry.Blazor.Forms;
 
-public partial class DryInputMultipleSelect<T> : ComponentBase, IDryInput<T>, IExtraDryComponent {
+public partial class DryInputMultipleSelect<T> 
+    : ComponentBase, IDryInput<T>, IExtraDryComponent 
+    where T : class
+{
 
     /// <inheritdoc />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
     [Parameter, EditorRequired]
-    public T? Model { get; set; }
+    public T Model { get; set; } = null!;
 
-    [Parameter]
-    public PropertyDescription? Property { get; set; }
+    [Parameter, EditorRequired]
+    public PropertyDescription Property { get; set; } = null!;
 
     /// <inheritdoc cref="DryInputSingleSelect{T}.Values" />
     [Parameter]
@@ -110,7 +113,7 @@ public partial class DryInputMultipleSelect<T> : ComponentBase, IDryInput<T>, IE
 
     private bool BlankSelected { get; set; } = true;
 
-    private Dictionary<string, OptionInfo> AllOptions { get; } = new Dictionary<string, OptionInfo>();
+    private Dictionary<string, OptionInfo> AllOptions { get; } = [];
 
     private IEnumerable<OptionInfo> SelectedOptions => AllOptions.Values.Where(e => e.Selected == true);
 

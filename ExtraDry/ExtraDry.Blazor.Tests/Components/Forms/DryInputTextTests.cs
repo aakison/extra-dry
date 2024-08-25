@@ -1,5 +1,6 @@
 ﻿using AngleSharp.Html.Dom;
 using ExtraDry.Blazor.Forms;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
@@ -20,7 +21,7 @@ public class DryInputTextTests {
             (nameof(DryInputText<Model>.Property), property)
             );
 
-        var input = fragment.Nodes.First() as IHtmlInputElement;
+        var input = fragment.Find("input") as IHtmlInputElement;
         Assert.NotNull(input);
         Assert.Equal("INPUT", input.NodeName);
         Assert.Equal(model.Name, input.Value);
@@ -39,9 +40,9 @@ public class DryInputTextTests {
             (nameof(DryInputText<Model>.UnmatchedAttributes), attributes)
             );
 
-        var input = fragment.Nodes.First() as IHtmlInputElement;
-        Assert.NotNull(input);
-        Assert.Equal("bar", input.GetAttribute("data-foo"));
+        var outerDiv = fragment.Nodes.First() as IHtmlDivElement;
+        Assert.NotNull(outerDiv);
+        Assert.Equal("bar", outerDiv.GetAttribute("data-foo"));
     }
 
     //[Fact]

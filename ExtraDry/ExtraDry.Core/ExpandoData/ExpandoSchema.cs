@@ -16,13 +16,13 @@ public class ExpandoSchema : IValidatableObject
     /// <summary>
     /// A collection of fields contained in the schema.
     /// </summary>
-    public List<ExpandoField> Fields { get; set; } = new();
+    public List<ExpandoField> Fields { get; set; } = [];
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         var slugs = Fields.Select(e => e.Slug);
         if(slugs.Count() != slugs.Distinct().Count()) {
-            yield return new ValidationResult("Duplicate Slugs found.", new[] { nameof(ExpandoField.Slug) });
+            yield return new ValidationResult("Duplicate Slugs found.", [nameof(ExpandoField.Slug)]);
         }
     }
 

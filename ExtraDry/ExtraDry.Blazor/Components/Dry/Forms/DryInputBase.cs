@@ -12,7 +12,9 @@ namespace ExtraDry.Blazor.Forms;
 ///  * Set single class names on the inner elements, e.g. 'value' for the input element.
 /// </summary>
 /// <typeparam name="T">The type of the property on the model the derived input handles.</typeparam>
-public class DryInputBase<T> : ComponentBase, IDryInput<T>, IExtraDryComponent
+public class DryInputBase<T> 
+    : ComponentBase, IDryInput<T>, IExtraDryComponent 
+    where T : class
 {
     /// <inheritdoc />
     [Parameter]
@@ -20,11 +22,11 @@ public class DryInputBase<T> : ComponentBase, IDryInput<T>, IExtraDryComponent
 
     /// <inheritdoc />
     [Parameter, EditorRequired]
-    public T? Model { get; set; }
+    public T Model { get; set; } = null!;
 
     /// <inheritdoc />
     [Parameter, EditorRequired]
-    public PropertyDescription? Property { get; set; }
+    public PropertyDescription Property { get; set; } = null!;
 
     /// <inheritdoc cref="Blazor.EditMode" />
     [CascadingParameter]

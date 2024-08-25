@@ -8,22 +8,17 @@ namespace ExtraDry.Server;
 /// <remarks>
 /// https://stackoverflow.com/questions/31515898/traverse-an-expression-tree-and-extract-parameters
 /// </remarks>
-internal class MemberAccessVisitor : ExpressionVisitor {
-
-    public MemberAccessVisitor(Type forType)
-    {
-        declaringType = forType;
-    }
-
-    public IList<string> PropertyNames { get; } = new List<string>();
+internal class MemberAccessVisitor(
+    Type forType)
+    : ExpressionVisitor
+{
+    public IList<string> PropertyNames { get; } = [];
 
     protected override Expression VisitMember(MemberExpression node)
     {
-        if(node.Member.DeclaringType == declaringType) {
+        if(node.Member.DeclaringType == forType) {
             PropertyNames.Add(node.Member.Name);
         }
         return base.VisitMember(node);
     }
-
-    private readonly Type declaringType;
 }

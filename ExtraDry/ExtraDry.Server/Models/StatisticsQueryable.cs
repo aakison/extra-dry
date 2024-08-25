@@ -8,7 +8,7 @@ public class StatisticsQueryable<T> : BaseQueryable<T> {
     public Statistics<T> ToStatistics()
     {
         var stats = new Statistics<T> {
-            Distributions = new List<DataDistribution>(),
+            Distributions = [],
             Filter = TrimFilter(Query.Filter),
         };
         var description = new ModelDescription(typeof(T));
@@ -28,7 +28,7 @@ public class StatisticsQueryable<T> : BaseQueryable<T> {
     public async Task<Statistics<T>> ToStatisticsAsync(CancellationToken cancellationToken = default)
     {
         var stats = new Statistics<T> {
-            Distributions = new List<DataDistribution>(),
+            Distributions = [],
             Filter = TrimFilter(Query.Filter),
         };
         var description = new ModelDescription(typeof(T));

@@ -25,15 +25,15 @@ public class FileTypeDefinition
     /// <summary>
     /// The file extensions that are associated with this file type, e.g. ["jpg", "jpeg"].
     /// </summary>
-    public List<string> Extensions { get; set; } = new List<string>();
+    public List<string> Extensions { get; set; } = [];
 
     /// <summary>
     /// The mime types that are associated with this file type, e.g. ["application/xml"].
     /// </summary>
-    public List<string> MimeTypes { get; set; } = new List<string>();
+    public List<string> MimeTypes { get; set; } = [];
 
     /// <summary>
     /// An object defining a way that this file type can be identified by its content.
     /// </summary>
-    public List<MagicBytes> MagicBytes { get; set; } = new List<MagicBytes>();
+    public List<MagicBytes> MagicBytes { get; set; } = [];
 }

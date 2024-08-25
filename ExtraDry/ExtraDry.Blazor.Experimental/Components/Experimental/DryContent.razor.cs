@@ -230,12 +230,14 @@ public partial class DryContent : ComponentBase {
             }
         }
     }
-    private readonly List<Guid> roosterIsCanonical = new();
+    private readonly List<Guid> roosterIsCanonical = [];
 
     private async Task EditorFocusOut(ContentContainer container)
     {
         var value = await JSRuntime.InvokeAsync<string>("roosterGetContent", container.Id);
         container.Html = value;
     }
+
+    private PropertyDescription Property(string name) => PropertyDescription.For(this, name);
 
 }

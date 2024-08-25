@@ -116,7 +116,7 @@ public class AttributeBuilder : ColumnBuilder {
 
     // Int is interesting here, considering not including it as a valid attribute ever, but then came across 'SortOrder', snap.
     // Not including decimal, float, long, etc unless an example justifying their use is identified.
-    private static readonly Type[] attributeTypes = new Type[] { typeof(string), typeof(Uri), typeof(Guid), typeof(int), typeof(DateOnly), typeof(DateTime) };
+    private static readonly Type[] attributeTypes = [typeof(string), typeof(Uri), typeof(Guid), typeof(int), typeof(DateOnly), typeof(DateTime)];
 
     protected override bool IsValidColumnType(ColumnType type)
     {

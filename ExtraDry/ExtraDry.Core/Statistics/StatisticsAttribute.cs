@@ -6,23 +6,18 @@
 /// calculate the statistics for the entity.  Use sparingly to keep the cost of 
 /// ToStatisticsAsync low.
 /// </summary>
+/// <remarks>
+/// Apply statistics to a property.
+/// </remarks>
+/// <param name="type">The type of statistics to apply to this property.</param>
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-public class StatisticsAttribute : Attribute
+public class StatisticsAttribute(Stats type) : Attribute
 {
-
-    /// <summary>
-    /// Apply statistics to a property.
-    /// </summary>
-    /// <param name="type">The type of statistics to apply to this property.</param>
-    public StatisticsAttribute(Stats type)
-    {
-        Stats = type;
-    }
 
     /// <summary>
     /// The type of statistics collected for the indicated property.
     /// </summary>
-    public Stats Stats { get; set; }
+    public Stats Stats { get; } = type;
 
 }
 

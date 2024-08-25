@@ -8,7 +8,7 @@ public partial class DryButtonBar : ComponentBase {
     /// Use `CommandInfo` constructors to create this command if using `DryButton` directly.
     /// </summary>
     [Parameter]
-    public IList<CommandInfo> Commands { get; set; } = new List<CommandInfo>();
+    public IList<CommandInfo> Commands { get; set; } = [];
 
     /// <summary>
     /// The target (method argument) for the command.

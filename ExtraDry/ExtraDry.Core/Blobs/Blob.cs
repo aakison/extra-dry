@@ -58,12 +58,12 @@ public class Blob : IBlob, IValidatableObject
     {
         if(Content != null) {
             if(Length != Content.Length) {
-                yield return new ValidationResult("Length does not match content", new[] { nameof(Length) });
+                yield return new ValidationResult("Length does not match content", [nameof(Length)]);
             }
             if(MD5Hash != string.Empty) {
                 var hash = MD5Core.GetHashString(Content);
                 if(!MD5Hash.Equals(hash, StringComparison.OrdinalIgnoreCase)) {
-                    yield return new ValidationResult("MD5 does not match content", new[] { nameof(MD5Hash) });
+                    yield return new ValidationResult("MD5 does not match content", [nameof(MD5Hash)]);
                 }
             }
         }

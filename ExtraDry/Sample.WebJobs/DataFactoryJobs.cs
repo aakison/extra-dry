@@ -7,13 +7,10 @@ using System.Text.Json;
 
 namespace Sample.WebJob;
 
-public class DataFactoryJobs {
-
-    public DataFactoryJobs(DataFactory<SampleWarehouseModel, SampleContext, WarehouseContext> dataFactory, ILogger<DataFactoryJobs> iLogger)
-    {
-        factory = dataFactory;
-        logger = iLogger;
-    }
+public class DataFactoryJobs(
+    DataFactory<SampleWarehouseModel, SampleContext, WarehouseContext> dataFactory, 
+    ILogger<DataFactoryJobs> iLogger)
+{
 
     /// <summary>
     /// Triggered from a message on a queue, this will process updates to a specific entity only.
@@ -23,12 +20,12 @@ public class DataFactoryJobs {
     {
         var message = JsonSerializer.Deserialize<EntityMessage>(item);
         if(message == null) {
-            logger.LogError("Unable to process event, message on queue not of type `EntityMessage`, instead '{content}'", item);
+            iLogger.LogError("Unable to process event, message on queue not of type `EntityMessage`, instead '{content}'", item);
             return;
         }
-        logger.LogInformation("Processing ad-hoc updates for {EntityName}", message.EntityName);
-        var count = await factory.ProcessBatchAsync(message.EntityName);
-        logger.LogInformation("Processed {count} ad-hoc records", count);
+        iLogger.LogInformation("Processing ad-hoc updates for {EntityName}", message.EntityName);
+        var count = await dataFactory.ProcessBatchAsync(message.EntityName);
+        iLogger.LogInformation("Processed {count} ad-hoc records", count);
     }
 
     /// <summary>
@@ -38,9 +35,9 @@ public class DataFactoryJobs {
     [FunctionName("IntradayProcessing")]
     public async Task IntradayProcessing([TimerTrigger(HourlyCron)] TimerInfo _)
     {
-        logger.LogInformation("Started 'IntradayProcessing' Web Job");
-        var count = await factory.ProcessBatchesAsync();
-        logger.LogInformation("Completed 'IntradayProcessing' Web Job, {count} records processed.", count);
+        iLogger.LogInformation("Started 'IntradayProcessing' Web Job");
+        var count = await dataFactory.ProcessBatchesAsync();
+        iLogger.LogInformation("Completed 'IntradayProcessing' Web Job, {count} records processed.", count);
     }
 
     /// <summary>
@@ -53,20 +50,15 @@ public class DataFactoryJobs {
     [FunctionName("NightlyProcessing")]
     public async Task NightlyProcessing([TimerTrigger(AestMidnightCron)] TimerInfo _)
     {
-        logger.LogInformation("Started 'NightlyProcessing' Web Job");
+        iLogger.LogInformation("Started 'NightlyProcessing' Web Job");
         int count = 0;
-        while(await factory.ProcessBatchesAsync() > 0) {
+        while(await dataFactory.ProcessBatchesAsync() > 0) {
             ++count;
         }
-        logger.LogInformation("Completed 'NightlyProcessing' Web Job, {count} batches processed.", count);
+        iLogger.LogInformation("Completed 'NightlyProcessing' Web Job, {count} batches processed.", count);
     }
 
     private const string HourlyCron = "0 0 * * * *";
 
     private const string AestMidnightCron = "0 0 14 * * *";
-
-    private readonly DataFactory<SampleWarehouseModel, SampleContext, WarehouseContext> factory;
-
-    private readonly ILogger<DataFactoryJobs> logger;
-
 }

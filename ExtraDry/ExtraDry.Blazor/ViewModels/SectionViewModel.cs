@@ -11,5 +11,5 @@ public class SectionViewModel {
 
     public string Icon { get; set; }
 
-    public Collection<ArticleViewModel> Articles { get; } = new Collection<ArticleViewModel>();
+    public Collection<ArticleViewModel> Articles { get; } = [];
 }

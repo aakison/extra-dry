@@ -37,7 +37,7 @@ public partial class HyperlinkInfo
 
     public HyperlinkContext Execute(object? arg = null)
     {
-        return Method.Invoke(ViewModel, new object?[] { arg }) as HyperlinkContext 
+        return Method.Invoke(ViewModel, [arg]) as HyperlinkContext 
             ?? throw new InvalidOperationException("The hyperlink method is not correctly populated");
     }
 

@@ -27,11 +27,11 @@ internal class FormDescription {
 
     public ViewModelDescription ViewModelDescription { get; init; }
 
-    public List<FormFieldset> Fieldsets { get; } = new();
+    public List<FormFieldset> Fieldsets { get; } = [];
 
-    private List<ExtendedProperty> ExtendedProperties { get; set; } = new();
+    private List<ExtendedProperty> ExtendedProperties { get; set; } = [];
 
-    private readonly Dictionary<string, int> originalPositions = new();
+    private readonly Dictionary<string, int> originalPositions = [];
 
     private void BuildFieldsets()
     {

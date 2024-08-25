@@ -11,7 +11,7 @@ internal class FormGroup(
 
     public string ClassName => Type.ToString().ToLowerInvariant();
 
-    public List<FormLine> Lines { get; } = new();
+    public List<FormLine> Lines { get; } = [];
 
     public object Target { get; set; } = target;
 

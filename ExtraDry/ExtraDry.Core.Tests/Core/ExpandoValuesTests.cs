@@ -49,22 +49,22 @@ public class ExpandoValuesTests
     }
 
     public static IEnumerable<object[]> InValidExpandoData =>
-        new List<object[]> {
-            new object[] {
+        [
+            [
                 new ExpandoValues {
                     { "external_id", "EX0000000000001" },
                     { "external_id_with_valid_values", "EX05" },
                     { "building_construction_date", "InvalidDate" },
                     { "property_code", 51 }
                 }
-            },
-            new object[] {
+            ],
+            [
                 new ExpandoValues {
                     { "external_id", 13298470 },
                     { "external_id_with_valid_values", "EXT01" },
                     { "building_construction_date", "" },
                     { "property_code", 100 }
                 }
-            },
-        };
+            ],
+        ];
 }

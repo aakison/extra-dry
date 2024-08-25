@@ -10,13 +10,9 @@ namespace ExtraDry.Core;
 /// <see cref="ServiceCollectionExtensions.AddFileValidation"/>
 /// extension method register and configure the FileValidator.
 /// </summary>
-public class FileValidator
+/// <inheritdoc cref="FileValidator" />
+public class FileValidator(FileValidationService validator)
 {
-    /// <inheritdoc cref="FileValidator" />
-    public FileValidator(FileValidationService fileValidationService)
-    {
-        validator = fileValidationService;
-    }
 
     /// <summary>
     /// Validates a file given the filename, mime type, and content.  If the file is invalid, the
@@ -76,8 +72,5 @@ public class FileValidator
         ValidationErrors.Clear();
     }
 
-    private List<ValidationResult> ValidationErrors { get; } = new();
-
-    private readonly FileValidationService validator;
-
+    private List<ValidationResult> ValidationErrors { get; } = [];
 }

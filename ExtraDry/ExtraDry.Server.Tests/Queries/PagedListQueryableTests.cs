@@ -248,7 +248,7 @@ public class PagedListQueryableTests {
         Assert.Equal(expected, actual.Items);
     }
 
-    private readonly List<Model> Models = new() {
+    private readonly List<Model> Models = [
         new Model { Id = 1, Name = "Alpha", Soundex = "A410", Type = ModelType.Greek, Notes = "Common with phonetic" },
         new Model { Id = 2, Name = "Beta", Soundex = "B300", Type = ModelType.Greek },
         new Model { Id = 3, Name = "Gamma", Soundex = "G500", Type = ModelType.Greek },
@@ -262,6 +262,6 @@ public class PagedListQueryableTests {
         new Model { Id = 11, Name = "Echo", Soundex = "E200", Type = ModelType.Phonetic },
         new Model { Id = 12, Name = "Foxtrot", Soundex = "F236", Type = ModelType.Phonetic },
         new Model { Id = 13, Name = "Foxxy", Soundex = "F200", Type = ModelType.Hendrix, Notes = "Jimi" },
-    };
+    ];
 
 }
