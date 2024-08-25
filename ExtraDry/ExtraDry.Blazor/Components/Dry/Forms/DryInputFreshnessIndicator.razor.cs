@@ -6,7 +6,9 @@ namespace ExtraDry.Blazor.Forms;
 /// A DRY wrapper around a freshness indicator field. Prefer the use of <see cref="DryInput{T}" /> instead
 /// of this component as it is more flexible and supports more data types.
 /// </summary>
-public partial class DryInputFreshnessIndicator<T> : DryInputBase<T>
+public partial class DryInputFreshnessIndicator<T> 
+    : DryInputBase<T>
+    where T : class
 {
     
     /// <inheritdoc cref="DryInput{T}.ReadOnly" />
@@ -15,24 +17,16 @@ public partial class DryInputFreshnessIndicator<T> : DryInputBase<T>
 
     protected override async Task OnParametersSetAsync()
     {
-        if(Model == null || Property == null) {
-            return;
-        }
-
         var property = Property?.GetValue(Model) ?? new UserTimestamp();
 
         var userGuid = ((UserTimestamp)property).User;
         var timeStamp = ((UserTimestamp)property).Timestamp;
 
-        var user = "";
         Value = $"updated {DataConverter.DateToRelativeTime(timeStamp)}";
         
-        if(DisplayNameProvider != null) {
-            user = await DisplayNameProvider.ResolveDisplayNameAsync(userGuid);
-        }
-        else {
-            user = userGuid;
-        }
+        var user = DisplayNameProvider == null
+            ? userGuid
+            : await DisplayNameProvider.ResolveDisplayNameAsync(userGuid);
 
         Value = $"{user} updated {DataConverter.DateToRelativeTime(timeStamp)}";
     }
