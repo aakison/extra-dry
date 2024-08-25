@@ -1,7 +1,21 @@
+using ExtraDry.Blazor.Models.InputValueFormatters;
+
 namespace ExtraDry.Blazor;
 
 public class PropertyDescription
 {
+
+    public static PropertyDescription For(object model, string propertyName)
+    {
+        return For(model.GetType(), propertyName);
+    }
+
+    public static PropertyDescription For(Type modelType, string propertyName)
+    {
+        var propertyInfo = modelType.GetProperty(propertyName) 
+            ?? throw new ArgumentException($"Property {propertyName} not found on {modelType.Name}");
+        return new PropertyDescription(propertyInfo);
+    }
 
     public PropertyDescription(PropertyInfo property)
     {
@@ -16,12 +30,14 @@ public class PropertyDescription
         Filter = Property.GetCustomAttribute<FilterAttribute>();
         InputFormat = Property.GetCustomAttribute<InputFormatAttribute>();
         Sort = Property.GetCustomAttribute<SortAttribute>();
+        
         FieldCaption = Display?.Name ?? DataConverter.CamelCaseToTitleCase(Property.Name);
         ColumnCaption = Display?.ShortName ?? DataConverter.CamelCaseToTitleCase(Property.Name);
         Description = Display?.Description;
         Order = Display?.GetOrder();
         HasDescription = !string.IsNullOrWhiteSpace(Description);
         Size = PredictSize();
+        NullDisplayText = Format?.NullDisplayText ?? "";
         if(HasDiscreteValues) {
             var enumValues = Property.PropertyType.GetFields(BindingFlags.Public | BindingFlags.Static);
             foreach(var enumValue in enumValues) {
@@ -41,7 +57,12 @@ public class PropertyDescription
             }
         }
         --recursionDepth;
-        PropertyType = Property.PropertyType.IsGenericType && Property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) ? Property.PropertyType.GetGenericArguments()[0] : Property.PropertyType;
+        AllowsNull = Property.PropertyType.IsGenericType && Property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>);
+        PropertyType = AllowsNull
+            ? Property.PropertyType.GetGenericArguments()[0] 
+            : Property.PropertyType;
+
+        Formatter = CreateFormatter();
     }
 
     /// <summary>
@@ -104,6 +125,8 @@ public class PropertyDescription
     public PropertyInfo Property { get; set; }
 
     public PropertySize Size { get; set; }
+
+    public string NullDisplayText { get; set; }
 
     public string DisplayValue(object? item)
     {
@@ -280,54 +303,37 @@ public class PropertyDescription
 
     private object? Unformat(object? value)
     {
-        if(Property.PropertyType.IsEnum) {
+        if(PropertyType.IsEnum) {
             return Enum.Parse(Property.PropertyType, value?.ToString() ?? "");
         }
-        else if(Property.PropertyType == typeof(string)) {
+        else if(PropertyType == typeof(string)) {
             return value?.ToString();
         }
-        else if(Property.PropertyType == typeof(decimal)) {
-            if(value is string strValue) {
-                if(Format?.DataFormatString?.Contains(":P") ?? false) {
-                    return PercentageToDecimal(strValue) ?? 0m;
-                }
-                else {
-                    return StringToDecimal(strValue) ?? 0m;
-                }
-            }
-            else if(value is decimal) {
-                return value;
-            }
-            else {
-                throw new NotImplementedException();
-            }
-        }
-        else if(Property.PropertyType == typeof(decimal?)) {
-            if(value is string strValue) {
-                if(Format?.DataFormatString?.Contains(":P") ?? false) {
-                    return PercentageToDecimal(strValue);
-                }
-                else {
-                    return StringToDecimal(strValue);
-                }
-            }
-            else {
-                throw new NotImplementedException();
+        else if(PropertyType == typeof(decimal) || PropertyType == typeof(int)) {
+            if(Formatter.TryParse(value?.ToString() ?? "", out var result)) {
+                return result;
             }
         }
         else {
             // fallback for object types
             return value;
         }
+        return null; // fallback for parsing errors.
     }
 
     public int? FieldLength => StringLength?.MaximumLength ?? MaxLength?.Length;
 
     /// <summary>
     /// Gets the type of the property.  If the property is a nullable type (e.g. 
-    /// Nullable&lt;DateTime&gt; or DateTime?) then the inner type is returned (e.g. DateTime).
+    /// Nullable&lt;DateTime&gt; or DateTime?) then just the inner type is returned (e.g. DateTime).
+    /// See <see cref="AllowsNull" /> for nullability.
     /// </summary>
     public Type PropertyType { get; }
+
+    /// <summary>
+    /// Gets the nullability of the property.  See <see cref="PropertyType"/> for the base type.
+    /// </summary>
+    public bool AllowsNull { get; }
 
     /// <summary>
     /// Returns the type of the property as it should be displayed to users during input.  This
@@ -361,4 +367,16 @@ public class PropertyDescription
     private static decimal? StringToDecimal(string value) =>
         decimal.TryParse(value, out var result) ? result : null;
 
+    private InputValueFormatter CreateFormatter()
+    {
+        return (AllowsNull, PropertyType) switch {
+            (false, Type t) when t == typeof(decimal) => new DecimalValueFormatter(this),
+            (true, Type t) when t == typeof(decimal) => new NullableDecimalValueFormatter(this),
+            (false, Type t) when t == typeof(int) => new IntValueFormatter(this),
+            (true, Type t) when t == typeof(int) => new NullableIntValueFormatter(this),
+            _ => new IdentityValueFormatter(this)
+        };
+    }
+
+    public InputValueFormatter Formatter { get; set; }
 }

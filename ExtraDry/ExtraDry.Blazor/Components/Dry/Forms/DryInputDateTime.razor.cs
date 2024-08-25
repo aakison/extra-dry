@@ -9,7 +9,9 @@
 /// The type of the Model that the input renders a property for. Supports DateTime, DateOnly, and
 /// TimeOnly.
 /// </typeparam>
-public partial class DryInputDateTime<T> : DryInputBase<T>
+public partial class DryInputDateTime<T> 
+    : DryInputBase<T> 
+    where T : class
 {
 
     /// <inheritdoc cref="DryInput{T}.ReadOnly" />

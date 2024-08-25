@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sample.Shared;
@@ -86,7 +85,7 @@ public class Company : IResourceIdentifiers {
     [Display(Prompt = "0.00", Description = "Clamped to range [0, 120]")]
     [Range(0, 120)]
     [Precision(18, 2)]
-    public decimal SalesMargin { get; set; }
+    public decimal? SalesMargin { get; set; }
 
     [Filter]
     [Display(Name = "Incorporation Date", ShortName = "Inc Date", Description = "Date stored as DateTime, informed by InputFormat")]
@@ -110,6 +109,12 @@ public class Company : IResourceIdentifiers {
     [Display(Name = "Last Trademark Review", ShortName = "Trademark", Description = "Date stored as String, informed by InputFormat")]
     [InputFormat(DataTypeOverride = typeof(DateOnly))]
     public string LastTrademarkReview { get; set; } = "";
+
+    public int NumberOfEmployees { get; set; }
+
+    [Display(Description = "Nullable int field with 'none' as display value for null")]
+    [DisplayFormat(NullDisplayText = "none")]
+    public int? NumberOfContractors { get; set; }
 
     [Display]
     [Rules(RuleAction.Allow)]

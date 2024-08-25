@@ -5,26 +5,22 @@
 /// create all the inputs for a form.  For advanced use-cases, this component may be used directly 
 /// and bound to any model, whether inside a <see cref="DryForm{T}"/> or not.
 /// </summary>
-public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryComponent, IDisposable {
+public partial class DryInput<T> 
+    : OwningComponentBase, IDryInput<T>, IExtraDryComponent, IDisposable 
+    where T : class
+{
 
     /// <inheritdoc />
     [Parameter]
     public string CssClass { get; set; } = "";
-    
+
     /// <inheritdoc />
     [Parameter, EditorRequired]
-    public T? Model { get; set; }
+    public T Model { get; set; } = null!;
 
     /// <inheritdoc />
-    [Parameter]
-    public PropertyDescription? Property { get; set; }
-
-    /// <summary>
-    /// If the <see cref="PropertyDescription"/> is not readily available, this can be used to 
-    /// specify the name of the property to use.
-    /// </summary>
-    [Parameter]
-    public string PropertyName { get; set; } = "";
+    [Parameter, EditorRequired]
+    public PropertyDescription Property { get; set; } = null!;
 
     /// <inheritdoc />
     [Parameter]
@@ -43,10 +39,9 @@ public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryC
 
     protected async override Task OnInitializedAsync()
     {
-        Property ??= typeof(T).GetProperty(PropertyName) is PropertyInfo prop ? new PropertyDescription(prop) : null;
-        if(Property?.Rules?.UpdateAction == RuleAction.Block) {
+        if(Property.Rules?.UpdateAction == RuleAction.Block) {
         }
-        else if(Property?.HasTextRepresentation == false && Property?.HasDateTimeRepresentation == false && Property.HasNumericRepresentation == false) {
+        else if(Property.HasTextRepresentation == false && Property?.HasDateTimeRepresentation == false && Property.HasNumericRepresentation == false) {
             await FetchLookupProviderOptions();
         }
     }
@@ -56,10 +51,10 @@ public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryC
     private List<object> LookupValues => LookupProviderOptions?.Values?.ToList() ?? [];
 
     private bool RulesAllowUpdate => Property?.Rules?.UpdateAction switch {
-            RuleAction.Block => false,
-            RuleAction.Ignore => false,
-            _ => true,
-        };
+        RuleAction.Block => false,
+        RuleAction.Ignore => false,
+        _ => true,
+    };
 
     private bool HasSetter => Property?.Property.CanWrite ?? false;
 
@@ -183,7 +178,6 @@ public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryC
 
     private Task ValidationChanged(ValidationEventArgs validation)
     {
-        var message = validation.Message;
         UpdateValidationUI(validation.IsValid, validation.Message);
         return Task.CompletedTask;
     }

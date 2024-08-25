@@ -2,17 +2,20 @@
 
 namespace ExtraDry.Blazor.Forms;
 
-public partial class DryInputMultipleSelect<T> : ComponentBase, IDryInput<T>, IExtraDryComponent {
+public partial class DryInputMultipleSelect<T> 
+    : ComponentBase, IDryInput<T>, IExtraDryComponent 
+    where T : class
+{
 
     /// <inheritdoc />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
     [Parameter, EditorRequired]
-    public T? Model { get; set; }
+    public T Model { get; set; } = null!;
 
-    [Parameter]
-    public PropertyDescription? Property { get; set; }
+    [Parameter, EditorRequired]
+    public PropertyDescription Property { get; set; } = null!;
 
     /// <inheritdoc cref="DryInputSingleSelect{T}.Values" />
     [Parameter]
