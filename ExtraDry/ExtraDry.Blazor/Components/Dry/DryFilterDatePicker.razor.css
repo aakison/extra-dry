@@ -26,3 +26,8 @@
   display: flex;
   justify-content: space-between;
 }
+
+div ::deep img.affordance {
+    width: var(--icon-tiny);
+    height: var(--icon-tiny);
+}

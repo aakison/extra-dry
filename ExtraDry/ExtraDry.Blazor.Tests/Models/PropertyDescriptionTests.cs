@@ -58,7 +58,7 @@ public class PropertyDescriptionTests
         Assert.Equal(PropertySize.Jumbo, propertyDescription.Size);
     }
 
-    private class SizeTestModel
+    private sealed class SizeTestModel
     {
         public string Unset { get; set; } = string.Empty;
 

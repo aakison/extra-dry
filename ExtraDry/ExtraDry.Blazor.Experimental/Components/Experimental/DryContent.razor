@@ -9,14 +9,14 @@
             <h5>Section</h5>
             <DryButtonBar ViewModel="this" Category="Section" />
             <hr />
-            <DryInput Model="this" PropertyName="CurrentSectionTheme" />
-            <DryInput Model="this" PropertyName="CurrentSectionLayout" />
+            <DryInput Model="this" Property="Property(nameof(CurrentSectionTheme))" />
+             <DryInput Model="this" Property="Property(nameof(CurrentSectionLayout))" />
         </section>
 
         <section>
             <h5>Container</h5>
-            <DryInput Model="this" PropertyName="CurrentContainerAlignment" />
-            <DryInput Model="this" PropertyName="CurrentContainerPadding" />
+            <DryInput Model="this" Property="Property(nameof(CurrentContainerAlignment))" />
+            <DryInput Model="this" Property="Property(nameof(CurrentContainerPadding))" />
         </section>
 
         <section>
@@ -26,9 +26,9 @@
 
         <section>
             <h5>Hyperlink</h5>
-            <DryInput Model="this" PropertyName="HyperlinkClass" />
-            <DryInput Model="this" PropertyName="HyperlinkTitle" />
-            <DryInput Model="this" PropertyName="HyperlinkHref" />
+            <DryInput Model="this" Property="Property(nameof(HyperlinkClass))" />
+            <DryInput Model="this" Property="Property(nameof(HyperlinkTitle))" />
+            <DryInput Model="this" Property="Property(nameof(HyperlinkHref))" />
         </section>
 
     </div>

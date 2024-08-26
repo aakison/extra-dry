@@ -13,7 +13,7 @@ using Sample.Data;
 namespace Sample.Data.Migrations
 {
     [DbContext(typeof(SampleContext))]
-    [Migration("20240815044527_Initial")]
+    [Migration("20240825051720_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -80,13 +80,19 @@ namespace Sample.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("NumberOfContractors")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NumberOfEmployees")
+                        .HasColumnType("int");
+
                     b.Property<int>("Ownership")
                         .HasColumnType("int");
 
                     b.Property<int?>("PrimarySectorId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("SalesMargin")
+                    b.Property<decimal?>("SalesMargin")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 

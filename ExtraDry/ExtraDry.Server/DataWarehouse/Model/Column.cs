@@ -5,21 +5,17 @@ namespace ExtraDry.Server.DataWarehouse;
 /// <summary>
 /// A column for a table in the schema for the data warehouse.
 /// </summary>
-public class Column {
+/// <remarks>
+/// Creates a new column of the indicate type and with the specified title.
+/// </remarks>
+public class Column(
+    ColumnType type, 
+    string name, 
+    Func<object, object>? converter = null)
+{
+    public string Name { get; set; } = name;
 
-    /// <summary>
-    /// Creates a new column of the indicate type and with the specified title.
-    /// </summary>
-    public Column(ColumnType type, string name, Func<object, object>? converter = null)
-    {
-        ColumnType = type;
-        Name = name;
-        Converter = converter ?? (e => e);
-    }
-
-    public string Name { get; set; }
-
-    public ColumnType ColumnType { get; set; }
+    public ColumnType ColumnType { get; set; } = type;
 
     /// <summary>
     /// If the column is Text field, indicates the length of the text field.
@@ -56,7 +52,7 @@ public class Column {
     /// Functor that converts data from source database to destination data warehouse.
     /// </summary>
     [JsonIgnore]
-    public Func<object, object> Converter { get; set; }
+    public Func<object, object> Converter { get; set; } = converter ?? (e => e);
 
 }
 

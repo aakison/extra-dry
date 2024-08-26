@@ -2,13 +2,8 @@
 
 namespace ExtraDry.Core;
 
-internal class FileTypeDefinitionSource {
-
-    public FileTypeDefinitionSource(string fileDatabasePath = "")
-    {
-        FileDefinitions = LoadFileDefinitionsFromAssembly(fileDatabasePath);
-    }
-
+internal class FileTypeDefinitionSource(string fileDatabasePath = "")
+{
     private static List<FileTypeDefinition> LoadFileDefinitionsFromAssembly(string fileDatabasePath)
     {
         string fileContent = "[]";
@@ -80,6 +75,6 @@ internal class FileTypeDefinitionSource {
         return false;
     }
 
-    private readonly List<FileTypeDefinition> FileDefinitions;
+    private readonly List<FileTypeDefinition> FileDefinitions = LoadFileDefinitionsFromAssembly(fileDatabasePath);
 
 }

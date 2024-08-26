@@ -1,14 +1,8 @@
 ﻿namespace ExtraDry.Server.DataWarehouse;
 
-public class Reference {
+public class Reference(string table, string column)
+{
+    public string Table { get; set; } = table;
 
-    public Reference(string table, string column)
-    {
-        Table = table;
-        Column = column;
-    }
-
-    public string Table { get; set; }
-
-    public string Column { get; set; }
+    public string Column { get; set; } = column;
 }

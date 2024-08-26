@@ -5,20 +5,15 @@
 /// Not typically required, but can be used to change default control behavior, such as rendering 
 /// a radio button list instead of a select drop-down.
 /// </summary>
+/// <inheritdoc cref="ControlAttribute" />
 [AttributeUsage(AttributeTargets.Property)]
-public class ControlAttribute : Attribute
+public class ControlAttribute(ControlType type = ControlType.BestMatch) : Attribute
 {
-
-    /// <inheritdoc cref="ControlAttribute" />
-    public ControlAttribute(ControlType type = ControlType.BestMatch)
-    {
-        Type = type;
-    }
 
     /// <summary>
     /// The type of control to use when rendering the property.
     /// </summary>
-    public ControlType Type { get; set; }
+    public ControlType Type { get; set; } = type;
 
     // TODO: Evaluate usefulness, seems to be used for incomplete Content control
     public string Icon { get; set; } = string.Empty;

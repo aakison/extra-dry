@@ -77,13 +77,19 @@ namespace Sample.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("NumberOfContractors")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NumberOfEmployees")
+                        .HasColumnType("int");
+
                     b.Property<int>("Ownership")
                         .HasColumnType("int");
 
                     b.Property<int?>("PrimarySectorId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("SalesMargin")
+                    b.Property<decimal?>("SalesMargin")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
@@ -389,6 +395,26 @@ namespace Sample.Data.Migrations
                         .WithMany()
                         .HasForeignKey("EmployerId");
 
+                    b.OwnsOne("ExtraDry.Core.UserTimestamp", "Revision", b1 =>
+                        {
+                            b1.Property<int>("EmployeeId")
+                                .HasColumnType("int");
+
+                            b1.Property<DateTime>("Timestamp")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<string>("User")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("EmployeeId");
+
+                            b1.ToTable("Employees");
+
+                            b1.WithOwner()
+                                .HasForeignKey("EmployeeId");
+                        });
+
                     b.OwnsOne("ExtraDry.Core.VersionInfo", "Version", b1 =>
                         {
                             b1.Property<int>("EmployeeId")
@@ -419,6 +445,9 @@ namespace Sample.Data.Migrations
                         });
 
                     b.Navigation("Employer");
+
+                    b.Navigation("Revision")
+                        .IsRequired();
 
                     b.Navigation("Version")
                         .IsRequired();
