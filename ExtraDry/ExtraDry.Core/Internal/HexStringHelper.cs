@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core;
+﻿namespace ExtraDry.Core.Internal;
 
 internal static class HexStringHelper {
     const string hex = "0123456789ABCDEF";
