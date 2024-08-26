@@ -74,9 +74,10 @@ public partial class FlexiSelectForm<TItem> : ComponentBase, IExtraDryComponent 
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
+    private static int id;
+
     protected override async void OnParametersSet()
     {
-        int id = 0;
         if(Data != null && DisplayData.Count == 0) {
             foreach(var item in Data) {
                 if(item != null) {
