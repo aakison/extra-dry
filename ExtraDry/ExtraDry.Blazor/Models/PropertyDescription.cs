@@ -347,9 +347,9 @@ public class PropertyDescription
     private PropertySize PredictSize()
     {
         if(Property.PropertyType == typeof(string)) {
-            var overrideSize = InputFormat?.GetSize();
-            if(overrideSize.HasValue) {
-                return overrideSize.Value;
+            var overrideSize = InputFormat?.SizeOverride ?? PropertySize.Unset;
+            if(overrideSize != PropertySize.Unset) {
+                return overrideSize;
             }
             var length = FieldLength ?? 1000;
             if(length <= 25) {

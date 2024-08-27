@@ -88,40 +88,40 @@ public class PropertyDescriptionTests
         public string JumboMaxLength { get; set; } = string.Empty;
 #pragma warning restore DRY1310 // Prefer the use of StringLength instead of MaxLength.
 
-        [InputFormat(Size = PropertySize.Small)]
+        [InputFormat(SizeOverride = PropertySize.Small)]
         public string UnsetSetSmall { get; set; } = string.Empty;
 
         [StringLength(25)]
-        [InputFormat(Size = PropertySize.Medium)]
+        [InputFormat(SizeOverride = PropertySize.Medium)]
         public string SmallStringLengthSetMedium { get; set; } = string.Empty;
 
         [StringLength(50)]
-        [InputFormat(Size = PropertySize.Large)]
+        [InputFormat(SizeOverride = PropertySize.Large)]
         public string MediumStringLengthSetLarge { get; set; } = string.Empty;
 
         [StringLength(100)]
-        [InputFormat(Size = PropertySize.Jumbo)]
+        [InputFormat(SizeOverride = PropertySize.Jumbo)]
         public string LargeStringLengthSetJumbo { get; set; } = string.Empty;
 
         [StringLength(101)]
-        [InputFormat(Size = PropertySize.Small)]
+        [InputFormat(SizeOverride = PropertySize.Small)]
         public string JumboStringLengthSetSmall { get; set; } = string.Empty;
 
 #pragma warning disable DRY1310 // Prefer the use of StringLength instead of MaxLength.
         [MaxLength(25)]
-        [InputFormat(Size = PropertySize.Medium)]
+        [InputFormat(SizeOverride = PropertySize.Medium)]
         public string SmallMaxLengthSetMedium { get; set; } = string.Empty;
 
         [MaxLength(50)]
-        [InputFormat(Size = PropertySize.Large)]
+        [InputFormat(SizeOverride = PropertySize.Large)]
         public string MediumMaxLengthSetLarge { get; set; } = string.Empty;
 
         [MaxLength(100)]
-        [InputFormat(Size = PropertySize.Jumbo)]
+        [InputFormat(SizeOverride = PropertySize.Jumbo)]
         public string LargeMaxLengthSetJumbo { get; set; } = string.Empty;
 
         [MaxLength(101)]
-        [InputFormat(Size = PropertySize.Small)]
+        [InputFormat(SizeOverride = PropertySize.Small)]
         public string JumboMaxLengthSetSmall { get; set; } = string.Empty;
 #pragma warning restore DRY1310 // Prefer the use of StringLength instead of MaxLength.
 

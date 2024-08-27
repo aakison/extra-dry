@@ -7,8 +7,6 @@ namespace ExtraDry.Core;
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
 public class InputFormatAttribute : Attribute
 {
-    private PropertySize? size;
-
     /// <summary>
     /// Provides a means to override the default input that is rendered for this property.
     /// </summary>
@@ -29,24 +27,5 @@ public class InputFormatAttribute : Attribute
     /// then the presentation layer will automatically determine the size.  Setting this property
     /// explicitly allows an override of the default behavior of the presentation layer.
     /// </summary>
-    /// <remarks>
-    /// Consumers must use the <see cref="GetSize" /> method to retrieve the value, as this
-    /// property getter will throw an exception if the value has not been set.
-    /// </remarks>
-    /// <exception cref="System.InvalidOperationException">
-    /// If the getter of this property is invoked when the value has not been explicitly set using
-    /// the setter.
-    /// </exception>
-    public PropertySize Size {
-        get {
-            if(!size.HasValue) {
-                throw new InvalidOperationException($"The {nameof(Size)} property has not been set.  Use the {nameof(GetSize)} method to get the value.");
-            }
-
-            return size.GetValueOrDefault();
-        }
-        set => size = value;
-    }
-
-    public PropertySize? GetSize() => size;
+    public PropertySize SizeOverride { get; set; } = PropertySize.Unset;
 }

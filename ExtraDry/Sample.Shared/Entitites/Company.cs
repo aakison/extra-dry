@@ -76,7 +76,7 @@ public class Company : IResourceIdentifiers {
 
     [EmailAddress, StringLength(100)]
     [Rules(RuleAction.IgnoreDefaults)]
-    [InputFormat(Size = PropertySize.Jumbo)]
+    [InputFormat(SizeOverride = PropertySize.Jumbo)]
     public string ContactEmail { get; set; } = "";
 
     [Precision(18, 2)]
