@@ -54,6 +54,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     private string StateClass => 
         InternalItems.Any() ? "full" 
         : changing ? "changing"
+        : validationError ? "invalid-filter"
         : firstLoadCompleted ? "empty" 
         : "loading";
 
@@ -311,6 +312,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
                 result = new();
             }
             firstLoadCompleted = true;
+            validationError = false;
             return result;
         }
         catch(OperationCanceledException) {
@@ -319,6 +321,15 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
             // result instead.  
             Logger.LogConsoleVerbose("Loading cancelled by request");
             return new ItemsProviderResult<ListItemInfo<TItem>>();
+        }
+        catch(DryException dex) {
+            if(dex.ProblemDetails != null && dex.ProblemDetails.Status == 400) {
+                validationError = true;
+                return new ItemsProviderResult<ListItemInfo<TItem>>();
+            }
+            else {
+                throw;
+            }
         }
         finally {
             serviceLock.Release();
@@ -334,6 +345,8 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     }
 
     private bool firstLoadCompleted;
+
+    private bool validationError;
 
     public void Dispose()
     {

@@ -123,7 +123,7 @@ table {
 }
 
 //
-// Collection tables may be in a state of loading/empty/full, add images to indicate empty states.
+// Collection tables may be in a state of loading/empty/full/invalid, add images to indicate empty states.
 //
 table.loading {
     tbody::before {
@@ -137,6 +137,15 @@ table.loading {
 table.empty {
     tbody::before {
         content: url('../img/collection-empty.svg');
+        position: absolute;
+        left: calc(50% - 100px);
+        margin-top: 50px;
+    }
+}
+
+table.invalid-filter {
+    tbody::before {
+        content: url('../img/collection-invalid.svg');
         position: absolute;
         left: calc(50% - 100px);
         margin-top: 50px;
