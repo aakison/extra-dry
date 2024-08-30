@@ -1,0 +1,13 @@
+﻿@namespace ExtraDry.Blazor.Forms
+@typeparam T
+@inherits DryInputBase<T>
+
+<div class="@CssClasses" @attributes="@UnmatchedAttributes">
+    @if (ResolvedIcon != "")
+    {
+        <Icon CssClass="context" Key="@ResolvedIcon" />
+    }
+    <span class="value">
+        @Value
+    </span>
+</div>

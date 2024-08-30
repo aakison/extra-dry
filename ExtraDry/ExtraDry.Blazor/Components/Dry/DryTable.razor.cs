@@ -246,6 +246,29 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
         return true;
     }
 
+    public async Task<bool> TryRemoveItemAsync(TItem removedItem, IEqualityComparer<TItem>? comparer = null)
+    {
+        var itemInfo = (comparer, removedItem) switch {
+            (var c, _) when c is not null => InternalItems.FirstOrDefault(itemInfo => c.Equals(itemInfo.Item, removedItem)),
+            (_, var item) when item is IUniqueIdentifier uniquelyIdentifiableItem => InternalItems.FirstOrDefault(itemInfo => (itemInfo.Item as IUniqueIdentifier)?.Uuid == uniquelyIdentifiableItem.Uuid),
+            (_, _) => throw new DryException($"Removing requires {nameof(TItem)} to implement {nameof(IUniqueIdentifier)} or an {nameof(IEqualityComparer)} to be provided.")
+        };
+        if(itemInfo == null) {
+            return false;
+        }
+
+        changing = true;
+        StateHasChanged();
+        var removed = InternalItems.Remove(itemInfo);
+        if(VirtualContainer != null) {
+            await VirtualContainer.RefreshDataAsync();
+        }
+        changing = false;
+        StateHasChanged();
+
+        return removed;
+    }
+
     private async ValueTask<ItemsProviderResult<ListItemInfo<TItem>>> GetItemsAsync(ItemsProviderRequest request)
     {
         if(ItemsService == null) {

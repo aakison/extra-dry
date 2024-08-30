@@ -606,7 +606,7 @@ internal class SortedFilteredCollection<T> {
     private void ApplySort()
     {
         SortedItems = (SourceItems, Group, Sort) switch {
-            (null, _, _) => new(),
+            (null, _, _) => [],
             (_, false, false) => SourceItems.ToList(),
             (_, true, false) => SourceItems.OrderBy(GroupFunc).ToList(),
             (_, false, true) => SourceItems.OrderBy(SortFunc).ToList(),
@@ -621,8 +621,8 @@ internal class SortedFilteredCollection<T> {
             : SortedItems.Where(e => DisplayFunc(e).Contains(Filter, StringComparison.OrdinalIgnoreCase)).ToList();
     }
 
-    private List<T> SortedItems { get; set; } = new();
+    private List<T> SortedItems { get; set; } = [];
 
-    public List<T> FilteredItems { get; private set; } = new();
+    public List<T> FilteredItems { get; private set; } = [];
 
 }

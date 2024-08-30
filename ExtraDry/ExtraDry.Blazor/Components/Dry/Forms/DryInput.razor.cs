@@ -5,30 +5,26 @@
 /// create all the inputs for a form.  For advanced use-cases, this component may be used directly 
 /// and bound to any model, whether inside a <see cref="DryForm{T}"/> or not.
 /// </summary>
-public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryComponent, IDisposable {
+public partial class DryInput<T> 
+    : OwningComponentBase, IDryInput<T>, IExtraDryComponent, IDisposable 
+    where T : class
+{
 
     /// <inheritdoc />
     [Parameter]
-    public string CssClass { get; set; } = string.Empty;
-    
+    public string CssClass { get; set; } = "";
+
     /// <inheritdoc />
     [Parameter, EditorRequired]
-    public T? Model { get; set; }
+    public T Model { get; set; } = null!;
+
+    /// <inheritdoc />
+    [Parameter, EditorRequired]
+    public PropertyDescription Property { get; set; } = null!;
 
     /// <inheritdoc />
     [Parameter]
-    public PropertyDescription? Property { get; set; }
-
-    /// <summary>
-    /// If the <see cref="PropertyDescription"/> is not readily available, this can be used to 
-    /// specify the name of the property to use.
-    /// </summary>
-    [Parameter]
-    public string PropertyName { get; set; } = string.Empty;
-
-    /// <inheritdoc />
-    [Parameter]
-    public EventCallback<ChangeEventArgs>? OnChange { get; set; }
+    public EventCallback<ChangeEventArgs> OnChange { get; set; }
 
     /// <inheritdoc />
     [CascadingParameter]
@@ -43,33 +39,37 @@ public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryC
 
     protected async override Task OnInitializedAsync()
     {
-        Property ??= typeof(T).GetProperty(PropertyName) is PropertyInfo prop ? new PropertyDescription(prop) : null;
-        if(Property?.Rules?.UpdateAction == RuleAction.Block) {
+        if(Property.Rules?.UpdateAction == RuleAction.Block) {
         }
-        else if(Property?.HasTextRepresentation == false) {
+        else if(Property.HasTextRepresentation == false && Property?.HasDateTimeRepresentation == false && Property.HasNumericRepresentation == false) {
             await FetchLookupProviderOptions();
         }
     }
 
     private Dictionary<string, object>? LookupProviderOptions { get; set; }
 
-    private List<object> LookupValues => LookupProviderOptions?.Values?.ToList() ?? new();
+    private List<object> LookupValues => LookupProviderOptions?.Values?.ToList() ?? [];
 
     private bool RulesAllowUpdate => Property?.Rules?.UpdateAction switch {
-            RuleAction.Block => false,
-            RuleAction.Ignore => false,
-            _ => true,
-        };
+        RuleAction.Block => false,
+        RuleAction.Ignore => false,
+        _ => true,
+    };
 
-    private bool Editable => EditMode == EditMode.Create || EditMode == EditMode.Update && RulesAllowUpdate;
+    private bool HasSetter => Property?.Property.CanWrite ?? false;
 
+    private bool Editable => EditMode == EditMode.Create || EditMode == EditMode.Update && RulesAllowUpdate && HasSetter;
+
+    /// <summary>
+    /// Indicates if the input component is read-only.
+    /// </summary>
     private bool ReadOnly => !Editable;
 
     private string Value => Property?.DisplayValue(Model) ?? "";
 
-    private string validationMessage = "";
+    private string ValidationMessage { get; set; } = "";
 
-    private bool valid = true;
+    private bool Valid { get; set; } = true;
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "field", SizeClass, Property?.DisplayClass, StateCss, ValidCss, CssClass);
 
@@ -94,9 +94,9 @@ public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryC
         if(optionProvider != null) {
             var method = typedOptionProvider.GetMethod("GetItemsAsync");
             var token = new CancellationTokenSource().Token;
-            dynamic task = method!.Invoke(optionProvider, new object[] { token })!;
+            dynamic task = method!.Invoke(optionProvider, [token])!;
             var optList = (await task).Items as ICollection;
-            var options = optList?.Cast<object>()?.ToList() ?? new();
+            var options = optList?.Cast<object>()?.ToList() ?? [];
             LookupProviderOptions = options
                 .Select((e, i) => new { Key = i, Item = e })
                 .ToDictionary(e => e.Key.ToString(CultureInfo.InvariantCulture), e => e.Item);
@@ -114,7 +114,7 @@ public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryC
         (_, _) => "readonly",
     };
 
-    private string ValidCss => valid ? " valid" : " invalid";
+    private string ValidCss => Valid ? " valid" : " invalid";
 
     private string HtmlDescription => TextDescription.Replace("-", "&#8209;"); // non-breaking-hyphen.
 
@@ -135,7 +135,7 @@ public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryC
         Console.WriteLine($"Model: {Model} to Value: {value}");
         Property.SetValue(Model, value);
         Validate();
-        var task = OnChange?.InvokeAsync(args);
+        var task = OnChange.InvokeAsync(args);
         if(task != null) {
             await task;
         }
@@ -155,7 +155,7 @@ public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryC
         Validate();
         // Ignore that it's a physical click and treat like value change for listeners.
         var changeEventArgs = new ChangeEventArgs { Value = value };
-        var task = OnChange?.InvokeAsync(changeEventArgs);
+        var task = OnChange.InvokeAsync(changeEventArgs);
         if(task != null) {
             await task;
         }
@@ -169,13 +169,25 @@ public partial class DryInput<T> : OwningComponentBase, IDryInput<T>, IExtraDryC
         }
         var validator = new DataValidator();
         if(validator.ValidateProperties(Model, Property.Property.Name)) {
-            validationMessage = "";
-            valid = true;
+            UpdateValidationUI(true, string.Empty);
         }
         else {
-            validationMessage = string.Join("; ", validator.Errors.Select(e => e.ErrorMessage));
-            valid = false;
+            UpdateValidationUI(false, string.Join("; ", validator.Errors.Select(e => e.ErrorMessage)));
         }
+    }
+
+    private Task ValidationChanged(ValidationEventArgs validation)
+    {
+        UpdateValidationUI(validation.IsValid, validation.Message);
+        return Task.CompletedTask;
+    }
+
+    private void UpdateValidationUI(bool valid, string message)
+    {
+        // Remove common redundant portions of messages
+        ValidationMessage = ValidationSummary.FormatMessage(Property!.Property.Name, message);
+        Valid = valid;
+        StateHasChanged();
     }
 
 }

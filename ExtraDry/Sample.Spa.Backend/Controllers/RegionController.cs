@@ -20,15 +20,9 @@ namespace Sample.Spa.Backend.Controllers;
 [ApiController]
 [ApiExplorerSettings(GroupName = ApiGroupNames.ReferenceCodes)]
 [ApiExceptionStatusCodes]
-public class RegionController {
-        
-    /// <summary>
-    /// Standard DI Constructor
-    /// </summary>
-    public RegionController(RegionService regionService)
-    {
-        regions = regionService;
-    }
+public class RegionController(
+    RegionService regionService)
+{
 
     /// <summary>
     /// Paged list of all regions
@@ -37,14 +31,14 @@ public class RegionController {
     [AllowAnonymous]
     public async Task<PagedCollection<Region>> ListAsync([FromQuery] PageQuery query)
     {
-        return await regions.ListAsync(query);
+        return await regionService.ListAsync(query);
     }
 
     [HttpGet("api/regions/hierarchy"), Produces("application/json")]
     [AllowAnonymous]
     public async Task<PagedHierarchyCollection<Region>> ListHierarchyAsync([FromQuery] PageHierarchyQuery query)
     {
-        return await regions.ListHierarchyAsync(query);
+        return await regionService.ListHierarchyAsync(query);
     }
 
     /// <summary>
@@ -54,7 +48,7 @@ public class RegionController {
     [AllowAnonymous]
     public async Task<Region> RetrieveAsync(string code)
     {
-        return await regions.RetrieveAsync(code);
+        return await regionService.RetrieveAsync(code);
     }
 
     /// <summary>
@@ -64,7 +58,7 @@ public class RegionController {
     [AllowAnonymous]
     public async Task<BaseCollection<Region>> ListChildrenAsync(string code)
     {
-        return await regions.ListChildrenAsync(code);
+        return await regionService.ListChildrenAsync(code);
     }
 
     /// <summary>
@@ -74,7 +68,7 @@ public class RegionController {
     [Authorize(SamplePolicies.SamplePolicy)]
     public async Task<ResourceReference<Region>> CreateAsync(Region value)
     {
-        var region = await regions.CreateAsync(value);
+        var region = await regionService.CreateAsync(value);
         return new ResourceReference<Region>(region);
     }
 
@@ -85,7 +79,7 @@ public class RegionController {
     [Authorize(SamplePolicies.SamplePolicy)]
     public async Task UpdateAsync(string code, Region item)
     {
-        await regions.UpdateAsync(code, item, allowMove: true);
+        await regionService.UpdateAsync(code, item, allowMove: true);
     }
 
     /// <summary>
@@ -95,8 +89,6 @@ public class RegionController {
     [Authorize(SamplePolicies.SamplePolicy)]
     public async Task DeleteAsync(string code)
     {
-        await regions.DeleteAsync(code);
+        await regionService.DeleteAsync(code);
     }
-
-    private readonly RegionService regions;
 }

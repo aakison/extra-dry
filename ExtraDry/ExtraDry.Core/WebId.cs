@@ -143,5 +143,5 @@ public static class WebId
         }
     }
 
-    private static readonly string[] removeEndings = new string[] { "The", "Ltd", "Pty", "S.A", "Inc", "Incorporated", "Pty td", "(Inc)" };
+    private static readonly string[] removeEndings = ["The", "Ltd", "Pty", "S.A", "Inc", "Incorporated", "Pty td", "(Inc)"];
 }

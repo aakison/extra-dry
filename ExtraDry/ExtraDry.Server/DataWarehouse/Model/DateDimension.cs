@@ -3,21 +3,16 @@
 namespace ExtraDry.Server.DataWarehouse;
 
 [DimensionTable(Name = "Date")]
-public class DateDimension {
-
-    public DateDimension(int sequence, DayType dayType)
-    {
-        Id = sequence;
-        DayType = dayType;
-        Value = new DateOnly(1970, 1, 1).AddDays(sequence);
-    }
-
+public class DateDimension(
+    int sequence, 
+    DayType dayType)
+{
     [Key]
     [JsonIgnore]
-    public int Id { get; set; }
+    public int Id { get; set; } = sequence;
 
     [Attribute("Date")]
-    public DateOnly Value { get; set; }
+    public DateOnly Value { get; set; } = new DateOnly(1970, 1, 1).AddDays(sequence);
 
     /// <summary>
     /// The year.
@@ -87,6 +82,6 @@ public class DateDimension {
 
     public string FiscalQuarterShortName => $"Q{FiscalQuarter}";
 
-    public DayType DayType { get; set; }
+    public DayType DayType { get; set; } = dayType;
 
 }

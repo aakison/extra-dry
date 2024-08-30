@@ -3,15 +3,11 @@
 /// <summary>
 /// Supports the IPartialQueryable ToStatistics method.
 /// </summary>
-internal class CountInfo {
+internal class CountInfo(
+    object key, 
+    int count)
+{
+    public string Key { get; set; } = key?.ToString() ?? "";
 
-    public CountInfo(object key, int count)
-    {
-        Key = key?.ToString() ?? "";
-        Count = count;
-    }
-
-    public string Key { get; set; }
-
-    public int Count { get; set; }
+    public int Count { get; set; } = count;
 }

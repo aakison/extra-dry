@@ -79,9 +79,9 @@ public class DisplayControllerDocumentFilter : IDocumentFilter {
         }
     }
 
-    private readonly Dictionary<string, int> originalPositions = new();
+    private readonly Dictionary<string, int> originalPositions = [];
 
-    private readonly Dictionary<string, DisplayAttribute> displayAttributes = new();
+    private readonly Dictionary<string, DisplayAttribute> displayAttributes = [];
 
 }
 

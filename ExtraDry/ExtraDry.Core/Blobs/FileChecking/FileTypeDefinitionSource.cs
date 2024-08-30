@@ -2,13 +2,8 @@
 
 namespace ExtraDry.Core;
 
-internal class FileTypeDefinitionSource {
-
-    public FileTypeDefinitionSource(string fileDatabasePath = "")
-    {
-        FileDefinitions = LoadFileDefinitionsFromAssembly(fileDatabasePath);
-    }
-
+internal class FileTypeDefinitionSource(string fileDatabasePath = "")
+{
     private static List<FileTypeDefinition> LoadFileDefinitionsFromAssembly(string fileDatabasePath)
     {
         string fileContent = "[]";
@@ -23,7 +18,7 @@ internal class FileTypeDefinitionSource {
             using var reader = new StreamReader(stream);
             fileContent = reader.ReadToEnd();
         }
-        return JsonSerializer.Deserialize<List<FileTypeDefinition>>(fileContent) ?? new();
+        return JsonSerializer.Deserialize<List<FileTypeDefinition>>(fileContent) ?? [];
     }
 
     /// <summary>
@@ -56,7 +51,7 @@ internal class FileTypeDefinitionSource {
     internal IEnumerable<FileTypeDefinition> GetFileTypeFromContent(byte[]? content)
     {
         if(content == null || content.Length == 0) {
-            return Array.Empty<FileTypeDefinition>();
+            return [];
         }
         return FileDefinitions.Where(m => IsMatch(content, m.MagicBytes));
     }
@@ -80,6 +75,6 @@ internal class FileTypeDefinitionSource {
         return false;
     }
 
-    private readonly List<FileTypeDefinition> FileDefinitions;
+    private readonly List<FileTypeDefinition> FileDefinitions = LoadFileDefinitionsFromAssembly(fileDatabasePath);
 
 }

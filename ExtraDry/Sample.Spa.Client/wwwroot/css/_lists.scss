@@ -103,6 +103,14 @@ table {
 
     tbody td.commands {
         padding-right: $margin;
+
+        .contextCommands {
+            display: flex;
+
+            button {
+                min-width: initial;
+            }
+        }
     }
 }
 

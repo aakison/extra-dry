@@ -1,9 +1,21 @@
-﻿using System.Collections;
-using System.Globalization;
+using ExtraDry.Blazor.Models.InputValueFormatters;
 
 namespace ExtraDry.Blazor;
 
-public class PropertyDescription {
+public class PropertyDescription
+{
+
+    public static PropertyDescription For(object model, string propertyName)
+    {
+        return For(model.GetType(), propertyName);
+    }
+
+    public static PropertyDescription For(Type modelType, string propertyName)
+    {
+        var propertyInfo = modelType.GetProperty(propertyName) 
+            ?? throw new ArgumentException($"Property {propertyName} not found on {modelType.Name}");
+        return new PropertyDescription(propertyInfo);
+    }
 
     public PropertyDescription(PropertyInfo property)
     {
@@ -16,13 +28,16 @@ public class PropertyDescription {
         IsRequired = Property.GetCustomAttribute<RequiredAttribute>() != null;
         Control = Property.GetCustomAttribute<ControlAttribute>();
         Filter = Property.GetCustomAttribute<FilterAttribute>();
+        InputFormat = Property.GetCustomAttribute<InputFormatAttribute>();
         Sort = Property.GetCustomAttribute<SortAttribute>();
-        FieldCaption = Display?.Name ?? Property.Name;
-        ColumnCaption = Display?.ShortName ?? Property.Name;
+        
+        FieldCaption = Display?.Name ?? DataConverter.CamelCaseToTitleCase(Property.Name);
+        ColumnCaption = Display?.ShortName ?? DataConverter.CamelCaseToTitleCase(Property.Name);
         Description = Display?.Description;
         Order = Display?.GetOrder();
         HasDescription = !string.IsNullOrWhiteSpace(Description);
         Size = PredictSize();
+        NullDisplayText = Format?.NullDisplayText ?? "";
         if(HasDiscreteValues) {
             var enumValues = Property.PropertyType.GetFields(BindingFlags.Public | BindingFlags.Static);
             foreach(var enumValue in enumValues) {
@@ -42,7 +57,12 @@ public class PropertyDescription {
             }
         }
         --recursionDepth;
-        PropertyType = Property.PropertyType.IsGenericType && Property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) ? Property.PropertyType.GetGenericArguments()[0] : Property.PropertyType;
+        AllowsNull = Property.PropertyType.IsGenericType && Property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>);
+        PropertyType = AllowsNull
+            ? Property.PropertyType.GetGenericArguments()[0] 
+            : Property.PropertyType;
+
+        Formatter = CreateFormatter();
     }
 
     /// <summary>
@@ -53,8 +73,18 @@ public class PropertyDescription {
 
     public ViewModelDescription? ChildModel { get; private set; }
 
+    /// <summary>
+    /// When rendered as an input component, the label for the input field. This may be set in the 
+    /// <see cref="DisplayAttribute.Name" />, or will default to a title-case version of the 
+    /// property name.
+    /// </summary>
     public string FieldCaption { get; set; }
 
+    /// <summary>
+    /// When rendered as a table colun, the label for the table header.  This may be set in the
+    /// <see cref="DisplayAttribute.ShortName" />, or will default to a title-case version of the
+    /// property name.
+    /// </summary>
     public string ColumnCaption { get; set; }
 
     public DisplayAttribute? Display { get; }
@@ -64,6 +94,8 @@ public class PropertyDescription {
     public RulesAttribute? Rules { get; }
 
     public FilterAttribute? Filter { get; }
+
+    public InputFormatAttribute? InputFormat { get; }
 
     public SortAttribute? Sort { get; }
 
@@ -94,13 +126,15 @@ public class PropertyDescription {
 
     public PropertySize Size { get; set; }
 
+    public string NullDisplayText { get; set; }
+
     public string DisplayValue(object? item)
     {
         if(item == null) {
             return string.Empty;
         }
         try {
-            var value = Property?.GetValue(item); 
+            var value = Property?.GetValue(item);
             if(value == null) {
                 return Format?.NullDisplayText ?? "null";
             }
@@ -219,12 +253,26 @@ public class PropertyDescription {
 
     public bool HasArrayValues => typeof(IEnumerable).IsAssignableFrom(Property.PropertyType) && !typeof(string).IsAssignableFrom(Property.PropertyType);
 
-    private readonly Dictionary<int, DisplayAttribute?> discreteDisplayAttributes = new();
+    private readonly Dictionary<int, DisplayAttribute?> discreteDisplayAttributes = [];
+
+    public bool HasNumericRepresentation {
+        get {
+            var types = new List<Type> { typeof(decimal), typeof(decimal?), typeof(int), typeof(int?), typeof(float) };
+            return types.Contains(Property.PropertyType);
+        }
+    }
 
     public bool HasTextRepresentation {
         get {
-            var types = new List<Type> { typeof(decimal), typeof(decimal?), typeof(string), typeof(Uri) };
+            var types = new List<Type> { typeof(string), typeof(Uri) };
             return types.Contains(Property.PropertyType) || Property.PropertyType.IsEnum;
+        }
+    }
+
+    public bool HasDateTimeRepresentation {
+        get {
+            var types = new List<Type> { typeof(DateTime), typeof(DateTime?), typeof(DateOnly), typeof(DateOnly?), typeof(TimeOnly), typeof(TimeOnly?) };
+            return types.Contains(InputType);
         }
     }
 
@@ -234,6 +282,8 @@ public class PropertyDescription {
             return types.Contains(Property.PropertyType);
         }
     }
+
+    public bool HasFreshnessRepresentation => Property.PropertyType == typeof(UserTimestamp);
 
     public IList<ValueDescription> GetDiscreteValues()
     {
@@ -253,51 +303,43 @@ public class PropertyDescription {
 
     private object? Unformat(object? value)
     {
-        if(Property.PropertyType.IsEnum) {
+        if(PropertyType.IsEnum) {
             return Enum.Parse(Property.PropertyType, value?.ToString() ?? "");
         }
-        else if(Property.PropertyType == typeof(string)) {
+        else if(PropertyType == typeof(string)) {
             return value?.ToString();
         }
-        else if(Property.PropertyType == typeof(decimal)) {
-            if(value is string strValue) {
-                if(Format?.DataFormatString?.Contains(":P") ?? false) {
-                    return PercentageToDecimal(strValue) ?? 0m;
-                }
-                else {
-                    return StringToDecimal(strValue) ?? 0m;
-                }
-            }
-            else {
-                throw new NotImplementedException();
-            }
-        }
-        else if(Property.PropertyType == typeof(decimal?)) {
-            if(value is string strValue) {
-                if(Format?.DataFormatString?.Contains(":P") ?? false) {
-                    return PercentageToDecimal(strValue);
-                }
-                else {
-                    return StringToDecimal(strValue);
-                }
-            }
-            else {
-                throw new NotImplementedException();
+        else if(PropertyType == typeof(decimal) || PropertyType == typeof(int)) {
+            if(Formatter.TryParse(value?.ToString() ?? "", out var result)) {
+                return result;
             }
         }
         else {
             // fallback for object types
             return value;
         }
+        return null; // fallback for parsing errors.
     }
 
     public int? FieldLength => StringLength?.MaximumLength ?? MaxLength?.Length;
 
     /// <summary>
-    /// Gets the type of the property.  If the property is a nullable type then the inner type is
-    /// returned.
+    /// Gets the type of the property.  If the property is a nullable type (e.g. 
+    /// Nullable&lt;DateTime&gt; or DateTime?) then just the inner type is returned (e.g. DateTime).
+    /// See <see cref="AllowsNull" /> for nullability.
     /// </summary>
     public Type PropertyType { get; }
+
+    /// <summary>
+    /// Gets the nullability of the property.  See <see cref="PropertyType"/> for the base type.
+    /// </summary>
+    public bool AllowsNull { get; }
+
+    /// <summary>
+    /// Returns the type of the property as it should be displayed to users during input.  This
+    /// may vary slightly (e.g. PropertyType is DateTime, where the InputType is DateOnly).
+    /// </summary>
+    public Type InputType => InputFormat?.DataTypeOverride ?? PropertyType;
 
     private PropertySize PredictSize()
     {
@@ -325,4 +367,16 @@ public class PropertyDescription {
     private static decimal? StringToDecimal(string value) =>
         decimal.TryParse(value, out var result) ? result : null;
 
+    private InputValueFormatter CreateFormatter()
+    {
+        return (AllowsNull, PropertyType) switch {
+            (false, Type t) when t == typeof(decimal) => new DecimalValueFormatter(this),
+            (true, Type t) when t == typeof(decimal) => new NullableDecimalValueFormatter(this),
+            (false, Type t) when t == typeof(int) => new IntValueFormatter(this),
+            (true, Type t) when t == typeof(int) => new NullableIntValueFormatter(this),
+            _ => new IdentityValueFormatter(this)
+        };
+    }
+
+    public InputValueFormatter Formatter { get; set; }
 }

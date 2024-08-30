@@ -5,7 +5,7 @@ namespace ExtraDry.Core;
 public class ContentLayout
 {
 
-    public Collection<ContentSection> Sections { get; set; } = new Collection<ContentSection>();
+    public Collection<ContentSection> Sections { get; set; } = [];
 
 }
 
@@ -16,7 +16,7 @@ public class ContentSection
 
     public ContentTheme Theme { get; set; } = ContentTheme.Light;
 
-    public Collection<ContentContainer> Containers { get; set; } = new Collection<ContentContainer>();
+    public Collection<ContentContainer> Containers { get; set; } = [];
 
     [JsonIgnore]
     public IEnumerable<ContentContainer> DisplayContainers {

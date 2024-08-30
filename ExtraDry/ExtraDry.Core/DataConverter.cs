@@ -63,6 +63,10 @@ public class DataConverter
         var words = new Regex(@"([a-z])([A-Z])");
         value = words.Replace(value, "$1 $2");
 
+        // lookbehind to avoid capitalizing small words at beginning of sentence
+        var smallWords = new Regex(@"(?<!^)\b(A|An|And|As|At|But|By|En|For|If|In|Of|On|Or|The|To|V[.]?|Via|Vs[.]?)\b");
+        value = smallWords.Replace(value, match => match.Value.ToLower());
+
         return value;
     }
 
@@ -97,7 +101,7 @@ public class DataConverter
     /// </summary>
     public static string JoinNonEmpty(string separator, params string?[] args)
     {
-        return string.Join(separator, args.Where(e => !string.IsNullOrWhiteSpace(e)));
+        return string.Join(separator, args.Where(e => !string.IsNullOrWhiteSpace(e)).Select(e => e!.Trim()));
     }
 
 }

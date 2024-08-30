@@ -63,7 +63,7 @@ public class Company : IResourceIdentifiers {
 
     [Display]
     [Rules(RuleAction.Link)]
-    public List<Sector> AdditionalSectors { get; set; } = new();
+    public List<Sector> AdditionalSectors { get; set; } = [];
 
     [Rules(RuleAction.Allow)]
     [Filter]
@@ -74,23 +74,47 @@ public class Company : IResourceIdentifiers {
     [Rules(RuleAction.IgnoreDefaults)]
     public string ContactPhone { get; set; } = "";
 
-    [Display]
     [EmailAddress, StringLength(100)]
     [Rules(RuleAction.IgnoreDefaults)]
     public string ContactEmail { get; set; } = "";
 
-    [Display]
     [Precision(18, 2)]
+    [InputFormat(Icon = "currency")]
     public decimal AnnualRevenue { get; set; }
 
-    [Display]
+    [Display(Prompt = "0.00", Description = "Clamped to range [0, 120]")]
+    [Range(0, 120)]
     [Precision(18, 2)]
-    public decimal SalesMargin { get; set; }
+    public decimal? SalesMargin { get; set; }
 
     [Filter]
-    [Display(Name = "Incorporation Date", ShortName = "Inc Date", AutoGenerateField = false)]
-    [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
+    [Display(Name = "Incorporation Date", ShortName = "Inc Date", Description = "Date stored as DateTime, informed by InputFormat")]
+    [InputFormat(DataTypeOverride = typeof(DateOnly))]
     public DateTime IncorporationDate { get; set; }
+
+    [Display(Name = "Dissolution Date", ShortName = "Diss Date", Description = "Date stored as DateTime?, informed by InputFormat")]
+    public DateTime? DissolutionDate { get; set; }
+
+    [Display(Name = "Start of Business Hours", ShortName = "Opens", Description = "Time stored as TimeOnly, informed by type")]
+    public TimeOnly StartOfBusinessHours { get; set; }
+
+    [Display(Name = "End of Business Hours", ShortName = "Closes", Description = "Time stored as TimeOnly?, informed by type")]
+    public TimeOnly? EndOfBusinessHours { get; set; }
+
+    [Display(Name = "CEO Birthday Holiday", ShortName = "CEO Bday", Description = "Date stored as DateOnly, informed by type")]
+    public DateOnly CeoBirthdayHoliday { get; set; }
+
+    public DateTime Timestamp { get; } = DateTime.UtcNow;
+
+    [Display(Name = "Last Trademark Review", ShortName = "Trademark", Description = "Date stored as String, informed by InputFormat")]
+    [InputFormat(DataTypeOverride = typeof(DateOnly))]
+    public string LastTrademarkReview { get; set; } = "";
+
+    public int NumberOfEmployees { get; set; }
+
+    [Display(Description = "Nullable int field with 'none' as display value for null")]
+    [DisplayFormat(NullDisplayText = "none")]
+    public int? NumberOfContractors { get; set; }
 
     [Display]
     [Rules(RuleAction.Allow)]
@@ -110,5 +134,5 @@ public class Company : IResourceIdentifiers {
 
     [Display(AutoGenerateField = false)]
     [JsonPropertyName("fields")]
-    public ExpandoValues CustomFields { get; set; } = new();
+    public ExpandoValues CustomFields { get; set; } = [];
 }

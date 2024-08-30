@@ -6,37 +6,16 @@ namespace ExtraDry.Blazor.Forms;
 /// A DRY wrapper around a single select dropdown list.  Prefer the use of <see cref="DryInput{T}"/> 
 /// instead of this component as it is more flexible and supports more data types.
 /// </summary>
-public partial class DryInputSingleSelect<T> : ComponentBase, IDryInput<T>, IExtraDryComponent {
-
-    /// <inheritdoc />
-    [Parameter]
-    public string CssClass { get; set; } = string.Empty;
-
-    /// <inheritdoc />
-    [Parameter, EditorRequired]
-    public T? Model { get; set; }
-
-    /// <inheritdoc />
-    [Parameter, EditorRequired]
-    public PropertyDescription? Property { get; set; }
+public partial class DryInputSingleSelect<T> 
+    : DryInputBase<T>, IDryInput<T>, IExtraDryComponent 
+    where T : class
+{
 
     /// <summary>
     /// Set of values to select from, any object can be used and the ToString values are displayed.
     /// </summary>
     [Parameter, EditorRequired]
-    public List<object>? Values { get; set; } 
-
-    /// <inheritdoc />
-    [Parameter]
-    public EventCallback<ChangeEventArgs>? OnChange { get; set; }
-
-    /// <inheritdoc cref="Blazor.EditMode" />
-    [CascadingParameter]
-    public EditMode EditMode { get; set; } = EditMode.Create;
-
-    /// <inheritdoc />
-    [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object>? UnmatchedAttributes { get; set; }
+    public List<object>? Values { get; set; }
 
     protected override void OnParametersSet()
     {
@@ -44,9 +23,6 @@ public partial class DryInputSingleSelect<T> : ComponentBase, IDryInput<T>, IExt
             SelectedValue = Property?.GetValue(Model);
         }
     }
-
-    [Inject]
-    private ILogger<DryInput<T>> Logger { get; set; } = null!;
 
     private async Task SelectOption(ChangeEventArgs args)
     {
@@ -62,10 +38,7 @@ public partial class DryInputSingleSelect<T> : ComponentBase, IDryInput<T>, IExt
 
     private async Task InvokeOnChange(ChangeEventArgs args)
     {
-        var task = OnChange?.InvokeAsync(args);
-        if(task != null) {
-            await task;
-        }
+        await OnChange.InvokeAsync(args);
     }
 
     private bool ReadOnly => EditMode == EditMode.ReadOnly;

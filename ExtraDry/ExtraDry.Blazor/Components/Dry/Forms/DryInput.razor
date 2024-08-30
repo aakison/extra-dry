@@ -7,7 +7,7 @@
         <progress>loading...</progress>
     }
     else {
-        <label class="@CssClasses" @onclick="ToggleDescription" title="@TextDescription">
+        <label class="title" @onclick="ToggleDescription" title="@TextDescription">
             <span class="caption">@Property.FieldCaption</span>
             @* TODO: These old icon styles don't work, what to do with them? *@
             @if(Property.HasDescription) {
@@ -26,7 +26,7 @@
             }
         </label>
         @if(HasDescription && ShowDescription) {
-            <span class="description @CssClasses">@((MarkupString)HtmlDescription)</span>
+            <span class="description">@((MarkupString)HtmlDescription)</span>
         }
         @if(Property.HasBooleanValues) {
             var value = ((bool?)Property.GetValue(Model) ?? false) == true;
@@ -53,21 +53,16 @@
                     }
                 </div>
             }
-            else { 
-                @if(ReadOnly) {
-                    <select class="@CssClasses readonly" disabled title="@Property.FieldCaption">
-                        <option value="@selectedValue?.ToString()" selected>@selectedValue?.ToString()</option>
-                    </select>
-                } 
-                else { 
-                    <select class="@CssClasses" @onchange="HandleChange" title="@Property.FieldCaption" >
-                        @foreach(var value in Property.GetDiscreteValues()) {
-                            var selected = value.Key.ToString() == selectedValue?.ToString(); // force object to enum compare
-                            <option value="@value.Key" selected="@selected">@value.Title</option>
-                        }
-                    </select>
-                }
+            else {
+                var values = Property.GetDiscreteValues().ToList();
+                <DryInputFlexiSelect Model="@Model" Property="@Property" ReadOnly="@ReadOnly" OnValidation="@ValidationChanged" />
             }
+        }
+        else if(Property.HasDateTimeRepresentation) {
+            <DryInputDateTime Model="@Model" Property="@Property" ReadOnly="@ReadOnly" OnValidation="@ValidationChanged" />
+        }
+        else if(Property.HasFreshnessRepresentation) {
+            <DryInputFreshnessIndicator Model="@Model" Property="@Property" ReadOnly="@ReadOnly" />
         }
         else if(Property.HasTextRepresentation) {
             if(Property.FieldLength > 256) {
@@ -75,26 +70,29 @@
                 <textarea class="@CssClasses" rows="@rows" readonly="@ReadOnly" placeholder="@Property.Display?.Prompt" @onchange="HandleChange">@Value</textarea>
             }
             else { 
-                <DryInputText CssClass="@CssClasses" Model="@Model" Property="@Property" ReadOnly="@ReadOnly"/>
+                <DryInputText Model="@Model" Property="@Property" ReadOnly="@ReadOnly" OnValidation="@ValidationChanged"/>
             }
         } 
+        else if(Property.HasNumericRepresentation) {
+            <DryInputNumeric Model="@Model" Property="@Property" ReadOnly="@ReadOnly" OnValidation="@ValidationChanged" />
+        }
         else if(LookupProviderOptions != null) {
             var selectedValue = Property.GetValue(Model);
             @if(Property.HasArrayValues) {
-                <DryInputMultipleSelect CssClass="@CssClasses" Model="@Model" Property="@Property" Values="@LookupValues" />
+                <DryInputMultipleSelect Model="@Model" Property="@Property" Values="@LookupValues" />
             }
             else { 
-                <DryInputSingleSelect CssClass="@CssClasses" Model="@Model" Property="@Property" Values="@LookupValues" />
+                <DryInputSingleSelect Model="@Model" Property="@Property" Values="@LookupValues" />
             }
         }
         else if(ReadOnly) {
             var selectedValue = Property.GetValue(Model);
-            <span class="@CssClasses">@selectedValue?.ToString()</span>
+            <span class="readonly">@selectedValue?.ToString()</span>
         }
         else { 
         }
-        @if(!valid) {
-            <span class="validation @CssClasses">@validationMessage</span>
+        @if(!Valid) {
+            <span class="validation">@ValidationMessage</span>
         }
     }
 </div>

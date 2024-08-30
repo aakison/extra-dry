@@ -3,13 +3,8 @@ using System.Reflection;
 
 namespace ExtraDry.Server.DataWarehouse.Builder;
 
-internal class EnumStats {
-
-    public EnumStats(Type enumType)
-    {
-        fields = enumType.GetFields(BindingFlags.Public | BindingFlags.Static).Select(e => new EnumFieldStats(e)).ToList();
-    }
-
+internal class EnumStats(Type enumType)
+{
     public int DisplayNameMaxLength() => fields.Max(e => e.DisplayName.Length);
 
     public bool HasShortName() => fields.Any(e => e.ShortName != null);
@@ -28,19 +23,15 @@ internal class EnumStats {
 
     public ReadOnlyCollection<EnumFieldStats> Fields => new(fields);
 
-    private readonly List<EnumFieldStats> fields;
+    private readonly List<EnumFieldStats> fields = enumType.GetFields(BindingFlags.Public | BindingFlags.Static)
+        .Select(e => new EnumFieldStats(e))
+        .ToList();
 
-    internal class EnumFieldStats {
+    internal class EnumFieldStats(FieldInfo field)
+    {
+        public FieldInfo Field { get; set; } = field;
 
-        public EnumFieldStats(FieldInfo field)
-        {
-            Field = field;
-            Display = field.GetCustomAttribute<DisplayAttribute>();
-        }
-
-        public FieldInfo Field { get; set; }
-
-        public DisplayAttribute? Display { get; set; }
+        public DisplayAttribute? Display { get; set; } = field.GetCustomAttribute<DisplayAttribute>();
 
         public string DisplayName => Display?.Name ?? DataConverter.CamelCaseToTitleCase(Field.Name);
 

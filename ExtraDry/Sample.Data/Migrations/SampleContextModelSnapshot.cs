@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.SqlServer.Types;
 using Sample.Data;
 
 #nullable disable
@@ -17,7 +18,7 @@ namespace Sample.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.14")
+                .HasAnnotation("ProductVersion", "8.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -37,6 +38,9 @@ namespace Sample.Data.Migrations
                     b.Property<string>("BankingDetails")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateOnly>("CeoBirthdayHoliday")
+                        .HasColumnType("date");
 
                     b.Property<string>("ContactEmail")
                         .IsRequired()
@@ -60,8 +64,24 @@ namespace Sample.Data.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<DateTime?>("DissolutionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<TimeOnly?>("EndOfBusinessHours")
+                        .HasColumnType("time");
+
                     b.Property<DateTime>("IncorporationDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("LastTrademarkReview")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("NumberOfContractors")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NumberOfEmployees")
+                        .HasColumnType("int");
 
                     b.Property<int>("Ownership")
                         .HasColumnType("int");
@@ -69,7 +89,7 @@ namespace Sample.Data.Migrations
                     b.Property<int?>("PrimarySectorId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("SalesMargin")
+                    b.Property<decimal?>("SalesMargin")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
@@ -77,6 +97,9 @@ namespace Sample.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(24)
                         .HasColumnType("nvarchar(24)");
+
+                    b.Property<TimeOnly>("StartOfBusinessHours")
+                        .HasColumnType("time");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -191,8 +214,7 @@ namespace Sample.Data.Migrations
                     b.Property<int>("Level")
                         .HasColumnType("int");
 
-                    b.Property<HierarchyId>("Lineage")
-                        .IsRequired()
+                    b.Property<SqlHierarchyId>("Lineage")
                         .HasColumnType("hierarchyid");
 
                     b.Property<int?>("ParentId")
@@ -373,6 +395,26 @@ namespace Sample.Data.Migrations
                         .WithMany()
                         .HasForeignKey("EmployerId");
 
+                    b.OwnsOne("ExtraDry.Core.UserTimestamp", "Revision", b1 =>
+                        {
+                            b1.Property<int>("EmployeeId")
+                                .HasColumnType("int");
+
+                            b1.Property<DateTime>("Timestamp")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<string>("User")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("EmployeeId");
+
+                            b1.ToTable("Employees");
+
+                            b1.WithOwner()
+                                .HasForeignKey("EmployeeId");
+                        });
+
                     b.OwnsOne("ExtraDry.Core.VersionInfo", "Version", b1 =>
                         {
                             b1.Property<int>("EmployeeId")
@@ -403,6 +445,9 @@ namespace Sample.Data.Migrations
                         });
 
                     b.Navigation("Employer");
+
+                    b.Navigation("Revision")
+                        .IsRequired();
 
                     b.Navigation("Version")
                         .IsRequired();

@@ -10,9 +10,9 @@ namespace ExtraDry.Blazor.Internal;
 internal class FormLine(
     object model)
 {
-    public Collection<PropertyDescription> FormProperties { get; } = new();
+    public Collection<PropertyDescription> FormProperties { get; } = [];
 
-    public Collection<FormCommand> Commands { get; } = new();
+    public Collection<FormCommand> Commands { get; } = [];
 
     public object Model { get; set; } = model;
 

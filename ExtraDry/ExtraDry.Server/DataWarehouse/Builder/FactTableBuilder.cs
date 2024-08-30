@@ -66,7 +66,7 @@ public abstract class FactTableBuilder : TableBuilder {
 
     private FactTableAttribute FactTableAttribute { get; set; }
 
-    private Dictionary<string, MeasureBuilder> MeasureBuilders { get; } = new();
+    private Dictionary<string, MeasureBuilder> MeasureBuilders { get; } = [];
 
 }
 

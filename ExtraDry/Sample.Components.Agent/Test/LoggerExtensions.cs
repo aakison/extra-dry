@@ -63,11 +63,6 @@ internal static partial class LoggerExtensions
 
     internal static void LogProblemDetails(this ILogger logger, ProblemDetails problem, [CallerMemberName] string? method = null)
         => LogProblemDetails(logger, problem.Status ?? 0, problem.Type ?? "unknown", problem.Instance ?? "unknown", problem.Detail ?? "", method);
-
-
-    [LoggerMessage(Level = LogLevel.Error, EventId = 55,
-        Message = "{Method} No option provider was registered.  An attempt to display a DryInput for type {PropertyType}, but no option provider was registered.  To enable select functionality for linked types, please add a scoped reference to the `IOptionProvider` in `Main`.  E.g. `builder.Services.AddScoped<IOptionProvider<{PropertyType}>>(e => new MyOptionProvider());`.  Also note that IListService implements IOptionProvider and can be used to register RESTful APIs")]
-    internal static partial void LogMissingOptionProvider(this ILogger logger, string propertyType, [CallerMemberName] string? method = null);
     
 
 }

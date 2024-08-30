@@ -2,14 +2,10 @@
 
 namespace Sample.Data.Services;
 
-public class InMemoryBlobService
+public class InMemoryBlobService(
+    RuleEngine ruleEngine, 
+    FileValidator fileValidator)
 {
-    public InMemoryBlobService(RuleEngine ruleEngine, FileValidator fileValidator)
-    {
-        rules = ruleEngine;
-        validator = fileValidator;
-    }
-
     public async Task<Blob> CreateAsync(Blob item)
     {
         Validate(item);
@@ -37,14 +33,14 @@ public class InMemoryBlobService
     {
         Validate(item);
         var existing = await RetrieveAsync(item.Uuid);
-        await rules.UpdateAsync(item, existing);
+        await ruleEngine.UpdateAsync(item, existing);
         memoryBlobStore[item.Uuid] = existing;
     }
 
     public async Task DeleteAsync(Guid uuid)
     {
         var existing = await RetrieveAsync(uuid);
-        await rules.DeleteAsync(existing, () => memoryBlobStore.Remove(uuid), () => { });
+        await ruleEngine.DeleteAsync(existing, () => memoryBlobStore.Remove(uuid), () => { });
     }
 
     private void Validate(Blob item)
@@ -53,13 +49,9 @@ public class InMemoryBlobService
         dataValidator.ValidateObject(item);
         dataValidator.ThrowIfInvalid();
 
-        validator.ValidateFile(item);
-        validator.ThrowIfInvalid();
+        fileValidator.ValidateFile(item);
+        fileValidator.ThrowIfInvalid();
     }
 
-    private static readonly Dictionary<Guid, Blob> memoryBlobStore = new();
-
-    private readonly RuleEngine rules;
-
-    private readonly FileValidator validator;
+    private static readonly Dictionary<Guid, Blob> memoryBlobStore = [];
 }

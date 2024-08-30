@@ -63,7 +63,7 @@ public abstract class TableBuilder {
 
     protected KeyBuilder KeyBuilder { get; }
 
-    protected Dictionary<string, SpokeBuilder> SpokeBuilders { get; } = new();
+    protected Dictionary<string, SpokeBuilder> SpokeBuilders { get; } = [];
 
     protected Type TableEntityType { get; }
 

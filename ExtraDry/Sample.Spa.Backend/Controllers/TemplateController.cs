@@ -9,15 +9,9 @@ namespace Sample.Spa.Backend.Controllers;
 [ApiController]
 [ApiExplorerSettings(GroupName = ApiGroupNames.SampleApi)]
 [ApiExceptionStatusCodes]
-public class TemplateController {
-       
-    /// <summary>
-    /// Stanard DI Constructor
-    /// </summary>
-    public TemplateController(TemplateService templateService)
-    {
-        templates = templateService;
-    }
+public class TemplateController(
+    TemplateService templateService)
+{
 
     /// <summary>
     /// Filtered list of all templates
@@ -26,7 +20,7 @@ public class TemplateController {
     [AllowAnonymous]
     public async Task<FilteredCollection<Template>> ListAsync([FromQuery] SortQuery query)
     {
-        return await templates.ListAsync(query);
+        return await templateService.ListAsync(query);
     }
 
     /// <summary>
@@ -36,7 +30,7 @@ public class TemplateController {
     [AllowAnonymous]
     public async Task<ResourceReference<Template>> CreateAsync(Template value)
     {
-        var template = await templates.CreateAsync(value);
+        var template = await templateService.CreateAsync(value);
         return new ResourceReference<Template>(template);
     }
 
@@ -47,7 +41,7 @@ public class TemplateController {
     [AllowAnonymous]
     public async Task<Template> RetrieveAsync(string title)
     {
-        return await templates.RetrieveAsync(title);
+        return await templateService.RetrieveAsync(title);
     }
 
     /// <summary>
@@ -58,7 +52,7 @@ public class TemplateController {
     public async Task UpdateAsync(string title, Template value)
     {
         ArgumentMismatchException.ThrowIfMismatch(title, value.Title, nameof(title));
-        await templates.UpdateAsync(value);
+        await templateService.UpdateAsync(value);
     }
 
     /// <summary>
@@ -68,8 +62,6 @@ public class TemplateController {
     [Authorize(SamplePolicies.SamplePolicy)]
     public async Task DeleteAsync(string title)
     {
-        await templates.DeleteAsync(title);
+        await templateService.DeleteAsync(title);
     }
-
-    private readonly TemplateService templates;
 }

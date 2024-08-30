@@ -73,7 +73,7 @@ internal static class LinqBuilder
                         && method.GetGenericArguments().Length == 2
                         && method.GetParameters().Length == 2);
         // Feels weird to explicitly state these methods exist and return values, but enforced by rigorous lookup above.
-        var result = methodInfo.MakeGenericMethod(typeof(T), type)!.Invoke(null, new object[] { source, lambda })!;
+        var result = methodInfo.MakeGenericMethod(typeof(T), type)!.Invoke(null, [source, lambda])!;
         return (IOrderedQueryable<T>)result;
     }
 

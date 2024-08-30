@@ -6,7 +6,10 @@
 /// platforms.  Includes list management and filtering.
 /// </summary>
 /// <typeparam name="TItem">The type for items in the select list.</typeparam>
-public partial class FlexiSelect<TItem> : ComponentBase, IExtraDryComponent where TItem : notnull {
+public partial class FlexiSelect<TItem> 
+    : ComponentBase, IExtraDryComponent 
+    where TItem : notnull 
+{
 
     public string Id { get; set; } = $"Id{Guid.NewGuid()}";
 
@@ -28,6 +31,10 @@ public partial class FlexiSelect<TItem> : ComponentBase, IExtraDryComponent wher
     /// </summary>
     [Parameter]
     public bool ShowPreview { get; set; } = true;
+
+    /// <inheritdoc cref="MiniDialog.ShowSubmitButton" />
+    [Parameter]
+    public bool ShowSubmitButton { get; set; } = true;
 
     /// <inheritdoc cref="Button.Icon" />
     [Parameter]

@@ -2,11 +2,9 @@
 
 namespace ExtraDry.Server.DataWarehouse;
 
-public class WarehouseContext : DbContext {
-
-    public WarehouseContext(DbContextOptions<WarehouseContext> options) : base(options) { }
-
-    
+public class WarehouseContext(
+    DbContextOptions<WarehouseContext> options)
+    : DbContext(options)
+{
     public DbSet<DataTableSync> TableSyncs { get; set; } = null!;
-
 }

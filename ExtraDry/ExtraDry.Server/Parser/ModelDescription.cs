@@ -10,11 +10,11 @@ internal class ModelDescription {
         GetReflectedModelProperties(modelType);
     }
 
-    public Collection<FilterProperty> FilterProperties { get; } = new();
+    public Collection<FilterProperty> FilterProperties { get; } = [];
 
-    public Collection<SortProperty> SortProperties { get; } = new();
+    public Collection<SortProperty> SortProperties { get; } = [];
 
-    public Collection<StatisticsProperty> StatisticsProperties { get; } = new();
+    public Collection<StatisticsProperty> StatisticsProperties { get; } = [];
 
     public SortProperty? StabilizerProperty => multipleStabilizerProperties ? null : stabilizerProperty;
 

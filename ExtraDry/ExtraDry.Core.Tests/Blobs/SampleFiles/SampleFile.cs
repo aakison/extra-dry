@@ -9,7 +9,7 @@ public class SampleFile
 
     public string MimeType { get; set; } = string.Empty;
 
-    public byte[] Content { get; set; } = Array.Empty<byte>();
+    public byte[] Content { get; set; } = [];
 
 }
 

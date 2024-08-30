@@ -57,7 +57,7 @@ builder.Services.AddSwaggerGen(openapi => {
 
 builder.Services.AddAuthentication("WorthlessAuthentication")
     .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("WorthlessAuthentication", null);
-//builder.Services.AddAuthorizationCore(options => SamplePolicies.AddAuthorizationOptions(options));
+builder.Services.AddAuthorizationCore(SamplePolicies.AddAuthorizationOptions);
 builder.Services.AddSingleton<IAuthorizationHandler, SampleAccessHandler>();
 
 builder.Services.AddHttpContextAccessor();
@@ -81,6 +81,9 @@ builder.Services.AddScoped(services => {
     return context;
 });
 
+builder.Services.AddExtraDry();
+
+
 builder.Services.AddScoped<EmployeeService>();
 builder.Services.AddScoped<CompanyService>();
 builder.Services.AddScoped<ContentsService>();
@@ -93,6 +96,8 @@ builder.Services.AddScoped<SampleDataService>();
 
 builder.Services.AddScoped<IEntityResolver<Sector>, SectorService>();
 builder.Services.AddScoped<IExpandoSchemaResolver, TemplateService>();
+
+builder.Services.AddRevisionAspect();
 
 builder.Services.AddFileValidation(options => {
     options.ValidateFilename = ValidationCondition.Always;

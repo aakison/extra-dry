@@ -5,16 +5,6 @@
     "minify": { "enabled": false }
   },
   {
-    "outputFile": "Components/Dry/DryFilterDatePicker.razor.css",
-    "inputFile": "Components/Dry/DryFilterDatePicker.razor.scss",
-    "minify": { "enabled": false }
-  },
-  {
-    "outputFile": "Components/Dry/DryFilterEnumSelect.razor.css",
-    "inputFile": "Components/Dry/DryFilterEnumSelect.razor.scss",
-    "minify": { "enabled": false }
-  },
-  {
     "outputFile": "Components/Standard/Reveal.razor.css",
     "inputFile": "Components/Standard/Reveal.razor.scss",
     "minify": { "enabled": false }
@@ -37,11 +27,6 @@
   {
     "outputFile": "Components/Standard/CodeBlock.razor.css",
     "inputFile": "Components/Standard/CodeBlock.razor.scss",
-    "minify": { "enabled": false }
-  },
-  {
-    "outputFile": "Components/Standard/FlexiSelect.razor.css",
-    "inputFile": "Components/Standard/FlexiSelect.razor.scss",
     "minify": { "enabled": false }
   },
   {

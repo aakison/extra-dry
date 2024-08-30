@@ -223,7 +223,7 @@ public class FileValidationService
         // If it's an xml file check for script tags
         var extensionAliases = contentInferredTypes.SelectMany(e => e.Extensions)
             .Union(filenameInferredTypes.SelectMany(e => e.Extensions))
-            .Union(new string[] { extension.ToLowerInvariant() });
+            .Union([extension.ToLowerInvariant()]);
         if(extensionAliases.Intersect(KnownXmlFileTypes).Any()) {
             // Take the first 1000 characters, it's a sanity check, not anti-virus
             var filecontent = Encoding.UTF8.GetString(content.Take(1000).ToArray());
