@@ -41,7 +41,7 @@
             }
           </tr>
         </thead>
-        <tbody>
+        <tbody data-validation-message="@validationMessage">
           <Virtualize ItemsProvider="GetItemsAsync" ItemSize="45" @ref="VirtualContainer">
             <ItemContent>
               <ViewModelTableRow Item="@context" Description="@description" Selection="@resolvedSelection" Height="45" GroupColumn="@GroupColumn" />
@@ -50,3 +50,10 @@
         </tbody>
     }
 </table>
+@* @if (validationError)
+{
+    <div class="invalid-filter-message">
+        <p>Invalid filter applied. Try adding quotes</p>
+        <p>@validationMessage</p>
+    </div>
+} *@

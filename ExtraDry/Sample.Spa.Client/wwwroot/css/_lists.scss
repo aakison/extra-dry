@@ -158,4 +158,19 @@ table.invalid-filter {
         left: calc(50% - 100px);
         margin-top: 50px;
     }
+
+    tbody::after {
+        content: 'Invalid filter applied. Try adding quotes\A' attr(data-validation-message) '.';
+        white-space: pre-wrap;
+        position: absolute;
+        left: calc(50% - 150px);
+        margin-top: 180px;
+        color: grey;
+    }
+}
+
+.invalid-filter-message {
+    text-align: center;
+    padding-top: 180px;
+    color: grey;
 }
