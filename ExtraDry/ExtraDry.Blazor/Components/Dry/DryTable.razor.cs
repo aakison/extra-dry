@@ -337,7 +337,6 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
             }
             firstLoadCompleted = true;
             validationError = false;
-            validationMessage = string.Empty;
             return result;
         }
         catch(OperationCanceledException) {
@@ -350,7 +349,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
         catch(DryException dex) {
             if(dex.ProblemDetails != null && dex.ProblemDetails.Status == 400) {
                 validationError = true;
-                validationMessage = dex?.ProblemDetails?.Title ?? dex?.ProblemDetails.Detail ?? string.Empty;
+                Logger.LogConsoleError($"Error applying filter: {dex?.ProblemDetails?.Title}");
                 return new ItemsProviderResult<ListItemInfo<TItem>>();
             }
             else {
@@ -373,7 +372,6 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     private bool firstLoadCompleted;
 
     private bool validationError;
-    private string validationMessage = string.Empty;
 
     public void Dispose()
     {
