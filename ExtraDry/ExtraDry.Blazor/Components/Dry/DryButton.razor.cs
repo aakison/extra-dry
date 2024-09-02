@@ -69,6 +69,12 @@ public partial class DryButton : ComponentBase, IExtraDryComponent {
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
+    /// <summary>
+    /// A function that is called before the click action is executed. Used for pre-execution validation.
+    /// </summary>
+    [Parameter]
+    public Action<CommandContext>? PreClickCheck { get; set; }
+
     [CascadingParameter]
     protected SelectionSet? Selection { get; set; }
 
@@ -152,6 +158,9 @@ public partial class DryButton : ComponentBase, IExtraDryComponent {
     {
         if(ResolvedCommand is null) {
             return;
+        }
+        if(PreClickCheck != null) {
+            PreClickCheck.Invoke(ResolvedCommand.Context);
         }
         if(Model != null) {
             await ResolvedCommand.ExecuteAsync(Model);

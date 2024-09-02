@@ -41,10 +41,11 @@ public partial class ValidationSummary : ComponentBase, IExtraDryComponent
         }
 
         var alertMessages = new List<string>();
-        if(errors is not JsonElement) {
+        var clientSideErrors = errors is Dictionary<string, List<string>>;
+        if(errors is not JsonElement && !clientSideErrors) {
             return [];
         }
-        var messages = JsonSerializer.Deserialize<Dictionary<string, List<string>>>(errors.ToString() ?? string.Empty);
+        var messages = clientSideErrors ? errors as Dictionary<string, List<string>> : JsonSerializer.Deserialize<Dictionary<string, List<string>>>(errors.ToString() ?? string.Empty);
         if(messages == null || messages.Keys.Count == 0) {
             return [];
         }

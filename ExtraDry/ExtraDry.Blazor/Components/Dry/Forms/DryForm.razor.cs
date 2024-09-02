@@ -1,4 +1,5 @@
 ﻿using ExtraDry.Blazor.Components.Internal;
+using ExtraDry.Core.Models;
 
 namespace ExtraDry.Blazor;
 
@@ -74,4 +75,71 @@ public partial class DryForm<T> : ComponentBase, IExtraDryComponent {
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "dry-form", ModelNameSlug, CssClass);
 
     private List<string> AlertMessages { get; set; } = [];
+
+    private Task ValidationChanged(ValidationEventArgs validation)
+    {
+        // Validation event args only returns one validation error at a time, but we're ready for it to increase if it ever needs to.
+        // This also simplifies later logic.
+        if(validation.IsValid) {
+            ClientValidationErrors.Remove(validation.MemberName);
+        }
+        else {
+            if(ClientValidationErrors.ContainsKey(validation.MemberName)) {
+                ClientValidationErrors[validation.MemberName] = [validation.Message];
+            }
+            else {
+                ClientValidationErrors.Add(validation.MemberName, [validation.Message]);
+            }
+        }
+        return Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Persists a collection of client side validation errors, some of which model validation will not catch.
+    /// For example, inputting 31/02/2024 will not update the model becuase the 31st Feb doesn't exist, so cannot be stored in a DateTime object.
+    /// Values are a List to simplify the later logic with the model validator
+    /// </summary>
+    private Dictionary<string, List<string>> ClientValidationErrors { get; set; } = [];
+
+    private void PreSubmissionCheck(CommandContext context)
+    {
+        if(context == CommandContext.Alternate) {
+            // Only validate on Primary, Default or Danger calls.
+            return;
+        }
+        if(Model is null) {
+            // No point trying to validate something that doesn't exist.
+            return;
+        }
+
+        var validator = new DataValidator();
+        validator.ValidateObject(Model);
+        if(validator.Errors.Count == 0 && ClientValidationErrors.Count == 0) {
+            // Valid, continue.
+            return;
+        }
+
+        // Else, get union of model and UI validation issues and throw.
+        // TODO: Throw? Is it exceptional?
+
+        var union = new Dictionary<string, List<string>>(ClientValidationErrors);
+        foreach(var error in validator.Errors) {
+            foreach(var member in error.MemberNames) {
+                if(union.TryGetValue(member, out List<string>? messages)) {
+                    messages.Add(error.ErrorMessage ?? "Is Invalid");
+                } else {
+                    union.Add(member, [error.ErrorMessage ?? "Is Invalid"]);
+                }
+            }
+        }
+
+        var problem = new ProblemDetails() {
+            Title = "Some values are Invalid",
+            Status = 400,
+            Detail = "Client side validation"
+        };
+        problem.Extensions.Add("errors", union);
+
+        throw new DryException(problem);
+    }
 }
