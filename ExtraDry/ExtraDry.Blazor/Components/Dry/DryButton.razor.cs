@@ -159,9 +159,7 @@ public partial class DryButton : ComponentBase, IExtraDryComponent {
         if(ResolvedCommand is null) {
             return;
         }
-        if(PreClickCheck != null) {
-            PreClickCheck.Invoke(ResolvedCommand.Context);
-        }
+        PreClickCheck?.Invoke(ResolvedCommand.Context);
         if(Model != null) {
             await ResolvedCommand.ExecuteAsync(Model);
         }
