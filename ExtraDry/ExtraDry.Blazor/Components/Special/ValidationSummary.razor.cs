@@ -90,7 +90,18 @@ public partial class ValidationSummary : ComponentBase, IExtraDryComponent
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "validation-summary", ErrorCss, CssClass);
 
-    private string ErrorCss => IsValidationError ? $"status{ProblemDetails!.Status}": "unexpected-error";
+    private string ErrorCss => IsValidationError ? $"status{ProblemDetails!.Status}" : "unexpected-error";
 
-    private bool IsValidationError => ProblemDetails != null && ProblemDetails.Status == (int)HttpStatusCode.BadRequest;
+    private bool IsValidationError {
+        get {
+            if(ProblemDetails is null) {
+                return false;
+            }
+            if(ProblemDetails.Status == (int)HttpStatusCode.BadRequest) {
+                return true;
+            }
+            ProblemDetails.Extensions.TryGetValue("source", out var source);
+            return source != null && source.ToString() == "client";
+        }
+    }
 }

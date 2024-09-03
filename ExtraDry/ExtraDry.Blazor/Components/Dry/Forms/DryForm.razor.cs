@@ -120,8 +120,6 @@ public partial class DryForm<T> : ComponentBase, IExtraDryComponent {
         }
 
         // Else, get union of model and UI validation issues and throw.
-        // TODO: Throw? Is it exceptional?
-
         var union = new Dictionary<string, List<string>>(ClientValidationErrors);
         foreach(var error in validator.Errors) {
             foreach(var member in error.MemberNames) {
@@ -134,11 +132,12 @@ public partial class DryForm<T> : ComponentBase, IExtraDryComponent {
         }
 
         var problem = new ProblemDetails() {
-            Title = "Some values are Invalid",
-            Status = 400,
+            Title = "One or more validation errors occurred.",
             Detail = "Client side validation"
         };
         problem.Extensions.Add("errors", union);
+        // Add a value to tell the validation that this is a client side validation error, not server side (which would have a 400 status)
+        problem.Extensions.Add("source", "client"); 
 
         throw new DryException(problem);
     }
