@@ -186,8 +186,7 @@ public partial class DryInput<T>
     private async Task ValidationChanged(ValidationEventArgs validation)
     {
         UpdateValidationUI(validation.IsValid, validation.Message);
-        await OnValidationChanged.InvokeAsync(validation);
-        
+        await OnValidationChanged.InvokeAsync(validation);        
     }
 
     private void UpdateValidationUI(bool valid, string message)
@@ -197,5 +196,4 @@ public partial class DryInput<T>
         Valid = valid;
         StateHasChanged();
     }
-
 }
