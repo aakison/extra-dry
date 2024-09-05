@@ -1,4 +1,5 @@
 using ExtraDry.Blazor.Components.Internal;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Web.Virtualization;
 
 namespace ExtraDry.Blazor;
@@ -54,6 +55,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     private string StateClass => 
         InternalItems.Any() ? "full" 
         : changing ? "changing"
+        : validationError ? "invalid-filter"
         : firstLoadCompleted ? "empty" 
         : "loading";
 
@@ -334,6 +336,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
                 result = new();
             }
             firstLoadCompleted = true;
+            validationError = false;
             return result;
         }
         catch(OperationCanceledException) {
@@ -342,6 +345,16 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
             // result instead.  
             Logger.LogConsoleVerbose("Loading cancelled by request");
             return new ItemsProviderResult<ListItemInfo<TItem>>();
+        }
+        catch(DryException dex) {
+            if(dex.ProblemDetails != null && dex.ProblemDetails.Status == 400) {
+                validationError = true;
+                Logger.LogConsoleError($"Error applying filter: {dex?.ProblemDetails?.Title}");
+                return new ItemsProviderResult<ListItemInfo<TItem>>();
+            }
+            else {
+                throw;
+            }
         }
         finally {
             serviceLock.Release();
@@ -357,6 +370,8 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     }
 
     private bool firstLoadCompleted;
+
+    private bool validationError;
 
     public void Dispose()
     {

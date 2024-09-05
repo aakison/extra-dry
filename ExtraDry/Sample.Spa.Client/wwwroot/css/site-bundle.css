@@ -229,6 +229,20 @@ table.empty tbody::before {
   margin-top: 50px;
 }
 
+table.invalid-filter tbody::before {
+  content: url("../img/collection-invalid.svg");
+  position: absolute;
+  left: calc(50% - 100px);
+  margin-top: 50px;
+}
+table.invalid-filter tbody::after {
+  content: "Invalid filter applied. Try adding quotes";
+  position: absolute;
+  left: calc(50% - 150px);
+  margin-top: 180px;
+  color: grey;
+}
+
 /*@import "_constants.scss";
 
 //
