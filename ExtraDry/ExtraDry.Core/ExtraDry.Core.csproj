@@ -11,11 +11,10 @@
 	<PropertyGroup>
 		<PackageId>ExtraDry.Core</PackageId>
 		<Authors>adrian.akison</Authors>
-		<Company>FMI Works</Company>
 		<Description>Extensions to Blazor and DRY libraries to create Blazor client/server applications with a lower-code footprint.  Use this Core library for server side and shared library common elements.</Description>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageProjectUrl>https://github.com/fmi-works/extra-dry</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/fmi-works/extra-dry.git</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/akison/extra-dry</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/akison/extra-dry.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>blazor spa microsoft dry don't repeat yourself low-code swashbuckle openapi</PackageTags>
 		<NeutralLanguage />

@@ -11,7 +11,7 @@ trigger:
 - develop
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'ubuntu-latest'
 
 variables:
   buildConfiguration: 'Release'
@@ -37,7 +37,7 @@ steps:
   inputs:
     command: 'custom'
     custom: 'tool'
-    arguments: 'install --global dotnet-ef --version 8.0.1'
+    arguments: 'install --global dotnet-ef --version 8.0.8'
 
 - task: DotNetCoreCLI@2
   displayName: Restore
@@ -162,24 +162,24 @@ steps:
     custom: 'ef'
     arguments: 'migrations script --project $(build.sourcesdirectory)/ExtraDry/Sample.Data/Sample.Data.csproj --idempotent --verbose --output $(build.artifactstagingdirectory)\sample\sql\migrations.sql'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Publish Web App'
-  inputs:
-    command: publish
-    publishWebProjects: false
-    projects: $(sampleProjectsGlob)
-    arguments: '--configuration $(BuildConfiguration) --no-build --output $(build.artifactstagingdirectory)\sample'
-    zipAfterPublish: false
-    modifyOutputPath: false
+# - task: DotNetCoreCLI@2
+#   displayName: 'Publish Web App'
+#   inputs:
+#     command: publish
+#     publishWebProjects: false
+#     projects: $(sampleProjectsGlob)
+#     arguments: '--configuration $(BuildConfiguration) --no-build --output $(build.artifactstagingdirectory)\sample'
+#     zipAfterPublish: false
+#     modifyOutputPath: false
 
-- task: DotNetCoreCLI@2
-  displayName: 'Publish Web Jobs'
-  inputs:
-    command: publish
-    publishWebProjects: false
-    projects: '**/Sample.WebJobs.csproj'
-    arguments: '--configuration $(BuildConfiguration) --no-build --output $(build.artifactstagingdirectory)\sample\App_Data\jobs\continuous'
-    zipAfterPublish: false
+# - task: DotNetCoreCLI@2
+#   displayName: 'Publish Web Jobs'
+#   inputs:
+#     command: publish
+#     publishWebProjects: false
+#     projects: '**/Sample.WebJobs.csproj'
+#     arguments: '--configuration $(BuildConfiguration) --no-build --output $(build.artifactstagingdirectory)\sample\App_Data\jobs\continuous'
+#     zipAfterPublish: false
 
 - task: DotNetCoreCLI@2
   displayName: Pack NuGet Packages

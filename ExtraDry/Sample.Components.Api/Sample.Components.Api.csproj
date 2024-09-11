@@ -29,12 +29,6 @@
 	<Import Project="..\CommonAnalyzers.targets" />
 	<Import Project="..\VulnerabilityFixes.targets" />
 	<ItemGroup>
-	  <EditorConfigFiles Remove="C:\Users\Adrian\Repos\FmiWorks\extra-dry\ExtraDry\Sample.Components.Api\.editorconfig" />
-	</ItemGroup>
-	<ItemGroup>
-	  <None Include="C:\Users\Adrian\Repos\FmiWorks\extra-dry\ExtraDry\Sample.Components.Api\.editorconfig" />
-	</ItemGroup>
-	<ItemGroup>
 	  <None Update="startup.sh">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
