@@ -31,7 +31,6 @@
 
 	<ItemGroup>
 		<Content Remove="bundleconfig.json" />
-		<Content Remove="libman.json" />
 		<Content Remove="wwwroot\js\extra-dry-blazor-module.js" />
 	</ItemGroup>
 
@@ -45,7 +44,6 @@
 			<PackagePath></PackagePath>
 		</None>
 		<None Include="bundleconfig.json" />
-		<None Include="libman.json" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -55,7 +53,6 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.7" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
-		<PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.175" />
 	</ItemGroup>
 
 	<ItemGroup>
