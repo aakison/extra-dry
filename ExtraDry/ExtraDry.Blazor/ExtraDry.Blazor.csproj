@@ -18,7 +18,8 @@
 		<PackageIcon>extradry-logo.png</PackageIcon>
 		<PackageIconUrl />
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-	</PropertyGroup>
+    <Copyright>Copyright ©️ 2024 Adrian Akison</Copyright>
+  </PropertyGroup>
 
 	<!-- File version is created here and uses Major/Minor version from CI.  Used for cache-busting by ExtraDryJavascriptModule. -->
 	<PropertyGroup>

@@ -13,7 +13,8 @@
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>blazor spa microsoft dry don't repeat yourself low-code swashbuckle openapi</PackageTags>
 		<NeutralLanguage />
-	</PropertyGroup>
+    <Copyright>Copyright ©️ 2024 Adrian Akison</Copyright>
+  </PropertyGroup>
 
 	<PropertyGroup>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
