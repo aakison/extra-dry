@@ -20,8 +20,8 @@ variables:
     value: '**/ExtraDry.**.csproj' # don't build samples
   - name: nugetProjectsGlob
     value: '**/ExtraDry.+(Core|Server|Blazor|Swashbuckle|Blazor.Experimental).csproj' # don't build samples
-  - name: testsGlob
-    value: '**/ExtraDry.+(Core|Server|Blazor).Tests.csproj'
+  - name: testProjectsGlob
+    value: '**/ExtraDry.+(Core|Server|Blazor|Swashbuckle).Tests.csproj'
   - name: isForDeployment
     value: $[in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/develop', 'refs/heads/release')]
   # Semantic Version details
