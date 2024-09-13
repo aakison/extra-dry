@@ -129,12 +129,9 @@ steps:
     packagesToPack: $(nugetProjectsGlob)
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'semanticVersion'
-    packDirectory: '$(Build.ArtifactStagingDirectory)\packages'
-    nobuild: true
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish NuGet Artifacts'
   condition: and(succeeded(), eq(variables.isForDeployment, true))
   inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)\packages'
-    artifactName: NuGetPackages
+    PathtoPublish: '$(build.artifactstagingdirectory)'
