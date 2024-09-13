@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net48;netstandard2.1</TargetFrameworks>
+		<TargetFrameworks>netstandard2.1</TargetFrameworks>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -34,13 +34,6 @@
 		<PackageReference Include="Microsoft.Extensions.Options" Version="8.0.1" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
-		<PackageReference Include="EntityFrameworkCore.SqlServer.HierarchyId.Abstractions" Version="4.0.0" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Options" Version="7.0.0" />
-		<PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
-	</ItemGroup>
-
 	<Import Project="..\CommonAnalyzers.targets" />
 
 	<Import Project="..\VulnerabilityFixes.targets" />
@@ -50,6 +43,10 @@
 			<Pack>True</Pack>
 			<PackagePath></PackagePath>
 		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Update="Azure.Identity" Version="1.12.0" />
 	</ItemGroup>
 
 </Project>

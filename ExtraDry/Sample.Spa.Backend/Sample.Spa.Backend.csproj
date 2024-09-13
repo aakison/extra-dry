@@ -35,4 +35,8 @@
 	  </None>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <PackageReference Update="Azure.Identity" Version="1.12.0" />
+	</ItemGroup>
+
 </Project>

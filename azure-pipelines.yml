@@ -14,17 +14,47 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  buildConfiguration: 'Release'
-  # Version details for `dotnet pack`, values to be overwritten by `GitSemVer`.
-  majorVersion: 0
-  minorVersion: 1
-  patchVersion: 0
-  prereleaseVersion: ''
-  semanticVersion: '0.1.0'  
-  nugetProjectsGlob: '**/ExtraDry.+(Core|Server|Blazor|Swashbuckle|Blazor.Experimental).csproj' # don't build samples
-  sampleProjectsGlob: '**/Sample.Spa.Backend.csproj'
-  testsGlob: '**/ExtraDry.+(Core|Server|Blazor).Tests.csproj'
-  isForDeployment: $[in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/develop', 'refs/heads/release')]
+  - name: buildConfiguration
+    value: 'Release'
+  - name: projectsGlob
+    value: '**/ExtraDry.**.csproj' # don't build samples
+  - name: nugetProjectsGlob
+    value: '**/ExtraDry.+(Core|Server|Blazor|Swashbuckle|Blazor.Experimental).csproj' # don't build samples
+  - name: testsGlob
+    value: '**/ExtraDry.+(Core|Server|Blazor).Tests.csproj'
+  - name: isForDeployment
+    value: $[in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/develop', 'refs/heads/release')]
+  # Semantic Version details
+  - name: majorMinorVersion
+    value: '0.8'
+  - name: patchVersion
+    value: $[counter(variables['majorMinorVersion'], 0)]
+  # The 'pre-alpha' name covers instances where the CI process has been manually triggered from a
+  # feature branch.  This covers instances where a developer wants to test the CI process or their
+  # feature changes outside of their local development environment.
+  - name: prereleaseVersion
+    value: '-pre-alpha'
+  - name: latestTag
+    value: 'latest-pre-alpha'
+  - ${{ if eq(variables['Build.SourceBranchName'], 'develop') }}: 
+    - name: prereleaseVersion
+      value: '-alpha'
+    - name: latestTag
+      value: 'latest-alpha'
+  - ${{ if eq(variables['Build.SourceBranchName'], 'release') }}: 
+    - name: prereleaseVersion
+      value: '-beta'
+    - name: latestTag
+      value: 'latest-beta'
+  - ${{ if eq(variables['Build.SourceBranchName'], 'main') }}: 
+    - name: prereleaseVersion
+      value: ''
+    - name: latestTag
+      value: 'latest'
+  - name: semanticVersion
+    value: $[format('{0}.{1}{2}', variables['majorMinorVersion'], variables['patchVersion'], variables['prereleaseVersion'])]
+  - name: revisionSuffix
+    value: $[replace(variables['semanticVersion'], '.', '-')]
 
 steps:
 - task: UseDotNet@2
@@ -43,7 +73,7 @@ steps:
   displayName: Restore
   inputs:
     command: restore
-    projects: '**/*.csproj'
+    projects: $(projectsGlob)
     verbosityRestore: normal
     feedsToUse: config
     nugetConfigPath: ./ExtraDry/nuget.config
@@ -53,133 +83,43 @@ steps:
   displayName: 'Check NuGet Packages for Vulnerabilities'
   inputs:
     targetType: 'inline'
-    workingDirectory: $(Build.SourcesDirectory)/ExtraDry
     script: |
       $global:failedLines = 0;
-      $global:invalidProjectFound = $false;
       Function Scan-Line-For-Vulnerability {
         [CmdletBinding()]
         Param([Parameter(ValueFromPipeline)] $line)
         process {
-          if($line -isnot [System.Management.Automation.ErrorRecord]) {
-            Write-Host $line
-            if($line.Contains(" Critical ") -OR $line.Contains(" Moderate ") -OR $line.Contains(" High ")) {
-              $global:failedLines = $global:failedLines + 1
-            }
+          Write-Host $line
+          if($line.Contains("Moderate") -OR $line.Contains("High") -OR $line.Contains("Critical")) {
+            $global:failedLines = $global:failedLines + 1
           }
         }
       }
-      try {
-        dotnet list package --vulnerable --include-transitive 2>&1 | Scan-Line-For-Vulnerability
-      }
-      catch {
-        # dotnet list errors if there is a dcproj in the solution. Capture if there is so we can ignore the error.
-        # See: https://github.com/NuGet/Home/issues/12520
-        if($_.Exception.Message.Contains(".dcproj")) {
-          $global:invalidProjectFound = $true
-        }
-      }
-      if($global:failedLines) {
+      dotnet list ExtraDry/ExtraDry.Blazor package --vulnerable --include-transitive | Scan-Line-For-Vulnerability
+      dotnet list ExtraDry/ExtraDry.Blazor.Experimental package --vulnerable --include-transitive | Scan-Line-For-Vulnerability
+      dotnet list ExtraDry/ExtraDry.Core package --vulnerable --include-transitive | Scan-Line-For-Vulnerability
+      dotnet list ExtraDry/ExtraDry.Server package --vulnerable --include-transitive | Scan-Line-For-Vulnerability
+      dotnet list ExtraDry/ExtraDry.Swashbuckle package --vulnerable --include-transitive | Scan-Line-For-Vulnerability
+      if($global:failedLines > 0) {
         Write-Host
         Write-Host "Vulnerabilities in dependant package have been found, please upgrade or replace." -ForegroundColor Red
         exit 1
       }
-      if(($LASTEXITCODE -eq 1) -AND $global:invalidProjectFound) {
-        $error.Clear()
-        $global:LASTEXITCODE = 0
-        exit 0
-      }
-
-- task: PowerShell@2
-  name: GitSemVer
-  displayName: 'Evaluate Git Semantic Version'
-  inputs:
-    targetType: 'inline'
-    script: |
-      Write-Host "Trigger Branch is $Env:BUILD_SOURCEBRANCHNAME"
-      function HeadIsBranch($branch) {
-        if($Env:BUILD_SOURCEBRANCHNAME -eq $null) {
-          $headHash = git rev-parse HEAD
-          $branchHash = git rev-parse $branch
-          $headHash -eq $branchHash
-        }
-        else {
-          $Env:BUILD_SOURCEBRANCHNAME -eq $branch
-        }
-      }
-      function PublishVariable($name, $value) {
-        Write-Host "Setting Variable $name to: $value"
-        Write-Host "##vso[task.setvariable variable=$name]$value"
-      }
-      function Coallesce($value1, $value2) {
-        if($value1 -eq $null) { $value2 } else { $value1 }
-      }
-      $describe = git describe --tags
-      Write-Host "Git Version is $describe"
-      $bits = $describe.TrimStart("v").Split(".-")
-      $majorVersion = Coallesce $bits[0] 1
-      $minorVersion = Coallesce $bits[1] 0
-      $patchVersion = Coallesce $bits[2] 0
-      $prereleaseVersion = 'head' # no semantic meaning
-      $isDevelop = HeadIsBranch('develop')
-      $isRelease = HeadIsBranch('release')
-      $isMain = HeadIsBranch('main') 
-      if($isDevelop) {  
-          $prereleaseVersion = "alpha"
-      }
-      if($isRelease) {
-          $prereleaseVersion = "beta"
-      }
-      if($isMain) {
-          $prereleaseVersion = ""
-      }
-      $semanticVersion = "$majorVersion.$minorVersion.$patchVersion-$prereleaseVersion".TrimEnd("-")
-      PublishVariable "majorVersion" $majorVersion
-      PublishVariable "minorVersion" $minorVersion
-      PublishVariable "patchVersion" $patchVersion
-      PublishVariable "prereleaseVersion" $prereleaseVersion
-      PublishVariable "semanticVersion" $semanticVersion
 
 - task: DotNetCoreCLI@2
   displayName: Build Projects
   inputs:
     command: build
-    projects: '**/*.csproj'
+    projects: $(projectsGlob)
     arguments: '--configuration $(BuildConfiguration) /p:Version=$(semanticVersion) /p:InformationalVersion=$(semanticVersion) --no-restore'
 
 - task: DotNetCoreCLI@2
   displayName: Run Unit Tests
   inputs:
     command: test
-    projects: '**/*.Tests.csproj'
+    projects: $(testProjectsGlob)
     arguments: '--configuration $(BuildConfiguration) --collect "Code coverage" --no-build'
     nobuild: true
-
-- task: DotNetCoreCLI@2
-  displayName: 'Publish Migration Script'
-  inputs:
-    command: 'custom'
-    custom: 'ef'
-    arguments: 'migrations script --project $(build.sourcesdirectory)/ExtraDry/Sample.Data/Sample.Data.csproj --idempotent --verbose --output $(build.artifactstagingdirectory)\sample\sql\migrations.sql'
-
-# - task: DotNetCoreCLI@2
-#   displayName: 'Publish Web App'
-#   inputs:
-#     command: publish
-#     publishWebProjects: false
-#     projects: $(sampleProjectsGlob)
-#     arguments: '--configuration $(BuildConfiguration) --no-build --output $(build.artifactstagingdirectory)\sample'
-#     zipAfterPublish: false
-#     modifyOutputPath: false
-
-# - task: DotNetCoreCLI@2
-#   displayName: 'Publish Web Jobs'
-#   inputs:
-#     command: publish
-#     publishWebProjects: false
-#     projects: '**/Sample.WebJobs.csproj'
-#     arguments: '--configuration $(BuildConfiguration) --no-build --output $(build.artifactstagingdirectory)\sample\App_Data\jobs\continuous'
-#     zipAfterPublish: false
 
 - task: DotNetCoreCLI@2
   displayName: Pack NuGet Packages
@@ -198,10 +138,3 @@ steps:
   inputs:
     PathtoPublish: '$(build.artifactstagingdirectory)\packages'
     artifactName: NuGetPackages
-
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Sample Artifact'
-  condition: and(succeeded(), eq(variables.isForDeployment, true))
-  inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)\sample'
-    artifactName: SampleApp
