@@ -1,0 +1,113 @@
+﻿@page "/components/special/dry-error-boundary"
+@using ExtraDry.Core.Models
+
+<section>
+    <h2>DryErrorBoundary</h2>
+    <p>
+        The <code>&lt;DryErrorBoundary&gt;</code> component wraps child components and display errors when they occur.
+    </p>
+    <p>
+        This component works similarly to the built-in <code>&lt;ErrorBoundary></code> component.  It differs in two areas:
+        <ul>
+            <li>The error layout is defined in an enclosing <code>Theme</code> and is consistent across all <code>DryErrorBoundary</code> components.</li>
+            <li>Supports styling of errors using either <code>Exception</code> objects or RFC7231 Problem Details objects (encapsulated by <code>DryException</code>).</li>
+        </ul>
+    </p>
+</section>
+<section>
+    <h3>Basic Usage</h3>
+    <CodeBlock Lang="blazor">
+        &lt;DryErrorBoundary>
+            @@DoBadThings()
+        &lt;/DryErrorBoundary>
+
+        @@code {
+            public string DoBadThings()
+            {
+                if(ThrowException) {
+                    throw new Exception("This is it, you asked for it.");
+                }
+                if(ThrowDryException) {
+                    var details = new ProblemDetails { Status = 499, Title = "Now cooking with gas.", Detail = "Some more details" };
+                    throw new DryException(details);
+                }
+                return "Nothing to see here, move along.";
+            }
+
+            public bool ThrowException { get; set; }
+
+            public bool ThrowDryException { get; set; }
+        }
+    </CodeBlock>
+    <DryErrorBoundary @ref="LocalBoundary" data-unmatched="huzzah">
+        @DoBadThings()
+    </DryErrorBoundary>
+</section>
+<section>
+    <h5>Try It Out</h5>
+    <form class="tryitout" onsubmit="return false;">
+        <div>
+            <label>ThrowException:</label>
+            <input type="checkbox" @bind="ThrowException" />
+        </div>
+        <div>
+            <label>ThrowDryException:</label>
+            <input type="checkbox" @bind="ThrowDryException" />
+        </div>
+        <div>
+            <button type="button" @onclick="@Recover">Recover</button>
+        </div>
+    </form>
+</section>
+<section>
+    <h3>Configuration</h3>
+    <p>
+        This is a standalone component, no configuration is required.
+    </p>
+    <h5>Semantic Styles</h5>
+    <p>
+        The control does not emit any HTML and cannot be styled.  However, the error component can be replaced by using an enclosing <code>Theme</code> component.
+    </p>
+</section>
+<section>
+    <h3>Tips &amp; Practices</h3>
+    <ul>
+        <li>The component does not render anything into the DOM on it's own, it will only switch between child content and error content.</li>
+        <li>The CssClass and any other attributes (e.g. ARIA attributes) are not sent to the child content, but will be provided to the error content.</li>
+        <li>Once an exception is captured the control will show error content and stop rendering children and responding to state changes.</li>
+        <li>Use the <code>Recover()</code> method to reset from error content back to child content.</li>
+    </ul>
+</section>
+<section>
+    <h3>See Also</h3>
+    <ul>
+        <li><a href="/components/special/default-error-component">Default Error Component</a></li>
+    </ul>
+</section>
+
+@code {
+    public string DoBadThings()
+    {
+        if(ThrowException) {
+            throw new Exception("This is it, you asked for it.");
+        }
+        if(ThrowDryException) {
+            var details = new ProblemDetails { Status = 499, Title = "Now cooking with gas.", Detail = "Some more details" };
+            throw new DryException(details);
+        }
+        return "Nothing to see here, move along.";
+    }
+
+    public void Recover()
+    {
+        ThrowException = false;
+        ThrowDryException = false;
+        LocalBoundary.Recover();
+    }
+
+    private DryErrorBoundary LocalBoundary { get; set; } = null!;
+
+    public bool ThrowException { get; set; }
+
+    public bool ThrowDryException { get; set; }
+}

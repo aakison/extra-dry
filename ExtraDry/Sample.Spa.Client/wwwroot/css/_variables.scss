@@ -1,0 +1,48 @@
+﻿@import "_constants.scss";
+
+//
+// Color palette mapped to CSS variables
+// Note: use #{} for SaaS expansion inside variable declarations.
+//
+:root {
+    --primary: #{$primary};
+    --secondary: #{$secondary};
+    --danger: #{$danger};
+    --success: #{$success};
+    --info: #{$info};
+    --warning: #{$warning};
+    --primary-light: #{$primary-light};
+    --secondary-light: #{$secondary-light};
+    --danger-light: #{$danger-light};
+    --success-light: #{$success-light};
+    --info-light: #{$info-light};
+    --warning-light: #{$warning-light};
+    --primary-dark: #{$primary-dark};
+    --secondary-dark: #{$secondary-dark};
+    --danger-dark: #{$danger-dark};
+    --success-dark: #{$success-dark};
+    --info-dark: #{$info-dark};
+    --warning-dark: #{$warning-dark};
+    --white: #{$white};
+    --off-white: #{$off-white};
+    --light: #{$light};
+    --silver: #{$silver};
+    --gray: #{$gray};
+    --dark: #{$dark};
+    --charcoal: #{$charcoal};
+    --black: #{$black};
+
+    --icon-tiny: 16px;
+    --input-rounding: 3px;
+
+    --text-tiny: calc(var(--text-normal) - 3px);
+    --text-small: calc(var(--text-normal) - 2px);
+    --text-normal: 16px;
+    --text-large: calc(var(--text-normal) + 2px);
+
+    --spacing-tiny: calc(0.5 * var(--spacing-small));
+    --spacing-small: 8px;
+    --spacing-medium: calc(2 * var(--spacing-small));
+    --spacing-large: calc(3 * var(--spacing-small));
+
+}

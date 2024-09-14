@@ -16,9 +16,24 @@ public class AttributeBuilder : ColumnBuilder {
         var type = PropertyInfo.PropertyType;
         if(type == typeof(int)) {
             SetType(ColumnType.Integer);
+            SetDefault(0);
+        }
+        else if(type == typeof(DateTime)) {
+            SetType(ColumnType.Integer);
+            SetConverter(e => StandardConversions.DateTimeToSequence((DateTime)e));
+            SetDefault(0);
+        }
+        else if(type == typeof(DateOnly)) {
+            SetType(ColumnType.Date);
+            //SetDefault(new DateOnly(1970, 1, 1));
+        }
+        else if(type == typeof(TimeOnly)) {
+            SetType(ColumnType.Time);
+            //SetDefault(new TimeOnly(0));
         }
         else {
             SetType(ColumnType.Text);
+            SetDefault("_NULL_");
         }
 
         var notMapped = propertyInfo.GetCustomAttribute<NotMappedAttribute>();
@@ -58,6 +73,18 @@ public class AttributeBuilder : ColumnBuilder {
         return this;
     }
 
+    public AttributeBuilder HasConversion(Func<object, object> converter)
+    {
+        SetConverter(converter);
+        return this;
+    }
+
+    public AttributeBuilder HasDefault(object @default)
+    {
+        SetDefault(@default);
+        return this;
+    }
+
     public AttributeBuilder IsIncluded(bool included)
     {
         SetIncluded(included);
@@ -66,10 +93,11 @@ public class AttributeBuilder : ColumnBuilder {
 
     internal override Column Build()
     {
-        return new Column(ColumnType, ColumnName) {
+        return new Column(ColumnType, ColumnName, Converter) {
             Nullable = false,
             PropertyInfo = PropertyInfo,
             Length = Length,
+            Default = Default,
         };
     }
 
@@ -88,11 +116,11 @@ public class AttributeBuilder : ColumnBuilder {
 
     // Int is interesting here, considering not including it as a valid attribute ever, but then came across 'SortOrder', snap.
     // Not including decimal, float, long, etc unless an example justifying their use is identified.
-    private static readonly Type[] attributeTypes = new Type[] { typeof(string), typeof(Uri), typeof(Guid), typeof(int) };
+    private static readonly Type[] attributeTypes = [typeof(string), typeof(Uri), typeof(Guid), typeof(int), typeof(DateOnly), typeof(DateTime)];
 
     protected override bool IsValidColumnType(ColumnType type)
     {
-        return type == ColumnType.Text || type == ColumnType.Integer;
+        return type == ColumnType.Text || type == ColumnType.Integer || type == ColumnType.Date || type == ColumnType.Time;
     }
 
     private AttributeAttribute? AttributeAttribute { get; set; }

@@ -3,6 +3,7 @@
 # Build and test ASP.NET Core projects targeting .NET Core.
 # Add steps that run tests, create a NuGet package, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+# Packages ExtraDry for NuGet and builds sample application.
 
 trigger:
 - main
@@ -10,31 +11,72 @@ trigger:
 - develop
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'ubuntu-latest'
 
 variables:
-  buildConfiguration: 'Release'
-  # Version details for `dotnet pack`, values to be overwritten by `GitSemVer`.
-  majorVersion: 0
-  minorVersion: 1
-  patchVersion: 0
-  prereleaseVersion: ''
-  semanticVersion: '0.1.0'  
-  projectsGlob: '**/ExtraDry.+(Core|Server|Blazor|Swashbuckle).csproj' # don't build samples
-  testsGlob: '**/ExtraDry.+(Core|Server|Blazor).Tests.csproj'
-  isForDeployment: $[in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/develop', 'refs/heads/release')]
+  - name: buildConfiguration
+    value: 'Release'
+  - name: projectsGlob
+    value: '**/ExtraDry.**.csproj' # don't build samples
+  - name: nugetProjectsGlob
+    value: '**/ExtraDry.+(Core|Server|Blazor|Swashbuckle|Blazor.Experimental).csproj' # don't build samples
+  - name: testProjectsGlob
+    value: '**/ExtraDry.+(Core|Server|Blazor|Swashbuckle).Tests.csproj'
+  - name: isForDeployment
+    value: $[in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/develop', 'refs/heads/release')]
+  # Semantic Version details
+  - name: majorMinorVersion
+    value: '0.8'
+  - name: patchVersion
+    value: $[counter(variables['majorMinorVersion'], 0)]
+  # The 'pre-alpha' name covers instances where the CI process has been manually triggered from a
+  # feature branch.  This covers instances where a developer wants to test the CI process or their
+  # feature changes outside of their local development environment.
+  - name: prereleaseVersion
+    value: '-pre-alpha'
+  - name: latestTag
+    value: 'latest-pre-alpha'
+  - ${{ if eq(variables['Build.SourceBranchName'], 'develop') }}: 
+    - name: prereleaseVersion
+      value: '-alpha'
+    - name: latestTag
+      value: 'latest-alpha'
+  - ${{ if eq(variables['Build.SourceBranchName'], 'release') }}: 
+    - name: prereleaseVersion
+      value: '-beta'
+    - name: latestTag
+      value: 'latest-beta'
+  - ${{ if eq(variables['Build.SourceBranchName'], 'main') }}: 
+    - name: prereleaseVersion
+      value: ''
+    - name: latestTag
+      value: 'latest'
+  - name: semanticVersion
+    value: $[format('{0}.{1}{2}', variables['majorMinorVersion'], variables['patchVersion'], variables['prereleaseVersion'])]
+  - name: revisionSuffix
+    value: $[replace(variables['semanticVersion'], '.', '-')]
 
 steps:
 - task: UseDotNet@2
-  displayName: 'Install .NET 6.0 SDK'
+  displayName: 'Install .NET 8.0 SDK'
   inputs:
-    version: '6.0.x'
+    version: '8.0.x'
+
+- task: DotNetCoreCLI@2
+  displayName: Install Entity Framework
+  inputs:
+    command: 'custom'
+    custom: 'tool'
+    arguments: 'install --global dotnet-ef --version 8.0.8'
 
 - task: DotNetCoreCLI@2
   displayName: Restore
   inputs:
     command: restore
     projects: $(projectsGlob)
+    verbosityRestore: normal
+    feedsToUse: config
+    nugetConfigPath: ./ExtraDry/nuget.config
 
 - task: PowerShell@2
   name: CheckVulnerability
@@ -48,92 +90,48 @@ steps:
         Param([Parameter(ValueFromPipeline)] $line)
         process {
           Write-Host $line
-          if($line.Contains("Moderate") -OR $line.Contains("High")) {
+          if($line.Contains("Moderate") -OR $line.Contains("High") -OR $line.Contains("Critical")) {
             $global:failedLines = $global:failedLines + 1
           }
         }
       }
-      dotnet list .\ExtraDry package --vulnerable --include-transitive | Scan-Line-For-Vulnerability
-      if($global:failedLines) {
+      dotnet list ExtraDry/ExtraDry.Blazor package --vulnerable --include-transitive | Scan-Line-For-Vulnerability
+      dotnet list ExtraDry/ExtraDry.Blazor.Experimental package --vulnerable --include-transitive | Scan-Line-For-Vulnerability
+      dotnet list ExtraDry/ExtraDry.Core package --vulnerable --include-transitive | Scan-Line-For-Vulnerability
+      dotnet list ExtraDry/ExtraDry.Server package --vulnerable --include-transitive | Scan-Line-For-Vulnerability
+      dotnet list ExtraDry/ExtraDry.Swashbuckle package --vulnerable --include-transitive | Scan-Line-For-Vulnerability
+      if($global:failedLines > 0) {
         Write-Host
         Write-Host "Vulnerabilities in dependant package have been found, please upgrade or replace." -ForegroundColor Red
         exit 1
       }
 
-- task: PowerShell@2
-  name: GitSemVer
-  displayName: 'Evaluate Git Semantic Version'
-  inputs:
-    targetType: 'inline'
-    script: |
-      Write-Host "Trigger Branch is $Env:BUILD_SOURCEBRANCHNAME"
-      function HeadIsBranch($branch) {
-        if($Env:BUILD_SOURCEBRANCHNAME -eq $null) {
-          $headHash = git rev-parse HEAD
-          $branchHash = git rev-parse $branch
-          $headHash -eq $branchHash
-        }
-        else {
-          $Env:BUILD_SOURCEBRANCHNAME -eq $branch
-        }
-      }
-      function PublishVariable($name, $value) {
-        Write-Host "Setting Variable $name to: $value"
-        Write-Host "##vso[task.setvariable variable=$name]$value"
-      }
-      function Coallesce($value1, $value2) {
-        if($value1 -eq $null) { $value2 } else { $value1 }
-      }
-      $describe = git describe --tags
-      Write-Host "Git Version is $describe"
-      $bits = $describe.TrimStart("v").Split(".-")
-      $majorVersion = Coallesce $bits[0] 1
-      $minorVersion = Coallesce $bits[1] 0
-      $patchVersion = Coallesce $bits[2] 0
-      $prereleaseVersion = "head" # no semantic meaning
-      if(HeadIsBranch("develop")) {
-          $prereleaseVersion = "alpha"
-      }
-      if(HeadIsBranch("release")) {
-          $prereleaseVersion = "beta"
-      }
-      if(HeadIsBranch("main") -OR HeadIsBranch("master")) {
-          $prereleaseVersion = ""
-      }
-      $semanticVersion = "$majorVersion.$minorVersion.$patchVersion-$prereleaseVersion".TrimEnd("-")
-      PublishVariable "majorVersion" $majorVersion
-      PublishVariable "minorVersion" $minorVersion
-      PublishVariable "patchVersion" $patchVersion
-      PublishVariable "prereleaseVersion" $prereleaseVersion
-      PublishVariable "semanticVersion" $semanticVersion
-
 - task: DotNetCoreCLI@2
-  displayName: Build
+  displayName: Build Projects
   inputs:
     command: build
     projects: $(projectsGlob)
     arguments: '--configuration $(BuildConfiguration) /p:Version=$(semanticVersion) /p:InformationalVersion=$(semanticVersion) --no-restore'
 
 - task: DotNetCoreCLI@2
-  displayName: Test
+  displayName: Run Unit Tests
   inputs:
     command: test
-    projects: $(testsGlob)
+    projects: $(testProjectsGlob)
     arguments: '--configuration $(BuildConfiguration) --collect "Code coverage" --no-build'
+    nobuild: true
 
 - task: DotNetCoreCLI@2
-  displayName: Pack
+  displayName: Pack NuGet Packages
   condition: and(succeeded(), eq(variables.isForDeployment, true))
   inputs:
     command: 'pack'
-    packagesToPack: $(projectsGlob)
+    packagesToPack: $(nugetProjectsGlob)
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'semanticVersion'
-    nobuild: true
 
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact'
+  displayName: 'Publish NuGet Artifacts'
   condition: and(succeeded(), eq(variables.isForDeployment, true))
   inputs:
     PathtoPublish: '$(build.artifactstagingdirectory)'
-

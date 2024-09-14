@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-namespace ExtraDry.Blazor.Internal;
+﻿namespace ExtraDry.Blazor.Internal;
 
 /// <summary>
 /// Represents an HTML fieldset, visually boxing groups of input controls.
@@ -11,7 +9,7 @@ internal class FormFieldset {
     {
         Legend = legend;
         Name = name;
-        CssClass = WebId.ToWebId(Name);
+        CssClass = Slug.ToSlug(Name);
     }
 
     public string Name { get; set; }
@@ -29,6 +27,6 @@ internal class FormFieldset {
     /// <summary>
     /// The groups that are inside this fieldset.
     /// </summary>
-    public List<FormGroup> Groups { get; } = new();
+    public List<FormGroup> Groups { get; } = [];
 
 }

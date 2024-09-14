@@ -4,7 +4,8 @@
 /// A data warehouse measure of a fact table.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Method)]
-public class MeasureAttribute : Attribute {
+public class MeasureAttribute : Attribute
+{
 
     /// <summary>
     /// Declares a property as a data warehouse measure with the name inferred from the property name.

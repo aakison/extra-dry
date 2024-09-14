@@ -1,10 +1,4 @@
-﻿#nullable enable
-
-using ExtraDry.Blazor.Models;
-using ExtraDry.Core;
-using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
-using System.Reflection;
+﻿using System.Collections.ObjectModel;
 
 namespace ExtraDry.Blazor;
 
@@ -14,7 +8,6 @@ public class ViewModelDescription {
     {
         ViewModel = viewModel;
         GetReflectedViewModelCommands(viewModel);
-        GetReflectedViewModelNavigations(viewModel);
         GetReflectedModel(viewModel.GetType());
         SetListSelectMode();
     }
@@ -23,9 +16,9 @@ public class ViewModelDescription {
     {
         ModelType = modelType;
         ViewModel = viewModel;
+        GetReflectedViewModelHyperLinks(viewModel, modelType);
         GetReflectedModelProperties(modelType);
         GetReflectedViewModelCommands(viewModel);
-        GetReflectedViewModelNavigations(viewModel);
         GetReflectedModel(modelType);
         SetListSelectMode();
     }
@@ -34,31 +27,31 @@ public class ViewModelDescription {
 
     public Type? ModelType { get; }
 
-    public Collection<PropertyDescription> FormProperties { get; } = new();
+    public Collection<PropertyDescription> FormProperties { get; } = [];
 
-    public Collection<PropertyDescription> TableProperties { get; } = new();
+    public Collection<PropertyDescription> TableProperties { get; } = [];
 
-    public Collection<PropertyDescription> FilterProperties { get; } = new();
+    public Collection<PropertyDescription> FilterProperties { get; } = [];
+
+    public PropertyDescription? UuidProperty { get; private set; }
 
     public ListSelectMode ListSelectMode { get; private set; } = ListSelectMode.None;
 
-    public Collection<CommandInfo> Commands { get; } = new();
+    public Collection<CommandInfo> Commands { get; } = [];
 
-    public Collection<NavigationDescription> Navigations { get; } = new();
+    public Collection<HyperlinkInfo> HyperLinks { get; } = [];
 
     public CommandInfo? SelectCommand => Commands.FirstOrDefault(e => e.Context == CommandContext.Primary && e.Arguments == CommandArguments.Single);
+
+    public CommandInfo? DefaultCommand => Commands.FirstOrDefault(e => e.Context == CommandContext.Default && e.Arguments == CommandArguments.Single);
+
+    public HyperlinkInfo? HyperLinkFor(string propertyName) => HyperLinks.FirstOrDefault(e => e.PropertyName == propertyName);
 
     public ReadOnlyCollection<CommandInfo> MenuCommands => new(Commands.Where(e => e.Arguments == CommandArguments.None).ToList());
 
     public ReadOnlyCollection<CommandInfo> ContextCommands => new(Commands.Where(e => e.Arguments == CommandArguments.Single).ToList());
 
     public ReadOnlyCollection<CommandInfo> MultiContextCommands => new(Commands.Where(e => e.Arguments == CommandArguments.Multiple).ToList());
-
-    public bool HasNavigationGroups => Navigations.Any(e => !string.IsNullOrWhiteSpace(e.Group));
-
-    public IEnumerable<string?> NavigationGroups => Navigations.Select(e => e.Group).Distinct();
-
-    public IEnumerable<NavigationDescription> NavigationsInGroup(string group) => Navigations.Where(e => e.Group == group);
 
     public string ModelDisplayName { get; private set; } = string.Empty;
 
@@ -79,7 +72,7 @@ public class ViewModelDescription {
         foreach(var property in properties) {
             var display = property.GetCustomAttribute<DisplayAttribute>();
             var col = new PropertyDescription(property);
-            if(display != null && (display.GetAutoGenerateField() ?? true)) {
+            if(display?.GetAutoGenerateField() ?? true) {
                 FormProperties.Add(col);
             }
             if(!string.IsNullOrEmpty(display?.ShortName)) {
@@ -87,6 +80,9 @@ public class ViewModelDescription {
             }
             if(col.Filter != null) {
                 FilterProperties.Add(col);
+            }
+            if(UuidProperty == null && property.PropertyType == typeof(Guid)) {
+                UuidProperty = col;
             }
         }
     }
@@ -107,25 +103,17 @@ public class ViewModelDescription {
         }
     }
 
-    private void GetReflectedViewModelNavigations(object viewModel)
+    private void GetReflectedViewModelHyperLinks(object viewModel, Type modelType)
     {
         if(viewModel == null) {
             return;
         }
         var viewModelType = viewModel.GetType();
-        var members = viewModelType.GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-        var navigationMembers = members.Where(e => e.GetCustomAttribute<NavigationAttribute>() != null);
-        var unorderedNavigations = new List<NavigationDescription>();
-        foreach(var member in navigationMembers) {
-            if(member is PropertyInfo property) {
-                unorderedNavigations.Add(new NavigationDescription(viewModel, property));
-            }
-            if(member is MethodInfo method) {
-                unorderedNavigations.Add(new NavigationDescription(viewModel, method));
-            }
-        }
-        foreach(var desc in unorderedNavigations.OrderBy(e => e.Order)) {
-            Navigations.Add(desc);
+        var methods = viewModelType.GetMethods(BindingFlags.Public | BindingFlags.Instance);
+        var hyperlinks = methods.Where(e => e.GetParameters().Length < 2 && e.GetCustomAttribute<HyperlinkAttribute>() != null);
+        var infos = hyperlinks.Select(e => new HyperlinkInfo(viewModel, modelType, e));
+        foreach(var info in infos) {
+            HyperLinks.Add(info);
         }
     }
 
@@ -137,7 +125,7 @@ public class ViewModelDescription {
         else if(Commands.Where(e => e.Arguments == CommandArguments.Single && e.Context == CommandContext.Primary).Count() == 1) {
             ListSelectMode = ListSelectMode.Action;
         }
-        else if(ContextCommands.Any()) {
+        else if(ContextCommands.Count != 0) {
             ListSelectMode = ListSelectMode.Single;
         }
         else {

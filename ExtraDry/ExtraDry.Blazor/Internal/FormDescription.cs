@@ -1,7 +1,4 @@
-﻿#nullable enable
-
-using ExtraDry.Core;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.ObjectModel;
 
 namespace ExtraDry.Blazor.Internal;
@@ -15,15 +12,26 @@ internal class FormDescription {
     public FormDescription(ViewModelDescription description, object model)
     {
         ViewModelDescription = description;
+        LoadOriginalPositions(description.FormProperties);
         ExtendProperties(description.FormProperties, "", FormGroupType.Properties, model);
         BuildFieldsets();
     }
 
+    private void LoadOriginalPositions(Collection<PropertyDescription> formProperties)
+    {
+        originalPositions.Clear();
+        for(int i = 0; i < formProperties.Count; i++) {
+            originalPositions.Add(formProperties[i].FieldCaption, i);
+        }
+    }
+
     public ViewModelDescription ViewModelDescription { get; init; }
 
-    public List<FormFieldset> Fieldsets { get; } = new();
+    public List<FormFieldset> Fieldsets { get; } = [];
 
-    private List<ExtendedProperty> ExtendedProperties { get; set; } = new();
+    private List<ExtendedProperty> ExtendedProperties { get; set; } = [];
+
+    private readonly Dictionary<string, int> originalPositions = [];
 
     private void BuildFieldsets()
     {
@@ -32,7 +40,7 @@ internal class FormDescription {
         foreach(var property in ExtendedProperties) {
             var fieldset = Fieldsets.LastOrDefault(e => string.Equals(e.Legend, property.FieldsetTitle, StringComparison.OrdinalIgnoreCase));
             if(fieldset == null) {
-                fieldset = new FormFieldset(property.FieldsetTitle, WebId.ToWebId(property.FieldsetTitle));
+                fieldset = new FormFieldset(property.FieldsetTitle, Slug.ToSlug(property.FieldsetTitle));
                 Fieldsets.Add(fieldset);
             }
             var group = fieldset.Groups.LastOrDefault(e => e.Type == property.GroupType && e.Target == property.Target);
@@ -59,10 +67,10 @@ internal class FormDescription {
         }
     }
 
-    private void ExtendProperties(Collection<PropertyDescription> properties, string fieldsetName, FormGroupType formGroup, object model, object? parentModel = null)
+    private void ExtendProperties(Collection<PropertyDescription> properties, string fieldsetName, FormGroupType formGroup, object? model, object? parentModel = null)
     {
-        foreach(var property in properties) {
-            var groupName = property.Display?.GroupName ?? "default";
+        foreach(var property in properties.OrderBy(p => FieldOrder(p)) ){            
+            var groupName = property.Display?.GroupName ?? "Details";
             if(groupName != string.Empty) {
                 fieldsetName = groupName;
             }
@@ -94,7 +102,7 @@ internal class FormDescription {
                     }
                 }
             }
-            else {
+            else if(model != null) {
                 ExtendedProperties.Add(new ExtendedProperty(property, model) { 
                     FieldsetTitle = fieldsetName,
                     GroupType = formGroup,
@@ -105,18 +113,23 @@ internal class FormDescription {
         }
     }
 
+    // Use this value when an order is not specified. This value allows for explicitly-ordered fields to be displayed before
+    const int OrderNotSpecifiedOffset = 10000;
 
-    private class ExtendedProperty {
-        public ExtendedProperty(PropertyDescription property, object target) {
-            Property = property;
-            Target = target;
-        }
+    private int FieldOrder(PropertyDescription p)
+    {
+        return p.Order ?? OrderNotSpecifiedOffset + originalPositions.GetValueOrDefault(p.FieldCaption, 0);
+    }
 
+    private class ExtendedProperty(
+        PropertyDescription property, 
+        object target)
+    {
         public string FieldsetTitle { get; set; } = string.Empty;
         public FormGroupType GroupType { get; set; }
         public PropertySize Length { get; set; }
-        public PropertyDescription? Property { get; set; }
-        public object Target { get; set; }
+        public PropertyDescription? Property { get; set; } = property;
+        public object Target { get; set; } = target;
         public object? ParentTarget { get; set; }
         public bool CommandRow { get; set; }
     }

@@ -1,0 +1,10 @@
+﻿@namespace ExtraDry.Blazor
+
+<svg xmlns="http://www.w3.org/2000/svg" id="svg-database" style="display: none;">
+    @foreach(var icon in SvgIcons) {
+        @((MarkupString)icon.SvgDatabaseBody)
+    }
+</svg>
+<CascadingValue Value="@ThemeInfo">
+    @ChildContent
+</CascadingValue>

@@ -1,0 +1,123 @@
+// Global styles that are applied across the entire site.
+@import "_constants.scss";
+
+@font-face {
+    font-family: 'OpenSans';
+    font-style: normal;
+    font-weight: 400;
+    src: local("OpenSans"), local("OpenSans-Regular"), url(/fonts/open-sans/OpenSans-Regular.ttf);
+}
+
+@font-face {
+    font-family: 'OpenSans';
+    font-style: normal;
+    font-weight: 500;
+    src: local("OpenSans Medium"), local("OpenSans-Medium"), url(/fonts/open-sans/OpenSans-Medium.ttf);
+}
+
+@font-face {
+    font-family: 'OpenSans';
+    font-style: normal;
+    font-weight: 600;
+    src: local("OpenSans SemiBold"), local("OpenSans-SemiBold"), url(/fonts/open-sans/OpenSans-SemiBold.ttf);
+}
+
+@font-face {
+    font-family: 'OpenSans';
+    font-style: normal;
+    font-weight: 700;
+    src: local("OpenSans Bold"), local("OpenSans-Bold"), url(/fonts/open-sans/OpenSans-Bold.ttf);
+}
+
+html, body {
+    font-family: 'OpenSans', Helvetica, Arial, sans-serif;
+}
+
+//
+// Some pages need scroll and other don't, always show scrollbar so pages don't jitter back and forth.
+// Ensure it's at the app level and not the body so dialog boxes can put a curtain over them.
+//
+body {
+    overflow-y: scroll;
+
+    div#app {
+        overflow-y: scroll;
+    }
+}
+
+//
+// Headers not quite so large.
+//
+h3 {
+    font-size: 1.6rem;
+}
+h4 {
+    font-size: 1.4rem;
+}
+h5 {
+    font-size: 1.2rem;
+}
+h6 {
+    font-size: 1rem;
+}
+
+//
+// Gravatars are by default 40x40 with full circle rounding when in headers.
+//
+header div.gravatar {
+    display: inline-block;
+
+    img.gravatar {
+        width: $logo-size;
+        height: $logo-size;
+        border-radius: $logo-size/2;
+    }
+}
+
+//
+// Glyphs should have consistent size and alignment
+//
+i.glyph {
+    font-size: $glyph-size;
+    line-height: $glyph-size;
+}
+
+//
+// Fill screen with primary body, such as list view, which is the last section.
+//
+main {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+    section {
+        flex: 0 0 auto;
+
+        &:last-child {
+            flex: 1 0 auto;
+        }
+    }
+}
+
+//
+// Box in code and give it a slight background.
+//
+pre {
+    // Prism will try to override, but don't want to create full theme.
+    background-color: $var-primary-light !important;
+    padding: $margin !important;
+    border: solid 1px $var-primary-dark;
+    margin-bottom: $margin !important;
+}
+code {
+    color: $var-secondary;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+//
+// When section used under article, e.g. for content, space out the margins.
+//
+article > section {
+    padding: $margin 2*$margin;
+}

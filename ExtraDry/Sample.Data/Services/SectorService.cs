@@ -1,63 +1,59 @@
-﻿#nullable enable
+﻿namespace Sample.Data.Services;
 
-using Sample.Shared;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Threading.Tasks;
-using ExtraDry.Core;
-using ExtraDry.Server;
+public class SectorService(
+    SampleContext sampleContext, 
+    RuleEngine ruleEngine) 
+    : IEntityResolver<Sector> 
+{
+    public async Task<FilteredCollection<Sector>> ListAsync(SortQuery query)
+    {
+        return await sampleContext.Sectors
+            .QueryWith(query, e => e.State == SectorState.Active)
+            .ToFilteredCollectionAsync();
+    }
 
-namespace Sample.Data.Services {
+    public async Task<Sector> CreateAsync(Sector exemplar)
+    {
+        var sector = await ruleEngine.CreateAsync(exemplar);
+        sampleContext.Sectors.Add(sector);
+        await sampleContext.SaveChangesAsync();
+        return sector;
+    }
 
-    public class SectorService : IEntityResolver<Sector> {
+    public async Task<Sector?> ResolveAsync(Sector exemplar)
+    {
+        return await TryRetrieveAsync(exemplar.Uuid);
+    }
 
-        public SectorService(SampleContext sampleContext, RuleEngine ruleEngine)
-        {
-            database = sampleContext;
-            rules = ruleEngine;
-        }
+    public async Task<Sector?> TryRetrieveAsync(Guid uuid)
+    {
+        return await sampleContext.Sectors.FirstOrDefaultAsync(e => e.Uuid == uuid);
+    }
 
-        public async Task<FilteredCollection<Sector>> ListAsync(FilterQuery query)
-        {
-            return await database.Sectors
-                .QueryWith(query, e => e.State == SectorState.Active)
-                .ToFilteredCollectionAsync();
-        }
+    public async Task<Sector> RetrieveAsync(Guid uuid)
+    {
+        return await TryRetrieveAsync(uuid) 
+            ?? throw new ArgumentOutOfRangeException(nameof(uuid), "No sector exists with given uuid.");
+    }
 
-        public async Task CreateAsync(Sector item)
-        {
-            database.Sectors.Add(item);
-            await database.SaveChangesAsync();
-        }
+    public async Task<Sector> UpdateAsync(Sector exemplar)
+    {
+        var existing = await RetrieveAsync(exemplar.Uuid);
+        await ruleEngine.UpdateAsync(exemplar, existing);
+        await sampleContext.SaveChangesAsync();
+        return existing;
+    }
 
-        public async Task<Sector> ResolveAsync(Sector exemplar)
-        {
-            return await RetrieveAsync(exemplar.Uuid);
-        }
-
-        public async Task<Sector> RetrieveAsync(Guid uuid)
-        {
-            return await database.Sectors.FirstOrDefaultAsync(e => e.Uuid == uuid) ??
-                throw new ArgumentOutOfRangeException(nameof(uuid), "No sector exists with given uuid.");
-        }
-
-        public async Task UpdateAsync(Sector item)
-        {
-            var existing = await RetrieveAsync(item.Uuid);
-            await rules.UpdateAsync(item, existing);
-            await database.SaveChangesAsync();
-        }
-
-        public async Task DeleteAsync(Guid uuid)
-        {
-            var existing = await RetrieveAsync(uuid);
-            rules.Delete(existing, () => database.Sectors.Remove(existing));
-            await database.SaveChangesAsync();
-        }
+    public async Task DeleteAsync(Guid uuid)
+    {
+        var existing = await RetrieveAsync(uuid);
+        await ruleEngine.DeleteAsync(existing, () => sampleContext.Sectors.Remove(existing), async () => await sampleContext.SaveChangesAsync());
+    }
     
-        private readonly SampleContext database;
-
-        private readonly RuleEngine rules;
-
+    public async Task<Statistics<Sector>> StatsAsync(FilterQuery query)
+    {
+        return await sampleContext.Sectors
+            .QueryWith(query)
+            .ToStatisticsAsync();
     }
 }

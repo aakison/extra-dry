@@ -1,25 +1,76 @@
-﻿using System;
+﻿using ExtraDry.Core.Models;
+using System.Net;
 
-namespace ExtraDry.Core {
+namespace ExtraDry.Core;
 
-    [Serializable]
-    public sealed class DryException : Exception {
-        
-        public DryException() { }
-        
-        public DryException(string message) : base(message) { }
-        
-        public DryException(string message, Exception inner) : base(message, inner) { }
+/// <summary>
+/// A generic exception for applications to use that enables passing additional problem details
+/// from the server through the API to the client using RFC7807.
+/// </summary>
+[Serializable]
+public sealed class DryException : ApplicationException
+{
 
-        public DryException(string message, string userMessage) : base(message)
-        {
-            UserMessage = userMessage;
+    /// <summary>
+    /// Construct an empty exception, prefer use of a constructor with more information.
+    /// </summary>
+    public DryException() { }
+
+    /// <summary>
+    /// Create an exception with the indicated problem details
+    /// </summary>
+    public DryException(ProblemDetails? details) : base(details?.Title)
+    {
+        if(details != null) {
+            ProblemDetails = details;
         }
-        
-        /// <summary>
-        /// If available, an exception message that is suitable to show to users.
-        /// E.g. certain validation exceptions can be shown, but null reference cannot.
-        /// </summary>
-        public string? UserMessage { get; set; }
     }
+
+    /// <summary>
+    /// Create an exception with information that will populate the inner ProblemDetails.
+    /// </summary>
+    /// <param name="status">The HTTP status code for this occurrence of the problem.</param>
+    /// <param name="message">A short, human-readable summary of the problem type.</param>
+    /// <param name="detail">A human-readable explanation specific to this occurrence of the problem.</param>
+    public DryException(HttpStatusCode status, string message, string detail) : base(message)
+    {
+        ProblemDetails.Status = (int)status;
+        ProblemDetails.Title = message;
+        ProblemDetails.Detail = detail;
+    }
+
+    /// <summary>
+    /// Create a simple exception with a message, prefer the constructor with (status, message,
+    /// detail) over this one.
+    /// </summary>
+    public DryException(string message) : base(message)
+    {
+        ProblemDetails.Title = message;
+    }
+
+    /// <summary>
+    /// Create a simple exception with a message and inner exception, prefer the constructor with
+    /// (status, message, detail) over this one.
+    /// </summary>
+    public DryException(string message, Exception inner) : base(message, inner)
+    {
+        ProblemDetails.Title = message;
+    }
+
+    /// <summary>
+    /// Create a simple exception with a message and detail, prefer the constructor with (status,
+    /// message, detail) over this one.
+    /// </summary>
+    public DryException(string message, string detail) : base(message)
+    {
+        ProblemDetails.Title = message;
+        ProblemDetails.Detail = detail;
+    }
+
+    /// <summary>
+    /// The problem details for this exception, can be used to communicate from server,
+    /// through API, through SAL, to users.
+    /// </summary>
+    public ProblemDetails ProblemDetails { get; private set; } = new();
+
 }

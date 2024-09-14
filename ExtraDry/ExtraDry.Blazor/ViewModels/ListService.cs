@@ -1,127 +1,235 @@
-﻿#nullable enable
-
-using ExtraDry.Core;
+﻿using ExtraDry.Blazor.Extensions;
 using Microsoft.AspNetCore.Components.Web.Virtualization;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
-using System.Linq;
-using System.Net.Http;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ExtraDry.Blazor;
 
-public class ListService<TCollection, TItem> : IListService<TItem> {
+public class ListService<TItem> : IListService<TItem> {
 
-    public ListService(HttpClient client, string entitiesEndpointTemplate, JsonSerializerOptions? jsonSerializerOptions = null)
+    public ListService(HttpClient client, string entitiesEndpointTemplate, ILogger<ListService<TItem>> iLogger, JsonSerializerOptions? jsonSerializerOptions = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ListService(HttpClient client, ListServiceOptions options, ILogger<ListService<TItem>> iLogger)
     {
         http = client;
-        UriTemplate = entitiesEndpointTemplate;
+        logger = iLogger;
+        Options = options;
         // Make default json to ignore case, most non-.NET "RESTful" services use camelCase...
-        JsonSerializerOptions = jsonSerializerOptions ?? new JsonSerializerOptions {
+        JsonSerializerOptions = options.JsonSerializerOptions ?? new JsonSerializerOptions {
             PropertyNameCaseInsensitive = true,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         };
-        if(typeof(TCollection).IsAssignableTo(typeof(ICollection<TItem>))) {
-            Unpacker = e => e as ICollection<TItem> ?? new Collection<TItem>();
-            Counter = e => Unpacker(e)?.Count ?? 0;
+        ListType = typeof(Collection<TItem>);
+        HierarchyType = typeof(HierarchyCollection<TItem>);
+        if(options.ListEndpoint != string.Empty) {
+            if(options.ListMode == ListServiceMode.FilterSortAndPage) {
+                ListType = typeof(PagedCollection<TItem>);
+                ListUnpacker = e => (e as PagedCollection<TItem>)?.Items ?? [];
+                ListCounter = e => (e as PagedCollection<TItem>)?.Total ?? 0;
+            }
+            else if(options.ListMode == ListServiceMode.FilterAndSort) {
+                ListType = typeof(SortedCollection<TItem>);
+                ListUnpacker = e => (e as SortedCollection<TItem>)?.Items ?? [];
+                ListCounter = e => (e as SortedCollection<TItem>)?.Count ?? 0;
+            }
+            else if(options.ListMode == ListServiceMode.Filter) {
+                ListType = typeof(FilteredCollection<TItem>);
+                ListUnpacker = e => (e as FilteredCollection<TItem>)?.Items ?? [];
+                ListCounter = e => (e as FilteredCollection<TItem>)?.Count ?? 0;
+            }
+            else {
+                ListUnpacker = e => e as ICollection<TItem> ?? [];
+                ListCounter = e => ListUnpacker(e)?.Count ?? 0;
+            }
         }
-        else if(typeof(TCollection).IsAssignableTo(typeof(FilteredCollection<TItem>))) {
-            Unpacker = e => (e as FilteredCollection<TItem>)?.Items ?? new Collection<TItem>();
-            Counter = e => (e as FilteredCollection<TItem>)?.Count ?? 0;
-        }
-        else if(typeof(TCollection).IsAssignableTo(typeof(PagedCollection<TItem>))) {
-            Unpacker = e => (e as PagedCollection<TItem>)?.Items ?? new Collection<TItem>();
-            Counter = e => (e as PagedCollection<TItem>)?.Total ?? 0;
-        }
-        else {
-            Unpacker = e => new Collection<TItem>();
-            Counter = e => 0;
+        if(options.HierarchyEndpoint != string.Empty) {
+            if(options.HierarchyMode == HierarchyServiceMode.FilterAndPage) {
+                HierarchyType = typeof(PagedHierarchyCollection<TItem>);
+                HierarchyUnpacker = e => (e as PagedHierarchyCollection<TItem>)?.Items ?? [];
+                HierarchyCounter = e => (e as PagedHierarchyCollection<TItem>)?.Total ?? 0;
+                HierarchyMaxLevel = e => (e as PagedHierarchyCollection<TItem>)?.MaxLevels ?? 0;
+                HierarchyMinLevel = e => (e as PagedHierarchyCollection<TItem>)?.MinLevels ?? 0;
+            }
+            else if(options.HierarchyMode == HierarchyServiceMode.Filter) {
+                HierarchyUnpacker = e => (e as HierarchyCollection<TItem>)?.Items ?? [];
+                HierarchyCounter = e => (e as HierarchyCollection<TItem>)?.Count ?? 0;
+                HierarchyMaxLevel = e => (e as HierarchyCollection<TItem>)?.MaxLevels ?? 0;
+                HierarchyMinLevel = e => (e as PagedHierarchyCollection<TItem>)?.MinLevels ?? 0;
+            }
         }
     }
 
-    public string UriTemplate { get; set; }
+    public int PageSize => Options.PageSize;
 
-    public int FetchSize { get; set; } = 100;
+    private ListServiceOptions Options { get; set; }
 
-    public string FilterQueryParam { get; set; } = "filter";
+    private Type ListType { get; set; }
 
-    public string SortQueryParam { get; set; } = "sort";
+    private Func<object, ICollection<TItem>>? ListUnpacker { get; set; }
 
-    public string SkipQueryParam { get; set; } = "skip";
+    private Func<object, int>? ListCounter { get; set; }
 
-    public string TakeQueryParam { get; set; } = "take";
+    private Type HierarchyType { get; set; }
 
+    private Func<object, ICollection<TItem>>? HierarchyUnpacker { get; set; }
 
-    private Func<TCollection, ICollection<TItem>> Unpacker { get; set; }
+    private Func<object, int>? HierarchyCounter { get; set; }
 
-    private Func<TCollection, int> Counter { get; set; }
+    private Func<object, int>? HierarchyMaxLevel { get; set; }
 
-    public object[] UriArguments { get; set; } = Array.Empty<object>();
+    private Func<object, int>? HierarchyMinLevel { get; set; }
+
+    public int MaxLevel { get; private set; }
+
+    public int MinLevel { get; private set; }
 
     public JsonSerializerOptions JsonSerializerOptions { get; set; }
 
-    public string ListEndpoint(string? filter, string? sort, bool? ascending, int? skip, int? take)
+    internal string ListEndpoint(Query query)
     {
         try {
-            var path = string.Format(CultureInfo.InvariantCulture, UriTemplate, UriArguments);
-            var keys = new Dictionary<string, string>();
-            if(!string.IsNullOrWhiteSpace(filter)) {
-                keys.Add(FilterQueryParam, filter);
-            }
-            if(!string.IsNullOrWhiteSpace(sort)) {
-                keys.Add(SortQueryParam, sort);
-                if(ascending.HasValue) {
-                    keys.Add("ascending", ascending.Value.ToString());
-                }
-            }
-            if(skip.HasValue && skip.Value > 0) {
-                keys.Add(SkipQueryParam, skip.Value.ToString());
-            }
-            if(take.HasValue && take.Value > 0 && take != int.MaxValue) {
-                keys.Add(TakeQueryParam, take.Value.ToString());
-            }
-            if(keys.Any()) {
-                var queries = keys.Select(e => $"{e.Key}={Uri.EscapeDataString(e.Value)}");
-                var query = string.Join("&", queries);
-                path = $"{path}?{query}";
-            }
-            return path;
+            var keys = new Dictionary<string, List<string>>();
+            AddIf(keys, Options.FilterParameterName, query.Filter);
+            AddIf(keys, Options.SortParameterName, query.Sort);
+            AddIf(keys, Options.SkipParameterName, query.Skip);
+            AddIf(keys, Options.TakeParameterName, Options.PageSize);
+            return ConstructPathAndQuery(Options.ListEndpoint, keys);
         }
         catch(FormatException ex) {
-            throw new DryException(ex.Message, $"Formatting problem while construction List/Create Endpoint: {ex.Message}");
+            throw new DryException("Formatting problem while construction List Endpoint", ex);
         }
     }
 
-    public async ValueTask<ItemsProviderResult<TItem>> GetItemsAsync(CancellationToken token)
+    private static string ConstructPathAndQuery(string path, Dictionary<string, List<string>> keys)
     {
-        return await GetItemsAsync(null, null, null, 0, int.MaxValue, token);
-    }
-
-    [Obsolete("Use the version that contains a filter.")]
-    public async ValueTask<ItemsProviderResult<TItem>> GetItemsAsync(string? sort, bool? ascending, int? skip, int? take, CancellationToken cancellationToken)
-    {
-        return await GetItemsAsync(null, sort, ascending, skip, take, cancellationToken);
-    }
-
-    public async ValueTask<ItemsProviderResult<TItem>> GetItemsAsync(string? filter, string? sort, bool? ascending, int? skip, int? take, CancellationToken cancellationToken)
-    {
-        var endpoint = ListEndpoint(filter, sort, ascending, skip, take);
-        var body = await http.GetStringAsync(endpoint, cancellationToken);
-        Console.WriteLine($"Got {body}");
-        Console.WriteLine($"Deserialize into {typeof(TCollection).Name}");
-        var packedResult = JsonSerializer.Deserialize<TCollection>(body, JsonSerializerOptions);
-        if(packedResult == null) {
-            throw new DryException($"Call to endpoint returned nothing or couldn't be converted to a result.");
+        if(keys.Count != 0) {
+            var queries = keys.SelectMany(e => e.Value.Select(v => $"{e.Key}={Uri.EscapeDataString(v)}"));
+            var query = string.Join("&", queries);
+            path = $"{path}?{query}";
         }
-        var items = Unpacker(packedResult);
-        var total = Counter(packedResult);
-        return new ItemsProviderResult<TItem>(items, total);
+        return path;
+    }
+
+    private string HierarchyEndpoint(Query query)
+    {
+        try {
+            var keys = new Dictionary<string, List<string>>();
+            if(Options.HierarchyMethod == HttpMethod.Get) {
+                AddIf(keys, Options.LevelParameterName, query.Level);
+                AddIf(keys, Options.FilterParameterName, query.Filter);
+                AddIf(keys, Options.SkipParameterName, query.Skip); 
+                AddIf(keys, Options.TakeParameterName, Options.PageSize);
+                AddIf(keys, Options.ExpandParameterName, query.Expand);
+                AddIf(keys, Options.CollapseParameterName, query.Collapse);
+            }
+            return ConstructPathAndQuery(Options.HierarchyEndpoint, keys);
+        }
+        catch(FormatException ex) {
+            throw new DryException("Formatting problem while construction Hierarchy Endpoint", ex);
+        }
+    }
+
+    private string HierarchyRequestBody(Query query)
+    {
+        var body = new PageHierarchyQuery {
+            Level = query.Level ?? 3,
+            Filter = query.Filter,
+            Skip = query.Skip ?? 0,
+            Take = Options.PageSize,
+        };
+        return JsonSerializer.Serialize(body, JsonSerializerOptions);
+    }
+
+    private static void AddIf(Dictionary<string, List<string>> keys, string key, string[]? values)
+    {
+        if((values?.Length ?? 0) > 0) {
+            keys.Add(key, values?.ToList() ?? []);
+        }
+    }
+
+    private static void AddIf(Dictionary<string, List<string>> keys, string key, string? value)
+    {
+        if(!string.IsNullOrWhiteSpace(value)) {
+            keys.Add(key, [value]);
+        }
+    }
+
+    private static void AddIf(Dictionary<string, List<string>> keys, string key, int? value)
+    {
+        if(value.HasValue && value.Value != 0) {
+            keys.Add(key, [$"{value.Value}"]);
+        }
+    }
+
+    public async ValueTask<ItemsProviderResult<TItem>> GetItemsAsync(CancellationToken cancellationToken)
+    {
+        var query = new Query { Source = ListSource.List };
+        return await GetItemsAsync(query, cancellationToken);
+    }
+
+    public async ValueTask<ItemsProviderResult<TItem>> GetItemsAsync(string filter, CancellationToken token)
+    {
+        var query = new Query { Source = ListSource.List, Filter = filter };
+        return await GetItemsAsync(query, token);
+    }
+
+    public async ValueTask<ItemsProviderResult<TItem>> GetItemsAsync(Query query, CancellationToken cancellationToken = default)
+    {
+        var result = await GetItemsInternalAsync(query, cancellationToken);
+        return new ItemsProviderResult<TItem>(result.Item2, result.Item3);
+    }
+
+    public async ValueTask<ListItemsProviderResult<TItem>> GetListItemsAsync(Query query, CancellationToken cancellationToken = default)
+    {
+        var result = await GetItemsInternalAsync(query, cancellationToken);
+        var collection = (BaseCollection<TItem>)result.Item1;
+        return new ListItemsProviderResult<TItem>(collection);
+    }
+
+    public async ValueTask<(object, ICollection<TItem>, int)> GetItemsInternalAsync(Query query, CancellationToken cancellationToken)
+    {
+        var source = (Options.ListEndpoint, Options.HierarchyEndpoint) switch {
+            ("", "") => throw new DryException(HttpStatusCode.NotFound, "No endpoints defined", "When configuring a ListService, either or both of ListEndpoint and/or HierarchyEndpoint must be provided."),
+            ("", _) => ListSource.Hierarchy,
+            (_, "") => ListSource.List,
+            (_, _) => query.Source,
+        };
+        var endpoint = source == ListSource.Hierarchy ? HierarchyEndpoint(query) : ListEndpoint(query);
+        if(source == ListSource.Hierarchy) {
+            logger.LogEndpointCall(typeof(TItem), endpoint);
+            var response = Options.HierarchyMethod == HttpMethod.Get
+                ? await http.GetAsync(endpoint, cancellationToken)
+                : await http.PostAsync(endpoint, new StringContent(HierarchyRequestBody(query)), cancellationToken);
+            await response.AssertSuccess(logger);
+            var body = await response.Content.ReadAsStringAsync(cancellationToken);
+            logger.LogEndpointResult(typeof(TItem), endpoint, body);
+            var packedResult = JsonSerializer.Deserialize(body, HierarchyType, JsonSerializerOptions)
+                ?? throw new DryException($"Call to endpoint returned nothing or couldn't be converted to a result.");
+            var items = HierarchyUnpacker!(packedResult);
+            var total = HierarchyCounter!(packedResult);
+            MaxLevel = HierarchyMaxLevel!(packedResult);
+            MinLevel = HierarchyMinLevel!(packedResult);
+            return (packedResult, items, total);
+        }
+        else {
+            logger.LogEndpointCall(typeof(TItem), endpoint);
+            var response = await http.GetAsync(endpoint, cancellationToken);
+            await response.AssertSuccess(logger);
+            var body = await response.Content.ReadAsStringAsync(cancellationToken);
+            logger.LogEndpointResult(typeof(TItem), endpoint, body);
+            var packedResult = JsonSerializer.Deserialize(body, ListType, JsonSerializerOptions)
+                ?? throw new DryException($"Call to endpoint returned nothing or couldn't be converted to a result.");
+            var items = ListUnpacker!(packedResult);
+            var total = ListCounter!(packedResult);
+            return (packedResult, items, total);
+        }
     }
 
     private readonly HttpClient http;
+
+    private readonly ILogger<ListService<TItem>> logger;
 
 }

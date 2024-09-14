@@ -1,0 +1,33 @@
+﻿::deep > button {
+  display: flex;
+  gap: 5px;
+  border: solid 1px gray;
+  padding: 0 5px;
+  margin: 0;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  background-color: white;
+}
+
+::deep.range-buttons {
+  display: flex;
+  flex-direction: row;
+}
+::deep.range-buttons button {
+  justify-content: center;
+}
+
+::deep ul {
+  list-style-type: none;
+  padding-inline-start: 0px;
+}
+::deep ul a {
+  display: flex;
+  justify-content: space-between;
+}
+
+div ::deep img.affordance {
+    width: var(--icon-tiny);
+    height: var(--icon-tiny);
+}

@@ -1,19 +1,16 @@
-﻿#nullable enable
-
-using Microsoft.AspNetCore.Components.Web.Virtualization;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Components.Web.Virtualization;
 
 namespace ExtraDry.Blazor;
 
 public interface IListService<T> : IOptionProvider<T> {
 
-    string UriTemplate { get; set; }
+    int PageSize { get; }
 
-    object[] UriArguments { get; set; }
+    int MaxLevel { get; }
 
-    int FetchSize { get; set; }
+    int MinLevel { get; }
 
-    ValueTask<ItemsProviderResult<T>> GetItemsAsync(string? filter, string? sort, bool? ascending, int? skip, int? take, CancellationToken cancellationToken = default);
+    ValueTask<ItemsProviderResult<T>> GetItemsAsync(Query query, CancellationToken cancellationToken = default);
 
+    ValueTask<ListItemsProviderResult<T>> GetListItemsAsync(Query query, CancellationToken cancellationToken = default);
 }

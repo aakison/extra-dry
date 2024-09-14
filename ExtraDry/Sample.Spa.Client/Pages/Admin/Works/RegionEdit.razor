@@ -1,0 +1,21 @@
+﻿@inject CrudService<Region> RegionService;
+@inject NavigationManager Navigation;
+
+@*<DryPageQueryView>
+    <TableMenu TItem="Region" />
+    <DryTable TItem="Region" ViewModel="@this" ItemsService="@RegionService" />
+</DryPageQueryView>
+*@
+
+<h3>To Be Implemented</h3>
+
+@code {
+
+    [Command(CommandContext.Alternate, Icon = "edit")]
+    public void Edit(Region region)
+    {
+        Console.WriteLine($"Huzzah {region.Slug}");
+        StateHasChanged();
+    }
+
+}

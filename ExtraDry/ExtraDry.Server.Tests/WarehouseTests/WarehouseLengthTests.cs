@@ -1,6 +1,7 @@
 ﻿using ExtraDry.Core.DataWarehouse;
 using ExtraDry.Server.DataWarehouse;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ExtraDry.Server.Tests.WarehouseTests;
 
@@ -61,12 +62,14 @@ public class WarehouseLengthTests {
     public class AttributeContainer {
 
         [Key]
+        [JsonIgnore]
         public int Id { get; set; }
 
         // Default is 36
         public Guid Uuid { get; set; }
 
         [MaxLength(40)] // extra space OK in case other stuff in the DW is merged?
+        [SuppressMessage("Usage", "DRY1310:Prefer the use of StringLength instead of MaxLength .", Justification = "Used for testing compatibility.")]
         public Guid LargerMaxGuid { get; set; }
 
         [StringLength(30)] // less space is OK in case want to get most benefit of GUID, but maybe not all...
@@ -77,6 +80,7 @@ public class WarehouseLengthTests {
         public string DefaultName { get; set; } = string.Empty;
 
         [MaxLength(103)]
+        [SuppressMessage("Usage", "DRY1310:Prefer the use of StringLength instead of MaxLength .", Justification = "Used for testing compatibility.")]
         public string MaxLengthName { get; set; } = string.Empty;
 
         [StringLength(104)]
@@ -86,7 +90,7 @@ public class WarehouseLengthTests {
         // Default is 2083 chars
         public Uri Uri { get; set; } = null!;
 
-        [MaxLength(101)]
+        [StringLength(101)]
         public Uri Thumbnail1 { get; set; } = null!;
 
         [StringLength(102)]
@@ -102,9 +106,10 @@ public class WarehouseLengthTests {
     public class BadLengthContext : DbContext {
 
         [DimensionTable]
-        public class BadLengthClass {
+        public class BadClass {
 
             [Key]
+            [JsonIgnore]
             public int Id { get; set; }
 
             [StringLength(-1)]
@@ -112,7 +117,7 @@ public class WarehouseLengthTests {
 
         }
 
-        public DbSet<BadLengthClass> BadLengthClasses { get; set; } = null!;
+        public DbSet<BadClass> BadLengthClasses { get; set; } = null!;
     }
 
 }

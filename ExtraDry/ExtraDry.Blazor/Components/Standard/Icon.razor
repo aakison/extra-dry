@@ -1,0 +1,13 @@
+﻿@namespace ExtraDry.Blazor
+
+@if(!string.IsNullOrWhiteSpace(Key)) {
+    if(string.IsNullOrWhiteSpace(ImagePath)) {
+        <i class="@CssClasses" @attributes="@UnmatchedAttributes" />
+    }
+    else if(RenderSvg) {
+        @Svg
+    }
+    else {
+        <img class="@CssClasses" src="@ImagePath" alt="@IconAlternateText" @attributes="@UnmatchedAttributes" />
+    }
+}

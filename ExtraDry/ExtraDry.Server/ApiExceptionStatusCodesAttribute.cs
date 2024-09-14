@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Filters;
+using System.ComponentModel;
 using System.Net;
 using System.Security;
 
 namespace ExtraDry.Server;
 
 [AttributeUsage(AttributeTargets.Class)]
-public class ApiExceptionStatusCodesAttribute : ExceptionFilterAttribute {
+public class ApiExceptionStatusCodesAttribute : ExceptionFilterAttribute 
+{
 
     public override Task OnExceptionAsync(ExceptionContext context)
     {
@@ -15,31 +18,37 @@ public class ApiExceptionStatusCodesAttribute : ExceptionFilterAttribute {
     public override void OnException(ExceptionContext context)
     {
         base.OnException(context);
-        if(context.Exception is ArgumentOutOfRangeException) {
-            var response = context.HttpContext.Response;
-            ExceptionResponse.RewriteResponse(response, HttpStatusCode.NotFound, "Not Found", context.Exception.Message);
-            context.ExceptionHandled = true;
+        if(context.Exception is ArgumentMismatchException ex) {
+            ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.BadRequest, ex.UserMessage);
+        }
+        else if(context.Exception is ArgumentOutOfRangeException || context.Exception is KeyNotFoundException) {
+            ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.NotFound);
         }
         else if(context.Exception is ArgumentException || context.Exception is ArgumentNullException) {
-            var response = context.HttpContext.Response;
-            ExceptionResponse.RewriteResponse(response, HttpStatusCode.BadRequest, "Bad Request", context.Exception.Message);
-            context.ExceptionHandled = true;
+            ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.BadRequest);
+        }
+        else if(context.Exception is ValidationException ve) {
+            ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.BadRequest, "One or more validation errors occurred.", ve.Message);
         }
         else if(context.Exception is NotImplementedException) {
-            var response = context.HttpContext.Response;
-            ExceptionResponse.RewriteResponse(response, HttpStatusCode.NotImplemented, "Not Implemented", context.Exception.Message);
-            context.ExceptionHandled = true;
+            ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.NotImplemented);
         }
         else if(context.Exception is SecurityException) {
-            var response = context.HttpContext.Response;
-            ExceptionResponse.RewriteResponse(response, HttpStatusCode.Forbidden, "Forbidden", context.Exception.Message);
-            context.ExceptionHandled = true;
+            ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.Forbidden);
         }
         else if(context.Exception is DryException dryException) {
-            var response = context.HttpContext.Response;
-            ExceptionResponse.RewriteResponse(response, HttpStatusCode.BadRequest, dryException.UserMessage ?? "Unspecified", dryException.Message);
-            context.ExceptionHandled = true;
+            // TODO: better handling here...
+            int code = dryException.ProblemDetails.Status ?? (int)HttpStatusCode.BadRequest;
+            ProblemDetailsResponse.RewriteResponse(context, (HttpStatusCode)code, 
+                dryException.ProblemDetails.Title, dryException.ProblemDetails.Detail);
         }
+        else if(context.Exception is UnauthorizedAccessException) {
+            ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.Forbidden);
+        }
+        else {
+            ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.InternalServerError, context.Exception.Message, context.Exception.StackTrace);
+        }
+        context.ExceptionHandled = true;
     }
 
 }

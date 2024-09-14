@@ -1,12 +1,11 @@
 [
   {
-    "outputFileName": "wwwroot/bundles/blazor-extra-dry.js",
+    "outputFileName": "wwwroot/js/extra-dry-blazor-module.js",
     "inputFiles": [
-      "Components/DryVideoCapture.razor.es5.js",
-      "wwwroot/unpkg/roosterjs/dist/rooster.js",
-      "Components/DryContent.razor.js",
       "wwwroot/js/attribution.js",
-      "Components/DryNavigation.razor.js"
+      "Components/Standard/TriCheck.razor.js",
+      "Components/Standard/CodeBlock.razor.js",
+      "Components/Standard/ComboBox.razor.js"
     ],
     "minify": {
       "enabled": true,

@@ -1,28 +1,42 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<PropertyGroup>
 		<PackageId>ExtraDry.Blazor</PackageId>
 		<Authors>adrian.akison</Authors>
-		<Company>FMI Works</Company>
 		<Description>Extensions to Blazor and DRY libraries to create Blazor client applications with a lower-code footprint.  Use this library in the Blazor project, it will include the Core library.</Description>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageProjectUrl>https://github.com/fmi-works/extra-dry</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/fmi-works/extra-dry.git</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/akison/extra-dry</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/akison/extra-dry.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>blazor spa microsoft dry don't repeat yourself low-code</PackageTags>
 		<PackageIcon>extradry-logo.png</PackageIcon>
 		<PackageIconUrl />
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <Copyright>Copyright ©️ 2024 Adrian Akison</Copyright>
+  </PropertyGroup>
+
+	<!-- File version is created here and uses Major/Minor version from CI.  Used for cache-busting by ExtraDryJavascriptModule. -->
+	<PropertyGroup>
+		<VersionMajor Condition="'$(VersionMajor)' == ''">0</VersionMajor>
+		<VersionMinor Condition="'$(VersionMinor)' == ''">0</VersionMinor>
+		<VersionPatch>$([System.DateTime]::UtcNow.Subtract($([System.DateTime]::new(2001,1,1))).TotalDays.ToString("0"))</VersionPatch>
+		<VersionRevision>$([System.DateTime]::UtcNow.TimeOfDay.TotalMinutes.ToString("0"))</VersionRevision>
+		<Version>$(VersionMajor).$(VersionMinor).$(VersionPatch).$(VersionRevision)</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<Content Remove="bundleconfig.json" />
-		<Content Remove="compilerconfig.json" />
+		<Content Remove="wwwroot\js\extra-dry-blazor-module.js" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<_ContentIncludedByDefault Remove="wwwroot\bundles\blazor-extra-dry.js" />
+	  <EmbeddedResource Include="wwwroot\js\extra-dry-blazor-module.js" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -31,7 +45,6 @@
 			<PackagePath></PackagePath>
 		</None>
 		<None Include="bundleconfig.json" />
-		<None Include="compilerconfig.json" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -39,50 +52,25 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="BuildWebCompiler2022" Version="1.14.7" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.7" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\ExtraDry.Core\ExtraDry.Core.csproj" />
 	</ItemGroup>
+	
+	<Import Project="..\CommonAnalyzers.targets" />
+	<Import Project="..\VulnerabilityFixes.targets" />
 
 	<ItemGroup>
-		<Content Update="wwwroot\background.png">
-			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-		</Content>
-		<Content Update="wwwroot\bundles\blazor-extra-dry.js">
-			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
-		</Content>
-		<Content Update="wwwroot\bundles\blazor-extra-dry.min.js">
-			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
-		</Content>
-		<Content Update="wwwroot\img\layout-doubleweightedleft.png">
-			<CopyToOutputDirectory></CopyToOutputDirectory>
-		</Content>
-		<Content Update="wwwroot\img\layout-doubleweightedright.png">
-			<CopyToOutputDirectory></CopyToOutputDirectory>
-		</Content>
-		<Content Update="wwwroot\img\layout-double.png">
-			<CopyToOutputDirectory></CopyToOutputDirectory>
-		</Content>
-		<Content Update="wwwroot\img\layout-single.png">
-			<CopyToOutputDirectory></CopyToOutputDirectory>
-		</Content>
-		<Content Update="wwwroot\img\layout-triple.png">
-			<CopyToOutputDirectory></CopyToOutputDirectory>
-		</Content>
-		<Content Update="wwwroot\styles.css">
-			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-		</Content>
-		<Content Update="wwwroot\unpkg\roosterjs\dist\rooster.js">
-			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
-		</Content>
 		<Content Update="_Imports.razor">
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Update="Azure.Identity" Version="1.12.0" />
 	</ItemGroup>
 
 </Project>

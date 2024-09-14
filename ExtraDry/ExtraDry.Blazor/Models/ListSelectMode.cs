@@ -1,10 +1,12 @@
-﻿#nullable enable
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace ExtraDry.Blazor;
 
 /// <summary>
 /// For a dry table, determines the action on a row selection.
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
+[SuppressMessage("Naming", "CA1720:Identifier contains type name", Justification = "Not a data type, but a indicator of counts.")]
 public enum ListSelectMode {
 
     /// <summary>

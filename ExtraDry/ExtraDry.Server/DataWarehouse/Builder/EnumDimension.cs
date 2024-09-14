@@ -3,7 +3,6 @@
 /// <summary>
 /// Represents the possible expansion of an Enum into a Dimension when Enums are annotated with [DimensionTable].
 /// </summary>
-[DimensionTable]
 public class EnumDimension {
 
     /// <summary>
@@ -15,6 +14,7 @@ public class EnumDimension {
     /// The ID or value of the enum, used as the primary key in the dimension table.
     /// </summary>
     [Key]
+    [JsonIgnore]
     public int Id { get; set; }
 
     /// <summary>

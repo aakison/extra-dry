@@ -1,7 +1,9 @@
-﻿#nullable enable
+﻿namespace ExtraDry.Blazor;
 
-namespace ExtraDry.Blazor;
-
+/// <summary>
+/// A semantic description of the size of a property, used to determine how to layout forms.
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum PropertySize {
 
     /// <summary>

@@ -4,8 +4,10 @@
 /// The semantic context of the command which assists in determining layout.
 /// </summary>
 /// <remarks>
-/// There should only be one `Primary` command, and `Danger` should be used sparingly, so `Alternate` is explicitly the default.
+/// There should only be one `Primary` or `Default` command, and `Danger` should be used 
+/// sparingly, so `Alternate` is explicitly the default.
 /// </remarks>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum CommandContext {
 
     /// <summary>
@@ -17,6 +19,12 @@ public enum CommandContext {
     /// The primary command, should only be one per ViewModel, e.g. 'Save'.
     /// </summary>
     Primary,
+
+    /// <summary>
+    /// The default command which indicates the double-click behavior on tables.  Should only be 
+    /// one per ViewModel.  
+    /// </summary>
+    Default,
 
     /// <summary>
     /// A command that might have adverse consequences, e.g. 'Delete'

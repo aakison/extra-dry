@@ -1,0 +1,9 @@
+﻿@namespace ExtraDry.Blazor.Forms
+@typeparam T
+@inherits DryInputBase<T>
+
+<div class="@CssClasses" @attributes="@UnmatchedAttributes">
+    <FlexiSelect Data="@EnumValues" MultiSelect="@MultiSelect" Placeholder="@Placeholder" Title="@Placeholder"
+        @bind-Value="Value" @bind-Values="Values" ShowThumbnail="false" ShowSubtitle="false" ShowSubmitButton="@MultiSelect"
+        OnSubmit="HandleChange" Icon="@ResolvedIcon" @attributes="@UnmatchedAttributes" DebugCss="true" LoseFocusAction="MiniDialogAction.Disabled" />
+</div>

@@ -13,9 +13,9 @@ public abstract class DimensionTableBuilder : TableBuilder {
 
         var factTable = entity.GetCustomAttribute<FactTableAttribute>();
 
-        var name = DimensionTableAttribute.Name ?? DataConverter.CamelCaseToTitleCase(entity.Name);
+        var name = DimensionTableAttribute?.Name ?? DataConverter.CamelCaseToTitleCase(entity.Name);
         var key = $"{name} ID";
-        if(factTable != null && factTable.Name == null && DimensionTableAttribute.Name == null) {
+        if(factTable != null && factTable.Name == null && DimensionTableAttribute?.Name == null) {
             // Both fact and dimension without explicit names, avoid table name collision.
             name += " Details";
             // Note: key name doesn't change so they align between the fact and dimension.
@@ -42,7 +42,10 @@ public abstract class DimensionTableBuilder : TableBuilder {
 
     public Table Build()
     {
-        var table = new Table(TableEntityType, TableName);
+        var table = new Table(TableEntityType, TableName) {
+            SourceProperty = Source?.PropertyInfo,
+            Generator = Generator,
+        };
         table.Columns.Add(KeyBuilder.Build());
         table.Columns.AddRange(SpokeBuilders.Values.Where(e => e.Included).Select(e => e.Build()));
         table.Columns.AddRange(AttributeBuilders.Values.Where(e => e.Included).Select(e => e.Build()));
@@ -53,7 +56,7 @@ public abstract class DimensionTableBuilder : TableBuilder {
         return table;
     }
 
-    public DimensionTableBuilder HasName(string name)
+    public virtual DimensionTableBuilder HasName(string name)
     {
         SetName(name);
         return this;
@@ -64,6 +67,14 @@ public abstract class DimensionTableBuilder : TableBuilder {
         baseData.Add(data);
     }
 
+    public DimensionTableBuilder HasGenerator(IDataGenerator generator)
+    {
+        Generator = generator;
+        return this;
+    }
+
+    private IDataGenerator? Generator { get; set; }
+
     public AttributeBuilder Attribute(string name)
     {
         return AttributeBuilders[name];
@@ -72,7 +83,7 @@ public abstract class DimensionTableBuilder : TableBuilder {
     public ReadOnlyCollection<Dictionary<ColumnBuilder, object>> Data {
         get => new(baseData);
     }
-    private readonly List<Dictionary<ColumnBuilder, object>> baseData = new();
+    private readonly List<Dictionary<ColumnBuilder, object>> baseData = [];
 
     internal override bool HasColumnNamed(string name) => 
         KeyBuilder?.ColumnName == name || AttributeBuilders.Values.Any(e => e.ColumnName == name);
@@ -97,9 +108,10 @@ public abstract class DimensionTableBuilder : TableBuilder {
             .Where(e => AttributeBuilder.IsAttribute(e) && e != KeyBuilder.PropertyInfo);
     }
 
-    private DimensionTableAttribute DimensionTableAttribute { get; set; }
+    // May be null when subclassed by DateDimensionTable
+    private DimensionTableAttribute? DimensionTableAttribute { get; set; }
 
-    private Dictionary<string, AttributeBuilder> AttributeBuilders { get; } = new();
+    private Dictionary<string, AttributeBuilder> AttributeBuilders { get; } = [];
 
 }
 

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.SqlServer.Types;
 using Sample.Data;
 
 #nullable disable
@@ -17,64 +18,10 @@ namespace Sample.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.1")
+                .HasAnnotation("ProductVersion", "8.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("ExtraDry.Core.BlobInfo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Filename")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MimeType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Scope")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ShaHash")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
-
-                    b.Property<int>("Size")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("UniqueId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Blobs");
-                });
-
-            modelBuilder.Entity("RegionRegion", b =>
-                {
-                    b.Property<int>("AncestorsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("DescendantsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AncestorsId", "DescendantsId");
-
-                    b.HasIndex("DescendantsId");
-
-                    b.ToTable("RegionRegion");
-                });
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("Sample.Shared.Company", b =>
                 {
@@ -82,26 +29,85 @@ namespace Sample.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("AnnualRevenue")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("BankingDetails")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateOnly>("CeoBirthdayHoliday")
+                        .HasColumnType("date");
+
+                    b.Property<string>("ContactEmail")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("ContactPhone")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("nvarchar(24)");
+
+                    b.Property<string>("CustomFields")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValueSql("'{}'")
+                        .HasAnnotation("Relational:JsonPropertyName", "fields");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime?>("DissolutionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<TimeOnly?>("EndOfBusinessHours")
+                        .HasColumnType("time");
+
+                    b.Property<DateTime>("IncorporationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastTrademarkReview")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("NumberOfContractors")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NumberOfEmployees")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Ownership")
+                        .HasColumnType("int");
 
                     b.Property<int?>("PrimarySectorId")
                         .HasColumnType("int");
+
+                    b.Property<decimal?>("SalesMargin")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("nvarchar(24)");
+
+                    b.Property<TimeOnly>("StartOfBusinessHours")
+                        .HasColumnType("time");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
 
                     b.Property<Guid>("Uuid")
                         .HasColumnType("uniqueidentifier");
@@ -119,9 +125,13 @@ namespace Sample.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Layout")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
@@ -143,7 +153,14 @@ namespace Sample.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
+
+                    b.Property<int?>("EmployerId")
+                        .HasColumnType("int");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -155,10 +172,25 @@ namespace Sample.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("TerminationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<Guid>("Uuid")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EmployerId");
 
                     b.ToTable("Employees");
                 });
@@ -169,30 +201,47 @@ namespace Sample.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("nvarchar(32)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<int>("IsDeleted")
+                        .HasColumnType("int");
+
                     b.Property<int>("Level")
                         .HasColumnType("int");
+
+                    b.Property<SqlHierarchyId>("Lineage")
+                        .HasColumnType("hierarchyid");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("nvarchar(32)");
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<Guid>("Uuid")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.HasIndex("Uuid")
+                        .IsUnique();
 
                     b.ToTable("Regions");
                 });
@@ -203,14 +252,20 @@ namespace Sample.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("CompanyId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("Group")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("State")
                         .HasColumnType("int");
@@ -230,19 +285,32 @@ namespace Sample.Data.Migrations
                     b.ToTable("Sectors");
                 });
 
-            modelBuilder.Entity("RegionRegion", b =>
+            modelBuilder.Entity("Sample.Shared.Template", b =>
                 {
-                    b.HasOne("Sample.Shared.Region", null)
-                        .WithMany()
-                        .HasForeignKey("AncestorsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.HasOne("Sample.Shared.Region", null)
-                        .WithMany()
-                        .HasForeignKey("DescendantsId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Schema")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("State")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid>("Uuid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Templates");
                 });
 
             modelBuilder.Entity("Sample.Shared.Company", b =>
@@ -282,7 +350,8 @@ namespace Sample.Data.Migrations
 
                     b.Navigation("PrimarySector");
 
-                    b.Navigation("Version");
+                    b.Navigation("Version")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Sample.Shared.Content", b =>
@@ -322,6 +391,30 @@ namespace Sample.Data.Migrations
 
             modelBuilder.Entity("Sample.Shared.Employee", b =>
                 {
+                    b.HasOne("Sample.Shared.Company", "Employer")
+                        .WithMany()
+                        .HasForeignKey("EmployerId");
+
+                    b.OwnsOne("ExtraDry.Core.UserTimestamp", "Revision", b1 =>
+                        {
+                            b1.Property<int>("EmployeeId")
+                                .HasColumnType("int");
+
+                            b1.Property<DateTime>("Timestamp")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<string>("User")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("EmployeeId");
+
+                            b1.ToTable("Employees");
+
+                            b1.WithOwner()
+                                .HasForeignKey("EmployeeId");
+                        });
+
                     b.OwnsOne("ExtraDry.Core.VersionInfo", "Version", b1 =>
                         {
                             b1.Property<int>("EmployeeId")
@@ -350,6 +443,52 @@ namespace Sample.Data.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("EmployeeId");
                         });
+
+                    b.Navigation("Employer");
+
+                    b.Navigation("Revision")
+                        .IsRequired();
+
+                    b.Navigation("Version")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Sample.Shared.Region", b =>
+                {
+                    b.HasOne("Sample.Shared.Region", "Parent")
+                        .WithMany()
+                        .HasForeignKey("ParentId");
+
+                    b.OwnsOne("ExtraDry.Core.VersionInfo", "Version", b1 =>
+                        {
+                            b1.Property<int>("RegionId")
+                                .HasColumnType("int");
+
+                            b1.Property<DateTime>("DateCreated")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<DateTime>("DateModified")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<string>("UserCreated")
+                                .IsRequired()
+                                .HasMaxLength(80)
+                                .HasColumnType("nvarchar(80)");
+
+                            b1.Property<string>("UserModified")
+                                .IsRequired()
+                                .HasMaxLength(80)
+                                .HasColumnType("nvarchar(80)");
+
+                            b1.HasKey("RegionId");
+
+                            b1.ToTable("Regions");
+
+                            b1.WithOwner()
+                                .HasForeignKey("RegionId");
+                        });
+
+                    b.Navigation("Parent");
 
                     b.Navigation("Version")
                         .IsRequired();
@@ -390,7 +529,43 @@ namespace Sample.Data.Migrations
                                 .HasForeignKey("SectorId");
                         });
 
-                    b.Navigation("Version");
+                    b.Navigation("Version")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Sample.Shared.Template", b =>
+                {
+                    b.OwnsOne("ExtraDry.Core.VersionInfo", "Version", b1 =>
+                        {
+                            b1.Property<int>("TemplateId")
+                                .HasColumnType("int");
+
+                            b1.Property<DateTime>("DateCreated")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<DateTime>("DateModified")
+                                .HasColumnType("datetime2");
+
+                            b1.Property<string>("UserCreated")
+                                .IsRequired()
+                                .HasMaxLength(80)
+                                .HasColumnType("nvarchar(80)");
+
+                            b1.Property<string>("UserModified")
+                                .IsRequired()
+                                .HasMaxLength(80)
+                                .HasColumnType("nvarchar(80)");
+
+                            b1.HasKey("TemplateId");
+
+                            b1.ToTable("Templates");
+
+                            b1.WithOwner()
+                                .HasForeignKey("TemplateId");
+                        });
+
+                    b.Navigation("Version")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Sample.Shared.Company", b =>

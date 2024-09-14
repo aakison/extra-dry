@@ -1,8 +1,4 @@
-﻿#nullable enable
-
-using System.Collections;
-using System.Reflection;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace ExtraDry.Blazor.Models;
 
@@ -10,7 +6,7 @@ namespace ExtraDry.Blazor.Models;
 /// Represents a command which wraps a method call and additional information about how to present
 /// the command using the method's signature and, optionally, the DisplayAttribute on the method.
 /// </summary>
-public class CommandInfo {
+public partial class CommandInfo {
 
     /// <summary>
     /// Create a `CommandInfo` with a reference to the ViewModel it will execute on and the method to call.
@@ -22,6 +18,14 @@ public class CommandInfo {
         Initialize(method);
     }
 
+    public CommandInfo(object viewModel, string methodName)
+    {
+        ViewModel = viewModel;
+        Method = viewModel.GetType().GetMethod(methodName) 
+            ?? throw new ArgumentException($"No method found named {methodName}");
+        Initialize(Method);
+    }
+
     /// <summary>
     /// Convenience constructor when the method is parameterless.
     /// </summary>
@@ -31,7 +35,6 @@ public class CommandInfo {
         Method = action.Method;
         Initialize(action.Method);
     }
-
 
     /// <summary>
     /// Convenience constructor when the method is async and parameterless.
@@ -66,10 +69,16 @@ public class CommandInfo {
     public string? Caption { get; set; }
 
     /// <summary>
-    /// The optional name of the icon to be displayed on buttons.
-    /// This is just the stem of the name (e.g. 'plus') which is mixed with the theme to create a final name (e.g. 'fas fa-plus').
+    /// The optional key of the icon to be displayed on buttons.
     /// </summary>
     public string? Icon { get; set; }
+
+    /// <summary>
+    /// The optional key of an icon to be displayed on the right of the button indicating what the 
+    /// button will visually do, e.g. "chevron-down" to indicate the result is a drop-down 
+    /// mini-dialog.
+    /// </summary>
+    public string? Affordance { get; set; }
 
     /// <summary>
     /// The view model that this command is defined as being part of.
@@ -82,11 +91,13 @@ public class CommandInfo {
     /// </summary>
     public CommandArguments Arguments { get; set; }
 
+    public string CssClass { get; set; } = string.Empty;
+
     /// <summary>
     /// A CSS class that is added to elements that can trigger the command.
     /// This has no intrinsic meaning but can be used by app to change appearance.
     /// </summary>
-    public string DisplayClass => Context.ToString().ToLowerInvariant();
+    public string DisplayClass => DataConverter.JoinNonEmpty(" ", CssClass, Context.ToString().ToLowerInvariant());
 
     public Func<bool> IsVisible { get; set; } = () => true;
 
@@ -95,8 +106,8 @@ public class CommandInfo {
     /// </summary>
     public async Task ExecuteAsync(object? arg = null) {
         object?[]? args = Arguments switch {
-            CommandArguments.Single => new object?[] { arg },
-            CommandArguments.Multiple => new object?[] { GetStrongTypedSubset(arg) },
+            CommandArguments.Single => [arg],
+            CommandArguments.Multiple => [GetStrongTypedSubset(arg)],
             _ => null,
         };
         var result = Method.Invoke(ViewModel, args);
@@ -111,6 +122,7 @@ public class CommandInfo {
     private void Initialize(MethodInfo method)
     {
         var attribute = method.GetCustomAttribute<CommandAttribute>();
+        CssClass = attribute?.CssClass ?? "";
         Caption = attribute?.Name ?? DefaultName(method.Name);
         Arguments = GetArgumentsType(method);
         if(attribute != null) {
@@ -126,9 +138,13 @@ public class CommandInfo {
     private static string DefaultName(string name)
     {
         name = name.Replace("Async", "");
-        name = Regex.Replace(name, "(?<=[a-z])([A-Z])", " $1", RegexOptions.Compiled).Trim();
+        name = DefaultNameFormatter().Replace(name, " $1").Trim();
+        //name = Regex.Replace(name, "(?<=[a-z])([A-Z])", " $1", RegexOptions.Compiled).Trim();
         return name;
     }
+
+    [GeneratedRegex(@"(?<=[a-z])([A-Z])", RegexOptions.Compiled)]
+    private static partial Regex DefaultNameFormatter();
 
     private static CommandArguments GetArgumentsType(MethodInfo method)
     {
@@ -151,17 +167,15 @@ public class CommandInfo {
     private IList GetStrongTypedSubset(object? arg)
     {
         if(arg is not IEnumerable) {
-            throw new ArgumentException("Parameter, while an object, must be of assignedable to type IEnumerable", nameof(arg));
+            throw new ArgumentException("Parameter, while an object, must be of assignable to type IEnumerable", nameof(arg));
         }
 
         var parameterType = Method.GetParameters()[0].ParameterType;
         var type = parameterType.GenericTypeArguments[0];
         var listType = typeof(List<>);
         var constructedListType = listType.MakeGenericType(type);
-        var typedCollection = Activator.CreateInstance(constructedListType);
-        if(typedCollection == null) {
-            throw new InvalidOperationException($"Could not create type List<{type}> for CommandInfo");
-        }
+        var typedCollection = Activator.CreateInstance(constructedListType) 
+            ?? throw new InvalidOperationException($"Could not create type List<{type}> for CommandInfo");
         var collection = (IList)typedCollection;
         var enumerable = (IEnumerable)arg;
         foreach(object item in enumerable) {

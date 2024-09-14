@@ -1,63 +1,44 @@
-﻿#nullable enable
+﻿namespace Sample.Data.Services;
 
-using Sample.Shared;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Threading.Tasks;
-using ExtraDry.Server;
-using ExtraDry.Core;
+public class EmployeeService(
+    SampleContext sampleContext, 
+    RuleEngine ruleEngine)
+{
+    public async Task<PagedCollection<Employee>> List(PageQuery query)
+    {
+        return await sampleContext.Employees.QueryWith(query).ToPagedCollectionAsync();
+    }
 
-namespace Sample.Data.Services {
-    public class EmployeeService {
+    public async Task<Employee> CreateAsync(Employee exemplar)
+    {
+        var employee = await ruleEngine.CreateAsync(exemplar);
+        sampleContext.Employees.Add(employee);
+        await sampleContext.SaveChangesAsync();
+        return employee;
+    }
 
-        public EmployeeService(SampleContext sampleContext, RuleEngine ruleEngine)
-        {
-            database = sampleContext;
-            rules = ruleEngine;
-        }
+    public async Task<Employee> RetrieveAsync(Guid uuid)
+    {
+        var result = await TryRetrieveAsync(uuid) ?? throw new ArgumentOutOfRangeException(nameof(uuid));
+        return result;
+    }
 
-        public async Task<PagedCollection<Employee>> List(PageQuery query)
-        {
-            return await database.Employees.QueryWith(query).ToPagedCollectionAsync();
-        }
+    public async Task<Employee?> TryRetrieveAsync(Guid uuid)
+    {
+        return await sampleContext.Employees.FirstOrDefaultAsync(e => e.Uuid == uuid);
+    }
 
-        public async Task Create(Employee item)
-        {
-            database.Employees.Add(item);
-            await database.SaveChangesAsync();
-        }
+    public async Task<Employee> Update(Employee exemplar)
+    {
+        var existing = await RetrieveAsync(exemplar.Uuid);
+        await ruleEngine.UpdateAsync(exemplar, existing);
+        await sampleContext.SaveChangesAsync();
+        return existing;
+    }
 
-        public async Task<Employee> RetrieveAsync(Guid uniqueId)
-        {
-            var result = await TryRetrieveAsync(uniqueId);
-            if(result == null) {
-                throw new ArgumentOutOfRangeException(nameof(uniqueId));
-            }
-            return result;
-        }
-
-        public async Task<Employee?> TryRetrieveAsync(Guid uniqueId)
-        {
-            return await database.Employees.FirstOrDefaultAsync(e => e.Uuid == uniqueId);
-        }
-
-        public async Task Update(Employee item)
-        {
-            var existing = await RetrieveAsync(item.Uuid);
-            await rules.UpdateAsync(item, existing);
-            await database.SaveChangesAsync();
-        }
-
-        public async Task Delete(Guid uniqueId)
-        {
-            var existing = await RetrieveAsync(uniqueId);
-            rules.Delete(existing, () => database.Employees.Remove(existing));
-            await database.SaveChangesAsync();
-        }
-    
-        private readonly SampleContext database;
-
-        private readonly RuleEngine rules;
-
+    public async Task Delete(Guid uuid)
+    {
+        var existing = await RetrieveAsync(uuid);
+        await ruleEngine.DeleteAsync(existing, () => sampleContext.Employees.Remove(existing), async () => await sampleContext.SaveChangesAsync());
     }
 }

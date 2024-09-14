@@ -21,7 +21,9 @@ public abstract class FactTableBuilder : TableBuilder {
 
     public Table Build()
     {
-        var table = new Table(TableEntityType, TableName);
+        var table = new Table(TableEntityType, TableName) {
+            SourceProperty = Source?.PropertyInfo,
+        };
         table.Columns.Add(KeyBuilder.Build());
         table.Columns.AddRange(SpokeBuilders.Values.Where(e => e.Included).Select(e => e.Build()));
         table.Columns.AddRange(MeasureBuilders.Values.Where(e => e.Included).Select(e => e.Build()));
@@ -64,7 +66,7 @@ public abstract class FactTableBuilder : TableBuilder {
 
     private FactTableAttribute FactTableAttribute { get; set; }
 
-    private Dictionary<string, MeasureBuilder> MeasureBuilders { get; } = new();
+    private Dictionary<string, MeasureBuilder> MeasureBuilders { get; } = [];
 
 }
 

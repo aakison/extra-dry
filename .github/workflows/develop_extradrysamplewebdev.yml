@@ -1,7 +1,11 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
+#
+# GitHub Action to build and test, used as prerequisites for PRs.
+# Packing and Publishing are done through Azure DevOps Pipelines.
+#
 
-name: Build and deploy ASP.Net Core app to Azure Web App - ExtraDrySampleWebDev
+name: Build and test ASP.Net Core app - ExtraDry
 
 on:
   push:
@@ -19,7 +23,7 @@ jobs:
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '6.0.x'
+          dotnet-version: '8.0.x'
           include-prerelease: false
 
       - name: Restore with dotnet
@@ -28,33 +32,5 @@ jobs:
       - name: Build with dotnet
         run: dotnet build ./ExtraDry/ExtraDry.sln --configuration Release --no-restore
 
-      - name: dotnet publish
-        run: dotnet publish ./ExtraDry/ExtraDry.sln -c Release -o ${{env.DOTNET_ROOT}}/myapp --no-build
-
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v2
-        with:
-          name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
-
-  deploy:
-    runs-on: windows-latest
-    needs: build
-    environment:
-      name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v2
-        with:
-          name: .net-app
-
-      - name: Deploy to Azure Web App
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: 'ExtraDrySampleWebDev'
-          slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_590378BE3C5B4A609DBEF92AFDA2AB51 }}
-          package: .
+      - name: Test with dotnet
+        run: dotnet test ./ExtraDry/ExtraDry.sln --configuration Release --no-build

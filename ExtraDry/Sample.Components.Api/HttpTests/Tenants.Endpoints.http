@@ -1,0 +1,55 @@
+### Health check for middleware, no authentication required
+GET {{HostAddress}}/healthcheck
+Accept: application/json
+
+### Valid request with User Token
+GET {{HostAddress}}/version/
+Authorization: Bearer {{AdminRoleToken}}
+Accept: application/json
+
+### Initialize the API, especially the CosmosDB container
+POST {{HostAddress}}/:initialize
+Authorization: Bearer {{AdminRoleToken}}
+Accept: application/json
+
+### LIST of tenants requires Admin role
+GET {{HostAddress}}/tenants
+Authorization: Bearer {{AdminRoleToken}}
+Accept: application/json
+
+### CREATE a new tenant
+POST {{HostAddress}}/tenants
+Content-Type: application/json
+Authorization: Bearer {{AdminRoleToken}}
+Accept: application/json
+
+{
+  "uuid": "4BE4E0B8-AABE-4C48-A5E9-47F07106FC9E",
+  "slug": "acme-corp",
+  "title": "Acme Corp Pty Ltd",
+  "plan": "Premium"
+}
+
+### RETRIEVE tenant by its slug
+GET {{HostAddress}}/tenants/acme-corp
+Authorization: Bearer {{AdminRoleToken}}
+Accept: application/json
+
+### UPDATE tenant plan, ensure UUID optional.
+PUT {{HostAddress}}/tenants/acme-corp
+Content-Type: application/json
+Authorization: Bearer {{AgentRoleToken}}
+Accept: application/json
+
+{
+  "slug": "acme-corp",
+  "title": "Acme Corp Inc",
+  "plan": "Enterprise"
+}
+
+### DELETE it to clean up
+DELETE {{HostAddress}}/tenants/acme-corp
+Authorization: Bearer {{AdminRoleToken}}
+Accept: application/json
+
+

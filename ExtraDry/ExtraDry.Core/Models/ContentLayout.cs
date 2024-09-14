@@ -1,113 +1,114 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text.Json.Serialization;
+﻿using System.Collections.ObjectModel;
 
-namespace ExtraDry.Core {
+namespace ExtraDry.Core;
 
-    public class ContentLayout {
+public class ContentLayout
+{
 
-        public Collection<ContentSection> Sections { get; set; } = new Collection<ContentSection>();
+    public Collection<ContentSection> Sections { get; set; } = [];
 
-    }
+}
 
-    public class ContentSection {
+public class ContentSection
+{
 
-        public SectionLayout Layout { get; set; } = SectionLayout.Single;
+    public SectionLayout Layout { get; set; } = SectionLayout.Single;
 
-        public ContentTheme Theme { get; set; } = ContentTheme.Light;
+    public ContentTheme Theme { get; set; } = ContentTheme.Light;
 
-        public Collection<ContentContainer> Containers { get; set; } = new Collection<ContentContainer>();
+    public Collection<ContentContainer> Containers { get; set; } = [];
 
-        [JsonIgnore]
-        public IEnumerable<ContentContainer> DisplayContainers {
-            get {
-                while(Containers.Count < ContainerCount) {
-                    Containers.Add(new ContentContainer());
-                }
-                return Containers.Take(ContainerCount);
+    [JsonIgnore]
+    public IEnumerable<ContentContainer> DisplayContainers {
+        get {
+            while(Containers.Count < ContainerCount) {
+                Containers.Add(new ContentContainer());
             }
+            return Containers.Take(ContainerCount);
         }
-
-        private int ContainerCount => Layout switch {
-            SectionLayout.Single => 1,
-            SectionLayout.Triple => 3,
-            SectionLayout.Quadruple => 4,
-            _ => 2,
-        };
-
     }
 
-    public class ContentContainer {
+    private int ContainerCount => Layout switch {
+        SectionLayout.Single => 1,
+        SectionLayout.Triple => 3,
+        SectionLayout.Quadruple => 4,
+        _ => 2,
+    };
 
-        public Guid Id { get; set; } = Guid.NewGuid();
+}
 
-        public ContentAlignment Alignment { get; set; } = ContentAlignment.TopLeft;
+public class ContentContainer
+{
 
-        public ContentPadding Padding { get; set; } = ContentPadding.None;
+    public Guid Id { get; set; } = Guid.NewGuid();
 
-        /// <summary>
-        /// The HTML for the content element.  This HTML should be kept very clean, most tags and styles are invalid.
-        /// </summary>
-        public string Html { get; set; } = string.Empty;
+    public ContentAlignment Alignment { get; set; } = ContentAlignment.TopLeft;
 
-    }
+    public ContentPadding Padding { get; set; } = ContentPadding.None;
 
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum ContentAlignment {
-        TopLeft,
-        TopCenter,
-        TopRight,
-        MiddleLeft,
-        MiddleCenter,
-        MiddleRight,
-        BottomLeft,
-        BottomCenter,
-        BottomRight,
-    }
+    /// <summary>
+    /// The HTML for the content element.  This HTML should be kept very clean, most tags and styles are invalid.
+    /// </summary>
+    public string Html { get; set; } = string.Empty;
 
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum ContentTheme {
-        Light,
-        Dark,
-        Accent,
-        Banner,
-    }
+}
 
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum SectionLayout {
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum ContentAlignment
+{
+    TopLeft,
+    TopCenter,
+    TopRight,
+    MiddleLeft,
+    MiddleCenter,
+    MiddleRight,
+    BottomLeft,
+    BottomCenter,
+    BottomRight,
+}
 
-        [Display(Name="single")]
-        Single,
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum ContentTheme
+{
+    Light,
+    Dark,
+    Accent,
+    Banner,
+}
 
-        [Display(Name = "double")]
-        Double,
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum SectionLayout
+{
 
-        [Display(Name = "triple")]
-        Triple,
+    [Display(Name = "single")]
+    Single,
 
-        [Display(Name = "double left")]
-        DoubleWeightedLeft,
+    [Display(Name = "double")]
+    Double,
 
-        [Display(Name = "double right")]
-        DoubleWeightedRight,
+    [Display(Name = "triple")]
+    Triple,
 
-        [Display(Name = "quadruple")]
-        Quadruple,
-    }
+    [Display(Name = "double left")]
+    DoubleWeightedLeft,
 
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum ContentPadding {
+    [Display(Name = "double right")]
+    DoubleWeightedRight,
 
-        [Display(Name = "none")]
-        None,
+    [Display(Name = "quadruple")]
+    Quadruple,
+}
 
-        [Display(Name = "single")]
-        Single,
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum ContentPadding
+{
 
-        [Display(Name = "double")]
-        Double,
-    }
+    [Display(Name = "none")]
+    None,
+
+    [Display(Name = "single")]
+    Single,
+
+    [Display(Name = "double")]
+    Double,
 }

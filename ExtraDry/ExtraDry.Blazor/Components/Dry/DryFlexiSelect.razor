@@ -1,0 +1,9 @@
+﻿@namespace ExtraDry.Blazor
+@inherits DryPropertyComponentBase
+
+<FlexiSelect Data="@Data" @bind-Value="LocalValue" 
+    CssClass="@CssClass" Title="@Title" ShowTitle="@ShowTitle" Placeholder="@Placeholder" 
+    ShowFilterThreshold="@ShowFilterThreshold" FilterPlaceholder="@FilterPlaceholder"
+    AutoDismissDialog="@AutoDismissDialog" LoseFocusAction="@LoseFocusAction" 
+    OnClick="@OnClick" OnSubmit="@OnSubmit" OnCancel="@OnCancel" 
+    AnimationDuration="@AnimationDuration" @attributes="@UnmatchedAttributes" />

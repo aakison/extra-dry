@@ -1,31 +1,62 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
-	<ImplicitUsings>enable</ImplicitUsings>
-	<PackageId>ExtraDry.Server</PackageId>
-    <Authors>adrian.akison</Authors>
-    <Company>FMI Works</Company>
-    <Description>Extensions to Blazor and DRY libraries to create Blazor client/server applications with a lower-code footprint.  Use this Server library for server side only elements.</Description>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/fmi-works/extra-dry</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/fmi-works/extra-dry.git</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageTags>blazor spa microsoft dry don't repeat yourself low-code swashbuckle openapi</PackageTags>
-    <NeutralLanguage />
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<PackageId>ExtraDry.Server</PackageId>
+		<Authors>adrian.akison</Authors>
+		<Description>Extensions to Blazor and DRY libraries to create Blazor client/server applications with a lower-code footprint.  Use this Server library for server side only elements.</Description>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageProjectUrl>https://github.com/akison/extra-dry</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/akison/extra-dry.git</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>blazor spa microsoft dry don't repeat yourself low-code swashbuckle openapi</PackageTags>
+		<NeutralLanguage />
+    <Copyright>Copyright ©️ 2024 Adrian Akison</Copyright>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.1" />
-    <PackageReference Include="System.Linq.Expressions" Version="4.3.0" />
-  </ItemGroup>
+	<ItemGroup>
+	  <None Remove="FileDatabase.json" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ExtraDry.Core\ExtraDry.Core.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+	  <ApplicationDefinition Include="FileDatabase.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </ApplicationDefinition>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Blobs\FileDatabase.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.17.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.7" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.7">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+		<PackageReference Include="Pidgin" Version="3.2.2" />
+		<PackageReference Include="NCrontab" Version="3.3.3" />
+		<PackageReference Include="System.Linq.Expressions" Version="4.3.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\ExtraDry.Core\ExtraDry.Core.csproj" />
+	</ItemGroup>
+
+	<Import Project="..\CommonAnalyzers.targets" />
+	<Import Project="..\VulnerabilityFixes.targets" />
+	<ItemGroup>
+	  <PackageReference Update="Azure.Identity" Version="1.12.0" />
+	</ItemGroup>
 
 </Project>

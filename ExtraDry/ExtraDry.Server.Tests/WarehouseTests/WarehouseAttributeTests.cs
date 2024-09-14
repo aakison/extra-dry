@@ -154,6 +154,7 @@ public class WarehouseAttributeTests {
     public class AttributeContainer {
 
         [Key]
+        [JsonIgnore]
         public int Id { get; set; }
 
         public Guid Uuid { get; set; }
@@ -184,11 +185,11 @@ public class WarehouseAttributeTests {
         [AttributeIgnore]
         public string Ignored { get; set; } = string.Empty;
 
-        public int Integer { get; set; }
+        public int WholeNumberTest { get; set; }
 
-        public double Double { get; set; }
+        public double RealNumberTest { get; set; }
 
-        public decimal Decimal { get; set; }
+        public decimal CurrencyNumberTest { get; set; }
     }
 
 

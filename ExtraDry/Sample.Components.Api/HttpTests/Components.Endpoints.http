@@ -1,0 +1,77 @@
+### Health check for middleware, no authentication required
+GET {{HostAddress}}/healthcheck
+Accept: application/json
+
+### LIST components for a tenant
+GET {{HostAddress}}/acme-corp/components
+Accept: application/json
+Authorization: Bearer {{AdminRoleToken}}
+
+### CREATE component for a tenant, requires Agent role.
+POST {{HostAddress}}/acme-corp/components
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{AgentRoleToken}}
+
+{
+  "tenant": "acme-corp",
+  "uuid": "CADB12F7-07F0-4BE6-B92C-9FB0A4217CC1",
+  "slug": "component-2",
+  "code": "INV-2",
+  "title": "Invoice #12345",
+  "description": "A sample invoice",
+  "keywords": "sample invoice 12345 and stuff",
+  "fullText": "All the words",
+  "discriminator": "Component",
+  "type": "Invoice",
+  "Attributes": {
+    "AssignedUser": "Bob"
+  }
+}
+
+### RETRIEVE component as AGENT (via Role)
+GET {{HostAddress}}/acme-corp/components/cadb12f7-07f0-4be6-b92c-9fb0a4217cc1
+Accept: application/json
+Authorization: Bearer {{AgentRoleToken}}
+
+### RETRIEVE component as MANAGER (via Claim only)
+GET {{HostAddress}}/acme-corp/components/cadb12f7-07f0-4be6-b92c-9fb0a4217cc1
+Accept: application/json
+Authorization: Bearer {{ManagerRoleToken}}
+
+### RETRIEVE component as USER (via Claim & Attribute)
+GET {{HostAddress}}/acme-corp/components/cadb12f7-07f0-4be6-b92c-9fb0a4217cc1
+Accept: application/json
+Authorization: Bearer {{UserRoleToken}}
+
+### RETRIEVE component for a tenant as VENDOR
+GET {{HostAddress}}/acme-corp/components/cadb12f7-07f0-4be6-b92c-9fb0a4217cc1
+Accept: application/json
+Authorization: Bearer {{VendorRoleToken}}
+
+### UPDATE component for a tenant, requires Agent role.
+PUT {{HostAddress}}/acme-corp/components/cadb12f7-07f0-4be6-b92c-9fb0a4217cc1
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{AgentRoleToken}}
+
+{
+  "tenant": "acme-corp",
+  "uuid": "CADB12F7-07F0-4BE6-B92C-9FB0A4217CC1",
+  "slug": "component-2",
+  "code": "INV-2",
+  "title": "Invoice #12345",
+  "description": "The changed name of the sample invoice",
+  "keywords": "sample invoice 12345 and stuff",
+  "fullText": "All the words",
+  "discriminator": "Component",
+  "type": "Invoice",
+  "Attributes": {
+    "AssignedUser": "Alice"
+  }
+}
+
+### DELETE component for a tenant, requires Agent role.
+DELETE {{HostAddress}}/acme-corp/components/cadb12f7-07f0-4be6-b92c-9fb0a4217cc1
+Accept: application/json
+Authorization: Bearer {{AgentRoleToken}}

@@ -1,0 +1,220 @@
+﻿@page "/components/advanced/suspense"
+@inject NavigationManager Navigation;
+
+<section>
+    <h2>Suspense</h2>
+    <p>The <code>&lt;Suspense&gt;</code> component displays a value after it is loaded with states for Loading, Completed, Error and Timeout.</p>
+</section>
+<section>
+    <h3>Basic usage all indicators as default</h3>
+    <CodeBlock Lang="blazor">
+        &lt;Suspense TModel="Employee" ItemProvider=@@LoadEmployee&gt;
+            &lt;div&gtFirst Name: @@context.FirstName&lt;/div&gt
+            &lt;div&gtLast Name: @@context.LastName&lt;/div&gt
+        &lt;/Suspense&gt;
+
+        @@code {
+            public async Task&lt;Employee?&gt; LoadEmployee(CancellationToken cancellationToken)
+            {
+                await Task.Delay(5000, cancellationToken);
+                return new Employee {
+                    Uuid = Guid.NewGuid(),
+                    FirstName = "John",
+                    LastName = "Smith"
+                };
+            }
+        }
+    </CodeBlock>
+
+    <div style="width: 200px;border: solid 1px;margin-bottom: 10px;">
+        <Suspense TModel="Employee" ItemProvider=@LoadEmployee Size=@IndicatorSize ShowIcon=@ShowIcon @ref="_childComponent">
+            <div>First Name: @context.FirstName</div>
+            <div>Last Name: @context.LastName</div>
+        </Suspense>
+    </div>
+
+    <h5>Try It Out</h5>
+    <form class="tryitout" onsubmit="return false;">
+        <div>
+            <label>Load result:</label>
+            <select @onchange="OnValueChange">
+                <option value="@(LoadingState.Complete)">Successful run</option>
+                <option value="@(LoadingState.Error)">Failed run</option>
+                <option value="@(LoadingState.Timeout)">Timeout</option>
+            </select>
+        </div>
+
+        <div>
+            <label>Size:</label>
+            <select @bind="IndicatorSize">
+                <option value="@(IndicatorSize.Standard)">IndicatorSize.Standard</option>
+                <option value="@(IndicatorSize.Small)">IndicatorSize.Small</option>
+                <option value="@(IndicatorSize.Large)">IndicatorSize.Large</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="showIconCheckBox">Show Icon:</label>
+            <input type="checkbox" id="showIconCheckBox" @bind="@ShowIcon" />
+        </div>
+    </form>
+
+    <h3>Timeout in component - Other indicators as default</h3>
+    <CodeBlock Lang="blazor">
+        &lt;Suspense TModel="Employee" ItemProvider=@@LoadEmployee &gt;
+            &lt;ChildContent&gt;
+                &lt;div&gtFirst Name: @@context.&lt;/div&gt
+                &lt;div&gtLast Name: @@context.LastName&lt;/div&gt
+            &lt;/ChildContent&gt;
+            &lt;Timeout&gt;
+                &lt;div&gt;
+                    &lt;Icon CssClass=@@context.Size.ToString().ToLower() Key="loader-timeout" /&gt;
+                &lt;/div&gt;
+                &lt;div&gt;Component timeout, &lt;a href="" @@onclick=@@context?.Reload @@onclick:preventDefault&gt;try again&lt;/a&gt;&lt;/div&gt;
+            &lt;/Timeout&gt;
+        &lt;/Suspense&gt;
+    </CodeBlock>
+
+    <div style="width: 200px;border: solid 1px;margin-bottom: 10px;">
+        <Suspense TModel="Employee" ItemProvider=@LoadEmployee Size=@IndicatorSize TimeoutDuration=500 ShowIcon=@ShowIcon @ref="_childComponent2">
+            <ChildContent>
+                <div>First Name: @context.FirstName</div>
+                <div>Last Name: @context.LastName</div>
+            </ChildContent>
+            <Timeout>
+                @if (ShowIcon)
+                {
+                    <div>
+
+                        <Icon CssClass=@context.Size.ToString().ToLower() Key="loader-timeout" />                    
+                    </div>
+                }
+                <div>Component timeout, <a href="" @onclick=@context.Reload @onclick:preventDefault>try again</a></div>
+            </Timeout>
+        </Suspense>
+    </div>
+
+    <h3>Timeout Duration set low to demonstrate timeout</h3>
+    <CodeBlock Lang="blazor">
+        &lt;Suspense TModel="Employee" ItemProvider=@@LoadEmployee TimeoutDuration=500&gt;
+            &lt;div&gtFirst Name: @@context.&lt;/div&gt
+            &lt;div&gtLast Name: @@context.LastName&lt;/div&gt
+        &lt;/Suspense&gt;
+    </CodeBlock>
+
+    <div style="width: 200px;border: solid 1px;margin-bottom: 10px;">
+        <Suspense TModel="Employee" ItemProvider=@LoadEmployee Size=@IndicatorSize ShowIcon=@ShowIcon TimeoutDuration =500 @ref="_childComponent2">
+            <div>First Name: @context.FirstName</div>
+            <div>Last Name: @context.LastName</div>
+        </Suspense>
+    </div>
+    
+</section> 
+<section>
+    <h3>Configuration</h3>
+    <p>
+        The type of the return model is passed via <code>TModel="Employee"</code>
+    </p>
+    <p>
+        The method to load the data is passed via <code>ItemProvider=@@GetData</code>
+    </p>
+    <p>
+        Can add custom CSS classes via the <code>CssClass</code> parameter
+    </p>
+    <p>
+        <code>TimeoutDuration</code> sets the length of time in milliseconds to load before cancelling the call and timing out. It is defaulted to 5 seconds (5000 milliseconds)
+    </p>
+    <p>
+        Can override the Loading, Error and Timeout states by passing a child fragment called <code>&lt;Fallback&gt;</code>, <code>&lt;Error&gt;</code> or <code>&lt;Timeout&gt;</code> to the <code>Suspense</code> component while wrapping the display content in a <code>&lt;ChildContent&gt;</code>
+    </p>
+    <p>
+        An example of the code above with Timeout Overridden showing how both the <code>Size</code> and <code>Reload</code> method are used from the <code>context</code>:
+        <CodeBlock Lang="Blazor">
+            &lt;Suspense TModel="Employee" ItemProvider=@@LoadEmployee&gt;
+                &lt;ChildContent&gt;
+                    &lt;div&gtFirst Name: @@context.FirstName&lt;/div&gt
+                    &lt;div&gtLast Name: @@context.LastName&lt;/div&gt
+                &lt;/ChildContent&gt;
+                &lt;Timeout&gt;
+                    &lt;div&gt;
+                        &lt;Icon CssClass=@@context.Size.ToString().ToLower() Key="loader-timeout" /&gt;
+                    &lt;/div&gt;
+                    &lt;div&gt;
+                        Timeout from component child, &lt;a href="" @@onclick="context?.Reload" @@onclick:preventDefault&gt;try again&lt;/a&gt;
+                    &lt;/div&gt;
+                &lt;/Timeout&gt;
+            &lt;/Suspense&gt;
+        </CodeBlock>
+    </p>
+    <p>
+        The <code>&lt;ChildFragment&gt;</code> will receive a context of type <code>TModel</code>
+    </p>
+    <p>
+        The <code>&lt;Fallback&gt;</code>, <code>&lt;Error&gt;</code> or <code>&lt;Timeout&gt;</code> fragments will receive a context of the following type:
+        <CodeBlock Lang="C#">
+            /// &lt;summary&gt;
+            /// Context passed through to the child components
+            /// &lt;/summary&gt;
+            public class IndicatorContext {
+                /// &lt;summary&gt;
+                /// The size of the loading icon
+                /// &lt;/summary&gt;
+                public SpinnerSize Size { get; set; }
+                /// &lt;summary&gt;
+                /// A callback method to retry the load process
+                /// &lt;/summary&gt;
+                public Func&lt;Task&gt;? Reload { get; set; }
+            }
+        </CodeBlock>
+    </p>
+    <p>
+        The indicators can also be overriden in the <code>Theme</code> using the child fragments <code>&lt;SuspenseFallback&gt;</code>, <code>&lt;SuspenseError&gt;</code> or <code>&lt;SuspenseTimeout&gt;</code>
+    </p>
+    <p>
+        The <code>&lt;ShowIcon&gt;</code> Parameter can be set to determine whether Icons should be displayed or not
+    </p>
+    
+</section>
+
+@code {
+    public LoadingState Value { get; set; } = LoadingState.Complete;
+    public IndicatorSize IndicatorSize { get; set; } = IndicatorSize.Standard;
+    private Suspense<Employee>? _childComponent;
+    private Suspense<Employee>? _childComponent2;
+
+    private bool ShowIcon = true;
+
+    async Task OnValueChange(ChangeEventArgs e)
+    {
+        if(e.Value != null)
+        {
+            Value = (LoadingState)Enum.Parse(typeof(LoadingState), e.Value.ToString() ?? string.Empty, true);
+        }
+        await _childComponent!.Refresh();
+        await _childComponent2!.Refresh();
+        StateHasChanged();
+    }
+
+    public async Task<Employee?> LoadEmployee(CancellationToken cancellationToken)
+    {
+        await Task.Delay(3000, cancellationToken);
+
+        if(Value == LoadingState.Error)
+        {
+            throw new Exception("Boom");
+        }
+
+        if (Value == LoadingState.Timeout)
+        {
+            throw new TaskCanceledException();
+        }
+
+        await Task.Delay(2000);
+        return new Employee
+        {
+            Uuid = Guid.NewGuid(),
+            FirstName = "John",
+            LastName = "Smith"
+        };
+    }
+}

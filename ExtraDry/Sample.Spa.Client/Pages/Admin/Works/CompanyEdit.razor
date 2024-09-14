@@ -1,0 +1,33 @@
+﻿@using System.Text.Json
+@implements IViewModelCaption
+@inject CrudService<Company> Service
+@inject NavigationManager Navigation
+
+<h2>Company</h2>
+<DryForm ViewModel="@this" Model="@company" FixedFieldsets="1"></DryForm>
+
+@code {
+
+    [Parameter]
+    public Guid Uuid { get; set; }
+
+    [Inject]
+    private AppViewModel AppViewModel { get; set; } = null!;
+
+    private Company? company;
+
+    protected override async Task OnInitializedAsync()
+    {
+        company = await Service.RetrieveAsync(Uuid);
+    }
+
+    [Command(CommandContext.Primary, Name = "Save & Close")]
+    public async Task SaveAsync(Company company)
+    {
+        await Service.UpdateAsync(Uuid, company);
+        await AppViewModel.NotifyStateChanged(Uuid);
+        Navigation.NavigateTo("/admin/works/companies/list");
+    }
+
+    public string Caption<T>(T model) => model is CompanyEdit companyEdit && companyEdit.company != null ? $"Company - {companyEdit.company.Slug}" : string.Empty;
+}

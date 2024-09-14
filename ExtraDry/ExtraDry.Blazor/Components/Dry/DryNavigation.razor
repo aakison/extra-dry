@@ -1,0 +1,35 @@
+﻿@namespace ExtraDry.Blazor
+
+<nav class="@CssClasses" @attributes="@UnmatchedAttributes">
+    <ul>
+        @if(HasNavigationGroups) {
+            @foreach(var group in NavigationGroups) {
+                var label = string.IsNullOrWhiteSpace(group) ? "&nbsp;" : group;
+                <li>
+                    <div>@label</div>
+                    <ul>
+                        @foreach(var item in SortedInGroup(group)) {
+                            var active = item.IsActive(Navigation.Uri) ? "active" : "inactive";
+                            <li class="@active">
+                                <a href="@item.NavLink" @onclick="() => DoItemClick(item)" @onclick:preventDefault>
+                                    <DryMiniCard Model="@item" />
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </li>
+            }
+        }
+        else { 
+            @foreach (var item in DisplayMenus)
+            {
+                var active = item.IsActive(Navigation.Uri) ? "active" : "inactive";
+                <li class="@active">
+                    <a href="@item.NavLink" @onclick="() => DoItemClick(item)" @onclick:preventDefault>
+                        <DryMiniCard Model="@item" />
+                    </a>
+                </li>
+            }
+        }
+    </ul>
+</nav>

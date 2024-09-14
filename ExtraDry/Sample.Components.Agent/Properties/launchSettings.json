@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "Kestrel": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "healthcheck",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "AGENTOPTIONS__SERVICEBUS": "RabbitMQ",
+        "AGENTOPTIONS__RABBITMQ__SERVER": "localhost",
+        "AGENTOPTIONS__RABBITMQ__USERNAME": "guest",
+        "AGENTOPTIONS__RABBITMQ__PASSWORD": "guest"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://localhost:41443;http://localhost:41080"
+    },
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "healthcheck",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/healthcheck",
+      "environmentVariables": {
+        "ASPNETCORE_HTTPS_PORTS": "443",
+        "ASPNETCORE_HTTP_PORTS": "80"
+      },
+      "publishAllPorts": true,
+      "useSSL": true
+    }
+  },
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:41080",
+      "sslPort": 41443
+    }
+  }
+}

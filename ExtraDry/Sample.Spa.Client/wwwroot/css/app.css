@@ -1,0 +1,252 @@
+﻿a, .btn-link {
+    color: #0366d6;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+.valid.modified:not([type=checkbox]) {
+    outline: 1px solid #26b050;
+}
+
+.validation-message {
+    color: red;
+}
+
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
+    }
+
+/*nav > ul {
+  margin: 0;
+  padding: 0;
+}
+
+  nav > ul > li {
+    padding: 13px;
+    margin: 0px 15px 10px 15px;
+    list-style: none;
+    border-radius: 5px;
+    color: white;
+  }
+
+    nav > ul > li.active {
+      background-color: rgb(255 255 255 / 0.25);
+    }
+
+  nav > ul > li > a {
+      color: white;
+  }
+
+    nav > ul > li > a:hover {
+        color: white;
+        text-decoration: none;  
+    }
+  
+    nav > ul > li > a > i {
+      padding: 0 5px;
+      text-align: center;
+      width: 30px;
+    }*/
+
+/*
+    Sample content layout CSS rules.
+    Classes applied to the Section are "banner", "light", "dark", "accent" for the themes,
+    and "single", "double", "doubleweightedleft", "doubleweightedright", "triple" for the layout.
+*/
+
+div.sections {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: azure;
+}
+
+  div.sections > section {
+    flex: 0 1 auto;
+    display: flex;
+    margin: 0;
+    width: 100%;
+    padding: 0;
+    background-color: blanchedalmond;
+    display: flex;
+    justify-content: center;
+  }
+
+    div.sections > section > article {
+      flex: 0 1 900px;
+      display: flex;
+    }
+
+      div.sections > section > article > div {
+        flex: 2 0 200px;
+        width: 100%;
+      }
+
+      div.sections > section.doubleweightedleft > article > div:first-child {
+        flex: 3 0 300px;
+      }
+
+      div.sections > section.doubleweightedright > article > div:last-child {
+        flex: 3 0 300px;
+      }
+  
+/* Classes for content theme Light */
+
+  div.sections > section.light, .radio-buttons.currentsectiontheme button span.light  {
+      background-color: white;
+      color: black;
+  }
+
+/* Classes for content theme Dark */
+
+  div.sections > section.dark, .radio-buttons.currentsectiontheme button span.dark {
+    background-color: black;
+    color: white;
+  }
+
+/* Classes for content theme Accent */
+
+  div.sections > section.accent, .radio-buttons.currentsectiontheme button span.accent {
+    background-color: antiquewhite;
+    color: black;
+  }
+
+/* Classes for content theme Accent */
+
+  div.sections > section.banner, .radio-buttons.currentsectiontheme button span.banner {
+    background-color: navy;
+    color: white;
+  }
+
+/*
+    Classes for alignment of content
+*/
+
+div.alignment-topleft {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+  div.alignment-topleft div {
+    text-align: left;
+  }
+
+div.alignment-topcenter {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+  div.alignment-topcenter div {
+    text-align: center;
+  }
+
+div.alignment-topright {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-end;
+}
+  div.alignment-topright div {
+    text-align: right;
+  }
+
+div.alignment-middleleft {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+  div.alignment-middleleft div {
+    text-align: left;
+  }
+
+div.alignment-middlecenter {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+  div.alignment-middlecenter div {
+    text-align: center;
+  }
+
+div.alignment-middleright {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+}
+  div.alignment-middleright div {
+    text-align: center;
+  }
+
+div.alignment-bottomleft {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+  div.alignment-bottomleft div {
+    text-align: left;
+  }
+
+div.alignment-bottomcenter {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+}
+  div.alignment-bottomcenter div {
+    text-align: center;
+  }
+
+div.alignment-bottomright {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+  div.alignment-bottomright div {
+    text-align: right;
+  }
+
+/*
+    Content Padding classes
+*/
+
+div.padding-none {
+  margin: 0;
+  padding: 0;
+}
+
+div.padding-single {
+  margin: 5px;
+  padding: 5px;
+}
+
+div.padding-double {
+  margin: 10px;
+  padding: 10px;
+}
+

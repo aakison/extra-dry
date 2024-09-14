@@ -5,7 +5,8 @@
 /// Overrides [Spoke] if both are included on the same property.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property)]
-public class SpokeIgnoreAttribute : Attribute {
+public class SpokeIgnoreAttribute : Attribute
+{
 
     /// <summary>
     /// Declares a property should not be a data warehouse spoke.

@@ -25,16 +25,15 @@ public abstract class TableBuilder {
 
     public string TableName { get; private set; } = null!; // Constructor sets via method, analyzer misses it...
 
+    public EntitySource? Source { get; internal set; } 
+
     protected PropertyInfo GetKeyProperty()
     {
         var properties = TableEntityType!.GetProperties();
         var keyProperty = properties.FirstOrDefault(e => e.GetCustomAttribute<KeyAttribute>() != null) ??
-            properties.FirstOrDefault(e => string.Compare(e.Name, "Id", StringComparison.OrdinalIgnoreCase) == 0) ??
-            properties.FirstOrDefault(e => string.Compare(e.Name, $"{TableEntityType.Name}Id", StringComparison.OrdinalIgnoreCase) == 0);
-        if(keyProperty == null) {
-            throw new DryException("Fact and Dimension tables must have primary keys.");
-        }
-        return keyProperty;
+            properties.FirstOrDefault(e => string.Equals(e.Name, "Id", StringComparison.OrdinalIgnoreCase)) ??
+            properties.FirstOrDefault(e => string.Equals(e.Name, $"{TableEntityType.Name}Id", StringComparison.OrdinalIgnoreCase));
+        return keyProperty ?? throw new DryException("Missing primary key", $"On {TableName}, Fact and Dimension tables must have primary keys.");
     }
 
     internal abstract bool HasColumnNamed(string name);
@@ -49,7 +48,7 @@ public abstract class TableBuilder {
             throw new DryException("Name limited to 50 characters.");
         }
         if(name != TableName && WarehouseBuilder.HasTableNamed(name)) {
-            throw new DryException($"Names for tables must be unique, {name} is duplicated.");
+            throw new DryException($"Names for tables must be unique, '{name}' is duplicated.");
         }
         TableName = name;
     }
@@ -64,7 +63,7 @@ public abstract class TableBuilder {
 
     protected KeyBuilder KeyBuilder { get; }
 
-    protected Dictionary<string, SpokeBuilder> SpokeBuilders { get; } = new();
+    protected Dictionary<string, SpokeBuilder> SpokeBuilders { get; } = [];
 
     protected Type TableEntityType { get; }
 

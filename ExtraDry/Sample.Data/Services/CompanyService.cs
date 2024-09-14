@@ -1,36 +1,31 @@
 ﻿namespace Sample.Data.Services;
 
-public class CompanyService {
-
-    public CompanyService(SampleContext sampleContext, RuleEngine ruleEngine)
+public class CompanyService(
+    SampleContext sampleContext, 
+    RuleEngine ruleEngine)
+{
+    public async Task<PagedCollection<Company>> List(PageQuery query)
     {
-        database = sampleContext;
-        rules = ruleEngine;
+        return await sampleContext.Companies.Include(e => e.PrimarySector).QueryWith(query).ToPagedCollectionAsync();
     }
 
-    public async Task<FilteredCollection<Company>> List(FilterQuery query)
+    public async Task<Company> Create(Company item)
     {
-        return await database.Companies.QueryWith(query).ToFilteredCollectionAsync();
+        var company = await ruleEngine.CreateAsync(item);
+        sampleContext.Companies.Add(company);
+        await sampleContext.SaveChangesAsync();
+        return company;
     }
 
-    public async Task Create(Company item)
+    public async Task<Company> RetrieveAsync(Guid companyId)
     {
-        database.Companies.Add(item);
-        await database.SaveChangesAsync();
-    }
-
-    public async Task<Company> RetrieveAsync(Guid uniqueId)
-    {
-        var result = await TryRetrieveAsync(uniqueId);
-        if(result == null) {
-            throw new ArgumentOutOfRangeException(nameof(uniqueId));
-        }
+        var result = await TryRetrieveAsync(companyId) ?? throw new ArgumentOutOfRangeException(nameof(companyId));
         return result;
     }
 
     public async Task<Company?> TryRetrieveAsync(Guid uniqueId)
     {
-        return await database.Companies
+        return await sampleContext.Companies
             .Include(e => e.PrimarySector)
             .Include(e => e.AdditionalSectors)
             .FirstOrDefaultAsync(e => e.Uuid == uniqueId);
@@ -39,19 +34,13 @@ public class CompanyService {
     public async Task Update(Company item)
     {
         var existing = await RetrieveAsync(item.Uuid);
-        await rules.UpdateAsync(item, existing);
-        await database.SaveChangesAsync();
+        await ruleEngine.UpdateAsync(item, existing);
+        await sampleContext.SaveChangesAsync();
     }
 
     public async Task Delete(Guid uniqueId)
     {
         var existing = await RetrieveAsync(uniqueId);
-        rules.Delete(existing, () => database.Companies.Remove(existing));
-        await database.SaveChangesAsync();
+        await ruleEngine.DeleteAsync(existing, () => sampleContext.Companies.Remove(existing), async () => await sampleContext.SaveChangesAsync());
     }
-
-    private readonly SampleContext database;
-
-    private readonly RuleEngine rules;
-
 }

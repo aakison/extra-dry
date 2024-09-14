@@ -17,7 +17,7 @@ public class MeasureBuilder : ColumnBuilder {
             SetType(ColumnType.Decimal);
         }
         else if(PropertyInfo.PropertyType == typeof(double) || PropertyInfo.PropertyType == typeof(float)) {
-            SetType(ColumnType.Double);
+            SetType(ColumnType.Real);
         }
         else {
             SetType(ColumnType.Integer);
@@ -38,6 +38,8 @@ public class MeasureBuilder : ColumnBuilder {
         if(precisionAttribute != null) {
             SetPrecision(precisionAttribute.Precision, precisionAttribute.Scale ?? 2);
         }
+
+        SetDefault(0);
     }
 
     public MeasureBuilder HasName(string name)
@@ -63,6 +65,18 @@ public class MeasureBuilder : ColumnBuilder {
         return this;
     }
 
+    public MeasureBuilder HasConversion(Func<object, object> converter)
+    {
+        SetConverter(converter);
+        return this;
+    }
+
+    public MeasureBuilder HasDefault(object @default)
+    {
+        SetDefault(@default);
+        return this;
+    }
+
     public MeasureBuilder IsIncluded(bool included)
     {
         SetIncluded(included);
@@ -71,10 +85,11 @@ public class MeasureBuilder : ColumnBuilder {
 
     internal override Column Build()
     {
-        var column = new Column(ColumnType, ColumnName) {
+        var column = new Column(ColumnType, ColumnName, Converter) {
             Nullable = false,
             PropertyInfo = PropertyInfo,
             Length = Length,
+            Default = Default,
         };
         if(ColumnType == ColumnType.Decimal) {
             column.Precision = $"{Precision.precision},{Precision.scale}";
@@ -92,12 +107,12 @@ public class MeasureBuilder : ColumnBuilder {
         return isMeasure;
     }
 
-    private static readonly Type[] measureTypes = new Type[] { typeof(decimal), typeof(float), typeof(int),
-        typeof(double), typeof(long), typeof(short), typeof(uint), typeof(sbyte) };
+    private static readonly Type[] measureTypes = [ typeof(decimal), typeof(float), typeof(int),
+        typeof(double), typeof(long), typeof(short), typeof(uint), typeof(sbyte) ];
 
     protected override bool IsValidColumnType(ColumnType type)
     {
-        return type == ColumnType.Decimal || type == ColumnType.Double || type == ColumnType.Integer;
+        return type == ColumnType.Decimal || type == ColumnType.Real || type == ColumnType.Integer;
     }
 
     private MeasureAttribute? MeasureAttribute { get; set; }

@@ -1,0 +1,69 @@
+﻿@namespace ExtraDry.Blazor
+@using ExtraDry.Blazor.Forms
+
+<div class="content-editor">
+
+    <div class="toolbar">
+
+        <section>
+            <h5>Section</h5>
+            <DryButtonBar ViewModel="this" Category="Section" />
+            <hr />
+            <DryInput Model="this" Property="Property(nameof(CurrentSectionTheme))" />
+             <DryInput Model="this" Property="Property(nameof(CurrentSectionLayout))" />
+        </section>
+
+        <section>
+            <h5>Container</h5>
+            <DryInput Model="this" Property="Property(nameof(CurrentContainerAlignment))" />
+            <DryInput Model="this" Property="Property(nameof(CurrentContainerPadding))" />
+        </section>
+
+        <section>
+            <h5>Selection</h5>
+            <DryButtonBar ViewModel="this" Category="Selection" />
+        </section>
+
+        <section>
+            <h5>Hyperlink</h5>
+            <DryInput Model="this" Property="Property(nameof(HyperlinkClass))" />
+            <DryInput Model="this" Property="Property(nameof(HyperlinkTitle))" />
+            <DryInput Model="this" Property="Property(nameof(HyperlinkHref))" />
+        </section>
+
+    </div>
+
+    <div class="editor">
+
+        @if(Content == null) {
+            <div class="progress">
+                <progress />
+            </div>
+        }
+        else { 
+            <div class="sections">
+                @foreach (var section in Content.Sections) {
+                    var layoutClass = section.Layout.ToString().ToLowerInvariant();
+                    var themeClass = section.Theme.ToString().ToLowerInvariant();
+                    var selectedClass = section == CurrentSection ? "rooster-selected" : "";
+                    <section class="@layoutClass @themeClass @selectedClass">
+                        <article>
+                            @foreach (var container in section.DisplayContainers) {
+                                var alignment = $"alignment-{container.Alignment.ToString().ToLowerInvariant()}";
+                                var padding = $"padding-{container.Padding.ToString().ToLowerInvariant()}";
+                                <div class="editor-root @alignment @padding" id="@container.Id"
+                                     @* @onfocusout="@(args => EditorFocusOut(container))"
+                                     @onfocus="@(args => EditorFocus(section, container))" *@>
+                                    <!-- Content injected via JS so Rooster and Blazor don't fight each other... -->
+                                </div>
+                            }
+                        </article>
+                    </section>
+                }
+            </div>
+        }
+
+    </div>
+
+</div>
+

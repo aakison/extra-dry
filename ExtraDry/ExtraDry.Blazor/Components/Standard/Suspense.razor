@@ -1,0 +1,72 @@
+﻿@typeparam TModel
+@namespace ExtraDry.Blazor
+
+<div class="@CssClasses" @attributes="@UnmatchedAttributes">
+    @switch(State){
+        case LoadingState.Loading:
+            @if (Fallback != null)
+            {
+                @Fallback(GetContext())
+            }
+            else if (ThemeInfo?.SuspenseFallback != null)
+            {
+                @ThemeInfo?.SuspenseFallback(GetContext())
+            }
+            else
+            {
+                if (ShowIcon)
+                {
+                    <div>
+                        <Spinner Size=@Size></Spinner>
+                    </div>
+                }
+                <div>Loading...</div>
+            }
+            break;
+        case LoadingState.Error:
+            @if (Error != null)
+            {
+                @Error(GetContext())
+            }
+            else if (ThemeInfo?.SuspenseError != null)
+            {
+                @ThemeInfo?.SuspenseError(GetContext())
+            }
+            else
+            {
+                if (ShowIcon)
+                {
+                    <div>
+                        <Icon CssClass=@Size.ToString().ToLower() Key="loader-error" />
+                    </div>
+                }
+                <div>An error has occurred</div>
+            }
+            break;
+        case LoadingState.Timeout:
+            @if(Timeout != null)
+            {
+                @Timeout(GetContext())
+            }
+            else if (ThemeInfo?.SuspenseTimeout != null)
+            {
+                @ThemeInfo?.SuspenseTimeout(GetContext())
+            }
+            else
+            {
+                if (ShowIcon)
+                {
+                    <div>
+                        <Icon CssClass=@Size.ToString().ToLower() Key="loader-timeout" />
+                    </div>
+                }
+                <div>Timeout, <a href="" @onclick="@Refresh" @onclick:preventDefault>try again</a></div>
+            }
+            break;
+        case LoadingState.Complete:
+            @ChildContent!(@Value)
+            break;
+        default:
+            break;
+    }
+</div>

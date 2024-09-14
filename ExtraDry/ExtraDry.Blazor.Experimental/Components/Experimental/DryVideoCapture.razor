@@ -1,0 +1,33 @@
+﻿@namespace ExtraDry.Blazor
+@inject IJSRuntime JSRuntime
+@implements IAsyncDisposable
+
+<div class="video-capture" @onclick="StartVideoCapture">
+    <video id="video" playsinline autoplay></video>
+    <canvas id="canvas"></canvas>
+    @if (State == FiniteState.Initializing)
+    {
+        <span>Initializing...</span>
+    }
+    else if (State == FiniteState.Waiting)
+    {
+        <div>
+            @ChildContent
+        </div>
+    }
+    else if (State == FiniteState.Video)
+    {
+        <button @onclick="CaptureVideo">Capture</button>
+    }
+    else if (State == FiniteState.Preview)
+    {
+
+    }
+    else if (State == FiniteState.BadDevice)
+    {
+        <div>
+            <p><span id="errorMsg"></span></p>
+        </div>
+    }
+    <span>@State</span>
+</div>

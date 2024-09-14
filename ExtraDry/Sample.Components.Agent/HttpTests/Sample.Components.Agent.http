@@ -1,0 +1,18 @@
+
+GET {{HostAddress}}/healthcheck
+Accept: application/json
+
+###
+
+GET {{HostAddress}}/config
+Accept: application/json
+
+###
+
+POST {{HostAddress}}/post-message
+Content-Type: application/json
+Accept: application/json
+
+{
+    "Value":"Hello World!"
+}

@@ -1,0 +1,39 @@
+﻿@namespace ExtraDry.Blazor.Internal
+@typeparam TItem where TItem : notnull
+
+<form class="@CssClasses" @attributes="@UnmatchedAttributes">
+    @if(ShowFilter || MultiSelect) {
+        <header>
+            <div class="controls">
+                @if(ShowFilter) {
+                    <div class="filter">
+                        <input @bind-value="Filter" @bind-value:event="oninput" placeholder="@FilterPlaceholder" />
+                        <Icon Key="search" />
+                        <button class="unobtrusive button clearFilter" type="button" @onclick="ClearFilter">
+                            <Icon Key="clear" />
+                        </button>
+                    </div>
+                }
+                @if(MultiSelect) {
+                    <div class="commands">
+                        <TriCheck Value="@TriCheckValue" Label="Select All" @onchange="SelectAllChange" />
+                        <button class="unobtrusive button clearSelected" type="button" @onclick="ClearAll">Clear</button>
+                    </div>
+                }
+            </div>
+        </header>
+    }
+    <div class="items">
+        @foreach(var item in DisplayData) {
+            <label for="@item.Id" class="flexi-select item label @item.FilterClass @item.SelectClass">
+                @if(MultiSelect) {
+                    <input id="@item.Id" type="checkbox" @onchange="e => OnChange(e, item)" checked="@item.Selected" />                
+                }
+                else {
+                    <input id="@item.Id" name="@Name" type="radio" @onchange="e => OnChange(e, item)" checked="@item.Selected" />
+                }
+                <DryMiniCard Model="@item.Source" ShowSubtitle="@ShowSubtitle" ShowThumbnail="@ShowThumbnail" />
+            </label>
+        }
+    </div>
+</form>

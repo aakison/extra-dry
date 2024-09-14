@@ -7,29 +7,36 @@ namespace ExtraDry.Server.DataWarehouse;
 
 public class WarehouseModelBuilder {
 
-    public void LoadSchema<T>() where T : DbContext
+    public void LoadSchema<T>(string? group = null) where T : DbContext
     {
-        LoadSchema(typeof(T));
+        LoadSchema(typeof(T), group);
     }
 
-    public void LoadSchema(Type contextType)
+    public void LoadSchema(Type contextType, string? group = null)
     {
-        var entityTypes = GetEntities(contextType);
-        var assemblies = entityTypes.Select(e => e.Assembly).Distinct().ToList();
+        var entitySources = GetEntitySources(contextType);
+        EntityContextType = contextType;
 
-        // Load enums, they're never dependent on anything.
-        foreach(var enumType in GetEnums(assemblies)) {
-            var dimensionAttribute = enumType.GetCustomAttribute<DimensionTableAttribute>();
-            if(dimensionAttribute != null) {
-                LoadEnumDimension(enumType, dimensionAttribute);
+        var factsAndDimensions = GetWarehouseTables(entitySources.Select(e => e.EntityType));
+
+        var dimensions = factsAndDimensions.Where(e => e.GetCustomAttribute<DimensionTableAttribute>() != null);
+        var nonEntityDimensions = dimensions.Except(entitySources.Select(e => e.EntityType));
+
+        // Load dimensions that have static or generated content, not sourced from a EF entity.
+        foreach(var dimension in nonEntityDimensions) {
+            if(dimension.IsEnum) {
+                LoadEnumDimension(dimension, dimension.GetCustomAttribute<DimensionTableAttribute>()!);
+            }
+            else {
+                LoadClassDimension(dimension, null);
             }
         }
 
         // Load dimensions, needed before facts are loaded.
-        foreach(var entity in entityTypes) {
-            var dimensionAttribute = entity.GetCustomAttribute<DimensionTableAttribute>();
+        foreach(var source in entitySources) {
+            var dimensionAttribute = source.EntityType.GetCustomAttribute<DimensionTableAttribute>();
             if(dimensionAttribute != null) {
-                LoadClassDimension(entity);
+                LoadClassDimension(source.EntityType, source);
             }
         }
 
@@ -39,15 +46,44 @@ public class WarehouseModelBuilder {
         }
 
         // Finally load facts and their foreign keys to dimensions.
-        foreach(var entity in entityTypes) {
-            var factAttribute = entity.GetCustomAttribute<FactTableAttribute>();
-            if(factAttribute != null) {
-                LoadClassFact(entity);
+        foreach(var source in entitySources) {
+            var factAttribute = source.EntityType.GetCustomAttribute<FactTableAttribute>();
+            if(factAttribute?.MatchesGroup(group) ?? false) {
+                LoadClassFact(source);
             }
         }
     }
 
-    public FactTableBuilder<T> Fact<T>() where T : class
+    private static List<Type> GetWarehouseTables(IEnumerable<Type> enumerable)
+    {
+        var tableClasses = new List<Type>() { typeof(DateDimension), typeof(TimeDimension) };
+        var rejectedClasses = new List<Type>();
+        foreach(var candidate in enumerable) {
+            ExpandTables(candidate);
+        }
+        return tableClasses;
+
+        void ExpandTables(Type candidate)
+        {
+            if(rejectedClasses.Contains(candidate) || tableClasses.Contains(candidate)) {
+                return;
+            }
+            if(candidate.GetCustomAttribute<FactTableAttribute>() != null || candidate.GetCustomAttribute<DimensionTableAttribute>() != null) {
+                tableClasses.Add(candidate);
+            }
+            else {
+                rejectedClasses.Add(candidate);
+                return;
+            }
+            var properties = candidate.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach(var property in properties) {
+                ExpandTables(property.PropertyType);
+            }
+        }
+
+    }
+
+    public FactTableBuilder<T> Fact<T>() 
     {
         try {
             return FactTables[typeof(T)] as FactTableBuilder<T> ?? throw new KeyNotFoundException();
@@ -60,14 +96,14 @@ public class WarehouseModelBuilder {
     public DimensionTableBuilder Dimension(Type type)
     {
         try {
-            return DimensionTables[type] as DimensionTableBuilder ?? throw new KeyNotFoundException();
+            return DimensionTables[type] ?? throw new KeyNotFoundException();
         }
         catch(KeyNotFoundException) {
             throw new DryException($"No Dimension table of type '{type.Name}' was defined.");
         }
     }
 
-    public DimensionTableBuilder<T> Dimension<T>() where T : class
+    public DimensionTableBuilder<T> Dimension<T>() 
     {
         try {
             return DimensionTables[typeof(T)] as DimensionTableBuilder<T> ?? throw new KeyNotFoundException();
@@ -94,21 +130,29 @@ public class WarehouseModelBuilder {
         }
     }
 
-    public WarehouseModel Build()
+    internal WarehouseModel Build()
     {
-        var model = new WarehouseModel();
+        var type = EntityContextType ?? throw new DryException("Can't generate warehouse model without first loading schema.");
+        return new WarehouseModel(this, type, Group);
+    }
+
+    internal IEnumerable<Table> BuildDimensions()
+    {
         foreach(var dimensionBuilder in DimensionTables.Values) {
-            model.Dimensions.Add(dimensionBuilder.Build());
+            yield return dimensionBuilder.Build();
         }
+    }
+
+    internal IEnumerable<Table> BuildFacts()
+    {
         foreach(var factBuilder in FactTables.Values) {
-            model.Facts.Add(factBuilder.Build());
+            yield return factBuilder.Build();
         }
-        return model;
     }
 
     internal bool HasTableNamed(string name) =>
-        FactTables.Values.Any(e => string.Compare(e.TableName, name, StringComparison.InvariantCultureIgnoreCase) == 0) ||
-        DimensionTables.Values.Any(e => string.Compare(e.TableName, name, StringComparison.InvariantCultureIgnoreCase) == 0);
+        FactTables.Values.Any(e => string.Equals(e.TableName, name, StringComparison.OrdinalIgnoreCase)) ||
+        DimensionTables.Values.Any(e => string.Equals(e.TableName, name, StringComparison.OrdinalIgnoreCase));
 
     private void LoadEnumDimension(Type enumType, DimensionTableAttribute dimension)
     {
@@ -186,17 +230,19 @@ public class WarehouseModelBuilder {
         }
     }
 
-    private void LoadClassDimension(Type entity)
+    private void LoadClassDimension(Type type, EntitySource? entitySource)
     {
-        if(LoadViaConstructor(typeof(DimensionTableBuilder<>), entity) is DimensionTableBuilder builder) {
-            DimensionTables.Add(entity, builder);
+        if(LoadViaConstructor(typeof(DimensionTableBuilder<>), type) is DimensionTableBuilder builder) {
+            builder.Source = entitySource;
+            DimensionTables.Add(type, builder);
         }
     }
 
-    private void LoadClassFact(Type entity)
+    private void LoadClassFact(EntitySource entitySource)
     {
-        if(LoadViaConstructor(typeof(FactTableBuilder<>), entity) is FactTableBuilder builder) {
-            FactTables.Add(entity, builder);
+        if(LoadViaConstructor(typeof(FactTableBuilder<>), entitySource.EntityType) is FactTableBuilder builder) {
+            builder.Source = entitySource;
+            FactTables.Add(entitySource.EntityType, builder);
         }
     }
 
@@ -217,31 +263,24 @@ public class WarehouseModelBuilder {
         }
     }
 
-    private static IEnumerable<Type> GetEntities(Type tableType)
+    private static IEnumerable<EntitySource> GetEntitySources(Type dbContextType)
     {
-        var properties = tableType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        var properties = dbContextType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
         foreach(var property in properties) {
             var type = property.PropertyType;
             if(type.IsGenericType && type.GetGenericTypeDefinition() == typeof(DbSet<>)) {
                 var entityType = type.GetGenericArguments()[0];
-                yield return entityType;
+                yield return new EntitySource(entityType) { ContextType = dbContextType, PropertyInfo = property };
             }
         }
     }
 
-    private static IEnumerable<Type> GetEnums(List<Assembly> assemblies)
-    {
-        foreach(var assembly in assemblies) {
-            foreach(var type in assembly.GetTypes()) {
-                if(type.IsEnum) {
-                    yield return type;
-                }
-            }
-        }
-    }
+    private Type? EntityContextType { get; set;  }
 
-    private Dictionary<Type, FactTableBuilder> FactTables { get; } = new();
+    private string? Group { get; set; }
 
-    private Dictionary<Type, DimensionTableBuilder> DimensionTables { get; } = new();
+    private Dictionary<Type, FactTableBuilder> FactTables { get; } = [];
+
+    private Dictionary<Type, DimensionTableBuilder> DimensionTables { get; } = [];
 
 }

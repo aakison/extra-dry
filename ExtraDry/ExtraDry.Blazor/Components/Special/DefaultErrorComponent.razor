@@ -1,0 +1,48 @@
+@namespace ExtraDry.Blazor
+@using ExtraDry.Core.Models
+
+<div class="@CssClasses" @attributes="@UnmatchedAttributes">
+    <h3>Error Occurred</h3>
+
+    @if(ProblemDetails != null) {
+        <div class="problemDetails @ErrorCss">
+            <div class="errorImagePlaceholder"></div>
+            <dl>
+                <dt class="status">Status</dt>
+                <dd class="status">@ProblemDetails.Status</dd>
+
+                <dt class="title">Title</dt>
+                <dd class="title">@ProblemDetails.Title</dd>
+
+                @if(!string.IsNullOrWhiteSpace(ProblemDetails.Detail)) {
+                    <dt class="details">Details</dt>
+                    <dd class="details">@ProblemDetails.Detail</dd>
+                }
+
+                @if(!string.IsNullOrWhiteSpace(ProblemDetails.Instance)) {
+                    <dt class="instance">Instance</dt>
+                    <dd class="instance">@ProblemDetails.Instance</dd>
+                }
+            </dl>
+        </div>
+    }   
+    else {
+        <div class="exception @ErrorCss">
+            <div class="errorImagePlaceholder"></div>
+            <dl>
+                <dt class="exception">Exception</dt>
+                <dd class="exception">@DataConverter.CamelCaseToTitleCase(Exception?.GetType().Name ?? string.Empty)</dd>
+
+                <dt class="message">Message</dt>
+                <dd class="message">@Exception?.Message</dd>
+
+                <dt class="instructions">Instructions</dt>
+                <dd class="instructions">
+                    Exposing exceptions is not friendly for users, considering shifting exceptions
+                    to problem details.
+                </dd>
+            </dl>
+            
+        </div>
+    }
+</div>

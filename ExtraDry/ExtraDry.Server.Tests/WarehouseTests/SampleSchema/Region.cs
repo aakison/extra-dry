@@ -6,7 +6,7 @@ namespace ExtraDry.Server.Tests.WarehouseTests;
 /// Represents a single geo-political region in a taxonomy of geo-political regions.
 /// </summary>
 [DimensionTable("Geographic Region")]
-public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, INamedSubject {
+public class Region : IHierarchyEntity<Region> { 
 
     /// <summary>
     /// The principal ID for the region, internal to the database.
@@ -14,6 +14,9 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, INamedSubject {
     [Key]
     [JsonIgnore]
     public int Id { get; set; }
+
+    /// <inheritdoc cref="IResourceIdentifiers.Uuid" />
+    public Guid Uuid { get; set; } = Guid.NewGuid();
 
     /// <summary>
     /// The level for this region inside a taxonomy of regions.
@@ -33,7 +36,8 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, INamedSubject {
     /// </summary>
     [Required, StringLength(32)]
     [Display(ShortName = "Code")]
-    public string Code { get; set; } = string.Empty;
+    [Filter(FilterType.Equals)]
+    public string Slug { get; set; } = string.Empty;
 
     /// <summary>
     /// The short name of the country or region, such as 'Australia', or 'USA'.
@@ -41,7 +45,12 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, INamedSubject {
     [Required, StringLength(32)]
     [Display(ShortName = "Title")]
     [Attribute("The Title")]
+    [Filter(FilterType.Contains)]
     public string Title { get; set; } = string.Empty;
+
+    public Region? Parent { get; set; }
+
+    public HierarchyId Lineage { get; set; } = HierarchyId.GetRoot();
 
     /// <summary>
     /// The full name of the country or region, such as 'Commonwealth of Australia', or 'United States of America'.
@@ -50,10 +59,11 @@ public class Region : TaxonomyEntity<Region>, ITaxonomyEntity, INamedSubject {
     /// Limited to 100 characters based on full names of countries which, in English, max at 59 characters per ISO.
     /// </remarks>
     [Required, StringLength(100)]
+    [Filter(FilterType.Contains)]
     public string Description { get; set; } = string.Empty;
 
     [NotMapped]
-    public string Caption => $"Region {Code}";
+    public string Caption => $"Region {Slug}";
 
     public string CompoundName { get; set; } = string.Empty;
 

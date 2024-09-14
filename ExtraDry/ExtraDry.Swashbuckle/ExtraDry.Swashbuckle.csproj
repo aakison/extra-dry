@@ -1,25 +1,49 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <Authors>adrian.akison</Authors>
-    <Company>FMI Works</Company>
-    <Description>Extensions to Blazor and DRY libraries to create Blazor client/server applications with a lower-code footprint.  Use this Swashbuckle library to efficiently extend the documentation capabilities of Swashbuckle for building OpenAPI interfaces.</Description>
-    <PackageTags>blazor spa microsoft dry don't repeat yourself low-code swashbuckle openapi</PackageTags>
-    <PackageProjectUrl>https://github.com/fmi-works/extra-dry</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/fmi-works/extra-dry.git</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<PackageId>ExtraDry.Swashbuckle</PackageId>
+		<Authors>adrian.akison</Authors>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Description>Extensions to Blazor and DRY libraries to create Blazor client/server applications with a lower-code footprint.  Use this Swashbuckle library to efficiently extend the documentation capabilities of Swashbuckle for building OpenAPI interfaces.</Description>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageProjectUrl>https://github.com/akison/extra-dry</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/akison/extra-dry.git</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>blazor spa microsoft dry don't repeat yourself low-code swashbuckle openapi</PackageTags>
+		<NeutralLanguage />
+    <Copyright>Copyright ©️ 2024 Adrian Akison</Copyright>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.*" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.*" />
-    <PackageReference Include="ExtraDry.Analyzers" Version="0.2.*" />
-  </ItemGroup>
+	<PropertyGroup>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<PackageIcon>extradry-logo.png</PackageIcon>
+		<PackageIconUrl />
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ExtraDry.Core\ExtraDry.Core.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.7" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\ExtraDry.Core\ExtraDry.Core.csproj" />
+		<ProjectReference Include="..\ExtraDry.Server\ExtraDry.Server.csproj" />
+	</ItemGroup>
+
+	<Import Project="..\CommonAnalyzers.targets" />
+	<Import Project="..\VulnerabilityFixes.targets" />
+
+	<ItemGroup>
+		<None Include="..\extradry-logo.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Update="Azure.Identity" Version="1.12.0" />
+	</ItemGroup>
 
 </Project>

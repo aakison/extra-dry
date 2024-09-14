@@ -1,0 +1,59 @@
+﻿@layer extra-dry {
+  /* 
+    Layout of the main groups of fieldsets 
+  */
+  form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+    form div.entity-info {
+      flex: 0 0 auto;
+    }
+
+    form div.fixed-fieldsets {
+      flex: 0 0 auto;
+    }
+
+    form div.variable-fieldsets {
+      flex: 1 1 auto;
+      overflow-y: auto;
+    }
+
+    form div.entity-actions {
+      flex: 0 0 auto;
+    }
+
+  /* 
+    Default layout paddings and gaps for form and groups. 
+  */
+  form {
+    padding: 10px;
+    gap: 5px;
+  }
+
+  /*
+    Style for the header of the form.
+  */
+  form div.entity-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+  }
+
+    form div.entity-info label {
+        font-weight: bold;
+        font-size: 20px;
+    }
+
+  /*
+      Style for the children fieldset groups.
+  */
+  form div {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+  }
+}

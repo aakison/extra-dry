@@ -1,0 +1,14 @@
+﻿@namespace ExtraDry.Blazor
+@implements IExtraDryComponent
+
+<div class="@CssClasses" @attributes="@UnmatchedAttributes">
+    @if(ShowThumbnail) {
+        <Icon class="thumbnail" Key="@Thumbnail" />
+    }
+    <div class="titles">
+        <span class="title">@Title</span>
+        @if(ShowSubtitle) {
+            <span class="subtitle">@Subtitle</span>
+        }
+    </div>
+</div>

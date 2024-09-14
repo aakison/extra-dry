@@ -1,46 +1,53 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <PackageId>ExtraDry.Core</PackageId>
-    <Authors>adrian.akison</Authors>
-    <Company>FMI Works</Company>
-	<ImplicitUsings>enable</ImplicitUsings>
-    <Description>Extensions to Blazor and DRY libraries to create Blazor client/server applications with a lower-code footprint.  Use this Core library for server side and shared library common elements.</Description>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/fmi-works/extra-dry</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/fmi-works/extra-dry.git</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageTags>blazor spa microsoft dry don't repeat yourself low-code swashbuckle openapi</PackageTags>
-    <NeutralLanguage />
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.1</TargetFrameworks>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<LangVersion>12.0</LangVersion>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageIcon>extradry-logo.png</PackageIcon>
-    <PackageIconUrl />
+	<PropertyGroup>
+		<PackageId>ExtraDry.Core</PackageId>
+		<Authors>adrian.akison</Authors>
+		<Description>Extensions to Blazor and DRY libraries to create Blazor client/server applications with a lower-code footprint.  Use this Core library for server side and shared library common elements.</Description>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageProjectUrl>https://github.com/akison/extra-dry</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/akison/extra-dry.git</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>blazor spa microsoft dry don't repeat yourself low-code swashbuckle openapi</PackageTags>
+		<NeutralLanguage />
+		<PackageIcon>extradry-logo.png</PackageIcon>
+		<PackageIconUrl />
+    <Copyright>Copyright ©️ 2024 Adrian Akison</Copyright>
   </PropertyGroup>
-  
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="6.0.1" />
-    <PackageReference Include="Pidgin" Version="2.5.0" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageReference Include="System.Text.Json" Version="6.0.1" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <None Include="..\extradry-logo.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+		<PackageReference Include="System.Text.Json" Version="8.0.4" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.Abstractions" Version="8.0.7" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="8.0.1" />
+	</ItemGroup>
+
+	<Import Project="..\CommonAnalyzers.targets" />
+
+	<Import Project="..\VulnerabilityFixes.targets" />
+
+	<ItemGroup>
+		<None Include="..\extradry-logo.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Update="Azure.Identity" Version="1.12.0" />
+	</ItemGroup>
 
 </Project>

@@ -1,0 +1,1374 @@
+[
+  {
+    "Description": "application/andrew-inset",
+    "Extensions": [ "ez" ],
+    "MimeTypes": [ "application/andrew-inset" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "application/java",
+    "Extensions": [ "class" ],
+    "MimeTypes": [ "application/java" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "cafebabe",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "Macintosh BinHex 4 Compressed Archive",
+    "Extensions": [ "hqx" ],
+    "MimeTypes": [ "application/mac-binhex40" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "application/mac-compactpro",
+    "Extensions": [ "cpt" ],
+    "MimeTypes": [ "application/mac-compactpro" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "application/msword",
+    "Extensions": [ "doc", "dot" ],
+    "MimeTypes": [ "application/msword" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "D0CF11E0A1B11AE1",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "application/oda",
+    "Extensions": [ "oda" ],
+    "MimeTypes": [ "application/oda" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "image/tiff",
+    "Extensions": [ "tif", "tiff" ],
+    "MimeTypes": [ "image/tiff" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "49492A00",
+        "Type": "Bytes"
+      },
+      {
+        "Offset": 0,
+        "Value": "4D4D002A",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "Portable Document Format (PDF)",
+    "Extensions": [ "pdf" ],
+    "MimeTypes": [ "application/pdf", "application/x-pdf" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "%PDF-",
+        "Type": "Content"
+      }
+    ]
+  },
+  {
+    "Description": "PostScript (PS)",
+    "Extensions": [ "ps", "ai", "eps" ],
+    "MimeTypes": [ "application/postscript" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "%!",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "\\004%!",
+        "Type": "Content"
+      }
+    ]
+  },
+  {
+    "Description": "SMIL Multimedia",
+    "Extensions": [ "smi", "smil" ],
+    "MimeTypes": [ "application/smil" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "FrameMaker Interchange Format",
+    "Extensions": [ "mif" ],
+    "MimeTypes": [ "application/vnd.mif" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "3c4d494646696c6520",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "application/vnd.ms-excel",
+    "Extensions": [ "xls", "xlt", "xla", "xlb", "xlc", "xlm", "xlw" ],
+    "MimeTypes": [ "application/vnd.ms-excel" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "D0CF11E0A1B11AE1",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "application/vnd.ms-powerpoint",
+    "Extensions": [ "ppt", "pot", "ppa", "pps", "pwz" ],
+    "MimeTypes": [ "application/vnd.ms-powerpoint" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "D0CF11E0A1B11AE1",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "OpenOffice.org Text Document",
+    "Extensions": [ "sxw" ],
+    "MimeTypes": [ "application/vnd.sun.xml.writer" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "application/vnd.wap.wbxml",
+    "Extensions": [ "wbxml" ],
+    "MimeTypes": [ "application/vnd.wap.wbxml" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Compiled WML Document",
+    "Extensions": [ "wmlc" ],
+    "MimeTypes": [ "application/vnd.wap.wmlc" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Compiled WML Script",
+    "Extensions": [ "wmlsc" ],
+    "MimeTypes": [ "application/vnd.wap.wmlscriptc" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Extensible HyperText Markup Language File",
+    "Extensions": [ "xhtml", "xht" ],
+    "MimeTypes": [ "application/xhtml\u002Bxml" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Bzip 2 UNIX Compressed File",
+    "Extensions": [ "bz2", "tbz2" ],
+    "MimeTypes": [ "application/x-bzip2" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "425a683931",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "application/x-bcpio",
+    "Extensions": [ "bcpio" ],
+    "MimeTypes": [ "application/x-bcpio" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Virtual CD-ROM CD Image File",
+    "Extensions": [ "vcd" ],
+    "MimeTypes": [ "application/x-cdlink" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Portable Game Notation (PGN)",
+    "Extensions": [ "pgn" ],
+    "MimeTypes": [ "application/x-chess-pgn" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "5b4576656e742022",
+        "Type": "Content"
+      }
+    ]
+  },
+  {
+    "Description": "UNIX CPIO Archive",
+    "Extensions": [ "cpio" ],
+    "MimeTypes": [ "application/x-cpio" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "3037303730",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "UNIX csh Shell Script",
+    "Extensions": [ "csh" ],
+    "MimeTypes": [ "application/x-csh" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Shockwave Movie",
+    "Extensions": [ "dcr", "dir", "dxr" ],
+    "MimeTypes": [ "application/x-director" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "DOS/Windows executable (EXE)",
+    "Extensions": [ "exe" ],
+    "MimeTypes": [ "application/x-dosexec" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "MZ",
+        "Type": "Content"
+      }
+    ]
+  },
+  {
+    "Description": "TeX Device Independent Document",
+    "Extensions": [ "dvi" ],
+    "MimeTypes": [ "application/x-dvi" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "02f7",
+        "Type": "Bytes"
+      },
+      {
+        "Offset": 14,
+        "Value": "1b20546558206f757470757420",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "Macromedia FutureSplash File",
+    "Extensions": [ "spl" ],
+    "MimeTypes": [ "application/x-futuresplash" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "GNU tar Compressed File Archive (GNU Tape Archive)",
+    "Extensions": [ "gtar" ],
+    "MimeTypes": [ "application/x-gtar" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Gzip Compressed Archive",
+    "Extensions": [ "gz", "tgz" ],
+    "MimeTypes": [ "application/x-gzip" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "1f8b",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "Hierarchical Data Format File",
+    "Extensions": [ "hdf" ],
+    "MimeTypes": [ "application/x-hdf" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "0e031301",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "JavaScript Source Code",
+    "Extensions": [ "js" ],
+    "MimeTypes": [ "application/x-javascript" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "KWord File",
+    "Extensions": [ "kwd", "kwt" ],
+    "MimeTypes": [ "application/x-kword" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "KSpread File",
+    "Extensions": [ "ksp" ],
+    "MimeTypes": [ "application/x-kspread" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "KPresenter File",
+    "Extensions": [ "kpr", "kpt" ],
+    "MimeTypes": [ "application/x-kpresenter" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "KChart File",
+    "Extensions": [ "chrt" ],
+    "MimeTypes": [ "application/x-kchart" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "KIllustrator File",
+    "Extensions": [ "kil" ],
+    "MimeTypes": [ "application/x-killustrator" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "SSEYO Koan File",
+    "Extensions": [ "skp", "skd", "skt", "skm" ],
+    "MimeTypes": [ "application/x-koan" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "LaTeX Source Document",
+    "Extensions": [ "latex" ],
+    "MimeTypes": [ "application/x-latex" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "application/x-netcdf",
+    "Extensions": [ "nc", "cdf" ],
+    "MimeTypes": [ "application/x-netcdf" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Ogg Vorbis Codec Compressed WAV File",
+    "Extensions": [ "ogg", "oga", "spc" ],
+    "MimeTypes": [ "application/x-ogg", "audio/ogg" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "4f67675300020000000000000000",
+        "Type": "Bytes"
+      },
+      {
+        "Offset": 0,
+        "Value": "4f67675300020000000000000000",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "Rar",
+    "Extensions": [ "rar" ],
+    "MimeTypes": [ "application/x-rar-compressed", "application/vnd.rar" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "526172211a",
+        "Type": "Bytes"
+      },
+      {
+        "Offset": 0,
+        "Value": "526172211a",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "RedHat Package Manager",
+    "Extensions": [ "rpm" ],
+    "MimeTypes": [ "application/x-rpm" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "edabeedb",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "UNIX/LINUX Shell Script",
+    "Extensions": [ "sh" ],
+    "MimeTypes": [ "application/x-sh" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "UNIX shar Archive File",
+    "Extensions": [ "shar" ],
+    "MimeTypes": [ "application/x-shar" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Macromedia Flash Format File",
+    "Extensions": [ "swf" ],
+    "MimeTypes": [ "application/x-shockwave-flash" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "FWS",
+        "Type": "Content"
+      }
+    ]
+  },
+  {
+    "Description": "StuffIt Compressed Archive File",
+    "Extensions": [ "sit" ],
+    "MimeTypes": [ "application/x-stuffit" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "StuffIt (c)1997-",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "SIT!",
+        "Type": "Content"
+      }
+    ]
+  },
+  {
+    "Description": "application/x-sv4cpio",
+    "Extensions": [ "sv4cpio" ],
+    "MimeTypes": [ "application/x-sv4cpio" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "application/x-sv4crc",
+    "Extensions": [ "sv4crc" ],
+    "MimeTypes": [ "application/x-sv4crc" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Tape Archive File",
+    "Extensions": [ "tar" ],
+    "MimeTypes": [ "application/x-tar" ],
+    "MagicBytes": [
+      {
+        "Offset": 257,
+        "Value": "ustar",
+        "Type": "Content"
+      }
+    ]
+  },
+  {
+    "Description": "Tcl (Tool Command Language) Language Script",
+    "Extensions": [ "tcl" ],
+    "MimeTypes": [ "application/x-tcl" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "LaTeX Source",
+    "Extensions": [ "tex" ],
+    "MimeTypes": [ "application/x-tex" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "application/x-texinfo",
+    "Extensions": [ "texinfo", "texi" ],
+    "MimeTypes": [ "application/x-texinfo" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Roff/nroff/troff/groff Unformatted Manual Page (UNIX)",
+    "Extensions": [ "t", "tr", "roff" ],
+    "MimeTypes": [ "application/x-troff" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Manual",
+    "Extensions": [ "man" ],
+    "MimeTypes": [ "application/x-troff-man" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Formatted Manual Page with ME Macros",
+    "Extensions": [ "me" ],
+    "MimeTypes": [ "application/x-troff-me" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Formatted Manual Page with MS Macros",
+    "Extensions": [ "ms" ],
+    "MimeTypes": [ "application/x-troff-ms" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "POSIX tar Compressed Archive",
+    "Extensions": [ "ustar" ],
+    "MimeTypes": [ "application/x-ustar" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "application/x-wais-source",
+    "Extensions": [ "src" ],
+    "MimeTypes": [ "application/x-wais-source" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Compressed Archive File",
+    "Extensions": [ "zip", "jar", "apk" ],
+    "MimeTypes": [ "application/zip", "application/x-zip-compressed", "application/zip-compressed" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "PK",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "PK",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "PK",
+        "Type": "Content"
+      }
+    ]
+  },
+  {
+    "Description": "uLaw/AU Audio File",
+    "Extensions": [ "au", "snd" ],
+    "MimeTypes": [ "audio/basic" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "2e736e64000000",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "Musical Instrument Digital Interface MIDI-sequention Sound",
+    "Extensions": [ "mid", "midi", "kar" ],
+    "MimeTypes": [ "audio/midi" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "MThd",
+        "Type": "Content"
+      }
+    ]
+  },
+  {
+    "Description": "MPEG Audio Stream, Layer III",
+    "Extensions": [ "mp3", "mp2", "mpga", "mp2a", "m3a", "m2a" ],
+    "MimeTypes": [ "audio/mpeg", "audio/mp3", "audio/mpeg3", "audio/x-mpeg-3" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "ID3",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "ID3",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "ID3",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "ID3",
+        "Type": "Content"
+      }
+    ]
+  },
+  {
+    "Description": "Audio Interchange File",
+    "Extensions": [ "aif", "aiff", "aifc" ],
+    "MimeTypes": [ "audio/x-aiff" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "464f524d00",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "MP3 Playlist File",
+    "Extensions": [ "m3u" ],
+    "MimeTypes": [ "audio/x-mpegurl" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "234558544d33550d0a",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "RealMedia Metafile",
+    "Extensions": [ "ram", "rm" ],
+    "MimeTypes": [ "audio/x-pn-realaudio" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "2e524d460000001200",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "RealMedia Player Plug-in",
+    "Extensions": [ "rpm" ],
+    "MimeTypes": [ "audio/x-pn-realaudio-plugin" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "RealMedia Streaming Media",
+    "Extensions": [ "ra" ],
+    "MimeTypes": [ "audio/x-realaudio" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "2e524d460000001200",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "Waveform Audio",
+    "Extensions": [ "wav" ],
+    "MimeTypes": [ "audio/wav", "audio/x-wav", "audio/vnd.wave", "audio/wave", "audio/x-pn-wav" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "RIFF",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "RIFF",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "RIFF",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "RIFF",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "RIFF",
+        "Type": "Content"
+      }
+    ]
+  },
+  {
+    "Description": "Brookhaven Protein Databank File",
+    "Extensions": [ "pdb" ],
+    "MimeTypes": [ "chemical/x-pdb" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "XMol XYZ",
+    "Extensions": [ "xyz" ],
+    "MimeTypes": [ "chemical/x-xyz" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Windows OS/2 Bitmap Graphics",
+    "Extensions": [ "bmp" ],
+    "MimeTypes": [ "image/bmp" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "BM",
+        "Type": "Content"
+      }
+    ]
+  },
+  {
+    "Description": "Graphic Interchange Format",
+    "Extensions": [ "gif" ],
+    "MimeTypes": [ "image/gif" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "GIF8",
+        "Type": "Content"
+      }
+    ]
+  },
+  {
+    "Description": "Image Exchange Format",
+    "Extensions": [ "ief" ],
+    "MimeTypes": [ "image/ief" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "JPEG/JIFF Image",
+    "Extensions": [ "jpg", "jpeg", "jpe" ],
+    "MimeTypes": [ "image/jpeg" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "ffd8ff",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "Photoshop Format",
+    "Extensions": [ "psd" ],
+    "MimeTypes": [ "image/photoshop" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "8BPS",
+        "Type": "Content"
+      }
+    ]
+  },
+  {
+    "Description": "Portable Network Graphic",
+    "Extensions": [ "png" ],
+    "MimeTypes": [ "image/png", "image/x-png", "image/vnd.mozilla.apng" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "89504e470d0a1a",
+        "Type": "Bytes"
+      },
+      {
+        "Offset": 0,
+        "Value": "89504e470d0a1a",
+        "Type": "Bytes"
+      },
+      {
+        "Offset": 0,
+        "Value": "89504e470d0a1a",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "DjVu File",
+    "Extensions": [ "djvu", "djv" ],
+    "MimeTypes": [ "image/vnd.djvu" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Wireless Bitmap File Format",
+    "Extensions": [ "wbmp" ],
+    "MimeTypes": [ "image/vnd.wap.wbmp" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "GIMP Image File",
+    "Extensions": [ "xcf" ],
+    "MimeTypes": [ "image/xcf" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "gimp xcf ",
+        "Type": "Content"
+      }
+    ]
+  },
+  {
+    "Description": "Cals Raster File",
+    "Extensions": [ "ras" ],
+    "MimeTypes": [ "image/x-cmu-raster" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "PBM Portable Any Map Graphic Bitmap",
+    "Extensions": [ "pnm" ],
+    "MimeTypes": [ "image/x-portable-anymap" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "UNIX Portable Bitmap Graphic",
+    "Extensions": [ "pbm" ],
+    "MimeTypes": [ "image/x-portable-bitmap" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "50340a",
+        "Type": "Bytes"
+      },
+      {
+        "Offset": 0,
+        "Value": "P1",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "P4",
+        "Type": "Content"
+      }
+    ]
+  },
+  {
+    "Description": "Portable Graymap Graphic",
+    "Extensions": [ "pgm" ],
+    "MimeTypes": [ "image/x-portable-graymap" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "50350a",
+        "Type": "Bytes"
+      },
+      {
+        "Offset": 0,
+        "Value": "P2",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "P5",
+        "Type": "Content"
+      }
+    ]
+  },
+  {
+    "Description": "PBM Portable Pixelmap Graphic",
+    "Extensions": [ "ppm" ],
+    "MimeTypes": [ "image/x-portable-pixmap" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "P3",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "P6",
+        "Type": "Content"
+      }
+    ]
+  },
+  {
+    "Description": "Silicon Graphics RGB Bitmap",
+    "Extensions": [ "rgb" ],
+    "MimeTypes": [ "image/x-rgb" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "01da01010003",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "X Bitmap Graphic",
+    "Extensions": [ "xbm" ],
+    "MimeTypes": [ "image/x-xbitmap" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "X Picsmap Graphic",
+    "Extensions": [ "xpm" ],
+    "MimeTypes": [ "image/x-xpixmap" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "message/news",
+    "Extensions": [],
+    "MimeTypes": [ "message/news" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "Path:",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "Xref:",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "Article",
+        "Type": "Content"
+      }
+    ]
+  },
+  {
+    "Description": "message/rfc822",
+    "Extensions": [ "eml", "mht", "mhtml", "mime", "nws" ],
+    "MimeTypes": [ "message/rfc822" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "Relay-Version:",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "#! rnews",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "N#! rnews",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "Forward to",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "Pipe to",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "Return-Path:",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "From:",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "Message-ID:",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "Date:",
+        "Type": "Content"
+      }
+    ]
+  },
+  {
+    "Description": "Initial Graphics Exchange Specification Format",
+    "Extensions": [ "igs", "iges" ],
+    "MimeTypes": [ "model/iges" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "model/mesh",
+    "Extensions": [ "msh", "mesh", "silo" ],
+    "MimeTypes": [ "model/mesh" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Virtual Reality Modeling Language",
+    "Extensions": [ "wrl", "vrml" ],
+    "MimeTypes": [ "model/vrml" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Cascading Style Sheet",
+    "Extensions": [ "css" ],
+    "MimeTypes": [ "text/css" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Hypertext Markup Language (HTML)",
+    "Extensions": [ "htm", "html" ],
+    "MimeTypes": [ "text/html" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "\u003CHEAD",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "\u003Chead",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "\u003CTITLE",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "\u003CHEAD",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "\u003C!doctype html",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "\u003C!DOCTYPE HTML",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "\u003Chtml",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "\u003CHTML",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "\u003CH1",
+        "Type": "Content"
+      },
+      {
+        "Offset": 0,
+        "Value": "\u003Ch1",
+        "Type": "Content"
+      }
+    ]
+  },
+  {
+    "Description": "Text File",
+    "Extensions": [ "txt", "text", "pl", "log", "list", "ksh", "in", "diff", "def", "conf", "asc" ],
+    "MimeTypes": [ "text/plain" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Rich Text Document",
+    "Extensions": [ "rtx" ],
+    "MimeTypes": [ "text/richtext" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Rich Text Format File",
+    "Extensions": [ "rtf" ],
+    "MimeTypes": [ "text/rtf" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "{\\rtf",
+        "Type": "Content"
+      }
+    ]
+  },
+  {
+    "Description": "Standard Generalized Markup Language Document",
+    "Extensions": [ "sgml", "sgm" ],
+    "MimeTypes": [ "text/sgml" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Tab Separated Values File",
+    "Extensions": [ "tsv" ],
+    "MimeTypes": [ "text/tab-separated-values" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Wireless Markup Language File",
+    "Extensions": [ "wml" ],
+    "MimeTypes": [ "text/vnd.wap.wml" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "WML Script",
+    "Extensions": [ "wmls" ],
+    "MimeTypes": [ "text/vnd.wap.wmlscript" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Extensible Markup Language File",
+    "Extensions": [ "xml", "xsl" ],
+    "MimeTypes": [ "text/xml" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "\u003C?xml",
+        "Type": "Content"
+      },
+      {
+        "Offset": 3,
+        "Value": "\u003C?xml",
+        "Type": "Content"
+      }
+    ]
+  },
+  {
+    "Description": "Setext (Structure Enhanced Text)",
+    "Extensions": [ "etx" ],
+    "MimeTypes": [ "text/x-setext" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "MPEG Movie Clip",
+    "Extensions": [ "mpg", "mpeg", "mpe" ],
+    "MimeTypes": [ "video/mpeg" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "000001b3",
+        "Type": "Bytes"
+      },
+      {
+        "Offset": 0,
+        "Value": "000001ba",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "QuickTime Video Clip",
+    "Extensions": [ "mov", "qt" ],
+    "MimeTypes": [ "video/quicktime" ],
+    "MagicBytes": [
+      {
+        "Offset": 4,
+        "Value": "moov",
+        "Type": "Content"
+      },
+      {
+        "Offset": 4,
+        "Value": "mdat",
+        "Type": "Content"
+      }
+    ]
+  },
+  {
+    "Description": "video/vnd.mpegurl",
+    "Extensions": [ "mxu" ],
+    "MimeTypes": [ "video/vnd.mpegurl" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Audio Video Interleave File",
+    "Extensions": [ "avi" ],
+    "MimeTypes": [ "video/x-msvideo" ],
+    "MagicBytes": [
+      {
+        "Offset": 8,
+        "Value": "41564920",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "QuickTime Movie",
+    "Extensions": [ "movie" ],
+    "MimeTypes": [ "video/x-sgi-movie" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Windows Media Video",
+    "Extensions": [ "wmv" ],
+    "MimeTypes": [ "video/x-ms-wmv" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "3026B2758E66CF11A6D900AA0062CE6C",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "Cooltalk Audio",
+    "Extensions": [ "ice" ],
+    "MimeTypes": [ "x-conference/x-cooltalk" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "7-Zip Archive",
+    "Extensions": [ "7z" ],
+    "MimeTypes": [ "application/x-7z-compressed" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "377ABCAF271C",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "Third Generation Partnership Project Video",
+    "Extensions": [ "3gp", "3g2" ],
+    "MimeTypes": [ "video/3gpp" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "667479703367",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "Third Generation Partnership Project Audio",
+    "Extensions": [ "3gp", "3g2" ],
+    "MimeTypes": [ "audio/3gpp" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "667479703367",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "Comma Seperated Values",
+    "Extensions": [ "csv" ],
+    "MimeTypes": [ "text/csv", "application/vnd.ms-excel" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Macro Enabled Word Document",
+    "Extensions": [ "docm" ],
+    "MimeTypes": [ "application/vnd.ms-word.document.macroEnabled.12" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "MS Word Document",
+    "Extensions": [ "docx" ],
+    "MimeTypes": [ "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "504B0304",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "Autodesk Drawing File",
+    "Extensions": [ "dwg" ],
+    "MimeTypes": [ "image/vnd.dwg" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Kodak FlashPix Image",
+    "Extensions": [ "fpx" ],
+    "MimeTypes": [ "image/vnd.fpx" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "High Efficiency Image File Format",
+    "Extensions": [ "heic", "heif" ],
+    "MimeTypes": [ "image/heic" ],
+    "MagicBytes": [
+      {
+        "Offset": 4,
+        "Value": "66747970686569",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "Advanced Audio Coding",
+    "Extensions": [ "mp4", "aac", "m4a" ],
+    "MimeTypes": [ "audio/aac", "audio/x-aac", "audio/mp4" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Protected MPEG-4",
+    "Extensions": [ "m4v", "mp4", "mp4v", "mpg4" ],
+    "MimeTypes": [ "video/x-m4v", "video/mp4" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Markdown File",
+    "Extensions": [ "md", "markdown", "mdown", "markdn" ],
+    "MimeTypes": [ "text/markdown", "text/x-markdown" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "Oasis Spreadsheet",
+    "Extensions": [ "ods" ],
+    "MimeTypes": [ "application/vnd.oasis.opendocument.spreadsheet" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "504B0304",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "Oasis Text File",
+    "Extensions": [ "odt" ],
+    "MimeTypes": [ "application/vnd.oasis.opendocument.text" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "504B0304",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "Macro Enabled Powerpoint",
+    "Extensions": [ "pptm" ],
+    "MimeTypes": [ "application/vnd.ms-powerpoint.presentation.macroenabled.12" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "MS Powerpoint",
+    "Extensions": [ "pptx" ],
+    "MimeTypes": [ "application/vnd.openxmlformats-officedocument.presentationml.presentation" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "504B0304",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "Macro Enabled Excel",
+    "Extensions": [ "xlsm" ],
+    "MimeTypes": [ "application/vnd.ms-excel.sheet.macroenabled.12" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "MS Excel workbook",
+    "Extensions": [ "xlsx" ],
+    "MimeTypes": [ "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "504B0304",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "Macro Enabled Excel Template",
+    "Extensions": [ "xltm" ],
+    "MimeTypes": [ "application/vnd.ms-excel.template.macroenabled.12" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "application/vnd.ms-pki.stl",
+    "Extensions": [ "stl" ],
+    "MimeTypes": [ "application/vnd.ms-pki.stl" ],
+    "MagicBytes": []
+  },
+  {
+    "Description": "VBScript Encoded script",
+    "Extensions": [ "vbe" ],
+    "MimeTypes": [],
+    "MagicBytes": [
+      {
+        "Offset": 0,
+        "Value": "23407E5E",
+        "Type": "Bytes"
+      }
+    ]
+  },
+  {
+    "Description": "Scalable Vector Graphic",
+    "Extensions": [ "svg" ],
+    "MimeTypes": [ "image/svg+xml", "image/svg" ],
+    "MagicBytes": []
+  }
+]

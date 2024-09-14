@@ -31,7 +31,7 @@ public class WarehouseDimensionTests {
 
     [Theory]
     [InlineData(typeof(Region), "Geographic Region ID", ColumnType.Key)] // Key Column naming convention
-    [InlineData(typeof(Region), "Code", ColumnType.Text)] // Simple property, no decoration or special handling
+    [InlineData(typeof(Region), "Slug", ColumnType.Text)] // Simple property, no decoration or special handling
     [InlineData(typeof(Region), "Compound Name", ColumnType.Text)] // Simple property, name title cased by default.
     [InlineData(typeof(Region), "The Title", ColumnType.Text)] // Dimension attribute rename
     public void DimensionHasColumn(Type entityType, string title, ColumnType columnType)

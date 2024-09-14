@@ -1,0 +1,14 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "provider": "unpkg",
+      "library": "roosterjs@8.2.6",
+      "destination": "wwwroot/lib/roosterjs/",
+      "files": [
+        "dist/rooster.js"
+      ]
+    }
+  ]
+}

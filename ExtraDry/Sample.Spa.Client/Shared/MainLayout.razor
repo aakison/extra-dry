@@ -1,0 +1,46 @@
+﻿@inherits LayoutComponentBase
+
+<Theme Icons="@AppViewModel.Icons">
+    <CascadingValue Value="@this">
+        <main>
+            <Header />
+            @if(!ViewExpanded) {
+                <SubModules />
+                <Statlets />
+                <ComponentMenu />
+            }
+            <section class="@ArticleClass">
+              <article>
+                @Body
+              </article>
+            </section>
+        </main>
+    </CascadingValue>
+</Theme>
+
+@code {
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+    public void Expand()
+    {
+        ViewExpanded = true;
+        StateHasChanged();
+    }
+
+    public void Compress()
+    {
+        ViewExpanded = false;
+        StateHasChanged();
+    }
+
+    [Inject]
+    public AppViewModel AppViewModel { get; set; } = null!;
+
+    public bool ViewExpanded { get; set; }
+
+    public string ArticleClass => ViewExpanded ? "expanded" : "compressed";
+
+}

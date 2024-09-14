@@ -3,7 +3,8 @@
 /// <summary>
 /// Designed to facility the validation of properties of objects, especially when not all of the object is validated.
 /// </summary>
-public class DataValidator {
+public class DataValidator
+{
 
     /// <summary>
     /// Validates all properties of the indicated object.
@@ -14,6 +15,15 @@ public class DataValidator {
         var validationContext = new ValidationContext(target, null, null);
         int previousCount = Errors.Count;
         Validator.TryValidateObject(target, validationContext, Errors, validateAllProperties: true);
+        var validatableComplexProperties = target.GetType().GetProperties()
+            .Where(e => e.PropertyType.GetInterface(nameof(IValidatableObject)) != null);
+        foreach(var property in validatableComplexProperties) {
+            var value = property.GetValue(target);
+            if(value != null) {
+                var innerContext = new ValidationContext(value, null, null);
+                Validator.TryValidateObject(value, innerContext, Errors, validateAllProperties: true);
+            }
+        }
         int currentCount = Errors.Count;
         return previousCount == currentCount;
     }
@@ -45,7 +55,7 @@ public class DataValidator {
         foreach(var propertyName in propertyNames) {
             validationContext.MemberName = propertyName;
             try {
-                var value = target?.GetType()?.GetProperty(propertyName)?.GetValue(target);
+                var value = target.GetType().GetProperty(propertyName)?.GetValue(target);
                 Validator.TryValidateProperty(value, validationContext, Errors);
                 var missing = string.IsNullOrWhiteSpace(value as string);
                 if(missing && forceRequired) {
@@ -60,6 +70,10 @@ public class DataValidator {
         return previousCount == currentCount; ;
     }
 
+    /// <summary>
+    /// Checks if the objects and properties that have been checked are valid.  If any are not, 
+    /// then throws a validation exception with all of the errors.
+    /// </summary>
     public void ThrowIfInvalid()
     {
         if(Errors.Any()) {
@@ -71,5 +85,5 @@ public class DataValidator {
     /// <summary>
     /// A list of all errors found by this data validator for all validation calls.
     /// </summary>
-    public IList<ValidationResult> Errors { get; } = new List<ValidationResult>();
+    public IList<ValidationResult> Errors { get; } = [];
 }

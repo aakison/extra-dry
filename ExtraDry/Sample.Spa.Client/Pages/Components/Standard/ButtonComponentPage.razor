@@ -1,0 +1,172 @@
+﻿@page "/components/standard/button"
+@using System.ComponentModel.DataAnnotations
+
+<section>
+    <h2>Button</h2>
+    <p>
+        The <code>&lt;Button&gt;</code> component exposes a button with icons.
+    </p>
+    <p>
+        Provides basic button functionality with two icons, one for context and one for visual affordance.
+        Use to ensure consistent interface aligned with Extra Dry controls that use buttons.
+    </p>
+</section>
+<section>
+    <h3>Basic Usage</h3>
+    <CodeBlock Lang="blazor">
+        &lt;Button @@onclick="OnButtonClick" Caption="@Caption" /&gt;
+
+        @@code {
+            private void OnButtonClick(MouseEventArgs args)
+            {
+                ++ClickCount;
+            }
+        }
+    </CodeBlock>
+    <p>
+        <Button @onclick="OnButtonClick" Caption="@Caption" />
+        <div>Click Counter: @ClickCount</div>
+    </p>
+
+    <h5>Try It Out</h5>
+    <form class="tryitout" onsubmit="return false;">
+        <div>
+            <label>Caption:</label>
+            <InputText @bind-Value="@Caption" />
+        </div>
+    </form>
+
+    <h3>More Usage</h3>
+    <p>Control the visual display by setting and showing, Icon, Caption, Affordance and Enabled.</p>
+    <CodeBlock Lang="blazor">
+        &lt;Button @@onclick="OnButtonClick" Caption="@Caption" ShowCaption="@ShowCaption" /&gt;
+
+        @@code {
+            private void OnButtonClick(MouseEventArgs args)
+            {
+                ++ClickCount;
+            }
+        }
+    </CodeBlock>
+    <p>
+        <Button @onclick="OnButtonClick" Caption="@Caption" ShowCaption="@ShowCaption" Enabled="@Enabled"
+            Icon="@Icon" ShowIcon="@ShowIcon" 
+            Affordance="@Affordance" ShowAffordance="@ShowAffordance" />
+        <div>Click Counter: @ClickCount</div>
+    </p>
+
+    <h5>Try It Out</h5>
+    <form class="tryitout" onsubmit="return false;">
+        <div>
+            <label>Caption:</label>
+            <InputText @bind-Value="@Caption" />
+        </div>
+        <div>
+            <label>Show Caption:</label>
+            <InputCheckbox @bind-Value="@ShowCaption" />
+        </div>
+        <div>
+            <label>Icon:</label>
+            <InputText @bind-Value="@Icon" />
+        </div>
+        <div>
+            <label>Show Icon:</label>
+            <InputCheckbox @bind-Value="@ShowIcon" />
+        </div>
+        <div>
+            <label>Affordance:</label>
+            <InputText @bind-Value="@Affordance" />
+        </div>
+        <div>
+            <label>Show Affordance:</label>
+            <InputCheckbox @bind-Value="@ShowAffordance" />
+        </div>
+        <div>
+            <label>Enabled:</label>
+            <InputCheckbox @bind-Value="@Enabled" />
+        </div>
+    </form>
+
+    <h3>Advanced Usage</h3>
+    <p>Control the visual display by hiding icons and caption and instead providing child content.</p>
+    <CodeBlock Lang="blazor">
+        &lt;Button @@onclick="OnButtonClick" Caption="@Caption" ShowCaption="false" &gt;
+          &lt;span>click to &lt;b>increment&lt;/b> counter&lt;/span>
+        &lt;/Button&gt;
+        @@code {
+            private void OnButtonClick(MouseEventArgs args)
+            {
+                ++ClickCount;
+            }
+        }
+    </CodeBlock>
+    <p>
+        <Button @onclick="OnButtonClick" Caption="@Caption" ShowCaption="false">
+            <span>click to <b>increment</b> counter</span>
+        </Button>
+        <div>Click Counter: @ClickCount</div>
+    </p>
+
+</section>
+<section>
+    <h3>Configuration</h3>
+    <p>
+        This is a standalone component, no configuration is required.
+    </p>
+    <h5>Semantic Styles</h5>
+    <p>
+        The control is rendered as a <code>&lt;button&gt;</code> enclosing Icons and a <code>&lt;span&gt;</code>.  
+        When child content is present it is rendered next to the <code>&lt;span&gt;</code> with no additional markup.  The Icons may 
+        render as either <code>&lt;i&gt;</code> or <code>&lt;img&gt;</code> depending on how the Icons are registered.  The sample below
+        shows one of each.
+    </p>
+    <CodeBlock lang="HTML">
+        &lt;button class="button" &gt;
+            &lt;img class="icon" id="uniqueId" type="checkbox" /&gt;
+            &lt;span class="content">...&lt;/span&gt;
+            &lt;!-- optional child content rendered here -->
+            &lt;i class="affordance" id="uniqueId" type="checkbox" /&gt;
+        &lt;button>
+    </CodeBlock>
+</section>
+<section>
+    <h3>Tips &amp; Practices</h3>
+    <ul>
+        <li>Caption must always be provided, even if ShowCaption is `false`.  For accessibility, the 
+            caption is also displayed in the title for screen readers.
+        </li>
+        <li>Icon keys can be fonts (try 'edit', 'plus', 'filter', 'expand'), or images (try 
+            'modules', 'alerts'), and even site logos and hero icons. (try 'logo', 'assets')
+        </li>
+        <li>View Source to see the rendered caption, even when caption is not shown.</li>
+    </ul>
+</section>
+<section>
+    <h3>See Also</h3>
+    <ul>
+        <li><a href="/components/dry/dry-button">DryButton Component</a></li>
+    </ul>
+</section>
+
+@code {
+    private string Caption { get; set; } = "Click Me!";
+
+    private bool ShowCaption { get; set; } = true;
+
+    private string Icon { get; set; } = "plus";
+
+    private bool ShowIcon { get; set; } = true;
+
+    private string Affordance { get; set; } = "chevron-down";
+
+    private bool ShowAffordance { get; set; } = true;
+
+    private int ClickCount { get; set; } = 0;
+
+    private bool Enabled { get; set; } = true;
+
+    private void OnButtonClick(MouseEventArgs args)
+    {
+        ++ClickCount;
+    }
+}

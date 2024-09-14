@@ -1,6 +1,6 @@
 ﻿@typeparam T
 
-<tr class="@CssClass" @onclick="RowClick" style="height: @($"{Height}px")">
+<tr data-uuid="@UuidValue" class="@CssClasses" @onclick="RowClick" @ondblclick="RowDoubleClick" style="height: @($"{Height}px")">
     @switch(Description.ListSelectMode) {
         case ListSelectMode.Multiple:
             <td class="checkbox"><input type="checkbox" @onchange="CheckChanged" checked="@IsSelected" /></td>
@@ -12,30 +12,42 @@
             break;
     }
     @foreach(var column in Description.TableProperties) {
-        var cssClass = column.DisplayClass;
+        var cssClass = column.ItemDisplayClass(Item.Item);
         var displayValue = column.DisplayValue(Item.Item);
-        if (column.HasDiscreteValues) {
+        var hyperlink = Description.HyperLinkFor(column.Property.Name);
+        if(column.HasDiscreteValues) {
             var enumValue = column.GetValue(Item.Item);
-            cssClass += $" {enumValue.ToString().ToLowerInvariant()}";
+            cssClass += $" {enumValue?.ToString()?.ToLowerInvariant()}";
         }
         <td class="@cssClass" data-label="@column.ColumnCaption">
-            @if(column.Property.Name == Grouping?.GroupingColumn) {
-                var cssGroupClass = $"level{Grouping.GroupingDepth}";
-                var cssAction = (Grouping.IsGroup, Grouping.IsExpanded) switch {
+            @if(column.Property.Name == GroupColumn) {
+                var cssAction = (Item.IsGroup, Item.IsExpanded) switch {
                     (false, _) => "child",
                     (true, false) => "collapsed",
                     (true, true) => "expanded"
                 };
-                <span class="group @cssAction @cssGroupClass" @onclick="(e => Grouping.Toggle())" @onclick:stopPropagation="true"></span>
+                @if (Item.Item is IHierarchyEntity)
+                {
+                    <DryTableHierarchyExpander Item="@Item" />
+                }
+                <span class="group @cssAction">@displayValue</span>
             }
-            <span class="@cssClass">@displayValue</span>
+            else if(hyperlink == null) {
+                <span class="@cssClass">@displayValue</span>
+            }
+            else {
+                var context = @hyperlink.Execute(Item.Item);
+                <span class="@cssClass"><a class="@context.DisplayClass" href="@context.Href" title="@context.Title">@displayValue</a></span>
+            }
         </td>
     }
     @if(Description.ContextCommands.Any()) {
         <td class="commands">
-            @foreach(var command in Description.ContextCommands) {
-                <DryButton Command="@command" Target="@Item.Item" IconOnly="true" />
-            }
+            <div class="contextCommands">
+                @foreach(var command in Description.ContextCommands) {
+                    <DryButton Command="@command" Model="@Item.Item" IconOnly="true" />
+                }
+            </div>
         </td>
     }
 </tr>
