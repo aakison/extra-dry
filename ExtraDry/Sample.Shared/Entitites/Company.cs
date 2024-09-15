@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sample.Shared;
@@ -76,6 +76,7 @@ public class Company : IResourceIdentifiers {
 
     [EmailAddress, StringLength(100)]
     [Rules(RuleAction.IgnoreDefaults)]
+    [InputFormat(SizeOverride = PropertySize.Jumbo)]
     public string ContactEmail { get; set; } = "";
 
     [Precision(18, 2)]

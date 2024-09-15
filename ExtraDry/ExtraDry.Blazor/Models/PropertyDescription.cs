@@ -124,7 +124,10 @@ public class PropertyDescription
 
     public PropertyInfo Property { get; set; }
 
-    public PropertySize Size { get; set; }
+    /// <summary>
+    /// The calculated size of the property.
+    /// </summary>
+    public PropertySize Size { get; private set; }
 
     public string NullDisplayText { get; set; }
 
@@ -344,6 +347,10 @@ public class PropertyDescription
     private PropertySize PredictSize()
     {
         if(Property.PropertyType == typeof(string)) {
+            var overrideSize = InputFormat?.SizeOverride ?? PropertySize.Unset;
+            if(overrideSize != PropertySize.Unset) {
+                return overrideSize;
+            }
             var length = FieldLength ?? 1000;
             if(length <= 25) {
                 return PropertySize.Small;
