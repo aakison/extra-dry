@@ -174,9 +174,7 @@ public static class QueryableExtensions {
         }
         else {
             // For anything other than ProviderDefaultsOnly, add a default sort for stabilization.
-            if(SortStabilization == SortStabilization.AddKeyWhenUnsorted ||
-                SortStabilization == SortStabilization.PrimaryKey)
-            {
+            if(SortStabilization == SortStabilization.PrimaryKey) {
                 query = query.OrderBy(modelDescription.StabilizerProperty.ExternalName);
             }
         }

@@ -4,6 +4,7 @@
 /// Defines the behaviour of ExtraDry when providing a sort method to an underlying data store.
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1069:Enums values should not be duplicated", Justification = "Only during obsolesence, then will be removed.")]
 public enum SortStabilization
 {
     /// <summary>

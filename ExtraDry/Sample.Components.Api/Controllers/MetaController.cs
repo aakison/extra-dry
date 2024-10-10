@@ -15,6 +15,7 @@ namespace Sample.Components.Api.Controllers;
 [ApiController]
 [SkipStatusCodePages]
 [ApiExceptionStatusCodes]
+[SuppressMessage("Usage", "DRY1018:API Controller Classes should not directly use DbContext.", Justification = "Special initialization case.")]
 public class MetaController(
     ILogger<TenantController> logger,
     CosmosClient cosmos,

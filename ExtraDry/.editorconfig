@@ -34,10 +34,14 @@ dotnet_diagnostic.CA1716.severity = none # Identifiers should not match keywords
 dotnet_diagnostic.CA1848.severity = none # For improved performance, use ILogger delegates
 
 
+# IDE0130: Namespace does not match folder structure, better for consumers to have a simplified experience
+dotnet_style_namespace_match_folder = false
+# IDE0160: Convert to block scoped namespace
+csharp_style_namespace_declarations = file_scoped
+
 [*.{cshtml,xml,html,css}]
 indent_style = space
 indent_size = 2
-
 
 [*.md]
 indent_style = space

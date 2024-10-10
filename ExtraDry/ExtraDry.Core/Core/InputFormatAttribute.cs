@@ -25,10 +25,10 @@ public class InputFormatAttribute : Attribute
     /// </summary>
     public string? Affordance { get; set; }
 
-    /// <summary>
-    /// Gets or sets the size that this field should be displayed.  If this property is not set 
-    /// then the presentation layer will automatically determine the size.  Setting this property
-    /// explicitly allows an override of the default behavior of the presentation layer.
-    /// </summary>
-    public PropertySize SizeOverride { get; set; }
+    // <summary>
+    // Gets or sets the size that this field should be displayed.  If this property is not set 
+    // then the presentation layer will automatically determine the size.  Setting this property
+    // explicitly allows an override of the default behavior of the presentation layer.
+    // </summary>
+    //public PropertySize SizeOverride { get; set; }
 }

@@ -63,12 +63,12 @@ public partial class DryFlexiSelect : DryPropertyComponentBase, IExtraDryCompone
     protected IList<ValueDescription>? Data { get; set; }
 
     private ValueDescription? LocalValue {
-        get => value;
+        get => localValue;
         set {
-            this.value = value;
-            Property?.SetValue(Model, this.value?.Key);
+            this.localValue = value;
+            Property?.SetValue(Model, this.localValue?.Key);
         }
     }
-    private ValueDescription? value;
+    private ValueDescription? localValue;
 
 }
