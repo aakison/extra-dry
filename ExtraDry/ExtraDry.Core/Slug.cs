@@ -34,11 +34,16 @@ public static class Slug
     /// <summary>
     /// Given a UUID, create a matching Slug that is slightly more URI friendly.
     /// </summary>
+    /// <remarks>
+    /// The UUID is converted to a string and each character is replaced with a more URI friendly 
+    /// character.  The alpha characters are also remapped to retain sorting order.  This was 
+    /// introduced with the introduction of V7 UUIDs which are also sortable based on time created.
+    /// </remarks>
     public static string ToSlug(Guid uuid)
     {
         return new string(uuid.ToString().Select(SlugChar).ToArray());
 
-        static char SlugChar(char c) => char.IsDigit(c) ? "mnorsuvwxz"[c - '0'] : c;
+        static char SlugChar(char c) => char.IsDigit(c) ? "acemnopqrs"[c - '0'] : char.IsLetter(c) ? "uvwxyz"[c - 'a'] : c;
     }
 
     /// <summary>
