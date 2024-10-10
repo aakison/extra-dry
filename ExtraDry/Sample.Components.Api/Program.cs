@@ -19,10 +19,16 @@ var builder = WebApplication.CreateBuilder(args);
 var apiOptions = new ApiOptions();
 builder.Configuration.Bind(ApiOptions.SectionName, apiOptions);
 builder.Services.AddSingleton(apiOptions);
+
+// Add ExtraDry services, no sort key as CosmosDB is already stable.
 builder.Services.AddExtraDry(options => {
-    options.Stabilization = SortStabilization.ProviderDefaultsOnly;
+    options.Stabilization = SortStabilization.None;
 });
+
+// Add the actual API endpoints
 builder.Services.AddControllers();
+
+// Add services for configuring Swagger and SwaggerUI (nee Swashbuckle) https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => {
     options.AddSecurityDefinition(name: "Bearer", securityScheme: new OpenApiSecurityScheme {
