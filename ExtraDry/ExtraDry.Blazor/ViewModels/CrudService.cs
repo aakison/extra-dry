@@ -27,17 +27,6 @@ public class CrudService<T>(
 {
     public CrudServiceOptions Options { get; } = options;
 
-    [Obsolete("Inject arguments into HtttpClient derived type")]
-    public async Task CreateAsync(T item, params object[] args)
-    {
-        var json = JsonSerializer.Serialize(item);
-        using var content = new StringContent(json, Encoding.UTF8, "application/json");
-        var endpoint = ApiEndpoint(nameof(CreateAsync), string.Empty, args);
-        logger.LogEndpointCall(typeof(T), endpoint);
-        var response = await client.PostAsync(endpoint, content);
-        await response.AssertSuccess(logger);
-    }
-
     public async Task CreateAsync(T item, CancellationToken cancellationToken = default)
     {
         var json = JsonSerializer.Serialize(item);
@@ -46,17 +35,6 @@ public class CrudService<T>(
         logger.LogEndpointCall(typeof(T), endpoint);
         var response = await client.PostAsync(endpoint, content, cancellationToken);
         await response.AssertSuccess(logger);
-    }
-
-    [Obsolete("Inject arguments into HttpClient derived type")]
-    public async Task<T?> RetrieveAsync(object key, params object[] args)
-    {
-        var endpoint = ApiEndpoint(nameof(RetrieveAsync), key, args);
-        logger.LogEndpointCall(typeof(T), endpoint);
-        var response = await client.GetAsync(endpoint);
-        await response.AssertSuccess(logger);
-        var item = await response.Content.ReadFromJsonAsync<T>();
-        return item;
     }
 
     public async Task<T?> RetrieveAsync(object key, CancellationToken cancellationToken = default)
@@ -69,29 +47,11 @@ public class CrudService<T>(
         return item;
     }
 
-    [Obsolete("Inject arguments into HtttpClient derived type")]
-    public async Task UpdateAsync(object key, T item, params object[] args)
-    {
-        var endpoint = ApiEndpoint(nameof(UpdateAsync), key, args);
-        logger.LogEndpointCall(typeof(T), endpoint);
-        var response = await client.PutAsJsonAsync(endpoint, item);
-        await response.AssertSuccess(logger);
-    }
-
     public async Task UpdateAsync(object key, T item, CancellationToken cancellationToken = default)
     {
         var endpoint = ApiEndpoint(nameof(UpdateAsync), key);
         logger.LogEndpointCall(typeof(T), endpoint);
         var response = await client.PutAsJsonAsync(endpoint, item, cancellationToken);
-        await response.AssertSuccess(logger);
-    }
-
-    [Obsolete("Inject arguments into HtttpClient derived type")]
-    public async Task DeleteAsync(object key, params object[] args)
-    {
-        var endpoint = ApiEndpoint(nameof(DeleteAsync), key, args);
-        logger.LogEndpointCall(typeof(T), endpoint);
-        var response = await client.DeleteAsync(endpoint);
         await response.AssertSuccess(logger);
     }
 

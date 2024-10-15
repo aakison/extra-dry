@@ -83,6 +83,18 @@ public class DataValidator
     }
 
     /// <summary>
+    /// Throws a validation exception if the object is not valid.  Shortcut for constructing a new 
+    /// DataValidator when only a single target is to be checked.
+    /// </summary>
+    /// <param name="target">The object that is checked for validity.</param>
+    public static void ThrowIfInvalid(object target)
+    {
+        var validator = new DataValidator();
+        validator.ValidateObject(target);
+        validator.ThrowIfInvalid();
+    }
+
+    /// <summary>
     /// A list of all errors found by this data validator for all validation calls.
     /// </summary>
     public IList<ValidationResult> Errors { get; } = [];

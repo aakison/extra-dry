@@ -18,7 +18,10 @@ public static class ServiceCollectionExtensions {
     }
 
     /// <summary>
-    /// Adds a strongly typed <see cref="CrudService{T}" /> to the service collection.
+    /// Adds a strongly typed <see cref="CrudService{T}" /> to the service collection.  See 
+    /// <see cref="AddCrudService{T}(IServiceCollection, Action{CrudServiceOptions})"/> for 
+    /// additional options. Particlularly useful for specifying the HttpClient to use in multi-
+    /// tenant deployments.
     /// </summary>
     public static IServiceCollection AddCrudService<T>(this IServiceCollection services, string endpointTemplate)
     {
@@ -28,12 +31,15 @@ public static class ServiceCollectionExtensions {
         return services;
     }
 
+    /// <summary>
+    /// Adds a strongly typed <see cref="CrudService{T}" /> to the service collection.
+    /// </summary>
     public static IServiceCollection AddCrudService<T>(this IServiceCollection services, Action<CrudServiceOptions> config)
     {
         var options = new CrudServiceOptions();
         config(options);
 
-        new DataValidator().ValidateObject(options);
+        DataValidator.ThrowIfInvalid(options);
 
         services.AddScoped(e => {
             var client = GetHttpClient(e, options);
@@ -60,7 +66,7 @@ public static class ServiceCollectionExtensions {
         var options = new StatServiceOptions();
         config(options);
 
-        new DataValidator().ValidateObject(options);
+        DataValidator.ThrowIfInvalid(options);
 
         services.AddScoped(e => {
             var client = GetHttpClient(e, options);
@@ -86,33 +92,17 @@ public static class ServiceCollectionExtensions {
         return services;
     }
 
-    public static IServiceCollection AddFilteredListService<T, THttpClient>(this IServiceCollection services, string endpoint)
-        where THttpClient : HttpClient
-    {
-        services.AddListService<T>(options => {
-            options.ListEndpoint = endpoint;
-            options.ListMode = ListServiceMode.Filter;
-            options.HttpClientType = typeof(THttpClient);
-        });
-        return services;
-    }
-
+    /// <summary>
+    /// Adds a strongly typed <see cref="ListService{TItem}"/> that provides a 
+    /// <see cref="SortedCollection{T}"/> to the service collection.  Also registers the 
+    /// service using the interfaces <see cref="IListService{T}"/> 
+    /// and <see cref="IOptionProvider{T}"/>.
+    /// </summary>
     public static IServiceCollection AddSortedListService<T>(this IServiceCollection services, string endpoint)
     {
         services.AddListService<T>(options => {
             options.ListEndpoint = endpoint;
             options.ListMode = ListServiceMode.FilterAndSort;
-        });
-        return services;
-    }
-
-    public static IServiceCollection AddSortedListService<T, THttpClient>(this IServiceCollection services, string endpoint)
-        where THttpClient : HttpClient
-    {
-        services.AddListService<T>(options => {
-            options.ListEndpoint = endpoint;
-            options.ListMode = ListServiceMode.FilterAndSort;
-            options.HttpClientType = typeof(THttpClient);
         });
         return services;
     }
@@ -131,17 +121,11 @@ public static class ServiceCollectionExtensions {
         return services;
     }
 
-    public static IServiceCollection AddPagedListService<T, THttpClient>(this IServiceCollection services, string endpoint)
-        where THttpClient : HttpClient
-    {
-        services.AddListService<T>(options => {
-            options.ListEndpoint = endpoint;
-            options.ListMode = ListServiceMode.FilterSortAndPage;
-            options.HttpClientType = typeof(THttpClient);
-        });
-        return services;
-    }
-
+    /// <summary>
+    /// Adds a strongly typed <see cref="ListService{TItem}"/> to the service collection.  Also
+    /// registers the service using the interfaces <see cref="IListService{T}"/> and
+    /// <see cref="IOptionProvider{T}"/>.
+    /// </summary>
     public static IServiceCollection AddListService<T>(this IServiceCollection services, Action<ListServiceOptions> config)
     {
         var options = new ListServiceOptions();
