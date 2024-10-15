@@ -11,6 +11,7 @@ namespace Sample.Spa.Backend.SampleData;
 [ApiController]
 [ApiExplorerSettings(GroupName = ApiGroupNames.ReferenceCodes)]
 [ApiExceptionStatusCodes]
+[SuppressMessage("Usage", "DRY1018:API Controller Classes should not directly use DbContext.", Justification = "Sample Setup")]
 public class SampleDataController(
     SampleContext database, 
     SampleDataService sampleData)

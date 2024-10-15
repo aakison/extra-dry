@@ -19,8 +19,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\ExtraDry.Server\ExtraDry.Server.csproj" />
-		<ProjectReference Include="..\Sample.Components.Shared\Sample.Components.Shared.csproj" />
+    <ProjectReference Include="..\ExtraDry.Server\ExtraDry.Server.csproj" />
+    <ProjectReference Include="..\ExtraDry.Blazor\ExtraDry.Blazor.csproj" />
+    <ProjectReference Include="..\Sample.Components.Shared\Sample.Components.Shared.csproj" />
 	</ItemGroup>
 
 </Project>

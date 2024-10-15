@@ -1,4 +1,5 @@
 ﻿using ExtraDry.Blazor;
+using ExtraDry.Blazor.Internal;
 using ExtraDry.Server.Agents;
 
 namespace Sample.Components.Agent;
