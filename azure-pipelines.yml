@@ -135,3 +135,12 @@ steps:
   condition: and(succeeded(), eq(variables.isForDeployment, true))
   inputs:
     PathtoPublish: '$(build.artifactstagingdirectory)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Publish NuGet Packages'
+  condition: and(succeeded(), eq(variables.isForDeployment, true))
+  inputs:
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+    nuGetFeedType: 'internal'
+    publishVstsFeed: 'ExtraDry/ExtraDry'

@@ -20,7 +20,7 @@ public class ThemeInfo {
     /// <see cref="ValidationBoundary"/> component to catch validation errors and display them using this
     /// component reference.
     /// </summary>
-    public Type ValidationMessageComponent { get; set; } = typeof(ValidationSummary);
+    public Type ValidationMessageComponent { get; set; } = typeof(DryValidationSummary);
 
     /// <summary>
     /// The set of Icons that are currently available in the theme.  This information is used by

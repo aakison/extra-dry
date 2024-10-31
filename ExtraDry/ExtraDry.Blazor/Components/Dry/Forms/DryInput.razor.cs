@@ -185,7 +185,7 @@ public partial class DryInput<T>
     private void UpdateValidationUI(bool valid, string message)
     {
         // Remove common redundant portions of messages
-        ValidationMessage = ValidationSummary.FormatMessage(Property!.Property.Name, message);
+        ValidationMessage = DryValidationSummary.FormatMessage(Property!.Property.Name, message);
         Valid = valid;
         StateHasChanged();
     }

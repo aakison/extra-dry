@@ -6,5 +6,5 @@ public partial class ValidationBoundary : DryErrorBoundary
     [Parameter]
     public ValidationRenderMode MessageRenderMode { get; set; } = ValidationRenderMode.Before;
 
-    protected Type ValidationMessageType => ErrorComponent ?? ThemeInfo?.ValidationMessageComponent ?? typeof(ValidationSummary);
+    protected Type ValidationMessageType => ErrorComponent ?? ThemeInfo?.ValidationMessageComponent ?? typeof(DryValidationSummary);
 }
