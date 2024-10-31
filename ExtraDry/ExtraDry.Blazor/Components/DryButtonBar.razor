@@ -1,10 +1,10 @@
 ﻿@namespace ExtraDry.Blazor
 
-<div class="buttons">
+<div class="@CssClasses">
     @foreach(var context in new CommandContext[] { CommandContext.Primary, CommandContext.Alternate, CommandContext.Danger }) {
         var commands = SelectCommands(context);
-        @if(commands.Any()) {
-            var className = context.ToString().ToLowerInvariant();
+        if(commands.Any()) {
+            var className = $"{context.ToString().ToLowerInvariant()}-buttons";
             <div class="@className">
                 @foreach(var command in commands) { 
                     <DryButton Command="@command" Model="@Target" />

@@ -53,7 +53,8 @@ public partial class DryButton : ComponentBase, IExtraDryComponent {
     public object? Model { get; set; }
 
     /// <summary>
-    /// If both an icon and a caption are available (as defined in the `CommandAttribute` on the method), then display as an Icon only.
+    /// If both an icon and a caption are available (as defined in the `CommandAttribute` on the 
+    /// method), then display as an Icon only.
     /// </summary>
     [Parameter]
     public bool IconOnly { get; set; }
