@@ -68,6 +68,9 @@ public static class LoggerExtensions
             var nestedProperties = properties.Where(e => e.PropertyType.IsClass && 
                 (e.PropertyType.Namespace?.StartsWith(type.Namespace ?? "", StringComparison.Ordinal) ?? false));
             foreach(var property in properties.Except(nestedProperties)) {
+                if(property.GetCustomAttribute<JsonIgnoreAttribute>() != null) {
+                    continue;
+                }
                 Properties.Add($"{prefix}{property.Name}", property.GetValue(target)?.ToString() ?? "<null>");
             }
             var secureProperties = properties.Where(e => e.GetCustomAttribute<SecretAttribute>() != null);
