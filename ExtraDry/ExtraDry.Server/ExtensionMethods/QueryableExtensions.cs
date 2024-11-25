@@ -1,7 +1,5 @@
 ﻿using ExtraDry.Server.Internal;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using System.Linq.Expressions;
 
 namespace ExtraDry.Server;

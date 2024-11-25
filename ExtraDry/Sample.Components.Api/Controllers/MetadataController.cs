@@ -1,9 +1,3 @@
-using ExtraDry.Server;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Sample.Components.Api.Security;
-using Sample.Components.Api.Services;
-
 namespace Sample.Components.Api.Controllers;
 
 /// <summary>

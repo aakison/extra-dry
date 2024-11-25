@@ -1,5 +1,4 @@
-﻿using ExtraDry.Server.Internal;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ExtraDry.Server;

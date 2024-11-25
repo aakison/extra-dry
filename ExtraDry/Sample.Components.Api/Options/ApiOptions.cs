@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-
-namespace Sample.Components.Api.Options;
+﻿namespace Sample.Components.Api.Options;
 
 /// <summary>
 /// All options for the API.

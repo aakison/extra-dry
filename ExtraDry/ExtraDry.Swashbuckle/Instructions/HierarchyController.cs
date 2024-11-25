@@ -1,6 +1,5 @@
 ﻿using ExtraDry.Server;
 using Microsoft.AspNetCore.Authorization;
-using System.Diagnostics.CodeAnalysis;
 
 namespace ExtraDry.Swashbuckle.Instructions;
 

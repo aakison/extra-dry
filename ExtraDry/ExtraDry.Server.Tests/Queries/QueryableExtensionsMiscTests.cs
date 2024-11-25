@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
-
-namespace ExtraDry.Server.Tests;
+﻿namespace ExtraDry.Server.Tests;
 
 public class QueryableExtensionsMiscTests {
 

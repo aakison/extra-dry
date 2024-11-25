@@ -1,5 +1,4 @@
 ﻿using ExtraDry.Core.Internal;
-using System.Text;
 
 namespace ExtraDry.Blazor;
 

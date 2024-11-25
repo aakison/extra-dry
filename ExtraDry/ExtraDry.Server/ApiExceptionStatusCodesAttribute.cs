@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Filters;
-using System.ComponentModel;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net;
 using System.Security;
 

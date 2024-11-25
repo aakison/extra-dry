@@ -1,6 +1,5 @@
 ﻿using ExtraDry.Core.DataWarehouse;
 using ExtraDry.Server.DataWarehouse;
-using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.CodeAnalysis;
 
 namespace ExtraDry.Server.Tests.WarehouseTests;

@@ -1,8 +1,4 @@
 ﻿using ExtraDry.Server;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.CodeAnalysis;
 

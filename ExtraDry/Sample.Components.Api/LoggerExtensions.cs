@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace Sample.Components.Api;
+﻿namespace Sample.Components.Api;
 
 internal static partial class LoggerExtensions
 {

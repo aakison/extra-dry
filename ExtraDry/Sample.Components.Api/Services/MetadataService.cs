@@ -1,8 +1,4 @@
-﻿using ExtraDry.Core;
-using ExtraDry.Server;
-using Microsoft.EntityFrameworkCore;
-
-namespace Sample.Components.Api.Services;
+﻿namespace Sample.Components.Api.Services;
 
 /// <summary>
 /// Standard services for Metadata, each requiring a tenant partition for scope.

@@ -1,6 +1,4 @@
-﻿using System.Text.RegularExpressions;
-
-namespace ExtraDry.Core.Tests;
+﻿namespace ExtraDry.Core.Tests;
 
 public class SlugTests
 {

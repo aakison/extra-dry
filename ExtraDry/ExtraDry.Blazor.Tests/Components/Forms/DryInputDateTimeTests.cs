@@ -1,7 +1,6 @@
 ﻿using AngleSharp.Html.Dom;
 using ExtraDry.Blazor.Forms;
 using ExtraDry.Core;
-using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Text.Json.Serialization;
 

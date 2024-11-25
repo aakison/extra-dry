@@ -1,8 +1,6 @@
-﻿using Azure;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Routing;
 using System.Net;
-using static ExtraDry.Swashbuckle.ExtraDryGenOptions;
 
 namespace ExtraDry.Swashbuckle;
 

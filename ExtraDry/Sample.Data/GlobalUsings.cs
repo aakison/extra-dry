@@ -2,4 +2,3 @@
 global using ExtraDry.Server;
 global using Microsoft.EntityFrameworkCore;
 global using Sample.Shared;
-global using System.Globalization;

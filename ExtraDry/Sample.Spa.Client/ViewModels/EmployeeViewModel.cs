@@ -1,7 +1,4 @@
-﻿using ExtraDry.Blazor;
-using Sample.Shared;
-
-namespace Sample.Spa.Client;
+﻿namespace Sample.Spa.Client;
 
 public class EmployeeViewModel : ISubjectViewModel<Employee> {
 

@@ -1,8 +1,6 @@
-﻿using ExtraDry.Blazor;
-using ExtraDry.Blazor.Internal;
+﻿using ExtraDry.Blazor.Internal;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web.Virtualization;
-using Sample.Shared;
 
 namespace Sample.Spa.Client.Pages.Components.Standard;
 

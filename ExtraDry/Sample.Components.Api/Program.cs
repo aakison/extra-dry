@@ -2,7 +2,6 @@ using ExtraDry.Server;
 using ExtraDry.Server.Agents;
 using ExtraDry.Server.EF;
 using HealthChecks.UI.Client;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Azure.Cosmos;
 using Microsoft.OpenApi.Models;
