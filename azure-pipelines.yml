@@ -26,7 +26,7 @@ variables:
     value: $[in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/develop', 'refs/heads/release')]
   # Semantic Version details
   - name: majorMinorVersion
-    value: '0.8'
+    value: '0.9'
   - name: patchVersion
     value: $[counter(variables['majorMinorVersion'], 0)]
   # The 'pre-alpha' name covers instances where the CI process has been manually triggered from a
@@ -58,16 +58,16 @@ variables:
 
 steps:
 - task: UseDotNet@2
-  displayName: 'Install .NET 8.0 SDK'
+  displayName: 'Install .NET 9.0 SDK'
   inputs:
-    version: '8.0.x'
+    version: '9.0.x'
 
 - task: DotNetCoreCLI@2
   displayName: Install Entity Framework
   inputs:
     command: 'custom'
     custom: 'tool'
-    arguments: 'install --global dotnet-ef --version 8.0.8'
+    arguments: 'install --global dotnet-ef --version 9.0.0'
 
 - task: DotNetCoreCLI@2
   displayName: Restore
