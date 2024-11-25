@@ -1,6 +1,4 @@
-﻿using ExtraDry.Blazor.Components.Internal;
-
-namespace ExtraDry.Blazor;
+﻿namespace ExtraDry.Blazor;
 
 /// <summary>
 /// Generates a generic form for the creation and updating of a model.  Form layout is based on 

@@ -30,14 +30,14 @@ public partial class DryHierarchyFilter<TItem> : ComponentBase, IExtraDryCompone
     {
         if(QueryBuilder?.Level?.Expand() ?? false) {
             QueryBuilder.NotifyChanged();
-        }            
+        }
     }
 
     protected void DoFiltersCollapse(MouseEventArgs _)
     {
         if(QueryBuilder?.Level?.Collapse() ?? false) {
             QueryBuilder.NotifyChanged();
-        }   
+        }
     }
 
     private ViewModelDescription ViewModelDescription { get; set; }

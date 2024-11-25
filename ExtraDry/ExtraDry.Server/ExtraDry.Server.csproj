@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<PackageId>ExtraDry.Server</PackageId>
@@ -38,12 +38,12 @@
 
 	<ItemGroup>
 		<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.18.2" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.10" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.10">
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.0" />
 		<PackageReference Include="Pidgin" Version="3.3.0" />
 		<PackageReference Include="NCrontab" Version="3.3.3" />
 		<PackageReference Include="System.Linq.Expressions" Version="4.3.0" />
@@ -57,6 +57,7 @@
 	<Import Project="..\VulnerabilityFixes.targets" />
 	<ItemGroup>
 	  <PackageReference Update="Azure.Identity" Version="1.13.1" />
+	  <PackageReference Update="System.Formats.Asn1" Version="9.0.0" />
 	</ItemGroup>
 
 </Project>

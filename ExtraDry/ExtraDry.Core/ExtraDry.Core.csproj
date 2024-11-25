@@ -26,13 +26,13 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-		<PackageReference Include="System.Text.Json" Version="8.0.5" />
+		<PackageReference Include="System.Text.Json" Version="9.0.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.Abstractions" Version="8.0.10" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
-		<PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.Abstractions" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="9.0.0" />
 	</ItemGroup>
 
 	<Import Project="..\CommonAnalyzers.targets" />
@@ -48,6 +48,7 @@
 
 	<ItemGroup>
 	  <PackageReference Update="Azure.Identity" Version="1.13.1" />
+	  <PackageReference Update="System.Formats.Asn1" Version="9.0.0" />
 	</ItemGroup>
 
 </Project>

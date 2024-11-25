@@ -1,8 +1,8 @@
-﻿namespace ExtraDry.Blazor;
-
-using ExtraDry.Core.Models;
+﻿using ExtraDry.Core.Models;
 using Microsoft.Extensions.Logging;
 using System.Runtime.CompilerServices;
+
+namespace ExtraDry.Blazor;
 
 internal static partial class LoggerExtensions
 {

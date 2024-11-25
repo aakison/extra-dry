@@ -1,9 +1,11 @@
 ﻿namespace ExtraDry.Server.Tests.Rules;
 
-public class EntityFrameworkTests {
+public class EntityFrameworkTests
+{
 
     [Fact]
-    public async Task ExpungeUserWithoutAddress() {
+    public async Task ExpungeUserWithoutAddress()
+    {
         var database = GetPopulatedDatabase();
         var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var user = database.Users.First(e => e.Name == "Homeless");

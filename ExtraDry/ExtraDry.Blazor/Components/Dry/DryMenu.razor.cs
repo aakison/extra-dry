@@ -3,7 +3,8 @@
 /// <summary>
 /// Represents a type of navigation that is controlled using a menu.
 /// </summary>
-public partial class DryMenu : IExtraDryComponent {
+public partial class DryMenu : IExtraDryComponent
+{
 
     /// <inheritdoc cref="DryNavigation.Menu" />
     [Parameter, EditorRequired]

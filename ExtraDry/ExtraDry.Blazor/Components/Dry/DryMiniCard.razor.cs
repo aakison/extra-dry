@@ -1,6 +1,7 @@
 ﻿namespace ExtraDry.Blazor;
 
-public partial class DryMiniCard<TItem> : ComponentBase, IExtraDryComponent {
+public partial class DryMiniCard<TItem> : ComponentBase, IExtraDryComponent
+{
 
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
@@ -57,8 +58,8 @@ public partial class DryMiniCard<TItem> : ComponentBase, IExtraDryComponent {
         }
     }
 
-    private string ViewModelTitle => ViewModelHelper.Title(Model, ResolvedViewModel, null) 
-        ?? Model?.ToString() 
+    private string ViewModelTitle => ViewModelHelper.Title(Model, ResolvedViewModel, null)
+        ?? Model?.ToString()
         ?? "null";
 
     private string? ViewModelSubtitle => ViewModelHelper.Subtitle(Model, ResolvedViewModel, null);

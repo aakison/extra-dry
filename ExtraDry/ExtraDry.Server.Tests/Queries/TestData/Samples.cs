@@ -26,28 +26,28 @@ public static class Samples {
         get {
             if(regions == null) {
                 // Tier 1
-                var allRegions = new Region { Uuid = Guid.NewGuid(), Slug = "all", Title = "All Regions", Description = "The World", Level = RegionLevel.Global, Lineage = HierarchyId.Parse("/") };
+                Region allRegions = new() { Uuid = Guid.NewGuid(), Slug = "all", Title = "All Regions", Description = "The World", Level = RegionLevel.Global, Lineage = HierarchyId.Parse("/") };
 
-                var auRegion = new Region { Parent = allRegions, Slug = "AU", Title = "Australia", Description = "Australia", Level = RegionLevel.Country, Lineage = HierarchyId.Parse("/1/") };
-                var nzRegion = new Region { Parent = allRegions, Slug = "NZ", Title = "New Zealand", Description = "New Zealand", Level = RegionLevel.Country, Lineage = HierarchyId.Parse("/2/") };
+                Region auRegion = new() { Parent = allRegions, Slug = "AU", Title = "Australia", Description = "Australia", Level = RegionLevel.Country, Lineage = HierarchyId.Parse("/1/") };
+                Region nzRegion = new() { Parent = allRegions, Slug = "NZ", Title = "New Zealand", Description = "New Zealand", Level = RegionLevel.Country, Lineage = HierarchyId.Parse("/2/") };
 
                 // Tier 2
-                var vicRegion = new Region { Parent = auRegion, Slug = "AU-VIC", Title = "Victoria", Description = "Victoria, Australia", Level = RegionLevel.Division, Lineage = HierarchyId.Parse("/1/1/") };
-                var qldRegion = new Region { Parent = auRegion, Slug = "AU-QLD", Title = "Queensland", Description = "Queensland, Australia", Level = RegionLevel.Division, Lineage = HierarchyId.Parse("/1/2/") };
-                var nswRegion = new Region { Parent = auRegion, Slug = "AU-NSW", Title = "New South Wales", Description = "NSW, Australia", Level = RegionLevel.Division, Lineage = HierarchyId.Parse("/1/3/") };
-                var actRegion = new Region { Parent = auRegion, Slug = "AU-ACT", Title = "Canberra", Description = "Australian Capital Territory", Level = RegionLevel.Division, Lineage = HierarchyId.Parse("/1/4/") };
-                var tasRegion = new Region { Parent = auRegion, Slug = "AU-TAS", Title = "Tasmania", Description = "Tasmania", Level = RegionLevel.Division, Lineage = HierarchyId.Parse("/1/5/") };
-                var saRegion = new Region { Parent = auRegion, Slug = "AU-SA", Title = "South Australia", Description = "South Australia", Level = RegionLevel.Division, Lineage = HierarchyId.Parse("/1/6/") };
-                var ntRegion = new Region { Parent = auRegion, Slug = "AU-NT", Title = "Northern Territory", Description = "Northern Territory", Level = RegionLevel.Division, Lineage = HierarchyId.Parse("/1/7/") };
-                var waRegion = new Region { Parent = auRegion, Slug = "AU-WA", Title = "Western Australia", Description = "Western Australia", Level = RegionLevel.Division, Lineage = HierarchyId.Parse("/1/8/") };
+                Region vicRegion = new() { Parent = auRegion, Slug = "AU-VIC", Title = "Victoria", Description = "Victoria, Australia", Level = RegionLevel.Division, Lineage = HierarchyId.Parse("/1/1/") };
+                Region qldRegion = new() { Parent = auRegion, Slug = "AU-QLD", Title = "Queensland", Description = "Queensland, Australia", Level = RegionLevel.Division, Lineage = HierarchyId.Parse("/1/2/") };
+                Region nswRegion = new() { Parent = auRegion, Slug = "AU-NSW", Title = "New South Wales", Description = "NSW, Australia", Level = RegionLevel.Division, Lineage = HierarchyId.Parse("/1/3/") };
+                Region actRegion = new() { Parent = auRegion, Slug = "AU-ACT", Title = "Canberra", Description = "Australian Capital Territory", Level = RegionLevel.Division, Lineage = HierarchyId.Parse("/1/4/") };
+                Region tasRegion = new() { Parent = auRegion, Slug = "AU-TAS", Title = "Tasmania", Description = "Tasmania", Level = RegionLevel.Division, Lineage = HierarchyId.Parse("/1/5/") };
+                Region saRegion = new() { Parent = auRegion, Slug = "AU-SA", Title = "South Australia", Description = "South Australia", Level = RegionLevel.Division, Lineage = HierarchyId.Parse("/1/6/") };
+                Region ntRegion = new() { Parent = auRegion, Slug = "AU-NT", Title = "Northern Territory", Description = "Northern Territory", Level = RegionLevel.Division, Lineage = HierarchyId.Parse("/1/7/") };
+                Region waRegion = new() { Parent = auRegion, Slug = "AU-WA", Title = "Western Australia", Description = "Western Australia", Level = RegionLevel.Division, Lineage = HierarchyId.Parse("/1/8/") };
 
-                var aukRegion = new Region { Parent = nzRegion, Slug = "NZ-AUK", Title = "Auckland", Description = "Auckland, NZ", Level = RegionLevel.Division, Lineage = HierarchyId.Parse("/2/1/") };
-                var tkiRegion = new Region { Parent = nzRegion, Slug = "NZ-TKI", Title = "Taranaki", Description = "Taranaki, NZ", Level = RegionLevel.Division, Lineage = HierarchyId.Parse("/2/2/") };
+                Region aukRegion = new() { Parent = nzRegion, Slug = "NZ-AUK", Title = "Auckland", Description = "Auckland, NZ", Level = RegionLevel.Division, Lineage = HierarchyId.Parse("/2/1/") };
+                Region tkiRegion = new() { Parent = nzRegion, Slug = "NZ-TKI", Title = "Taranaki", Description = "Taranaki, NZ", Level = RegionLevel.Division, Lineage = HierarchyId.Parse("/2/2/") };
 
                 // Tier 3
-                var melbRegion = new Region { Parent = vicRegion, Slug = "AU-VIC-Melbourne", Title = "Melbourne City", Description = "Melbourne, Victoria, Australia", Level = RegionLevel.Subdivision, Lineage = HierarchyId.Parse("/1/1/1/") };
-                var brisRegion = new Region { Parent = qldRegion, Slug = "AU-QLD-Brisbane", Title = "Brisbane", Description = "Brisbane", Level = RegionLevel.Subdivision, Lineage = HierarchyId.Parse("/1/2/1/") };
-                var redRegion = new Region { Parent = qldRegion, Slug = "AU-QLD-Redlands", Title = "Redlands", Description = "City of Redlands", Level = RegionLevel.Subdivision, Lineage = HierarchyId.Parse("/1/2/2/") };
+                Region melbRegion = new() { Parent = vicRegion, Slug = "AU-VIC-Melbourne", Title = "Melbourne City", Description = "Melbourne, Victoria, Australia", Level = RegionLevel.Subdivision, Lineage = HierarchyId.Parse("/1/1/1/") };
+                Region brisRegion = new() { Parent = qldRegion, Slug = "AU-QLD-Brisbane", Title = "Brisbane", Description = "Brisbane", Level = RegionLevel.Subdivision, Lineage = HierarchyId.Parse("/1/2/1/") };
+                Region redRegion = new() { Parent = qldRegion, Slug = "AU-QLD-Redlands", Title = "Redlands", Description = "City of Redlands", Level = RegionLevel.Subdivision, Lineage = HierarchyId.Parse("/1/2/2/") };
 
                 regions = [allRegions, auRegion, nzRegion, vicRegion, qldRegion, nswRegion, actRegion, tasRegion, saRegion, ntRegion, waRegion, aukRegion, tkiRegion, melbRegion, brisRegion, redRegion];
             }

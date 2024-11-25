@@ -2,10 +2,9 @@
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
 
 namespace ExtraDry.Blazor;
-
-using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// A simple CRUD API service wrapper for Extra Dry service endpoints.  This wrapper assumes that 4 
