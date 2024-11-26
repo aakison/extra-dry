@@ -92,17 +92,29 @@ public class SelectionSet {
         Changed?.Invoke(this, args);
     }
 
-    public bool Contains(object item) => ExclusiveStorage ? !items.Contains(item) : items.Contains(item);
+    public bool Contains(object item)
+    {
+        return ExclusiveStorage ? !items.Contains(item) : items.Contains(item);
+    }
 
-    public bool Any() => ExclusiveStorage || items.Count != 0;
+    public bool Any()
+    {
+        return ExclusiveStorage || items.Count != 0;
+    }
 
     /// <summary>
     /// Indicates if a single selection is made, independent of whether multiple or single select mode is on.
     /// </summary>
     [SuppressMessage("Naming", "CA1720:Identifier contains type name", Justification = "Good enough for LINQ, good enough here.")]
-    public bool Single() => (!MultipleSelect || inclusiveStorage) && items.Count == 1;
+    public bool Single()
+    {
+        return (!MultipleSelect || inclusiveStorage) && items.Count == 1;
+    }
 
-    public bool All() => ExclusiveStorage && items.Count == 0;
+    public bool All()
+    {
+        return ExclusiveStorage && items.Count == 0;
+    }
 
     public IEnumerable<object> Items => items.AsEnumerable(); // TODO: Make function that can optionally supply super-set?
 

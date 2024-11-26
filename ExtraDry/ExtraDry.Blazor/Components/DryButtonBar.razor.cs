@@ -52,8 +52,10 @@ public partial class DryButtonBar : ComponentBase, IExtraDryComponent
         }
     }
 
-    private IEnumerable<CommandInfo> SelectCommands(CommandContext context) => Commands
-        .Where(e => e.Context == context)
-        .Where(e => Category == null || Category == e.Category);
-
+    private IEnumerable<CommandInfo> SelectCommands(CommandContext context)
+    {
+        return Commands
+            .Where(e => e.Context == context)
+            .Where(e => Category == null || Category == e.Category);
+    }
 }

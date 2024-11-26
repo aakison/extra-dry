@@ -10,7 +10,8 @@ namespace ExtraDry.Server.Security;
 /// a route, and a target object; and then determining if the user has access to a resource.
 /// Broken into it's own class to allow for easier testing.
 /// </summary>
-internal class AbacAuthorizationHelper(AbacOptions options) { 
+internal class AbacAuthorizationHelper(AbacOptions options)
+{
 
     /// <summary>
     /// Looks up the policies that match the target object and operation, returning true if 
@@ -45,8 +46,8 @@ internal class AbacAuthorizationHelper(AbacOptions options) {
     private List<AbacPolicy> GetMatchingPolicies(object target, AbacOperation operation)
     {
         var type = options.AbacTypeResolver(target);
-        var policies = options.Policies.Where(e => 
-            (e.Types.Count == 0 || e.Types.Contains(type)) && 
+        var policies = options.Policies.Where(e =>
+            (e.Types.Count == 0 || e.Types.Contains(type)) &&
             (e.Operations.Count == 0 || e.Operations.Contains(operation)))
             .ToList();
         return policies;
@@ -69,7 +70,10 @@ internal class AbacAuthorizationHelper(AbacOptions options) {
         if(condition.Roles.All(user.IsInRole) &&
             condition.Claims.All(claim => {
                 return user.HasClaim(c => {
-                    if(c.Type != claim.Key) return false;
+                    if(c.Type != claim.Key) {
+                        return false;
+                    }
+
                     var value = Expand(claim.Value, user, route, target);
                     if(value.StartsWith('/')) {
                         var regex = new Regex(value.TrimStart('/').TrimEnd('/'));

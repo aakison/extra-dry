@@ -1,14 +1,15 @@
 ﻿namespace ExtraDry.Blazor;
 
-public class ValueDescription : ISubjectViewModel {
+public class ValueDescription : ISubjectViewModel
+{
 
     public ValueDescription(object key, MemberInfo memberInfo)
     {
         Key = key;
 
         var display = memberInfo.GetCustomAttribute<DisplayAttribute>();
-        Title = display?.Name 
-            ?? memberInfo.Name; 
+        Title = display?.Name
+            ?? memberInfo.Name;
         // TODO: Format display name with global title case converter.
         AutoGenerate = display?.GetAutoGenerateField() ?? true;
     }
@@ -34,9 +35,13 @@ public class ValueDescription : ISubjectViewModel {
 
     public override bool Equals(object? obj)
     {
-        if(obj == null) return false;
+        if(obj == null) {
+            return false;
+        }
         var otherKey = (obj as ValueDescription)?.Key;
-        if(otherKey == null) return false;
+        if(otherKey == null) {
+            return false;
+        }
         return otherKey.Equals(Key);
     }
 

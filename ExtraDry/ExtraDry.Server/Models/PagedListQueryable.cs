@@ -16,12 +16,16 @@ public class PagedListQueryable<T> : SortedListQueryable<T>
     }
 
     /// <inheritdoc cref="IFilteredQueryable{T}.ToPagedCollection"/>
-    public PagedCollection<T> ToPagedCollection() =>
-        CreatePagedCollection(PagedQuery.ToList());
+    public PagedCollection<T> ToPagedCollection()
+    {
+        return CreatePagedCollection(PagedQuery.ToList());
+    }
 
     /// <inheritdoc cref="IFilteredQueryable{T}.ToPagedCollectionAsync(CancellationToken)" />
-    public async Task<PagedCollection<T>> ToPagedCollectionAsync(CancellationToken cancellationToken = default) =>
-        CreatePagedCollection(await ToListAsync(PagedQuery, cancellationToken));
+    public async Task<PagedCollection<T>> ToPagedCollectionAsync(CancellationToken cancellationToken = default)
+    {
+        return CreatePagedCollection(await ToListAsync(PagedQuery, cancellationToken));
+    }
 
     private PagedCollection<T> CreatePagedCollection(List<T> items)
     {
@@ -42,7 +46,7 @@ public class PagedListQueryable<T> : SortedListQueryable<T>
          *  of 5, this would result in 3 items being returned.  Therefore the continuation tokens
          *  skip and take values should be 13 and 5.
          */
-        var nextToken = items.Count == previousTake 
+        var nextToken = items.Count == previousTake
             ? lastToken.Next(skip, take)
             : new ContinuationToken(Query.Filter, sort, FilteredQuery.Count(), previousTake);
 

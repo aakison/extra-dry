@@ -1,6 +1,6 @@
 ﻿using ExtraDry.Server.Internal;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using System.Collections;
 using System.Linq.Expressions;
 
@@ -33,16 +33,22 @@ public class BaseQueryable<T> : IQueryable<T>
 
     public IQueryProvider Provider => PagedQuery.Provider;
 
-    public IEnumerator GetEnumerator() => PagedQuery.GetEnumerator();
+    public IEnumerator GetEnumerator()
+    {
+        return PagedQuery.GetEnumerator();
+    }
 
-    IEnumerator<T> IEnumerable<T>.GetEnumerator() => PagedQuery.GetEnumerator();
+    IEnumerator<T> IEnumerable<T>.GetEnumerator()
+    {
+        return PagedQuery.GetEnumerator();
+    }
 
     /// <summary>
     /// Helper to perform either a ToSingle or ToSingleAsync depending on the type of queryable.
     /// </summary>
     protected async Task<TItem> ToSingleAsync<TItem>(IQueryable<TItem> queryable, CancellationToken cancellationToken = default)
     {
-        if(queryable is IAsyncEnumerable<TItem>) {
+        if(queryable is IAsyncEnumerable<TItem> or EntityQueryable<TItem>) {
             // version for EF to database.
             return await queryable.SingleAsync(cancellationToken);
         }
@@ -57,7 +63,7 @@ public class BaseQueryable<T> : IQueryable<T>
     /// </summary>
     protected async Task<List<TItem>> ToListAsync<TItem>(IQueryable<TItem> queryable, CancellationToken cancellationToken = default)
     {
-        if(queryable is IAsyncEnumerable<TItem>) {
+        if(queryable is IAsyncEnumerable<TItem> or EntityQueryable<TItem>) {
             // version for EF to database.
             return await queryable.ToListAsync(cancellationToken);
         }
@@ -72,7 +78,7 @@ public class BaseQueryable<T> : IQueryable<T>
     /// </summary>
     protected async Task<int> ToCountAsync<TItem>(IQueryable<TItem> queryable, CancellationToken cancellationToken = default)
     {
-        if(queryable is IAsyncQueryProvider) {
+        if(queryable is IAsyncEnumerable<TItem> or EntityQueryable<TItem>) {
             // version for EF to database.
             return await queryable.CountAsync(cancellationToken);
         }
@@ -82,13 +88,17 @@ public class BaseQueryable<T> : IQueryable<T>
         }
     }
 
-    internal async Task<BaseCollection<T>> ToBaseCollectionInternalAsync(CancellationToken cancellationToken = default) =>
-        BaseQueryable<T>.CreateBaseCollection(await ToListAsync(FilteredQuery, cancellationToken));
+    internal async Task<BaseCollection<T>> ToBaseCollectionInternalAsync(CancellationToken cancellationToken = default)
+    {
+        return BaseQueryable<T>.CreateBaseCollection(await ToListAsync(FilteredQuery, cancellationToken));
+    }
 
-    private static BaseCollection<T> CreateBaseCollection(List<T> items) =>
-        new() {
+    private static BaseCollection<T> CreateBaseCollection(List<T> items)
+    {
+        return new() {
             Items = items,
         };
+    }
 
     /// <summary>
     /// Used for in-memory databases that are case sensitive when doing instructions page.  Not

@@ -3,9 +3,10 @@ using System.Reflection;
 
 namespace ExtraDry.Server.DataWarehouse.Builder;
 
-public class AttributeBuilder : ColumnBuilder {
+public class AttributeBuilder : ColumnBuilder
+{
 
-    internal AttributeBuilder(TableBuilder tableBuilder, Type entityType, PropertyInfo propertyInfo) 
+    internal AttributeBuilder(TableBuilder tableBuilder, Type entityType, PropertyInfo propertyInfo)
         : base(tableBuilder, entityType, propertyInfo)
     {
         AttributeAttribute = propertyInfo.GetCustomAttribute<AttributeAttribute>();
@@ -44,7 +45,7 @@ public class AttributeBuilder : ColumnBuilder {
         var ignored = propertyInfo.GetCustomAttribute<AttributeIgnoreAttribute>();
         if(ignored != null) {
             // [MeasureIgnore] will always ignore, even if [Measure] is present.
-            SetIncluded(false); 
+            SetIncluded(false);
         }
 
         HasLength(propertyInfo.GetCustomAttribute<StringLengthAttribute>()?.MaximumLength

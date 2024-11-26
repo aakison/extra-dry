@@ -113,7 +113,10 @@ public partial class DryNavigation : ComponentBase, IExtraDryComponent, IDisposa
     /// <summary>
     /// When grouped, the sorted list of items within a group.  Constrained as SortedItems above.
     /// </summary>
-    private IEnumerable<Menu> SortedInGroup(string group) => DisplayMenus.Where(e => e.Group == group).OrderBy(e => e.Order ?? 10_000);
+    private IEnumerable<Menu> SortedInGroup(string group)
+    {
+        return DisplayMenus.Where(e => e.Group == group).OrderBy(e => e.Order ?? 10_000);
+    }
 
     [Inject]
     private NavigationManager Navigation { get; set; } = null!;

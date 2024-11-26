@@ -2,7 +2,8 @@
 
 namespace ExtraDry.Server.Tests.Models;
 
-public class BaseQueryableTests {
+public class BaseQueryableTests
+{
 
     [Fact]
     public void QueryableInterfacePublished()
@@ -51,20 +52,25 @@ public class BaseQueryableTests {
 
     // Support the IAsyncEnumerable interface, enable testing of the async methods within the
     // BaseQueryable which is used by DbSet implementations.
-    public class ModelsBaseCollection : BaseQueryable<Model>, IAsyncEnumerable<Model> {
+    public class ModelsBaseCollection : BaseQueryable<Model>, IAsyncEnumerable<Model>
+    {
         public IAsyncEnumerator<Model> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
             return new ModelsEnumerator { Models = Models };
         }
 
-        public class ModelsEnumerator : IAsyncEnumerator<Model> {
+        public class ModelsEnumerator : IAsyncEnumerator<Model>
+        {
             public Model Current => Models[index];
             public ValueTask DisposeAsync()
             {
                 GC.SuppressFinalize(this);
                 return ValueTask.CompletedTask;
             }
-            public ValueTask<bool> MoveNextAsync() => ValueTask.FromResult(++index < Models.Count);
+            public ValueTask<bool> MoveNextAsync()
+            {
+                return ValueTask.FromResult(++index < Models.Count);
+            }
 
             private int index = -1;
             public required List<Model> Models { get; init; }

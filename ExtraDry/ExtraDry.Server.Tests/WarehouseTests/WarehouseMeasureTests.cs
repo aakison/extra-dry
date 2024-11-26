@@ -262,9 +262,7 @@ public class MeasureContainer {
     [Measure("Big Bucks")]
     public decimal BadName { get; set; }
 
-    public decimal DoubleRevenue {
-        get => 2 * AnnualRevenue;
-    }
+    public decimal DoubleRevenue => 2 * AnnualRevenue;
 
     [NotMapped]
     public decimal Sales { get; set; }

@@ -45,11 +45,20 @@ public class QueryBuilder
         return Query;
     }
 
-    private string BuildFilter() => string.Join(' ', Filters.Select(e => e.Build()).Where(e => !string.IsNullOrWhiteSpace(e))).Trim();
+    private string BuildFilter()
+    {
+        return string.Join(' ', Filters.Select(e => e.Build()).Where(e => !string.IsNullOrWhiteSpace(e))).Trim();
+    }
 
-    private string BuildSort() => Sort.Build();
+    private string BuildSort()
+    {
+        return Sort.Build();
+    }
 
-    private int? BuildLevel() => Level.Build();
+    private int? BuildLevel()
+    {
+        return Level.Build();
+    }
 
     public void Reset()
     {

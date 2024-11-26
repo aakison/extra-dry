@@ -80,12 +80,10 @@ public abstract class DimensionTableBuilder : TableBuilder {
         return AttributeBuilders[name];
     }
 
-    public ReadOnlyCollection<Dictionary<ColumnBuilder, object>> Data {
-        get => new(baseData);
-    }
+    public ReadOnlyCollection<Dictionary<ColumnBuilder, object>> Data => new(baseData);
     private readonly List<Dictionary<ColumnBuilder, object>> baseData = [];
 
-    internal override bool HasColumnNamed(string name) => 
+    internal override bool HasColumnNamed(string name) =>
         KeyBuilder?.ColumnName == name || AttributeBuilders.Values.Any(e => e.ColumnName == name);
 
     private void LoadClassAttributes()

@@ -95,10 +95,7 @@ public class WarehouseLengthTests {
         [StringLength(102)]
         public Uri Thumbnail2 { get; set; } = null!;
 
-        [StringLength(50)]
-        public string ChristianName {
-            get => DefaultName;
-        }
+        public string ChristianName => DefaultName;
 
     }
 

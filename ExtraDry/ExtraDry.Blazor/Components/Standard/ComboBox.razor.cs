@@ -349,42 +349,52 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent, IDispo
     /// <summary>
     /// The display name for a Group that is related to the item.
     /// </summary>
-    private string DisplayItemGroup(TItem? item) => 
-        GroupFunc?.Invoke(item) 
+    private string DisplayItemGroup(TItem? item)
+    {
+        return GroupFunc?.Invoke(item)
         ?? DisplayItemTitle(item)[0..1].ToUpper(CultureInfo.CurrentCulture);
+    }
 
     /// <summary>
     /// A string that determines the sort order of group items, typically the same as the Group
     /// name but can be changed by component consumers.
     /// </summary>
-    private string DisplayItemGroupSort(TItem? item) =>
-        GroupSortFunc?.Invoke(item)
+    private string DisplayItemGroupSort(TItem? item)
+    {
+        return GroupSortFunc?.Invoke(item)
         ?? DisplayItemGroup(item);
+    }
 
     /// <summary>
     /// The sortable name for the item, can be used to sort by something other than title.
     /// </summary>
-    private string DisplayItemSort(TItem? item) =>
-        SortFunc?.Invoke(item)
+    private string DisplayItemSort(TItem? item)
+    {
+        return SortFunc?.Invoke(item)
         ?? DisplayItemTitle(item);
+    }
 
     /// <summary>
     /// Determines a unique Id for the item to enable JavaScript UI manipulation.
     /// </summary>
     /// <remarks>ID should be unique for each item and retained between renderings.</remarks>
-    private string DisplayItemID(TItem? item) =>
-        $"{Id}_item_{item?.GetHashCode()}";
+    private string DisplayItemID(TItem? item)
+    {
+        return $"{Id}_item_{item?.GetHashCode()}";
+    }
 
     /// <summary>
     /// Determines the title to display for the item using multiple fallback mechanisms such as the
     /// ViewModel.
     /// </summary>
-    private string DisplayItemTitle(TItem? item) =>
-        item == null ? "null" : null
+    private string DisplayItemTitle(TItem? item)
+    {
+        return item == null ? "null" : null
         ?? ViewModel?.Title(item)
         ?? (item as IListItemViewModel)?.Title
         ?? item.ToString()
         ?? "unnamed";
+    }
 
     /// <summary>
     /// Id for the first header when headers are shown so auto-scoll can target it.
@@ -464,7 +474,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent, IDispo
         PreventDefault = false;
         // 9 lines shown so page up/down should be one less so we have one line overlap for context.
         var pageSize = 8;
-        if(args.Code == "Enter" || args.Code == "NumpadEnter") {
+        if(args.Code is "Enter" or "NumpadEnter") {
             PreventDefault = true; // must occur before await, as needed to prevent button clicks.
             if(ShowOptions) {
                 await ConfirmInputAsync(SelectedOption);

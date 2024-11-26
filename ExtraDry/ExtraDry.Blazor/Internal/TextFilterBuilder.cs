@@ -11,8 +11,14 @@ public class TextFilterBuilder : FilterBuilder {
     public string Keywords { get; set; } = string.Empty;
 
     /// <inheritdoc cref="FilterBuilder.Build" />
-    public override string Build() => Keywords.Trim();
+    public override string Build()
+    {
+        return Keywords.Trim();
+    }
 
     /// <inheritdoc cref="FilterBuilder.Reset" />
-    public override void Reset() => Keywords = string.Empty;
+    public override void Reset()
+    {
+        Keywords = string.Empty;
+    }
 }

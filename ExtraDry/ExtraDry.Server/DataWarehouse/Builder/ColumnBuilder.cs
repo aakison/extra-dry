@@ -8,53 +8,37 @@ namespace ExtraDry.Server.DataWarehouse.Builder;
 /// <remarks>
 /// Using a Get property with Set method to provide a fluent builder interface for developers.
 /// </remarks>
-public abstract class ColumnBuilder {
+public abstract class ColumnBuilder
+{
 
     internal ColumnBuilder(TableBuilder tableBuilder, Type entityType, PropertyInfo propertyInfo)
     {
         EntityType = entityType;
         PropertyInfo = propertyInfo;
         TableBuilder = tableBuilder;
-        columnName = DataConverter.CamelCaseToTitleCase(propertyInfo.Name);
+        ColumnName = DataConverter.CamelCaseToTitleCase(propertyInfo.Name);
         Converter = e => e;
     }
 
-    public string ColumnName {
-        get => columnName;
-    } 
-    private string columnName;
+    public string ColumnName { get; private set; }
 
-    public ColumnType ColumnType { 
-        get => columnType; 
-    }
-    private ColumnType columnType;
+    public ColumnType ColumnType { get; private set; }
 
-    public bool Included {
-        get => included;
-    } 
-    private bool included =true;
+    public bool Included { get; private set; } = true;
 
-    public int? Length {
-        get => length;
-    }
-    private int? length;
+    public int? Length { get; private set; }
 
-    public (int precision, int scale) Precision {
-        get => precision;
-    }
+    public (int precision, int scale) Precision => precision;
     private (int precision, int scale) precision = (18, 2);
 
-    public object Default {
-        get => _default;
-    }
-    private object _default = new();
+    public object Default { get; private set; } = new();
 
     protected void SetLength(int? length)
     {
-        if(length != null && length < 0) {
+        if(length is not null and < 0) {
             throw new DryException($"Column '{ColumnName}' length must be a non-negative integer or null.");
         }
-        this.length = length;
+        Length = length;
     }
 
     protected void SetName(string name)
@@ -69,7 +53,7 @@ public abstract class ColumnBuilder {
         if(name != ColumnName && TableBuilder.HasColumnNamed(name)) {
             throw new DryException($"Names for columns must be unique, '{name}' is duplicated on '{TableBuilder.TableName}'.");
         }
-        columnName = name;
+        ColumnName = name;
     }
 
     protected void SetType(ColumnType type)
@@ -77,7 +61,7 @@ public abstract class ColumnBuilder {
         if(!IsValidColumnType(type)) {
             throw new DryException("Column type is not valid.");
         }
-        columnType = type;
+        ColumnType = type;
     }
 
     protected void SetPrecision(int precision, int scale)
@@ -99,7 +83,7 @@ public abstract class ColumnBuilder {
 
     protected void SetIncluded(bool included)
     {
-        this.included = included;
+        Included = included;
     }
 
     protected void SetConverter(Func<object, object> converter)
@@ -109,7 +93,7 @@ public abstract class ColumnBuilder {
 
     protected void SetDefault(object @default)
     {
-        _default = @default;
+        Default = @default;
     }
 
     protected Func<object, object> Converter { get; private set; }

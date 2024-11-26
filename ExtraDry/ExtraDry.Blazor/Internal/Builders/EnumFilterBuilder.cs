@@ -11,12 +11,21 @@ public class EnumFilterBuilder : FilterBuilder
     public List<string> Values { get; } = [];
 
     /// <inheritdoc cref="FilterBuilder.Build" />
-    public override string Build() => Values.Count != 0 ? $"{FilterName}:{QuotedValues}" : "";
+    public override string Build()
+    {
+        return Values.Count != 0 ? $"{FilterName}:{QuotedValues}" : "";
+    }
 
     /// <inheritdoc cref="FilterBuilder.Reset" />
-    public override void Reset() => Values.Clear();
+    public override void Reset()
+    {
+        Values.Clear();
+    }
 
     private string QuotedValues => string.Join('|', Values.Where(e => !string.IsNullOrWhiteSpace(e)).Select(QuotedValue));
 
-    private string QuotedValue(string value) => value.Contains(' ') || value.Contains('|') ? $"\"{value}\"" : value;
+    private string QuotedValue(string value)
+    {
+        return value.Contains(' ') || value.Contains('|') ? $"\"{value}\"" : value;
+    }
 }

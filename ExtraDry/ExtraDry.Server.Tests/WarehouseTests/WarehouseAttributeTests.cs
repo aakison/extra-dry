@@ -177,9 +177,7 @@ public class WarehouseAttributeTests {
         // For Fluent renaming
         public string LastName { get; set; } = string.Empty;
 
-        public string ChristianName {
-            get => FirstName;
-        }
+        public string ChristianName => FirstName;
 
         [AttributeIgnore]
         public string Ignored { get; set; } = string.Empty;

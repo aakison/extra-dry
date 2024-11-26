@@ -1,6 +1,7 @@
 ﻿namespace ExtraDry.Server.Tests.Rules;
 
-public class RuleEngineUpdateIndividualAsyncTests {
+public class RuleEngineUpdateIndividualAsyncTests
+{
 
     [Fact]
     public async Task IdentityUnchanged()
@@ -248,7 +249,8 @@ public class RuleEngineUpdateIndividualAsyncTests {
     }
 
     [DeleteRule(DeleteAction.Recycle, nameof(Active), ActiveType.Deleted)]
-    public class Entity {
+    public class Entity
+    {
 
         [JsonIgnore]
         [Rules(RuleAction.Block)]
@@ -280,13 +282,15 @@ public class RuleEngineUpdateIndividualAsyncTests {
         [Rules(RuleAction.Block)]
         public int HoursWorked { get; set; }
 
-        public int ReadOnly {
-            get => HoursWorked;
-        }
+        public int ReadOnly => HoursWorked;
 
         public ActiveType Active { get; set; } = ActiveType.Pending;
+
         public ActiveType ChildStatus { get; set; } = ActiveType.Pending;
     }
-    private static Entity SampleEntity() => new();
 
+    private static Entity SampleEntity()
+    {
+        return new();
+    }
 }

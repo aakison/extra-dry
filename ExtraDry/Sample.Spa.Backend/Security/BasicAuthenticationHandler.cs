@@ -27,8 +27,9 @@ public class BasicAuthenticationHandler(
     {
         // skip authentication if endpoint has [AllowAnonymous] attribute
         var endpoint = Context.GetEndpoint();
-        if(endpoint?.Metadata?.GetMetadata<IAllowAnonymous>() != null)
+        if(endpoint?.Metadata?.GetMetadata<IAllowAnonymous>() != null) {
             return Task.FromResult(AuthenticateResult.NoResult());
+        }
 
         if(!Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues value)) {
             return Task.FromResult(AuthenticateResult.Fail("Missing Authorization Header"));

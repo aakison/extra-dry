@@ -9,7 +9,8 @@ namespace ExtraDry.Swashbuckle;
 /// <remarks>
 /// Works with ResourceReferenceConverter`T to change the serialized type of the entity.
 /// </remarks>
-public class ResourceReferenceSchemaFilter : IDocumentFilter {
+public class ResourceReferenceSchemaFilter : IDocumentFilter
+{
 
     /// <inheritdoc cref="IDocumentFilter.Apply(OpenApiDocument, DocumentFilterContext)" />
     public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
@@ -28,7 +29,7 @@ public class ResourceReferenceSchemaFilter : IDocumentFilter {
          *  being changed.
          */
         var existingSchemas = swaggerDoc.Components.Schemas.ToList();
-        foreach (var schema in existingSchemas) { 
+        foreach(var schema in existingSchemas) {
             foreach(var property in schema.Value.Properties) {
                 var qualifiedName = $"{schema.Key}.{property.Key}";
                 if(typeRewrites.TryGetValue(qualifiedName, out var rewriteType)) {
@@ -66,7 +67,7 @@ public class ResourceReferenceSchemaFilter : IDocumentFilter {
                     if(converter.ConverterType.GetGenericTypeDefinition() != typeof(ResourceReferenceConverter<>)) {
                         continue;
                     }
-                    
+
                     var typeName = type.Name;
                     var propertyName = property.Name;
 
@@ -79,7 +80,7 @@ public class ResourceReferenceSchemaFilter : IDocumentFilter {
             }
         }
     }
-    
+
     /// <summary>
     /// This method is borrowed from Swashbuckle.AspNetCore.SwaggerGen to 
     /// ensure that the reference names we use are the same as the one's 
@@ -89,7 +90,9 @@ public class ResourceReferenceSchemaFilter : IDocumentFilter {
     /// </summary>
     private string DefaultSchemaIdSelector(Type modelType)
     {
-        if(!modelType.IsConstructedGenericType) return modelType.Name.Replace("[]", "Array");
+        if(!modelType.IsConstructedGenericType) {
+            return modelType.Name.Replace("[]", "Array");
+        }
 
         var prefix = modelType.GetGenericArguments()
                               .Select(DefaultSchemaIdSelector)
