@@ -4,7 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace ExtraDry.Server.Tests.WarehouseTests;
 
-public class WarehouseLengthTests {
+public class WarehouseLengthTests
+{
 
     [Theory]
     [InlineData("Uuid", 36)] // Simple Guid property, get basic length
@@ -16,7 +17,6 @@ public class WarehouseLengthTests {
     [InlineData("Uri", 2083)]
     [InlineData("Thumbnail1", 101)]
     [InlineData("Thumbnail2", 102)]
-    [InlineData("ChristianName", 50)]
     public void PropertyLengths(string name, int? length)
     {
         var builder = new WarehouseModelBuilder();
@@ -53,12 +53,14 @@ public class WarehouseLengthTests {
         Assert.Equal(length, attribute.Length);
     }
 
-    public class AttributeContext : DbContext {
+    public class AttributeContext : DbContext
+    {
         public DbSet<AttributeContainer> Attributes { get; set; } = null!;
     }
 
     [DimensionTable]
-    public class AttributeContainer {
+    public class AttributeContainer
+    {
 
         [Key]
         [JsonIgnore]
@@ -95,14 +97,17 @@ public class WarehouseLengthTests {
         [StringLength(102)]
         public Uri Thumbnail2 { get; set; } = null!;
 
+        [StringLength(50)] // Even though only has a getter, defines length in the DW
         public string ChristianName => DefaultName;
 
     }
 
-    public class BadLengthContext : DbContext {
+    public class BadLengthContext : DbContext
+    {
 
         [DimensionTable]
-        public class BadClass {
+        public class BadClass
+        {
 
             [Key]
             [JsonIgnore]
