@@ -2,7 +2,8 @@
 
 namespace ExtraDry.Server;
 
-public class StatisticsQueryable<T> : BaseQueryable<T> {
+public class StatisticsQueryable<T> : BaseQueryable<T>
+{
 
     /// <inheritdoc cref="IFilteredQueryable{T}.ToStatistics" />
     public Statistics<T> ToStatistics()
@@ -47,12 +48,7 @@ public class StatisticsQueryable<T> : BaseQueryable<T> {
 
     private static string? TrimFilter(string? filter)
     {
-        if(string.IsNullOrWhiteSpace(filter)) {
-            return null;
-        }
-        else {
-            return filter.Trim();
-        }
+        return filter?.Trim() ?? "";
     }
 
 }

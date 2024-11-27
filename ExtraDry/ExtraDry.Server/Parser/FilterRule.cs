@@ -1,6 +1,7 @@
 ﻿namespace ExtraDry.Server.Internal;
 
-internal class FilterRule {
+internal class FilterRule
+{
 
     public FilterRule(string propertyName, FilterRule values)
     {

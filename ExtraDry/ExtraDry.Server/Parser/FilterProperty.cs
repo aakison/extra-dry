@@ -6,8 +6,8 @@ namespace ExtraDry.Server.Internal;
 /// Encapsulates a property that has the `FilterAttribute` on it.
 /// </summary>
 internal class FilterProperty(
-    PropertyInfo property, 
-    FilterAttribute filter, 
+    PropertyInfo property,
+    FilterAttribute filter,
     string? externalName = null)
 {
     public PropertyInfo Property { get; set; } = property;

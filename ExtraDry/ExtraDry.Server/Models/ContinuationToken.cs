@@ -9,7 +9,8 @@
 /// security critical, but want to discourage any token hacking so that future versions aren't 
 /// breaking changes.
 /// </remarks>
-internal class ContinuationToken {
+internal class ContinuationToken
+{
 
     internal ContinuationToken() { }
 
@@ -44,8 +45,8 @@ internal class ContinuationToken {
 
     public override string ToString()
     {
-        using var memory = new MemoryStream(); 
-        using var writer = new BinaryWriter(memory); 
+        using var memory = new MemoryStream();
+        using var writer = new BinaryWriter(memory);
         writer.Write(Filter);
         writer.Write(Sort);
         writer.Write(Skip);
@@ -104,7 +105,8 @@ internal class ContinuationToken {
     /// <summary>
     /// Returns the winning `skip` amount where API call can override token (but both must agree to make it zero).
     /// </summary>
-    internal static int ActualSkip(ContinuationToken? token, int skip) {
+    internal static int ActualSkip(ContinuationToken? token, int skip)
+    {
         if(skip > 0) {
             return skip;
         }

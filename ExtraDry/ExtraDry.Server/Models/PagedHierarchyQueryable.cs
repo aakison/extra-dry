@@ -3,8 +3,8 @@ using System.Linq.Expressions;
 
 namespace ExtraDry.Server;
 
-public class PagedHierarchyQueryable<T> : FilteredHierarchyQueryable<T> where T : class, IHierarchyEntity<T> 
-    {
+public class PagedHierarchyQueryable<T> : FilteredHierarchyQueryable<T> where T : class, IHierarchyEntity<T>
+{
     public PagedHierarchyQueryable(IQueryable<T> queryable, PageHierarchyQuery query, Expression<Func<T, bool>>? defaultFilter)
     {
         UnfilteredQuery = queryable;

@@ -4,9 +4,11 @@ using System.Linq.Expressions;
 
 namespace ExtraDry.Server;
 
-public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : class, IHierarchyEntity<T> {
+public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : class, IHierarchyEntity<T>
+{
 
-    protected FilteredHierarchyQueryable() {
+    protected FilteredHierarchyQueryable()
+    {
         UnfilteredQuery = new List<T>().AsQueryable();
         Query = new();
     }
@@ -53,7 +55,7 @@ public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : 
 
     protected IQueryable<T> ApplyLevelFilter(IQueryable<T> queryable, int level)
     {
-        return level == 0 
+        return level == 0
             ? new BaseQueryable<T>(queryable, ForceStringComparison)
             : new BaseQueryable<T>(queryable.Where(e => e.Lineage.GetLevel() < level), ForceStringComparison);
     }
@@ -117,7 +119,7 @@ public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : 
 
     private new HierarchyQuery Query { get; }
 
-    private HierarchyCollection<T> CreateHierarchyCollection(IList<T> items, List<string> expandable) => 
+    private HierarchyCollection<T> CreateHierarchyCollection(IList<T> items, List<string> expandable) =>
         new() {
             Filter = Query.Filter,
             Items = items,
@@ -126,6 +128,6 @@ public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : 
             Expand = Query.Expand.Count != 0 ? Query.Expand : null,
             Collapse = Query.Collapse.Count != 0 ? Query.Collapse : null,
             Expandable = expandable.Count != 0 ? expandable : null,
-        };  
+        };
 
 }

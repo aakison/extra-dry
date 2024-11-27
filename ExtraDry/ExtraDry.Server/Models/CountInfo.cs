@@ -4,7 +4,7 @@
 /// Supports the IPartialQueryable ToStatistics method.
 /// </summary>
 internal class CountInfo(
-    object key, 
+    object key,
     int count)
 {
     public string Key { get; set; } = key?.ToString() ?? "";

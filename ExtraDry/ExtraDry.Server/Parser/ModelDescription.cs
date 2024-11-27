@@ -3,7 +3,8 @@ using System.Reflection;
 
 namespace ExtraDry.Server.Internal;
 
-internal class ModelDescription {
+internal class ModelDescription
+{
 
     public ModelDescription(Type modelType)
     {

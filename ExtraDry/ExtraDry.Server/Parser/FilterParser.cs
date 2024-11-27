@@ -4,15 +4,15 @@ using static Pidgin.Parser<char>;
 
 namespace ExtraDry.Server.Internal;
 
-internal static class FilterParser {
+internal static class FilterParser
+{
 
     public static Filter Parse(string filter)
     {
         var parsed = Filters.Parse(filter);
-        if(!parsed.Success) {
-            throw new DryException($"Invalid filter expression '{filter}' resulted in '{parsed.Error}'", "Unable to apply filter. 0x0F947CB5");
-        }
-        return parsed.Value;
+        return parsed.Success
+            ? parsed.Value
+            : throw new DryException($"Invalid filter expression '{filter}' resulted in '{parsed.Error}'", "Unable to apply filter. 0x0F947CB5");
     }
 
     private static readonly Parser<char, char> Colon = Char(':');

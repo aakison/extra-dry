@@ -3,7 +3,7 @@
 namespace ExtraDry.Server.Internal;
 
 internal class SortProperty(
-    PropertyInfo property, 
+    PropertyInfo property,
     string externalName)
 {
     public PropertyInfo Property { get; } = property;

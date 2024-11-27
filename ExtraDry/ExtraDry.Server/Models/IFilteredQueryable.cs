@@ -49,7 +49,8 @@ public interface IPagedQueryable<T> : ISortedQueryable<T>
 /// to return paged or filtered subsets, as well as general statistics.
 /// </summary>
 /// <typeparam name="T"></typeparam>
-public interface IFilteredQueryable<T> : IQueryable<T> {
+public interface IFilteredQueryable<T> : IQueryable<T>
+{
 
     /// <summary>
     /// Return a Filtered Collection suitable for serialization that represents a filtered subset

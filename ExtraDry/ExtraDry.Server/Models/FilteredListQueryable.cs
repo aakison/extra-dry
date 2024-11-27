@@ -4,7 +4,8 @@ using System.Linq.Expressions;
 namespace ExtraDry.Server;
 
 /// <inheritdoc cref="IFilteredQueryable{T}" />
-public class FilteredListQueryable<T> : StatisticsQueryable<T> {
+public class FilteredListQueryable<T> : StatisticsQueryable<T>
+{
 
     protected FilteredListQueryable() { }
 
@@ -52,9 +53,9 @@ public class FilteredListQueryable<T> : StatisticsQueryable<T> {
             Filter = Query.Filter,
             Items = items,
         };
-    
+
     /// <inheritdoc cref="IFilteredQueryable{T}.ToFilteredCollection" />
-    public FilteredCollection<T> ToFilteredCollection() => 
+    public FilteredCollection<T> ToFilteredCollection() =>
         CreateFilteredCollection(FilteredQuery.ToList());
 
     /// <inheritdoc cref="IFilteredQueryable{T}.ToFilteredCollectionAsync(CancellationToken)" />

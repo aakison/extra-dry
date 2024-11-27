@@ -7,8 +7,8 @@ namespace ExtraDry.Server.Internal;
 /// in the ModelDescription.
 /// </summary>
 internal class StatisticsProperty(
-    PropertyInfo property, 
-    string externalName, 
+    PropertyInfo property,
+    string externalName,
     Stats stats)
 {
     public PropertyInfo Property { get; } = property;

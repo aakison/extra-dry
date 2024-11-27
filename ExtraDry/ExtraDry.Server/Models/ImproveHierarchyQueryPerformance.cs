@@ -14,7 +14,8 @@ namespace ExtraDry.Server;
 /// This is a temporary fix until EF Core or SQL Server fixes this.
 /// See https://github.com/dotnet/efcore/issues/27150
 /// </remarks>
-public class ImproveHierarchyQueryPerformance : DbCommandInterceptor {
+public class ImproveHierarchyQueryPerformance : DbCommandInterceptor
+{
     public override InterceptionResult<DbDataReader> ReaderExecuting(DbCommand command, CommandEventData eventData, InterceptionResult<DbDataReader> result)
     {
         ReplaceCast(command);

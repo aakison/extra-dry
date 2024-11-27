@@ -1,6 +1,7 @@
 ﻿namespace ExtraDry.Server.Internal;
 
-internal class Filter {
+internal class Filter
+{
 
     public Filter(IEnumerable<FilterRule> rules)
     {
