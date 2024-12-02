@@ -21,7 +21,7 @@ public class StatisticsQueryableTests {
         Assert.Equal(greekCount, byModelType[nameof(ModelType.Greek)]);
         Assert.Equal(phoneticCount, byModelType[nameof(ModelType.Phonetic)]);
         Assert.Equal(hendrixCount, byModelType[nameof(ModelType.Hendrix)]);
-        Assert.Null(actual.Filter);
+        Assert.Equal("", actual.Filter);
     }
 
     [Theory]
@@ -42,7 +42,7 @@ public class StatisticsQueryableTests {
         Assert.Equal(greekCount, byModelType[nameof(ModelType.Greek)]);
         Assert.Equal(phoneticCount, byModelType[nameof(ModelType.Phonetic)]);
         Assert.Equal(hendrixCount, byModelType[nameof(ModelType.Hendrix)]);
-        Assert.Null(actual.Filter);
+        Assert.Equal("", actual.Filter);
     }
 
     [Theory]
