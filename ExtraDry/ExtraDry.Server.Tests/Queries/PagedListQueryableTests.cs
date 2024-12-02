@@ -67,37 +67,13 @@ public class PagedListQueryableTests {
         Assert.Equal(take, token.Take);
     }
 
-    [Theory]
-    [InlineData(0, 5)]
-    [InlineData(5, 5)]
-    public async Task BasicSkipTakePagingAsync(int skip, int take)
-    {
-        var query = new PageQuery { Skip = skip, Take = take };
-        var expected = Models.ToList().Skip(skip).Take(take);
-
-        var actual = await Models.AsQueryable().QueryWith(query).ToPagedCollectionAsync();
-
-        Assert.Equal(expected, actual.Items);
-        Assert.Equal(Models.Count, actual.Total);
-        Assert.Equal(take, actual.Count);
-        Assert.Equal(skip, actual.Start);
-        Assert.Null(actual.Filter);
-        Assert.Null(actual.Sort);
-        Assert.False(actual.IsFullCollection);
-        Assert.NotNull(actual.ContinuationToken);
-        var token = ContinuationToken.FromString(actual.ContinuationToken);
-        Assert.NotNull(token);
-        Assert.Equal(skip + take, token.Skip);
-        Assert.Equal(take, token.Take);
-    }
-
     [Fact]
-    public async Task SkipTakeLastPageAsync()
+    public void SkipTakeLastPage()
     {
         var query = new PageQuery { Skip = 0, Take = 15 };
         var expected = Models.ToList().Skip(0).Take(15);
 
-        var actual = await Models.AsQueryable().QueryWith(query).ToPagedCollectionAsync();
+        var actual = Models.AsQueryable().QueryWith(query).ToPagedCollection();
 
         Assert.Equal(expected, actual.Items);
         Assert.Equal(Models.Count, actual.Total);
@@ -114,12 +90,12 @@ public class PagedListQueryableTests {
     }
 
     [Fact]
-    public async Task SkipTakePastLastPageAsync()
+    public void SkipTakePastLastPageAsync()
     {
         var query = new PageQuery { Skip = 15, Take = 5 };
         var expected = Models.ToList().Skip(15).Take(5);
 
-        var actual = await Models.AsQueryable().QueryWith(query).ToPagedCollectionAsync();
+        var actual = Models.AsQueryable().QueryWith(query).ToPagedCollection();
 
         Assert.Equal(expected, actual.Items);
         Assert.Equal(Models.Count, actual.Total);
@@ -138,12 +114,12 @@ public class PagedListQueryableTests {
     [Theory]
     [InlineData(0, 5)]
     [InlineData(5, 5)]
-    public async Task NextResultsUsingOnlyTokenAsync(int skip, int take)
+    public void NextResultsUsingOnlyTokenAsync(int skip, int take)
     {
         var query = new PageQuery { Token = new ContinuationToken(null, null, skip, take).ToString() };
         var expected = Models.ToList().Skip(skip).Take(take);
 
-        var actual = await Models.AsQueryable().QueryWith(query).ToPagedCollectionAsync();
+        var actual = Models.AsQueryable().QueryWith(query).ToPagedCollection();
 
         Assert.Equal(expected, actual.Items);
         Assert.Equal(Models.Count, actual.Total);
@@ -160,12 +136,12 @@ public class PagedListQueryableTests {
     }
 
     [Fact]
-    public async Task NextResultsUsingOnlyTokenLastPageAsync()
+    public void NextResultsUsingOnlyTokenLastPageAsync()
     {
         var query = new PageQuery { Token = new ContinuationToken(null, null, 10, 5).ToString() };
         var expected = Models.ToList().Skip(10).Take(5);
 
-        var actual = await Models.AsQueryable().QueryWith(query).ToPagedCollectionAsync();
+        var actual = Models.AsQueryable().QueryWith(query).ToPagedCollection();
 
         Assert.Equal(expected, actual.Items);
         Assert.Equal(Models.Count, actual.Total);
@@ -181,12 +157,12 @@ public class PagedListQueryableTests {
     }
 
     [Fact]
-    public async Task NextResultsUsingOnlyTokenPastLastPageAsync()
+    public void NextResultsUsingOnlyTokenPastLastPageAsync()
     {
         var query = new PageQuery { Token = new ContinuationToken(null, null, 15, 5).ToString() };
         var expected = Models.ToList().Skip(15).Take(5);
 
-        var actual = await Models.AsQueryable().QueryWith(query).ToPagedCollectionAsync();
+        var actual = Models.AsQueryable().QueryWith(query).ToPagedCollection();
 
         Assert.Equal(expected, actual.Items);
         Assert.Equal(Models.Count, actual.Total);
@@ -205,12 +181,12 @@ public class PagedListQueryableTests {
     [InlineData(2, null, 0, 5)]
     [InlineData(null, 2, 5, 5)]
     [InlineData(2, 2, 5, 5)]
-    public async Task NextResultsUsingTokenAndQueryOverrideAsync(int? querySkip, int? queryTake, int tokenSkip, int tokenTake)
+    public void NextResultsUsingTokenAndQueryOverrideAsync(int? querySkip, int? queryTake, int tokenSkip, int tokenTake)
     {
         var query = new PageQuery { Skip = querySkip ?? 0, Take = queryTake ?? 0, Token = new ContinuationToken(null, null, tokenSkip, tokenTake).ToString() };
         var expected = Models.ToList().Skip(querySkip ?? tokenSkip).Take(queryTake ?? tokenTake);
 
-        var actual = await Models.AsQueryable().QueryWith(query).ToPagedCollectionAsync();
+        var actual = Models.AsQueryable().QueryWith(query).ToPagedCollection();
 
         Assert.Equal(expected, actual.Items);
         Assert.Equal(Models.Count, actual.Total);
