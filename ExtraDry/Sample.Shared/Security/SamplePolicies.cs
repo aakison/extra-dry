@@ -6,7 +6,8 @@ namespace Sample.Shared.Security;
 /// Policies are shared between the back-end API server and the front-end Blazor SPA. 
 /// This sample shows how to use a single method to register policies on both front and back end.
 /// </summary>
-public static class SamplePolicies {
+public static class SamplePolicies
+{
 
     /// <summary>
     /// Method to be called in startup to register the policies with front-end and back-end.

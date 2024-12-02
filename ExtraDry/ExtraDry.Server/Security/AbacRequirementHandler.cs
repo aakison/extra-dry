@@ -18,8 +18,8 @@ public class AbacRequirementHandler
         var helper = new AbacAuthorizationHelper(options);
         var route = contextAccessor.HttpContext?.Request.RouteValues;
         if(context.Resource != null) {
-            var user = context.User == AuthorizationServiceExtensions.DeferredPrincipal 
-                ? contextAccessor.HttpContext?.User 
+            var user = context.User == AuthorizationServiceExtensions.DeferredPrincipal
+                ? contextAccessor.HttpContext?.User
                 : context.User;
             var success = helper.IsAuthorized(user, route, context.Resource, requirement.Operation);
             if(success) {

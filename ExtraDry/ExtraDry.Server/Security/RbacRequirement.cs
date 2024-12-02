@@ -4,7 +4,7 @@ namespace ExtraDry.Server.Security;
 
 /// <summary>
 /// Requirement for authorization that is backed by ABAC rules, but doesn't assess the resource.
-/// Useful for matching the RBAC rule in `[Authrorize("Policy")]` attributes to the subset of ABAC
+/// Useful for matching the RBAC rule in `[Authorize("Policy")]` attributes to the subset of ABAC
 /// rules matched in `IAuthorizationService.IsAuthorized(...)`.
 /// </summary>
 public class RbacRequirement(

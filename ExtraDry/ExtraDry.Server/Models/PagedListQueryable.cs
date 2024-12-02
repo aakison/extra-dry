@@ -24,7 +24,8 @@ public class PagedListQueryable<T> : SortedListQueryable<T>
     /// <inheritdoc cref="IFilteredQueryable{T}.ToPagedCollectionAsync(CancellationToken)" />
     public async Task<PagedCollection<T>> ToPagedCollectionAsync(CancellationToken cancellationToken = default)
     {
-        return CreatePagedCollection(await ToListAsync(PagedQuery, cancellationToken));
+        List<T> list = await ToListAsync(PagedQuery, cancellationToken);
+        return CreatePagedCollection(list);
     }
 
     private PagedCollection<T> CreatePagedCollection(List<T> items)

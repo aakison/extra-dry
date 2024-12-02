@@ -5,7 +5,7 @@ using System.Security;
 namespace ExtraDry.Server;
 
 [AttributeUsage(AttributeTargets.Class)]
-public class ApiExceptionStatusCodesAttribute : ExceptionFilterAttribute 
+public class ApiExceptionStatusCodesAttribute : ExceptionFilterAttribute
 {
 
     public override Task OnExceptionAsync(ExceptionContext context)
@@ -19,10 +19,10 @@ public class ApiExceptionStatusCodesAttribute : ExceptionFilterAttribute
         if(context.Exception is ArgumentMismatchException ex) {
             ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.BadRequest, ex.UserMessage);
         }
-        else if(context.Exception is ArgumentOutOfRangeException || context.Exception is KeyNotFoundException) {
+        else if(context.Exception is ArgumentOutOfRangeException or KeyNotFoundException) {
             ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.NotFound);
         }
-        else if(context.Exception is ArgumentException || context.Exception is ArgumentNullException) {
+        else if(context.Exception is ArgumentException or ArgumentNullException) {
             ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.BadRequest);
         }
         else if(context.Exception is ValidationException ve) {
@@ -35,9 +35,8 @@ public class ApiExceptionStatusCodesAttribute : ExceptionFilterAttribute
             ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.Forbidden);
         }
         else if(context.Exception is DryException dryException) {
-            // TODO: better handling here...
             int code = dryException.ProblemDetails.Status ?? (int)HttpStatusCode.BadRequest;
-            ProblemDetailsResponse.RewriteResponse(context, (HttpStatusCode)code, 
+            ProblemDetailsResponse.RewriteResponse(context, (HttpStatusCode)code,
                 dryException.ProblemDetails.Title, dryException.ProblemDetails.Detail);
         }
         else if(context.Exception is UnauthorizedAccessException) {

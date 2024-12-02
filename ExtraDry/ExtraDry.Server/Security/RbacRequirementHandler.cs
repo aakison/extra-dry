@@ -17,8 +17,8 @@ public class RbacRequirementHandler
     {
         var helper = new AbacAuthorizationHelper(options);
         var route = contextAccessor.HttpContext?.Request.RouteValues;
-        var user = context.User == AuthorizationServiceExtensions.DeferredPrincipal 
-            ? contextAccessor.HttpContext?.User 
+        var user = context.User == AuthorizationServiceExtensions.DeferredPrincipal
+            ? contextAccessor.HttpContext?.User
             : context.User;
         var policy = options.Policies.FirstOrDefault(p => p.Name == requirement.PolicyName);
         if(policy == null) {
