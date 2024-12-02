@@ -60,7 +60,7 @@ public class PagedListQueryable<T> : SortedListQueryable<T>
             Filter = nextToken.Filter,
             Sort = nextToken.Sort,
             Start = previousSkip,
-            Total = FilteredQuery.Count(),
+            Total = count,
             ContinuationToken = nextToken.ToString(),
         };
     }
