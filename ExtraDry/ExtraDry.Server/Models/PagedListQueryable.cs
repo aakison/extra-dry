@@ -1,4 +1,5 @@
 ﻿using ExtraDry.Server.Internal;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace ExtraDry.Server;
@@ -18,17 +19,20 @@ public class PagedListQueryable<T> : SortedListQueryable<T>
     /// <inheritdoc cref="IFilteredQueryable{T}.ToPagedCollection"/>
     public PagedCollection<T> ToPagedCollection()
     {
-        return CreatePagedCollection(PagedQuery.ToList());
+        var list = PagedQuery.ToList();
+        var count = FilteredQuery.Count();
+        return CreatePagedCollection(list, count);
     }
 
     /// <inheritdoc cref="IFilteredQueryable{T}.ToPagedCollectionAsync(CancellationToken)" />
     public async Task<PagedCollection<T>> ToPagedCollectionAsync(CancellationToken cancellationToken = default)
     {
-        List<T> list = await ToListAsync(PagedQuery, cancellationToken);
-        return CreatePagedCollection(list);
+        var list = await ToListAsync(PagedQuery, cancellationToken);
+        var count = await FilteredQuery.CountAsync(cancellationToken);
+        return CreatePagedCollection(list, count);
     }
 
-    private PagedCollection<T> CreatePagedCollection(List<T> items)
+    private PagedCollection<T> CreatePagedCollection(List<T> items, int count)
     {
         var query = (Query as PageQuery)!;
         var skip = query.Skip;
@@ -49,7 +53,7 @@ public class PagedListQueryable<T> : SortedListQueryable<T>
          */
         var nextToken = items.Count == previousTake
             ? lastToken.Next(skip, take)
-            : new ContinuationToken(Query.Filter, sort, FilteredQuery.Count(), previousTake);
+            : new ContinuationToken(Query.Filter, sort, count, previousTake);
 
         return new PagedCollection<T> {
             Items = items,
