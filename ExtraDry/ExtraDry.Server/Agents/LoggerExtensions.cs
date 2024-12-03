@@ -65,8 +65,7 @@ public static class LoggerExtensions
         {
             var type = target.GetType();
             var properties = type.GetProperties();
-            var nestedProperties = properties.Where(e => e.PropertyType.IsClass && 
-                (e.PropertyType.Namespace?.StartsWith(type.Namespace ?? "", StringComparison.Ordinal) ?? false));
+            var nestedProperties = properties.Where(e => e.PropertyType.IsClass && e.Name.Contains("Options"));
             foreach(var property in properties.Except(nestedProperties)) {
                 if(property.GetCustomAttribute<JsonIgnoreAttribute>() != null) {
                     continue;
