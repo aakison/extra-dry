@@ -1,7 +1,11 @@
-﻿namespace ExtraDry.Core;
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace ExtraDry.Core;
+
 /// <summary>
 /// Represents an event in time that was initiated by a user, system, or agent.
 /// </summary>
+[Owned]
 public class UserTimestamp
 {
 
@@ -11,6 +15,7 @@ public class UserTimestamp
     /// be populated with user personally identifiable information (PII), consider a User UUID or
     /// similar value for this field.
     /// </summary>
+    [StringLength(StringLength.Line)]
     public string User { get; set; } = "";
 
     /// <summary>
