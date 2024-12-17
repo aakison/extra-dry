@@ -16,10 +16,10 @@ public class AuditAspectOptions
 
     /// <summary>
     /// Indicates if the claim must match exactly or if it can match the stem of the claim.
-    /// This simplifies the claim matching process allowing 'nameidentifeir' to match 
+    /// This simplifies the claim matching process allowing 'nameidentifier' to match 
     /// 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'.
     /// </summary>
-    public bool StrictClaimMatch { get; set; } 
+    public bool StrictClaimMatch { get; set; }
 
     /// <summary>
     /// If the user claims do not match the indicated claim, the value for the username in 

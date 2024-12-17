@@ -85,7 +85,7 @@ public class FilteredListQueryableTests {
     {
         var filter = new FilterQuery { Filter = "Id:1|8" };
         var models = Samples.Models;
-        var expected = models.Where(e => e.Id == 1 || e.Id == 8).ToList();
+        var expected = models.Where(e => e.Id is 1 or 8).ToList();
 
         var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync();
 
@@ -97,7 +97,7 @@ public class FilteredListQueryableTests {
     {
         var filter = new FilterQuery { Filter = "Id:[-2,-1)" };
         var models = Samples.Models;
-        var expected = models.Where(e => e.Id >= -2 && e.Id < -1).ToList();
+        var expected = models.Where(e => e.Id is >= -2 and < -1).ToList();
 
         var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync();
 
@@ -109,7 +109,7 @@ public class FilteredListQueryableTests {
     {
         var filter = new FilterQuery { Filter = "Id:[2,5)" };
         var models = Samples.Models;
-        var expected = models.Where(e => e.Id >= 2 && e.Id < 5).ToList();
+        var expected = models.Where(e => e.Id is >= 2 and < 5).ToList();
 
         var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync();
 

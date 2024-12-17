@@ -161,7 +161,7 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent, IDisposable
     /// </summary>
     public async Task ToggleAsync()
     {
-        if(State == DialogState.NotLoaded || State == DialogState.Hidden || State == DialogState.Hiding) {
+        if(State is DialogState.NotLoaded or DialogState.Hidden or DialogState.Hiding) {
             await ShowAsync();
         }
         else {
@@ -255,7 +255,7 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent, IDisposable
         // wait and see if we should ignore the out because we're switching focus within control.
         await Task.Delay(1);
         if(shouldCollapse) {
-            if(LoseFocusAction == MiniDialogAction.Save || LoseFocusAction == MiniDialogAction.SaveAndClose) {
+            if(LoseFocusAction is MiniDialogAction.Save or MiniDialogAction.SaveAndClose) {
                 await DoSubmit(null);
             }
             if(LoseFocusAction == MiniDialogAction.Cancel) {

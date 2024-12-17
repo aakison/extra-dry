@@ -107,7 +107,7 @@ public partial class CodeBlock : ComponentBase, IExtraDryComponent {
         ChildContent.Invoke(builder);
         var frames = builder.GetFrames();
         Body = string.Join("", frames.Array
-            .Where(e => e.FrameType == RenderTreeFrameType.Text || e.FrameType == RenderTreeFrameType.Markup)
+            .Where(e => e.FrameType is RenderTreeFrameType.Text or RenderTreeFrameType.Markup)
             .Select(e => e.TextContent));
     }
 

@@ -133,7 +133,7 @@ public class RuleEngine(
             await deleting.OnDeletingAsync(ref action);
         }
 
-        if(action == DeleteAction.Recycle || action == DeleteAction.TryExpunge) {
+        if(action is DeleteAction.Recycle or DeleteAction.TryExpunge) {
             if(AttemptRecycle(item) == DeleteResult.Recycled) {
                 await execute();
                 result = DeleteResult.Recycled;
@@ -142,7 +142,7 @@ public class RuleEngine(
                 throw new DryException($"Unable to recycle item by changing property '{rule?.PropertyName}' to '{rule?.DeleteValue}'.");
             }
         }
-        if(action == DeleteAction.TryExpunge || action == DeleteAction.Expunge) {
+        if(action is DeleteAction.TryExpunge or DeleteAction.Expunge) {
             if(await ExpungeAsync(item, remove, execute) == DeleteResult.Expunged) {
                 result = DeleteResult.Expunged;
             }

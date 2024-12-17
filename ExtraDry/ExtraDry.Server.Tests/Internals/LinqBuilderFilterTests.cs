@@ -19,7 +19,7 @@ public class LinqBuilderFilterTests {
     [Fact]
     public void MultipleNamesOnSingleField()
     {
-        var linqWhere = SampleData.Where(e => e.FirstName == "Bob" || e.FirstName == "Alice").ToList();
+        var linqWhere = SampleData.Where(e => e.FirstName is "Bob" or "Alice").ToList();
         var filterProperty = GetFilterProperty<Datum>(nameof(Datum.FirstName));
 
         var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions([filterProperty], "firstname:Bob|Alice").ToList();
@@ -30,7 +30,7 @@ public class LinqBuilderFilterTests {
     [Fact]
     public void MultipleNamesOnSingleFieldAlternateSyntax()
     {
-        var linqWhere = SampleData.Where(e => e.FirstName == "Bob" || e.FirstName == "Alice").ToList();
+        var linqWhere = SampleData.Where(e => e.FirstName is "Bob" or "Alice").ToList();
         var filterProperty = GetFilterProperty<Datum>(nameof(Datum.FirstName));
 
         var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions(
@@ -64,7 +64,7 @@ public class LinqBuilderFilterTests {
     [Fact]
     public void FilterOnMultipleNumberField()
     {
-        var linqWhere = SampleData.Where(e => e.Number == 222 || e.Number == 111).ToList();
+        var linqWhere = SampleData.Where(e => e.Number is 222 or 111).ToList();
         var filterProperty = GetFilterProperty<Datum>(nameof(Datum.Number));
 
         var linqBuilderWhere = SampleData.AsQueryable().WhereFilterConditions([filterProperty], "number:222|111").ToList();
@@ -75,7 +75,7 @@ public class LinqBuilderFilterTests {
     [Fact]
     public void SimpleRangeQuery()
     {
-        var linqWhere = SampleDataWithDuplicateNames.Where(e => e.Number >= 100 && e.Number < 200).ToList();
+        var linqWhere = SampleDataWithDuplicateNames.Where(e => e.Number is >= 100 and < 200).ToList();
         var firstName = GetFilterProperty<Datum>(nameof(Datum.FirstName));
         var lastName = GetFilterProperty<Datum>(nameof(Datum.LastName));
         var number = GetFilterProperty<Datum>(nameof(Datum.Number));

@@ -9,7 +9,7 @@ public class DateGeneratorOptions {
     public int FiscalYearEndingMonth {
         get => fiscalYearEndingMonth;
         set {
-            if(value < 1 || value > 12) {
+            if(value is < 1 or > 12) {
                 throw new ArgumentOutOfRangeException(nameof(value), "Fiscal Year Ending Month is 1 indexed from January and must be between 1 and 12 inclusive.");
             }
             fiscalYearEndingMonth = value;
@@ -23,7 +23,7 @@ public class DateGeneratorOptions {
         if((date.Month == 12 && date.Day == 25) || (date.Month == 1 && date.Day == 1)) {
             return DayType.Holiday;
         }
-        else if(date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday) {
+        else if(date.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday) {
             return DayType.Weekend;
         }
         else {

@@ -121,7 +121,7 @@ public class AttributeBuilder : ColumnBuilder
 
     protected override bool IsValidColumnType(ColumnType type)
     {
-        return type == ColumnType.Text || type == ColumnType.Integer || type == ColumnType.Date || type == ColumnType.Time;
+        return type is ColumnType.Text or ColumnType.Integer or ColumnType.Date or ColumnType.Time;
     }
 
     private AttributeAttribute? AttributeAttribute { get; set; }

@@ -112,7 +112,7 @@ public class MeasureBuilder : ColumnBuilder {
 
     protected override bool IsValidColumnType(ColumnType type)
     {
-        return type == ColumnType.Decimal || type == ColumnType.Real || type == ColumnType.Integer;
+        return type is ColumnType.Decimal or ColumnType.Real or ColumnType.Integer;
     }
 
     private MeasureAttribute? MeasureAttribute { get; set; }

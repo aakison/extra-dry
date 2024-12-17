@@ -80,7 +80,7 @@ WHEN NOT MATCHED THEN
 
     private static string SqlVarchar(int? length)
     {
-        if(length == null || length > 8000 || length <= 0) {
+        if(length is null or > 8000 or <= 0) {
             return "NVARCHAR(Max)";
         }
         else {

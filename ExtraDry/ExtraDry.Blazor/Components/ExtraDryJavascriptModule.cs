@@ -3,7 +3,8 @@
 /// <summary>
 /// Additional abstraction of JavaScript modules for use by Extra DRY, use instead of IJSRuntime.
 /// </summary>
-public class ExtraDryJavascriptModule {
+public class ExtraDryJavascriptModule
+{
 
     /// <summary>
     /// Constructor that expects runtime, for use with dependency injection.

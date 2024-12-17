@@ -1,11 +1,12 @@
 namespace ExtraDry.Blazor;
 
-public partial class DryFilter<TItem> : ComponentBase, IExtraDryComponent {
+public partial class DryFilter<TItem> : ComponentBase, IExtraDryComponent
+{
 
     public DryFilter()
     {
         ViewModelDescription = new ViewModelDescription(typeof(TItem), this);
-        AllFilters = 
+        AllFilters =
         [
             KeywordsFitlerIdentifier,
             .. ViewModelDescription.FilterProperties
@@ -63,12 +64,12 @@ public partial class DryFilter<TItem> : ComponentBase, IExtraDryComponent {
 
     protected void DoFiltersSubmit(DialogEventArgs _)
     {
-        DisplayedFilters = [..SelectedFilters];
+        DisplayedFilters = [.. SelectedFilters];
     }
 
     protected void DoFiltersCancel(DialogEventArgs _)
     {
-        SelectedFilters = [..DisplayedFilters];
+        SelectedFilters = [.. DisplayedFilters];
     }
 
     private void DoFiltersReset(MouseEventArgs _)

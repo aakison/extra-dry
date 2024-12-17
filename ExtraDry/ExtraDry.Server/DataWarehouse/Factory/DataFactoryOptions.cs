@@ -10,7 +10,7 @@ public class DataFactoryOptions {
     public int BatchSize { 
         get => batchSize; 
         set {
-            if(value < 1 || value > 10_000) {
+            if(value is < 1 or > 10_000) {
                 throw new ArgumentOutOfRangeException(nameof(BatchSize), "Valid batch sizes are between 1 and 10,000");
             }
             batchSize = value;

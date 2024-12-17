@@ -109,7 +109,7 @@ public partial class Reveal : ComponentBase, IExtraDryComponent {
     /// </summary>
     public RevealState State { get; set; } = RevealState.None;
 
-    public bool IsShown => State == RevealState.Revealed || State == RevealState.Concealing || State == RevealState.Revealing;
+    public bool IsShown => State is RevealState.Revealed or RevealState.Concealing or RevealState.Revealing;
 
     private const int minimumDuration = 15; // One frame to allow refresh to happen.
 
@@ -131,7 +131,7 @@ public partial class Reveal : ComponentBase, IExtraDryComponent {
             var style = string.Empty;
             if(Mode == RevealMode.Fade) {
                 style = $"transition: opacity {AdjustedDuration / 1000f}s;";
-                if(State == RevealState.Concealing || State == RevealState.Concealed || State == RevealState.None) {
+                if(State is RevealState.Concealing or RevealState.Concealed or RevealState.None) {
                     style = $"{style} opacity: 0%;";
                 }
                 else {
@@ -140,7 +140,7 @@ public partial class Reveal : ComponentBase, IExtraDryComponent {
             }
             else if(Mode == RevealMode.Expand) {
                 style = $"transition: height {AdjustedDuration / 1000f}s; overflow: hidden;";
-                if(State == RevealState.Concealing || State == RevealState.Concealed || State == RevealState.None) {
+                if(State is RevealState.Concealing or RevealState.Concealed or RevealState.None) {
                     style = $"{style} height: 0;";
                 }
                 else {

@@ -95,7 +95,7 @@ public class DateTimeFilterBuilder : FilterBuilder
     {
         date = null;
         var dateTimeParts = dateString.Split('-');
-        if(dateTimeParts.Length < 1 || dateTimeParts.Length > 3) {
+        if(dateTimeParts.Length is < 1 or > 3) {
             return false;
         }
         if(dateTimeParts.Any(part => string.IsNullOrEmpty(part) || !Int32.TryParse(part, out _))) {

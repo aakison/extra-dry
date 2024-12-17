@@ -180,7 +180,7 @@ public partial class DryContent : ComponentBase {
             throw new DryException("When posting back an image, send through the imageDataUri from the clipboard.  This URL must begin with 'data:' scheme.", "Unable to upload image. 0x0F4B39DA");
         }
         var semicolon = imageDataUrl.IndexOf(';');
-        if(semicolon > 64 || semicolon < 7) {
+        if(semicolon is > 64 or < 7) {
             throw new DryException("When posting back an image, send through the imageDataUri from the clipboard.  This must include the mime type between the first ':' and the first ';'", "Unable to upload image. 0x0F8A8B8C");
         }
         var base64Delimiter = imageDataUrl.IndexOf("base64,", StringComparison.Ordinal);
