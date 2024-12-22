@@ -3,8 +3,9 @@
 /// <summary>
 /// Options for a CRUD service.
 /// </summary>
-public class CrudServiceOptions : IHttpClientOptions, IValidatableObject {
-    
+public class CrudServiceOptions : IHttpClientOptions, IValidatableObject
+{
+
     /// <inheritdoc />
     public string HttpClientName { get; set; } = string.Empty;
 

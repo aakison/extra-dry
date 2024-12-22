@@ -6,7 +6,7 @@ using System.Text.Json;
 namespace ExtraDry.Blazor;
 
 /// <summary>
-/// A simple CRUD API service wrapper for Extra Dry service endpoints.  This wrapper assumes that 4 
+/// A simple CRUD API service wrapper for Extra Dry service endpoints.  This wrapper assumes that 4
 /// endpoints exist following standard RESTful principles for endpoints.  The entity of Type `T 
 /// must be JSON serializable and accepted by the server.  On non-success (2xx) results, the 
 /// service endpoints should return a ProblemDetails (RFC7807)  response body.  This body will be 
@@ -19,8 +19,8 @@ namespace ExtraDry.Blazor;
 /// extension method.
 /// </remarks>
 public class CrudService<T>(
-    HttpClient client, 
-    CrudServiceOptions options, 
+    HttpClient client,
+    CrudServiceOptions options,
     ILogger<CrudService<T>> logger)
 {
     public CrudServiceOptions Options { get; } = options;
@@ -29,7 +29,7 @@ public class CrudService<T>(
     {
         var json = JsonSerializer.Serialize(item);
         using var content = new StringContent(json, Encoding.UTF8, "application/json");
-        var endpoint = ApiEndpoint(nameof(CreateAsync), string.Empty);
+        var endpoint = ApiEndpoint(string.Empty);
         logger.LogEndpointCall(typeof(T), endpoint);
         var response = await client.PostAsync(endpoint, content, cancellationToken);
         await response.AssertSuccess(logger);
@@ -37,7 +37,7 @@ public class CrudService<T>(
 
     public async Task<T?> RetrieveAsync(object key, CancellationToken cancellationToken = default)
     {
-        var endpoint = ApiEndpoint(nameof(RetrieveAsync), key);
+        var endpoint = ApiEndpoint(key);
         logger.LogEndpointCall(typeof(T), endpoint);
         var response = await client.GetAsync(endpoint, cancellationToken);
         await response.AssertSuccess(logger);
@@ -47,7 +47,7 @@ public class CrudService<T>(
 
     public async Task UpdateAsync(object key, T item, CancellationToken cancellationToken = default)
     {
-        var endpoint = ApiEndpoint(nameof(UpdateAsync), key);
+        var endpoint = ApiEndpoint(key);
         logger.LogEndpointCall(typeof(T), endpoint);
         var response = await client.PutAsJsonAsync(endpoint, item, cancellationToken);
         await response.AssertSuccess(logger);
@@ -55,23 +55,15 @@ public class CrudService<T>(
 
     public async Task DeleteAsync(object key, CancellationToken cancellationToken = default)
     {
-        var endpoint = ApiEndpoint(nameof(DeleteAsync), key);
+        var endpoint = ApiEndpoint(key);
         logger.LogEndpointCall(typeof(T), endpoint);
         var response = await client.DeleteAsync(endpoint, cancellationToken);
         await response.AssertSuccess(logger);
     }
 
-    private string ApiEndpoint(string method, object key, params object[] args)
+    private string ApiEndpoint(object key)
     {
-        try {
-            var baseUrl = string.Format(CultureInfo.InvariantCulture, Options.CrudEndpoint, args);
-            var url = $"{baseUrl}/{key}".TrimEnd('/');
-            return url;
-        }
-        catch(FormatException ex) {
-            var argsFormatted = string.Join(',', args?.Select(e => e?.ToString()) ?? []);
-            logger.LogFormattingError(typeof(T), Options.CrudEndpoint, argsFormatted, ex, method);
-            throw new DryException("Error occurred connecting to server", "This is a mis-configuration and not a user error, please see the console output for more information.");
-        }
+        var url = $"{Options.CrudEndpoint.TrimEnd('/')}/{key}".TrimEnd('/');
+        return url;
     }
 }

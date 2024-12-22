@@ -4,22 +4,20 @@ using System.Text.Json;
 namespace ExtraDry.Blazor;
 
 /// <summary>
-/// A simple Stats API service wrapper for Extra Dry service endpoints.
-/// The entity of Type `T must be JSON serializable and accepted by the server.
-/// The return object will be a Statistics object of type `T
-/// On non-success (2xx) results, the service endpoints should return a ProblemDetails (RFC7807)
-/// response body.  This body will be unwrapped and throw in the body of a DryException.  If 
-/// ProblemDetails are not present, then a trivial attempt to unpack the arbitrary response 
-/// payload will be made.
+/// A simple Stats API service wrapper for Extra Dry service endpoints.  The entity of Type `T 
+/// must be JSON serializable and accepted by the server. The return object will be a Statistics 
+/// object of type `T On non-success (2xx) results, the service endpoints should return a 
+/// ProblemDetails (RFC7807) response body. This body will be unwrapped and throw in the body of a 
+/// DryException. If ProblemDetails are not present, then a trivial attempt to unpack the arbitrary
+/// response payload will be made.
 /// </summary>
 /// <remarks>
-/// Create a stat service with the specified configuration. This service should not be 
-/// manually added to the IServiceCollection.  Instead, use the AddCrudService`T 
-/// extension method.
+/// Create a stat service with the specified configuration. This service should not be manually 
+/// added to the IServiceCollection.  Instead, use the AddCrudService`T extension method.
 /// </remarks>
 public class StatService<T>(
-    HttpClient client, 
-    StatServiceOptions options, 
+    HttpClient client,
+    StatServiceOptions options,
     ILogger<StatService<T>> logger)
 {
     public StatServiceOptions Options { get; } = options;
@@ -43,16 +41,10 @@ public class StatService<T>(
 
     private string ApiEndpoint(string? filter)
     {
-        try {
-            var url = Options.StatEndpoint;
-            if(filter != null) {
-                url += $"?Filter={filter}";
-            }
-            return url;
+        var url = Options.StatEndpoint;
+        if(filter != null) {
+            url += $"?Filter={filter}";
         }
-        catch(FormatException ex) {
-            logger.LogFormattingError(typeof(T), Options.StatEndpoint, "-none-", ex);
-            throw new DryException("Error occurred connecting to server", "This is a mis-configuration and not a user error, please see the console output for more information.");
-        }
+        return url;
     }
 }

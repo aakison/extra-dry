@@ -2,7 +2,8 @@
 
 namespace ExtraDry.Blazor;
 
-public class StatServiceOptions : IHttpClientOptions, IValidatableObject {
+public class StatServiceOptions : IHttpClientOptions, IValidatableObject
+{
 
     public string HttpClientName { get; set; } = string.Empty;
 
@@ -12,8 +13,10 @@ public class StatServiceOptions : IHttpClientOptions, IValidatableObject {
     public string StatEndpoint { get; set; } = string.Empty;
 
     // Make default json to ignore case, most non-.NET "RESTful" services use camelCase...
-    public JsonSerializerOptions JsonSerializerOptions { get; set; } = new JsonSerializerOptions { PropertyNameCaseInsensitive = true, 
-                                                                                                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+    public JsonSerializerOptions JsonSerializerOptions { get; set; } = new JsonSerializerOptions {
+        PropertyNameCaseInsensitive = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
