@@ -27,7 +27,7 @@ public class StatService<T>(
     /// </summary>
     /// <param name="filter">The entity specific text filter for the collection.</param>
     /// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
-    public async Task<Statistics<T>?> RetrieveAsync(string? filter, CancellationToken cancellationToken = default)
+    public async Task<Statistics<T>?> TryRetrieveAsync(string? filter, CancellationToken cancellationToken = default)
     {
         var endpoint = ApiEndpoint(filter);
         logger.LogEndpointCall(typeof(T), endpoint);
@@ -37,6 +37,12 @@ public class StatService<T>(
         logger.LogEndpointResult(typeof(T), endpoint, body);
         var item = JsonSerializer.Deserialize<Statistics<T>>(body, Options.JsonSerializerOptions);
         return item;
+    }
+
+    public async Task<Statistics<T>> RetrieveAsync(string? filter, CancellationToken cancellationToken = default)
+    {
+        return await TryRetrieveAsync(filter, cancellationToken)
+            ?? throw new ArgumentOutOfRangeException(nameof(filter), $"Item not found for filter {filter}");
     }
 
     private string ApiEndpoint(string? filter)

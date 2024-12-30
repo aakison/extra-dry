@@ -35,7 +35,7 @@ public class CrudService<T>(
         await response.AssertSuccess(logger);
     }
 
-    public async Task<T?> RetrieveAsync(object key, CancellationToken cancellationToken = default)
+    public async Task<T?> TryRetrieveAsync(object key, CancellationToken cancellationToken = default)
     {
         var endpoint = ApiEndpoint(key);
         logger.LogEndpointCall(typeof(T), endpoint);
@@ -43,6 +43,12 @@ public class CrudService<T>(
         await response.AssertSuccess(logger);
         var item = await response.Content.ReadFromJsonAsync<T>(cancellationToken: cancellationToken);
         return item;
+    }
+
+    public async Task<T> RetrieveAsync(object key, CancellationToken cancellationToken = default)
+    {
+        return await TryRetrieveAsync(key, cancellationToken)
+            ?? throw new ArgumentOutOfRangeException(nameof(key), $"Item not found for key {key}");
     }
 
     public async Task UpdateAsync(object key, T item, CancellationToken cancellationToken = default)
