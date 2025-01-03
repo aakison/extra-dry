@@ -80,7 +80,7 @@ builder.Services
     .AddAzureCosmosDB();
 
 builder.Services.AddScoped<RuleEngine>();
-builder.Services.AddScoped<TenantService>();
+builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<ComponentService>();
 
 var host = builder.Build();

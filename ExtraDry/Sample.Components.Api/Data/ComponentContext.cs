@@ -16,7 +16,7 @@ public class ComponentContext(
     /// <summary>
     /// The Tenants in the system.
     /// </summary>
-    public DbSet<Tenant> Tenants { get; set; } = null!;
+    public DbSet<Customer> Tenants { get; set; } = null!;
 
     /// <summary>
     /// The Components for Tenants in the system.
@@ -42,8 +42,8 @@ public class ComponentContext(
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.HasDefaultContainer("Components");
-        modelBuilder.Entity<Tenant>().HasPartitionKey(e => e.Partition);
-        modelBuilder.Entity<Component>().HasPartitionKey(e => e.Partition);
+        modelBuilder.Entity<Customer>().HasPartitionKey(e => e.Tenant);
+        modelBuilder.Entity<Component>().HasPartitionKey(e => e.Tenant);
         //modelBuilder.Entity<Attachment>().HasPartitionKey(e => e.Partition);
         //modelBuilder.Entity<Metadata>().HasPartitionKey(e => e.Partition);
     }

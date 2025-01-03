@@ -24,7 +24,8 @@ internal class FileTypeDefinitionSource(string fileDatabasePath = "")
     /// <summary>
     /// Add file definitions to the default database.
     /// </summary>
-    internal void AddFileDefinitions(IEnumerable<FileTypeDefinition> fileTypeDefinitions){
+    internal void AddFileDefinitions(IEnumerable<FileTypeDefinition> fileTypeDefinitions)
+    {
         FileDefinitions.AddRange(fileTypeDefinitions);
     }
 
@@ -59,7 +60,9 @@ internal class FileTypeDefinitionSource(string fileDatabasePath = "")
     private static bool IsMatch(byte[] content, List<MagicBytes> magic)
     {
         foreach(var m in magic) {
-            if(IsMatch(content, m)){ return true; }
+            if(IsMatch(content, m)) {
+                return true;
+            }
         }
         return false;
     }

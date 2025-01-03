@@ -9,7 +9,7 @@ namespace Sample.Components.Api.Services;
 /// </summary>
 public class ComponentService(
     ComponentContext database,
-    TenantService tenants,
+    CustomerService tenants,
     RuleEngine rules)
 {
 

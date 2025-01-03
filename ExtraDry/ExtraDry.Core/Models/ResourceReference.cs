@@ -22,7 +22,7 @@ public class ResourceReference
             Title = resource.Title;
         }
         if(target is ITenanted tenanted) {
-            Tenant = tenanted.Partition;
+            Tenant = tenanted.Tenant;
         }
     }
 

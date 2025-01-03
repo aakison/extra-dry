@@ -12,7 +12,7 @@ public class Schema : ITenanted
 {
     /// <inheritdoc/>
     [JsonIgnore]
-    public string Partition { get; set; } = "";
+    public string Tenant { get; set; } = "";
 
     /// <inheritdoc/>
     [Key]

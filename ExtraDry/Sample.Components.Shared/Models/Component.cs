@@ -9,12 +9,6 @@ namespace Sample.Components;
 /// </summary>
 public class Component : IResourceIdentifiers, ITenanted, IAudited, IRevisioned, IAttributed
 {
-    /// <inheritdoc/>
-    public string Partition { 
-        get => Tenant;
-        set { }
-    }
-
     /// <summary>
     /// The tenant that the component is associated with.
     /// </summary>

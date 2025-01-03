@@ -12,7 +12,7 @@ public class Metadata : ITenanted, IAudited, IRevisioned
 {
     /// <inheritdoc/>
     [JsonIgnore]
-    public string Partition { get; set; } = "";
+    public string Tenant { get; set; } = "";
 
     public string TenantId { get; set; } = "";
 
