@@ -1,14 +1,13 @@
 ﻿namespace ExtraDry.Blazor;
 
 /// <summary>
-/// A mini-dialog box that can be used to edit a single property or field.  Is typically shown as a
-/// dropdown from a button or link.  On small screens (i.e. phones), it may be displayed full screen
-/// to support all the options of just a single field.  The dialog box is shown and hidden using the 
+/// A mini-dialog box that can be used to edit a single property or field. Is typically shown as a
+/// dropdown from a button or link. On small screens (i.e. phones), it may be displayed full screen
+/// to support all the options of just a single field. The dialog box is shown and hidden using the
 /// Show() and Hide() methods.
 /// </summary>
 public partial class MiniDialog : ComponentBase, IExtraDryComponent, IDisposable
 {
-
     /// <summary>
     /// The title for the dialog box.
     /// </summary>
@@ -23,8 +22,8 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent, IDisposable
     public bool ShowTitle { get; set; } = true;
 
     /// <summary>
-    /// The caption of the button that is used to cancel the dialog box.
-    /// Supports HTML markup, do no place customer content in this string.
+    /// The caption of the button that is used to cancel the dialog box. Supports HTML markup, do
+    /// no place customer content in this string.
     /// </summary>
     [Parameter]
     public string CancelButtonCaption { get; set; } = "&times;";
@@ -37,8 +36,8 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent, IDisposable
     public bool ShowCancelButton { get; set; } = true;
 
     /// <summary>
-    /// The caption of the button that is used to save and close the dialog box.
-    /// Supports HTML markup, do no place customer content in this string.
+    /// The caption of the button that is used to save and close the dialog box. Supports HTML
+    /// markup, do no place customer content in this string.
     /// </summary>
     [Parameter]
     public string SubmitButtonCaption { get; set; } = "Close";
@@ -50,7 +49,7 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent, IDisposable
     [Parameter]
     public bool ShowSubmitButton { get; set; } = true;
 
-    /// <inheritdoc cref="MiniDialogAction"/>
+    /// <inheritdoc cref="MiniDialogAction" />
     [Parameter]
     public MiniDialogAction LoseFocusAction { get; set; } = MiniDialogAction.SaveAndClose;
 
@@ -59,30 +58,30 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent, IDisposable
     public string CssClass { get; set; } = string.Empty;
 
     /// <summary>
-    /// The child content that renders the form.
-    /// Content should be focussed on a single property/field/tuple concept and not attempt to populate an entire object.
+    /// The child content that renders the form. Content should be focussed on a single
+    /// property/field/tuple concept and not attempt to populate an entire object.
     /// </summary>
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 
     /// <summary>
-    /// Called when the mini-dialog is closed using the Submit button, 
-    /// or when it loses focus and the LoseFocusAction is Save or SaveAndClose.
+    /// Called when the mini-dialog is closed using the Submit button, or when it loses focus and
+    /// the LoseFocusAction is Save or SaveAndClose.
     /// </summary>
     [Parameter]
     public EventCallback<DialogEventArgs> OnSubmit { get; set; }
 
     /// <summary>
-    /// Called when the mini-dialog is closed using the cancel button,
-    /// or when it loses focus and the LoseFocusAction is Cancel.
+    /// Called when the mini-dialog is closed using the cancel button, or when it loses focus and
+    /// the LoseFocusAction is Cancel.
     /// </summary>
     [Parameter]
     public EventCallback<DialogEventArgs> OnCancel { get; set; }
 
     /// <summary>
-    /// The number of milliseconds to render the showing and hiding states.
-    /// This only affects the duration of the CSS classes applied to the dialog.
-    /// The user must use CSS to have these style perform the desired animations.
+    /// The number of milliseconds to render the showing and hiding states. This only affects the
+    /// duration of the CSS classes applied to the dialog. The user must use CSS to have these
+    /// style perform the desired animations.
     /// </summary>
     [Parameter]
     public int AnimationDuration { get; set; }
@@ -96,11 +95,11 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent, IDisposable
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
     /// <summary>
-    /// The state of the dialog box, which cycles when Show() and Hide() are called.
-    /// On Show, typically moves: NotLoaded -> Hidden -> Showing -> Visible.
-    /// On Hide, typically moves: Visible -> Hiding -> Hidden -> NotLoaded.
-    /// The states are also reflected in CSS classes that are rendered except for NotLoaded as no HTML is rendered.
-    /// Also, Show and Hide can interrupt each other so the actual flow might bounce around.
+    /// The state of the dialog box, which cycles when Show() and Hide() are called. On Show,
+    /// typically moves: NotLoaded -&gt; Hidden -&gt; Showing -&gt; Visible. On Hide, typically
+    /// moves: Visible -&gt; Hiding -&gt; Hidden -&gt; NotLoaded. The states are also reflected in
+    /// CSS classes that are rendered except for NotLoaded as no HTML is rendered. Also, Show and
+    /// Hide can interrupt each other so the actual flow might bounce around.
     /// </summary>
     public DialogState State { get; private set; } = DialogState.NotLoaded;
 
@@ -156,7 +155,7 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent, IDisposable
     }
 
     /// <summary>
-    /// Show/Hide the mini dialog box depending on the current state, cycling through CSS states 
+    /// Show/Hide the mini dialog box depending on the current state, cycling through CSS states
     /// for animation.
     /// </summary>
     public async Task ToggleAsync()
@@ -280,5 +279,4 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent, IDisposable
 
     // Maximum to some logical upper bound that prevents app-destructive behavior.
     private const int maximumDuration = 5000;
-
 }

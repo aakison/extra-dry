@@ -5,7 +5,6 @@
 /// </summary>
 public class ExtraDryJavascriptModule
 {
-
     /// <summary>
     /// Constructor that expects runtime, for use with dependency injection.
     /// </summary>
@@ -16,8 +15,8 @@ public class ExtraDryJavascriptModule
     }
 
     /// <summary>
-    /// Invoke a function inside the 'extra-dry-blazor-module' module.
-    /// Usage is same as IJSRuntime, but method must be exposed by Extra DRY module.
+    /// Invoke a function inside the 'extra-dry-blazor-module' module. Usage is same as IJSRuntime,
+    /// but method must be exposed by Extra DRY module.
     /// </summary>
     public async ValueTask InvokeVoidAsync(string name, params object?[]? args)
     {
@@ -30,5 +29,4 @@ public class ExtraDryJavascriptModule
     private string Filename => $"/_content/ExtraDry.Blazor/js/extra-dry-blazor-module.min.js?v={Version}";
 
     private string Version { get; set; }
-
 }

@@ -2,8 +2,8 @@
 
 namespace ExtraDry.Blazor.Components.Internal;
 
-public class Grouping {
-
+public class Grouping
+{
     public string GroupingColumn { get; set; }
 
     public int GroupingDepth { get; set; }
@@ -13,5 +13,4 @@ public class Grouping {
     public bool IsExpanded { get; set; }
 
     public Action Toggle { get; set; }
-
 }

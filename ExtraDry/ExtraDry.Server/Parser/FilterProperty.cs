@@ -15,5 +15,4 @@ internal class FilterProperty(
     public FilterAttribute Filter { get; set; } = filter;
 
     public string ExternalName { get; } = externalName ?? property.Name;
-
 }

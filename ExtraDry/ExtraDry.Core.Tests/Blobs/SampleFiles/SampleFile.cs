@@ -10,7 +10,6 @@ public class SampleFile
     public string MimeType { get; set; } = string.Empty;
 
     public byte[] Content { get; set; } = [];
-
 }
 
 public class SampleFiles
@@ -87,5 +86,4 @@ public class SampleFiles
         var content = memoryStream.ToArray();
         return content;
     }
-
 }

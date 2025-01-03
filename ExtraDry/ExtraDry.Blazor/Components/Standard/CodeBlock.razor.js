@@ -48,7 +48,6 @@ function LoadScriptAndFormat(id) {
         };
 
         body.appendChild(script);
-
     }
 }
 

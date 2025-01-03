@@ -2,8 +2,8 @@
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 [DimensionTable("Company Status")]
-public enum CompanyStatus {
-
+public enum CompanyStatus
+{
     [Display(Order = 0, Description = "Company is active")]
     Active = 0,
 
@@ -15,5 +15,4 @@ public enum CompanyStatus {
 
     [Display(Description = "Trying to get money out of a turnip.")]
     InArbitration = 3,
-
 }

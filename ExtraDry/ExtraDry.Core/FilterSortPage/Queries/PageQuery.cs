@@ -5,12 +5,11 @@
 /// </summary>
 public class PageQuery : SortQuery, IPageQuery
 {
-
     /// <inheritdoc cref="IPageQuery.Skip" />
     public int Skip { get; set; }
 
     /// <inheritdoc cref="IPageQuery.Take" />
-    public int Take { get; set;}
+    public int Take { get; set; }
 
     /// <inheritdoc cref="IPageQuery.Token" />
     public string? Token { get; set; }

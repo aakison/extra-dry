@@ -2,8 +2,8 @@
 
 namespace ExtraDry.Server.Tests.Rules;
 
-public class ContinuationTokenTests {
-
+public class ContinuationTokenTests
+{
     [Fact]
     public void DefaultValues()
     {
@@ -178,5 +178,4 @@ public class ContinuationTokenTests {
         Assert.Equal(20, tokenThree.Skip);
         Assert.Equal(10, tokenThree.Take);
     }
-
 }

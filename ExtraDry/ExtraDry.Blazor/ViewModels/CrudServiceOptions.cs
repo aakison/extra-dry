@@ -5,7 +5,6 @@
 /// </summary>
 public class CrudServiceOptions : IHttpClientOptions, IValidatableObject
 {
-
     /// <inheritdoc />
     public string HttpClientName { get; set; } = string.Empty;
 
@@ -13,7 +12,7 @@ public class CrudServiceOptions : IHttpClientOptions, IValidatableObject
     public Type? HttpClientType { get; set; }
 
     /// <summary>
-    /// The endpoint template for the service.  This is required.  If a HttpClientName or
+    /// The endpoint template for the service. This is required. If a HttpClientName or
     /// HttpClientType is specified then this endpoint is relative the base address of that client.
     /// </summary>
     [Required, StringLength(StringLength.Sentence)]
@@ -32,5 +31,4 @@ public class CrudServiceOptions : IHttpClientOptions, IValidatableObject
             yield return new ValidationResult("HttpClientType must define a subtype of HttpClient.");
         }
     }
-
 }

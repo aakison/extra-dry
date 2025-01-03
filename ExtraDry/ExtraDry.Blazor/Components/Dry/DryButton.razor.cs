@@ -3,33 +3,33 @@
 namespace ExtraDry.Blazor;
 
 /// <summary>
-/// An Extra Dry button executes a command, typically from a ViewModel, with a Model as the argument.
-/// This is typically used from within `DryCommandBar` or `DryForm`, but can be used directly.
-/// If using manually, populate ViewModel and MethodName, and optionally Model.
+/// An Extra Dry button executes a command, typically from a ViewModel, with a Model as the
+/// argument. This is typically used from within `DryCommandBar` or `DryForm`, but can be used
+/// directly. If using manually, populate ViewModel and MethodName, and optionally Model.
 /// </summary>
-public partial class DryButton : ComponentBase, IExtraDryComponent {
-
+public partial class DryButton : ComponentBase, IExtraDryComponent
+{
     /// <inheritdoc />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
     /// <summary>
-    /// A link to the ViewModel that contains the method to call on the button click.  Typically
-    /// `this`.  When used, must also be partnered with `MethodName` being set.
+    /// A link to the ViewModel that contains the method to call on the button click. Typically
+    /// `this`. When used, must also be partnered with `MethodName` being set.
     /// </summary>
     [Parameter]
     public object? ViewModel { get; set; }
 
     /// <summary>
-    /// When defining the method using the ViewModel parameter, the method name to call.  The
-    /// method should either take no parameters, a single Model or an enumeration of Models.
+    /// When defining the method using the ViewModel parameter, the method name to call. The method
+    /// should either take no parameters, a single Model or an enumeration of Models.
     /// </summary>
     [Parameter]
     public string? MethodName { get; set; }
 
     /// <summary>
-    /// A CommandInfo object that defines the view model and method.  This parameter is mutually
-    /// exclusive from the ViewModel/MethodName.  Use CommandInfo constructors to create this 
+    /// A CommandInfo object that defines the view model and method. This parameter is mutually
+    /// exclusive from the ViewModel/MethodName. Use CommandInfo constructors to create this
     /// command if using DryButton directly, typically this parameter is only used if the caller
     /// already has the CommandInfo from a ViewModelDescription.
     /// </summary>
@@ -37,31 +37,24 @@ public partial class DryButton : ComponentBase, IExtraDryComponent {
     public CommandInfo? Command { get; set; }
 
     /// <summary>
-    /// The information, retrieved through reflection, about the method to execute, along with 
-    /// display attributes.  
-    /// </summary>
-    //[Parameter]
-    private CommandInfo? ResolvedCommand { get; set; }
-
-    /// <summary>
-    /// The optional argument for the command if the command takes one.  Typically the model or
+    /// The optional argument for the command if the command takes one. Typically the model or
     /// models for the command are determined based on the context of the page and this is not set
-    /// directly.  When unset, the active `SelectionSet` will have one or models that will 
-    /// determine the arguments for the method.
+    /// directly. When unset, the active `SelectionSet` will have one or models that will determine
+    /// the arguments for the method.
     /// </summary>
     [Parameter]
     public object? Model { get; set; }
 
     /// <summary>
-    /// If both an icon and a caption are available (as defined in the `CommandAttribute` on the 
+    /// If both an icon and a caption are available (as defined in the `CommandAttribute` on the
     /// method), then display as an Icon only.
     /// </summary>
     [Parameter]
     public bool IconOnly { get; set; }
 
     /// <summary>
-    /// Set to enable/disable the button. Set to `null` (the default) to use the existence of Models
-    /// in the `SelectionSet` to determine if the button should be enabled.
+    /// Set to enable/disable the button. Set to `null` (the default) to use the existence of
+    /// Models in the `SelectionSet` to determine if the button should be enabled.
     /// </summary>
     [Parameter]
     public bool? Enabled { get; set; }
@@ -70,21 +63,19 @@ public partial class DryButton : ComponentBase, IExtraDryComponent {
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
+        if(selection != null) {
+            selection.Changed -= SelectionChanged;
+        }
+    }
+
     [CascadingParameter]
     protected SelectionSet? Selection { get; set; }
 
     [Inject]
     protected ILogger<DryButton> Logger { get; set; } = null!;
-
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass, ResolvedCommand?.DisplayClass);
-
-    private SelectionSet? selection;
-
-    private bool HasIcon => !string.IsNullOrWhiteSpace(ResolvedCommand?.Icon);
-
-    private bool ShowCaption => !string.IsNullOrWhiteSpace(ResolvedCommand?.Caption) && !(HasIcon && IconOnly);
-
-    private string ButtonCaption => ShowCaption ? ResolvedCommand?.Caption! : string.Empty;
 
     protected override void OnParametersSet()
     {
@@ -118,6 +109,21 @@ public partial class DryButton : ComponentBase, IExtraDryComponent {
         }
     }
 
+    /// <summary>
+    /// The information, retrieved through reflection, about the method to execute, along with
+    /// display attributes.
+    /// </summary>
+    //[Parameter]
+    private CommandInfo? ResolvedCommand { get; set; }
+
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass, ResolvedCommand?.DisplayClass);
+
+    private bool HasIcon => !string.IsNullOrWhiteSpace(ResolvedCommand?.Icon);
+
+    private bool ShowCaption => !string.IsNullOrWhiteSpace(ResolvedCommand?.Caption) && !(HasIcon && IconOnly);
+
+    private string ButtonCaption => ShowCaption ? ResolvedCommand?.Caption! : string.Empty;
+
     private void SelectionChanged(object? sender, SelectionSetChangedEventArgs args)
     {
         UpdateDisabled();
@@ -147,7 +153,6 @@ public partial class DryButton : ComponentBase, IExtraDryComponent {
             StateHasChanged();
         }
     }
-    private bool disabled;
 
     private async Task DoClick(MouseEventArgs args)
     {
@@ -169,12 +174,7 @@ public partial class DryButton : ComponentBase, IExtraDryComponent {
         }
     }
 
-    public void Dispose()
-    {
-        GC.SuppressFinalize(this);
-        if(selection != null) {
-            selection.Changed -= SelectionChanged;
-        }
-    }
+    private SelectionSet? selection;
 
+    private bool disabled;
 }

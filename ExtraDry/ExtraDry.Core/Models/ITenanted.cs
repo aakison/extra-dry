@@ -6,8 +6,7 @@
 public interface ITenanted : IUniqueIdentifier
 {
     /// <summary>
-    /// The partition key for the tenant.  
+    /// The partition key for the tenant.
     /// </summary>
     public string Tenant { get; set; }
-
 }

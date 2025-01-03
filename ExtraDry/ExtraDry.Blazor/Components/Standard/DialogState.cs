@@ -1,7 +1,8 @@
 ﻿namespace ExtraDry.Blazor;
 
 /// <summary>
-/// The states that cycle through as the dialog is moved through states with Show(), Hide(), and Toggle().
+/// The states that cycle through as the dialog is moved through states with Show(), Hide(), and
+/// Toggle().
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum DialogState
@@ -27,8 +28,8 @@ public enum DialogState
     Visible,
 
     /// <summary>
-    /// The dialog continues to be loaded but has a limited hiding state just before unloading, typically for animation of dialog.
+    /// The dialog continues to be loaded but has a limited hiding state just before unloading,
+    /// typically for animation of dialog.
     /// </summary>
     Hiding,
-
 }

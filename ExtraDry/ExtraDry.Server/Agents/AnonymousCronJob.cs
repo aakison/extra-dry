@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Server.Agents;
 
 /// <summary>
-/// Internal Cron Job that wraps an anonymous function that was set using a lambda expression 
+/// Internal Cron Job that wraps an anonymous function that was set using a lambda expression
 /// passed to the AddCronJob method.
 /// </summary>
 internal class AnonymousCronJob : CronJob

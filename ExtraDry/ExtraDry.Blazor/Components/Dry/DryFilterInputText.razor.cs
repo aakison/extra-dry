@@ -4,13 +4,13 @@
 /// A filter component used by the DryFilter to display text input that is passed directly to the
 /// PageQuery in the API, used for keyword selections.
 /// </summary>
-public partial class DryFilterInputText : ComponentBase, IExtraDryComponent, IDisposable {
-
-    /// <inheritdoc cref="IExtraDryComponent.CssClass "/>
+public partial class DryFilterInputText : ComponentBase, IExtraDryComponent, IDisposable
+{
+    /// <inheritdoc cref="IExtraDryComponent.CssClass " />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
-    /// <inheritdoc cref="IComments.Placeholder"/>
+    /// <inheritdoc cref="IComments.Placeholder" />
     [Parameter]
     public string Placeholder { get; set; } = "filter by keyword...";
 
@@ -94,5 +94,4 @@ public partial class DryFilterInputText : ComponentBase, IExtraDryComponent, IDi
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "dry-field-filter", "filter-text", "keywords", CssClass);
 
     private bool filterInSync = true;
-
 }

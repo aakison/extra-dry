@@ -8,8 +8,8 @@ namespace ExtraDry.Server.DataWarehouse;
 /// A lightweight aspect that sends the names of updated entities during an EF update to a queue.
 /// For performance reasons, ensure that ServiceBusQueue`T is registered as a singleton.
 /// </summary>
-public class DataWarehouseAspect {
-
+public class DataWarehouseAspect
+{
     public DataWarehouseAspect(AspectDbContext _, ServiceBusQueue<EntityMessage> queue, ILogger<DataWarehouseAspect> iLogger)
     {
         Queue = queue;
@@ -33,14 +33,13 @@ public class DataWarehouseAspect {
     }
 
     /// <summary>
-    /// Some types don't make sense, currently for example is VersionInfo.
-    /// This might be expanded to allow for user selection of types, or by assembly declared, DbSet usage, etc.
-    /// For now, just use for VersionInfo...
+    /// Some types don't make sense, currently for example is VersionInfo. This might be expanded
+    /// to allow for user selection of types, or by assembly declared, DbSet usage, etc. For now,
+    /// just use for VersionInfo...
     /// </summary>
     private List<Type> ExceptionTypes { get; } = [];
 
     private ServiceBusQueue<EntityMessage> Queue { get; }
 
     private readonly ILogger<DataWarehouseAspect> logger;
-
 }

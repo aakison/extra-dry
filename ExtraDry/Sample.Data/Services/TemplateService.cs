@@ -1,9 +1,9 @@
 ﻿namespace Sample.Data.Services;
 
 public class TemplateService(
-    SampleContext sampleContext, 
-    RuleEngine ruleEngine) 
-    : IExpandoSchemaResolver 
+    SampleContext sampleContext,
+    RuleEngine ruleEngine)
+    : IExpandoSchemaResolver
 {
     public async Task<FilteredCollection<Template>> ListAsync(SortQuery query)
     {
@@ -27,7 +27,7 @@ public class TemplateService(
 
     public async Task<Template> RetrieveAsync(string title)
     {
-        return await TryRetrieveAsync(title) 
+        return await TryRetrieveAsync(title)
             ?? throw new ArgumentOutOfRangeException(nameof(title), "No template exists with given Target Type.");
     }
 

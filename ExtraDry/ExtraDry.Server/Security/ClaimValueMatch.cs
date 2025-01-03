@@ -1,7 +1,8 @@
 ﻿namespace ExtraDry.Server.Security;
 
 /// <summary>
-/// The method to use to match a claim value for <see cref="RbacRouteMatchesClaimRequirement"/> policies.
+/// The method to use to match a claim value for <see cref="RbacRouteMatchesClaimRequirement" />
+/// policies.
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ClaimValueMatch

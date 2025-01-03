@@ -5,10 +5,11 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 namespace Sample.Spa.Backend.Security;
 
 /// <summary>
-/// During construction of the SwaggerGen, use the Authorize attribute to determine if Basic Auth required.
+/// During construction of the SwaggerGen, use the Authorize attribute to determine if Basic Auth
+/// required.
 /// </summary>
-public class BasicAuthOperationFilter : IOperationFilter {
-
+public class BasicAuthOperationFilter : IOperationFilter
+{
     /// <summary>
     /// Scan through each operation, using Authorize to add security requirement to OpenApi.
     /// </summary>
@@ -33,7 +34,5 @@ public class BasicAuthOperationFilter : IOperationFilter {
                 }
             });
         }
-
     }
-
 }

@@ -1,12 +1,12 @@
 ﻿namespace ExtraDry.Blazor;
 
 /// <summary>
-/// Indicates that the specified method, typically on a ViewModel, 
-/// is to be used to create a hyperlink for a particular property.
+/// Indicates that the specified method, typically on a ViewModel, is to be used to create a
+/// hyperlink for a particular property.
 /// </summary>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
 public sealed class HyperlinkAttribute(
-    string propertyName) 
+    string propertyName)
     : Attribute
 {
     /// <summary>

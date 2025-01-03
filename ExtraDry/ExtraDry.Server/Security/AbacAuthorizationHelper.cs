@@ -6,16 +6,15 @@ using System.Text.RegularExpressions;
 namespace ExtraDry.Server.Security;
 
 /// <summary>
-/// Internal class that has all the actual logic for combining a set of AbacOptions, a user, 
-/// a route, and a target object; and then determining if the user has access to a resource.
-/// Broken into it's own class to allow for easier testing.
+/// Internal class that has all the actual logic for combining a set of AbacOptions, a user, a
+/// route, and a target object; and then determining if the user has access to a resource. Broken
+/// into it's own class to allow for easier testing.
 /// </summary>
 internal class AbacAuthorizationHelper(AbacOptions options)
 {
-
     /// <summary>
-    /// Looks up the policies that match the target object and operation, returning true if 
-    /// all policies succeed.
+    /// Looks up the policies that match the target object and operation, returning true if all
+    /// policies succeed.
     /// </summary>
     internal bool IsAuthorized(ClaimsPrincipal? user, RouteValueDictionary? route, object target, AbacOperation operation)
     {
@@ -31,8 +30,8 @@ internal class AbacAuthorizationHelper(AbacOptions options)
     }
 
     /// <summary>
-    /// Applies the indicated policy to the target object and operation, returning true if 
-    /// it succeeds.
+    /// Applies the indicated policy to the target object and operation, returning true if it
+    /// succeeds.
     /// </summary>
     internal bool IsAuthorized(ClaimsPrincipal? user, RouteValueDictionary? route, object target, AbacPolicy policy)
     {
@@ -135,5 +134,4 @@ internal class AbacAuthorizationHelper(AbacOptions options)
         var propertyValue = property.GetValue(target);
         return propertyValue?.ToString() == value;
     }
-
 }

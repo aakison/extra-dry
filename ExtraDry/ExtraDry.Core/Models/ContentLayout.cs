@@ -4,14 +4,11 @@ namespace ExtraDry.Core;
 
 public class ContentLayout
 {
-
     public Collection<ContentSection> Sections { get; set; } = [];
-
 }
 
 public class ContentSection
 {
-
     public SectionLayout Layout { get; set; } = SectionLayout.Single;
 
     public ContentTheme Theme { get; set; } = ContentTheme.Light;
@@ -34,12 +31,10 @@ public class ContentSection
         SectionLayout.Quadruple => 4,
         _ => 2,
     };
-
 }
 
 public class ContentContainer
 {
-
     public Guid Id { get; set; } = Guid.NewGuid();
 
     public ContentAlignment Alignment { get; set; } = ContentAlignment.TopLeft;
@@ -47,23 +42,31 @@ public class ContentContainer
     public ContentPadding Padding { get; set; } = ContentPadding.None;
 
     /// <summary>
-    /// The HTML for the content element.  This HTML should be kept very clean, most tags and styles are invalid.
+    /// The HTML for the content element. This HTML should be kept very clean, most tags and styles
+    /// are invalid.
     /// </summary>
     public string Html { get; set; } = string.Empty;
-
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ContentAlignment
 {
     TopLeft,
+
     TopCenter,
+
     TopRight,
+
     MiddleLeft,
+
     MiddleCenter,
+
     MiddleRight,
+
     BottomLeft,
+
     BottomCenter,
+
     BottomRight,
 }
 
@@ -71,15 +74,17 @@ public enum ContentAlignment
 public enum ContentTheme
 {
     Light,
+
     Dark,
+
     Accent,
+
     Banner,
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum SectionLayout
 {
-
     [Display(Name = "single")]
     Single,
 
@@ -102,7 +107,6 @@ public enum SectionLayout
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ContentPadding
 {
-
     [Display(Name = "none")]
     None,
 

@@ -12,7 +12,6 @@ namespace Sample.Spa.Backend.Controllers;
 public class ContentsController(
     ContentsService contents)
 {
-
     /// <summary>
     /// Filtered list of all contents
     /// </summary>
@@ -29,7 +28,8 @@ public class ContentsController(
     /// Create a new page of content
     /// </summary>
     /// <remarks>
-    /// Create a new content entity at the URI, the uniqueId in the URI must match the Id in the payload.
+    /// Create a new content entity at the URI, the uniqueId in the URI must match the Id in the
+    /// payload.
     /// </remarks>
     /// <param name="value"></param>
     /// <returns></returns>

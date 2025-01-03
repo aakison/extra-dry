@@ -8,10 +8,9 @@ using System.Text.Json;
 namespace Sample.WebJob;
 
 public class DataFactoryJobs(
-    DataFactory<SampleWarehouseModel, SampleContext, WarehouseContext> dataFactory, 
+    DataFactory<SampleWarehouseModel, SampleContext, WarehouseContext> dataFactory,
     ILogger<DataFactoryJobs> iLogger)
 {
-
     /// <summary>
     /// Triggered from a message on a queue, this will process updates to a specific entity only.
     /// </summary>
@@ -29,8 +28,8 @@ public class DataFactoryJobs(
     }
 
     /// <summary>
-    /// A routine processing step that runs a single batch until all batches are complete, chance to catch up if tons of updates.
-    /// Cron is set to run hourly and only process a single batch.
+    /// A routine processing step that runs a single batch until all batches are complete, chance
+    /// to catch up if tons of updates. Cron is set to run hourly and only process a single batch.
     /// </summary>
     [FunctionName("IntradayProcessing")]
     public async Task IntradayProcessing([TimerTrigger(HourlyCron)] TimerInfo _)
@@ -41,8 +40,8 @@ public class DataFactoryJobs(
     }
 
     /// <summary>
-    /// A nightly processing step that runs until all batches are complete, chance to catch up if tons of updates.
-    /// Cron is set to run at 2pm UTC, which is midnight AEST.
+    /// A nightly processing step that runs until all batches are complete, chance to catch up if
+    /// tons of updates. Cron is set to run at 2pm UTC, which is midnight AEST.
     /// </summary>
     /// <remarks>
     /// See https://codehollow.com/2017/02/azure-functions-time-trigger-cron-cheat-sheet/

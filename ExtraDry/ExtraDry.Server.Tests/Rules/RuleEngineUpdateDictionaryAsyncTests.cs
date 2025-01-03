@@ -2,8 +2,8 @@
 
 namespace ExtraDry.Core.Tests.Rules;
 
-public class RuleEngineUpdateDictionaryAsyncTests {
-
+public class RuleEngineUpdateDictionaryAsyncTests
+{
     [Fact]
     public async Task IdentityUnchanged()
     {
@@ -181,8 +181,6 @@ public class RuleEngineUpdateDictionaryAsyncTests {
     [InlineData("123", 123.0)] // int as Numeric
     [InlineData("true", true)] // bool as True
     [InlineData("false", false)] // bool as False
-    //[InlineData("null", null)] // null as null
-    //[InlineData("undefined", null)] // undefined as null
     public async Task JsonObjectTypeMapping(string element, object expected)
     {
         var services = new ServiceProviderStub();
@@ -212,8 +210,8 @@ public class RuleEngineUpdateDictionaryAsyncTests {
         Assert.False(destination.Values.ContainsKey("key"));
     }
 
-    public class Target {
-
+    public class Target
+    {
         [Rules(RuleAction.Block)]
         [JsonIgnore]
         public int Id { get; set; } = 1;
@@ -229,11 +227,10 @@ public class RuleEngineUpdateDictionaryAsyncTests {
 
         [Rules(RuleAction.Ignore)]
         public ExpandoValues IgnoredValues { get; set; } = [];
-
     }
 
-    public class ServiceProviderStub : IServiceProvider {
+    public class ServiceProviderStub : IServiceProvider
+    {
         public object? GetService(Type serviceType) => null;
     }
-
 }

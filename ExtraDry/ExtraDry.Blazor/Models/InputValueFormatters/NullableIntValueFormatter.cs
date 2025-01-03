@@ -16,7 +16,7 @@ public class NullableIntValueFormatter(
 
     public override bool TryParse(string? value, out object? result)
     {
-        if(string.IsNullOrWhiteSpace(value) 
+        if(string.IsNullOrWhiteSpace(value)
             || value.Trim().Equals(Property.NullDisplayText, StringComparison.OrdinalIgnoreCase)) {
             result = null;
             return true;
@@ -31,5 +31,4 @@ public class NullableIntValueFormatter(
             return false;
         }
     }
-
 }

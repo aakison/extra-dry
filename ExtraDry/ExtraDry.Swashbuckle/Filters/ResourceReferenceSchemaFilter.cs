@@ -3,7 +3,7 @@ using System.Reflection;
 namespace ExtraDry.Swashbuckle;
 
 /// <summary>
-/// During construction of the SwaggerGen, use the JsonConverter types that indicate that a 
+/// During construction of the SwaggerGen, use the JsonConverter types that indicate that a
 /// ResourceReference is to be returned to change the type exposed through the API.
 /// </summary>
 /// <remarks>
@@ -11,7 +11,6 @@ namespace ExtraDry.Swashbuckle;
 /// </remarks>
 public class ResourceReferenceSchemaFilter : IDocumentFilter
 {
-
     /// <inheritdoc cref="IDocumentFilter.Apply(OpenApiDocument, DocumentFilterContext)" />
     public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
     {
@@ -22,10 +21,10 @@ public class ResourceReferenceSchemaFilter : IDocumentFilter
     private void RewriteResourceReferenceTypes(OpenApiDocument swaggerDoc, DocumentFilterContext context)
     {
         /*
-         *  Loop through the schemas rewriting property types to a corresponding resource reference 
-         *  type where needed. When adding a resource reference type generate a schema for it, if it 
-         *  doesn't already exist. The `GenerateSchema` method adds the schema to the collection by 
-         *  default, using a clone of the collection will avoid any errors due to the collection 
+         *  Loop through the schemas rewriting property types to a corresponding resource reference
+         *  type where needed. When adding a resource reference type generate a schema for it, if it
+         *  doesn't already exist. The `GenerateSchema` method adds the schema to the collection by
+         *  default, using a clone of the collection will avoid any errors due to the collection
          *  being changed.
          */
         var existingSchemas = swaggerDoc.Components.Schemas.ToList();
@@ -82,10 +81,9 @@ public class ResourceReferenceSchemaFilter : IDocumentFilter
     }
 
     /// <summary>
-    /// This method is borrowed from Swashbuckle.AspNetCore.SwaggerGen to 
-    /// ensure that the reference names we use are the same as the one's 
-    /// created by Swashbuckle. We can't use the original method as it's 
-    /// scoped as private.
+    /// This method is borrowed from Swashbuckle.AspNetCore.SwaggerGen to ensure that the reference
+    /// names we use are the same as the one's created by Swashbuckle. We can't use the original
+    /// method as it's scoped as private.
     /// See: https://github.com/domaindrivendev/Swashbuckle.AspNetCore/blob/8f363f7359cb1cb8fa5de5195ec6d97aefaa16b3/src/Swashbuckle.AspNetCore.SwaggerGen/SchemaGenerator/SchemaGeneratorOptions.cs#L44
     /// </summary>
     private string DefaultSchemaIdSelector(Type modelType)
@@ -102,5 +100,6 @@ public class ResourceReferenceSchemaFilter : IDocumentFilter
     }
 
     private readonly Dictionary<string, string> typeRewrites = new(StringComparer.InvariantCultureIgnoreCase);
+
     private readonly Dictionary<string, Type> typeSchema = new(StringComparer.InvariantCultureIgnoreCase);
 }

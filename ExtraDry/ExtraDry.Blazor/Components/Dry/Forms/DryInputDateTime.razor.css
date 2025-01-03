@@ -15,22 +15,21 @@ div {
     background-color: transparent;
   }
 
-  div input:focus, div input:focus-visible {
-    outline: none;
-  }
+    div input:focus, div input:focus-visible {
+      outline: none;
+    }
 
-/*
+    /*
     Hide the default calendar input icon, replace with a custom icon.
     Note: the HTML has a JavaScript event handler to open the calendar on click.
 */
-div input::-webkit-calendar-picker-indicator {
-  display: none;
-}
+    div input::-webkit-calendar-picker-indicator {
+      display: none;
+    }
 
-/*
+  /*
     Styling for the element to be readonly
 */
-div.readonly {
+  div.readonly {
     background-color: #efefef;
-}
-
+  }

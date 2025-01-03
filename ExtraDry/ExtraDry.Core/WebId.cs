@@ -3,12 +3,12 @@
 namespace ExtraDry.Core;
 
 /// <summary>
-/// Helper class to facilitate the maintenance of "Web" Ids that can be used in a URI path without escaping.
+/// Helper class to facilitate the maintenance of "Web" Ids that can be used in a URI path without
+/// escaping.
 /// </summary>
 [Obsolete("Use Slug instead")]
 public static class WebId
 {
-
     /// <summary>
     /// Given a Guid, creates an all lowercase letter version that appears a bit nicer in a URI.
     /// </summary>
@@ -28,9 +28,7 @@ public static class WebId
     /// <summary>
     /// Given a name, with punctuation and mixed case, create a matching WebId.
     /// </summary>
-    /// <remarks>
-    /// This does not guarantee uniqueness, consider `ToUniqueWebId` instead.
-    /// </remarks>
+    /// <remarks>This does not guarantee uniqueness, consider `ToUniqueWebId` instead.</remarks>
     public static string ToWebId(string name, bool lowercase = true)
     {
         if(string.IsNullOrWhiteSpace(name)) {
@@ -60,11 +58,10 @@ public static class WebId
     }
 
     /// <summary>
-    /// Given a name, with punctuation and mixed case, create a matching WebId, with a maximum length.
+    /// Given a name, with punctuation and mixed case, create a matching WebId, with a maximum
+    /// length.
     /// </summary>
-    /// <remarks>
-    /// This does not guarantee uniqueness, consider `ToUniqueWebId` instead.
-    /// </remarks>
+    /// <remarks>This does not guarantee uniqueness, consider `ToUniqueWebId` instead.</remarks>
     public static string ToWebId(string name, int maxLength, bool lowercase = true)
     {
         var webId = ToWebId(name, lowercase);
@@ -91,7 +88,8 @@ public static class WebId
     /// Given a name, with punctuation and mixed case, create a matching WebId.
     /// </summary>
     /// <remarks>
-    /// The `existsAsync` method is used to check if the WebIds already exists, such as in a database.
+    /// The `existsAsync` method is used to check if the WebIds already exists, such as in a
+    /// database.
     /// </remarks>
     public static async Task<string> ToUniqueWebIdAsync(string name, int maxLength, Func<string, Task<bool>> existsAsync)
     {

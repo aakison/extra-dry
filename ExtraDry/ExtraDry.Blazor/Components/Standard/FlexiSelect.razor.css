@@ -28,7 +28,7 @@ div ::deep > button {
     flex: 0 0 auto;
   }
 
-/*
+  /*
   When the placeholder or selected text is too large, prevent from wrapping and render with ellipses
 */
   div ::deep > button span.content {
@@ -38,7 +38,7 @@ div ::deep > button {
   }
 
 /*
-    Default affordance sizing 
+    Default affordance sizing
 */
 div ::deep img.affordance {
   width: var(--icon-tiny);

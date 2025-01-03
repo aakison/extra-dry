@@ -6,11 +6,12 @@
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Method)]
 public class MeasureAttribute : Attribute
 {
-
     /// <summary>
-    /// Declares a property as a data warehouse measure with the name inferred from the property name.
+    /// Declares a property as a data warehouse measure with the name inferred from the property
+    /// name.
     /// </summary>
-    public MeasureAttribute() { }
+    public MeasureAttribute()
+    { }
 
     /// <summary>
     /// Declares a property as a data warehouse measure with the name explicity defined.
@@ -21,9 +22,8 @@ public class MeasureAttribute : Attribute
     }
 
     /// <summary>
-    /// The name to use for the data warehouse measure column.  
-    /// If `null`, then the name is inferred from the property's name.
+    /// The name to use for the data warehouse measure column. If `null`, then the name is inferred
+    /// from the property's name.
     /// </summary>
     public string? Name { get; set; }
-
 }

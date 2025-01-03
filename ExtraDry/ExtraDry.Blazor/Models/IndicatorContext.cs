@@ -3,8 +3,8 @@
 /// <summary>
 /// Context passed through to the indicator child components
 /// </summary>
-public class IndicatorContext {
-
+public class IndicatorContext
+{
     /// <summary>
     /// The size of the indicator icon
     /// </summary>

@@ -18,6 +18,7 @@ public class AppViewModel(NavigationManager navigation)
             return menu;
         }
     }
+
     private Menu? menu;
 
     public IconInfo[] Icons { get; } = [
@@ -88,7 +89,6 @@ public class AppViewModel(NavigationManager navigation)
         new("loader-timeout", "fa fa-rotate-right"),
 
     ];
-
 
     private Menu CreateMenu() => new() {
         Icon = "modules",

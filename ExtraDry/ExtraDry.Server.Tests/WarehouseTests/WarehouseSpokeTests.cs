@@ -3,8 +3,8 @@ using ExtraDry.Server.DataWarehouse;
 
 namespace ExtraDry.Server.Tests.WarehouseTests;
 
-public class WarehouseSpokeTests {
-
+public class WarehouseSpokeTests
+{
     [Fact]
     public void ForeignKeyConstraints()
     {
@@ -110,19 +110,20 @@ public class WarehouseSpokeTests {
         Assert.Contains(dimension.Columns, e => e.Name.EndsWith("Self Reference ID", StringComparison.Ordinal));
     }
 
-    public class TestContext : DbContext {
-
+    public class TestContext : DbContext
+    {
         [FactTable]
-        public class SimpleSource {
+        public class SimpleSource
+        {
             [JsonIgnore]
             public int Id { get; set; }
 
             public Target? TargetName { get; set; }
-
         }
 
         [FactTable]
-        public class MultipleTarget {
+        public class MultipleTarget
+        {
             [JsonIgnore]
             public int Id { get; set; }
 
@@ -132,12 +133,11 @@ public class WarehouseSpokeTests {
 
             [Display(Name = "Thirdly")] // ignored for spoke generation
             public Target? ThirdReference { get; set; }
-
         }
 
         [FactTable]
-        public class Spokeless {
-
+        public class Spokeless
+        {
             [JsonIgnore]
             public int Id { get; set; }
 
@@ -146,13 +146,15 @@ public class WarehouseSpokeTests {
         }
 
         [DimensionTable]
-        public class Target {
+        public class Target
+        {
             [JsonIgnore]
             public int Id { get; set; }
         }
 
         [DimensionTable]
-        public class DimensionSource {
+        public class DimensionSource
+        {
             [JsonIgnore]
             public int Id { get; set; }
 
@@ -160,7 +162,8 @@ public class WarehouseSpokeTests {
         }
 
         [FactTable, DimensionTable]
-        public class DoubleDutySource {
+        public class DoubleDutySource
+        {
             [JsonIgnore]
             public int Id { get; set; }
 
@@ -178,13 +181,13 @@ public class WarehouseSpokeTests {
         public DbSet<DimensionSource> DimensionSources { get; set; } = null!;
 
         public DbSet<DoubleDutySource> DoubleDutySources { get; set; } = null!;
-
     }
 
-    public class SelfReferenceContext : DbContext {
-
+    public class SelfReferenceContext : DbContext
+    {
         [DimensionTable]
-        public class SelfReference {
+        public class SelfReference
+        {
             [JsonIgnore]
             public int Id { get; set; }
 
@@ -192,8 +195,5 @@ public class WarehouseSpokeTests {
         }
 
         public DbSet<SelfReference> SelfReferences { get; set; } = null!;
-
     }
-
 }
-

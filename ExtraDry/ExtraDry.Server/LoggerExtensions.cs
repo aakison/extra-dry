@@ -10,7 +10,6 @@ internal static partial class LoggerExtensions
         Message = "{Method} info: {Message}")]
     internal static partial void LogTextVerbose(this ILogger logger, string message, [CallerMemberName] string? method = null);
 
-
     [LoggerMessage(Level = LogLevel.Information, EventId = 20,
         Message = "{Method} info: {Message}")]
     internal static partial void LogTextInfo(this ILogger logger, string message, [CallerMemberName] string? method = null);
@@ -19,11 +18,9 @@ internal static partial class LoggerExtensions
         Message = "{Method} info: Table {Table} changed; {Message}")]
     internal static partial void LogTableChange(this ILogger logger, string message, string table, [CallerMemberName] string? method = null);
 
-
     [LoggerMessage(Level = LogLevel.Warning, EventId = 40,
         Message = "{Method} warning: {Message}")]
     internal static partial void LogTextWarning(this ILogger logger, string message, [CallerMemberName] string? method = null);
-
 
     [LoggerMessage(Level = LogLevel.Error, EventId = 50,
         Message = "{Method} error: {Message}")]
@@ -36,7 +33,7 @@ internal static partial class LoggerExtensions
     internal static void LogProblemDetails(this ILogger logger, ProblemDetails problem, [CallerMemberName] string? method = null)
         => LogProblemDetails(logger, problem.Status ?? 0, problem.Type ?? "unknown", problem.Instance ?? "unknown", problem.Detail ?? "", method);
 
-    [LoggerMessage(Level = LogLevel.Information, EventId = 60, 
+    [LoggerMessage(Level = LogLevel.Information, EventId = 60,
 Message = "Cron job '{Name}' triggered at {Time}")]
     internal static partial void LogCronJobTrigger(this ILogger logger, string name, string time);
 
@@ -55,12 +52,9 @@ Message = "Cron job '{Name}' triggered at {Time}")]
     [LoggerMessage(Level = LogLevel.Information, EventId = 65, Message = "Job '{JobName}' with schedule '{Schedule}' next 3 occurrences:\n\t{Time1}\n\t{Time2}\n\t{Time3}")]
     internal static partial void LogCronJobNexts(this ILogger logger, string JobName, string schedule, string time1, string time2, string time3);
 
-
     [LoggerMessage(Level = LogLevel.Information, EventId = 70, Message = "Resolved Configuration for '{Name}':\n\t{List}")]
     internal static partial void LogConfigurationList(this ILogger logger, string name, string list);
 
     [LoggerMessage(Level = LogLevel.Warning, EventId = 71, Message = "Configuration Failed Validation:\n\t{Results}")]
     internal static partial void LogConfigurationValidationError(this ILogger logger, string results);
-
-
 }

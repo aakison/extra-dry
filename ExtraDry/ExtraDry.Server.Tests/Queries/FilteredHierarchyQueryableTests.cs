@@ -2,8 +2,8 @@
 
 namespace ExtraDry.Server.Tests.Models;
 
-public class FilteredHierarchyQueryableTests {
-
+public class FilteredHierarchyQueryableTests
+{
     [Fact]
     public void QueryableInterfacePublished()
     {
@@ -22,7 +22,7 @@ public class FilteredHierarchyQueryableTests {
     [InlineData(1, 1)]
     [InlineData(2, 3)]
     [InlineData(3, 13)]
-    [InlineData(4, 16)] 
+    [InlineData(4, 16)]
     public void HierarchyLevels(int level, int count)
     {
         // filter to get rid of duplicate names
@@ -39,7 +39,7 @@ public class FilteredHierarchyQueryableTests {
         Assert.Null(actual.Expand);
         Assert.Null(actual.Collapse);
         Assert.Equal(count, actual.Count);
-        Assert.Equal(expected, actual.Items); 
+        Assert.Equal(expected, actual.Items);
     }
 
     [Theory]
@@ -153,5 +153,4 @@ public class FilteredHierarchyQueryableTests {
         Assert.Null(actual.Collapse);
         Assert.Equal(4, actual.Count);
     }
-
 }

@@ -1,25 +1,25 @@
 ﻿namespace ExtraDry.Blazor;
 
 /// <summary>
-/// Represents an icon in the system, rendered using a global repository of icons which
-/// are either images or styles on `i` tags.
+/// Represents an icon in the system, rendered using a global repository of icons which are either
+/// images or styles on `i` tags.
 /// </summary>
-public partial class Icon : ComponentBase, IExtraDryComponent {
-
+public partial class Icon : ComponentBase, IExtraDryComponent
+{
     /// <inheritdoc cref="IExtraDryComponent.CssClass" />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
     /// <summary>
-    /// A key for the icon.  The key is typically be registered with an enclosing `Theme` tag.
-    /// If the key is a Uri, then the Uri is used directly.
+    /// A key for the icon. The key is typically be registered with an enclosing `Theme` tag. If
+    /// the key is a Uri, then the Uri is used directly.
     /// </summary>
     [Parameter, EditorRequired]
     public string Key { get; set; } = null!;
 
     /// <summary>
-    /// Alt text that is applied to `img` tags when icon is an image.  This overrides
-    /// the default "alt" text which is registered with the `Theme`.
+    /// Alt text that is applied to `img` tags when icon is an image. This overrides the default
+    /// "alt" text which is registered with the `Theme`.
     /// </summary>
     [Parameter]
     public string? Alt { get; set; }
@@ -80,6 +80,7 @@ public partial class Icon : ComponentBase, IExtraDryComponent {
             noThemeErrorIssued = false;
         }
     }
+
     private static bool noThemeErrorIssued = true;
 
     [Inject]

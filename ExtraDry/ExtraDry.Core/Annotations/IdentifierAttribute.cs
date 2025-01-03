@@ -1,12 +1,11 @@
 ﻿namespace ExtraDry.Core;
 
 /// <summary>
-/// An identifier can contain unicode letters, underscores and digits, but may not start with 
-/// a digit.
+/// An identifier can contain unicode letters, underscores and digits, but may not start with a
+/// digit.
 /// </summary>
 public class IdentifierAttribute : RegularExpressionAttribute
 {
-
     /// <inheritdoc cref="IdentifierAttribute" />
     public IdentifierAttribute() : base(ValidIdentifierRegex)
     {

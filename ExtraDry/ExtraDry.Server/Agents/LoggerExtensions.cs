@@ -4,15 +4,15 @@ using System.Reflection;
 namespace ExtraDry.Server.Agents;
 
 /// <summary>
-/// Extensions to the logger that displays all the properties of an object and its children.  Any
-/// properties that are marked with the <see cref="SecretAttribute"/> will be displayed as "*****" 
-/// instead of being displayed.  
+/// Extensions to the logger that displays all the properties of an object and its children. Any
+/// properties that are marked with the <see cref="SecretAttribute" /> will be displayed as "*****"
+/// instead of being displayed.
 /// </summary>
 public static class LoggerExtensions
 {
     /// <summary>
-    /// Logs the properties of the object and its children.  Any properties that are marked with the
-    /// <see cref="SecretAttribute"/> will be dispalyed as "*****" instead of their actual value.
+    /// Logs the properties of the object and its children. Any properties that are marked with the
+    /// <see cref="SecretAttribute" /> will be dispalyed as "*****" instead of their actual value.
     /// Validation is also checked and any errors are logged.
     /// </summary>
     /// <param name="logger">The ILogger that the properties are logged to.</param>
@@ -87,12 +87,11 @@ public static class LoggerExtensions
                 }
             }
         }
+
         private static string ValidationMessage(string prefix, ValidationResult result)
         {
             var members = string.Join(", ", result.MemberNames);
             return $"{prefix}{members}: {result.ErrorMessage}";
         }
-
     }
-
 }

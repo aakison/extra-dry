@@ -5,7 +5,6 @@
 /// </summary>
 public class PageHierarchyQuery : HierarchyQuery, IPageQuery
 {
-
     /// <inheritdoc cref="IPageQuery.Skip" />
     public int Skip { get; set; }
 
@@ -14,6 +13,7 @@ public class PageHierarchyQuery : HierarchyQuery, IPageQuery
         get => take <= 0 ? DefaultTake : take;
         set => take = value;
     }
+
     private int take;
 
     /// <inheritdoc cref="IPageQuery.Token" />

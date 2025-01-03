@@ -2,8 +2,8 @@
 
 namespace ExtraDry.Server.Tests.Internals;
 
-public class FilterParserTests {
-
+public class FilterParserTests
+{
     [Theory]
     [InlineData("Name")]
     [InlineData("_Name")]
@@ -101,8 +101,6 @@ public class FilterParserTests {
     [InlineData("Name:~unquoted~")]
     [InlineData("Name:[]")]
     [InlineData("~~~totally invalid~~~")]
-    //[InlineData("NameThatGoesNowhere")]
-    //[InlineData("Name:  extra")]
     public void InvalidIdentifierRule(string filter)
     {
         Assert.Throws<DryException>(() => FilterParser.Parse(filter));
@@ -235,5 +233,4 @@ public class FilterParserTests {
         Assert.Equal("number", tree.Rules.Last().PropertyName);
         Assert.Equal("123", tree.Rules.Last().Values.First());
     }
-
 }

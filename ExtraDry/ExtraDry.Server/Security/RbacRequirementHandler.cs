@@ -11,7 +11,6 @@ public class RbacRequirementHandler
     IHttpContextAccessor contextAccessor)
     : AuthorizationHandler<RbacRequirement>
 {
-
     /// <inheritdoc cref="RbacRequirementHandler" />
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, RbacRequirement requirement)
     {
@@ -31,9 +30,8 @@ public class RbacRequirementHandler
     }
 
     /// <summary>
-    /// An empty object to use as the resource for the ABAC check.  This should be null context as 
+    /// An empty object to use as the resource for the ABAC check. This should be null context as
     /// this is an RBAC check, but pass something through as Helper expects a target object.
     /// </summary>
     private static object Empty { get; } = new();
-
 }

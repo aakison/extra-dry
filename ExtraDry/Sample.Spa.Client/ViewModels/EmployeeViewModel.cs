@@ -1,7 +1,7 @@
 ﻿namespace Sample.Spa.Client;
 
-public class EmployeeViewModel : ISubjectViewModel<Employee> {
-
+public class EmployeeViewModel : ISubjectViewModel<Employee>
+{
     public string Caption(Employee item) => $"{item.FirstName} {item.LastName} ({item.Email})";
 
     public string Code(Employee item) => string.Empty;
@@ -13,5 +13,4 @@ public class EmployeeViewModel : ISubjectViewModel<Employee> {
     public string Icon(Employee item) => Gravatar.ToGravatarUrl(item.Email, 40);
 
     public string Description(Employee item) => string.Empty;
-
 }

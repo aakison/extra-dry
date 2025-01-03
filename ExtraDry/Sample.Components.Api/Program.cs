@@ -27,7 +27,8 @@ builder.Services.AddExtraDry(options => {
 // Add the actual API endpoints
 builder.Services.AddControllers();
 
-// Add services for configuring Swagger and SwaggerUI (nee Swashbuckle) https://aka.ms/aspnetcore/swashbuckle
+// Add services for configuring Swagger and SwaggerUI (nee Swashbuckle)
+// https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => {
     options.AddSecurityDefinition(name: "Bearer", securityScheme: new OpenApiSecurityScheme {
@@ -90,7 +91,7 @@ if(host.Environment.IsDevelopment()) {
     host.UseSwagger();
     host.UseSwaggerUI();
 }
- 
+
 // HealthCheck middleware
 host.UseHealthChecks("/healthcheck", new HealthCheckOptions() {
     Predicate = _ => true,

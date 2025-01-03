@@ -6,8 +6,8 @@
 /// platforms. Includes list management and filtering.
 /// </summary>
 /// <typeparam name="TItem">The type for items in the select list.</typeparam>
-public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent, IDisposable where TItem : class {
-
+public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent, IDisposable where TItem : class
+{
     /// <inheritdoc cref="IExtraDryComponent.CssClass" />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
@@ -65,8 +65,8 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent, IDispo
     public bool Sort { get; set; }
 
     /// <summary>
-    /// A func that defines the string that the items are sorted by when `Sort` is `true`. 
-    /// Defaults to sorting by the title of the item.
+    /// A func that defines the string that the items are sorted by when `Sort` is `true`. Defaults
+    /// to sorting by the title of the item.
     /// </summary>
     [Parameter]
     public Func<TItem?, string>? SortFunc { get; set; }
@@ -91,10 +91,10 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent, IDispo
     public string MoreItemsTemplate { get; set; } = "plus {0} more...";
 
     /// <summary>
-    /// When set, renders the combo box with the list of items always rendered to the document.
-    /// By default, the list is removed from the DOM for performance, but this is harder to style.
-    /// Use of this property is only recommended during development and should not be set 
-    /// in production.
+    /// When set, renders the combo box with the list of items always rendered to the document. By
+    /// default, the list is removed from the DOM for performance, but this is harder to style. Use
+    /// of this property is only recommended during development and should not be set in
+    /// production.
     /// </summary>
     [Parameter]
     public bool DebugCss { get; set; }
@@ -136,11 +136,11 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent, IDispo
     }
 
     /// <summary>
-    /// When the DIV loses focus we want to Cancel Input.  However, the onfocusout event will fire
-    /// multiple times _within_ the DIV without it actually losing focus.  E.g. when switching from
-    /// the button to the input text or scrollbar.  No elegant solution can be found, so when the
-    /// DIV receives OnFocusOut, let all events complete and see if the DIV immediately got a 
-    /// onfocusin event.  If it loses focus and gains focus both in the same event loop then it
+    /// When the DIV loses focus we want to Cancel Input. However, the onfocusout event will fire
+    /// multiple times _within_ the DIV without it actually losing focus. E.g. when switching from
+    /// the button to the input text or scrollbar. No elegant solution can be found, so when the
+    /// DIV receives OnFocusOut, let all events complete and see if the DIV immediately got a
+    /// onfocusin event. If it loses focus and gains focus both in the same event loop then it
     /// "hasn't actually lost focus" and we don't want to cancel.
     /// </summary>
     private bool haveActuallyLostFocus;
@@ -180,7 +180,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent, IDispo
     }
 
     /// <summary>
-    /// After each render, ensure that the 
+    /// After each render, ensure that the
     /// </summary>
     /// <param name="firstRender"></param>
     /// <returns></returns>
@@ -216,7 +216,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent, IDispo
 
     /// <summary>
     /// The current filter displayed the user. Will be the entire title of the SelectedOption once
-    /// selection made.  The actual filter might vary and is contained in `InternalItems`.
+    /// selection made. The actual filter might vary and is contained in `InternalItems`.
     /// </summary>
     private string DisplayFilter { get; set; } = string.Empty;
 
@@ -316,8 +316,8 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent, IDispo
     }
 
     /// <summary>
-    /// Confirms the explicit or implicit `SelectedOption` and makes it the current `Value`. Handles
-    /// Enter key and Double Clicks.
+    /// Confirms the explicit or implicit `SelectedOption` and makes it the current `Value`.
+    /// Handles Enter key and Double Clicks.
     /// </summary>
     private async Task ConfirmInputAsync(TItem? selectedItem)
     {
@@ -432,8 +432,8 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent, IDispo
     /// <remarks>
     /// This is done using one of the Blazor "anti-patterns" as binding doesn't work with Blazor 6
     /// and the fix designed for .NET 7 "missed the RTM window" a couple of times. Eventually this
-    /// will be better to use binding with `@bind:after="SetOptionsFilter"` but that's not 
-    /// ready yet.
+    /// will be better to use binding with `@bind:after="SetOptionsFilter"` but that's not ready
+    /// yet.
     /// </remarks>
     protected async Task DoFilterInput(ChangeEventArgs args)
     {
@@ -472,7 +472,8 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent, IDispo
     protected async Task DoKeyDown(KeyboardEventArgs args)
     {
         PreventDefault = false;
-        // 9 lines shown so page up/down should be one less so we have one line overlap for context.
+        // 9 lines shown so page up/down should be one less so we have one line overlap for
+        // context.
         var pageSize = 8;
         if(args.Code is "Enter" or "NumpadEnter") {
             PreventDefault = true; // must occur before await, as needed to prevent button clicks.
@@ -568,8 +569,8 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent, IDispo
     private ILogger<ComboBox<TItem>> Logger { get; set; } = null!;
 }
 
-internal class SortedFilteredCollection<T> {
-
+internal class SortedFilteredCollection<T>
+{
     public IEnumerable<T>? SourceItems { get; private set; }
 
     public void SetFuncs(Func<T?, string> group, Func<T?, string> sort, Func<T?, string> display)
@@ -632,5 +633,4 @@ internal class SortedFilteredCollection<T> {
     private List<T> SortedItems { get; set; } = [];
 
     public List<T> FilteredItems { get; private set; } = [];
-
 }

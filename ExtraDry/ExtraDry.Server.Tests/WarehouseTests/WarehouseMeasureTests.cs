@@ -4,8 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace ExtraDry.Server.Tests.WarehouseTests;
 
-public class WarehouseMeasureTests {
-
+public class WarehouseMeasureTests
+{
     [Theory]
     [InlineData("Measure Container ID", ColumnType.Key)] // Key Column naming convention
     [InlineData(nameof(MeasureContainer.Integer), ColumnType.Integer)] // Simple int property, no decoration or special handling
@@ -223,17 +223,16 @@ public class WarehouseMeasureTests {
 
         Assert.Throws<DryException>(() => builder.Fact<PrecisionContext.PrecisionClass>().Measure(e => e.FluentScale).HasPrecision(precision, scale));
     }
-
 }
 
-public class MeasureContext : DbContext {
-
+public class MeasureContext : DbContext
+{
     public DbSet<MeasureContainer> Measures { get; set; } = null!;
 }
 
 [FactTable]
-public class MeasureContainer {
-
+public class MeasureContainer
+{
     [Key]
     [JsonIgnore]
     public int Id { get; set; }
@@ -276,37 +275,35 @@ public class MeasureContainer {
     public decimal Ignored { get; set; }
 }
 
-public class EmptyMeasureNameContext : DbContext {
-
+public class EmptyMeasureNameContext : DbContext
+{
     [FactTable]
-    public class BadClass {
-
+    public class BadClass
+    {
         [Measure("")]
         public decimal GoodName { get; set; }
-
     }
 
     public DbSet<BadClass> BadClasses { get; set; } = null!;
 }
 
-public class BlankMeasureNameContext : DbContext {
-
+public class BlankMeasureNameContext : DbContext
+{
     [FactTable]
-    public class BadClass {
-
+    public class BadClass
+    {
         [Measure("   ")]
         public decimal GoodName { get; set; }
-
     }
 
     public DbSet<BadClass> BadClasses { get; set; } = null!;
 }
 
-public class NameCollisionContext : DbContext {
-
+public class NameCollisionContext : DbContext
+{
     [FactTable]
-    public class NameCollisionClass {
-
+    public class NameCollisionClass
+    {
         public decimal Name { get; set; }
 
         [Measure("Name")]
@@ -316,11 +313,11 @@ public class NameCollisionContext : DbContext {
     public DbSet<NameCollisionClass> NameCollisionClasses { get; set; } = null!;
 }
 
-public class PrecisionContext : DbContext {
-
+public class PrecisionContext : DbContext
+{
     [FactTable]
-    public class PrecisionClass {
-
+    public class PrecisionClass
+    {
         [JsonIgnore]
         public int Id { get; set; }
 
@@ -336,7 +333,6 @@ public class PrecisionContext : DbContext {
         public decimal MissingScale { get; set; }
 
         public decimal FluentScale { get; set; }
-
     }
 
     public DbSet<PrecisionClass> PrecisionClasses { get; set; } = null!;

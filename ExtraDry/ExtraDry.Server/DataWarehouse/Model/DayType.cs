@@ -4,8 +4,8 @@
 /// Declares the type of day for a Date in the data warehouse.
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum DayType {
-    
+public enum DayType
+{
     /// <summary>
     /// A typical working day, such as Monday-Friday in the US, or Monday-Saturday in South Korea.
     /// For a 24/7 shift work environment, every day might be considered a workday.
@@ -21,5 +21,4 @@ public enum DayType {
     /// An ad-hoc day where work is not done for some holiday reason.
     /// </summary>
     Holiday,
-
 }

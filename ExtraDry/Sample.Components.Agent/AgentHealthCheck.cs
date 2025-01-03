@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
-using System.Diagnostics;
 using System.Reflection;
 
 namespace Sample.Components.Agent;

@@ -1,13 +1,12 @@
 ﻿namespace ExtraDry.Core;
 
 /// <summary>
-/// Represents the interface that defines the names of Subjects.
-/// Models can implement this or ViewModel objects can implement this for models.
-/// Consider ISubjectViewModel`TModel instead to use a ViewModel controller.
+/// Represents the interface that defines the names of Subjects. Models can implement this or
+/// ViewModel objects can implement this for models. Consider ISubjectViewModel`TModel instead to
+/// use a ViewModel controller.
 /// </summary>
 public interface ISubjectViewModel : IListItemViewModel
 {
-
     /// <summary>
     /// A Code that is used to uniquely identify the subject amongst similar typed entities.
     /// </summary>
@@ -19,8 +18,8 @@ public interface ISubjectViewModel : IListItemViewModel
     string Subtitle { get; }
 
     /// <summary>
-    /// A caption for presenting on a card with other information, 
-    /// should uniquely identify the entity when only a single line of text available.
+    /// A caption for presenting on a card with other information, should uniquely identify the
+    /// entity when only a single line of text available.
     /// </summary>
     string Caption { get; }
 
@@ -28,7 +27,6 @@ public interface ISubjectViewModel : IListItemViewModel
     /// When not empty, a URL that indicates where a thumnbail of the subject can be downloaded.
     /// </summary>
     string Icon { get; }
-
 }
 
 /// <summary>
@@ -48,5 +46,4 @@ public interface ISubjectViewModel<TModel> : IListItemViewModel<TModel>
 
     /// <inheritdoc cref="ISubjectViewModel.Icon" />
     string Icon(TModel item);
-
 }

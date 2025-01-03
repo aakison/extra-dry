@@ -3,8 +3,8 @@ using ExtraDry.Server.DataWarehouse;
 
 namespace ExtraDry.Server.Tests.WarehouseTests;
 
-public class WarehouseAttributeTests {
-
+public class WarehouseAttributeTests
+{
     [Theory]
     [InlineData("Attribute Container ID", ColumnType.Key)] // Key Column naming convention
     [InlineData("Uuid", ColumnType.Text)] // Simple Guid property, no decoration or special handling
@@ -145,13 +145,14 @@ public class WarehouseAttributeTests {
         Assert.Throws<DryException>(() => builder.Dimension<AttributeContainer>().Attribute(e => e.LastName).HasName("Name"));
     }
 
-    public class AttributeContext : DbContext {
+    public class AttributeContext : DbContext
+    {
         public DbSet<AttributeContainer> Attributes { get; set; } = null!;
     }
 
     [DimensionTable]
-    public class AttributeContainer {
-
+    public class AttributeContainer
+    {
         [Key]
         [JsonIgnore]
         public int Id { get; set; }
@@ -188,42 +189,37 @@ public class WarehouseAttributeTests {
 
         public decimal CurrencyNumberTest { get; set; }
     }
-
-
 }
 
-
-public class EmptyAttributeNameContext : DbContext {
-
+public class EmptyAttributeNameContext : DbContext
+{
     [DimensionTable]
-    public class BadClass {
-
+    public class BadClass
+    {
         [Measure("")]
         public string GoodName { get; set; } = string.Empty;
-
     }
 
     public DbSet<BadClass> BadClasses { get; set; } = null!;
 }
 
-public class BlankAttributeNameContext : DbContext {
-
+public class BlankAttributeNameContext : DbContext
+{
     [DimensionTable]
-    public class BadClass {
-
+    public class BadClass
+    {
         [Measure("   ")]
         public string GoodName { get; set; } = string.Empty;
-
     }
 
     public DbSet<BadClass> BadClasses { get; set; } = null!;
 }
 
-public class AttributeNameCollisionContext : DbContext {
-
+public class AttributeNameCollisionContext : DbContext
+{
     [DimensionTable]
-    public class NameCollisionClass {
-
+    public class NameCollisionClass
+    {
         public string Name { get; set; } = string.Empty;
 
         [Attribute("Name")]

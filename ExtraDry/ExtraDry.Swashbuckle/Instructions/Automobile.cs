@@ -3,11 +3,11 @@
 /// <summary>
 /// A sample class used for demonstrating the common features of APIs.
 /// </summary>
-public class Automobile {
-
+public class Automobile
+{
     /// <summary>
     /// The DAO primary key.
-    /// </summary> 
+    /// </summary>
     [JsonIgnore]
     [Key]
     public int Id { get; set; }
@@ -49,6 +49,4 @@ public class Automobile {
     /// <example>Retro-styled body-on-frame mid-size SUV inspired by the Toyota FJ40.</example>
     [Filter(FilterType.Contains)]
     public string Description { get; set; } = string.Empty;
-
 }
-

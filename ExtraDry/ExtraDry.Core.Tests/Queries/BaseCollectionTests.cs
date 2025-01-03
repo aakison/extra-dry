@@ -4,7 +4,6 @@ namespace ExtraDry.Core.Tests.Models;
 
 public class BaseCollectionTests
 {
-
     [Fact]
     public void DefaultConstructor()
     {
@@ -56,5 +55,4 @@ public class BaseCollectionTests
 
         public string Load { get; set; } = string.Empty;
     }
-
 }

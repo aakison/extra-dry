@@ -9,10 +9,9 @@ public class AbacRequirement(
     AbacOperation operation)
     : IAuthorizationRequirement
 {
-
     /// <summary>
-    /// The operation that is requested for this ABAC operation, used to determine the policies 
-    /// to apply.
+    /// The operation that is requested for this ABAC operation, used to determine the policies to
+    /// apply.
     /// </summary>
     public AbacOperation Operation { get; init; } = operation;
 
@@ -50,5 +49,4 @@ public class AbacRequirement(
     /// The requirement for aggregate operations on a collection of entities.
     /// </summary>
     public static AbacRequirement Aggregate { get; } = new(AbacOperation.Aggregate);
-
 }

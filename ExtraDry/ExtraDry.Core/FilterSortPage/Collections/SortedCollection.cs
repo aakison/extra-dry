@@ -14,10 +14,12 @@ public class SortedCollection<T> : FilteredCollection<T>
         get => sort;
         set => sort = string.IsNullOrWhiteSpace(value) ? null : value;
     }
+
     private string? sort;
 
     /// <summary>
-    /// Create a new <see cref="FilteredCollection{T}" /> with the items cast to a base class or interface.
+    /// Create a new <see cref="FilteredCollection{T}" /> with the items cast to a base class or
+    /// interface.
     /// </summary>
     public new SortedCollection<TCast> Cast<TCast>() => new() {
         Filter = Filter,
@@ -25,6 +27,4 @@ public class SortedCollection<T> : FilteredCollection<T>
         Sort = Sort,
         Items = Items.Cast<TCast>().ToList(),
     };
-
 }
-

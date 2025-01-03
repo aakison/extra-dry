@@ -3,8 +3,8 @@
 namespace ExtraDry.Blazor.Components.Internal;
 
 [SuppressMessage("Usage", "DRY1500:Extra DRY Blazor components should have an interface.", Justification = "Internal component not for general use.")]
-public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
-
+public partial class ViewModelTableRow<T> : ComponentBase, IDisposable
+{
     /// <summary>
     /// Required parameter which is the view model description passed from the DryTable.
     /// </summary>
@@ -126,5 +126,4 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable {
         GC.SuppressFinalize(this);
         Selection.Changed -= OnExclusivity;
     }
-
 }

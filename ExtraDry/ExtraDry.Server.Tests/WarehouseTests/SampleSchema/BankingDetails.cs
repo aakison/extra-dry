@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Server.Tests.WarehouseTests;
 
-public class BankingDetails {
-
+public class BankingDetails
+{
     [Display(Name = "Bank Number", Description = "The banks number such as an ABN in Australia or the R/T in the U.S.", ShortName = "ABN")]
     [StringLength(20)]
     public string BankNumber { get; set; } = string.Empty;
@@ -13,5 +13,4 @@ public class BankingDetails {
     [Display(Name = "Account Number", Description = "The number of the bank account.")]
     [StringLength(20)]
     public string AccountNumber { get; set; } = string.Empty;
-
 }

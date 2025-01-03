@@ -20,9 +20,11 @@ form.flexi-select-form {
 // Match with Change AnimationDuration on MiniDialog to 100 to see this work.
 .mini-dialog.form, .mini-dialog.curtain {
     transition: opacity 0.1s;
+
     &.showing, &.visible {
         opacity: 100%;
     }
+
     &.hidden, &.hiding {
         opacity: 0%;
     }

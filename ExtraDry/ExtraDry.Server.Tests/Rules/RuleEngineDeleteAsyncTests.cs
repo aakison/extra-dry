@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Server.Tests.Rules;
 
-public class RuleEngineDeleteAsyncTests {
-
+public class RuleEngineDeleteAsyncTests
+{
     [Fact]
     public async Task EntityFrameworkStyleDeleteSoftExecutesSoft()
     {
@@ -20,7 +20,7 @@ public class RuleEngineDeleteAsyncTests {
     public async Task EntityFrameworkStyleDeleteExecutesHard()
     {
         var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
-        
+
         var item = new object();
         var items = new List<object> { item };
 
@@ -51,11 +51,11 @@ public class RuleEngineDeleteAsyncTests {
         var item = new object();
         var items = new List<object> { item };
 
-        var result = await rules.ExpungeAsync(item, 
+        var result = await rules.ExpungeAsync(item,
             async () => {
                 await Task.Delay(1);
                 items.Remove(item);
-            }, 
+            },
             SaveChangesAsync
         );
 
@@ -85,14 +85,18 @@ public class RuleEngineDeleteAsyncTests {
 
     private SaveState state = SaveState.Pending;
 
-    private enum SaveState {
+    private enum SaveState
+    {
         Pending = 0,
+
         Processing = 1,
+
         Done = 2,
     }
 
     [DeleteRule(DeleteAction.Recycle, nameof(Active), false, true)]
-    public class SoftDeletable {
+    public class SoftDeletable
+    {
         public bool Active { get; set; } = true;
     }
 
@@ -101,5 +105,4 @@ public class RuleEngineDeleteAsyncTests {
     {
         public bool Active { get; set; } = true;
     }
-
 }

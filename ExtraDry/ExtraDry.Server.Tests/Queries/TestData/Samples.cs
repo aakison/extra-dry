@@ -3,8 +3,8 @@ using ExtraDry.Server.Tests.WarehouseTests;
 
 namespace ExtraDry.Server.Tests;
 
-public static class Samples {
-
+public static class Samples
+{
     public static List<Model> Models => [
         new Model { Id = 1, Name = "Alpha", Soundex = "A410", Type = ModelType.Greek, Notes = "Common with phonetic" },
         new Model { Id = 2, Name = "Beta", Soundex = "B300", Type = ModelType.Greek },
@@ -20,7 +20,6 @@ public static class Samples {
         new Model { Id = 12, Name = "Foxtrot", Soundex = "F236", Type = ModelType.Phonetic },
         new Model { Id = 13, Name = "Foxxy", Soundex = "F200", Type = ModelType.Hendrix, Notes = "Jimi" },
     ];
-
 
     public static List<Region> Regions {
         get {
@@ -53,8 +52,7 @@ public static class Samples {
             }
             return regions;
         }
-
     }
-    private static List<Region>? regions;
 
+    private static List<Region>? regions;
 }

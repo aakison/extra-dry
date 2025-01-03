@@ -19,6 +19,7 @@ header {
 
         div.waffle {
             padding: 0;
+
             ::deep svg {
                 color: $var-secondary;
             }
@@ -55,4 +56,3 @@ header {
         }
     }
 }
-

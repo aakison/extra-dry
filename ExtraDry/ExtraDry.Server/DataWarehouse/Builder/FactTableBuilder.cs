@@ -3,9 +3,9 @@ using System.Reflection;
 
 namespace ExtraDry.Server.DataWarehouse.Builder;
 
-public abstract class FactTableBuilder : TableBuilder {
-
-    internal FactTableBuilder(WarehouseModelBuilder warehouseBuilder, Type entity) 
+public abstract class FactTableBuilder : TableBuilder
+{
+    internal FactTableBuilder(WarehouseModelBuilder warehouseBuilder, Type entity)
         : base(warehouseBuilder, entity)
     {
         FactTableAttribute = entity.GetCustomAttribute<FactTableAttribute>()!;
@@ -41,7 +41,7 @@ public abstract class FactTableBuilder : TableBuilder {
         return MeasureBuilders[name];
     }
 
-    internal override bool HasColumnNamed(string name) => 
+    internal override bool HasColumnNamed(string name) =>
         KeyBuilder?.ColumnName == name || MeasureBuilders.Values.Any(e => e.ColumnName == name);
 
     private void LoadMeasureBuilders()
@@ -67,14 +67,13 @@ public abstract class FactTableBuilder : TableBuilder {
     private FactTableAttribute FactTableAttribute { get; set; }
 
     private Dictionary<string, MeasureBuilder> MeasureBuilders { get; } = [];
-
 }
 
-public class FactTableBuilder<T> : FactTableBuilder {
-
-    internal FactTableBuilder(WarehouseModelBuilder warehouseModel, Type entity) 
+public class FactTableBuilder<T> : FactTableBuilder
+{
+    internal FactTableBuilder(WarehouseModelBuilder warehouseModel, Type entity)
         : base(warehouseModel, entity)
-    { 
+    {
     }
 
     public MeasureBuilder Measure<TProperty>(Expression<Func<T, TProperty>> propertyExpression)
@@ -99,5 +98,4 @@ public class FactTableBuilder<T> : FactTableBuilder {
         }
         return property;
     }
-
 }

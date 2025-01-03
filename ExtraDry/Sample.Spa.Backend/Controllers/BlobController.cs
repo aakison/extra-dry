@@ -13,12 +13,11 @@ namespace Sample.Spa.Backend.Controllers;
 [SuppressMessage("Usage", "DRY1002:ApiController shouldn't inherit from ControllerBase",
     Justification = "Controller makes use of ControllerBase functionality for emitting file content.")]
 public class BlobController(
-    InMemoryBlobService blobs) 
+    InMemoryBlobService blobs)
     : ControllerBase
 {
-
     /// <summary>
-    /// Creates a Blob with both the given unique key and the user-friendly filename.  
+    /// Creates a Blob with both the given unique key and the user-friendly filename.
     /// </summary>
     [HttpPost("/api/blobs/{uuid}/{filename}")]
     [Produces("application/json")]

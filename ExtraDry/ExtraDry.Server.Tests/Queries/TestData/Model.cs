@@ -2,8 +2,8 @@
 
 namespace ExtraDry.Server.Tests.Models;
 
-public class Model {
-
+public class Model
+{
     [Filter]
     [JsonIgnore]
     public int Id { get; set; }

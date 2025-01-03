@@ -4,10 +4,10 @@ namespace ExtraDry.Swashbuckle;
 
 /// <summary>
 /// Document filter that applies to OpenApiDocuments (swagger) to make the DisplayAttribute work
-/// when it is applied to a ApiController.  Included when AddExtraDry() used on Swagger options.
+/// when it is applied to a ApiController. Included when AddExtraDry() used on Swagger options.
 /// </summary>
-public class DisplayControllerDocumentFilter : IDocumentFilter {
-
+public class DisplayControllerDocumentFilter : IDocumentFilter
+{
     public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
     {
         LoadDisplayAttributes();
@@ -28,7 +28,8 @@ public class DisplayControllerDocumentFilter : IDocumentFilter {
         }
     }
 
-    private static void RenameTag(OpenApiDocument swaggerDoc, string oldName, string newName) { 
+    private static void RenameTag(OpenApiDocument swaggerDoc, string oldName, string newName)
+    {
         foreach(var tag in swaggerDoc.Tags) {
             if(tag.Name == oldName) {
                 tag.Name = newName;
@@ -82,6 +83,4 @@ public class DisplayControllerDocumentFilter : IDocumentFilter {
     private readonly Dictionary<string, int> originalPositions = [];
 
     private readonly Dictionary<string, DisplayAttribute> displayAttributes = [];
-
 }
-

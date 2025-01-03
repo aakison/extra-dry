@@ -1,13 +1,12 @@
 ﻿namespace ExtraDry.Blazor.Internal;
 
 /// <summary>
-/// Builds a PageQuery for posting back to a server using a set of filters.  This also has change
-/// notifications so that display components can sync to the changing filters.  This is the primary
+/// Builds a PageQuery for posting back to a server using a set of filters. This also has change
+/// notifications so that display components can sync to the changing filters. This is the primary
 /// mechanism by which filter components inform table views of filters and required refreshes.
 /// </summary>
 public class QueryBuilder
 {
-
     /// <inheritdoc cref="QueryBuilder" />
     public QueryBuilder()
     {
@@ -16,8 +15,8 @@ public class QueryBuilder
     }
 
     /// <summary>
-    /// Event to subscribe to be notified when the page query has changed and views should 
-    /// be refreshed.
+    /// Event to subscribe to be notified when the page query has changed and views should be
+    /// refreshed.
     /// </summary>
     public event EventHandler? OnChanged;
 
@@ -71,19 +70,19 @@ public class QueryBuilder
     }
 
     /// <summary>
-    /// A list of all filterable items that this page query supports.  These supports any filter
+    /// A list of all filterable items that this page query supports. These supports any filter
     /// concept that can be bound to such as free-text, enum select lists, etc.
     /// </summary>
     public List<FilterBuilder> Filters { get; } = [];
 
     /// <summary>
-    /// A generic text filter that can be applied.  This is typically just words written by users
-    /// but will technically support any ExtraDry FilterQuery.  
+    /// A generic text filter that can be applied. This is typically just words written by users
+    /// but will technically support any ExtraDry FilterQuery.
     /// </summary>
     public TextFilterBuilder TextFilter { get; }
 
     /// <summary>
-    /// The currently active page query.  Filters will be updated and will notify through OnChanged 
+    /// The currently active page query. Filters will be updated and will notify through OnChanged
     /// when a new Query is available.
     /// </summary>
     public Query Query { get; private set; } = new();
@@ -102,7 +101,6 @@ public class QueryBuilder
     {
         var notifyChanged = false;
         foreach(var filter in filters) {
-
             var filterKeyValue = filter.Split(':');
             if(filterKeyValue.Length != 2) { continue; }
 
@@ -113,10 +111,11 @@ public class QueryBuilder
             var queryFilter = Filters.FirstOrDefault(f => f.FilterName == propertyName);
             switch(queryFilter) {
                 case EnumFilterBuilder enumFilter:
-                    if (UpdateEnumFilter(enumFilter, filterValue)) {
+                    if(UpdateEnumFilter(enumFilter, filterValue)) {
                         notifyChanged = true;
                     }
                     break;
+
                 case DateTimeFilterBuilder dateTimeFilterBuilder:
                     if(dateTimeFilterBuilder.TryParseFilter(filter)) {
                         notifyChanged = true;

@@ -3,13 +3,12 @@
 /// <summary>
 /// A serializer for blobs to serialize and deserialize to and from HTTP requests and responses.
 /// For the client-side, this is used to serialize the blob to a Request and deserialize the blob
-/// from a Response.  There is a similar class in ExtraDry.Server for the server-side.
+/// from a Response. There is a similar class in ExtraDry.Server for the server-side.
 /// </summary>
 public static class BlobSerializer
 {
-
     /// <summary>
-    /// Serialize a Blob to a <see cref="ByteArrayContent"/> object suitable for sending as the 
+    /// Serialize a Blob to a <see cref="ByteArrayContent" /> object suitable for sending as the
     /// payload of an HTTP request.
     /// </summary>
     public static ByteArrayContent SerializeBlob<T>(T blob) where T : IBlob
@@ -32,7 +31,7 @@ public static class BlobSerializer
     }
 
     /// <summary>
-    /// Deserialized a Blob from a <see cref="HttpResponseMessage"/>.
+    /// Deserialized a Blob from a <see cref="HttpResponseMessage" />.
     /// </summary>
     public static async Task<T> DeserializeBlobAsync<T>(HttpResponseMessage response, CancellationToken cancellationToken = default) where T : IBlob, new()
     {
@@ -61,7 +60,8 @@ public static class BlobSerializer
                     throw new NotImplementedException("HttpHeaderAttribute only supports string, int, and Guid types.");
                 }
                 else {
-                    // silently ignore other types unless the developer tries to force them with HttpHeaderAttribute.
+                    // silently ignore other types unless the developer tries to force them with
+                    // HttpHeaderAttribute.
                 }
             }
         }
@@ -76,5 +76,4 @@ public static class BlobSerializer
             return (values ?? moreValues)?.FirstOrDefault() ?? "";
         }
     }
-
 }

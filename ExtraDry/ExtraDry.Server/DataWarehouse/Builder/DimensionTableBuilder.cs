@@ -4,9 +4,9 @@ using System.Reflection;
 
 namespace ExtraDry.Server.DataWarehouse.Builder;
 
-public abstract class DimensionTableBuilder : TableBuilder {
-
-    internal DimensionTableBuilder(WarehouseModelBuilder warehouseBuilder, Type entity) 
+public abstract class DimensionTableBuilder : TableBuilder
+{
+    internal DimensionTableBuilder(WarehouseModelBuilder warehouseBuilder, Type entity)
         : base(warehouseBuilder, entity)
     {
         DimensionTableAttribute = entity.GetCustomAttribute<DimensionTableAttribute>()!;
@@ -28,14 +28,15 @@ public abstract class DimensionTableBuilder : TableBuilder {
     }
 
     /// <summary>
-    /// Dimensions can reference other dimensions, so need to first load all the dimension,
-    /// then in a second pass load the spokes/references between them.
+    /// Dimensions can reference other dimensions, so need to first load all the dimension, then in
+    /// a second pass load the spokes/references between them.
     /// </summary>
     internal void LoadSpokesDeferred()
     {
         var factTable = TableEntityType.GetCustomAttribute<FactTableAttribute>();
         if(factTable == null) {
-            // Only load spokes once, if this table is also a fact table, it will get the spokes instead.
+            // Only load spokes once, if this table is also a fact table, it will get the spokes
+            // instead.
             LoadSpokeBuilders();
         }
     }
@@ -81,6 +82,7 @@ public abstract class DimensionTableBuilder : TableBuilder {
     }
 
     public ReadOnlyCollection<Dictionary<ColumnBuilder, object>> Data => new(baseData);
+
     private readonly List<Dictionary<ColumnBuilder, object>> baseData = [];
 
     internal override bool HasColumnNamed(string name) =>
@@ -110,14 +112,13 @@ public abstract class DimensionTableBuilder : TableBuilder {
     private DimensionTableAttribute? DimensionTableAttribute { get; set; }
 
     private Dictionary<string, AttributeBuilder> AttributeBuilders { get; } = [];
-
 }
 
-public class DimensionTableBuilder<T> : DimensionTableBuilder {
-
-    internal DimensionTableBuilder(WarehouseModelBuilder warehouseModel, Type entity) 
+public class DimensionTableBuilder<T> : DimensionTableBuilder
+{
+    internal DimensionTableBuilder(WarehouseModelBuilder warehouseModel, Type entity)
         : base(warehouseModel, entity)
-    { 
+    {
     }
 
     public AttributeBuilder Attribute<TProperty>(Expression<Func<T, TProperty>> propertyExpression)
@@ -142,5 +143,4 @@ public class DimensionTableBuilder<T> : DimensionTableBuilder {
         }
         return property;
     }
-
 }

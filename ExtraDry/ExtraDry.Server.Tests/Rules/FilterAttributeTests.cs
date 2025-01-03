@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Server.Tests.Rules;
 
-public class FilterAttributeTests {
-
+public class FilterAttributeTests
+{
     [Fact]
     public void DefaultValues()
     {

@@ -2,8 +2,8 @@
 
 namespace ExtraDry.Server.Tests.Internals;
 
-public class FilterPropertyTests {
-
+public class FilterPropertyTests
+{
     [Fact]
     public void DefaultValues()
     {
@@ -39,6 +39,5 @@ public class FilterPropertyTests {
             var filter = new FilterAttribute();
             return new FilterProperty(property!, filter);
         }
-    } 
-
+    }
 }

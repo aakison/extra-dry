@@ -2,7 +2,6 @@
 
 public class FormatAttributeTests
 {
-
     [Theory]
     [InlineData("Icon", "abc")]
     [InlineData("Icon", "")]
@@ -16,5 +15,4 @@ public class FormatAttributeTests
 
         Assert.Equal(propertyValue, result);
     }
-
 }

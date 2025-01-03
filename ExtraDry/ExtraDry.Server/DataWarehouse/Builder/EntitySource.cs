@@ -3,18 +3,18 @@
 namespace ExtraDry.Server.DataWarehouse;
 
 /// <summary>
-/// The reference to a source of an entity for checking for changes requiring updates to the data warehouse.
+/// The reference to a source of an entity for checking for changes requiring updates to the data
+/// warehouse.
 /// </summary>
 /// <remarks>
-/// Creates a EntitySource, only the entity type is required.
-/// If using a DbContext as the source, also populate the ContextType and PropertyInfo.
+/// Creates a EntitySource, only the entity type is required. If using a DbContext as the source,
+/// also populate the ContextType and PropertyInfo.
 /// </remarks>
 public class EntitySource(Type type)
 {
-
     /// <summary>
-    /// The context that is used to store the entity, typically a subclass of DbContext.
-    /// If source is an Enum, then there is no context and this is null.
+    /// The context that is used to store the entity, typically a subclass of DbContext. If source
+    /// is an Enum, then there is no context and this is null.
     /// </summary>
     [JsonIgnore]
     public Type? ContextType { get; set; }
@@ -35,6 +35,4 @@ public class EntitySource(Type type)
     /// For schema checking, a serialized snapshot of the above properties.
     /// </summary>
     public string Reference => $"{ContextType?.Name}/{PropertyInfo?.Name}<{EntityType.Name}>";
-
 }
-

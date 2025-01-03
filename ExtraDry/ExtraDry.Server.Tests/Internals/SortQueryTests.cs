@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Server.Tests.Internals;
 
-public class SortQueryTests {
-
+public class SortQueryTests
+{
     [Fact]
     public void DefaultValues()
     {
@@ -28,5 +28,4 @@ public class SortQueryTests {
     }
 
     private static SortQuery ValidSortQuery => new();
-
 }

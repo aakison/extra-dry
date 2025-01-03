@@ -4,7 +4,6 @@ namespace ExtraDry.Core.Tests;
 
 public class EntityMessageTests
 {
-
     [Theory]
     [InlineData("EntityName", "abc")]
     [InlineData("EntityName", "")]
@@ -31,5 +30,4 @@ public class EntityMessageTests
 
         Assert.Equal(propertyValue, result);
     }
-
 }

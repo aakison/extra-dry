@@ -1,8 +1,8 @@
 ﻿namespace ExtraDry.Blazor;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum CommandCollapse {
-
+public enum CommandCollapse
+{
     Never,
 
     Always,
@@ -10,5 +10,4 @@ public enum CommandCollapse {
     IconThenEllipses,
 
     StraightToEllipses,
-
 }

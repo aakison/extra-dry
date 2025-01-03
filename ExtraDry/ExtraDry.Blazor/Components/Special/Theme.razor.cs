@@ -9,8 +9,8 @@ namespace ExtraDry.Blazor;
 /// Note: this does not cover styles like colors which should be done in CSS.
 /// </summary>
 [SuppressMessage("Usage", "DRY1500:Extra DRY Blazor components should have an interface.", Justification = "Theme does not render a root tag, purpose is to register cascading values.")]
-public partial class Theme : ComponentBase {
-
+public partial class Theme : ComponentBase
+{
     /// <summary>
     /// The content that this theme applies to.
     /// </summary>
@@ -18,11 +18,11 @@ public partial class Theme : ComponentBase {
     public RenderFragment ChildContent { get; set; } = null!;
 
     /// <summary>
-    /// The collection of icons that are used for this theme.  See IconInfo for details on 
-    /// creating the icons, then register them here.  The icons must always be available and should
-    /// be stored in a static backing field to ensure they are available, especially when the site
-    /// navigates to a missing page and back.  It is recommended they are part of the AppViewModel
-    /// registered as a Singleton.
+    /// The collection of icons that are used for this theme. See IconInfo for details on creating
+    /// the icons, then register them here. The icons must always be available and should be stored
+    /// in a static backing field to ensure they are available, especially when the site navigates
+    /// to a missing page and back. It is recommended they are part of the AppViewModel registered
+    /// as a Singleton.
     /// </summary>
     [Parameter]
     public IEnumerable<IconInfo>? Icons { get; set; }
@@ -32,33 +32,35 @@ public partial class Theme : ComponentBase {
     protected ThemeInfo ThemeInfo { get; set; } = new();
 
     /// <summary>
-    /// A custom error component that is applied and used on any DryErrorBoundary instead of the default.
+    /// A custom error component that is applied and used on any DryErrorBoundary instead of the
+    /// default.
     /// </summary>
     [Parameter]
     public Type? ErrorComponent { get; set; }
 
     /// <summary>
-    /// A custom validation error component that is applied and used on any ValidationBoundary instead of the default.
+    /// A custom validation error component that is applied and used on any ValidationBoundary
+    /// instead of the default.
     /// </summary>
     [Parameter]
     public Type? ValidationMessageComponent { get; set; }
 
     /// <inheritdoc cref="Suspense{TModel}.Error" />
-    /// <see cref="Suspense{TModel}"/>
+    /// <see cref="Suspense{TModel}" />
     [Parameter]
     public RenderFragment<IndicatorContext>? SuspenseError { get; set; }
 
     /// <inheritdoc cref="Suspense{TModel}.Timeout" />
-    /// <see cref="Suspense{TModel}"/>
+    /// <see cref="Suspense{TModel}" />
     [Parameter]
     public RenderFragment<IndicatorContext>? SuspenseTimeout { get; set; }
 
     /// <inheritdoc cref="Suspense{TModel}.Fallback" />
-    /// <see cref="Suspense{TModel}"/>
+    /// <see cref="Suspense{TModel}" />
     [Parameter]
     public RenderFragment<IndicatorContext>? SuspenseFallback { get; set; }
 
-    protected async override Task OnParametersSetAsync()
+    protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
 
@@ -120,7 +122,7 @@ public partial class Theme : ComponentBase {
             return;
         }
         try {
-            if(icon == null || icon.ImagePath == null || icon.SvgRenderType == SvgRenderType.Reference 
+            if(icon == null || icon.ImagePath == null || icon.SvgRenderType == SvgRenderType.Reference
                 || !icon.ImagePath.EndsWith(".svg", StringComparison.InvariantCultureIgnoreCase)) {
                 return;
             }
@@ -134,8 +136,8 @@ public partial class Theme : ComponentBase {
                 var symbol = $@"<symbol id=""{icon.Key}"" {viewBox}>{svgBody}</symbol>";
                 var defs = DefsRegex().Match(svgBody).Value;
                 if(!string.IsNullOrWhiteSpace(defs)) {
-                    // defs included in the SVG, typically for gradient fills and the like.  
-                    // Need to keep these defs inline and not in the symbol.
+                    // defs included in the SVG, typically for gradient fills and the like. Need to
+                    // keep these defs inline and not in the symbol.
                     symbol = symbol.Replace(defs, "");
                 }
                 icon.SvgDatabaseBody = symbol;
@@ -170,4 +172,3 @@ public partial class Theme : ComponentBase {
         ?.Where(e => !string.IsNullOrEmpty(e.SvgDatabaseBody))
         ?? [];
 }
-

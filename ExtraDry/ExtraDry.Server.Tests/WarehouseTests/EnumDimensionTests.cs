@@ -5,8 +5,8 @@ namespace ExtraDry.Server.Tests.WarehouseTests;
 /// <summary>
 /// Set of relatively useless tests, but removes distracting false-negatives from code coverage.
 /// </summary>
-public class EnumDimensionTests {
-
+public class EnumDimensionTests
+{
     [Theory]
     [InlineData("Id", 7)]
     [InlineData(nameof(EnumDimension.Description), "value")]
@@ -24,5 +24,4 @@ public class EnumDimensionTests {
 
         Assert.Equal(propertyValue, result);
     }
-
 }

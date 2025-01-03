@@ -5,8 +5,8 @@ namespace ExtraDry.Server;
 
 public class AuthorizationResponse(RequestDelegate next, ExtraDryOptions options)
 {
-
     private readonly RequestDelegate next = next;
+
     private readonly ExtraDryOptions options = options;
 
     public async Task InvokeAsync(HttpContext context)
@@ -17,6 +17,7 @@ public class AuthorizationResponse(RequestDelegate next, ExtraDryOptions options
             case (int)HttpStatusCode.Forbidden:
                 ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.Forbidden, options.ForbiddenTitle, options.ForbiddenMessage);
                 break;
+
             case (int)HttpStatusCode.Unauthorized:
                 ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.Unauthorized, options.UnauthorizedTitle, options.UnauthorizedMessage);
                 break;

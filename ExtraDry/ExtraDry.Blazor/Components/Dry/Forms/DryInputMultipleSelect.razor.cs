@@ -2,11 +2,10 @@
 
 namespace ExtraDry.Blazor.Forms;
 
-public partial class DryInputMultipleSelect<T> 
-    : ComponentBase, IDryInput<T>, IExtraDryComponent 
+public partial class DryInputMultipleSelect<T>
+    : ComponentBase, IDryInput<T>, IExtraDryComponent
     where T : class
 {
-
     /// <inheritdoc />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
@@ -19,7 +18,7 @@ public partial class DryInputMultipleSelect<T>
 
     /// <inheritdoc cref="DryInputSingleSelect{T}.Values" />
     [Parameter]
-    public List<object>? Values { get; set; } 
+    public List<object>? Values { get; set; }
 
     /// <inheritdoc />
     [Parameter]
@@ -62,7 +61,7 @@ public partial class DryInputMultipleSelect<T>
         foreach(var value in Values) {
             var key = $"{index++}";
             var selected = PropertyList?.Contains(value) ?? false;
-            AllOptions.Add(key, new OptionInfo(key, value?.ToString() ?? "-empty-", value) { 
+            AllOptions.Add(key, new OptionInfo(key, value?.ToString() ?? "-empty-", value) {
                 Selected = selected,
             });
         }
@@ -124,5 +123,4 @@ public partial class DryInputMultipleSelect<T>
     private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", ReadOnlyCss, CssClass);
-
 }

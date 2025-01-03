@@ -5,7 +5,6 @@ namespace ExtraDry.Blazor;
 
 public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComponent
 {
-
     /// <inheritdoc />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
@@ -336,9 +335,9 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
             return result;
         }
         catch(OperationCanceledException) {
-            // KLUDGE: The CancellationTokenSource is initiated in the Virtualize component, but
-            // it can't handle the exception. Catch the exception here and return an empty
-            // result instead.  
+            // KLUDGE: The CancellationTokenSource is initiated in the Virtualize component, but it
+            // can't handle the exception. Catch the exception here and return an empty result
+            // instead.
             Logger.LogConsoleVerbose("Loading cancelled by request");
             return new ItemsProviderResult<ListItemInfo<TItem>>();
         }
@@ -356,7 +355,6 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
             serviceLock.Release();
             StateHasChanged(); // update classes affected by InternalItems
         }
-
 
         bool AllItemsCached(int start, int count) => InternalItems.Skip(start).Take(count).All(e => e.IsLoaded);
 
@@ -381,5 +379,6 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     }
 
     private readonly SemaphoreSlim serviceLock = new(1, 1);
+
     private bool queryBuilderEventSet;
 }

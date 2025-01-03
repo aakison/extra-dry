@@ -3,24 +3,28 @@ using System.Text;
 
 // **************************************************************
 // * Raw implementation of the MD5 hash algorithm
-// * from RFC 1321.
-// *
+// * from RFC 1321. *
 // * Written By: Reid Borsuk and Jenny Zheng
-// * Copyright (c) Microsoft Corporation.  All rights reserved.
+// * Copyright (c) Microsoft Corporation. All rights reserved.
 // **************************************************************
 
-// Simple struct for the (a,b,c,d) which is used to compute the mesage digest.    
+// Simple struct for the (a,b,c,d) which is used to compute the mesage digest.
 
 namespace ExtraDry.Core.Internal;
 
-internal struct ABCDStruct {
+internal struct ABCDStruct
+{
     public uint A;
+
     public uint B;
+
     public uint C;
+
     public uint D;
 }
 
-internal static class MD5Core {
+internal static class MD5Core
+{
     //Prevent CSC from adding a default public constructor
 
     public static byte[] GetHash(string input, Encoding encoding)
@@ -97,7 +101,7 @@ internal static class MD5Core {
             GetHashBlock(input, ref abcd, startIndex);
             startIndex += 64;
         }
-        // The final data block. 
+        // The final data block.
         return GetHashFinalBlock(input, startIndex, input.Length - startIndex, abcd, (Int64)input.Length * 8);
     }
 
@@ -106,7 +110,7 @@ internal static class MD5Core {
         var working = new byte[64];
         var length = BitConverter.GetBytes(len);
 
-        //Padding is a single bit 1, followed by the number of 0s required to make size congruent to 448 modulo 512. Step 1 of RFC 1321  
+        //Padding is a single bit 1, followed by the number of 0s required to make size congruent to 448 modulo 512. Step 1 of RFC 1321
         //The CLR ensures that our buffer is 0-assigned, we don't need to explicitly set it. This is why it ends up being quicker to just
         //use a temporary array rather then doing in-place assignment (5% for small inputs)
         Array.Copy(input, ibStart, working, 0, cbSize);
@@ -135,10 +139,7 @@ internal static class MD5Core {
 
     // Performs a single block transform of MD5 for a given set of ABCD inputs
     /* If implementing your own hashing framework, be sure to set the initial ABCD correctly according to RFC 1321:
-    //    A = 0x67452301;
-    //    B = 0xefcdab89;
-    //    C = 0x98badcfe;
-    //    D = 0x10325476;
+    // A = 0x67452301; B = 0xefcdab89; C = 0x98badcfe; D = 0x10325476;
     */
 
     internal static void GetHashBlock(byte[] input, ref ABCDStruct ABCDValue, int ibStart)
@@ -228,36 +229,36 @@ internal static class MD5Core {
     {
         //                  (b + LSR((a + F(b, c, d) + x + t), s))
         //F(x, y, z)        ((x & y) | ((x ^ 0xFFFFFFFF) & z))
-        return unchecked(b + LSR((a + ((b & c) | ((b ^ 0xFFFFFFFF) & d)) + x + t), s));
+        return unchecked(b + LSR(a + ((b & c) | ((b ^ 0xFFFFFFFF) & d)) + x + t, s));
     }
 
     private static uint R2(uint a, uint b, uint c, uint d, uint x, int s, uint t)
     {
         //                  (b + LSR((a + G(b, c, d) + x + t), s))
         //G(x, y, z)        ((x & z) | (y & (z ^ 0xFFFFFFFF)))
-        return unchecked(b + LSR((a + ((b & d) | (c & (d ^ 0xFFFFFFFF))) + x + t), s));
+        return unchecked(b + LSR(a + ((b & d) | (c & (d ^ 0xFFFFFFFF))) + x + t, s));
     }
 
     private static uint R3(uint a, uint b, uint c, uint d, uint x, int s, uint t)
     {
         //                  (b + LSR((a + H(b, c, d) + k + i), s))
         //H(x, y, z)        (x ^ y ^ z)
-        return unchecked(b + LSR((a + (b ^ c ^ d) + x + t), s));
+        return unchecked(b + LSR(a + (b ^ c ^ d) + x + t, s));
     }
 
     private static uint R4(uint a, uint b, uint c, uint d, uint x, int s, uint t)
     {
         //                  (b + LSR((a + I(b, c, d) + k + i), s))
         //I(x, y, z)        (y ^ (x | (z ^ 0xFFFFFFFF)))
-        return unchecked(b + LSR((a + (c ^ (b | (d ^ 0xFFFFFFFF))) + x + t), s));
+        return unchecked(b + LSR(a + (c ^ (b | (d ^ 0xFFFFFFFF))) + x + t, s));
     }
 
-    // Implementation of left rotate
-    // s is an int instead of a uint becuase the CLR requires the argument passed to >>/<< is of 
-    // type int. Doing the demoting inside this function would add overhead.
+    // Implementation of left rotate s is an int instead of a uint becuase the CLR requires the
+    // argument passed to >>/<< is of type int. Doing the demoting inside this function would add
+    // overhead.
     private static uint LSR(uint i, int s)
     {
-        return ((i << s) | (i >> (32 - s)));
+        return (i << s) | (i >> (32 - s));
     }
 
     //Convert input array into array of UInts

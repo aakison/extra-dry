@@ -9,6 +9,4 @@ public class FilterQuery
     /// The entity specific text filter for the collection.
     /// </summary>
     public string? Filter { get; set; }
-
 }
-

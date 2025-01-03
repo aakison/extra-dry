@@ -5,8 +5,8 @@ using System.Text.Json.Serialization;
 
 namespace ExtraDry.Blazor.Tests.Components;
 
-public class DryInputTextTests {
-
+public class DryInputTextTests
+{
     [Fact]
     public void StaticComponents()
     {
@@ -14,7 +14,7 @@ public class DryInputTextTests {
         var model = new Model { Id = 1, Name = "TheModel" };
         var description = new ViewModelDescription(typeof(Model), model);
         var property = description.FormProperties.First(e => e.Property.Name == nameof(Model.Name));
-        
+
         var fragment = context.RenderComponent<DryInputText<Model>>(
             (nameof(DryInputText<Model>.Model), model),
             (nameof(DryInputText<Model>.Property), property)
@@ -49,7 +49,7 @@ public class DryInputTextTests {
     //{
     //    var fragment = context.RenderComponent<Gravatar>(("Email", exampleEmail));
 
-    //    var img = fragment.Find("img");
+    // var img = fragment.Find("img");
 
     //    Assert.NotNull(img);
     //    Assert.Equal("gravatar", img.ClassName);
@@ -60,8 +60,7 @@ public class DryInputTextTests {
     //{
     //    var fragment = context.RenderComponent<Gravatar>(("Email", exampleEmail));
 
-    //    var img = fragment.Find("img");
-    //    var alt = img?.Attributes["alt"]?.Value;
+    // var img = fragment.Find("img"); var alt = img?.Attributes["alt"]?.Value;
 
     //    Assert.NotNull(img);
     //    Assert.NotNull(alt);
@@ -73,8 +72,7 @@ public class DryInputTextTests {
     //{
     //    var fragment = context.RenderComponent<Gravatar>(("Email", exampleEmail), ("HideEmail", true));
 
-    //    var img = fragment.Find("img");
-    //    var alt = img?.Attributes["alt"]?.Value;
+    // var img = fragment.Find("img"); var alt = img?.Attributes["alt"]?.Value;
 
     //    Assert.NotNull(img);
     //    Assert.NotNull(alt);
@@ -87,8 +85,7 @@ public class DryInputTextTests {
     //{
     //    var fragment = context.RenderComponent<Gravatar>(("Email", exampleEmail));
 
-    //    var img = fragment.Find("img");
-    //    var src = img?.Attributes["src"]?.Value;
+    // var img = fragment.Find("img"); var src = img?.Attributes["src"]?.Value;
 
     //    Assert.NotNull(img);
     //    Assert.NotNull(src);
@@ -101,8 +98,7 @@ public class DryInputTextTests {
     //{
     //    var fragment = context.RenderComponent<Gravatar>(("Email", exampleEmail), ("Size", 123));
 
-    //    var img = fragment.Find("img");
-    //    var src = img?.Attributes["src"]?.Value;
+    // var img = fragment.Find("img"); var src = img?.Attributes["src"]?.Value;
 
     //    Assert.NotNull(img);
     //    Assert.NotNull(src);
@@ -116,6 +112,4 @@ public class DryInputTextTests {
 
         public string Name { get; set; } = string.Empty;
     }
-
-
 }

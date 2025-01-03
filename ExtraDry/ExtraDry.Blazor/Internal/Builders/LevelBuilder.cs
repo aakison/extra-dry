@@ -1,9 +1,9 @@
 ﻿namespace ExtraDry.Blazor.Internal;
 
 /// <summary>
-/// A level builder as used by the <see cref="QueryBuilder"/>.  Supports expanding and collapsing
-/// the level of hierarchy that is returned without overstepping the minimum and maximum 
-/// known bounds.
+/// A level builder as used by the <see cref="QueryBuilder" />. Supports expanding and collapsing
+/// the level of hierarchy that is returned without overstepping the minimum and maximum known
+/// bounds.
 /// </summary>
 public class LevelBuilder
 {
@@ -21,21 +21,22 @@ public class LevelBuilder
             Level = level;
         }
     }
+
     /// <summary>
-    /// If known, the maximum level of the hierarchy for the collection, ignoring any Level filter 
+    /// If known, the maximum level of the hierarchy for the collection, ignoring any Level filter
     /// that may be applied.
     /// </summary>
     public int MaxLevel { get; private set; }
 
     /// <summary>
-    /// If known, the minimum level of the hierarchy for the collection, ignoring any Level filter 
+    /// If known, the minimum level of the hierarchy for the collection, ignoring any Level filter
     /// that may be applied.
     /// </summary>
     public int MinLevel { get; private set; }
 
     /// <summary>
     /// When collections are returned, the max level might be updated down because of an explicit
-    /// level.  Keep the information on the max level exclusive of the level filter.
+    /// level. Keep the information on the max level exclusive of the level filter.
     /// </summary>
     public void UpdateMaxLevel(int maxLevel)
     {
@@ -46,7 +47,7 @@ public class LevelBuilder
 
     /// <summary>
     /// When collections are returned, the min level might be updated up because of an explicit
-    /// level.  Keep the information on the min level exclusive of the level filter.
+    /// level. Keep the information on the min level exclusive of the level filter.
     /// </summary>
     public void UpdateMinLevel(int minLevel)
     {

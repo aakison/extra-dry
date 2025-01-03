@@ -7,16 +7,17 @@ namespace ExtraDry.Server.Agents;
 /// </summary>
 public static class ServiceCollectionExtensions
 {
-
     /// <summary>
     /// Adds a cron job to the service collection.
     /// </summary>
-    /// <typeparam name="T">The type of the class to be registered that implements ICronJob.</typeparam>
-    /// <param name="services">The <see cref="IServiceCollection"/> for DI.</param>
+    /// <typeparam name="T">
+    /// The type of the class to be registered that implements ICronJob.
+    /// </typeparam>
+    /// <param name="services">The <see cref="IServiceCollection" /> for DI.</param>
     /// <param name="cronSchedule">The Cron expression for the schedule.</param>
     /// <param name="name">The name of the job for logging.</param>
-    /// <returns>The <see cref="IServiceCollection"/> for chaining calls.</returns>
-    public static IServiceCollection AddCronJob<T>(this IServiceCollection services, string cronSchedule, string name = "anonymous") 
+    /// <returns>The <see cref="IServiceCollection" /> for chaining calls.</returns>
+    public static IServiceCollection AddCronJob<T>(this IServiceCollection services, string cronSchedule, string name = "anonymous")
         where T : class, ICronJob
     {
         services.AddHostedService<CronService>();
@@ -31,10 +32,10 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Add a cron job to the service collection.
     /// </summary>
-    /// <param name="services">The <see cref="IServiceCollection"/> for DI.</param>
+    /// <param name="services">The <see cref="IServiceCollection" /> for DI.</param>
     /// <param name="cronSchedule">The Cron expression for the schedule.</param>
     /// <param name="function">The lambda function that is run.</param>
-    /// <returns>The <see cref="IServiceCollection"/> for chaining calls.</returns>
+    /// <returns>The <see cref="IServiceCollection" /> for chaining calls.</returns>
     public static IServiceCollection AddCronJob(this IServiceCollection services, string cronSchedule, Action function)
     {
         return AddCronJob(services, cronSchedule, "anonymous", function);
@@ -43,14 +44,15 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Add a cron job to the service collection.
     /// </summary>
-    /// <param name="services">The <see cref="IServiceCollection"/> for DI.</param>
+    /// <param name="services">The <see cref="IServiceCollection" /> for DI.</param>
     /// <param name="cronSchedule">The Cron expression for the schedule.</param>
     /// <param name="name">The name of the job for logging.</param>
     /// <param name="function">The lambda function that is run.</param>
-    /// <returns>The <see cref="IServiceCollection"/> for chaining calls.</returns>
+    /// <returns>The <see cref="IServiceCollection" /> for chaining calls.</returns>
     public static IServiceCollection AddCronJob(this IServiceCollection services, string cronSchedule, string name, Action function)
     {
-        void Trigger(CancellationToken _) { 
+        void Trigger(CancellationToken _)
+        {
             function.Invoke();
         }
         AddCronJob(services, cronSchedule, name, Trigger);
@@ -60,10 +62,10 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Add a cron job to the service collection.
     /// </summary>
-    /// <param name="services">The <see cref="IServiceCollection"/> for DI.</param>
+    /// <param name="services">The <see cref="IServiceCollection" /> for DI.</param>
     /// <param name="cronSchedule">The Cron expression for the schedule.</param>
     /// <param name="function">The cancellable lambda function that is run.</param>
-    /// <returns>The <see cref="IServiceCollection"/> for chaining calls.</returns>
+    /// <returns>The <see cref="IServiceCollection" /> for chaining calls.</returns>
     public static IServiceCollection AddCronJob(this IServiceCollection services, string cronSchedule, Action<CancellationToken> function)
     {
         return AddCronJob(services, cronSchedule, "anonymous", function);
@@ -72,11 +74,11 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Add a cron job to the service collection.
     /// </summary>
-    /// <param name="services">The <see cref="IServiceCollection"/> for DI.</param>
+    /// <param name="services">The <see cref="IServiceCollection" /> for DI.</param>
     /// <param name="cronSchedule">The Cron expression for the schedule.</param>
     /// <param name="name">The name of the job for logging.</param>
     /// <param name="function">The cancellable lambda function that is run.</param>
-    /// <returns>The <see cref="IServiceCollection"/> for chaining calls.</returns>
+    /// <returns>The <see cref="IServiceCollection" /> for chaining calls.</returns>
     public static IServiceCollection AddCronJob(this IServiceCollection services, string cronSchedule, string name, Action<CancellationToken> function)
     {
         services.AddHostedService<CronService>();
@@ -89,10 +91,10 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Add a cron job to the service collection.
     /// </summary>
-    /// <param name="services">The <see cref="IServiceCollection"/> for DI.</param>
+    /// <param name="services">The <see cref="IServiceCollection" /> for DI.</param>
     /// <param name="cronSchedule">The Cron expression for the schedule.</param>
     /// <param name="function">The awaitable, cancellable lambda function that is run.</param>
-    /// <returns>The <see cref="IServiceCollection"/> for chaining calls.</returns>
+    /// <returns>The <see cref="IServiceCollection" /> for chaining calls.</returns>
     public static IServiceCollection AddCronJob(this IServiceCollection services, string cronSchedule, Func<CancellationToken, Task> function)
     {
         return AddCronJob(services, cronSchedule, "anonymous", function);
@@ -101,11 +103,11 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Add a cron job to the service collection.
     /// </summary>
-    /// <param name="services">The <see cref="IServiceCollection"/> for DI.</param>
+    /// <param name="services">The <see cref="IServiceCollection" /> for DI.</param>
     /// <param name="cronSchedule">The Cron expression for the schedule.</param>
     /// <param name="name">The name of the job for logging.</param>
     /// <param name="function">The awaitable, cancellable lambda function that is run.</param>
-    /// <returns>The <see cref="IServiceCollection"/> for chaining calls.</returns>
+    /// <returns>The <see cref="IServiceCollection" /> for chaining calls.</returns>
     public static IServiceCollection AddCronJob(this IServiceCollection services, string cronSchedule, string name, Func<CancellationToken, Task> function)
     {
         services.AddHostedService<CronService>();
@@ -114,5 +116,4 @@ public static class ServiceCollectionExtensions
         });
         return services;
     }
-
 }

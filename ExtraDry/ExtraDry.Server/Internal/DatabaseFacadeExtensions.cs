@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace ExtraDry.Server.Internal;
 
-internal static class DatabaseFacadeExtensions {
-
-    // Not part of EF any more, need to hack it.  
+internal static class DatabaseFacadeExtensions
+{
+    // Not part of EF any more, need to hack it.
     public static async Task<int> ExecuteScalerAsync(this DatabaseFacade facade, string sql)
     {
         using var cmd = facade.GetDbConnection().CreateCommand();
@@ -17,5 +17,4 @@ internal static class DatabaseFacadeExtensions {
         var val = await cmd.ExecuteScalarAsync();
         return (val as int?) ?? -1;
     }
-
 }

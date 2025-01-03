@@ -1,9 +1,9 @@
 ﻿namespace ExtraDry.Blazor;
 
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "DRY1500:Extra DRY Blazor components should have an interface.", 
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "DRY1500:Extra DRY Blazor components should have an interface.",
     Justification = "Decide fate of component")]
-public partial class DryContent : ComponentBase {
-
+public partial class DryContent : ComponentBase
+{
     [Parameter]
     public ContentLayout? Content { get; set; }
 
@@ -16,6 +16,7 @@ public partial class DryContent : ComponentBase {
 
     [Inject]
     private IServiceProvider ServiceProvider { get; set; } = null!;
+
     private static IServiceProvider StaticServiceProvider { get; set; } = null!;
 
     [Inject]
@@ -35,13 +36,13 @@ public partial class DryContent : ComponentBase {
         if(Content == null) {
             return;
         }
-        Content.Sections.Add(new ContentSection { 
-            Containers = { 
-                new ContentContainer { 
+        Content.Sections.Add(new ContentSection {
+            Containers = {
+                new ContentContainer {
                     Html = "<div>New Section</div>",
                     Padding = ContentPadding.Single,
                 }
-            } 
+            }
         });
         StateHasChanged();
     }
@@ -230,6 +231,7 @@ public partial class DryContent : ComponentBase {
             }
         }
     }
+
     private readonly List<Guid> roosterIsCanonical = [];
 
     private async Task EditorFocusOut(ContentContainer container)
@@ -239,5 +241,4 @@ public partial class DryContent : ComponentBase {
     }
 
     private PropertyDescription Property(string name) => PropertyDescription.For(this, name);
-
 }

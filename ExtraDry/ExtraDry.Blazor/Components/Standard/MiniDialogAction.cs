@@ -1,8 +1,8 @@
 ﻿namespace ExtraDry.Blazor;
 
 /// <summary>
-/// If the user clicks outside of the dialog and it loses focus, determines what the dialog 
-/// should do.
+/// If the user clicks outside of the dialog and it loses focus, determines what the dialog should
+/// do.
 /// Default: SaveAndClose
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -27,5 +27,4 @@ public enum MiniDialogAction
     /// Don't save changes and don't close dialog box, disable any UI associated with the action.
     /// </summary>
     Disabled,
-
 }

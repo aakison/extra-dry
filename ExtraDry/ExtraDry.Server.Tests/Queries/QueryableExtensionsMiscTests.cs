@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Server.Tests;
 
-public class QueryableExtensionsMiscTests {
-
+public class QueryableExtensionsMiscTests
+{
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -21,12 +21,13 @@ public class QueryableExtensionsMiscTests {
     {
         var queryable = UnfilterableModels.AsQueryable();
 
-        var filtered = queryable.Filter("One"); 
+        var filtered = queryable.Filter("One");
 
         Assert.Equal(queryable, filtered);
     }
 
-    public class Unfilterable {
+    public class Unfilterable
+    {
         public string Name { get; set; } = string.Empty;
     }
 
@@ -34,5 +35,4 @@ public class QueryableExtensionsMiscTests {
             new Unfilterable { Name = "One" },
             new Unfilterable { Name = "Two" },
         ];
-
 }

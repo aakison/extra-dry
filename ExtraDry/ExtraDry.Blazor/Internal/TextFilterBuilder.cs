@@ -3,8 +3,8 @@
 /// <summary>
 /// A filter builder used by the PageQueryBuilder that supports user-entered free text.
 /// </summary>
-public class TextFilterBuilder : FilterBuilder {
-
+public class TextFilterBuilder : FilterBuilder
+{
     /// <summary>
     /// The free-text to be sent to the server, typically just space separated keywords.
     /// </summary>

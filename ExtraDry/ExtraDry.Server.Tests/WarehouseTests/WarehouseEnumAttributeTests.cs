@@ -4,11 +4,11 @@ using ExtraDry.Server.DataWarehouse.Builder;
 namespace ExtraDry.Server.Tests.WarehouseTests;
 
 /// <summary>
-/// Test for when an enum is simple attribute of an enclosing dimension.
-/// Occurs when no [DimensionTable] on the enum.
+/// Test for when an enum is simple attribute of an enclosing dimension. Occurs when no
+/// [DimensionTable] on the enum.
 /// </summary>
-public class WarehouseEnumAttributeTests {
-
+public class WarehouseEnumAttributeTests
+{
     [Fact]
     public void NonDimensionEnumBecomesAttribute()
     {
@@ -61,5 +61,4 @@ public class WarehouseEnumAttributeTests {
         Assert.NotNull(attribute);
         Assert.Equal(80, attribute.Length);
     }
-
 }

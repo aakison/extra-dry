@@ -5,11 +5,11 @@ namespace ExtraDry.Swashbuckle.Instructions;
 /// <summary>
 /// A sample entity of 'animals', that is used to demonstrate the features of the API.
 /// </summary>
-public class Animal : IHierarchyEntity<Animal>, IResourceIdentifiers {
-
+public class Animal : IHierarchyEntity<Animal>, IResourceIdentifiers
+{
     /// <summary>
     /// The DAO primary key.
-    /// </summary> 
+    /// </summary>
     [JsonIgnore]
     [Key]
     public int Id { get; set; }
@@ -22,13 +22,13 @@ public class Animal : IHierarchyEntity<Animal>, IResourceIdentifiers {
     /// </summary>
     /// <example>Elephant</example>
     [Filter(FilterType.Contains)]
-    public required string Title { get; set; }
+    public string Title { get; set; }
 
     /// <summary>
     /// A description of the animal.
     /// </summary>
     /// <example>
-    /// A large herbivorous mammal with a trunk, long tusks, and flapping ears, native to Africa 
+    /// A large herbivorous mammal with a trunk, long tusks, and flapping ears, native to Africa
     /// and Asia.
     /// </example>
     public string Description { get; set; } = string.Empty;
@@ -43,12 +43,12 @@ public class Animal : IHierarchyEntity<Animal>, IResourceIdentifiers {
 
     /// <inheritdoc cref="IHierarchyEntity.Lineage" />
     [JsonIgnore]
-    public required HierarchyId Lineage { get; set; }
+    public HierarchyId Lineage { get; set; }
 
     /// <inheritdoc cref="IHierarchyEntity.Lineage" />
     /// <remarks>
-    /// This approach is used as OpenAPI treats HierarchyId as an object and cannot then provide
-    /// a string example, or have it declared as read-only.
+    /// This approach is used as OpenAPI treats HierarchyId as an object and cannot then provide a
+    /// string example, or have it declared as read-only.
     /// </remarks>
     /// <example>/1/3/10/</example>
     [JsonPropertyName("lineage")]

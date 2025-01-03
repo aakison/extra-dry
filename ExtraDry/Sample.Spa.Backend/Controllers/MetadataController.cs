@@ -10,9 +10,9 @@ namespace Sample.Spa.Backend.Controllers;
 /// </summary>
 [ApiController]
 [ApiExceptionStatusCodes]
-[ApiExplorerSettings(GroupName = ApiGroupNames.SampleApi, IgnoreApi = false)] 
-public class MetadataController {
-
+[ApiExplorerSettings(GroupName = ApiGroupNames.SampleApi, IgnoreApi = false)]
+public class MetadataController
+{
     /// <summary>
     /// Checks the application service is running without checking database dependencies.
     /// </summary>
@@ -27,7 +27,9 @@ public class MetadataController {
     /// <summary>
     /// Forces an exception to be thrown to test error handling.
     /// </summary>
-    /// <param name="code">A known code for problem details, in set { 400, 403, 404, 500, 501 }.</param>
+    /// <param name="code">
+    /// A known code for problem details, in set { 400, 403, 404, 500, 501 }.
+    /// </param>
     [HttpGet("api/v2/exception/{code}")]
     [AllowAnonymous]
     [Produces("application/json")]
@@ -44,13 +46,13 @@ public class MetadataController {
             _ => new MessagePayload { Message = "Unrecognized error code, no exception thrown." }
         };
     }
-
 }
 
 /// <summary>
 /// Sample response payload for metadata checks.
 /// </summary>
-public class MessagePayload {
+public class MessagePayload
+{
     /// <summary>
     /// Message to return.
     /// </summary>

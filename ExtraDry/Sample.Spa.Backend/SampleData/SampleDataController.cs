@@ -13,10 +13,9 @@ namespace Sample.Spa.Backend.SampleData;
 [ApiExceptionStatusCodes]
 [SuppressMessage("Usage", "DRY1018:API Controller Classes should not directly use DbContext.", Justification = "Sample Setup")]
 public class SampleDataController(
-    SampleContext database, 
+    SampleContext database,
     SampleDataService sampleData)
 {
-
     /// <summary>
     /// Load the set of sample data, idempotent so allowed to be anonymous.
     /// </summary>
@@ -41,7 +40,9 @@ public class SampleDataController(
     /// <summary>
     /// Load the sample data with regions.
     /// </summary>
-    /// <param name="countryFilter">A list of 2 character ISO 3166-2 country code to filter the data load.</param>
+    /// <param name="countryFilter">
+    /// A list of 2 character ISO 3166-2 country code to filter the data load.
+    /// </param>
     /// <param name="includeSubdivisions"></param>
     /// <param name="includeLocalities"></param>
     /// <returns></returns>

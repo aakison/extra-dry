@@ -6,10 +6,9 @@
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum Stats
 {
-
     /// <summary>
-    /// Returns a summary of the frequency distribution of a given attribute, counting by unique 
-    /// values.  Typically only apply to enums, but could apply to any column with a small set of 
+    /// Returns a summary of the frequency distribution of a given attribute, counting by unique
+    /// values. Typically only apply to enums, but could apply to any column with a small set of
     /// discrete values.
     /// </summary>
     Distribution = 1,
@@ -26,6 +25,4 @@ public enum Stats
     ///// Includes mean and standard deviation stats.
     ///// </summary>
     //Aggregate = 3,
-
 }
-

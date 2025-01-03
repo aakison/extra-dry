@@ -2,7 +2,6 @@
 
 public class ArgumentMismatchExceptionTests
 {
-
     [Fact]
     public void ArgumentMismatchRoundtrip1()
     {
@@ -38,6 +37,4 @@ public class ArgumentMismatchExceptionTests
         Assert.Null(ex.ParamName);
         Assert.Equal(inner, ex.InnerException);
     }
-
 }
-

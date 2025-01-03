@@ -3,16 +3,17 @@
 namespace ExtraDry.Server.DataWarehouse;
 
 /// <summary>
-/// Represents a table in the Data Warehouse, tables will match to some source data in the system.  E.g.
-///   * Enums decorated with [DimensionTable] will create static dimension tables
-///   * DbSet`T properties in the DbContext will create tables if `T is decorated with [DimensionTable] or [FactTable]
-/// Multiple tables might match back to the same source, such as fact and dimensions tables for the same entity.
+/// Represents a table in the Data Warehouse, tables will match to some source data in the system.
+/// E.g.
+/// * Enums decorated with [DimensionTable] will create static dimension tables
+/// * DbSet`T properties in the DbContext will create tables if `T is decorated with
+///   [DimensionTable] or [FactTable] Multiple tables might match back to the same source, such as
+/// fact and dimensions tables for the same entity.
 /// </summary>
 public class Table(
-    Type type, 
+    Type type,
     string name)
 {
-
     /// <summary>
     /// The underlying data type for the source.
     /// </summary>
@@ -20,8 +21,8 @@ public class Table(
     public Type EntityType { get; private init; } = type;
 
     /// <summary>
-    /// The name of the table as it will appear in the data warehouse.
-    /// This is constructed from the property name of the DbSet`T or as overridden.
+    /// The name of the table as it will appear in the data warehouse. This is constructed from the
+    /// property name of the DbSet`T or as overridden.
     /// </summary>
     public string Name { get; private init; } = name;
 
@@ -33,7 +34,8 @@ public class Table(
     public IDataGenerator? Generator { get; init; }
 
     /// <summary>
-    /// If the table is linked to a DbSet`T on the source DbContext, the PropertyInfo for that property.
+    /// If the table is linked to a DbSet`T on the source DbContext, the PropertyInfo for that
+    /// property.
     /// </summary>
     [JsonIgnore]
     public PropertyInfo? SourceProperty { get; internal init; }
@@ -41,9 +43,8 @@ public class Table(
     public string SourcePropertyName => $"{SourceProperty?.Name}";
 
     /// <summary>
-    /// The base data, if any, for this table.
-    /// Enums will create all of there data here and won't change while the program is running.
-    /// Dimensions and facts will typically have no base data.
+    /// The base data, if any, for this table. Enums will create all of there data here and won't
+    /// change while the program is running. Dimensions and facts will typically have no base data.
     /// </summary>
     public List<Dictionary<string, object>> Data { get; } = [];
 
@@ -56,5 +57,4 @@ public class Table(
     /// An accessor to easily fetch all non-key columns.
     /// </summary>
     public IEnumerable<Column> ValueColumns => Columns.Where(e => e.ColumnType != ColumnType.Key);
-
 }

@@ -2,7 +2,6 @@
 
 public class SlugAttributeTests
 {
-
     [Theory]
     [InlineData("acme")]
     [InlineData("acme-co")]
@@ -71,6 +70,4 @@ public class SlugAttributeTests
 
         Assert.False(isValid);
     }
-
 }
-

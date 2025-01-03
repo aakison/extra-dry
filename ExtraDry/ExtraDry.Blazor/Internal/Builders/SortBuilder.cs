@@ -2,7 +2,6 @@
 
 public class SortBuilder
 {
-
     public string SortProperty { get; set; } = string.Empty;
 
     public bool Ascending { get; set; } = true;

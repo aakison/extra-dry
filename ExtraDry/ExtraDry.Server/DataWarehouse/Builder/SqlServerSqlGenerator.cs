@@ -1,17 +1,17 @@
 ﻿namespace ExtraDry.Server.DataWarehouse.Builder;
 
-public class SqlServerSqlGenerator : ISqlGenerator {
-
+public class SqlServerSqlGenerator : ISqlGenerator
+{
     public bool IncludeConstraints { get; set; }
 
     public string Generate(WarehouseModel warehouse) =>
         string.Join("\nGO\n", warehouse.Dimensions.Union(warehouse.Facts).Select(e => CreateTable(e))) +
-        "\nGO\n" + 
+        "\nGO\n" +
         string.Join("\nGO\n", warehouse.Dimensions.Union(warehouse.Facts).Select(e => InsertData(e)));
 
     /// <summary>
-    /// Generate the SQL to create a table.
-    /// When overloading, avoid foreign key constraints as they cause performance bottlenecks in data warehouses.
+    /// Generate the SQL to create a table. When overloading, avoid foreign key constraints as they
+    /// cause performance bottlenecks in data warehouses.
     /// </summary>
     public string CreateTable(Table table) =>
         $"CREATE TABLE [{table.Name}] (\n    {SqlColumns(table.Columns)}\n    {SqlConstraints(table)}\n)\n";
@@ -128,5 +128,4 @@ WHEN NOT MATCHED THEN
             return value.ToString()!;
         }
     }
-
 }

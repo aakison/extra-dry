@@ -2,12 +2,11 @@
 
 namespace ExtraDry.Server.DataWarehouse;
 
-public static class DateGeneratorBuilderExtensions {
-
+public static class DateGeneratorBuilderExtensions
+{
     public static DimensionTableBuilder<T> HasDateGenerator<T>(this DimensionTableBuilder<T> source, Action<DateGeneratorOptions>? options = null) where T : DateDimension
     {
         source.HasGenerator(new DateGenerator(options));
         return source;
     }
-
 }

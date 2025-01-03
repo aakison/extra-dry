@@ -2,8 +2,8 @@
 
 namespace ExtraDry.Blazor.Tests.Internals;
 
-public class SelectionSetStaticTests {
-
+public class SelectionSetStaticTests
+{
     [Theory]
     [InlineData("")]
     public void NullOnMissingDataLookup(string key)
@@ -44,5 +44,4 @@ public class SelectionSetStaticTests {
 
         Assert.Null(set1);
     }
-
 }

@@ -14,5 +14,4 @@ internal class OptionsDisplayer(
         var result = await tenants.GetItemsAsync(new Query(), cancellationToken);
         logger.LogInformation("Tenant Count: {count}", result.Items.Count());
     }
-
 }

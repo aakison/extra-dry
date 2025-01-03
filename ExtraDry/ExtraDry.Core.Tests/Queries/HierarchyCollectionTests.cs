@@ -4,7 +4,6 @@ namespace ExtraDry.Core.Tests.Models;
 
 public class HierarchyCollectionTests
 {
-
     [Fact]
     public void DefaultConstructor()
     {
@@ -115,5 +114,4 @@ public class HierarchyCollectionTests
 
         public string Load { get; set; } = string.Empty;
     }
-
 }

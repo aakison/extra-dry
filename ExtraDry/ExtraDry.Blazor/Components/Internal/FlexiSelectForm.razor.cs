@@ -1,19 +1,17 @@
 ﻿namespace ExtraDry.Blazor.Internal;
 
 /// <summary>
-/// The internal form for the Flexi-Select component. 
-/// Do not use directly.
+/// The internal form for the Flexi-Select component. Do not use directly.
 /// </summary>
-public partial class FlexiSelectForm<TItem> : ComponentBase, IExtraDryComponent where TItem : notnull {
-
+public partial class FlexiSelectForm<TItem> : ComponentBase, IExtraDryComponent where TItem : notnull
+{
     /// <inheritdoc cref="IExtraDryComponent.CssClass" />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
     /// <summary>
-    /// The number of items in `Data` that will trigger the filter to show.
-    /// Use 0 to always show and Int.MaxValue to never show.
-    /// Default is to show after 10 items are in the form.
+    /// The number of items in `Data` that will trigger the filter to show. Use 0 to always show
+    /// and Int.MaxValue to never show. Default is to show after 10 items are in the form.
     /// </summary>
     [Parameter]
     public int ShowFilterThreshold { get; set; } = 10;
@@ -43,8 +41,8 @@ public partial class FlexiSelectForm<TItem> : ComponentBase, IExtraDryComponent 
     public IEnumerable<TItem>? Data { get; set; }
 
     /// <summary>
-    /// Indicates if the select control should be single- or multi- select.
-    /// If single, bind to `Value`, if multi, bind to `Values`.
+    /// Indicates if the select control should be single- or multi- select. If single, bind to
+    /// `Value`, if multi, bind to `Values`.
     /// </summary>
     [Parameter]
     public bool MultiSelect { get; set; }
@@ -58,8 +56,8 @@ public partial class FlexiSelectForm<TItem> : ComponentBase, IExtraDryComponent 
     public EventCallback<TItem> ValueChanged { get; set; }
 
     /// <summary>
-    /// The selected values when the component is set to multi-select mode.
-    /// Use with two-way data binding.
+    /// The selected values when the component is set to multi-select mode. Use with two-way data
+    /// binding.
     /// </summary>
     [Parameter]
     public List<TItem>? Values { get; set; }
@@ -135,6 +133,7 @@ public partial class FlexiSelectForm<TItem> : ComponentBase, IExtraDryComponent 
             StateHasChanged();
         }
     }
+
     private string filter = string.Empty;
 
     private string[] Filters { get; set; } = [];
@@ -152,7 +151,7 @@ public partial class FlexiSelectForm<TItem> : ComponentBase, IExtraDryComponent 
             match = !value.Selected;
         }
         else {
-            match = Filters.Any(e => value.Title.Contains(e, StringComparison.OrdinalIgnoreCase) 
+            match = Filters.Any(e => value.Title.Contains(e, StringComparison.OrdinalIgnoreCase)
                 || value.Subtitle.Contains(e, StringComparison.OrdinalIgnoreCase));
         }
         value.FilterClass = match ? "unfiltered" : "filtered";
@@ -166,7 +165,8 @@ public partial class FlexiSelectForm<TItem> : ComponentBase, IExtraDryComponent 
         if(args?.Value?.Equals("on") ?? false) {
             // Single select change.
             foreach(var item in DisplayData) {
-                // Probably more efficent to set all to not selected than to do half as many complex comparisons.
+                // Probably more efficent to set all to not selected than to do half as many
+                // complex comparisons.
                 item.Selected = false;
             }
             value.Selected = true;
@@ -280,7 +280,5 @@ public partial class FlexiSelectForm<TItem> : ComponentBase, IExtraDryComponent 
         public bool Selected { get; set; }
 
         public string SelectClass => Selected ? "selected" : "";
-
     }
-
 }

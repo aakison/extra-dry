@@ -84,7 +84,7 @@ public class DateTimeFilterBuilderTests
     public void CanParseFilter(string filterString, bool lowerInclusive, bool upperInclusive)
     {
         var filter = new DateTimeFilterBuilder();
-        
+
         var result = filter.TryParseFilter(filterString);
 
         Assert.True(result);
@@ -112,7 +112,6 @@ public class DateTimeFilterBuilderTests
         Assert.Equal(2023, filter.Lower.Value.Year);
         Assert.Equal(inclusive, filter.LowerInclusive);
         Assert.Null(filter.Upper);
-        
     }
 
     [Theory]
@@ -130,7 +129,6 @@ public class DateTimeFilterBuilderTests
         Assert.NotNull(filter.Upper);
         Assert.Equal(2023, filter.Upper.Value.Year);
         Assert.Equal(inclusive, filter.UpperInclusive);
-
     }
 
     [Theory]
@@ -151,7 +149,7 @@ public class DateTimeFilterBuilderTests
     public void FailedParseFilter(string filterString)
     {
         var filter = new DateTimeFilterBuilder();
-        
+
         var result = filter.TryParseFilter(filterString);
 
         Assert.False(result);

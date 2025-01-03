@@ -2,12 +2,12 @@
 
 namespace ExtraDry.Blazor;
 
-public class ListItemsProviderResult<T> 
+public class ListItemsProviderResult<T>
 {
     public ListItemsProviderResult(BaseCollection<T> collection)
     {
         Collection = collection;
-        ItemInfos = collection.Items.Select(e => new ListItemInfo<T> { 
+        ItemInfos = collection.Items.Select(e => new ListItemInfo<T> {
             Item = e,
             IsLoaded = true,
             IsGroup = IsGroup(e),
@@ -17,7 +17,7 @@ public class ListItemsProviderResult<T>
         Count = collection.Count;
         Total = Collection is PagedCollection<T> paged ? paged.Total :
                 Collection is PagedHierarchyCollection<T> pagedHierarchy ? pagedHierarchy.Total :
-                Collection.Count; 
+                Collection.Count;
         MaxLevels = collection is HierarchyCollection<T> hierarchy ? hierarchy.MaxLevels : 0;
     }
 
@@ -31,9 +31,9 @@ public class ListItemsProviderResult<T>
 
     private BaseCollection<T> Collection { get; set; }
 
-    private bool IsGroup(T item) => 
-        Collection is HierarchyCollection<T> hierarchy && 
-        item is IHierarchyEntity entity && 
+    private bool IsGroup(T item) =>
+        Collection is HierarchyCollection<T> hierarchy &&
+        item is IHierarchyEntity entity &&
         (hierarchy.Expandable?.Contains(entity.Slug) ?? false);
 
     private static int GroupDepth(T item) =>
@@ -54,5 +54,4 @@ public class ListItemsProviderResult<T>
             return child.Lineage.IsDescendantOf(parent.Lineage);
         }
     }
-
 }

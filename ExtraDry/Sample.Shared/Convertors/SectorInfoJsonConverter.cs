@@ -3,7 +3,8 @@
 /// <summary>
 /// Converts a subset of a `Sector` for use when `Sector` is a child of another object.
 /// </summary>
-public class SectorInfoJsonConverter : JsonConverter<Sector> {
+public class SectorInfoJsonConverter : JsonConverter<Sector>
+{
     public override Sector? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         return JsonSerializer.Deserialize<Sector>(ref reader, options);
@@ -48,5 +49,4 @@ public class SectorInfoJsonConverter : JsonConverter<Sector> {
 
         string Renamer(string name) => options.PropertyNamingPolicy?.ConvertName(name) ?? name;
     }
-        
 }

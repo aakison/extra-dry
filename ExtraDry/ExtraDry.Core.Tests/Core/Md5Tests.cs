@@ -2,8 +2,8 @@
 
 namespace ExtraDry.Core.Tests.Internals;
 
-public class Md5Tests {
-
+public class Md5Tests
+{
     [Theory]
     [InlineData("adrian@akison.com", "E5A7055CAB0FCBBAE38D8C1FB5840D03")]
     [InlineData("myemailaddress@example.com", "0BC83CB571CD1C50BA6F3E8A78EF1346")]
@@ -14,5 +14,4 @@ public class Md5Tests {
 
         Assert.Equal(expected, actual);
     }
-
 }

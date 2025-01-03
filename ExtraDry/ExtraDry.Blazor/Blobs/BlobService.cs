@@ -5,24 +5,24 @@ using Microsoft.AspNetCore.Components.Forms;
 namespace ExtraDry.Blazor;
 
 /// <summary>
-/// Registers a API service for Blobs.  This service is used to upload files to the server.
+/// Registers a API service for Blobs. This service is used to upload files to the server.
 /// </summary>
 /// <remarks>
-/// Create a Blob service with the specified configuration.  This service should not be 
-/// manually added to the IServiceCollection.  Instead, use the <see cref="ServiceCollectionExtensions.AddBlobService(Microsoft.Extensions.DependencyInjection.IServiceCollection, Action{BlobServiceOptions})" />
-/// extension method.
+/// Create a Blob service with the specified configuration. This service should not be manually
+/// added to the IServiceCollection. Instead, use the <see
+/// cref="ServiceCollectionExtensions.AddBlobService(Microsoft.Extensions.DependencyInjection.IServiceCollection,
+/// Action{BlobServiceOptions})" /> extension method.
 /// </remarks>
 public class BlobService<TBlob>(
-    HttpClient client, 
-    FileValidationService? fileValidation, 
-    BlobServiceOptions options, 
-    ILogger<BlobService<TBlob>> logger) 
+    HttpClient client,
+    FileValidationService? fileValidation,
+    BlobServiceOptions options,
+    ILogger<BlobService<TBlob>> logger)
     where TBlob : IBlob, new()
 {
-
     /// <summary>
-    /// Given an entity implementing <see cref="IBlob"/>, create a new Blob by calling the 
-    /// registered Blob endpoint.  The URI of the blob will be created from the Blob's UUID.
+    /// Given an entity implementing <see cref="IBlob" />, create a new Blob by calling the
+    /// registered Blob endpoint. The URI of the blob will be created from the Blob's UUID.
     /// </summary>
     public async Task CreateAsync(TBlob blob, CancellationToken cancellationToken = default)
     {
@@ -54,12 +54,10 @@ public class BlobService<TBlob>(
     }
 
     /// <summary>
-    /// Given a filename, type and content, create a new Blob by calling the registered Blob 
-    /// endpoint.  The URI of the blob will be created from an auto generated UUID.
+    /// Given a filename, type and content, create a new Blob by calling the registered Blob
+    /// endpoint. The URI of the blob will be created from an auto generated UUID.
     /// </summary>
-    /// <returns>
-    /// The Blob that was created locally and corresponds to the remote Blob.
-    /// </returns>
+    /// <returns>The Blob that was created locally and corresponds to the remote Blob.</returns>
     public async Task<TBlob> CreateAsync(string filename, string mimeType, byte[] content, CancellationToken cancellationToken = default)
     {
         var blob = new TBlob {
@@ -72,13 +70,11 @@ public class BlobService<TBlob>(
     }
 
     /// <summary>
-    /// Given a <see cref="IBrowserFile"/> from an <see cref="InputFile"/>, create a new Blob by
-    /// calling the registered Blob endpoint.  The URI of the blob will be created from an auto
+    /// Given a <see cref="IBrowserFile" /> from an <see cref="InputFile" />, create a new Blob by
+    /// calling the registered Blob endpoint. The URI of the blob will be created from an auto
     /// generated UUID.
     /// </summary>
-    /// <returns>
-    /// The Blob that was created locally and corresponds to the remote Blob.
-    /// </returns>
+    /// <returns>The Blob that was created locally and corresponds to the remote Blob.</returns>
     public async Task<TBlob> CreateAsync(IBrowserFile file, CancellationToken cancellationToken = default)
     {
         var blob = new TBlob {
@@ -95,9 +91,9 @@ public class BlobService<TBlob>(
     }
 
     /// <summary>
-    /// Given a Blob's UUID, retrieve the Blob from the server.  The URI for the blob will not
-    /// contain the Blob's filename, so the default filename will be used.  This is suitable for 
-    /// use inside the app, but not ideal for downloading the file.  
+    /// Given a Blob's UUID, retrieve the Blob from the server. The URI for the blob will not
+    /// contain the Blob's filename, so the default filename will be used. This is suitable for use
+    /// inside the app, but not ideal for downloading the file.
     /// </summary>
     public async Task<TBlob> RetrieveAsync(Guid uuid, CancellationToken cancellationToken = default)
     {
@@ -105,7 +101,7 @@ public class BlobService<TBlob>(
     }
 
     /// <summary>
-    /// Given a Blob's UUID, retrieve the Blob from the server.  The URI for the blob will contain
+    /// Given a Blob's UUID, retrieve the Blob from the server. The URI for the blob will contain
     /// the slug provided which improves the URI and allows for downloading files.
     /// </summary>
     public async Task<TBlob> RetrieveAsync(Guid uuid, string slug, CancellationToken cancellationToken = default)

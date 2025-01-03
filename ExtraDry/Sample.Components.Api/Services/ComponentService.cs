@@ -12,7 +12,6 @@ public class ComponentService(
     CustomerService tenants,
     RuleEngine rules)
 {
-
     public async Task<PagedCollection<Component>> ListComponentsAsync(string tenant, PageQuery query)
     {
         var q = database.Components.WithPartitionKey(tenant).QueryWith(query);
@@ -51,7 +50,7 @@ public class ComponentService(
     {
         return await TryRetrieveComponentAsync(tenant, uuid)
             ?? throw new ArgumentException($"Component '{uuid}' not found", nameof(uuid));
-    }   
+    }
 
     public async Task<Component> UpdateComponentAsync(string tenant, Component exemplar)
     {
@@ -66,5 +65,4 @@ public class ComponentService(
         var existing = await RetrieveComponentAsync(tenant, uuid);
         await rules.DeleteAsync(existing, () => database.Components.Remove(existing), async () => await database.SaveChangesAsync());
     }
-
 }

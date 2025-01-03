@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Blazor;
 
-public abstract class DryViewModelComponentBase : ComponentBase {
-
+public abstract class DryViewModelComponentBase : ComponentBase
+{
     [Parameter, EditorRequired]
     public object ViewModel { get; set; } = null!;
 
@@ -20,5 +20,4 @@ public abstract class DryViewModelComponentBase : ComponentBase {
 
     [Inject]
     private ILogger<DryViewModelComponentBase> BaseLogger { get; set; } = null!;
-
 }

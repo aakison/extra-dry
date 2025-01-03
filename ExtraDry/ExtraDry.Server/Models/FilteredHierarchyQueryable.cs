@@ -6,7 +6,6 @@ namespace ExtraDry.Server;
 
 public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : class, IHierarchyEntity<T>
 {
-
     protected FilteredHierarchyQueryable()
     {
         UnfilteredQuery = new List<T>().AsQueryable();
@@ -67,7 +66,9 @@ public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : 
             results = results.Union(ChildrenOf(query.Expand));
         }
         if(!string.IsNullOrWhiteSpace(query.Filter)) {
-            /// Add Tag for <see cref="ImproveHierarchyQueryPerformance"/> to work
+            /// Add Tag for
+            /// <see cref="ImproveHierarchyQueryPerformance" />
+            /// to work
             var ancestors = AncestorsOf(filteredQueryable).TagWith(ImproveHierarchyQueryPerformance.Tag);
             results = results.Union(ancestors);
         }
@@ -94,7 +95,6 @@ public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : 
             filtered.SelectMany(descendant => baseQueryable
                 .Where(ancestor => descendant.Lineage.IsDescendantOf(ancestor.Lineage)),
                 (_, ancestor) => ancestor).Distinct();
-
     }
 
     protected IQueryable<string> CreateChildrenQuery()
@@ -129,5 +129,4 @@ public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : 
             Collapse = Query.Collapse.Count != 0 ? Query.Collapse : null,
             Expandable = expandable.Count != 0 ? expandable : null,
         };
-
 }

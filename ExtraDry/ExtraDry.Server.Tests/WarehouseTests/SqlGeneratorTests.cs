@@ -4,8 +4,8 @@ using ExtraDry.Server.DataWarehouse.Builder;
 
 namespace ExtraDry.Server.Tests.WarehouseTests;
 
-public class SqlGeneratorTests {
-
+public class SqlGeneratorTests
+{
     [Fact]
     public void ColumnTableSyntax()
     {
@@ -91,10 +91,11 @@ public class SqlGeneratorTests {
         Assert.DoesNotContain("CONSTRAINT", sql);
     }
 
-    public class TestContext : DbContext {
-
+    public class TestContext : DbContext
+    {
         [FactTable]
-        public class Source {
+        public class Source
+        {
             [JsonIgnore]
             public int Id { get; set; }
 
@@ -102,7 +103,8 @@ public class SqlGeneratorTests {
         }
 
         [DimensionTable]
-        public class Target {
+        public class Target
+        {
             [JsonIgnore]
             public int Id { get; set; }
         }
@@ -111,6 +113,4 @@ public class SqlGeneratorTests {
 
         public DbSet<Target> Targets { get; set; } = null!;
     }
-
 }
-

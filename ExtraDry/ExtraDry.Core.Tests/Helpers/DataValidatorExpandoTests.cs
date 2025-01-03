@@ -2,7 +2,6 @@
 
 public class DataValidatorExpandoTests
 {
-
     [Fact]
     public void EmptyExpandoValidates()
     {
@@ -61,9 +60,7 @@ public class DataValidatorExpandoTests
 
     public class Sample
     {
-
         public ExpandoValues Values { get; set; } = [];
-
     }
 
     public static ExpandoSchema Schema => new() {
@@ -85,5 +82,4 @@ public class DataValidatorExpandoTests
             return sample;
         }
     }
-
 }

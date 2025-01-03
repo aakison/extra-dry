@@ -2,7 +2,6 @@
 
 public class DataConverterTests
 {
-
     [Theory]
     [InlineData(TestType.SimpleName, "SimpleName")]
     [InlineData(TestType.DisplayName, "Display Name")]
@@ -25,12 +24,10 @@ public class DataConverterTests
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum TestType
     {
-
         SimpleName = 0,
 
         [Display(Name = "Display Name")]
         DisplayName = 1,
-
     }
 
     [Theory]
@@ -77,5 +74,4 @@ public class DataConverterTests
 
         Assert.Equal(expected, actual);
     }
-
 }

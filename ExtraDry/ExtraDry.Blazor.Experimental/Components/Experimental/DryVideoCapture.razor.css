@@ -5,15 +5,18 @@
   background-color: silver;
   color: white;
 }
-div.video-capture video, div.video-capture canvas, div.video-capture div {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-}
-div.video-capture video, div.video-capture canvas {
-  transform: scaleX(-1);
-}
-div.video-capture div {
-  display: grid;
-  background-color: silver;
-}
+
+  div.video-capture video, div.video-capture canvas, div.video-capture div {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
+  div.video-capture video, div.video-capture canvas {
+    transform: scaleX(-1);
+  }
+
+  div.video-capture div {
+    display: grid;
+    background-color: silver;
+  }

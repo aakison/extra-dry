@@ -8,11 +8,10 @@ namespace Sample.Components.Api.Controllers;
 //[ApiExceptionStatusCodes]
 //public class MetadataController(
 //    ComponentService components,
-//    MetadataService metadata) 
+//    MetadataService metadata)
 //{
-
 //    /// <summary>
-//    /// Retrieve a set of metadata for a component by UUID.  
+//    /// Retrieve a set of metadata for a component by UUID.
 //    /// </summary>
 //    [HttpGet("/{tenant}/metadata/{uuid}")]
 //    [Authorize(Policies.User)]
@@ -25,17 +24,13 @@ namespace Sample.Components.Api.Controllers;
 //        return result;
 //    }
 
-//    /// <summary>
-//    /// Updates the set of metadata for a component by UUID.  
-//    /// </summary>
-//    [HttpPut("/{tenant}/metadata/{uuid}")]
-//    [Authorize(Policies.User)]
-//    [Consumes("application/json")]
-//    public async Task UpdateMetadata(string tenant, Guid uuid, Metadata exemplar)
-//    {
-//        var component = await components.RetrieveComponentAsync(tenant, uuid);
-//        //Authorization.AssertAuthorizedAsync(); // TODO: Check ABAC attribute rules.
-//        await metadata.UpdateMetadataAsync(component, exemplar);
-//    }
+// ///
+// <summary>
+// /// Updates the set of metadata for a component by UUID. ///
+// </summary>
+// [HttpPut("/{tenant}/metadata/{uuid}")] [Authorize(Policies.User)] [Consumes("application/json")]
+// public async Task UpdateMetadata(string tenant, Guid uuid, Metadata exemplar) { var component =
+// await components.RetrieveComponentAsync(tenant, uuid); //Authorization.AssertAuthorizedAsync();
+// // TODO: Check ABAC attribute rules. await metadata.UpdateMetadataAsync(component, exemplar); }
 
 //}

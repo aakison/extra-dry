@@ -4,13 +4,14 @@ using System.Reflection;
 namespace ExtraDry.Server.Internal;
 
 /// <summary>
-/// A lightweight dynamic linq builder, just enough to satisfy needs of filtering, sorting and paging API result sets.
+/// A lightweight dynamic linq builder, just enough to satisfy needs of filtering, sorting and
+/// paging API result sets.
 /// </summary>
 internal static class LinqBuilder
 {
-
     /// <summary>
-    /// Sorts the elements of the sequence according to a key which is provided by name instead of a lambda.
+    /// Sorts the elements of the sequence according to a key which is provided by name instead of
+    /// a lambda.
     /// </summary>
     public static IOrderedQueryable<T> OrderBy<T>(this IQueryable<T> source, string property)
     {
@@ -18,7 +19,8 @@ internal static class LinqBuilder
     }
 
     /// <summary>
-    /// Sorts the elements of the sequence, in descending order, according to a key which is provided by name instead of a lambda.
+    /// Sorts the elements of the sequence, in descending order, according to a key which is
+    /// provided by name instead of a lambda.
     /// </summary>
     public static IOrderedQueryable<T> OrderByDescending<T>(this IQueryable<T> source, string property)
     {
@@ -26,7 +28,8 @@ internal static class LinqBuilder
     }
 
     /// <summary>
-    /// Performs a subsequent ordering of a sequence according to a key which is provided by name instead of a lambda.
+    /// Performs a subsequent ordering of a sequence according to a key which is provided by name
+    /// instead of a lambda.
     /// </summary>
     public static IOrderedQueryable<T> ThenBy<T>(this IOrderedQueryable<T> source, string property)
     {
@@ -34,7 +37,8 @@ internal static class LinqBuilder
     }
 
     /// <summary>
-    /// Performs a subsequent ordering of a sequence, in descending order, according to a key which is provided by name instead of a lambda.
+    /// Performs a subsequent ordering of a sequence, in descending order, according to a key which
+    /// is provided by name instead of a lambda.
     /// </summary>
     public static IOrderedQueryable<T> ThenByDescending<T>(this IOrderedQueryable<T> source, string property)
     {
@@ -44,7 +48,10 @@ internal static class LinqBuilder
     /// <summary>
     /// Applies LINQ method by property name and method name instead of using Method and Lambda.
     /// </summary>
-    /// <remarks>see https://stackoverflow.com/questions/41244/dynamic-linq-orderby-on-ienumerablet-iqueryablet</remarks>
+    /// <remarks>
+    /// see
+    /// https://stackoverflow.com/questions/41244/dynamic-linq-orderby-on-ienumerablet-iqueryablet
+    /// </remarks>
     private static IOrderedQueryable<T> ApplyOrder<T>(IQueryable<T> source, string property, OrderType methodType)
     {
         var modelDescription = new ModelDescription(typeof(T));
@@ -68,15 +75,16 @@ internal static class LinqBuilder
                         && method.IsGenericMethodDefinition
                         && method.GetGenericArguments().Length == 2
                         && method.GetParameters().Length == 2);
-        // Feels weird to explicitly state these methods exist and return values, but enforced by rigorous lookup above.
+        // Feels weird to explicitly state these methods exist and return values, but enforced by
+        // rigorous lookup above.
         var result = methodInfo.MakeGenericMethod(typeof(T), type)!.Invoke(null, [source, lambda])!;
         return (IOrderedQueryable<T>)result;
     }
 
     public static IQueryable<T> WhereVersionModified<T>(this IQueryable<T> source, EqualityType equality, DateTime timestamp)
     {
-        // Build the tree for the following manually... (where 'Version' is the first property of type VersionInfo)
-        // .Where(e => e.Version.DateModified >= timestamp)
+        // Build the tree for the following manually... (where 'Version' is the first property of
+        // type VersionInfo) .Where(e => e.Version.DateModified >= timestamp)
         var param = Expression.Parameter(typeof(T), "e");
 
         Expression propertyExpression = param;
@@ -100,8 +108,8 @@ internal static class LinqBuilder
 
     public static IQueryable<IGrouping<object, T>> GroupBy<T>(this IQueryable<T> source, StatisticsProperty property)
     {
-        // Build up the group-by property, which is essentially the lambda `e => (object)e.propertyName`
-        // The cast to object is required for enum support.
+        // Build up the group-by property, which is essentially the lambda `e =>
+        // (object)e.propertyName` The cast to object is required for enum support.
         var paramExpr = Expression.Parameter(typeof(T), "e");
         var statsProperty = typeof(T).GetProperty(property.Property.Name)
             ?? throw new DryException("Can't find property on class that defines the property?!?");
@@ -113,11 +121,13 @@ internal static class LinqBuilder
     }
 
     /// <summary>
-    /// Given a list of filter properties and a list of match strings, constructs a queryable for an existing queryable.
+    /// Given a list of filter properties and a list of match strings, constructs a queryable for
+    /// an existing queryable.
     /// </summary>
     /// <remarks>
-    /// This builds a Conjunctive Normal Form (CNF) linq expression where each string in `matchValues` must exist in 
-    /// at least one of the properties.  The exact comparison function is also determined by the properties' filter attribute.
+    /// This builds a Conjunctive Normal Form (CNF) linq expression where each string in
+    /// `matchValues` must exist in at least one of the properties. The exact comparison function
+    /// is also determined by the properties' filter attribute.
     /// </remarks>
     public static IQueryable<T> WhereFilterConditions<T>(this IQueryable<T> source, FilterProperty[] filterProperties, string filterQuery, StringComparison? forceStringComparison = null)
     {
@@ -133,7 +143,8 @@ internal static class LinqBuilder
                         AddTerms(param, keywords, rule, filterProperty, forceStringComparison);
                     }
                     catch {
-                        // E.g. when "abc" is passed to an Int32, ignore when part of keyword/wildcard search.
+                        // E.g. when "abc" is passed to an Int32, ignore when part of
+                        // keyword/wildcard search.
                     }
                 }
                 if(keywords.Count != 0) {
@@ -211,8 +222,9 @@ internal static class LinqBuilder
             return equality;
         }
         catch(DryException) {
-            // Can't construct or parse value, comparison is impossible and can't convert to expression.
-            // Replace with a similarly impossible but syntactically correct expression.
+            // Can't construct or parse value, comparison is impossible and can't convert to
+            // expression. Replace with a similarly impossible but syntactically correct
+            // expression.
             return EmptySetExpression;
         }
     }
@@ -253,7 +265,8 @@ internal static class LinqBuilder
         {
             var expression = (Expression)Expression.Constant(ParseToType(type, value));
             if(type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>)) {
-                // If nullable property, need to convert non nullable values from ParseToType into nullable equivalents.
+                // If nullable property, need to convert non nullable values from ParseToType into
+                // nullable equivalents.
                 expression = Expression.Convert(expression, type);
             }
             return expression;
@@ -321,8 +334,11 @@ internal static class LinqBuilder
     private enum OrderType
     {
         OrderBy,
+
         ThenBy,
+
         OrderByDescending,
+
         ThenByDescending,
     }
 
@@ -330,7 +346,7 @@ internal static class LinqBuilder
     public enum EqualityType
     {
         GreaterThan,
+
         EqualTo,
     }
-
 }

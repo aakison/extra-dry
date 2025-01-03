@@ -6,7 +6,7 @@
 public class BaseCollection<T>
 {
     /// <summary>
-    /// The UTC date/time that the collection was created.  
+    /// The UTC date/time that the collection was created.
     /// </summary>
     public DateTime Created { get; set; } = DateTime.UtcNow;
 
@@ -22,12 +22,11 @@ public class BaseCollection<T>
     public IList<T> Items { get; set; } = [];
 
     /// <summary>
-    /// Create a new <see cref="BaseCollection{T}" /> with the items cast to a base class or interface.
+    /// Create a new <see cref="BaseCollection{T}" /> with the items cast to a base class or
+    /// interface.
     /// </summary>
     public BaseCollection<TCast> Cast<TCast>() => new() {
         Created = Created,
         Items = Items.Cast<TCast>().ToList(),
     };
-
 }
-

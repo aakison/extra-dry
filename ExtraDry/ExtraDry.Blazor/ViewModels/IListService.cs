@@ -2,8 +2,8 @@
 
 namespace ExtraDry.Blazor;
 
-public interface IListService<T> : IOptionProvider<T> {
-
+public interface IListService<T> : IOptionProvider<T>
+{
     int PageSize { get; }
 
     int MaxLevel { get; }

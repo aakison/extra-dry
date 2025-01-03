@@ -3,8 +3,8 @@
 /// <summary>
 /// Helper class to provide renaming options for SchemaIds for Swagger.
 /// </summary>
-public static class SchemaIds {
-
+public static class SchemaIds
+{
     /// <summary>
     /// Rename interfaces that are used to not indicate the obligatory "I" in front of each.
     /// </summary>
@@ -29,5 +29,4 @@ public static class SchemaIds {
         }
         return name;
     }
-
 }

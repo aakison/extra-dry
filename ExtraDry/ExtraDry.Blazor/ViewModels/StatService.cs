@@ -4,16 +4,16 @@ using System.Text.Json;
 namespace ExtraDry.Blazor;
 
 /// <summary>
-/// A simple Stats API service wrapper for Extra Dry service endpoints.  The entity of Type `T 
-/// must be JSON serializable and accepted by the server. The return object will be a Statistics 
-/// object of type `T On non-success (2xx) results, the service endpoints should return a 
-/// ProblemDetails (RFC7807) response body. This body will be unwrapped and throw in the body of a 
-/// DryException. If ProblemDetails are not present, then a trivial attempt to unpack the arbitrary
-/// response payload will be made.
+/// A simple Stats API service wrapper for Extra Dry service endpoints. The entity of Type `T must
+/// be JSON serializable and accepted by the server. The return object will be a Statistics object
+/// of type `T On non-success (2xx) results, the service endpoints should return a ProblemDetails
+/// (RFC7807) response body. This body will be unwrapped and throw in the body of a DryException.
+/// If ProblemDetails are not present, then a trivial attempt to unpack the arbitrary response
+/// payload will be made.
 /// </summary>
 /// <remarks>
-/// Create a stat service with the specified configuration. This service should not be manually 
-/// added to the IServiceCollection.  Instead, use the AddCrudService`T extension method.
+/// Create a stat service with the specified configuration. This service should not be manually
+/// added to the IServiceCollection. Instead, use the AddCrudService`T extension method.
 /// </remarks>
 public class StatService<T>(
     HttpClient client,
@@ -26,7 +26,9 @@ public class StatService<T>(
     /// Retrieves the Statistics of the Entity
     /// </summary>
     /// <param name="filter">The entity specific text filter for the collection.</param>
-    /// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
+    /// <param name="cancellationToken">
+    /// Propagates notification that operations should be canceled.
+    /// </param>
     public async Task<Statistics<T>?> TryRetrieveAsync(string? filter, CancellationToken cancellationToken = default)
     {
         var endpoint = ApiEndpoint(filter);

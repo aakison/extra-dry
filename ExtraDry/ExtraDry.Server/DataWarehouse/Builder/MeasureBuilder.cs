@@ -4,8 +4,8 @@ using System.Reflection;
 
 namespace ExtraDry.Server.DataWarehouse.Builder;
 
-public class MeasureBuilder : ColumnBuilder {
-
+public class MeasureBuilder : ColumnBuilder
+{
     internal MeasureBuilder(TableBuilder tableBuilder, Type entityType, PropertyInfo propertyInfo) : base(tableBuilder, entityType, propertyInfo)
     {
         MeasureAttribute = propertyInfo.GetCustomAttribute<MeasureAttribute>();
@@ -57,7 +57,9 @@ public class MeasureBuilder : ColumnBuilder {
     /// <summary>
     /// Set the precision for Decimal data types
     /// </summary>
-    /// <param name="precision">The total number of decimal digits both before and after the decimal point.</param>
+    /// <param name="precision">
+    /// The total number of decimal digits both before and after the decimal point.
+    /// </param>
     /// <param name="scale">The number of decimal digits after the decimal point.</param>
     public MeasureBuilder HasPrecision(int precision, int scale)
     {
@@ -116,5 +118,4 @@ public class MeasureBuilder : ColumnBuilder {
     }
 
     private MeasureAttribute? MeasureAttribute { get; set; }
-
 }

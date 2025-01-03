@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExtraDry.Server.DataWarehouse;
 
-public class DateGenerator : IDataGenerator {
-
+public class DateGenerator : IDataGenerator
+{
     public DateGenerator(Action<DateGeneratorOptions>? options = null)
     {
         OptionsBuilder = options;
@@ -15,7 +15,7 @@ public class DateGenerator : IDataGenerator {
     [JsonIgnore]
     public DateOnly StartDate => Options.StartDate;
 
-    [JsonIgnore] 
+    [JsonIgnore]
     public DateOnly EndDate => Options.EndDate;
 
     public int FiscalYearEndingMonth => Options.FiscalYearEndingMonth;
@@ -29,7 +29,8 @@ public class DateGenerator : IDataGenerator {
         var actualMin = await olapContext.Database.ExecuteScalerAsync(minSql);
         var requiredMin = StandardConversions.DateOnlyToSequence(StartDate);
         if(requiredMin < actualMin) {
-            // Earlier dates are required, ensure they're added in decreasing order, reverses typical for loop.
+            // Earlier dates are required, ensure they're added in decreasing order, reverses
+            // typical for loop.
             var start = actualMin - 1;
             var end = Math.Max(requiredMin, start - 100);
             for(int d = start; d >= end; --d) {
@@ -70,5 +71,4 @@ public class DateGenerator : IDataGenerator {
     private DateGeneratorOptions Options { get; set; } = new DateGeneratorOptions();
 
     private Action<DateGeneratorOptions>? OptionsBuilder { get; set; }
-
 }

@@ -7,7 +7,6 @@ namespace ExtraDry.Server;
 [AttributeUsage(AttributeTargets.Class)]
 public class ApiExceptionStatusCodesAttribute : ExceptionFilterAttribute
 {
-
     public override Task OnExceptionAsync(ExceptionContext context)
     {
         return base.OnExceptionAsync(context);
@@ -47,5 +46,4 @@ public class ApiExceptionStatusCodesAttribute : ExceptionFilterAttribute
         }
         context.ExceptionHandled = true;
     }
-
 }

@@ -3,11 +3,11 @@
 /// <summary>
 /// Interface for data warehouse system to generate SQL from data warehouse concepts.
 /// </summary>
-public interface ISqlGenerator {
-
+public interface ISqlGenerator
+{
     /// <summary>
-    /// Generate the SQL to create a table.
-    /// When overloading, avoid foreign key constraints as they cause performance bottlenecks in data warehouses.
+    /// Generate the SQL to create a table. When overloading, avoid foreign key constraints as they
+    /// cause performance bottlenecks in data warehouses.
     /// </summary>
     string CreateTable(Table table);
 
@@ -17,7 +17,8 @@ public interface ISqlGenerator {
     string DropTable(Table table);
 
     /// <summary>
-    /// Generate the SQL to insert the base data that is associated with a table, for example, when the table represents an enum.
+    /// Generate the SQL to insert the base data that is associated with a table, for example, when
+    /// the table represents an enum.
     /// </summary>
     string InsertData(Table table);
 
@@ -32,8 +33,8 @@ public interface ISqlGenerator {
     string SelectMinimum(Table table, string column);
 
     /// <summary>
-    /// Generate the SQL for an Upsert statement for the given table and row, with the values provided.
+    /// Generate the SQL for an Upsert statement for the given table and row, with the values
+    /// provided.
     /// </summary>
     string Upsert(Table table, int keyValue, Dictionary<string, object> values);
-
 }

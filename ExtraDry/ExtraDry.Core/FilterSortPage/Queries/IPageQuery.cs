@@ -5,14 +5,13 @@
 /// </summary>
 public interface IPageQuery
 {
-
     /// <summary>
     /// The number of records to skip before returning results.
     /// </summary>
     int Skip { get; set; }
 
     /// <summary>
-    /// The requested number of records to take.  
+    /// The requested number of records to take.
     /// </summary>
     int Take { get; set; }
 
@@ -20,5 +19,4 @@ public interface IPageQuery
     /// The continuation token from the previous response.
     /// </summary>
     string? Token { get; set; }
-
 }

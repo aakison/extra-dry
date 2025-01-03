@@ -85,10 +85,9 @@ public class DryInputDateTimeTests
         Assert.NotNull(input);
         Assert.Equal("INPUT", input.NodeName);
         Assert.Equal(model.TimeOnly, TimeOnly.Parse(input.Value, CultureInfo.InvariantCulture));
-        
+
         Assert.Equal("time", input.Type);
     }
-
 
     [Fact]
     public void DateOverrideInputRendersAsDate()
@@ -126,7 +125,7 @@ public class DryInputDateTimeTests
         var input = fragment.Find("input") as IHtmlInputElement;
         Assert.NotNull(input);
         Assert.Equal("INPUT", input.NodeName);
-        Assert.Equal(DateTime.Parse(model.DateTime, CultureInfo.InvariantCulture), 
+        Assert.Equal(DateTime.Parse(model.DateTime, CultureInfo.InvariantCulture),
             DateTime.Parse(input.Value, CultureInfo.InvariantCulture));
         Assert.Equal("datetime-local", input.Type);
     }

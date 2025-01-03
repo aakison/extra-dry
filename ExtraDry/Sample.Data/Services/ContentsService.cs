@@ -1,7 +1,7 @@
 ﻿namespace Sample.Data.Services;
 
 public class ContentsService(
-    SampleContext sampleContext, 
+    SampleContext sampleContext,
     RuleEngine ruleEngine)
 {
     public async Task<FilteredCollection<Content>> ListAsync(FilterQuery query)

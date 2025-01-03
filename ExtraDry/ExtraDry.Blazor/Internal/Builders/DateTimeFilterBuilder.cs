@@ -25,13 +25,13 @@ public class DateTimeFilterBuilder : FilterBuilder
         Upper = upper;
     }
 
-    ///  <inheritdoc cref="FilterBuilder.Build" />
+    /// <inheritdoc cref="FilterBuilder.Build" />
     public override string Build()
         => Lower != null || Upper != null
             ? $"{FilterName}:{(LowerInclusive ? "[" : "(")}{BuildDate(Lower)},{BuildDate(Upper)}{(UpperInclusive ? "]" : ")")}"
             : string.Empty;
 
-    ///  <inheritdoc cref="FilterBuilder.Reset" />
+    /// <inheritdoc cref="FilterBuilder.Reset" />
     public override void Reset()
     {
         Lower = null;
@@ -41,7 +41,7 @@ public class DateTimeFilterBuilder : FilterBuilder
     }
 
     /// <summary>
-    /// Converts the specified string representation of a date and time filter to its 
+    /// Converts the specified string representation of a date and time filter to its
     /// DateTimeFilterBuilder equivalent.
     /// </summary>
     /// <returns>Returns a boolean that indicates whether the conversion succeeded.</returns>
@@ -57,7 +57,6 @@ public class DateTimeFilterBuilder : FilterBuilder
         if(!(filterValue.StartsWith('[') || filterValue.StartsWith('('))
             || !(filterValue.EndsWith(']') || filterValue.EndsWith(')'))
             || !filterValue.Contains(',')) {
-
             return false;
         }
 

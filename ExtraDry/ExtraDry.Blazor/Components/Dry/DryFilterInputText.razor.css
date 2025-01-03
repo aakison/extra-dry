@@ -1,6 +1,7 @@
 ﻿div {
   display: flex;
 }
-div ::deep input {
-  flex: 1 1 auto;
-}
+
+  div ::deep input {
+    flex: 1 1 auto;
+  }

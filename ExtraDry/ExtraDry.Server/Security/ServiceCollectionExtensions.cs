@@ -10,9 +10,8 @@ namespace ExtraDry.Server;
 /// </summary>
 public static class ServiceCollectionExtensions
 {
-
     /// <summary>
-    /// Register the extensions that allows using ABAC rules from options.  
+    /// Register the extensions that allows using ABAC rules from options.
     /// </summary>
     public static IServiceCollection AddAbacExtensions(this IServiceCollection services, Action<AbacOptions>? config = null)
     {
@@ -28,5 +27,4 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IAuthorizationHandler, RbacRequirementHandler>();
         return services;
     }
-
 }

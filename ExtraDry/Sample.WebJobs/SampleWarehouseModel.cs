@@ -4,8 +4,8 @@ using Sample.Shared;
 
 namespace Sample.WebJob;
 
-public class SampleWarehouseModel : WarehouseModel<SampleContext> {
-
+public class SampleWarehouseModel : WarehouseModel<SampleContext>
+{
     protected override void OnCreating(WarehouseModelBuilder builder)
     {
         builder.Fact<Company>().Measure(e => e.AnnualRevenue).HasName("Big Bucks");
@@ -17,5 +17,4 @@ public class SampleWarehouseModel : WarehouseModel<SampleContext> {
         builder.Dimension<DateDimension>().Attribute(e => e.DayOfWeekName).IsIncluded(false);
         builder.Dimension<TimeDimension>().HasTimeGenerator();
     }
-
 }

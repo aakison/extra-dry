@@ -3,14 +3,11 @@
 /// <summary>
 /// The count of discrete values for a given property.
 /// </summary>
-/// <remarks>
-/// Create the set of data points for a single property name
-/// </remarks>
+/// <remarks>Create the set of data points for a single property name</remarks>
 /// <param name="propertyName"></param>
 /// <param name="counts"></param>
 public class DataDistribution(string propertyName, Dictionary<string, int> counts)
 {
-
     /// <summary>
     /// The name of the property that these counts were collected against.
     /// </summary>
@@ -23,5 +20,4 @@ public class DataDistribution(string propertyName, Dictionary<string, int> count
     /// </summary>
     /// <example>{"electrical" : 1, "plumbing" : 2}</example>
     public Dictionary<string, int> Counts { get; } = counts;
-
 }

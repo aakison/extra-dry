@@ -7,7 +7,6 @@ button {
     padding: $margin/3 $margin;
     min-width: 88px;
     height: 30px;
-
     // A button that is bold and clearly a button, probably the button style if there is
     // only one button on the page.
     &.primary {
@@ -18,21 +17,18 @@ button {
             background-color: lighten($primary, 10%);
         }
     }
-
     // Additional buttons for alternative actions that appear next to the primary buttons.
     // Still looks very much like a button, such as in a button list.
     &.secondary {
         background-color: $var-secondary;
         color: $var-black;
     }
-
     // A button that has consequences that users can't recover from, such as a permanent delete.
     // Still looks like a button but with some 'dangerous' styling.
     &.danger {
         background-color: $var-danger;
         color: $var-white;
     }
-
     // A button that starts to look less like a button and could blend into the backround.
     // Might look the same as a select list or other subtle control, where context of content
     // determines if it's a button or other.
@@ -47,7 +43,6 @@ button {
             background-color: rgba(0, 0, 0, 0.15);
         }
     }
-
     // A button that doesn't initially look like a button at all, probably needs some sort of
     // hover mechanism to reveal that it's actually clickable.
     &.unobtrusive {

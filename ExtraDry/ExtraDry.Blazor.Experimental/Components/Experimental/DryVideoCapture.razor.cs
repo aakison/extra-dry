@@ -2,8 +2,8 @@
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "DRY1500:Extra DRY Blazor components should have an interface.",
     Justification = "Decide fate of component")]
-public partial class DryVideoCapture : ComponentBase {
-
+public partial class DryVideoCapture : ComponentBase
+{
     [Parameter]
     public int Width { get; set; } = 480;
 
@@ -60,7 +60,8 @@ public partial class DryVideoCapture : ComponentBase {
         }
     }
 
-    private enum FiniteState {
+    private enum FiniteState
+    {
         Initializing, Waiting, Video, Preview, BadDevice
     }
 

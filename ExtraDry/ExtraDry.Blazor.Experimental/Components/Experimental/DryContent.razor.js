@@ -2,7 +2,6 @@
 var roosterActiveDiv = null;
 
 var SamplePlugin = (function () {
-
     function SamplePlugin() {
     }
 

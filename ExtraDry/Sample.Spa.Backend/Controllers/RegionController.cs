@@ -5,14 +5,15 @@ namespace Sample.Spa.Backend.Controllers;
 
 /// <summary>
 /// Manages the taxonomy/collection of geo-political regions.
-/// 
+///
 /// The geo-political regions are a three level taxonomy that drill down as:
-///   * Country
-///   * Division, such as a State or Territory
-///   * Subdivision, such as a county, city, or municipality
-///   
-/// Regions follow the standard subject naming scheme with `Code` (unique), `Title` and `Description`.
-/// 
+/// * Country
+/// * Division, such as a State or Territory
+/// * Subdivision, such as a county, city, or municipality
+///
+/// Regions follow the standard subject naming scheme with `Code` (unique), `Title` and
+/// `Description`.
+///
 /// Regions also follow the standard taxonomy structure, where each region is at a specific level;
 /// and each region is the child of a region in the level above it.
 /// </summary>
@@ -22,7 +23,6 @@ namespace Sample.Spa.Backend.Controllers;
 public class RegionController(
     RegionService regionService)
 {
-
     /// <summary>
     /// Paged list of all regions
     /// </summary>

@@ -2,7 +2,6 @@
 
 internal class Filter
 {
-
     public Filter(IEnumerable<FilterRule> rules)
     {
         foreach(var rule in rules) {
@@ -17,5 +16,4 @@ internal class Filter
     }
 
     public List<FilterRule> Rules { get; } = [];
-
 }

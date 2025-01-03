@@ -16,12 +16,11 @@ namespace Sample.Components.Api.Controllers;
 [ApiExceptionStatusCodes]
 public class ComponentController(
     ComponentService components,
-    IAuthorizationService auth) 
+    IAuthorizationService auth)
 {
-
     /// <summary>
-    /// Retrieve a paged list of components for a tenant.  Not typically very useful as it doesn't
-    /// apply ABAC and can therefore only be used by Admins.  
+    /// Retrieve a paged list of components for a tenant. Not typically very useful as it doesn't
+    /// apply ABAC and can therefore only be used by Admins.
     /// </summary>
     [HttpGet("/{tenant}/components")]
     [Authorize(Policies.Admin)]
@@ -35,7 +34,7 @@ public class ComponentController(
     }
 
     /// <summary>
-    /// Create a new component, enabling the use of `Attachments` and `Conversations` for it.  
+    /// Create a new component, enabling the use of `Attachments` and `Conversations` for it.
     /// Limited to Agents which populate this from an event feed from other microservices.
     /// </summary>
     [HttpPost("/{tenant}/components")]
@@ -48,7 +47,7 @@ public class ComponentController(
     }
 
     /// <summary>
-    /// Retrieve a single component by UUID.  
+    /// Retrieve a single component by UUID.
     /// </summary>
     [HttpGet("/{tenant}/components/{uuid}")]
     [Authorize(Policies.User)]
@@ -61,7 +60,7 @@ public class ComponentController(
     }
 
     /// <summary>
-    /// Updates an existing component.  Limited to Agents which populate this from an event feed 
+    /// Updates an existing component. Limited to Agents which populate this from an event feed
     /// from other microservices.
     /// </summary>
     [HttpPut("/{tenant}/components/{uuid}")]
@@ -76,7 +75,7 @@ public class ComponentController(
     }
 
     /// <summary>
-    /// Deletes an existing `Component`.  Limited to Agents which populate this from an event feed
+    /// Deletes an existing `Component`. Limited to Agents which populate this from an event feed
     /// from other microservices.
     /// </summary>
     [HttpDelete("/{tenant}/components/{uuid}")]
@@ -86,5 +85,4 @@ public class ComponentController(
         // No ABAC, agents can do whatever they want.
         await components.DeleteComponentAsync(tenant, uuid);
     }
-
 }

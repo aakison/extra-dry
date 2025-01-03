@@ -4,8 +4,8 @@
 /// A semantic description of the size of a property, used to determine how to layout forms.
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum PropertySize {
-
+public enum PropertySize
+{
     /// <summary>
     /// A small property, such as an int field, small enough to fit four fields on a single line.
     /// </summary>
@@ -25,5 +25,4 @@ public enum PropertySize {
     /// An extra large property, always gets its own line.
     /// </summary>
     Jumbo = 4,
-
 }

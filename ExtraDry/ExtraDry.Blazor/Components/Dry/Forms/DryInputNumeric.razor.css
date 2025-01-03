@@ -19,7 +19,7 @@ div {
       outline: none;
     }
 
-/* 
+  /*
     Numeric fields should be right aligned (actually decimal, but close enough)
 */
   div input {

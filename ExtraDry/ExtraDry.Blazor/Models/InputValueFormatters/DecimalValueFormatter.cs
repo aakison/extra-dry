@@ -27,5 +27,4 @@ public class DecimalValueFormatter(
             return false;
         }
     }
-
 }

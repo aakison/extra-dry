@@ -14,9 +14,8 @@ namespace Sample.Components.Api.Controllers;
 [SkipStatusCodePages]
 [ApiExceptionStatusCodes]
 public class TenantController(
-    CustomerService tenants) 
+    CustomerService tenants)
 {
-
     /// <summary>
     /// Get a list of all Tenants.
     /// </summary>
@@ -32,7 +31,8 @@ public class TenantController(
     /// Create a new Tenant.
     /// </summary>
     /// <remarks>
-    /// Typically called by agents to create a tenant when events are received indicating new clients.
+    /// Typically called by agents to create a tenant when events are received indicating new
+    /// clients.
     /// </remarks>
     [HttpPost("/tenants")]
     [Authorize(Policies.AdminOrAgent)]
@@ -78,5 +78,4 @@ public class TenantController(
     {
         await tenants.DeleteTenantAsync(slug);
     }
-
 }

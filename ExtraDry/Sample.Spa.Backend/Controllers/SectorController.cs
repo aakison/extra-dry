@@ -12,7 +12,6 @@ namespace Sample.Spa.Backend.Controllers;
 public class SectorController(
     SectorService sectors)
 {
-
     /// <summary>
     /// Filtered list of all company services
     /// </summary>

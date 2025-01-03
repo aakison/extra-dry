@@ -1,10 +1,11 @@
 ﻿namespace ExtraDry.Blazor;
 
 /// <summary>
-/// Helper to consistently resolve the display fields for a Model given an optional View Model and/or interface.
+/// Helper to consistently resolve the display fields for a Model given an optional View Model
+/// and/or interface.
 /// </summary>
-internal static class ViewModelHelper {
-
+internal static class ViewModelHelper
+{
     public static string? Code<TModel>(TModel model, ISubjectViewModel<TModel>? viewModel, string? _default = null)
     {
         if(viewModel != null) {
@@ -82,5 +83,4 @@ internal static class ViewModelHelper {
             return _default;
         }
     }
-
 }

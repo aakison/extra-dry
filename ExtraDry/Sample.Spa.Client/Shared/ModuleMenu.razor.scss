@@ -14,7 +14,6 @@ div {
                 height: 0.9*$icon-size;
             }
         }
-
         /* Drop down menu from main waffle */
         section.mini-dialog div.mini-dialog {
             width: 375px - 4*$margin;
@@ -22,7 +21,6 @@ div {
             padding-top: 0.5*$margin;
 
             nav {
-
                 ul {
                     padding: 0;
                     flex-direction: column;

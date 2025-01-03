@@ -2,8 +2,8 @@
 
 namespace ExtraDry.Blazor;
 
-public class ViewModelDescription {
-
+public class ViewModelDescription
+{
     public ViewModelDescription(object viewModel)
     {
         ViewModel = viewModel;
@@ -132,5 +132,4 @@ public class ViewModelDescription {
             ListSelectMode = ListSelectMode.None;
         }
     }
-
 }

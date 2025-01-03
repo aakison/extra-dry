@@ -11,7 +11,6 @@ public class AbacRequirementHandler
     IHttpContextAccessor contextAccessor)
     : AuthorizationHandler<AbacRequirement>
 {
-
     /// <inheritdoc />
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, AbacRequirement requirement)
     {

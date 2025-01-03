@@ -5,12 +5,14 @@ using System.Net;
 namespace ExtraDry.Swashbuckle;
 
 /// <summary>
-/// During construction of the SwaggerGen, use the Attributes to intuit the likely HTTP response error codes.
+/// During construction of the SwaggerGen, use the Attributes to intuit the likely HTTP response
+/// error codes.
 /// </summary>
 public class SignatureImpliesStatusCodes : IOperationFilter
 {
     /// <summary>
-    /// Scan through each operation, using attribute signatures to guess the typical client errors that will be surfaced.
+    /// Scan through each operation, using attribute signatures to guess the typical client errors
+    /// that will be surfaced.
     /// </summary>
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {

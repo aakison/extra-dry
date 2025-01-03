@@ -4,8 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 namespace ExtraDry.Server.Tests.WarehouseTests;
 
 [FactTable, DimensionTable]
-public class Company {
-
+public class Company
+{
     [Key]
     [JsonIgnore]
     [Rules(RuleAction.Ignore)]

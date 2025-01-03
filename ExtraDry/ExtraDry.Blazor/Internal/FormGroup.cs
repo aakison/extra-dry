@@ -1,8 +1,8 @@
 ﻿namespace ExtraDry.Blazor.Internal;
 
 /// <summary>
-/// Represents a logical group of lines inside a form.
-/// These might be grouped for different reasons as specifie by the `Type` property.
+/// Represents a logical group of lines inside a form. These might be grouped for different reasons
+/// as specifie by the `Type` property.
 /// </summary>
 internal class FormGroup(
     object target)
@@ -16,5 +16,4 @@ internal class FormGroup(
     public object Target { get; set; } = target;
 
     public object? ParentTarget { get; set; }
-
 }

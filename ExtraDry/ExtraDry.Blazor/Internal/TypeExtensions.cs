@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Blazor.Internal;
 
-internal static class TypeExtensions {
-
+internal static class TypeExtensions
+{
     public static bool HasDefaultConstructor(this Type type) => type.GetConstructors().Any(t => t.GetParameters().Length == 0);
 
     public static Type SingleGenericType(this Type type)
@@ -18,9 +18,8 @@ internal static class TypeExtensions {
         if(!type.HasDefaultConstructor()) {
             throw new DryException("Generic type was expected to have a default constructor.", "Bad Type, please contact support. 0x0FA7CBDE");
         }
-        var item = Activator.CreateInstance(type) 
+        var item = Activator.CreateInstance(type)
             ?? throw new DryException("Generic type failed to instantiate.", "Bad Type, please contact support. 0x0F21D0C2");
         return item;
     }
-
 }

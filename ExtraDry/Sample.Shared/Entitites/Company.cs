@@ -7,15 +7,17 @@ namespace Sample.Shared;
 public enum OwnershipStructure
 {
     Private,
+
     Public,
+
     Hybrid
 }
 
 [Format(Icon = "company")]
 [FactTable, DimensionTable]
 [DeleteRule(DeleteAction.Recycle, nameof(Status), CompanyStatus.Deleted, CompanyStatus.Active)]
-public class Company : IResourceIdentifiers {
-
+public class Company : IResourceIdentifiers
+{
     [Display(AutoGenerateField = false)]
     [Key]
     [JsonIgnore]

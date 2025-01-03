@@ -1,18 +1,7 @@
 ﻿namespace ExtraDry.Core.Internal;
 
-internal static class HexStringHelper {
-    const string hex = "0123456789ABCDEF";
-    
-    private static byte GetByteFromchars(char a, char b)
-    {
-        var val1 = hex.IndexOf(char.ToUpperInvariant(a));
-        var val2 = hex.IndexOf(char.ToUpperInvariant(b));
-        if(val1 < 0 || val2 < 0) {
-            throw new ArgumentException("Invalid hex character");
-        }
-        return Convert.ToByte((val1 * 16) + val2);
-    }
-
+internal static class HexStringHelper
+{
     /// <summary>
     /// Polyfill for Convert.FromHexString, which is available in .net 5 onwards.
     /// </summary>
@@ -30,4 +19,15 @@ internal static class HexStringHelper {
         }
         return bytes;
     }
+
+    private static byte GetByteFromchars(char a, char b)
+    {
+        var val1 = hex.IndexOf(char.ToUpperInvariant(a));
+        var val2 = hex.IndexOf(char.ToUpperInvariant(b));
+        return val1 < 0 || val2 < 0
+            ? throw new ArgumentException("Invalid hex character")
+            : Convert.ToByte((val1 * 16) + val2);
+    }
+
+    private const string hex = "0123456789ABCDEF";
 }

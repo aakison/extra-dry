@@ -21,7 +21,6 @@ internal static class HtmlAssert
         Assert.Equal(value, attributeValue);
     }
 
-
     internal static void TagHasClass<T>(IRenderedComponent<T> component, string tag, string cssClass)
         where T : class, Microsoft.AspNetCore.Components.IComponent
     {
@@ -29,7 +28,6 @@ internal static class HtmlAssert
         Assert.NotNull(element);
         Assert.Contains(cssClass, element.ClassList);
     }
-
 
     internal static void TagNoAttribute<T>(IRenderedComponent<T> component, string tag, string attribute)
     where T : class, Microsoft.AspNetCore.Components.IComponent

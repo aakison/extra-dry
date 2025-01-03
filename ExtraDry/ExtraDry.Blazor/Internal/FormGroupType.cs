@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Blazor.Internal;
 
-internal enum FormGroupType {
-
+internal enum FormGroupType
+{
     Properties,
 
     Object,
@@ -9,5 +9,4 @@ internal enum FormGroupType {
     Element,
 
     Commands,
-
 }

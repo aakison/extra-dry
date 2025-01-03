@@ -3,14 +3,13 @@
 namespace ExtraDry.Blazor.Forms;
 
 /// <summary>
-/// A DRY wrapper around a single select dropdown list.  Prefer the use of <see cref="DryInput{T}"/> 
-/// instead of this component as it is more flexible and supports more data types.
+/// A DRY wrapper around a single select dropdown list. Prefer the use of <see cref="DryInput{T}"
+/// /> instead of this component as it is more flexible and supports more data types.
 /// </summary>
-public partial class DryInputSingleSelect<T> 
-    : DryInputBase<T>, IDryInput<T>, IExtraDryComponent 
+public partial class DryInputSingleSelect<T>
+    : DryInputBase<T>, IDryInput<T>, IExtraDryComponent
     where T : class
 {
-
     /// <summary>
     /// Set of values to select from, any object can be used and the ToString values are displayed.
     /// </summary>
@@ -48,5 +47,4 @@ public partial class DryInputSingleSelect<T>
     private string CssClasses => DataConverter.JoinNonEmpty(" ", ReadOnlyCss, CssClass);
 
     private object? SelectedValue { get; set; }
-
 }

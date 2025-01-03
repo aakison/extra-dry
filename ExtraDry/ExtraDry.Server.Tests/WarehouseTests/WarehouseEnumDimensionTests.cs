@@ -4,11 +4,10 @@ using ExtraDry.Server.DataWarehouse.Builder;
 namespace ExtraDry.Server.Tests.WarehouseTests;
 
 /// <summary>
-/// Test for when an enum is a dimension.
-/// Occurs when [DimensionTable] on the enum.
+/// Test for when an enum is a dimension. Occurs when [DimensionTable] on the enum.
 /// </summary>
-public class WarehouseEnumDimensionTests {
-
+public class WarehouseEnumDimensionTests
+{
     [Theory]
     [InlineData("Company Status")] // implied name.
     [InlineData("Geo Status")] // explicit name.
@@ -86,7 +85,7 @@ public class WarehouseEnumDimensionTests {
     public void AttributesAreConditionallyIncluded(Type type, string name, bool included)
     {
         var builder = new WarehouseModelBuilder();
-        
+
         builder.LoadSchema<SampleContext>();
 
         Assert.Equal(included, builder.EnumDimension(type).Attribute(name).Included);
@@ -142,7 +141,7 @@ public class WarehouseEnumDimensionTests {
     public void EnumBuilderImplicitLength(Type type, string attributeName, int length)
     {
         var builder = new WarehouseModelBuilder();
-        
+
         builder.LoadSchema<SampleContext>();
 
         var descriptionAttribute = builder.EnumDimension(type).Attribute(attributeName);
@@ -160,5 +159,4 @@ public class WarehouseEnumDimensionTests {
 
         Assert.Equal(80, descriptionAttribute.Length);
     }
-
 }

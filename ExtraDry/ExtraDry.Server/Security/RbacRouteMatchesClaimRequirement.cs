@@ -7,9 +7,8 @@ namespace ExtraDry.Server.Security;
 /// </summary>
 public class RbacRouteMatchesClaimRequirement : IAuthorizationRequirement
 {
-
     /// <summary>
-    /// The name of the route parameter in a URI (in the controller endpoint definition) that is 
+    /// The name of the route parameter in a URI (in the controller endpoint definition) that is
     /// used to compare against the claim value.
     /// </summary>
     public string RouteParameter { get; set; } = "";
@@ -28,5 +27,4 @@ public class RbacRouteMatchesClaimRequirement : IAuthorizationRequirement
     /// If a user has a role that is in this list, the requirement is satisfied.
     /// </summary>
     public string[] RoleOverrides { get; set; } = [];
-
 }

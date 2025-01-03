@@ -7,13 +7,12 @@ namespace ExtraDry.Server;
 /// <summary>
 /// A serializer for blobs to serialize and deserialize to and from HTTP requests and responses.
 /// For the server-side, this is used to serialize the blob to a Response and deserialize the blob
-/// from a Request.  There is a similar class in ExtraDry.Blazor for the client-side.
+/// from a Request. There is a similar class in ExtraDry.Blazor for the client-side.
 /// </summary>
 public static class BlobSerializer
 {
-
     /// <summary>
-    /// Serialize a Blob to a <see cref="HttpResponse"/>.
+    /// Serialize a Blob to a <see cref="HttpResponse" />.
     /// </summary>
     public static async Task SerializeBlobAsync<T>(this HttpResponse response, T blob) where T : IBlob
     {
@@ -34,7 +33,7 @@ public static class BlobSerializer
     }
 
     /// <summary>
-    /// Deserialize a Blob from a <see cref="HttpRequest"/>.
+    /// Deserialize a Blob from a <see cref="HttpRequest" />.
     /// </summary>
     public static async Task<T> DeserializeBlobAsync<T>(HttpRequest request) where T : IBlob, new()
     {
@@ -58,7 +57,8 @@ public static class BlobSerializer
                     throw new NotImplementedException("HttpHeaderAttribute only supports string, int, and Guid types.");
                 }
                 else {
-                    // silently ignore other types unless the developer tries to force them with HttpHeaderAttribute.
+                    // silently ignore other types unless the developer tries to force them with
+                    // HttpHeaderAttribute.
                 }
             }
         }
@@ -69,5 +69,4 @@ public static class BlobSerializer
         blob.Length = bytes.Length;
         return blob;
     }
-
 }

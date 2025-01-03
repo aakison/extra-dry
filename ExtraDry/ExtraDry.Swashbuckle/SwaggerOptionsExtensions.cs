@@ -4,17 +4,17 @@ using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace ExtraDry.Swashbuckle;
 
-public static class SwaggerOptionsExtensions {
-
+public static class SwaggerOptionsExtensions
+{
     /// <summary>
-    /// Configure and add additional features to the generation of OpenAPI documents aligned with 
+    /// Configure and add additional features to the generation of OpenAPI documents aligned with
     /// features and best practices of Extra Dry.
     /// </summary>
     public static void AddExtraDry(this SwaggerGenOptions openapi, Action<ExtraDryGenOptions>? configure = null)
     {
         var options = new ExtraDryGenOptions();
         configure?.Invoke(options);
-        
+
         if(options.Instructions.Include) {
             openapi.SwaggerDoc(GroupName, new OpenApiInfo {
                 Version = options.Instructions.Version,
@@ -65,6 +65,4 @@ public static class SwaggerOptionsExtensions {
     }
 
     public const string GroupName = "instructions";
-
 }
-

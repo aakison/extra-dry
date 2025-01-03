@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Server.Tests.Models;
 
-public class FilteredListQueryableTests {
-
+public class FilteredListQueryableTests
+{
     [Fact]
     public void QueryableInterfacePublished()
     {
@@ -298,5 +298,4 @@ public class FilteredListQueryableTests {
 
         Assert.Equal(expected, actual.Items);
     }
-
 }

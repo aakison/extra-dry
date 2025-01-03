@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Server.Tests.Rules;
 
-public class ControlAttributeTests {
-
+public class ControlAttributeTests
+{
     [Fact]
     public void ValidateControlAttribute()
     {
@@ -18,7 +18,7 @@ public class ControlAttributeTests {
     [InlineData("CaptionTemplate", "{0}")]
     [InlineData("Icon", "")]
     public void DefaultValues(string propertyName, object defaultValue)
-    { 
+    {
         var control = ValidControlAttribute;
         var property = control.GetType().GetProperty(propertyName);
 
@@ -43,5 +43,4 @@ public class ControlAttributeTests {
     }
 
     private static ControlAttribute ValidControlAttribute => new();
-
 }

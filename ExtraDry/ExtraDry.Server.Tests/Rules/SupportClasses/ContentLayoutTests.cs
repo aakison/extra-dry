@@ -2,8 +2,8 @@
 
 namespace ExtraDry.Server.Tests.Rules;
 
-public class ContentLayoutTests {
-
+public class ContentLayoutTests
+{
     [Fact]
     public void ValidateContent()
     {
@@ -120,7 +120,7 @@ public class ContentLayoutTests {
     //    var blob = ValidBlob;
     //    var guid = Guid.NewGuid();
 
-    //    blob.UniqueId = guid;
+    // blob.UniqueId = guid;
 
     //    Assert.Equal(guid, blob.UniqueId);
     //}
@@ -131,7 +131,7 @@ public class ContentLayoutTests {
     //    var blob = ValidBlob;
     //    blob.Id = 12345;
 
-    //    var json = JsonSerializer.Serialize(blob);
+    // var json = JsonSerializer.Serialize(blob);
 
     //    Assert.DoesNotContain("12345", json);
     //}
@@ -141,11 +141,9 @@ public class ContentLayoutTests {
             new ContentSection {
                 Containers = {
                     new ContentContainer {
-
                     }
                 }
             }
-        }    
+        }
     };
-
 }

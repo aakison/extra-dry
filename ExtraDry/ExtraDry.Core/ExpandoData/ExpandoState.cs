@@ -20,5 +20,4 @@ public enum ExpandoState
     /// The field has been archived and is currently not allowed for user input.
     /// </summary>
     Archived = 2,
-
 }

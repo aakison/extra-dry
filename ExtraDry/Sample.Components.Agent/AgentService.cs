@@ -8,7 +8,6 @@ internal class AgentService(
     IHttpClientFactory clientFactory)
     : BackgroundService
 {
-
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         logger.LogInformation("Agent Start");

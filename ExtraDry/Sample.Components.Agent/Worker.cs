@@ -1,11 +1,11 @@
 ﻿namespace GettingStarted;
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Contracts;
 using MassTransit;
 using Microsoft.Extensions.Hosting;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 public class Worker(IBus bus) : BackgroundService
 {

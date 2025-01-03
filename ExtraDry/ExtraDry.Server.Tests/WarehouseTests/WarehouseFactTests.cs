@@ -2,8 +2,8 @@
 
 namespace ExtraDry.Server.Tests.WarehouseTests;
 
-public class WarehouseFactTests {
-
+public class WarehouseFactTests
+{
     [Theory]
     [InlineData(typeof(Company), "Company")]
     [InlineData(typeof(Employee), "Worker Bees")]
@@ -92,5 +92,4 @@ public class WarehouseFactTests {
 
         Assert.Throws<DryException>(() => builder.Fact<Company>().Measure(e => e.field));
     }
-
 }

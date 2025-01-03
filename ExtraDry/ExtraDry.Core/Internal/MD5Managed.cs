@@ -7,20 +7,25 @@
 // * Copyright (c) Microsoft Corporation.  All rights reserved.
 // **************************************************************
 
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace ExtraDry.Core.Internal;
 
 /// <summary>
-/// An implementation of an MD5 Hash.  This has been removed from .NET (browser profile).
-/// This is only used for non-secure purposes, in particular, the generation of gravatars.
-/// As such, this is not exposed publicly.
+/// An implementation of an MD5 Hash. This has been removed from .NET (browser profile). This is
+/// only used for non-secure purposes, in particular, the generation of gravatars. As such, this is
+/// not exposed publicly.
 /// </summary>
-internal class MD5 : HashAlgorithm {
+internal class MD5 : HashAlgorithm
+{
     private readonly byte[] _data;
+
     private ABCDStruct _abcd;
+
     private Int64 _totalLength;
+
     private int _dataSize;
 
     public MD5()
@@ -76,14 +81,14 @@ internal class MD5 : HashAlgorithm {
     }
 
     /// <summary>
-    /// Convenience method that creates a MD5 hash of a string and returns a string.
-    /// Encapsulates the `ComputeHash` method and simply provide byte to string translations.
+    /// Convenience method that creates a MD5 hash of a string and returns a string. Encapsulates
+    /// the `ComputeHash` method and simply provide byte to string translations.
     /// </summary>
     public string ComputeStringHash(string input)
     {
         var encoder = new UTF8Encoding();
         var hashedBytes = ComputeHash(encoder.GetBytes(input));
-        var hash = string.Join("", hashedBytes.Select(e => e.ToString("X2")));
+        var hash = string.Join("", hashedBytes.Select(e => e.ToString("X2", CultureInfo.InvariantCulture)));
         return hash;
     }
 }

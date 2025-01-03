@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Server.Tests.Rules;
 
-public class RuleEngineUpdateTreeAsyncTests {
-
+public class RuleEngineUpdateTreeAsyncTests
+{
     [Fact]
     public async Task IdentityUnchanged()
     {
@@ -114,16 +114,15 @@ public class RuleEngineUpdateTreeAsyncTests {
         await Assert.ThrowsAsync<DryException>(async () => await rules.UpdateAsync(source, destination));
     }
 
-    public class Grandchild {
-
+    public class Grandchild
+    {
         public Guid Uuid { get; set; } = Guid.NewGuid();
 
         public string Name { get; set; } = "Child";
-
     }
 
-    public class Child {
-
+    public class Child
+    {
         public Guid Uuid { get; set; } = Guid.NewGuid();
 
         public string Name { get; set; } = "Child";
@@ -139,12 +138,12 @@ public class RuleEngineUpdateTreeAsyncTests {
         public override bool Equals(object? obj) => (obj as Child)?.Uuid == Uuid;
 
         public override int GetHashCode() => Uuid.GetHashCode();
-
     }
 
-    public class Parent {
-
-        public Parent() { }
+    public class Parent
+    {
+        public Parent()
+        { }
 
         public Parent(Guid childGuid, string childName, Guid grandchildGuid, string grandchildName)
         {
@@ -169,10 +168,10 @@ public class RuleEngineUpdateTreeAsyncTests {
 
         [Rules(RuleAction.Ignore)]
         public Child? IgnoreChild { get; set; }
-
     }
 
-    public class ChildEntityResolver : IEntityResolver<Child> {
+    public class ChildEntityResolver : IEntityResolver<Child>
+    {
         public Task<Child?> ResolveAsync(Child exemplar)
         {
             Database.TryGetValue(exemplar.Uuid, out var child);
@@ -185,10 +184,10 @@ public class RuleEngineUpdateTreeAsyncTests {
         }
 
         private Dictionary<Guid, Child> Database { get; set; } = [];
-
     }
 
-    public class ServiceProviderStubWithChildResolver : IServiceProvider {
+    public class ServiceProviderStubWithChildResolver : IServiceProvider
+    {
         public object? GetService(Type serviceType)
         {
             if(serviceType.IsAssignableTo(typeof(IEntityResolver<Child>))) {
@@ -200,17 +199,17 @@ public class RuleEngineUpdateTreeAsyncTests {
         }
 
         public ChildEntityResolver ChildResolver { get; private set; } = new ChildEntityResolver();
-
     }
 
-    public class ServiceProviderStub : IServiceProvider {
+    public class ServiceProviderStub : IServiceProvider
+    {
         public object? GetService(Type serviceType) => null;
-
     }
 
-    public class Malformed {
+    public class Malformed
+    {
         public string Name { get; set; } = "Name";
+
         public Malformed? Child { get; set; }
     }
-
 }

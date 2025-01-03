@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Components;
 
 namespace Sample.Spa.Client.Shared;
 
-public sealed partial class TableMenu<TItem> : ComponentBase {
-
+public sealed partial class TableMenu<TItem> : ComponentBase
+{
     [CascadingParameter]
     public MainLayout? Layout { get; set; }
 
@@ -16,7 +16,8 @@ public sealed partial class TableMenu<TItem> : ComponentBase {
     public Reveal Reveal { get; set; } = null!;
 
     [Command(Icon = "plus")]
-    public void AddItem() { }
+    public void AddItem()
+    { }
 
     [Command(Icon = "filter")]
     public async Task Filter()
@@ -38,17 +39,20 @@ public sealed partial class TableMenu<TItem> : ComponentBase {
         Layout?.Compress();
     }
 
-
     public CommandInfo AddCommand => new(this, AddItem);
+
     public CommandInfo FilterCommand => new(this, Filter);
+
     public CommandInfo ExpandCommand => new(this, Expand) {
         IsVisible = () => !Layout?.ViewExpanded ?? false,
     };
+
     public CommandInfo CompressCommand => new(this, Compress) {
         IsVisible = () => Layout?.ViewExpanded ?? false,
     };
-    public CommandInfo CloseFilterCommand => new(this, Filter) {
-        Icon = "close-dialog", Caption = "",
-    };
 
+    public CommandInfo CloseFilterCommand => new(this, Filter) {
+        Icon = "close-dialog",
+        Caption = "",
+    };
 }

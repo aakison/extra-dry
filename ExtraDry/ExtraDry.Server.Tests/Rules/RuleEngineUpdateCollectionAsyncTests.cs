@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Core.Tests.Rules;
 
-public class RuleEngineUpdateCollectionAsyncTests {
-
+public class RuleEngineUpdateCollectionAsyncTests
+{
     [Fact]
     public async Task IdentityUnchanged()
     {
@@ -73,10 +73,12 @@ public class RuleEngineUpdateCollectionAsyncTests {
     {
         var services = new ServiceProviderStub();
         var rules = new RuleEngine(services, new ExtraDryOptions());
-        var source = new Parent { Children = [
+        var source = new Parent {
+            Children = [
             new() { Uuid = Guid.NewGuid(), Name = "Child1" },
             new() { Uuid = Guid.NewGuid(), Name = "Child2" },
-        ]};
+        ]
+        };
         var destination = new Parent { };
 
         await rules.UpdateAsync(source, destination);
@@ -285,7 +287,6 @@ public class RuleEngineUpdateCollectionAsyncTests {
         Assert.Equal("Child2", destination.IgnoredDefaultsChildren[1].Name);
     }
 
-
     [Fact]
     public async Task IgnoreDefaultsChildrenIgnoresNull()
     {
@@ -393,7 +394,6 @@ public class RuleEngineUpdateCollectionAsyncTests {
         Assert.Equal("Child4", destination.BlockedChildren[1].Name);
     }
 
-
     [Fact]
     public async Task BlockChangesEmptyOverwriteThrows()
     {
@@ -451,8 +451,8 @@ public class RuleEngineUpdateCollectionAsyncTests {
         await Assert.ThrowsAsync<DryException>(async () => await rules.UpdateAsync(source, destination));
     }
 
-    public class Child {
-
+    public class Child
+    {
         public Guid Uuid { get; set; } = Guid.NewGuid();
 
         public string Name { get; set; } = "Child";
@@ -461,15 +461,14 @@ public class RuleEngineUpdateCollectionAsyncTests {
 
         public override int GetHashCode() => Uuid.GetHashCode();
 
-        // This is used to determine if this was created from the
-        // ResourceReferenceConverter by comparing the default property values.
-        // This can then be used to determine if validation can be run against it.
+        // This is used to determine if this was created from the ResourceReferenceConverter by
+        // comparing the default property values. This can then be used to determine if validation
+        // can be run against it.
         internal bool CreatedFromResourceReference => Name == "Child";
-
     }
 
-    public class Parent : IValidatableObject {
-
+    public class Parent : IValidatableObject
+    {
         [Rules(RuleAction.Block)]
         [JsonIgnore]
         public int Id { get; set; } = 1;
@@ -495,7 +494,8 @@ public class RuleEngineUpdateCollectionAsyncTests {
         }
     }
 
-    public class ChildEntityResolver : IEntityResolver<Child> {
+    public class ChildEntityResolver : IEntityResolver<Child>
+    {
         public Task<Child?> ResolveAsync(Child exemplar)
         {
             Database.TryGetValue(exemplar.Uuid, out var child);
@@ -508,10 +508,10 @@ public class RuleEngineUpdateCollectionAsyncTests {
         }
 
         private Dictionary<Guid, Child> Database { get; set; } = [];
-
     }
 
-    public class ServiceProviderStubWithChildResolver : IServiceProvider {
+    public class ServiceProviderStubWithChildResolver : IServiceProvider
+    {
         public object? GetService(Type serviceType)
         {
             if(serviceType.IsAssignableTo(typeof(IEntityResolver<Child>))) {
@@ -523,12 +523,10 @@ public class RuleEngineUpdateCollectionAsyncTests {
         }
 
         public ChildEntityResolver ChildResolver { get; private set; } = new ChildEntityResolver();
-
     }
 
-    public class ServiceProviderStub : IServiceProvider {
+    public class ServiceProviderStub : IServiceProvider
+    {
         public object? GetService(Type serviceType) => null;
-
     }
-
 }

@@ -3,14 +3,13 @@
 namespace ExtraDry.Blazor.Forms;
 
 /// <summary>
-/// A DRY wrapper around a text input field.  Prefer the use of <see cref="DryInput{T}"/> 
-/// instead of this component as it is more flexible and supports more data types.
+/// A DRY wrapper around a text input field. Prefer the use of <see cref="DryInput{T}" /> instead
+/// of this component as it is more flexible and supports more data types.
 /// </summary>
-public partial class DryInputText<T> 
-    : DryInputBase<T> 
+public partial class DryInputText<T>
+    : DryInputBase<T>
     where T : class
 {
-
     [Parameter]
     public bool ReadOnly { get; set; }
 

@@ -5,10 +5,9 @@ namespace ExtraDry.Core;
 
 public class DataConverter
 {
-
     /// <summary>
-    /// Given a date, formats it for display using a relative time.
-    /// For example, 5 minutes ago, or Yesterday.
+    /// Given a date, formats it for display using a relative time. For example, 5 minutes ago, or
+    /// Yesterday.
     /// </summary>
     public static string DateToRelativeTime(DateTime dateTime)
     {
@@ -46,8 +45,8 @@ public class DataConverter
     }
 
     /// <summary>
-    /// A function which returns the current date and time.  
-    /// Defaults to UTC which should match date storage format in databases.
+    /// A function which returns the current date and time. Defaults to UTC which should match date
+    /// storage format in databases.
     /// </summary>
     public static Func<DateTime> CurrentDateTime { get; set; } = () => DateTime.UtcNow;
 
@@ -76,7 +75,8 @@ public class DataConverter
     public static string CamelCaseToKebabCase(string value) => Slug.ToSlug(CamelCaseToTitleCase(value));
 
     /// <summary>
-    /// Gets the DataAnnotation DisplayName attribute for a given enum (for displaying enums values nicely to users)
+    /// Gets the DataAnnotation DisplayName attribute for a given enum (for displaying enums values
+    /// nicely to users)
     /// </summary>
     public static string DisplayEnum(Enum value)
     {
@@ -96,12 +96,12 @@ public class DataConverter
     }
 
     /// <summary>
-    /// Works like the normal string.join, except any args that are null or only whitespace are ignored.
-    /// Convenient for use when joining lists of things that might have some optional or missing items, e.g. CSS classes.
+    /// Works like the normal string.join, except any args that are null or only whitespace are
+    /// ignored. Convenient for use when joining lists of things that might have some optional or
+    /// missing items, e.g. CSS classes.
     /// </summary>
     public static string JoinNonEmpty(string separator, params string?[] args)
     {
         return string.Join(separator, args.Where(e => !string.IsNullOrWhiteSpace(e)).Select(e => e!.Trim()));
     }
-
 }

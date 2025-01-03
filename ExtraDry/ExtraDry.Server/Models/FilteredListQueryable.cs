@@ -6,8 +6,8 @@ namespace ExtraDry.Server;
 /// <inheritdoc cref="IFilteredQueryable{T}" />
 public class FilteredListQueryable<T> : StatisticsQueryable<T>
 {
-
-    protected FilteredListQueryable() { }
+    protected FilteredListQueryable()
+    { }
 
     public FilteredListQueryable(IQueryable<T> queryable, FilterQuery filterQuery, Expression<Func<T, bool>>? defaultFilter)
     {
@@ -45,8 +45,8 @@ public class FilteredListQueryable<T> : StatisticsQueryable<T>
     }
 
     /// <summary>
-    /// Given a collection of items retrieved from a data store, create a filtered collection.
-    /// Base classes will use their knowledge of the queries to fill in the correct details.
+    /// Given a collection of items retrieved from a data store, create a filtered collection. Base
+    /// classes will use their knowledge of the queries to fill in the correct details.
     /// </summary>
     protected FilteredCollection<T> CreateFilteredCollection(List<T> items) =>
         new() {
@@ -61,5 +61,4 @@ public class FilteredListQueryable<T> : StatisticsQueryable<T>
     /// <inheritdoc cref="IFilteredQueryable{T}.ToFilteredCollectionAsync(CancellationToken)" />
     public async Task<FilteredCollection<T>> ToFilteredCollectionAsync(CancellationToken cancellationToken = default) =>
         CreateFilteredCollection(await ToListAsync(FilteredQuery, cancellationToken));
-
 }

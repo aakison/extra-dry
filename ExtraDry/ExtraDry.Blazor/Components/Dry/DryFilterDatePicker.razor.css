@@ -14,20 +14,22 @@
   display: flex;
   flex-direction: row;
 }
-::deep.range-buttons button {
-  justify-content: center;
-}
+
+  ::deep.range-buttons button {
+    justify-content: center;
+  }
 
 ::deep ul {
   list-style-type: none;
   padding-inline-start: 0px;
 }
-::deep ul a {
-  display: flex;
-  justify-content: space-between;
-}
+
+  ::deep ul a {
+    display: flex;
+    justify-content: space-between;
+  }
 
 div ::deep img.affordance {
-    width: var(--icon-tiny);
-    height: var(--icon-tiny);
+  width: var(--icon-tiny);
+  height: var(--icon-tiny);
 }

@@ -4,9 +4,9 @@ using System.Text.Json;
 namespace ExtraDry.Server.Tests.WarehouseTests;
 
 public class SampleContext(
-    DbContextOptions<SampleContext> options, 
-    IEnumerable<IDbAspect> aspects) 
-    : AspectDbContext(options, aspects) 
+    DbContextOptions<SampleContext> options,
+    IEnumerable<IDbAspect> aspects)
+    : AspectDbContext(options, aspects)
 {
     public DbSet<Company> Companies { get; set; } = null!;
 

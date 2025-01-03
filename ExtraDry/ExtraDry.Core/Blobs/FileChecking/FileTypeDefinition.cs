@@ -1,14 +1,14 @@
 ﻿namespace ExtraDry.Core;
 
 /// <summary>
-/// Definition of a file type that links extensions with mime types and optionally 'magic bytes' 
-/// that indicate the file type from the content.  Used to check for valid files during upload.
+/// Definition of a file type that links extensions with mime types and optionally 'magic bytes'
+/// that indicate the file type from the content. Used to check for valid files during upload.
 /// </summary>
 public class FileTypeDefinition
 {
-
     /// <inheritdoc cref="FileTypeDefinition" />
-    public FileTypeDefinition() { }
+    public FileTypeDefinition()
+    { }
 
     /// <inheritdoc cref="FileTypeDefinition" />
     public FileTypeDefinition(string extension, string mimeType, string description = "")
@@ -22,6 +22,7 @@ public class FileTypeDefinition
     /// A human readable description of the file type, e.g. "Portable Network Graphics Image".
     /// </summary>
     public string Description { get; set; } = string.Empty;
+
     /// <summary>
     /// The file extensions that are associated with this file type, e.g. ["jpg", "jpeg"].
     /// </summary>

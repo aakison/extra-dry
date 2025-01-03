@@ -1,11 +1,11 @@
 ﻿namespace ExtraDry.Blazor;
 
 /// <summary>
-/// A filter component used by the DryFilter to a drop-down dialog that presents filter options
-/// for an enum property.  
+/// A filter component used by the DryFilter to a drop-down dialog that presents filter options for
+/// an enum property.
 /// </summary>
-public partial class DryFilterEnumSelect : ComponentBase, IExtraDryComponent, IDisposable {
-
+public partial class DryFilterEnumSelect : ComponentBase, IExtraDryComponent, IDisposable
+{
     /// <summary>
     /// The property that is used to present the options for the enum select.
     /// </summary>
@@ -29,17 +29,15 @@ public partial class DryFilterEnumSelect : ComponentBase, IExtraDryComponent, ID
     public QueryBuilder? PageQueryBuilder { get; set; }
 
     /// <summary>
-    /// When parameters are set, check if the PageQuery has a filter that matches our property
-    /// by name.  If not, create one and add it to the PageQuery.
+    /// When parameters are set, check if the PageQuery has a filter that matches our property by
+    /// name. If not, create one and add it to the PageQuery.
     /// </summary>
-    /// <remarks>
-    /// Multiple filters mapped to the same PageQuery are not supported.
-    /// </remarks>
+    /// <remarks>Multiple filters mapped to the same PageQuery are not supported.</remarks>
     protected override void OnParametersSet()
     {
         if(Property != null && PageQueryBuilder != null) {
             Filter = PageQueryBuilder.Filters
-                .FirstOrDefault(e => string.Equals(e.FilterName, Property.Property.Name, StringComparison.OrdinalIgnoreCase)) 
+                .FirstOrDefault(e => string.Equals(e.FilterName, Property.Property.Name, StringComparison.OrdinalIgnoreCase))
                 as EnumFilterBuilder;
             if(Filter == null) {
                 Filter = new EnumFilterBuilder { FilterName = Property.Property.Name };
@@ -66,7 +64,7 @@ public partial class DryFilterEnumSelect : ComponentBase, IExtraDryComponent, ID
     {
         if(Filter == null) { return; }
         Values ??= [];
-        
+
         Values.Clear();
         foreach(var value in Filter.Values) {
             var vd = EnumValues.FirstOrDefault(e => string.Equals(e.Title, value, StringComparison.OrdinalIgnoreCase));
@@ -79,11 +77,12 @@ public partial class DryFilterEnumSelect : ComponentBase, IExtraDryComponent, ID
     }
 
     /// <summary>
-    /// Determines if the external filter matches the internal state of this component.
-    /// Typically used to see if another component has update the PageQueryBuilder in a fashion
-    /// that would require this component to be updated.
+    /// Determines if the external filter matches the internal state of this component. Typically
+    /// used to see if another component has update the PageQueryBuilder in a fashion that would
+    /// require this component to be updated.
     /// </summary>
-    private bool FiltersMatchValues() {
+    private bool FiltersMatchValues()
+    {
         // Quick a common check based on count of values...
         var filterCount = Filter?.Values?.Count ?? 0;
         var valueCount = Values?.Count ?? 0;
@@ -100,7 +99,7 @@ public partial class DryFilterEnumSelect : ComponentBase, IExtraDryComponent, ID
         }
         // Looks clear...
         return true;
-    }             
+    }
 
     public void Dispose()
     {
@@ -141,5 +140,4 @@ public partial class DryFilterEnumSelect : ComponentBase, IExtraDryComponent, ID
     /// is only updated just before the PageQueryBuilder is asked to notify all observers.
     /// </summary>
     private EnumFilterBuilder? Filter { get; set; }
-
 }

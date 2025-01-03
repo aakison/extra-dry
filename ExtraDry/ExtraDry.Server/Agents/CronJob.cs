@@ -3,11 +3,13 @@
 namespace ExtraDry.Server.Agents;
 
 /// <summary>
-/// Represents the details of a Cron Job that is scheduled to run at specific times on the
-/// <see cref="CronService"/>.  Add new jobs to the service by using the <see cref="ServiceCollectionExtensions.AddCronJob(IServiceCollection, string, string, Action)"/> extension methods.
+/// Represents the details of a Cron Job that is scheduled to run at specific times on the <see
+/// cref="CronService" />. Add new jobs to the service by using the <see
+/// cref="ServiceCollectionExtensions.AddCronJob(IServiceCollection, string, string, Action)" />
+/// extension methods.
 /// </summary>
 public abstract class CronJob(
-    string cronSchedule, 
+    string cronSchedule,
     string name)
     : ICronJob
 {
@@ -17,7 +19,8 @@ public abstract class CronJob(
     public string Name { get; } = name;
 
     /// <summary>
-    /// The Cron schedule for the job.  Uses either 5 or 6 fields, depending on the schedule and if seconds are required.
+    /// The Cron schedule for the job. Uses either 5 or 6 fields, depending on the schedule and if
+    /// seconds are required.
     /// </summary>
     public string CronSchedule { get; } = cronSchedule;
 

@@ -5,8 +5,8 @@ using System.Reflection;
 
 namespace ExtraDry.Server.DataWarehouse;
 
-public class WarehouseModelBuilder {
-
+public class WarehouseModelBuilder
+{
     public void LoadSchema<T>(string? group = null) where T : DbContext
     {
         LoadSchema(typeof(T), group);
@@ -80,10 +80,9 @@ public class WarehouseModelBuilder {
                 ExpandTables(property.PropertyType);
             }
         }
-
     }
 
-    public FactTableBuilder<T> Fact<T>() 
+    public FactTableBuilder<T> Fact<T>()
     {
         try {
             return FactTables[typeof(T)] as FactTableBuilder<T> ?? throw new KeyNotFoundException();
@@ -103,7 +102,7 @@ public class WarehouseModelBuilder {
         }
     }
 
-    public DimensionTableBuilder<T> Dimension<T>() 
+    public DimensionTableBuilder<T> Dimension<T>()
     {
         try {
             return DimensionTables[typeof(T)] as DimensionTableBuilder<T> ?? throw new KeyNotFoundException();
@@ -120,7 +119,7 @@ public class WarehouseModelBuilder {
 
     public bool HasDimension(Type type) => DimensionTables.ContainsKey(type);
 
-    public DimensionTableBuilder<EnumDimension> EnumDimension(Type type) 
+    public DimensionTableBuilder<EnumDimension> EnumDimension(Type type)
     {
         try {
             return DimensionTables[type] as DimensionTableBuilder<EnumDimension> ?? throw new KeyNotFoundException();
@@ -223,7 +222,8 @@ public class WarehouseModelBuilder {
                 data.Add(groupNameBuilder, enumField.GroupName ?? string.Empty);
             }
             if(orderBuilder.Included) {
-                // Default per https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.displayattribute.order?view=net-6.0
+                // Default per
+                // https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.displayattribute.order?view=net-6.0
                 data.Add(orderBuilder, enumField.Order ?? 10000);
             }
             builder.HasData(data);
@@ -246,19 +246,20 @@ public class WarehouseModelBuilder {
         }
     }
 
-    private object LoadViaConstructor(Type generic, Type entity) 
+    private object LoadViaConstructor(Type generic, Type entity)
     {
-        // To activate, need type, args and indicator that the constructor is not public, tricky to get right overload...
+        // To activate, need type, args and indicator that the constructor is not public, tricky to
+        // get right overload...
         var factTableBuilderType = generic.MakeGenericType(entity);
         var args = new object[] { this, entity };
         var binding = BindingFlags.NonPublic | BindingFlags.Instance;
         var binder = (Binder?)null;
         var culture = CultureInfo.InvariantCulture;
         try {
-            return Activator.CreateInstance(factTableBuilderType, binding, binder, args, culture) 
+            return Activator.CreateInstance(factTableBuilderType, binding, binder, args, culture)
                 ?? throw new DryException("Couldn't create instance of FactBuilderTable");
         }
-        catch(TargetInvocationException ex) when (ex.InnerException is DryException dryEx) {
+        catch(TargetInvocationException ex) when(ex.InnerException is DryException dryEx) {
             throw dryEx;
         }
     }
@@ -275,12 +276,11 @@ public class WarehouseModelBuilder {
         }
     }
 
-    private Type? EntityContextType { get; set;  }
+    private Type? EntityContextType { get; set; }
 
     private string? Group { get; set; }
 
     private Dictionary<Type, FactTableBuilder> FactTables { get; } = [];
 
     private Dictionary<Type, DimensionTableBuilder> DimensionTables { get; } = [];
-
 }

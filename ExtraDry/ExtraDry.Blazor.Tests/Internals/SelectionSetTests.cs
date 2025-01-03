@@ -15,7 +15,6 @@ public class SelectionSetTests
         Assert.Empty(set.Items);
     }
 
-
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
@@ -97,7 +96,6 @@ public class SelectionSetTests
         Assert.False(set.Contains(obj1));
     }
 
-
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
@@ -154,5 +152,4 @@ public class SelectionSetTests
 
         Assert.Throws<InvalidOperationException>(() => set.SelectAll());
     }
-
 }

@@ -12,13 +12,14 @@ public enum FilenameCharacters
     All,
 
     /// <summary>
-    /// Only Unicode alphanumeric characters are allowed.  This is the default for the names of files.
+    /// Only Unicode alphanumeric characters are allowed. This is the default for the names of
+    /// files.
     /// </summary>
     UnicodeAlphaNumeric,
 
     /// <summary>
-    /// Only Ascii alphanumeric characters are allowed.  This is the default for the extensions of files.
+    /// Only Ascii alphanumeric characters are allowed. This is the default for the extensions of
+    /// files.
     /// </summary>
     AsciiAlphaNumeric,
-
 }

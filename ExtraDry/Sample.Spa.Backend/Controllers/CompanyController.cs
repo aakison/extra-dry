@@ -14,12 +14,12 @@ namespace Sample.Spa.Backend.Controllers;
 public class CompanyController(
     CompanyService companies)
 {
-
     /// <summary>
     /// Filtered list of all companies
     /// </summary>
     /// <remarks>
-    /// Provides a complete list of all companies, as this list is not too large, all are returned on every call.
+    /// Provides a complete list of all companies, as this list is not too large, all are returned
+    /// on every call.
     /// </remarks>
     [HttpGet("api/companies"), Produces("application/json")]
     [AllowAnonymous]
@@ -41,9 +41,7 @@ public class CompanyController(
     /// <summary>
     /// Create a new company
     /// </summary>
-    /// <remarks>
-    /// Create a new company at the URI.
-    /// </remarks>
+    /// <remarks>Create a new company at the URI.</remarks>
     [HttpPost("api/companies"), Produces("application/json"), Consumes("application/json")]
     [Authorize(SamplePolicies.SamplePolicy)]
     public async Task<ResourceReference<Company>> Create(Company value)

@@ -7,13 +7,13 @@ using System.Text.RegularExpressions;
 namespace Sample.Spa.Backend.SampleData;
 
 public partial class SampleDataService(
-    SampleContext sampleContext, 
+    SampleContext sampleContext,
     RegionService regionService)
 {
     public void PopulateServices()
     {
-        sampleContext.Sectors.Add(new Sector { 
-            State = SectorState.Active,  
+        sampleContext.Sectors.Add(new Sector {
+            State = SectorState.Active,
             Title = "Standard Electrical Services",
             Description = "Provide licensed electrical works for commercial and residential buildings",
         });
@@ -42,14 +42,14 @@ public partial class SampleDataService(
                 Uuid = PseudoRandomGuid(),
                 Schema = new ExpandoSchema {
                     TargetType = "Company",
-                    Fields = { 
-                        new ExpandoField { 
-                            DataType = ExpandoDataType.Text, 
-                            Label = "Stock Code", 
-                            Slug = "asx_code",  
-                            IsRequired = false, 
-                            MaxLength = 10, 
-                            State = ExpandoState.Active 
+                    Fields = {
+                        new ExpandoField {
+                            DataType = ExpandoDataType.Text,
+                            Label = "Stock Code",
+                            Slug = "asx_code",
+                            IsRequired = false,
+                            MaxLength = 10,
+                            State = ExpandoState.Active
                         },
                     }
                 }
@@ -75,11 +75,10 @@ public partial class SampleDataService(
                     AnnualRevenue = random.Next(1_000_000, 3_000_000),
                     SalesMargin = random.Next(100_000, 300_000),
                     IncorporationDate = new DateTime(random.Next(2020, 2021), random.Next(1, 12), random.Next(1, 28)),
-                    
                 };
                 //Randomly populate fields.
-                if(company.PrimarySector.Id == 3 ) {
-                    company.CustomFields = new ExpandoValues { 
+                if(company.PrimarySector.Id == 3) {
+                    company.CustomFields = new ExpandoValues {
                         { "asx_code", Slug.RandomWebString(3).ToUpper(CultureInfo.CurrentCulture) }
                     };
                 }
@@ -123,7 +122,8 @@ public partial class SampleDataService(
 
     private Guid PseudoRandomGuid()
     {
-        // Create a fake Guid, one that is consistently created based on the random seed below, don't use Guid.NewGuid().
+        // Create a fake Guid, one that is consistently created based on the random seed below,
+        // don't use Guid.NewGuid().
         var bytes = new byte[16];
         random.NextBytes(bytes);
         return new Guid(bytes);
@@ -237,8 +237,9 @@ public partial class SampleDataService(
         return world;
     }
 
-    public record Country (string Name, string Alpha2Code, string Alpha3Code, int NumericCode, string Iso3166Code, string Independent);
-    public record Subdivision (string Country, string Code, string Name, string TypeName);
+    public record Country(string Name, string Alpha2Code, string Alpha3Code, int NumericCode, string Iso3166Code, string Independent);
+    public record Subdivision(string Country, string Code, string Name, string TypeName);
+
     private readonly Random random = new(123);
 
     private readonly CompanyStatus[] companyStatuses = [CompanyStatus.Inactive, CompanyStatus.Deleted, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active, CompanyStatus.Active];
@@ -260,7 +261,6 @@ public partial class SampleDataService(
         "Melissa", "Deborah", "Stephanie", "Rebecca", "Laura", "Sharon", "Cynthia", "Kathleen", "Amy",
         "Shirley", "Angela", "Helen", "Anna", "Brenda", "Pamela", "Nicole", "Samantha", "Katherine",
         "Emma", "Ruth", "Christine", "Catherine", "Debra", "Rachel", "Carolyn", "Janet", "Virginia" ];
-
 
     private readonly string[] lastNames = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Miller", "Davis",
         "Garcia", "Rodriguez", "Wilson", "Martinez", "Anderson", "Taylor", "Thomas", "Hernandez", "Moore",

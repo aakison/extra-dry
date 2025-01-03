@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Sample.Components.Agent.Controllers;
 
 public class ConfigController(
-    IBus bus) 
+    IBus bus)
     : Controller
 {
     [HttpGet("/config")]

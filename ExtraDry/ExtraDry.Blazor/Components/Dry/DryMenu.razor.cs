@@ -5,7 +5,6 @@
 /// </summary>
 public partial class DryMenu : IExtraDryComponent
 {
-
     /// <inheritdoc cref="DryNavigation.Menu" />
     [Parameter, EditorRequired]
     public Menu Menu { get; set; } = null!;
@@ -23,8 +22,8 @@ public partial class DryMenu : IExtraDryComponent
     public int AnimationDuration { get; set; } = 100;
 
     /// <summary>
-    /// The content of the menu is the clickable area to open the menu.
-    /// Typically an image, text div, or MiniCard.
+    /// The content of the menu is the clickable area to open the menu. Typically an image, text
+    /// div, or MiniCard.
     /// </summary>
     [Parameter, EditorRequired]
     public RenderFragment ChildContent { get; set; } = null!;
@@ -46,5 +45,4 @@ public partial class DryMenu : IExtraDryComponent
     {
         await MiniDialog!.HideAsync();
     }
-
 }

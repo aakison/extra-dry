@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Components.Web.Virtualization;
 
 namespace Sample.Spa.Client.Pages.Components.Standard;
 
-public partial class ComboBoxComponentPage : ComponentBase, IListItemViewModel<Sector> {
-
+public partial class ComboBoxComponentPage : ComponentBase, IListItemViewModel<Sector>
+{
     public string Title(Sector item) => item.Title;
 
     public string Description(Sector item) => item.Description;
@@ -155,10 +155,11 @@ public partial class ComboBoxComponentPage : ComponentBase, IListItemViewModel<S
     }
 
     /// <summary>
-    /// Provides list of sectors as a service with a max size of 20 and simulating a slow connection.
+    /// Provides list of sectors as a service with a max size of 20 and simulating a slow
+    /// connection.
     /// </summary>
-    public class SectorListService : IListService<Sector> {
-
+    public class SectorListService : IListService<Sector>
+    {
         public void Initialize(IEnumerable<Sector> sectors)
         {
             Sectors = sectors.ToList();

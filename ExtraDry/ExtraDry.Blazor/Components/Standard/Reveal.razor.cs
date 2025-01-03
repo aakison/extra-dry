@@ -1,11 +1,11 @@
 ﻿namespace ExtraDry.Blazor;
 
 /// <summary>
-/// A Blazor component that conditionally displays child content using a state system and CSS 
+/// A Blazor component that conditionally displays child content using a state system and CSS
 /// classes to enable common UI mechanisms such as expand/collapse, and fade-in/fade-out.
 /// </summary>
-public partial class Reveal : ComponentBase, IExtraDryComponent {
-    
+public partial class Reveal : ComponentBase, IExtraDryComponent
+{
     /// <summary>
     /// The child content to be displayed.
     /// </summary>
@@ -13,15 +13,15 @@ public partial class Reveal : ComponentBase, IExtraDryComponent {
     public RenderFragment? ChildContent { get; set; }
 
     /// <summary>
-    /// The duration, in milliseconds, that the animation takes between revealed and 
-    /// concealed states.
+    /// The duration, in milliseconds, that the animation takes between revealed and concealed
+    /// states.
     /// </summary>
     [Parameter]
     public int Duration { get; set; } = 0;
 
     /// <summary>
-    /// When the mode is `Expanding`, the height of the expanded content in pixels.  
-    /// Ignored otherwise.
+    /// When the mode is `Expanding`, the height of the expanded content in pixels. Ignored
+    /// otherwise.
     /// </summary>
     [Parameter]
     public int Height { get; set; } = 50;
@@ -48,7 +48,7 @@ public partial class Reveal : ComponentBase, IExtraDryComponent {
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
     /// <summary>
-    /// Reveals the components children as necessary.  Will start in Concealed state, progress
+    /// Reveals the components children as necessary. Will start in Concealed state, progress
     /// through Revealing state for Duration milliseconds, then stop ate Revealed state.
     /// </summary>
     public async Task RevealAsync()
@@ -69,7 +69,7 @@ public partial class Reveal : ComponentBase, IExtraDryComponent {
     }
 
     /// <summary>
-    /// Conceals the components children as necessary.  When starting from Revealed state, will
+    /// Conceals the components children as necessary. When starting from Revealed state, will
     /// progress to Concealing state for Duration milliseconds and then will reach Concealed state.
     /// If KeepInDom is false (the default), then the concealed state will occur only briefly as
     /// the content is unloaded from the DOM and the reveal state is set to None.
@@ -102,10 +102,9 @@ public partial class Reveal : ComponentBase, IExtraDryComponent {
     }
 
     /// <summary>
-    /// The state of the reveal (e.g. expanding or showing).  Ties into the styles on the component
-    /// to perform CSS based animations.
-    /// None -> Concealed -> Revealing -> Revealed -> Concealing -\
-    ///           ^-----------------------------------------------/
+    /// The state of the reveal (e.g. expanding or showing). Ties into the styles on the component
+    /// to perform CSS based animations. None -&gt; Concealed -&gt; Revealing -&gt; Revealed -&gt;
+    /// Concealing -\ ^-----------------------------------------------/
     /// </summary>
     public RevealState State { get; set; } = RevealState.None;
 

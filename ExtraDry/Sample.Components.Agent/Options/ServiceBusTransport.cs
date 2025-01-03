@@ -3,6 +3,8 @@
 public enum ServiceBusTransport
 {
     InMemory,
+
     RabbitMQ,
+
     AzureServiceBus,
 }

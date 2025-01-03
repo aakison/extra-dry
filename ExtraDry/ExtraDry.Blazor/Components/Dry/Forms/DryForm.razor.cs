@@ -1,11 +1,11 @@
 ﻿namespace ExtraDry.Blazor;
 
 /// <summary>
-/// Generates a generic form for the creation and updating of a model.  Form layout is based on 
-/// the attributes of the fields of the model, as well as the optional view model.
+/// Generates a generic form for the creation and updating of a model. Form layout is based on the
+/// attributes of the fields of the model, as well as the optional view model.
 /// </summary>
-public partial class DryForm<T> : ComponentBase, IExtraDryComponent {
-
+public partial class DryForm<T> : ComponentBase, IExtraDryComponent
+{
     /// <inheritdoc />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
@@ -19,14 +19,14 @@ public partial class DryForm<T> : ComponentBase, IExtraDryComponent {
     [Parameter]
     public object? ViewModel { get; set; }
 
-    /// <inheritdoc cref="Blazor.EditMode"/>
+    /// <inheritdoc cref="Blazor.EditMode" />
     [Parameter]
     public EditMode EditMode { get; set; } = EditMode.Update;
 
     /// <summary>
     /// Represents the number of fieldsets that are rendered in the first collection of fieldsets.
-    /// The remainder are rendered in a second collection of fieldsets.  CSS styles can render 
-    /// these two separately, e.g. my making the second set scrollable.
+    /// The remainder are rendered in a second collection of fieldsets. CSS styles can render these
+    /// two separately, e.g. my making the second set scrollable.
     /// </summary>
     [Parameter]
     public int FixedFieldsets { get; set; }

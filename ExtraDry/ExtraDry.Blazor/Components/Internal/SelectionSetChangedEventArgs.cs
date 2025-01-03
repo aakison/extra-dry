@@ -3,8 +3,8 @@
 /// <summary>
 /// The event arguments used by the `SelectionSet.Changed` event handler
 /// </summary>
-public class SelectionSetChangedEventArgs : EventArgs {
-
+public class SelectionSetChangedEventArgs : EventArgs
+{
     /// <summary>
     /// Indicates the type of the change.
     /// </summary>
@@ -19,5 +19,4 @@ public class SelectionSetChangedEventArgs : EventArgs {
     /// When `Type` is 'Removed` or `Changed`, the list of removed items.
     /// </summary>
     public List<object> Removed { get; } = [];
-
 }

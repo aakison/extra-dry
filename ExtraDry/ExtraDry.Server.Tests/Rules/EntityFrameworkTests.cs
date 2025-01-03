@@ -2,7 +2,6 @@
 
 public class EntityFrameworkTests
 {
-
     [Fact]
     public async Task ExpungeUserWithoutAddress()
     {
@@ -89,7 +88,6 @@ public class EntityFrameworkTests
         await Assert.ThrowsAsync<DryException>(() => rules.ExpungeManyAsync(user, address));
     }
 
-
     [Fact]
     public async Task HardDeleteMutipleEntities()
     {
@@ -152,7 +150,6 @@ public class EntityFrameworkTests
         await database.SaveChangesAsync();
     }
 
-
     private static TestContext GetDatabase()
     {
         var options = new DbContextOptionsBuilder<TestContext>()
@@ -179,5 +176,4 @@ public class EntityFrameworkTests
         PopulateSampleData(database);
         return database;
     }
-
 }

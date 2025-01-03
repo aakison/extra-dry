@@ -3,11 +3,11 @@
 }
 
 ::deep nav li {
-    padding: 5px 10px;
-    border: solid 1px silver;
+  padding: 5px 10px;
+  border: solid 1px silver;
 }
 
-::deep nav li.active {
+  ::deep nav li.active {
     border-bottom: solid 1px red;
     background-color: aliceblue;
-}
+  }

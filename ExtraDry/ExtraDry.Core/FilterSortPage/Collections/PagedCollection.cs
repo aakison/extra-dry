@@ -1,12 +1,11 @@
 ﻿namespace ExtraDry.Core;
 
 /// <summary>
-/// A page of a sorted and filtered collection of items from the API with information on 
-/// retrieving other pages.
+/// A page of a sorted and filtered collection of items from the API with information on retrieving
+/// other pages.
 /// </summary>
 public class PagedCollection<T> : SortedCollection<T>
 {
-
     /// <summary>
     /// The starting index of this partial collection within the full collection.
     /// </summary>
@@ -20,16 +19,16 @@ public class PagedCollection<T> : SortedCollection<T>
     public int Total { get; set; }
 
     /// <summary>
-    /// An arbitrary token sent by the server used to managed consistency of results.  As a 
-    /// best-practice, always send this token back to the server when fetching additional partial 
+    /// An arbitrary token sent by the server used to managed consistency of results. As a
+    /// best-practice, always send this token back to the server when fetching additional partial
     /// results, don't rely on the `Query` and `Start` indexes alone.
     /// </summary>
     /// <example>AAAAZAAAAGQAAAA=</example>
     public string? ContinuationToken { get; set; }
 
     /// <summary>
-    /// Indicates if this partial collection is also the full collection.
-    /// Typical when the collection on the server is small.
+    /// Indicates if this partial collection is also the full collection. Typical when the
+    /// collection on the server is small.
     /// </summary>
     [JsonIgnore]
     public bool IsFullCollection => Count == Total;
@@ -46,5 +45,4 @@ public class PagedCollection<T> : SortedCollection<T>
         Start = Start,
         Total = Total,
     };
-
 }

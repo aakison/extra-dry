@@ -5,8 +5,8 @@ using Microsoft.Extensions.Logging;
 
 namespace ExtraDry.Server.DataWarehouse;
 
-public static class DataWarehouseServiceCollectionExtensions {
-
+public static class DataWarehouseServiceCollectionExtensions
+{
     public static IServiceCollection AddDataFactory<TModel, TOltpContext, TOlapContext>(this IServiceCollection services, Action<DataFactoryOptions>? options = null)
         where TModel : WarehouseModel
         where TOltpContext : DbContext
@@ -34,5 +34,4 @@ public static class DataWarehouseServiceCollectionExtensions {
         });
         return services;
     }
-
 }

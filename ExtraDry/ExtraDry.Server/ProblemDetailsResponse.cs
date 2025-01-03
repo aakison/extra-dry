@@ -6,8 +6,8 @@ using System.Net;
 
 namespace ExtraDry.Server;
 
-public static class ProblemDetailsResponse {
-
+public static class ProblemDetailsResponse
+{
     internal static void RewriteResponse(ExceptionContext context, HttpStatusCode httpStatusCode, string? title = null, string? details = null)
     {
         RewriteResponse(context.HttpContext, context.Exception.GetType().Name, (int)httpStatusCode, title ?? context.Exception.Message, details);
@@ -47,7 +47,6 @@ public static class ProblemDetailsResponse {
         return problemDetails;
     }
 
-    private static JsonSerializerOptions SerializerOptions { get; } = 
+    private static JsonSerializerOptions SerializerOptions { get; } =
         new(JsonSerializerDefaults.Web) { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault };
-
 }

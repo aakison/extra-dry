@@ -2,8 +2,8 @@
 
 namespace ExtraDry.Blazor.Tests.Models;
 
-public class NakedSingleParameterCommandInfoTests {
-
+public class NakedSingleParameterCommandInfoTests
+{
     [Fact]
     public void DefaultValues()
     {
@@ -62,7 +62,6 @@ public class NakedSingleParameterCommandInfoTests {
 
         Assert.NotNull(command);
         Assert.Equal("NakedSingleCommand()", lastMethodCalled);
-
     }
 
     [Fact]
@@ -109,5 +108,4 @@ public class NakedSingleParameterCommandInfoTests {
     }
 
     private string lastMethodCalled = string.Empty;
-
 }

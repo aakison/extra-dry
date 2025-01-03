@@ -7,20 +7,21 @@
   animation: spin 2s linear infinite;
 }
 
-.spinner.small {
-  width: 16px;
-  height: 16px;
-}
+  .spinner.small {
+    width: 16px;
+    height: 16px;
+  }
 
-.spinner.large {
-  width: 28px;
-  height: 28px;
-}
+  .spinner.large {
+    width: 28px;
+    height: 28px;
+  }
 
 @keyframes spin {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }

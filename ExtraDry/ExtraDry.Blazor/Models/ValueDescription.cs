@@ -2,7 +2,6 @@
 
 public class ValueDescription : ISubjectViewModel
 {
-
     public ValueDescription(object key, MemberInfo memberInfo)
     {
         Key = key;
@@ -46,5 +45,4 @@ public class ValueDescription : ISubjectViewModel
     }
 
     public override int GetHashCode() => Key.GetHashCode();
-
 }

@@ -7,8 +7,8 @@ namespace ExtraDry.Blazor;
 /// <summary>
 /// Provides pretty formatting of code for displaying blocks of codes.
 /// </summary>
-public partial class CodeBlock : ComponentBase, IExtraDryComponent {
-
+public partial class CodeBlock : ComponentBase, IExtraDryComponent
+{
     /// <inheritdoc />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
@@ -26,8 +26,8 @@ public partial class CodeBlock : ComponentBase, IExtraDryComponent {
     public RenderFragment? ChildContent { get; set; }
 
     /// <summary>
-    /// When set, aligns the code to the left of the block allowing code to be indented
-    /// in .razor file without indent showing on rendered page.
+    /// When set, aligns the code to the left of the block allowing code to be indented in .razor
+    /// file without indent showing on rendered page.
     /// </summary>
     [Parameter]
     public bool Normalize { get; set; } = true;

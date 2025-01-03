@@ -1,15 +1,14 @@
 ﻿namespace ExtraDry.Blazor.Forms;
 
 /// <summary>
-/// A single input field for a property of a model.  This is used by <see cref="DryForm{T}"/> to 
-/// create all the inputs for a form.  For advanced use-cases, this component may be used directly 
-/// and bound to any model, whether inside a <see cref="DryForm{T}"/> or not.
+/// A single input field for a property of a model. This is used by <see cref="DryForm{T}" /> to
+/// create all the inputs for a form. For advanced use-cases, this component may be used directly
+/// and bound to any model, whether inside a <see cref="DryForm{T}" /> or not.
 /// </summary>
-public partial class DryInput<T> 
-    : OwningComponentBase, IDryInput<T>, IExtraDryComponent, IDisposable 
+public partial class DryInput<T>
+    : OwningComponentBase, IDryInput<T>, IExtraDryComponent, IDisposable
     where T : class
 {
-
     /// <inheritdoc />
     [Parameter]
     public string CssClass { get; set; } = "";
@@ -37,7 +36,7 @@ public partial class DryInput<T>
     [Inject]
     private ILogger<DryInput<T>> Logger { get; set; } = null!;
 
-    protected async override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         if(Property.Rules?.UpdateAction == RuleAction.Block) {
         }
@@ -189,5 +188,4 @@ public partial class DryInput<T>
         Valid = valid;
         StateHasChanged();
     }
-
 }

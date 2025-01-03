@@ -1,12 +1,11 @@
 ﻿namespace ExtraDry.Core;
 
 /// <summary>
-/// A page of a filtered collection of hierarchy items items sorted breadth-first from the API with 
+/// A page of a filtered collection of hierarchy items items sorted breadth-first from the API with
 /// information on retrieving other pages.
 /// </summary>
 public class PagedHierarchyCollection<T> : HierarchyCollection<T>
 {
-
     /// <inheritdoc cref="PagedCollection{T}.Start" />
     public int Start { get; set; }
 
@@ -31,5 +30,4 @@ public class PagedHierarchyCollection<T> : HierarchyCollection<T>
         Expand = Expand == null ? null : new List<string>(Expand),
         Collapse = Collapse == null ? null : new List<string>(Collapse),
     };
-
 }

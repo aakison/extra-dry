@@ -7,9 +7,8 @@ namespace ExtraDry.Server.EF;
 /// </summary>
 public static class ServiceCollectionExtensions
 {
-
     /// <summary>
-    /// Extension method to add the <see cref="AuditAspect"/> to the service collection.
+    /// Extension method to add the <see cref="AuditAspect" /> to the service collection.
     /// </summary>
     public static IServiceCollection AddAuditAspect(this IServiceCollection services, Action<AuditAspectOptions>? config = null)
     {
@@ -24,7 +23,7 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Extension method to add the <see cref="RevisionAspect"/> to the service collection.
+    /// Extension method to add the <see cref="RevisionAspect" /> to the service collection.
     /// </summary>
     public static IServiceCollection AddRevisionAspect(this IServiceCollection services, Action<RevisionAspectOptions>? config = null)
     {
@@ -37,5 +36,4 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
-
 }

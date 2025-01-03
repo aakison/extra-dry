@@ -7,32 +7,31 @@ using System.Reflection;
 namespace ExtraDry.Server;
 
 /// <summary>
-/// Provides business rule logic for Creating, Updating and Deleting objects from untrusted 
-/// sources. The untrusted source is usually an object deserialized from JSON from an API or MVC 
-/// call. The rules for overwriting, ignoring, or blocking changes are defined by applying the 
-/// `RuleAttribute` to each property. The `RuleEngine` should then be dependency injected into 
+/// Provides business rule logic for Creating, Updating and Deleting objects from untrusted
+/// sources. The untrusted source is usually an object deserialized from JSON from an API or MVC
+/// call. The rules for overwriting, ignoring, or blocking changes are defined by applying the
+/// `RuleAttribute` to each property. The `RuleEngine` should then be dependency injected into
 /// services where its methods will consistently apply business rules.
 /// </summary>
 /// <remarks>
-/// Creates a new RuleEngine, typically only called from the DI service. The IServiceProvider is 
-/// used to further discover IEntityResolver objects for cases where the rule engine is attempting 
+/// Creates a new RuleEngine, typically only called from the DI service. The IServiceProvider is
+/// used to further discover IEntityResolver objects for cases where the rule engine is attempting
 /// to link to an existing object.
 /// </remarks>
 public class RuleEngine(
     IServiceProvider services,
     ExtraDryOptions options)
 {
-
     /// <summary>
     /// When copying an object (during create or update) that allows for nested objects, the number
-    /// of nesting that the system will stop at.  This will prevent recursion issues when two objects reference
-    /// each other.  This can be increased if necessary for large trees of data.
+    /// of nesting that the system will stop at. This will prevent recursion issues when two
+    /// objects reference each other. This can be increased if necessary for large trees of data.
     /// </summary>
     public int MaxRecursionDepth { get; set; } = 20;
 
     /// <summary>
-    /// Given an potentially untrusted and unvalidated exemplar of an object, create a new copy of 
-    /// that object with business rules applied.  Any validation issues or rule violations will 
+    /// Given an potentially untrusted and unvalidated exemplar of an object, create a new copy of
+    /// that object with business rules applied. Any validation issues or rule violations will
     /// throw an exception.
     /// </summary>
     public async Task<T> CreateAsync<T>(T exemplar)
@@ -59,12 +58,14 @@ public class RuleEngine(
     }
 
     /// <summary>
-    /// Updates the `destination` with properties from `source`, while applying business logic rules in annotations.
-    /// The source object will be validated using data annotations first, then properties will be copied across, where:
-    ///   `JsonIgnore` properties will be skipped, these are typically empty as the source has likely been deserialized from the network;
-    ///   `Rules(UpdateAction.BlockChanges)` annotations will throw an exception if a change is attempted;
-    ///   `Rules(UpdateAction.Ignore)` annotations will not be copied;
-    ///   `Rules(UpdateAction.IgnoreDefaults)` annotations will not be copied if the source property is `null` or `default`.
+    /// Updates the `destination` with properties from `source`, while applying business logic
+    /// rules in annotations. The source object will be validated using data annotations first,
+    /// then properties will be copied across, where: `JsonIgnore` properties will be skipped,
+    /// these are typically empty as the source has likely been deserialized from the network;
+    /// `Rules(UpdateAction.BlockChanges)` annotations will throw an exception if a change is
+    /// attempted; `Rules(UpdateAction.Ignore)` annotations will not be copied;
+    /// `Rules(UpdateAction.IgnoreDefaults)` annotations will not be copied if the source property
+    /// is `null` or `default`.
     /// </summary>
     public async Task UpdateAsync<T>(T source, T destination)
     {
@@ -79,7 +80,7 @@ public class RuleEngine(
         }
         await UpdatePropertiesAsync(source, destination, MaxRecursionDepth, e => e.UpdateAction);
         /*
-         *  Validation is run after the update on the destination to allow for 
+         *  Validation is run after the update on the destination to allow for
          *  validation that includes linked or resolvable entities.
          */
         validator = new DataValidator();
@@ -111,14 +112,19 @@ public class RuleEngine(
     }
 
     /// <summary>
-    /// Processes a delete of an item if possible, using either a soft-delete or a hard-delete 
-    /// pattern.  The chosen option is first checked against the DeleteRuleAttribute on the entity.
-    /// The OnDeleting callback can change the requested action.  If not possible, then 
-    /// soft-delete is performed instead.
+    /// Processes a delete of an item if possible, using either a soft-delete or a hard-delete
+    /// pattern. The chosen option is first checked against the DeleteRuleAttribute on the entity.
+    /// The OnDeleting callback can change the requested action. If not possible, then soft-delete
+    /// is performed instead.
     /// </summary>
     /// <param name="item">The item to delete, a soft-delete is attempted first.</param>
-    /// <param name="remove">If item can't be soft-deleted, then the action that is executed for a hard-delete.</param>
-    /// <param name="execute">If item can't be soft-deleted, then the optional action that is executed to commit hard-delete.</param>
+    /// <param name="remove">
+    /// If item can't be soft-deleted, then the action that is executed for a hard-delete.
+    /// </param>
+    /// <param name="execute">
+    /// If item can't be soft-deleted, then the optional action that is executed to commit
+    /// hard-delete.
+    /// </param>
     public async Task<DeleteResult> DeleteAsync<T>(T item, Func<Task> remove, Func<Task> execute)
     {
         ArgumentNullException.ThrowIfNull(item);
@@ -156,10 +162,10 @@ public class RuleEngine(
     }
 
     /// <summary>
-    /// Processes a hard delete for multiple items if possible. If not possible, then soft-delete 
-    /// is performed for all items instead.  Uses the remove actions from 
-    /// <see cref="RegisterRemove{T}(Action{T})" /> and commit action from 
-    /// <see cref="RegisterCommit(Func{Task})" />
+    /// Processes a hard delete for multiple items if possible. If not possible, then soft-delete
+    /// is performed for all items instead. Uses the remove actions from <see
+    /// cref="RegisterRemove{T}(Action{T})" /> and commit action from <see
+    /// cref="RegisterCommit(Func{Task})" />
     /// </summary>
     /// <param name="items">The list of items to delete.</param>
     public async Task<DeleteResult> DeleteAsync(params object?[] items)
@@ -202,21 +208,25 @@ public class RuleEngine(
             await commit();
             result = DeleteResult.Expunged;
         }
-        catch { 
+        catch {
             //Do not throw exceptions on commit- Just return appropriate result.
         }
-        return result; 
+        return result;
     }
 
     /// <summary>
-    /// Given an item that has previously been recycled, attempts to restore the item.  Will check 
-    /// that item can be undeleted based on `DeleteRule` on entity and that the item is actually 
-    /// in a deleted state.
+    /// Given an item that has previously been recycled, attempts to restore the item. Will check
+    /// that item can be undeleted based on `DeleteRule` on entity and that the item is actually in
+    /// a deleted state.
     /// </summary>
     /// <param name="item">The item to be undeleted</param>
-    /// <returns>Status of the restore action.  If no restore value exists or this item is not 
-    /// in a recycled state, then will return NotRestored.</returns>
-    /// <exception cref="DryException">If the `DeleteRule` attribute has invalid properties or values.</exception>
+    /// <returns>
+    /// Status of the restore action. If no restore value exists or this item is not in a recycled
+    /// state, then will return NotRestored.
+    /// </returns>
+    /// <exception cref="DryException">
+    /// If the `DeleteRule` attribute has invalid properties or values.
+    /// </exception>
     [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Orthogonal with other members and might need to be made instance level in the future.")]
     public async Task<RestoreResult> RestoreAsync<T>(T item)
     {
@@ -304,9 +314,9 @@ public class RuleEngine(
     }
 
     /// <summary>
-    /// Processes a Hard Delete for multiple items.
-    /// Uses the remove actions from <see cref="RegisterRemove{T}(Action{T})"/> and commit action from 
-    /// <see cref="RegisterCommit(Func{Task})"/>.
+    /// Processes a Hard Delete for multiple items. Uses the remove actions from <see
+    /// cref="RegisterRemove{T}(Action{T})" /> and commit action from <see
+    /// cref="RegisterCommit(Func{Task})" />.
     /// </summary>
     /// <param name="items">Items to delete</param>
     public async Task<DeleteResult> ExpungeManyAsync(params object?[] items)
@@ -472,8 +482,8 @@ public class RuleEngine(
         // How to process dictionary?
         // 1. Recurse like any other entity through the objects?
         // 2. Treat values as value-types only (string, decimal, int, double, etc.)
-        // 3. What keys are allowed? Just strings?
-        // Start with simplest case <string, value-type>, expand later if needed.
+        // 3. What keys are allowed? Just strings? Start with simplest case <string, value-type>,
+        // expand later if needed.
         // 4. How to manage sets, key:key => update
         // 5. key:null => create
         // 6. null:key => ignore (use key with null value to delete)
@@ -523,7 +533,8 @@ public class RuleEngine(
             property.SetValue(destination, destinationList);
         }
         if(action == RuleAction.IgnoreDefaults && sourceList == null) {
-            // Don't modify destination as source is in default state of null (note that an empty collection will change destination)
+            // Don't modify destination as source is in default state of null (note that an empty
+            // collection will change destination)
             return;
         }
         var sourceEntities = new List<object?>();
@@ -551,9 +562,10 @@ public class RuleEngine(
     }
 
     /// <summary>
-    /// Given an object, especially one that has been deserialized, attempts to resolve a version of that object
-    /// that might be a database entity.  Uses `IEntityResolver` class in DI to find potential replacement.
-    /// This only works for objects, value types are always copies, so sourceValue is always returned.
+    /// Given an object, especially one that has been deserialized, attempts to resolve a version
+    /// of that object that might be a database entity. Uses `IEntityResolver` class in DI to find
+    /// potential replacement. This only works for objects, value types are always copies, so
+    /// sourceValue is always returned.
     /// </summary>
     private async Task<(bool, object?)> ResolveEntityValue(Type type, object? sourceValue)
     {
@@ -567,7 +579,7 @@ public class RuleEngine(
             return (false, sourceValue);
         }
         else {
-            var method = typedEntityResolver.GetMethod("ResolveAsync") 
+            var method = typedEntityResolver.GetMethod("ResolveAsync")
                 ?? throw new DryException($"Resolver '{type.Name}' object missing method ResolveAsync");
             // Force not-null return as ResolveAsync above is not-null return.
             dynamic task = method.Invoke(resolver, [sourceValue])!;
@@ -659,11 +671,13 @@ public class RuleEngine(
         return DeleteResult.Recycled;
     }
 
-    private class DeleteItem {
-        public required object Item { get; set; }
-        public DeleteRuleAttribute? DeleteRuleAttribute { get; set; }
-        public PropertyInfo? PropInfo { get; set; }
+    private class DeleteItem
+    {
+        public object Item { get; set; }
 
+        public DeleteRuleAttribute? DeleteRuleAttribute { get; set; }
+
+        public PropertyInfo? PropInfo { get; set; }
     }
 
     private Dictionary<Type, Action<object>> RemoveFunctors { get; set; } = [];
@@ -671,8 +685,8 @@ public class RuleEngine(
     private Func<Task> CommitFunctor { get; set; } = () => Task.CompletedTask;
 
     /// <summary>
-    /// Use for options for the Rule Engine.  Note is also used to ensure the options are loaded for
-    /// other components that dynamically rely on the options.  As RuleEngine is a singleton, it 
+    /// Use for options for the Rule Engine. Note is also used to ensure the options are loaded for
+    /// other components that dynamically rely on the options. As RuleEngine is a singleton, it
     /// will ensure the options are loaded at startup.
     /// </summary>
     private ExtraDryOptions Options { get; } = options;

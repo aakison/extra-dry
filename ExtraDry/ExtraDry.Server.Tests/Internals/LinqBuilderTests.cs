@@ -3,8 +3,8 @@ using System.Reflection;
 
 namespace ExtraDry.Server.Tests.Internals;
 
-public class LinqBuilderTests {
-
+public class LinqBuilderTests
+{
     [Fact]
     public void OrderByNameCompatible()
     {
@@ -135,8 +135,8 @@ public class LinqBuilderTests {
         return new FilterProperty(property, filter);
     }
 
-    public class Datum {
-
+    public class Datum
+    {
         [JsonIgnore]
         [Key]
         public int Id { get; set; }
@@ -170,5 +170,4 @@ public class LinqBuilderTests {
     //    new Datum { FirstName = "Alice", LastName = "Barker", Number = 123 },
     //    new Datum { FirstName = "Bob", LastName = "Ross", Number = 321 },
     //};
-
 }

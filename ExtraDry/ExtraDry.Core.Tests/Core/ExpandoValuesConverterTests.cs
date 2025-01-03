@@ -4,7 +4,6 @@ namespace ExtraDry.Core.Tests;
 
 public class ExpandoValuesConverterTests
 {
-
     [Fact]
     public void NullExpandoValuesAreNull()
     {
@@ -66,8 +65,6 @@ public class ExpandoValuesConverterTests
 
     public class Target
     {
-
         public ExpandoValues Values { get; set; } = [];
-
     }
 }

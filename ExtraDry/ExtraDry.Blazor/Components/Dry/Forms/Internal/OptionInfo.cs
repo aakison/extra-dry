@@ -1,8 +1,8 @@
 ﻿namespace ExtraDry.Blazor.Forms;
 
 internal class OptionInfo(
-    string key, 
-    string display, 
+    string key,
+    string display,
     object? value)
 {
     public string Key { get; set; } = key;

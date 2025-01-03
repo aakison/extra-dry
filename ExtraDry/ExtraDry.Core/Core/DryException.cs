@@ -10,11 +10,11 @@ namespace ExtraDry.Core;
 [Serializable]
 public sealed class DryException : ApplicationException
 {
-
     /// <summary>
     /// Construct an empty exception, prefer use of a constructor with more information.
     /// </summary>
-    public DryException() { }
+    public DryException()
+    { }
 
     /// <summary>
     /// Create an exception with the indicated problem details
@@ -31,7 +31,9 @@ public sealed class DryException : ApplicationException
     /// </summary>
     /// <param name="status">The HTTP status code for this occurrence of the problem.</param>
     /// <param name="message">A short, human-readable summary of the problem type.</param>
-    /// <param name="detail">A human-readable explanation specific to this occurrence of the problem.</param>
+    /// <param name="detail">
+    /// A human-readable explanation specific to this occurrence of the problem.
+    /// </param>
     public DryException(HttpStatusCode status, string message, string detail) : base(message)
     {
         ProblemDetails.Status = (int)status;
@@ -68,9 +70,8 @@ public sealed class DryException : ApplicationException
     }
 
     /// <summary>
-    /// The problem details for this exception, can be used to communicate from server,
-    /// through API, through SAL, to users.
+    /// The problem details for this exception, can be used to communicate from server, through
+    /// API, through SAL, to users.
     /// </summary>
     public ProblemDetails ProblemDetails { get; private set; } = new();
-
 }

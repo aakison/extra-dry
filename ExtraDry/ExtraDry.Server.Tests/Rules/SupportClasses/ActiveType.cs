@@ -1,8 +1,8 @@
 ﻿namespace ExtraDry.Server.Tests.Rules;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum ActiveType {
-
+public enum ActiveType
+{
     Pending,
 
     Inactive,
@@ -10,5 +10,4 @@ public enum ActiveType {
     Active,
 
     Deleted,
-
 }

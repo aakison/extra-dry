@@ -4,10 +4,9 @@ namespace ExtraDry.Server.EF;
 
 public class RevisionAspect(
     IHttpContextAccessor httpContextAccessor,
-    RevisionAspectOptions options) 
-    : IDbAspect 
+    RevisionAspectOptions options)
+    : IDbAspect
 {
-
     public void EntitiesChanging(EntitiesChanged args)
     {
         // no-op
@@ -33,5 +32,4 @@ public class RevisionAspect(
     private string? GetClaim(string type) => options.StrictClaimMatch
         ? httpContextAccessor.HttpContext?.User?.Claims?.FirstOrDefault(c => c.Type == type)?.Value
         : httpContextAccessor.HttpContext?.User?.Claims?.FirstOrDefault(c => c.Type.EndsWith(type, StringComparison.OrdinalIgnoreCase))?.Value;
-
 }

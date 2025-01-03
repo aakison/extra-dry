@@ -65,17 +65,22 @@ public class RegionService(
     }
 
     /// <summary>
-    /// Updates the provided Region. If allowMove is set to true it also allows this Region to be reparented.
+    /// Updates the provided Region. If allowMove is set to true it also allows this Region to be
+    /// reparented.
     /// </summary>
     /// <param name="slug">The slug that is used to identify the region to update</param>
     /// <param name="item">The item to update</param>
-    /// <param name="allowMove">If false (default), any parent changes will be ignored. If true, will attempt to reparent the provided item to the provided parent.</param>
+    /// <param name="allowMove">
+    /// If false (default), any parent changes will be ignored. If true, will attempt to reparent
+    /// the provided item to the provided parent.
+    /// </param>
     /// <returns></returns>
     public async Task UpdateAsync(string slug, Region item, bool allowMove = false)
     {
         var existing = await RetrieveAsync(slug);
         if(!allowMove) {
-            // if we're not allowing a parent change, ensure they're not bypassing the parent update by explicitly resetting it.
+            // if we're not allowing a parent change, ensure they're not bypassing the parent
+            // update by explicitly resetting it.
             item.Parent = existing.Parent;
         }
         else if(allowMove && existing.Parent != null && item.Parent != null && existing.Parent.Slug != item.Parent.Slug) {
@@ -106,7 +111,8 @@ public class RegionService(
         if(parent == null) { return; }
 
         if(sampleContext.Regions.Any(e => e.Uuid == child.Uuid && e.Lineage.IsDescendantOf(parent.Lineage))) {
-            // Already a child of this entity in the DB, so lets not set it again, it'll change the sort and make the lineage numbers climb.
+            // Already a child of this entity in the DB, so lets not set it again, it'll change the
+            // sort and make the lineage numbers climb.
             return;
         }
 
@@ -117,7 +123,8 @@ public class RegionService(
 
         var maxChildLineage = await sampleContext.Regions.Where(e => e.Lineage!.IsDescendantOf(parent.Lineage)).MaxAsync(c => c.Lineage);
         if(maxChildLineage == HierarchyId.GetRoot() || maxChildLineage == parent.Lineage) {
-            // If this is the first child of the parent, pass null as the first param for GetDescendant
+            // If this is the first child of the parent, pass null as the first param for
+            // GetDescendant
             maxChildLineage = null;
         }
         var newLineage = parent.Lineage?.GetDescendant(maxChildLineage, null);

@@ -2,41 +2,51 @@
   table ::deep span.group {
     display: flex;
   }
-  table ::deep span.group span.dry-hierarchy-expander {
-    display: flex;
-    align-items: center;
-    justify-content: end;
-  }
-  table ::deep span.group span.dry-hierarchy-expander.level-0 {
-    width: 32px;
-  }
-  table ::deep span.group span.dry-hierarchy-expander.level-1 {
-    width: 48px;
-  }
-  table ::deep span.group span.dry-hierarchy-expander.level-2 {
-    width: 64px;
-  }
-  table ::deep span.group span.dry-hierarchy-expander.level-3 {
-    width: 80px;
-  }
-  table ::deep span.group span.dry-hierarchy-expander.level-4 {
-    width: 96px;
-  }
-  table ::deep span.group span.dry-hierarchy-expander.level-5 {
-    width: 112px;
-  }
-  table ::deep span.group span.dry-hierarchy-expander.level-6 {
-    width: 128px;
-  }
-  table ::deep span.group span.dry-hierarchy-expander.level-7 {
-    width: 144px;
-  }
-  table ::deep span.group span.dry-hierarchy-expander button {
-    display: flex;
-    width: 32px;
-    height: 32px;
-    padding: 0;
-    align-items: center;
-    justify-content: center;
-  }
+
+    table ::deep span.group span.dry-hierarchy-expander {
+      display: flex;
+      align-items: center;
+      justify-content: end;
+    }
+
+      table ::deep span.group span.dry-hierarchy-expander.level-0 {
+        width: 32px;
+      }
+
+      table ::deep span.group span.dry-hierarchy-expander.level-1 {
+        width: 48px;
+      }
+
+      table ::deep span.group span.dry-hierarchy-expander.level-2 {
+        width: 64px;
+      }
+
+      table ::deep span.group span.dry-hierarchy-expander.level-3 {
+        width: 80px;
+      }
+
+      table ::deep span.group span.dry-hierarchy-expander.level-4 {
+        width: 96px;
+      }
+
+      table ::deep span.group span.dry-hierarchy-expander.level-5 {
+        width: 112px;
+      }
+
+      table ::deep span.group span.dry-hierarchy-expander.level-6 {
+        width: 128px;
+      }
+
+      table ::deep span.group span.dry-hierarchy-expander.level-7 {
+        width: 144px;
+      }
+
+      table ::deep span.group span.dry-hierarchy-expander button {
+        display: flex;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        align-items: center;
+        justify-content: center;
+      }
 }

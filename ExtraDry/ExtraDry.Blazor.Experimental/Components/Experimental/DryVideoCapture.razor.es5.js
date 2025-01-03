@@ -58,4 +58,3 @@ function stopCamera() {
 exports.startCamera = startCamera;
 exports.captureImage = captureImage;
 exports.stopCamera = stopCamera;
-

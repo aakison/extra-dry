@@ -8,8 +8,8 @@
 public enum SortStabilization
 {
     /// <summary>
-    /// Add the primary key to sort queries to provide a stabalized sort across multiple requests 
-    /// or database re-indexes.  Ideal for relational databases.
+    /// Add the primary key to sort queries to provide a stabalized sort across multiple requests
+    /// or database re-indexes. Ideal for relational databases.
     /// </summary>
     PrimaryKey = 0,
 
@@ -27,8 +27,8 @@ public enum SortStabilization
 
     /// <summary>
     /// When retrieving list from a data store this will not use a secondary property to enforce a
-    /// stabilized sort.  Ideal for CosmosDB or other NoSQL databases, where sorting by 2 columns
-    /// is not supported, but the results are already stable.
+    /// stabilized sort. Ideal for CosmosDB or other NoSQL databases, where sorting by 2 columns is
+    /// not supported, but the results are already stable.
     /// </summary>
     None = 1,
 
@@ -37,5 +37,4 @@ public enum SortStabilization
     /// </summary>
     [Obsolete("Use NoStabilization instead.  This will be removed in a future version of ExtraDry.")]
     ProviderDefaultsOnly = 1,
-
 }

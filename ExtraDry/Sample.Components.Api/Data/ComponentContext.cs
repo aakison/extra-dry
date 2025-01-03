@@ -9,10 +9,9 @@ namespace Sample.Components.Api.Data;
 /// <param name="options"></param>
 public class ComponentContext(
     DbContextOptions<ComponentContext> options,
-    IEnumerable<IDbAspect> aspects) 
+    IEnumerable<IDbAspect> aspects)
     : AspectDbContext(options, aspects)
 {
-
     /// <summary>
     /// The Tenants in the system.
     /// </summary>
@@ -34,9 +33,8 @@ public class ComponentContext(
     //public DbSet<Attachment> Attachments { get; set; } = null!;
 
     /// <summary>
-    /// A single CosmosDB container is created for all entities.  The parition key is taken from 
-    /// the ITenanted interface's Partition property.  This should be the Tenant slug for 
-    /// everything.
+    /// A single CosmosDB container is created for all entities. The parition key is taken from the
+    /// ITenanted interface's Partition property. This should be the Tenant slug for everything.
     /// </summary>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -47,5 +45,4 @@ public class ComponentContext(
         //modelBuilder.Entity<Attachment>().HasPartitionKey(e => e.Partition);
         //modelBuilder.Entity<Metadata>().HasPartitionKey(e => e.Partition);
     }
-
 }

@@ -2,8 +2,8 @@
 
 namespace ExtraDry.Server.Tests.Rules;
 
-public class RuleEngineDeleteTests {
-
+public class RuleEngineDeleteTests
+{
     [Fact]
     public async Task DeleteRequiresItem()
     {
@@ -96,7 +96,7 @@ public class RuleEngineDeleteTests {
 
         var result = await rules.DeleteAsync(obj, () => { },
             // exception on hard delete (the second call).
-            () => { if(callCount++ > 0) { throw new ArgumentException(); } return Task.CompletedTask; } 
+            () => { if(callCount++ > 0) { throw new ArgumentException(); } return Task.CompletedTask; }
         );
 
         Assert.False(obj.Active);
@@ -147,7 +147,8 @@ public class RuleEngineDeleteTests {
     private int step = 1;
 
     [DeleteRule(DeleteAction.Recycle, nameof(Active), false, true)]
-    public class SoftDeletable {
+    public class SoftDeletable
+    {
         public bool Active { get; set; } = true;
 
         [Rules]
@@ -174,5 +175,4 @@ public class RuleEngineDeleteTests {
     {
         public object Status { get; set; } = new();
     }
-
 }

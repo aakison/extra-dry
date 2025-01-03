@@ -2,8 +2,8 @@
 
 namespace ExtraDry.Server.Tests.Rules;
 
-public class RuleEngineUndeleteTests {
-
+public class RuleEngineUndeleteTests
+{
     [Fact]
     public async Task DeleteRequiresItem()
     {
@@ -96,32 +96,38 @@ public class RuleEngineUndeleteTests {
     }
 
     [DeleteRule(DeleteAction.Recycle, nameof(Status), "Deleted", null)]
-    public class NullUndelete {
+    public class NullUndelete
+    {
         public string Status { get; set; } = "Active";
     }
 
     [DeleteRule(DeleteAction.Recycle, nameof(State), State.Deleted, State.Active)]
-    public class SoftDeletable {
+    public class SoftDeletable
+    {
         public State State { get; set; } = State.Inactive;
     }
 
-    public class NotDeletable {
+    public class NotDeletable
+    {
         public State State { get; set; } = State.Inactive;
     }
 
     [DeleteRule(DeleteAction.Recycle, nameof(State), State.Deleted)]
-    public class NotUndeletable {
+    public class NotUndeletable
+    {
         public State State { get; set; } = State.Inactive;
     }
 
     [SuppressMessage("Usage", "DRY1305:DeleteRule on classes should use nameof for property names.", Justification = "Required for testing.")]
     [DeleteRule(DeleteAction.Recycle, "BadName", State.Deleted, State.Active)]
-    public class BadProperty {
+    public class BadProperty
+    {
         public State State { get; set; } = State.Inactive;
     }
 
     [DeleteRule(DeleteAction.Recycle, nameof(State), State.Deleted, "BadValue")]
-    public class BadUndeleteValue {
+    public class BadUndeleteValue
+    {
         public State State { get; set; } = State.Inactive;
     }
 
@@ -129,7 +135,9 @@ public class RuleEngineUndeleteTests {
     public enum State
     {
         Active,
+
         Inactive,
+
         Deleted,
     }
 }

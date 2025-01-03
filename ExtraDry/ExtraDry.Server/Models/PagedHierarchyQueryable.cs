@@ -22,7 +22,7 @@ public class PagedHierarchyQueryable<T> : FilteredHierarchyQueryable<T> where T 
         PagedQuery = SortedQuery.Page(query);
     }
 
-    /// <inheritdoc cref="IFilteredQueryable{T}.ToPagedCollection"/>
+    /// <inheritdoc cref="IFilteredQueryable{T}.ToPagedCollection" />
     public PagedHierarchyCollection<T> ToPagedHierarchyCollection()
     {
         var statsQuery = CreateStatQuery();
@@ -67,5 +67,4 @@ public class PagedHierarchyQueryable<T> : FilteredHierarchyQueryable<T> where T 
             Expandable = expandable.Count != 0 ? expandable : null,
         };
     }
-
 }

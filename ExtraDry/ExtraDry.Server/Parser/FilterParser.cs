@@ -6,7 +6,6 @@ namespace ExtraDry.Server.Internal;
 
 internal static class FilterParser
 {
-
     public static Filter Parse(string filter)
     {
         var parsed = Filters.Parse(filter);
@@ -78,5 +77,4 @@ internal static class FilterParser
     private static readonly Parser<char, IEnumerable<FilterRule>> CompositeFilterRule = FilterRule.Separated(Whitespace);
 
     private static readonly Parser<char, Filter> Filters = CompositeFilterRule.Before(End).Select(e => new Filter(e));
-
 }

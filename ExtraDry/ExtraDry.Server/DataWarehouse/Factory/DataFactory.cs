@@ -7,10 +7,10 @@ using System.Reflection;
 namespace ExtraDry.Server.DataWarehouse;
 
 public class DataFactory(
-    WarehouseModel model, 
-    DbContext source, 
-    WarehouseContext target, 
-    ILogger<DataFactory> logger, 
+    WarehouseModel model,
+    DbContext source,
+    WarehouseContext target,
+    ILogger<DataFactory> logger,
     DataFactoryOptions? options = null)
 {
     public async Task MigrateAsync()
@@ -44,7 +44,8 @@ public class DataFactory(
     }
 
     /// <summary>
-    /// For a given entity, process the changes for all warehouse table that have the entity as a source.
+    /// For a given entity, process the changes for all warehouse table that have the entity as a
+    /// source.
     /// </summary>
     public async Task<int> ProcessBatchAsync(string entity)
     {
@@ -135,7 +136,7 @@ public class DataFactory(
             logger.LogTextVerbose($"Executing Upsert SQL: {sql}"); // TODO: remove when tested.
             await target.Database.ExecuteSqlRawAsync(sql);
         }
-        batchStats.SyncTimestamp =  table.Generator?.GetSyncTimestamp()
+        batchStats.SyncTimestamp = table.Generator?.GetSyncTimestamp()
             ?? batch.Max(e => GetVersionInfo(e)?.DateModified ?? DateTime.MinValue);
         await target.SaveChangesAsync();
         logger.LogTextVerbose($"Processed {batch.Count} upserts on [{table.Name}], updating sync timestamp to {batchStats.SyncTimestamp}."); // TODO: remove when tested.
@@ -143,13 +144,10 @@ public class DataFactory(
 
     private async Task<List<object>> GetBatchAfterTimestampAsync(PropertyInfo entitiesDbSet, DataTableSync batchStats)
     {
-        // Dynamically build up something comparable to the following:
-        // var batchIncoming = await Oltp.Companies
-        //      .Where(e => e.Version.DateModified > batchStats.SyncTimestamp)
-        //      .OrderBy(e => e.Version.DateModified)
-        //      .Take(Options.BatchSize)
-        //      .ToListAsync();
-        // Dynamic used to access extensions methods manually, then once batch received get out of dynamic hell.
+        // Dynamically build up something comparable to the following: var batchIncoming = await
+        // Oltp.Companies .Where(e => e.Version.DateModified > batchStats.SyncTimestamp) .OrderBy(e
+        // => e.Version.DateModified) .Take(Options.BatchSize) .ToListAsync(); Dynamic used to
+        // access extensions methods manually, then once batch received get out of dynamic hell.
         var dbSet = (dynamic?)entitiesDbSet.GetValue(source)
             ?? throw new DryException("Source context for model must match the source DbContext for the factory.");
         var where = LinqBuilder.WhereVersionModified(dbSet, LinqBuilder.EqualityType.GreaterThan, batchStats.SyncTimestamp);
@@ -163,11 +161,10 @@ public class DataFactory(
 
     private async Task<List<object>> GetBatchExactTimestamp(PropertyInfo entitiesDbSet, DataTableSync batchStats)
     {
-        // Dynamically build up something comparable to the following:
-        // var batchIncoming = await Oltp.Companies
-        //      .Where(e => e.Version.DateModified == batchStats.SyncTimestamp)
-        //      .ToListAsync();
-        // Dynamic used to access extensions methods manually, then once batch received get out of dynamic hell.
+        // Dynamically build up something comparable to the following: var batchIncoming = await
+        // Oltp.Companies .Where(e => e.Version.DateModified == batchStats.SyncTimestamp)
+        // .ToListAsync(); Dynamic used to access extensions methods manually, then once batch
+        // received get out of dynamic hell.
         var dbSet = (dynamic?)entitiesDbSet.GetValue(source)
             ?? throw new DryException("Source context for model must match the source DbContext for the factory.");
         var where = LinqBuilder.WhereVersionModified(dbSet, LinqBuilder.EqualityType.EqualTo, batchStats.SyncTimestamp);
@@ -188,6 +185,7 @@ public class DataFactory(
         }
         return value.GetValue(item) as VersionInfo;
     }
+
     private Dictionary<Type, PropertyInfo> VersionInfoProperties { get; } = [];
 
     private string Upsert(Table table, object entity)
@@ -208,7 +206,6 @@ public class DataFactory(
         }
         return Sql.Upsert(table, (int)key, values);
     }
-
 
     private async Task CreateTargetTable(Table table, DataTableSync updateInfo)
     {
@@ -248,18 +245,17 @@ public class DataFactory(
     private DataFactoryOptions Options { get; } = options ?? new();
 
     private SqlServerSqlGenerator Sql { get; } = new SqlServerSqlGenerator();
-
 }
 
 public class DataFactory<TModel, TOltpContext, TOlapContext>(
-    TModel model, 
-    TOltpContext source, 
-    TOlapContext target, 
-    ILogger<DataFactory> logger, 
-    DataFactoryOptions? options = null) 
+    TModel model,
+    TOltpContext source,
+    TOlapContext target,
+    ILogger<DataFactory> logger,
+    DataFactoryOptions? options = null)
     : DataFactory(model, source, target, logger, options)
     where TModel : WarehouseModel
     where TOltpContext : DbContext
-    where TOlapContext : WarehouseContext  
+    where TOlapContext : WarehouseContext
 {
 }

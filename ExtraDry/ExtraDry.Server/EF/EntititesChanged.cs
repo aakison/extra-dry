@@ -3,16 +3,13 @@
 /// <summary>
 /// Arguments with information on the entities that have changed.
 /// </summary>
-/// <remarks>
-/// Create args with the added, updated and deleted entities.
-/// </remarks>
+/// <remarks>Create args with the added, updated and deleted entities.</remarks>
 public class EntitiesChanged(
-    IEnumerable<object> added, 
-    IEnumerable<object> modified, 
+    IEnumerable<object> added,
+    IEnumerable<object> modified,
     IEnumerable<object> deleted,
     AspectDbContext context)
 {
-
     public AspectDbContext Context { get; private set; } = context;
 
     /// <summary>

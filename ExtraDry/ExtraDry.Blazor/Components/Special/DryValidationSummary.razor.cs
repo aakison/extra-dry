@@ -16,8 +16,8 @@ public partial class DryValidationSummary : ComponentBase, IExtraDryComponent
     public Exception? Exception { get; set; }
 
     /// <summary>
-    /// If ProblemDetails are available (per RFC7231) they are provided here.  This will be the 
-    /// case with any RFC7231 APIs that return problem details on any 4xx response.
+    /// If ProblemDetails are available (per RFC7231) they are provided here. This will be the case
+    /// with any RFC7231 APIs that return problem details on any 4xx response.
     /// </summary>
     [Parameter]
     public ProblemDetails? ProblemDetails { get; set; }
@@ -29,10 +29,10 @@ public partial class DryValidationSummary : ComponentBase, IExtraDryComponent
     public List<string> GetValidationMessages()
     {
         if(!IsValidationError) {
-            // TODO: Propogate non validation exceptions to a higher ErrorBoundary?
-            // Throwing the exception here doesn't get handled by DryErrorBoundary it goes unhandled and
-            // the alert bar at bottom of the screen appears.
-            // For now it's handled by the DryValidationSummary to display a "A problem has occurred. Please try again" message
+            // TODO: Propogate non validation exceptions to a higher ErrorBoundary? Throwing the
+            // exception here doesn't get handled by DryErrorBoundary it goes unhandled and the
+            // alert bar at bottom of the screen appears. For now it's handled by the
+            // DryValidationSummary to display a "A problem has occurred. Please try again" message
             // throw Exception;
             return [];
         }
@@ -58,9 +58,9 @@ public partial class DryValidationSummary : ComponentBase, IExtraDryComponent
     }
 
     /// <summary>
-    /// Formats the message to be displayed in the alert bar.  Typically for validation messages
-    /// the group is the property name and the error is the message, which redundantly contains
-    /// the group name.  Identify these situations and clean them up.
+    /// Formats the message to be displayed in the alert bar. Typically for validation messages the
+    /// group is the property name and the error is the message, which redundantly contains the
+    /// group name. Identify these situations and clean them up.
     /// </summary>
     private static string FormatGroupMessage(string group, string message)
     {
@@ -72,13 +72,14 @@ public partial class DryValidationSummary : ComponentBase, IExtraDryComponent
     }
 
     /// <summary>
-    /// Given a validation message that contains a property name, remove the property name.  This
+    /// Given a validation message that contains a property name, remove the property name. This
     /// allows messages that are shown in context to not appear redundant.
     /// </summary>
     /// <param name="propertyName">The name of the property.</param>
     /// <param name="message">The validation messages</param>
     /// <returns>The formatted message</returns>
-    internal static string FormatMessage(string propertyName, string message) {
+    internal static string FormatMessage(string propertyName, string message)
+    {
         message = message.Replace($"The {propertyName} field ", "");
         message = message.Replace($"The field {propertyName} ", "");
         if(message.Length > 0) {
@@ -89,7 +90,7 @@ public partial class DryValidationSummary : ComponentBase, IExtraDryComponent
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "validation-summary", ErrorCss, CssClass);
 
-    private string ErrorCss => IsValidationError ? $"status{ProblemDetails!.Status}": "unexpected-error";
+    private string ErrorCss => IsValidationError ? $"status{ProblemDetails!.Status}" : "unexpected-error";
 
     private bool IsValidationError => ProblemDetails != null && ProblemDetails.Status == (int)HttpStatusCode.BadRequest;
 }

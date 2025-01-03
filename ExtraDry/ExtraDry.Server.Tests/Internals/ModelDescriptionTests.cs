@@ -2,8 +2,8 @@
 
 namespace ExtraDry.Server.Tests.Internals;
 
-public class ModelDescriptionTests {
-
+public class ModelDescriptionTests
+{
     [Fact]
     public void StabilizerPropertyIsKeyAttribute()
     {
@@ -74,38 +74,40 @@ public class ModelDescriptionTests {
         Assert.Equal("ExternalName", modelDescription.FilterProperties[1].ExternalName);
     }
 
-    public class KeyAttributeEntity {
-
+    public class KeyAttributeEntity
+    {
         [Key]
         [JsonIgnore]
         public int PrimaryKey { get; set; }
 
         public string Payload { get; set; } = string.Empty;
-
     }
 
-    public class IdConventionEntity {
+    public class IdConventionEntity
+    {
         [JsonIgnore]
         public int Id { get; set; }
 
         public string Payload { get; set; } = string.Empty;
     }
 
-    public class ClassNameConventionEntity {
+    public class ClassNameConventionEntity
+    {
         [JsonIgnore]
         public int ClassNameConventionEntityId { get; set; }
 
         public string Payload { get; set; } = string.Empty;
     }
 
-    public class NoImplicitStabilizer {
+    public class NoImplicitStabilizer
+    {
         public int PrimaryKey { get; set; }
 
         public string Payload { get; set; } = string.Empty;
     }
 
-    public class CompositeKeyAttributeEntity {
-
+    public class CompositeKeyAttributeEntity
+    {
         [Key]
         [JsonIgnore]
         public int PrimaryKey { get; set; }
@@ -115,11 +117,10 @@ public class ModelDescriptionTests {
         public int SecondaryKey { get; set; }
 
         public string Payload { get; set; } = string.Empty;
-
     }
 
-    public class SortPropertiesEntity {
-            
+    public class SortPropertiesEntity
+    {
         [Key]
         [JsonIgnore]
         public int Key { get; set; }

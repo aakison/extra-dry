@@ -5,7 +5,6 @@
 /// </summary>
 public class SlugAttribute : RegularExpressionAttribute
 {
-
     /// <inheritdoc cref="SlugAttribute" />
     public SlugAttribute(SlugType type = SlugType.Lowercase) : base(type == SlugType.MixedCase ? MixedCaseSlugRegex : LowercaseSlugRegex)
     {
@@ -20,5 +19,4 @@ public class SlugAttribute : RegularExpressionAttribute
     private const string LowercaseSlugRegex = "^[a-z0-9-]+$";
 
     private const string MixedCaseSlugRegex = "^[a-zA-Z0-9-]+$";
-
 }

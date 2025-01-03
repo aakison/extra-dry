@@ -1,7 +1,7 @@
 ﻿namespace Sample.Shared;
 
-public class Content : IResourceIdentifiers {
-
+public class Content : IResourceIdentifiers
+{
     [Key]
     [Rules(RuleAction.Block)]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]

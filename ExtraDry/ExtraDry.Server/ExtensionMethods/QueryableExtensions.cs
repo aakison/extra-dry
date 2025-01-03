@@ -5,26 +5,26 @@ using System.Linq.Expressions;
 namespace ExtraDry.Server;
 
 /// <summary>
-/// A very lightweight dynamic linq builder, just enough to satisfy needs of filtering, sorting 
-/// and paging API result sets.
+/// A very lightweight dynamic linq builder, just enough to satisfy needs of filtering, sorting and
+/// paging API result sets.
 /// </summary>
-public static class QueryableExtensions {
-
+public static class QueryableExtensions
+{
     public static FilteredListQueryable<T> QueryWith<T>(this IQueryable<T> source, FilterQuery query, Expression<Func<T, bool>>? defaultFilter = null) where T : class
     {
         return new FilteredListQueryable<T>(source.AsNoTracking(), query, defaultFilter);
     }
 
     /// <summary>
-    /// Given a `FilterQuery`, dynamically constructs an expression query that applies the 
+    /// Given a `FilterQuery`, dynamically constructs an expression query that applies the
     /// indicated filtering and sorting.
     /// </summary>
     /// <typeparam name="T">The type of objects in the collection.</typeparam>
     /// <param name="source">The extension source</param>
     /// <param name="query">A sort query that contains filtering and sorting information.</param>
     /// <param name="defaultFilter">
-    /// An expression that provides default filtering support, which can be overridden 
-    /// by `filterQuery`.
+    /// An expression that provides default filtering support, which can be overridden by
+    /// `filterQuery`.
     /// </param>
     public static SortedListQueryable<T> QueryWith<T>(this IQueryable<T> source, SortQuery query, Expression<Func<T, bool>>? defaultFilter = null) where T : class
     {
@@ -32,7 +32,7 @@ public static class QueryableExtensions {
     }
 
     /// <summary>
-    /// Given a `PageQuery`, dynamically constructs an expression query that applies the indicated 
+    /// Given a `PageQuery`, dynamically constructs an expression query that applies the indicated
     /// filtering, sorting, and paging.
     /// </summary>
     /// <typeparam name="T">The type of objects in the collection.</typeparam>
@@ -41,8 +41,8 @@ public static class QueryableExtensions {
     /// A page query that contains filtering, sorting, and paging information.
     /// </param>
     /// <param name="defaultFilter">
-    /// An expression that provides default filtering support, which can be overridden 
-    /// by `partialQuery`.
+    /// An expression that provides default filtering support, which can be overridden by
+    /// `partialQuery`.
     /// </param>
     public static PagedListQueryable<T> QueryWith<T>(this IQueryable<T> source, PageQuery query, Expression<Func<T, bool>>? defaultFilter = null) where T : class
     {
@@ -50,7 +50,7 @@ public static class QueryableExtensions {
     }
 
     /// <summary>
-    /// Given a <see cref="HierarchyQuery"/>, dynamically constructs an expression query that 
+    /// Given a <see cref="HierarchyQuery" />, dynamically constructs an expression query that
     /// applies the indicated level and keyword filtering, expansions, and collapses.
     /// </summary>
     /// <typeparam name="T">The type of objects in the collection.</typeparam>
@@ -59,7 +59,8 @@ public static class QueryableExtensions {
     /// A hierarchy query that contains filtering, expansion, and collapse information.
     /// </param>
     /// <param name="defaultFilter">
-    /// An expression that provides default filtering support, which can be overridden by `partialQuery`.
+    /// An expression that provides default filtering support, which can be overridden by
+    /// `partialQuery`.
     /// </param>
     public static FilteredHierarchyQueryable<T> QueryWith<T>(this IQueryable<T> source, HierarchyQuery query, Expression<Func<T, bool>>? defaultFilter = null) where T : class, IHierarchyEntity<T>
     {
@@ -67,7 +68,7 @@ public static class QueryableExtensions {
     }
 
     /// <summary>
-    /// Given a <see cref="PageHierarchyQuery"/>, dynamically constructs an expression query that 
+    /// Given a <see cref="PageHierarchyQuery" />, dynamically constructs an expression query that
     /// applies the indicated level and keyword filtering, expansions, collapses, and paging.
     /// </summary>
     /// <typeparam name="T">The type of objects in the collection.</typeparam>
@@ -76,7 +77,8 @@ public static class QueryableExtensions {
     /// A page hierarchy query that contains filtering, expansion, collapse and paging information.
     /// </param>
     /// <param name="defaultFilter">
-    /// An expression that provides default filtering support, which can be overridden by `partialQuery`.
+    /// An expression that provides default filtering support, which can be overridden by
+    /// `partialQuery`.
     /// </param>
     public static PagedHierarchyQueryable<T> QueryWith<T>(this IQueryable<T> source, PageHierarchyQuery query, Expression<Func<T, bool>>? defaultFilter = null) where T : class, IHierarchyEntity<T>
     {
@@ -84,8 +86,8 @@ public static class QueryableExtensions {
     }
 
     /// <summary>
-    /// Forces the underlying query mechanism to build string comparisons with the given comparison 
-    /// type.  This only works on in-memory databases and anything that executes on a remote 
+    /// Forces the underlying query mechanism to build string comparisons with the given comparison
+    /// type. This only works on in-memory databases and anything that executes on a remote
     /// database will throw an exception.
     /// </summary>
     public static BaseQueryable<T> ForceStringComparison<T>(this IQueryable<T> source, StringComparison forceStringComparison)
@@ -94,7 +96,7 @@ public static class QueryableExtensions {
     }
 
     /// <summary>
-    /// Given a `FilterQuery`, dynamically constructs an expression query that applies the 
+    /// Given a `FilterQuery`, dynamically constructs an expression query that applies the
     /// indicated filtering but not the indicated sorting.
     /// </summary>
     /// <typeparam name="T">The type of objects in the collection.</typeparam>
@@ -106,8 +108,8 @@ public static class QueryableExtensions {
     }
 
     /// <summary>
-    /// Given a `filter`, dynamically constructs an expression query that applies the 
-    /// indicated filtering.
+    /// Given a `filter`, dynamically constructs an expression query that applies the indicated
+    /// filtering.
     /// </summary>
     /// <typeparam name="T">The type of objects in the collection.</typeparam>
     /// <param name="source">The extension source</param>
@@ -122,11 +124,11 @@ public static class QueryableExtensions {
             return source;
         }
         var comparison = (source as BaseQueryable<T>)?.ForceStringComparison;
-        return source.WhereFilterConditions([..description.FilterProperties], filter.Trim(), comparison);
+        return source.WhereFilterConditions([.. description.FilterProperties], filter.Trim(), comparison);
     }
 
     /// <summary>
-    /// Given a `SortQuery`, dynamically constructs an expression query that applies the indicated 
+    /// Given a `SortQuery`, dynamically constructs an expression query that applies the indicated
     /// sorting but not the indicated filtering.
     /// </summary>
     /// <typeparam name="T">The type of objects in the collection.</typeparam>
@@ -139,13 +141,18 @@ public static class QueryableExtensions {
     }
 
     /// <summary>
-    /// Given a name of a property and an order, dynamically creates a sort query.
-    /// Also merges in the continuation token to supply values for consisted paging.
-    /// On conflict, the token will override the specified sort.
+    /// Given a name of a property and an order, dynamically creates a sort query. Also merges in
+    /// the continuation token to supply values for consisted paging. On conflict, the token will
+    /// override the specified sort.
     /// </summary>
-    /// <param name="source">The queryable source, typically from EF, this is from `DbSet.AsQueryable()`</param>
+    /// <param name="source">
+    /// The queryable source, typically from EF, this is from `DbSet.AsQueryable()`
+    /// </param>
     /// <param name="sort">The name of the property to sort by (optional, case insensitive)</param>
-    /// <param name="continuationToken">If this is not a new request, the token passed back from the previous request to maintain stability (optional)</param>
+    /// <param name="continuationToken">
+    /// If this is not a new request, the token passed back from the previous request to maintain
+    /// stability (optional)
+    /// </param>
     internal static IQueryable<T> Sort<T>(this IQueryable<T> source, string? sort, string? continuationToken)
     {
         var token = ContinuationToken.FromString(continuationToken);
@@ -180,7 +187,7 @@ public static class QueryableExtensions {
     }
 
     /// <summary>
-    /// Given a `PageQuery`, dynamically constructs an expression query that applies the indicated 
+    /// Given a `PageQuery`, dynamically constructs an expression query that applies the indicated
     /// paging but not the indicated filtering or sorting.
     /// </summary>
     /// <typeparam name="T">The type of objects in the collection.</typeparam>
@@ -193,15 +200,23 @@ public static class QueryableExtensions {
     }
 
     /// <summary>
-    /// Given a starting position and page size, returns a subset of the a collection.  Use will 
-    /// typically immediately follow a call to `Sort`.  Also merges in continuation token to 
-    /// supply values for paging if skip and take are missing.  On conflict, the skip and take 
-    /// values will override the token.
+    /// Given a starting position and page size, returns a subset of the a collection. Use will
+    /// typically immediately follow a call to `Sort`. Also merges in continuation token to supply
+    /// values for paging if skip and take are missing. On conflict, the skip and take values will
+    /// override the token.
     /// </summary>
     /// <param name="source">The queryable source, typically from result of call to `Sort`</param>
-    /// <param name="skip">The number of records to skip, if paging this is the page number times the take size.</param>
-    /// <param name="take">the number of records to take, this is the page size of the fetch.  Use to balance call API latency versus bandwidth</param>
-    /// <param name="continuationToken">If this is not a new request, the token passed back from the previous request to maintain stability (optional)</param>
+    /// <param name="skip">
+    /// The number of records to skip, if paging this is the page number times the take size.
+    /// </param>
+    /// <param name="take">
+    /// the number of records to take, this is the page size of the fetch. Use to balance call API
+    /// latency versus bandwidth
+    /// </param>
+    /// <param name="continuationToken">
+    /// If this is not a new request, the token passed back from the previous request to maintain
+    /// stability (optional)
+    /// </param>
     public static IQueryable<T> Page<T>(this IQueryable<T> source, int skip, int take, string? continuationToken)
     {
         var token = ContinuationToken.FromString(continuationToken);
@@ -220,18 +235,17 @@ public static class QueryableExtensions {
     public static async Task<BaseCollection<T>> ToBaseCollectionAsync<T>(this IQueryable<T> source, CancellationToken cancellationToken = default)
     {
         var baseQuery = new BaseQueryable<T>(source);
-        return await baseQuery.ToBaseCollectionInternalAsync(cancellationToken); 
+        return await baseQuery.ToBaseCollectionInternalAsync(cancellationToken);
     }
 
-    static internal ExtraDryOptions Options { get; set; } = new ExtraDryOptions();
+    internal static ExtraDryOptions Options { get; set; } = new ExtraDryOptions();
 
     /// <summary>
     /// The stabilization method to be used in queryable sorting.
     /// </summary>
-    static private SortStabilization SortStabilization => Options.Stabilization;
+    private static SortStabilization SortStabilization => Options.Stabilization;
 
     private const string MissingStabilizerErrorMessage = "Sort requires that a single EF key is uniquely defined to stabalize the sort, even if another sort property is present.  Use a single unique key following EF conventions";
 
     private const string SortErrorUserMessage = "Unable to Sort. 0x0F3F241C";
-
 }

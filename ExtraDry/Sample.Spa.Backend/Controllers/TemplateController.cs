@@ -12,7 +12,6 @@ namespace Sample.Spa.Backend.Controllers;
 public class TemplateController(
     TemplateService templateService)
 {
-
     /// <summary>
     /// Filtered list of all templates
     /// </summary>

@@ -6,66 +6,47 @@ using System.Text.Json;
 namespace ExtraDry.Swashbuckle.Instructions;
 
 /// <summary>
-/// Sometimes things just don't work out.  And when they don't, it can be frustrating when you don't
-/// have enough information to find the problem.  To help determine the source of the problem, this
-/// API adopts RFC 7807 (https://www.rfc-editor.org/rfc/rfc7807) and reports Problem Details as a 
+/// Sometimes things just don't work out. And when they don't, it can be frustrating when you don't
+/// have enough information to find the problem. To help determine the source of the problem, this
+/// API adopts RFC 7807 (https://www.rfc-editor.org/rfc/rfc7807) and reports Problem Details as a
 /// JSON payload when errors occur.
-/// 
-/// ### RFC 7807
-/// When APIs fail, the system will conform to the Problem Details RFC.  This will return a JSON
-/// object with additional information that is intended for users to better understand the source of
-/// the failure.
-/// 
+///
+/// ### RFC 7807 When APIs fail, the system will conform to the Problem Details RFC. This will
+/// return a JSON object with additional information that is intended for users to better
+/// understand the source of the failure.
+///
 /// In accordance with the RFC, the following members are returned in the JSON object:
-/// 
-/// `type`
-/// : A URI that uniquely identifies the type of the problem.  This is not designed for display and
-/// does not link to a page with further information.
-/// 
-/// `status`
-/// : The HTTP status code associated with the problem, will match the status code in the 
+///
+/// `type` : A URI that uniquely identifies the type of the problem. This is not designed for
+/// display and does not link to a page with further information.
+///
+/// `status` : The HTTP status code associated with the problem, will match the status code in the
 /// HTTP header.
-/// 
-/// `title`
-/// : An English language summary of the problem.  It does not contain specific details of the 
-/// problem and does not change from occurrance to occurrance.  E.g. "Entity could not be found"
-/// 
-/// `detail`
-/// : An English language description of the problem.  This expands on the title and might include
-/// specific additional dynamic information about the request or the 
 ///
-/// `instance`
-/// : The specific instance that caused this problem, as this is a RESTful API, this is the URI path
-/// and query of the HTTP request.
+/// `title` : An English language summary of the problem. It does not contain specific details of
+/// the problem and does not change from occurrance to occurrance. E.g. "Entity could not be found"
 ///
-/// ### Example
-/// ```
-/// {
-///   "type" : "/problems/entity-not-found",
-///   "status" : 404,
-///   "title" : "Entity could not be found",
-///   "detail" : "Could not find 'Company' with the 'companyId' of '123'.",
-///   "instance" : "/api/companies/123"
-/// }
-/// ```
-/// 
-/// ### Exceptions
-/// Sometimes, the system is unable to return Problem Details.  For example, a call might be
-/// throttled by a Web Application Firewall (WAF) and return a 429 - Too Many Requests response
-/// before this API is called. Alternately, our system (with our deepest regrets) might have an
-/// internal failure and return a 500 - Internal Server Error.
+/// `detail` : An English language description of the problem. This expands on the title and might
+/// include specific additional dynamic information about the request or the /// `instance` : The
+/// specific instance that caused this problem, as this is a RESTful API, this is the URI path and
+/// query of the HTTP request. /// ### Example ``` { "type" : "/problems/entity-not-found",
+/// "status" : 404, "title" : "Entity could not be found", "detail" : "Could not find 'Company'
+/// with the 'companyId' of '123'.", "instance" : "/api/companies/123" } ```
 ///
-/// ### Try It Out
-/// Use the endpoint below to see an example of problem details.  There is only one input that does
-/// not produce a problem details response, and inputs will provide different responses to
-/// demonstrate how details should assist the developer or user to get unblocked.
+/// ### Exceptions Sometimes, the system is unable to return Problem Details. For example, a call
+/// might be throttled by a Web Application Firewall (WAF) and return a 429 - Too Many Requests
+/// response before this API is called. Alternately, our system (with our deepest regrets) might
+/// have an internal failure and return a 500 - Internal Server Error. /// ### Try It Out Use the
+/// endpoint below to see an example of problem details. There is only one input that does not
+/// produce a problem details response, and inputs will provide different responses to demonstrate
+/// how details should assist the developer or user to get unblocked.
 /// </summary>
 [ApiController]
 [ApiExplorerSettings(GroupName = SwaggerOptionsExtensions.GroupName)]
 [ApiExceptionStatusCodes]
 [Display(Name = "Problem Details", Order = 5)]
-public class ProblemDetailsController {
-
+public class ProblemDetailsController
+{
     /// <summary>
     /// Puzzling endpoint, but at least it has good error responses.
     /// </summary>
@@ -112,7 +93,8 @@ public class ProblemDetailsController {
         public object? Answer { get; set; }
     }
 
-    public class Response {
+    public class Response
+    {
         /// <summary>
         /// A congratulatory message.
         /// </summary>
@@ -123,5 +105,4 @@ public class ProblemDetailsController {
     private static readonly JsonSerializerOptions jsonOptions = new() {
         PropertyNameCaseInsensitive = true,
     };
-
 }

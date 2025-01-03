@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Core.Server.Tests.ExtensionMethods;
 
-public class QueryableExtensionsTests {
-
+public class QueryableExtensionsTests
+{
     [Fact]
     public void NoSortSpecifiedUseIdStabilizer()
     {
@@ -81,41 +81,40 @@ public class QueryableExtensionsTests {
         Assert.Throws<DryException>(() => list.AsQueryable().Sort(query));
     }
 
-
-    public class IdConventionKey {
-
+    public class IdConventionKey
+    {
         [JsonIgnore]
         public int Id { get; set; }
 
         public string Payload { get; set; } = string.Empty;
     }
 
-    public class ClassNameConventionKey {
-
+    public class ClassNameConventionKey
+    {
         [JsonIgnore]
         public int ClassNameConventionKeyId { get; set; }
 
         public string Payload { get; set; } = string.Empty;
     }
 
-    public class KeyAttributeEntity {
-
+    public class KeyAttributeEntity
+    {
         [Key]
         [JsonIgnore]
         public int PrimaryKey { get; set; }
 
         public string Payload { get; set; } = string.Empty;
-
     }
 
-    public class NoImplicitStabilizer {
+    public class NoImplicitStabilizer
+    {
         public int PrimaryKey { get; set; }
 
         public string Payload { get; set; } = string.Empty;
     }
 
-
-    public class CompositeKeyStabilizer {
+    public class CompositeKeyStabilizer
+    {
         [Key]
         [JsonIgnore]
         public int FirstPartKey { get; set; }
@@ -126,5 +125,4 @@ public class QueryableExtensionsTests {
 
         public string Payload { get; set; } = string.Empty;
     }
-
 }

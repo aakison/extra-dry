@@ -51,12 +51,15 @@ body {
 h3 {
     font-size: 1.6rem;
 }
+
 h4 {
     font-size: 1.4rem;
 }
+
 h5 {
     font-size: 1.2rem;
 }
+
 h6 {
     font-size: 1rem;
 }
@@ -109,6 +112,7 @@ pre {
     border: solid 1px $var-primary-dark;
     margin-bottom: $margin !important;
 }
+
 code {
     color: $var-secondary;
     font-weight: bold;

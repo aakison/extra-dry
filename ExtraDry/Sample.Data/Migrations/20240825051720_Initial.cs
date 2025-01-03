@@ -13,8 +13,7 @@ namespace Sample.Data.Migrations
         {
             migrationBuilder.CreateTable(
                 name: "Contents",
-                columns: table => new
-                {
+                columns: table => new {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Uuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -26,15 +25,13 @@ namespace Sample.Data.Migrations
                     Version_DateModified = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Version_UserModified = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_Contents", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Regions",
-                columns: table => new
-                {
+                columns: table => new {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Uuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -51,8 +48,7 @@ namespace Sample.Data.Migrations
                     Version_DateModified = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Version_UserModified = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_Regions", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Regions_Regions_ParentId",
@@ -63,8 +59,7 @@ namespace Sample.Data.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Templates",
-                columns: table => new
-                {
+                columns: table => new {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Uuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -76,15 +71,13 @@ namespace Sample.Data.Migrations
                     Version_UserModified = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false),
                     Schema = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_Templates", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Companies",
-                columns: table => new
-                {
+                columns: table => new {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Uuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -113,15 +106,13 @@ namespace Sample.Data.Migrations
                     Version_UserModified = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false),
                     CustomFields = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValueSql: "'{}'")
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_Companies", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Employees",
-                columns: table => new
-                {
+                columns: table => new {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Uuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -137,8 +128,7 @@ namespace Sample.Data.Migrations
                     Version_DateModified = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Version_UserModified = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_Employees", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Employees_Companies_EmployerId",
@@ -149,8 +139,7 @@ namespace Sample.Data.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Sectors",
-                columns: table => new
-                {
+                columns: table => new {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Uuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -164,8 +153,7 @@ namespace Sample.Data.Migrations
                     Version_UserModified = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false),
                     CompanyId = table.Column<int>(type: "int", nullable: true)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_Sectors", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Sectors_Companies_CompanyId",

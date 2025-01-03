@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Blazor;
 
-public partial class DryFlexiSelect : DryPropertyComponentBase, IExtraDryComponent {
-
+public partial class DryFlexiSelect : DryPropertyComponentBase, IExtraDryComponent
+{
     /// <inheritdoc cref="IExtraDryComponent.CssClass" />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
@@ -14,7 +14,7 @@ public partial class DryFlexiSelect : DryPropertyComponentBase, IExtraDryCompone
     [Parameter]
     public bool ShowTitle { get; set; } = true;
 
-    /// <inheritdoc cref="FlexiSelect{TItem}.Placeholder"/>
+    /// <inheritdoc cref="FlexiSelect{TItem}.Placeholder" />
     [Parameter]
     public string Placeholder { get; set; } = "select...";
 
@@ -34,7 +34,7 @@ public partial class DryFlexiSelect : DryPropertyComponentBase, IExtraDryCompone
     [Parameter]
     public MiniDialogAction LoseFocusAction { get; set; } = MiniDialogAction.SaveAndClose;
 
-    /// <inheritdoc cref="FlexiSelect{TItem}.OnClick"/>
+    /// <inheritdoc cref="FlexiSelect{TItem}.OnClick" />
     [Parameter]
     public EventCallback<MouseEventArgs> OnClick { get; set; }
 
@@ -69,6 +69,6 @@ public partial class DryFlexiSelect : DryPropertyComponentBase, IExtraDryCompone
             Property?.SetValue(Model, this.localValue?.Key);
         }
     }
-    private ValueDescription? localValue;
 
+    private ValueDescription? localValue;
 }

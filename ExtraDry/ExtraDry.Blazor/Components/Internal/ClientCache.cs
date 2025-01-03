@@ -1,8 +1,8 @@
 ﻿namespace ExtraDry.Blazor.Components.Internal;
 
 internal class ClientCache<TKey, TItem>(
-    TimeSpan timeoutWindow) 
-    where TKey : notnull 
+    TimeSpan timeoutWindow)
+    where TKey : notnull
 {
     public bool TryGetValue(TKey key, out TItem? entry)
     {
@@ -28,6 +28,7 @@ internal class ClientCache<TKey, TItem>(
     public class CacheEntry(DateTime expiry, TItem entry)
     {
         public DateTime Expiry { get; set; } = expiry;
+
         public TItem Entry { get; set; } = entry;
     }
 
@@ -41,5 +42,4 @@ internal class ClientCache<TKey, TItem>(
     }
 
     private readonly Dictionary<TKey, CacheEntry> entries = [];
-
 }

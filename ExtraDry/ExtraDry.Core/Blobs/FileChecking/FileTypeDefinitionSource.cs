@@ -51,10 +51,9 @@ internal class FileTypeDefinitionSource(string fileDatabasePath = "")
     /// </summary>
     internal IEnumerable<FileTypeDefinition> GetFileTypeFromContent(byte[]? content)
     {
-        if(content == null || content.Length == 0) {
-            return [];
-        }
-        return FileDefinitions.Where(m => IsMatch(content, m.MagicBytes));
+        return content == null || content.Length == 0
+            ? ([])
+            : FileDefinitions.Where(m => IsMatch(content, m.MagicBytes));
     }
 
     private static bool IsMatch(byte[] content, List<MagicBytes> magic)
@@ -79,5 +78,4 @@ internal class FileTypeDefinitionSource(string fileDatabasePath = "")
     }
 
     private readonly List<FileTypeDefinition> FileDefinitions = LoadFileDefinitionsFromAssembly(fileDatabasePath);
-
 }

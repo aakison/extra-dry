@@ -3,7 +3,7 @@
 namespace Sample.Data.Services;
 
 public class InMemoryBlobService(
-    RuleEngine ruleEngine, 
+    RuleEngine ruleEngine,
     FileValidator fileValidator)
 {
     public async Task<Blob> CreateAsync(Blob item)

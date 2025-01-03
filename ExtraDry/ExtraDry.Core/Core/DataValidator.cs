@@ -1,11 +1,11 @@
 ﻿namespace ExtraDry.Core;
 
 /// <summary>
-/// Designed to facility the validation of properties of objects, especially when not all of the object is validated.
+/// Designed to facility the validation of properties of objects, especially when not all of the
+/// object is validated.
 /// </summary>
 public class DataValidator
 {
-
     /// <summary>
     /// Validates all properties of the indicated object.
     /// </summary>
@@ -41,8 +41,8 @@ public class DataValidator
     }
 
     /// <summary>
-    /// Validates the specified properties (by name) of the indicated object.
-    /// Ability provided to force checking for `[Required]` on string fields even if not attributed.
+    /// Validates the specified properties (by name) of the indicated object. Ability provided to
+    /// force checking for `[Required]` on string fields even if not attributed.
     /// </summary>
     /// <returns>True if validation successful.</returns>
     /// <example>
@@ -71,8 +71,8 @@ public class DataValidator
     }
 
     /// <summary>
-    /// Checks if the objects and properties that have been checked are valid.  If any are not, 
-    /// then throws a validation exception with all of the errors.
+    /// Checks if the objects and properties that have been checked are valid. If any are not, then
+    /// throws a validation exception with all of the errors.
     /// </summary>
     public void ThrowIfInvalid()
     {
@@ -83,7 +83,7 @@ public class DataValidator
     }
 
     /// <summary>
-    /// Throws a validation exception if the object is not valid.  Shortcut for constructing a new 
+    /// Throws a validation exception if the object is not valid. Shortcut for constructing a new
     /// DataValidator when only a single target is to be checked.
     /// </summary>
     /// <param name="target">The object that is checked for validity.</param>

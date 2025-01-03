@@ -6,11 +6,12 @@
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 public class FactTableAttribute : WarehouseTableAttribute
 {
-
     /// <summary>
-    /// Declares a `class` as a data warehouse fact table with the name inferred from the `class` name.
+    /// Declares a `class` as a data warehouse fact table with the name inferred from the `class`
+    /// name.
     /// </summary>
-    public FactTableAttribute() { }
+    public FactTableAttribute()
+    { }
 
     /// <summary>
     /// Declares a `class` as a data warehouse fact table with the name explicity defined.
@@ -19,5 +20,4 @@ public class FactTableAttribute : WarehouseTableAttribute
     {
         Name = name;
     }
-
 }

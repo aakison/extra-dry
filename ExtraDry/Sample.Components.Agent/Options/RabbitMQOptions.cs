@@ -1,8 +1,6 @@
-﻿using ExtraDry.Server.Agents;
+﻿namespace Sample.Components.Agent;
 
-namespace Sample.Components.Agent;
-
-public class RabbitMQOptions 
+public class RabbitMQOptions
 {
     [StringLength(255)]
     [RegularExpression(@"[a-zA-Z0-9.\-]+")]
@@ -22,5 +20,4 @@ public class RabbitMQOptions
     public int AdminPort { get; set; } = 15672;
 
     public string AdminUrl => $"https://{Username}:{Password}@{Server}:{AdminPort}{VirtualHost}";
-
 }

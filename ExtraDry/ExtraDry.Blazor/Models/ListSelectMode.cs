@@ -7,8 +7,8 @@ namespace ExtraDry.Blazor;
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
 [SuppressMessage("Naming", "CA1720:Identifier contains type name", Justification = "Not a data type, but a indicator of counts.")]
-public enum ListSelectMode {
-
+public enum ListSelectMode
+{
     /// <summary>
     /// The list rows are not selectable and there is nothing that can be done with any of them.
     /// </summary>
@@ -25,8 +25,8 @@ public enum ListSelectMode {
     Single,
 
     /// <summary>
-    /// One or more commands exist that support multiple items at once, multiple rows may be selected.
+    /// One or more commands exist that support multiple items at once, multiple rows may be
+    /// selected.
     /// </summary>
     Multiple,
-
 }

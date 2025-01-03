@@ -12,5 +12,4 @@ public partial class ApiOptions
 
     /// <inheritdoc cref="CosmosDbOptions" />
     public CosmosDbOptions CosmosDb { get; set; } = new();
-
 }

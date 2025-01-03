@@ -5,14 +5,12 @@
 /// </summary>
 public interface IUpdatingCallback
 {
-
     /// <summary>
-    /// Callback handler for the item that is done as it is being updated. This is called just 
-    /// before the object is updated by the Rule Engine.  This is not intended to be called by 
-    /// user code.
+    /// Callback handler for the item that is done as it is being updated. This is called just
+    /// before the object is updated by the Rule Engine. This is not intended to be called by user
+    /// code.
     /// </summary>
     public Task OnUpdatingAsync();
-
 }
 
 /// <summary>
@@ -20,14 +18,12 @@ public interface IUpdatingCallback
 /// </summary>
 public interface IUpdatedCallback
 {
-
     /// <summary>
-    /// Callback handler for the item that is done as it is being updated. This is called just 
-    /// after the object is updated by the Rule Engine.  This is not intended to be called by 
-    /// user code.
+    /// Callback handler for the item that is done as it is being updated. This is called just
+    /// after the object is updated by the Rule Engine. This is not intended to be called by user
+    /// code.
     /// </summary>
     public Task OnUpdatedAsync();
-
 }
 
 /// <summary>
@@ -35,5 +31,4 @@ public interface IUpdatedCallback
 /// </summary>
 public interface IUpdateCallbacks : IUpdatingCallback, IUpdatedCallback
 {
-
 }

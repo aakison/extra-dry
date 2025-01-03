@@ -9,11 +9,10 @@
 /// The type of the Model that the input renders a property for. Supports DateTime, DateOnly, and
 /// TimeOnly.
 /// </typeparam>
-public partial class DryInputDateTime<T> 
-    : DryInputBase<T> 
+public partial class DryInputDateTime<T>
+    : DryInputBase<T>
     where T : class
 {
-
     /// <inheritdoc cref="DryInput{T}.ReadOnly" />
     [Parameter]
     public bool ReadOnly { get; set; }
@@ -59,9 +58,9 @@ public partial class DryInputDateTime<T>
         _ => "datetime-local"
     };
 
-    private new string ResolvedAffordance => 
+    private new string ResolvedAffordance =>
         Affordance == ""
-        
+
         ? Property?.InputFormat?.Affordance
         ?? Property?.InputType switch {
             Type t when t == typeof(DateOnly) => "select-date",
@@ -79,9 +78,9 @@ public partial class DryInputDateTime<T>
     private string Value { get; set; } = "";
 
     /// <summary>
-    /// Browser enables space to get dialog on date/time but doesn't disable it when the field is 
-    /// readonly. This hack disables the space key when the field is readonly.  It also disables 
-    /// the up and down arrows which would scroll the page.
+    /// Browser enables space to get dialog on date/time but doesn't disable it when the field is
+    /// readonly. This hack disables the space key when the field is readonly. It also disables the
+    /// up and down arrows which would scroll the page.
     /// </summary>
     private string DisableSpaceWhenReadOnlyHack => ReadOnly ? @"if(event.code == 'Space' || event.code == 'ArrowUp' || event.code == 'ArrowDown') return false;" : "";
 
@@ -200,7 +199,6 @@ public partial class DryInputDateTime<T>
                 parseValid = true;
             }
         }
-
 
         if(parseValid) {
             Property.SetValue(Model, newValue);

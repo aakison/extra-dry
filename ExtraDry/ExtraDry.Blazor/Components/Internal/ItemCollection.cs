@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Blazor.Components.Internal;
 
-internal class ItemCollection<T> : List<ListItemInfo<T>> {
-
+internal class ItemCollection<T> : List<ListItemInfo<T>>
+{
     public ItemCollection()
     {
     }
@@ -15,7 +15,5 @@ internal class ItemCollection<T> : List<ListItemInfo<T>> {
 
     //public void SortBy(PropertyDescription property)
     //{
-            
     //}
-
 }

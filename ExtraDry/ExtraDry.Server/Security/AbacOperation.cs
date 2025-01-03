@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Server.Security;
 
 /// <summary>
-/// The ABAC operation that is being checked for authorization purposes.  This is used to determine
+/// The ABAC operation that is being checked for authorization purposes. This is used to determine
 /// which configured rule to apply to the authorization check.
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -33,7 +33,8 @@ public enum AbacOperation
     List,
 
     /// <summary>
-    /// The operation is to perform aggregate operations on a collection of entities, such as sum, average, etc.
+    /// The operation is to perform aggregate operations on a collection of entities, such as sum,
+    /// average, etc.
     /// </summary>
     Aggregate,
 

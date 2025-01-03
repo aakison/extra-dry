@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Blazor.Tests.Components;
 
-public class GravatarTests : IDisposable {
-
+public class GravatarTests : IDisposable
+{
     [Fact]
     public void GravatarHasSurroundingDiv()
     {
@@ -21,7 +21,7 @@ public class GravatarTests : IDisposable {
         var fragment = context.RenderComponent<Gravatar>(("Email", exampleEmail));
 
         var img = fragment.Find("img");
-            
+
         Assert.NotNull(img);
         Assert.Equal("gravatar", img.ClassName);
     }
@@ -87,8 +87,8 @@ public class GravatarTests : IDisposable {
     }
 
     private const string exampleEmail = "user@example.com";
+
     private const string exampleHash = "b58996c504c5638798eb6b511e6f49af";
 
     private readonly TestContext context = new();
-
 }

@@ -9,8 +9,7 @@ namespace ExtraDry.Core;
 /// </summary>
 public class ExpandoValuesConverter : JsonConverter<ExpandoValues>
 {
-
-    /// <inheritdoc cref="JsonConverter{T}.Read(ref Utf8JsonReader, Type, JsonSerializerOptions)"/>
+    /// <inheritdoc cref="JsonConverter{T}.Read(ref Utf8JsonReader, Type, JsonSerializerOptions)" />
     public override ExpandoValues? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var dictionary = JsonSerializer.Deserialize<Dictionary<string, object>>(ref reader, options);
@@ -27,8 +26,9 @@ public class ExpandoValuesConverter : JsonConverter<ExpandoValues>
     }
 
     /// <summary>
-    /// When the serializer deserializes a dictionary from a json object, the values are JsonElement.
-    /// During ExpandoValues deserialization, we want to convert these to the appropriate type.
+    /// When the serializer deserializes a dictionary from a json object, the values are
+    /// JsonElement. During ExpandoValues deserialization, we want to convert these to the
+    /// appropriate type.
     /// </summary>
     private static object? UnpackJsonElement(object? item)
     {
@@ -55,5 +55,4 @@ public class ExpandoValuesConverter : JsonConverter<ExpandoValues>
             throw new ArgumentException("Elements in Expando Values must either be JsonElement, double, string, or DateTime.", nameof(item));
         }
     }
-
 }

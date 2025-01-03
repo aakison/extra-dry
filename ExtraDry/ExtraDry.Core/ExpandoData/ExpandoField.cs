@@ -5,7 +5,6 @@
 /// </summary>
 public class ExpandoField
 {
-
     /// <summary>
     /// A unique slug for the field that is auto-generated on create.
     /// </summary>
@@ -25,8 +24,8 @@ public class ExpandoField
     public string Section { get; set; } = string.Empty;
 
     /// <summary>
-    /// A description for the field that can present more information than the name.
-    /// This may be presented to users in the form of a tooltip or similar.
+    /// A description for the field that can present more information than the name. This may be
+    /// presented to users in the form of a tooltip or similar.
     /// </summary>
     public string Description { get; set; } = string.Empty;
 
@@ -36,8 +35,8 @@ public class ExpandoField
     public ExpandoDataType DataType { get; set; }
 
     /// <summary>
-    /// The default value for the field, to be populated by the client when a form is loaded.
-    /// If the form is "cancelled", then the default should be reverted.
+    /// The default value for the field, to be populated by the client when a form is loaded. If
+    /// the form is "cancelled", then the default should be reverted.
     /// </summary>
     public object? DefaultValue { get; set; }
 
@@ -89,7 +88,7 @@ public class ExpandoField
     /// </summary>
     public int Order { get; set; }
 
-    /// <inheritdoc cref="ExpandoState"/>
+    /// <inheritdoc cref="ExpandoState" />
     public ExpandoState State { get; set; } = ExpandoState.Draft;
 
     public IEnumerable<ValidationResult> ValidateValue(object? value)
@@ -131,11 +130,13 @@ public class ExpandoField
                     results.Add(new ValidationResult($"{Label} does not match the DataType, expected 'true' or 'false'.", [Label]));
                 }
                 break;
+
             case ExpandoDataType.DateTime:
                 if(!DateTime.TryParse(value.ToString(), out var _)) {
                     results.Add(new ValidationResult($"{Label} does not match the DataType set.", [Label]));
                 }
                 break;
+
             case ExpandoDataType.Number:
                 if(value is int iNumber) {
                     ValidateNumber(iNumber, ref results);
@@ -147,6 +148,7 @@ public class ExpandoField
                     results.Add(new ValidationResult($"{Label} does not match the DataType, expected number.", [Label]));
                 }
                 break;
+
             case ExpandoDataType.Text:
                 if(value is not string) {
                     results.Add(new ValidationResult($"{Label} does not match the DataType, expected string literal.", [Label]));
@@ -172,5 +174,4 @@ public class ExpandoField
             }
         }
     }
-
 }

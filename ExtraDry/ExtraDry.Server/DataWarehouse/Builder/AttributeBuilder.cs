@@ -5,7 +5,6 @@ namespace ExtraDry.Server.DataWarehouse.Builder;
 
 public class AttributeBuilder : ColumnBuilder
 {
-
     internal AttributeBuilder(TableBuilder tableBuilder, Type entityType, PropertyInfo propertyInfo)
         : base(tableBuilder, entityType, propertyInfo)
     {
@@ -115,8 +114,9 @@ public class AttributeBuilder : ColumnBuilder
         return isAttribute;
     }
 
-    // Int is interesting here, considering not including it as a valid attribute ever, but then came across 'SortOrder', snap.
-    // Not including decimal, float, long, etc unless an example justifying their use is identified.
+    // Int is interesting here, considering not including it as a valid attribute ever, but then
+    // came across 'SortOrder', snap. Not including decimal, float, long, etc unless an example
+    // justifying their use is identified.
     private static readonly Type[] attributeTypes = [typeof(string), typeof(Uri), typeof(Guid), typeof(int), typeof(DateOnly), typeof(DateTime)];
 
     protected override bool IsValidColumnType(ColumnType type)
@@ -130,5 +130,4 @@ public class AttributeBuilder : ColumnBuilder
 
     // http://net-informations.com/q/mis/len.html
     private const int MaxUriLength = 2083;
-
 }

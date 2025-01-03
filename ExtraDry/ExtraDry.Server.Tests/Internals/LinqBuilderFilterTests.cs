@@ -3,8 +3,8 @@ using System.Reflection;
 
 namespace ExtraDry.Server.Tests.Internals;
 
-public class LinqBuilderFilterTests {
-
+public class LinqBuilderFilterTests
+{
     [Fact]
     public void SingleEqualsWhereFilterCompatible()
     {
@@ -155,7 +155,8 @@ public class LinqBuilderFilterTests {
         return new FilterProperty(property, filter);
     }
 
-    public class Datum {
+    public class Datum
+    {
         [Filter(FilterType.Equals)]
         public string FirstName { get; set; } = string.Empty;
 
@@ -176,6 +177,7 @@ public class LinqBuilderFilterTests {
     public enum DatumType
     {
         Active,
+
         Inactive,
     }
 
@@ -193,9 +195,9 @@ public class LinqBuilderFilterTests {
         new Datum { FirstName = "Bob", LastName = "Ross", Number = 321 },
     ];
 
-    public class SimpleDatum {
+    public class SimpleDatum
+    {
         [Filter(FilterType.Equals)]
         public string Name { get; set; } = string.Empty;
     }
-
 }

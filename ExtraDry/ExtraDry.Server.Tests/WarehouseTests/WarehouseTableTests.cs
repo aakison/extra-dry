@@ -3,8 +3,8 @@ using ExtraDry.Server.DataWarehouse;
 
 namespace ExtraDry.Server.Tests.WarehouseTests;
 
-public class WarehouseTableTests {
-
+public class WarehouseTableTests
+{
     [Theory]
     [InlineData(typeof(FactTableCollisionContext))]
     [InlineData(typeof(DimensionTableCollisionContext))]
@@ -88,16 +88,18 @@ public class WarehouseTableTests {
         var ex = Assert.Throws<DryException>(() => builder.Dimension<Employee>());
     }
 
-    public class FactTableCollisionContext : DbContext {
-
+    public class FactTableCollisionContext : DbContext
+    {
         [FactTable]
-        public class FirstTable {
+        public class FirstTable
+        {
             [JsonIgnore]
             public int Id { get; set; }
         }
 
         [FactTable("First Table")]
-        public class SecondTable {
+        public class SecondTable
+        {
             [JsonIgnore]
             public int Id { get; set; }
         }
@@ -105,19 +107,20 @@ public class WarehouseTableTests {
         public DbSet<FirstTable> Firsts { get; set; } = null!;
 
         public DbSet<SecondTable> Seconds { get; set; } = null!;
-
     }
 
-    public class DimensionTableCollisionContext : DbContext {
-
+    public class DimensionTableCollisionContext : DbContext
+    {
         [DimensionTable]
-        public class FirstTable {
+        public class FirstTable
+        {
             [JsonIgnore]
             public int Id { get; set; }
         }
 
         [DimensionTable("First Table")]
-        public class SecondTable {
+        public class SecondTable
+        {
             [JsonIgnore]
             public int Id { get; set; }
         }
@@ -125,19 +128,20 @@ public class WarehouseTableTests {
         public DbSet<FirstTable> Firsts { get; set; } = null!;
 
         public DbSet<SecondTable> Seconds { get; set; } = null!;
-
     }
 
-    public class MixedTableCollisionContext : DbContext {
-
+    public class MixedTableCollisionContext : DbContext
+    {
         [FactTable]
-        public class FirstTable {
+        public class FirstTable
+        {
             [JsonIgnore]
             public int Id { get; set; }
         }
 
         [DimensionTable("First Table")]
-        public class SecondTable {
+        public class SecondTable
+        {
             [JsonIgnore]
             public int Id { get; set; }
         }
@@ -145,6 +149,5 @@ public class WarehouseTableTests {
         public DbSet<FirstTable> Firsts { get; set; } = null!;
 
         public DbSet<SecondTable> Seconds { get; set; } = null!;
-
     }
 }

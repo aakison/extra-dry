@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Server;
 
-public class ExtraDryOptions {
-
+public class ExtraDryOptions
+{
     /// <summary>
     /// When binding from configuration, this is the section name to use.
     /// </summary>

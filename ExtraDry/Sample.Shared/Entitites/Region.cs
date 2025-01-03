@@ -9,8 +9,8 @@ namespace Sample.Shared;
 /// </summary>
 [DeleteRule(DeleteAction.Recycle, nameof(IsDeleted), DeleteStatus.Recycled, DeleteStatus.Live)]
 [Index(nameof(Uuid), IsUnique = true)]
-public partial class Region : IHierarchyEntity<Region>, IResourceIdentifiers, IValidatableObject, IEquatable<Region> {
-
+public partial class Region : IHierarchyEntity<Region>, IResourceIdentifiers, IValidatableObject, IEquatable<Region>
+{
     /// <summary>
     /// The database primary key for the entity.
     /// </summary>
@@ -19,7 +19,7 @@ public partial class Region : IHierarchyEntity<Region>, IResourceIdentifiers, IV
     public int Id { get; set; }
 
     /// <inheritdoc />
-    [Sort(SortType.Sortable)] 
+    [Sort(SortType.Sortable)]
     public Guid Uuid { get; set; } = Guid.NewGuid();
 
     /// <summary>
@@ -53,8 +53,8 @@ public partial class Region : IHierarchyEntity<Region>, IResourceIdentifiers, IV
     public int Strata => (int)Level;
 
     /// <summary>
-    /// The code for the region, using the ISO-3166 standard.
-    /// Use alpha-2 codes for country, then country specific codes.  E.g. "AU", then "AU-QLD", then "AU-QLD-Brisbane".
+    /// The code for the region, using the ISO-3166 standard. Use alpha-2 codes for country, then
+    /// country specific codes. E.g. "AU", then "AU-QLD", then "AU-QLD-Brisbane".
     /// </summary>
     [Required, StringLength(32)]
     [Display(ShortName = "Code")]
@@ -70,11 +70,11 @@ public partial class Region : IHierarchyEntity<Region>, IResourceIdentifiers, IV
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
-    /// The full name of the country or region, such as 'Commonwealth of Australia', or 'United 
+    /// The full name of the country or region, such as 'Commonwealth of Australia', or 'United
     /// States of America'.
     /// </summary>
     /// <remarks>
-    /// Limited to 100 characters based on full names of countries which, in English, max at 59 
+    /// Limited to 100 characters based on full names of countries which, in English, max at 59
     /// characters per ISO.
     /// </remarks>
     [Required, StringLength(100)]
@@ -110,6 +110,7 @@ public partial class Region : IHierarchyEntity<Region>, IResourceIdentifiers, IV
         }
         return results;
     }
+
     public bool Equals(Region? other) => Slug == other?.Slug;
 
     public override bool Equals(object? obj) => Equals(obj as Region);
@@ -124,12 +125,12 @@ public partial class Region : IHierarchyEntity<Region>, IResourceIdentifiers, IV
 
     [GeneratedRegex(@"^\w{2}-\w{2,4}-\w{2,20}$", RegexOptions.Compiled)]
     private partial Regex SubdivisionRegex();
-
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum DeleteStatus
 {
     Live,
-    Recycled, 
+
+    Recycled,
 }

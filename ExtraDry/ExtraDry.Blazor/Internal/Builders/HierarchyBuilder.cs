@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Blazor.Internal;
 
 /// <summary>
-/// A hierarchy builder as used by the <see cref="QueryBuilder"/>.  Supports expanding and 
+/// A hierarchy builder as used by the <see cref="QueryBuilder" />. Supports expanding and
 /// collapsing individual noes of a hierarchy.
 /// </summary>
 public class HierarchyBuilder
@@ -44,5 +44,4 @@ public class HierarchyBuilder
     internal List<string> ExpandNodes { get; } = [];
 
     internal List<string> CollapseNodes { get; } = [];
-
 }

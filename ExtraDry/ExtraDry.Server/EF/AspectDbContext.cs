@@ -3,24 +3,20 @@
 namespace ExtraDry.Server.EF;
 
 /// <summary>
-/// Provides an extension to the Core EF DbContext for hooking aspects to changes to handle cross-cutting concerns.
-/// E.g. VersionInfo should be updated consistently across the system.
+/// Provides an extension to the Core EF DbContext for hooking aspects to changes to handle
+/// cross-cutting concerns. E.g. VersionInfo should be updated consistently across the system.
 /// </summary>
-/// <remarks>
-/// Create a new AspectDbContext, same usage as DbContext.
-/// </remarks>
+/// <remarks>Create a new AspectDbContext, same usage as DbContext.</remarks>
 public abstract class AspectDbContext(
-    DbContextOptions options, 
-    IEnumerable<IDbAspect> aspects) 
-    : DbContext(options) 
+    DbContextOptions options,
+    IEnumerable<IDbAspect> aspects)
+    : DbContext(options)
 {
-
     /// <summary>
-    /// Saves all changes made to this context to the database, applying version information as necessary.
+    /// Saves all changes made to this context to the database, applying version information as
+    /// necessary.
     /// </summary>
-    /// <remarks>
-    /// Only need to override 2 of the 4 SaveChanges as the other 2 call these.
-    /// </remarks>
+    /// <remarks>Only need to override 2 of the 4 SaveChanges as the other 2 call these.</remarks>
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
     {
         OnEntitiesChanging();
@@ -28,11 +24,10 @@ public abstract class AspectDbContext(
     }
 
     /// <summary>
-    /// Saves all changes made to this context to the database, applying version information as necessary.
+    /// Saves all changes made to this context to the database, applying version information as
+    /// necessary.
     /// </summary>
-    /// <remarks>
-    /// Only need to override 2 of the 4 SaveChanges as the other 2 call these.
-    /// </remarks>
+    /// <remarks>Only need to override 2 of the 4 SaveChanges as the other 2 call these.</remarks>
     public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
     {
         OnEntitiesChanging();
@@ -67,5 +62,4 @@ public abstract class AspectDbContext(
         var args = new EntitiesChanged(added, modified, deleted, this);
         return args;
     }
-
 }

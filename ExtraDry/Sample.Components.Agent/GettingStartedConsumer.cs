@@ -1,9 +1,9 @@
 ﻿namespace GettingStarted.Consumers;
 
-using System.Threading.Tasks;
 using Contracts;
 using MassTransit;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 public class GettingStartedConsumer(
     ILogger<GettingStartedConsumer> logger)

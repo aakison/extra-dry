@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Blazor.Tests.Components;
 
-public class DryButtonTests : IDisposable {
-
+public class DryButtonTests : IDisposable
+{
     [Fact]
     public void DryButtonNoCommandAttributeDefaults()
     {
@@ -31,7 +31,6 @@ public class DryButtonTests : IDisposable {
     {
         LastMethodClicked = nameof(ParameterlessMethod);
     }
-
 
     [Fact]
     public void DecoratedAttributeDefaults()
@@ -80,5 +79,4 @@ public class DryButtonTests : IDisposable {
     private readonly TestContext context = new();
 
     private string LastMethodClicked { get; set; } = string.Empty;
-    
 }

@@ -2,7 +2,6 @@
 
 internal class FilterRule
 {
-
     public FilterRule(string propertyName, FilterRule values)
     {
         PropertyName = propertyName;

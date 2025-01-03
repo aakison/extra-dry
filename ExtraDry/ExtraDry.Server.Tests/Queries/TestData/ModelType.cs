@@ -1,9 +1,13 @@
 ﻿namespace ExtraDry.Server.Tests.Models;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum ModelType {
+public enum ModelType
+{
     Phonetic,
+
     Greek,
+
     Hendrix,
+
     Latin,
 }

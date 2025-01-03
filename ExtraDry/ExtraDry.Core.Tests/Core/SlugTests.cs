@@ -3,6 +3,7 @@
 public class SlugTests
 {
     #region Slug Tests
+
     [Fact]
     public void SlugWithNullArg()
     {
@@ -61,9 +62,11 @@ public class SlugTests
         Assert.StartsWith(expected, slug);
         Assert.Equal(expected.Length + 6, slug.Length);
     }
-    #endregion
+
+    #endregion Slug Tests
 
     #region TitleSlug Tests
+
     [Fact]
     public void TitleSlugWithTheLot()
     {
@@ -117,9 +120,11 @@ public class SlugTests
         Assert.StartsWith(expected, slug);
         Assert.Equal(expected.Length + 6, slug.Length);
     }
-    #endregion
+
+    #endregion TitleSlug Tests
 
     #region CodeSlug Tests
+
     [Fact]
     public void CodeSlugWithTheLot()
     {
@@ -193,7 +198,7 @@ public class SlugTests
     public async Task AsyncCodeSlugWithOnlyNonLatinCharacters(string input)
     {
         var defaultSlugPattern = @"\w{5}\-\w{7}";
-        var slug = await Slug.ToUniqueSlugAsync(input, 20 , slug => GetAsyncList(slug, input));
+        var slug = await Slug.ToUniqueSlugAsync(input, 20, slug => GetAsyncList(slug, input));
 
         Assert.Matches(defaultSlugPattern, slug);
     }
@@ -211,7 +216,6 @@ public class SlugTests
         Assert.Equal(expected, slug);
     }
 
-
     [Theory]
     [InlineData("٠ ١ ٢ ٣ ٤ ٥ Arabic", "---Arabic")]
     [InlineData("Tough💩", "Tough")]
@@ -225,9 +229,11 @@ public class SlugTests
         Assert.NotEqual(expected, slug);
         Assert.Equal(expected.Length + 6, slug.Length);
     }
-    #endregion
+
+    #endregion CodeSlug Tests
 
     #region Edge Cases And Coverage Boosters
+
     [Fact]
     public void ToUniqueTitleSlugMaxLengthLessThan6()
     {
@@ -268,8 +274,8 @@ public class SlugTests
             seenSlugs.Add(slug);
         }
     }
-    #endregion
+
+    #endregion Edge Cases And Coverage Boosters
 
     private static async Task<bool> GetAsyncList(string slug, string expected) => await Task.FromResult(slug == expected);
 }
-

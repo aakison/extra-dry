@@ -3,8 +3,8 @@
 namespace ExtraDry.Server.DataWarehouse;
 
 [DimensionTable(Name = "Time")]
-public class TimeDimension {
-    
+public class TimeDimension
+{
     public TimeDimension(TimeOnly time)
     {
         Value = new TimeOnly(time.Hour, time.Minute);
@@ -55,5 +55,4 @@ public class TimeDimension {
     [StringLength(8)]
     [Attribute("12 Hour Time Name")]
     public string Time12Name => Value.ToString("hh:mm tt", CultureInfo.CurrentCulture);
-
 }

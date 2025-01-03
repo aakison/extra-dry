@@ -7,10 +7,11 @@ namespace ExtraDry.Server.DataWarehouse;
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
 [SuppressMessage("Naming", "CA1720:Identifier contains type name", Justification = "Integer is a math concept first.")]
-public enum ColumnType {
-
+public enum ColumnType
+{
     /// <summary>
-    /// Represents the key column for a table, only a single key is supported and it must be an Int.
+    /// Represents the key column for a table, only a single key is supported and it must be an
+    /// Int.
     /// </summary>
     Key,
 

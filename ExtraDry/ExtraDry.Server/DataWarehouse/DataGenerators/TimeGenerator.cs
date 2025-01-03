@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExtraDry.Server.DataWarehouse;
 
-public class TimeGenerator : IDataGenerator {
-
+public class TimeGenerator : IDataGenerator
+{
     public async Task<List<object>> GetBatchAsync(Table table, DbContext oltpContext, DbContext olapContext, ISqlGenerator sqlGenerator)
     {
         var batch = new List<object>();
@@ -27,5 +27,4 @@ public class TimeGenerator : IDataGenerator {
     }
 
     public DateTime GetSyncTimestamp() => DateTime.UtcNow;
-
 }

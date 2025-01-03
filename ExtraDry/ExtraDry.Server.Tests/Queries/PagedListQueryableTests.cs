@@ -2,8 +2,8 @@
 
 namespace ExtraDry.Server.Tests.Models;
 
-public class PagedListQueryableTests {
-
+public class PagedListQueryableTests
+{
     [Fact]
     public void QueryableInterfacePublished()
     {
@@ -239,5 +239,4 @@ public class PagedListQueryableTests {
         new Model { Id = 12, Name = "Foxtrot", Soundex = "F236", Type = ModelType.Phonetic },
         new Model { Id = 13, Name = "Foxxy", Soundex = "F200", Type = ModelType.Hendrix, Notes = "Jimi" },
     ];
-
 }

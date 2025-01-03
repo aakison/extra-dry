@@ -6,13 +6,13 @@ using System.Collections.ObjectModel;
 namespace ExtraDry.Server.Agents;
 
 /// <summary>
-/// The CronService is a background service that runs on the server and triggers jobs at specific 
-/// times. Avoid direct use of this class and instead use the `AddCronJob` extensions when 
+/// The CronService is a background service that runs on the server and triggers jobs at specific
+/// times. Avoid direct use of this class and instead use the `AddCronJob` extensions when
 /// configuring services.
 /// </summary>
 public class CronService(
-    ILogger<CronService> logger, 
-    IServiceProvider services) 
+    ILogger<CronService> logger,
+    IServiceProvider services)
     : BackgroundService
 {
     /// <summary>
@@ -21,7 +21,7 @@ public class CronService(
     public ReadOnlyCollection<CronJob> CronJobs => new(Jobs);
 
     /// <summary>
-    /// Executes all the jobs that are due to run at the given time.  This method is called by the
+    /// Executes all the jobs that are due to run at the given time. This method is called by the
     /// BackgroundService and should not be called directly.
     /// </summary>
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)

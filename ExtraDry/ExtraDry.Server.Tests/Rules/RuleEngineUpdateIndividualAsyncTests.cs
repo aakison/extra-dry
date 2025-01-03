@@ -2,7 +2,6 @@
 
 public class RuleEngineUpdateIndividualAsyncTests
 {
-
     [Fact]
     public async Task IdentityUnchanged()
     {
@@ -110,7 +109,7 @@ public class RuleEngineUpdateIndividualAsyncTests
     //    source.DefaultIgnoredReal = 0;
     //    destination.DefaultIgnoredReal = 1.23;
 
-    //    await rules.UpdateAsync(source, destination);
+    // await rules.UpdateAsync(source, destination);
 
     //    Assert.Equal(1.23, destination.DefaultIgnoredReal);
     //}
@@ -251,7 +250,6 @@ public class RuleEngineUpdateIndividualAsyncTests
     [DeleteRule(DeleteAction.Recycle, nameof(Active), ActiveType.Deleted)]
     public class Entity
     {
-
         [JsonIgnore]
         [Rules(RuleAction.Block)]
         public int Id { get; set; } = 1;

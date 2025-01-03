@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Server.DataWarehouse;
 
-public class DateGeneratorOptions {
-
+public class DateGeneratorOptions
+{
     public DateOnly StartDate { get; set; } = new DateOnly(2000, 1, 1);
 
     public DateOnly EndDate { get; set; } = new DateOnly(DateTime.UtcNow.Year, 12, 31);
@@ -15,11 +15,13 @@ public class DateGeneratorOptions {
             fiscalYearEndingMonth = value;
         }
     }
+
     private int fiscalYearEndingMonth = 12;
 
     public Func<DateOnly, DayType> DayTypesSelector { get; set; } = TrivialHolidaySelector;
 
-    private static DayType TrivialHolidaySelector(DateOnly date) {
+    private static DayType TrivialHolidaySelector(DateOnly date)
+    {
         if((date.Month == 12 && date.Day == 25) || (date.Month == 1 && date.Day == 1)) {
             return DayType.Holiday;
         }
@@ -30,5 +32,4 @@ public class DateGeneratorOptions {
             return DayType.Workday;
         }
     }
-
 }

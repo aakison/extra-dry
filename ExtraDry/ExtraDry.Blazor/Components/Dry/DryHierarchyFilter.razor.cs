@@ -1,18 +1,18 @@
 ﻿namespace ExtraDry.Blazor;
 
-public partial class DryHierarchyFilter<TItem> : ComponentBase, IExtraDryComponent {
-
+public partial class DryHierarchyFilter<TItem> : ComponentBase, IExtraDryComponent
+{
     public DryHierarchyFilter()
     {
         ViewModelDescription = new ViewModelDescription(typeof(TItem), this);
     }
 
-    /// <inheritdoc cref="IExtraDryComponent.CssClass "/>
+    /// <inheritdoc cref="IExtraDryComponent.CssClass " />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
     /// <summary>
-    /// The optional content that is displayed alongside the filter.  This is useful to augment the
+    /// The optional content that is displayed alongside the filter. This is useful to augment the
     /// filter with additional controls that are rendered inside the filter dialog.
     /// </summary>
     [Parameter]
@@ -43,5 +43,4 @@ public partial class DryHierarchyFilter<TItem> : ComponentBase, IExtraDryCompone
     private ViewModelDescription ViewModelDescription { get; set; }
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "dry-hierarchy-filter", CssClass);
-
 }

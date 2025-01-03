@@ -2,17 +2,18 @@
 
 namespace ExtraDry.Server.DataWarehouse.Builder;
 
-public class SpokeBuilder : ColumnBuilder {
-
-    internal SpokeBuilder(TableBuilder tableBuilder, Type entityType, PropertyInfo propertyInfo) 
-        : base(tableBuilder, entityType, propertyInfo) 
+public class SpokeBuilder : ColumnBuilder
+{
+    internal SpokeBuilder(TableBuilder tableBuilder, Type entityType, PropertyInfo propertyInfo)
+        : base(tableBuilder, entityType, propertyInfo)
     {
         TargetDimension = tableBuilder.WarehouseBuilder.Dimension(propertyInfo.PropertyType);
 
         var allPropertiesOfType = entityType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
             .Where(e => e.PropertyType == propertyInfo.PropertyType).ToList();
         if(allPropertiesOfType.Count > 1) {
-            // Multiple properties on dimension need additional clarification, not just target's primary key name.
+            // Multiple properties on dimension need additional clarification, not just target's
+            // primary key name.
             SetName($"{DataConverter.CamelCaseToTitleCase(propertyInfo.Name)} {TargetDimension.HasKey().ColumnName}");
         }
         else if(tableBuilder.HasKey().ColumnName == TargetDimension.HasKey().ColumnName) {
@@ -20,7 +21,8 @@ public class SpokeBuilder : ColumnBuilder {
             SetName($"{DataConverter.CamelCaseToTitleCase(propertyInfo.Name)} {TargetDimension.HasKey().ColumnName}");
         }
         else {
-            // Assign property name to match the target dimension primary key, easier for tools and people to correlate.
+            // Assign property name to match the target dimension primary key, easier for tools and
+            // people to correlate.
             SetName(TargetDimension.HasKey().ColumnName);
         }
 
@@ -65,5 +67,4 @@ public class SpokeBuilder : ColumnBuilder {
     }
 
     public DimensionTableBuilder TargetDimension { get; set; }
-
 }

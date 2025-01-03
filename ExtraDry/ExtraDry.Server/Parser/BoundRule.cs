@@ -3,6 +3,8 @@
 internal enum BoundRule
 {
     None,
+
     Inclusive,
+
     Exclusive,
 }

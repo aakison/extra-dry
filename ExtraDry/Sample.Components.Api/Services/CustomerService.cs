@@ -11,7 +11,6 @@ public class CustomerService(
     ComponentContext database,
     RuleEngine rules)
 {
-
     public async Task<PagedCollection<Customer>> ListTenantsAsync(PageQuery query)
     {
         var q = database.Tenants.QueryWith(query);
@@ -25,7 +24,7 @@ public class CustomerService(
             database.Tenants.Add(tenant);
             await database.SaveChangesAsync();
         }
-        catch (DbUpdateException ex) {
+        catch(DbUpdateException ex) {
             throw new ArgumentException($"Tenant '{tenant.Slug}' already exists", ex);
         }
         return tenant;
@@ -56,5 +55,4 @@ public class CustomerService(
         var tenant = await RetrieveTenantAsync(slug);
         await rules.DeleteAsync(tenant, () => database.Tenants.Remove(tenant), async () => await database.SaveChangesAsync());
     }
-
 }

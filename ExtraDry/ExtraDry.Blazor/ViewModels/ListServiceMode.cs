@@ -4,7 +4,10 @@
 public enum ListServiceMode
 {
     FullCollection,
+
     Filter,
+
     FilterAndSort,
+
     FilterSortAndPage,
 }

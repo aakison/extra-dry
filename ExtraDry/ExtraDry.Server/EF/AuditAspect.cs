@@ -3,21 +3,21 @@
 namespace ExtraDry.Server.EF;
 
 /// <summary>
-/// A database aspect that automatically populates the audit fields on entities that implement IAudited.
+/// A database aspect that automatically populates the audit fields on entities that implement
+/// IAudited.
 /// </summary>
 public class AuditAspect(
     IHttpContextAccessor httpContextAccessor,
-    AuditAspectOptions options) 
-    : IDbAspect 
+    AuditAspectOptions options)
+    : IDbAspect
 {
-
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public void EntitiesChanging(EntitiesChanged args)
     {
         // no-op
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public void EntitiesChanged(EntitiesChanged args)
     {
         var entities = args.EntitiesAdded.Union(args.EntitiesModified);
@@ -34,5 +34,4 @@ public class AuditAspect(
     private string? GetClaim(string type) => options.StrictClaimMatch
         ? httpContextAccessor.HttpContext?.User?.Claims?.FirstOrDefault(c => c.Type == type)?.Value
         : httpContextAccessor.HttpContext?.User?.Claims?.FirstOrDefault(c => c.Type.EndsWith(type, StringComparison.OrdinalIgnoreCase))?.Value;
-
 }

@@ -4,6 +4,8 @@
 public enum HierarchyServiceMode
 {
     FullCollection,
+
     Filter,
+
     FilterAndPage,
 }

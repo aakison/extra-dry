@@ -6,7 +6,6 @@ namespace ExtraDry.Server.Tests.WarehouseTests;
 
 public class WarehouseLengthTests
 {
-
     [Theory]
     [InlineData("Uuid", 36)] // Simple Guid property, get basic length
     [InlineData("LargerMaxGuid", 40)] // OK to re-state larger length
@@ -61,7 +60,6 @@ public class WarehouseLengthTests
     [DimensionTable]
     public class AttributeContainer
     {
-
         [Key]
         [JsonIgnore]
         public int Id { get; set; }
@@ -76,7 +74,6 @@ public class WarehouseLengthTests
         [StringLength(30)] // less space is OK in case want to get most benefit of GUID, but maybe not all...
         public Guid SmallerStringGuid { get; set; }
 
-
         // Should be varchar(max)
         public string DefaultName { get; set; } = string.Empty;
 
@@ -86,7 +83,6 @@ public class WarehouseLengthTests
 
         [StringLength(104)]
         public string StringLengthName { get; set; } = string.Empty;
-
 
         // Default is 2083 chars
         public Uri Uri { get; set; } = null!;
@@ -99,26 +95,21 @@ public class WarehouseLengthTests
 
         [StringLength(50)] // Even though only has a getter, defines length in the DW
         public string ChristianName => DefaultName;
-
     }
 
     public class BadLengthContext : DbContext
     {
-
         [DimensionTable]
         public class BadClass
         {
-
             [Key]
             [JsonIgnore]
             public int Id { get; set; }
 
             [StringLength(-1)]
             public string Name { get; set; } = string.Empty;
-
         }
 
         public DbSet<BadClass> BadLengthClasses { get; set; } = null!;
     }
-
 }

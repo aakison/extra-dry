@@ -3,11 +3,11 @@
 namespace ExtraDry.Blazor;
 
 /// <summary>
-/// Provides extension methods to simplify the registration of Extra Dry services to the
-/// service collection for dependency injection.
+/// Provides extension methods to simplify the registration of Extra Dry services to the service
+/// collection for dependency injection.
 /// </summary>
-public static class ServiceCollectionExtensions {
-
+public static class ServiceCollectionExtensions
+{
     /// <summary>
     /// Add the core Extra Dry services to the Blazor application.
     /// </summary>
@@ -18,10 +18,10 @@ public static class ServiceCollectionExtensions {
     }
 
     /// <summary>
-    /// Adds a strongly typed <see cref="CrudService{T}" /> to the service collection.  See 
-    /// <see cref="AddCrudService{T}(IServiceCollection, Action{CrudServiceOptions})"/> for 
-    /// additional options. Particlularly useful for specifying the HttpClient to use in multi-
-    /// tenant deployments.
+    /// Adds a strongly typed <see cref="CrudService{T}" /> to the service collection. See <see
+    /// cref="AddCrudService{T}(IServiceCollection, Action{CrudServiceOptions})" /> for additional
+    /// options. Particlularly useful for specifying the HttpClient to use in multi- tenant
+    /// deployments.
     /// </summary>
     public static IServiceCollection AddCrudService<T>(this IServiceCollection services, string endpointTemplate)
     {
@@ -51,7 +51,7 @@ public static class ServiceCollectionExtensions {
     }
 
     /// <summary>
-    /// Adds a strongly typed <see cref="StatService{T}"/> to the service collection.
+    /// Adds a strongly typed <see cref="StatService{T}" /> to the service collection.
     /// </summary>
     public static IServiceCollection AddStatService<T>(this IServiceCollection services, string endpointTemplate)
     {
@@ -78,10 +78,9 @@ public static class ServiceCollectionExtensions {
     }
 
     /// <summary>
-    /// Adds a strongly typed <see cref="ListService{TItem}"/> that provides a 
-    /// <see cref="FilteredCollection{T}"/> to the service collection.  Also registers the 
-    /// service using the interfaces <see cref="IListService{T}"/> 
-    /// and <see cref="IOptionProvider{T}"/>.
+    /// Adds a strongly typed <see cref="ListService{TItem}" /> that provides a <see
+    /// cref="FilteredCollection{T}" /> to the service collection. Also registers the service using
+    /// the interfaces <see cref="IListService{T}" /> and <see cref="IOptionProvider{T}" />.
     /// </summary>
     public static IServiceCollection AddFilteredListService<T>(this IServiceCollection services, string endpoint)
     {
@@ -93,10 +92,9 @@ public static class ServiceCollectionExtensions {
     }
 
     /// <summary>
-    /// Adds a strongly typed <see cref="ListService{TItem}"/> that provides a 
-    /// <see cref="SortedCollection{T}"/> to the service collection.  Also registers the 
-    /// service using the interfaces <see cref="IListService{T}"/> 
-    /// and <see cref="IOptionProvider{T}"/>.
+    /// Adds a strongly typed <see cref="ListService{TItem}" /> that provides a <see
+    /// cref="SortedCollection{T}" /> to the service collection. Also registers the service using
+    /// the interfaces <see cref="IListService{T}" /> and <see cref="IOptionProvider{T}" />.
     /// </summary>
     public static IServiceCollection AddSortedListService<T>(this IServiceCollection services, string endpoint)
     {
@@ -108,9 +106,9 @@ public static class ServiceCollectionExtensions {
     }
 
     /// <summary>
-    /// Adds a strongly typed <see cref="ListService{TItem}"/> to the service 
-    /// collection.  Also registers the service using the interfaces <see cref="IListService{T}"/> 
-    /// and <see cref="IOptionProvider{T}"/>.
+    /// Adds a strongly typed <see cref="ListService{TItem}" /> to the service collection. Also
+    /// registers the service using the interfaces <see cref="IListService{T}" /> and <see
+    /// cref="IOptionProvider{T}" />.
     /// </summary>
     public static IServiceCollection AddPagedListService<T>(this IServiceCollection services, string endpoint)
     {
@@ -122,9 +120,9 @@ public static class ServiceCollectionExtensions {
     }
 
     /// <summary>
-    /// Adds a strongly typed <see cref="ListService{TItem}"/> to the service collection.  Also
-    /// registers the service using the interfaces <see cref="IListService{T}"/> and
-    /// <see cref="IOptionProvider{T}"/>.
+    /// Adds a strongly typed <see cref="ListService{TItem}" /> to the service collection. Also
+    /// registers the service using the interfaces <see cref="IListService{T}" /> and <see
+    /// cref="IOptionProvider{T}" />.
     /// </summary>
     public static IServiceCollection AddListService<T>(this IServiceCollection services, Action<ListServiceOptions> config)
     {
@@ -151,10 +149,9 @@ public static class ServiceCollectionExtensions {
         return services;
     }
 
-
     /// <summary>
-    /// Adds a strongly typed <see cref="BlobService{TBlob}"/> to the service collection.  Use with
-    /// the built-in Blob class, or a custom class that implements <see cref="IBlob"/>.
+    /// Adds a strongly typed <see cref="BlobService{TBlob}" /> to the service collection. Use with
+    /// the built-in Blob class, or a custom class that implements <see cref="IBlob" />.
     /// </summary>
     public static IServiceCollection AddBlobService<T>(this IServiceCollection services, string endpointTemplate) where T : IBlob, new()
     {
@@ -164,7 +161,7 @@ public static class ServiceCollectionExtensions {
         return services;
     }
 
-    /// <inheritdoc cref="AddBlobService{T}(IServiceCollection, string)"/>
+    /// <inheritdoc cref="AddBlobService{T}(IServiceCollection, string)" />
     public static IServiceCollection AddBlobService<T>(this IServiceCollection services, Action<BlobServiceOptions> config) where T : IBlob, new()
     {
         var options = new BlobServiceOptions();
@@ -184,7 +181,6 @@ public static class ServiceCollectionExtensions {
         return services;
     }
 
-
     private static HttpClient GetHttpClient(IServiceProvider provider, IHttpClientOptions options)
     {
         if(options.HttpClientType != null) {
@@ -198,5 +194,4 @@ public static class ServiceCollectionExtensions {
             return provider.GetRequiredService<HttpClient>();
         }
     }
-
 }

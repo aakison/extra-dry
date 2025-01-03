@@ -4,19 +4,18 @@ namespace ExtraDry.Core;
 
 /// <summary>
 /// Provides validation services for files that are uploaded from Blazor clients to MVC servers.
-/// The validation is partially performed client-side and a complete validation is performed 
-/// server-side.  Configuration of the file validation rules are done using 
-/// <see cref="FileValidationOptions"/> and the <see cref="FileValidationService"/>.  Use the 
-/// <see cref="ServiceCollectionExtensions.AddFileValidation"/>
-/// extension method register and configure the FileValidator.
+/// The validation is partially performed client-side and a complete validation is performed
+/// server-side. Configuration of the file validation rules are done using <see
+/// cref="FileValidationOptions" /> and the <see cref="FileValidationService" />. Use the <see
+/// cref="ServiceCollectionExtensions.AddFileValidation" /> extension method register and configure
+/// the FileValidator.
 /// </summary>
 /// <inheritdoc cref="FileValidator" />
 public class FileValidator(FileValidationService validator)
 {
-
     /// <summary>
-    /// Validates a file given the filename, mime type, and content.  If the file is invalid, the
-    /// list of invalid reasons is returned.  For multiple file uploads, call this multiple times 
+    /// Validates a file given the filename, mime type, and content. If the file is invalid, the
+    /// list of invalid reasons is returned. For multiple file uploads, call this multiple times
     /// and retrieve the results fromt the Errors property.
     /// </summary>
     public IEnumerable<ValidationResult> ValidateFile(string filename, string mimeType, byte[]? content = null)
@@ -27,8 +26,8 @@ public class FileValidator(FileValidationService validator)
     }
 
     /// <summary>
-    /// Validates a file referenced by a <see cref="IBlob"/>.  If the file is invalid, the list of 
-    /// invalid reasons is returned.  For multiple file uploads, call this multiple times and 
+    /// Validates a file referenced by a <see cref="IBlob" />. If the file is invalid, the list of
+    /// invalid reasons is returned. For multiple file uploads, call this multiple times and
     /// retrieve the results fromt the Errors property.
     /// </summary>
     public IEnumerable<ValidationResult> ValidateFile(IBlob blob)
@@ -37,8 +36,8 @@ public class FileValidator(FileValidationService validator)
     }
 
     /// <summary>
-    /// Gets a value indicating whether the file (or files) that was validated with 
-    /// <see cref="ValidateFile(string, string, byte[])" /> is free of validation errors.
+    /// Gets a value indicating whether the file (or files) that was validated with <see
+    /// cref="ValidateFile(string, string, byte[])" /> is free of validation errors.
     /// </summary>
     public bool IsValid => ValidationErrors.Count == 0;
 
@@ -52,7 +51,8 @@ public class FileValidator(FileValidationService validator)
     }
 
     /// <summary>
-    /// If the file or files that were validated had any validation errors, then throw a validation exception.
+    /// If the file or files that were validated had any validation errors, then throw a validation
+    /// exception.
     /// </summary>
     public void ThrowIfInvalid()
     {

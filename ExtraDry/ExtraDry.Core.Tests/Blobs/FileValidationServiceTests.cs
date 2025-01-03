@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Core.Tests;
 
-public class FileValidationServiceTests {
-
+public class FileValidationServiceTests
+{
     [Theory]
     [InlineData("good.txt")] // basic correctness
     [InlineData("MixedCase.txt")] // mixed case
@@ -110,7 +110,6 @@ public class FileValidationServiceTests {
     public void AltersFileNameToCorrect(string inputFilename, string expected)
     {
         var service = new FileValidationService(new FileValidationOptions() {
-            
         });
 
         var clean = service.CleanFilename(inputFilename);
@@ -120,13 +119,6 @@ public class FileValidationServiceTests {
 
     [Theory]
     [InlineData(SampleFiles.GoodTextFileKey)]
-    //[InlineData("png.png", "image/png")]
-    //[InlineData("word.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")] // interesting use case. .docx magic bytes = .zip magic bytes = .apk magic bytes
-    //[InlineData("zip.zip", "application/zip")] // interesting use case. .docx magic bytes = .zip magic bytes = .apk magic bytes
-    //[InlineData("Tiff.tiff", "image/tiff")]
-    //[InlineData("mp4.mp4", "audio/mp4")]
-    //[InlineData("mp4.mp4", "audio/aac")]
-    //[InlineData("mp4.mp4", "video/mp4")]
     public void ValidToUploadGoodFiles(int fileKey)
     {
         var file = SampleFiles.GetFile(fileKey);
@@ -151,7 +143,7 @@ public class FileValidationServiceTests {
     [InlineData("text.$$$")]
     public void InvalidFilenameWithDefaultOptions(string filename)
     {
-        var options = new FileValidationOptions { 
+        var options = new FileValidationOptions {
             ValidateContent = ValidationCondition.Never,
         };
         var service = new FileValidationService(options);
@@ -226,7 +218,7 @@ public class FileValidationServiceTests {
     public void BlacklistBlocksExtension()
     {
         var options = new FileValidationOptions() {
-            ExtensionWhitelist = ["txt"], 
+            ExtensionWhitelist = ["txt"],
             ExtensionBlacklist = ["txt"], // even if on whitelist...
             ValidateExtension = ValidationCondition.Always,
             ValidateContent = ValidationCondition.Never,
@@ -343,5 +335,4 @@ public class FileValidationServiceTests {
 
         Assert.True(validator.IsValid);
     }
-
 }

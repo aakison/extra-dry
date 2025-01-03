@@ -5,14 +5,13 @@ using System.Text.Json;
 namespace ExtraDry.Core;
 
 /// <summary>
-/// A JSON converter that will serialize a resource that implement IResourceIdentifiers into a 
-/// shorter ResourceReference for use as part of a DTO.  On Deserialization, the original 
-/// object is approximated by using default values and Id references. This is suitable for 
-/// properties that are treated as RuleAction.Link.
+/// A JSON converter that will serialize a resource that implement IResourceIdentifiers into a
+/// shorter ResourceReference for use as part of a DTO. On Deserialization, the original object is
+/// approximated by using default values and Id references. This is suitable for properties that
+/// are treated as RuleAction.Link.
 /// </summary>
 public class ResourceReferenceConverter<T> : JsonConverter<T> where T : IResourceIdentifiers
 {
-
     /// <inheritdoc cref="JsonConverter{T}.ReadAsPropertyName(ref Utf8JsonReader, Type, JsonSerializerOptions)" />
     public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
@@ -54,5 +53,4 @@ public class ResourceReferenceConverter<T> : JsonConverter<T> where T : IResourc
     {
         JsonSerializer.Serialize(writer, (IResourceIdentifiers)value!, options);
     }
-
 }

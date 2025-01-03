@@ -3,8 +3,8 @@ using System.Net.Http.Json;
 
 namespace ExtraDry.Blazor.Extensions;
 
-public static class HttpResponseMessageExtensions {
-
+public static class HttpResponseMessageExtensions
+{
     public static async Task AssertSuccess(this HttpResponseMessage response, ILogger logger)
     {
         if(!response.IsSuccessStatusCode) {
@@ -29,5 +29,4 @@ public static class HttpResponseMessageExtensions {
             throw new DryException(problem);
         }
     }
-
 }

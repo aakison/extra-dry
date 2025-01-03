@@ -4,7 +4,8 @@ using System.Text.Json;
 namespace ExtraDry.Core;
 
 /// <summary>
-/// A JSON converter that will serialize a HierarchyId object so that it can be deserialised and used on the front end
+/// A JSON converter that will serialize a HierarchyId object so that it can be deserialised and
+/// used on the front end
 /// </summary>
 public class HierarchyIdConverter : JsonConverter<HierarchyId>
 {

@@ -1,9 +1,9 @@
 ﻿namespace Sample.Data.Services;
 
 public class SectorService(
-    SampleContext sampleContext, 
-    RuleEngine ruleEngine) 
-    : IEntityResolver<Sector> 
+    SampleContext sampleContext,
+    RuleEngine ruleEngine)
+    : IEntityResolver<Sector>
 {
     public async Task<FilteredCollection<Sector>> ListAsync(SortQuery query)
     {
@@ -32,7 +32,7 @@ public class SectorService(
 
     public async Task<Sector> RetrieveAsync(Guid uuid)
     {
-        return await TryRetrieveAsync(uuid) 
+        return await TryRetrieveAsync(uuid)
             ?? throw new ArgumentOutOfRangeException(nameof(uuid), "No sector exists with given uuid.");
     }
 
@@ -49,7 +49,7 @@ public class SectorService(
         var existing = await RetrieveAsync(uuid);
         await ruleEngine.DeleteAsync(existing, () => sampleContext.Sectors.Remove(existing), async () => await sampleContext.SaveChangesAsync());
     }
-    
+
     public async Task<Statistics<Sector>> StatsAsync(FilterQuery query)
     {
         return await sampleContext.Sectors

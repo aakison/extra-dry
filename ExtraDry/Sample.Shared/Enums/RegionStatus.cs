@@ -2,8 +2,8 @@
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 [DimensionTable("Region Status")]
-public enum RegionStatus {
-
+public enum RegionStatus
+{
     [Display(Order = 0, Description = "Region is active")]
     Active = 0,
 
@@ -12,5 +12,4 @@ public enum RegionStatus {
 
     [Display(Order = 1, Description = "Region no longer exists, but is linked to historic records.")]
     Deleted = 2,
-
 }

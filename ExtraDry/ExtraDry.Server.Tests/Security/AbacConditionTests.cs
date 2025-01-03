@@ -4,7 +4,6 @@ namespace ExtraDry.Server.Tests.Security;
 
 public class AbacConditionTests
 {
-
     [Fact]
     public void DefaultAllowAnonymous()
     {
@@ -12,5 +11,4 @@ public class AbacConditionTests
 
         Assert.True(condition.AllowAnonymous);
     }
-
 }

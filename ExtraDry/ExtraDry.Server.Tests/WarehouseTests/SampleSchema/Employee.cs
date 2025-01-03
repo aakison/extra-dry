@@ -33,5 +33,4 @@ public class Employee
     /// </summary>
     [JsonIgnore]
     public VersionInfo Version { get; set; } = new VersionInfo();
-
 }

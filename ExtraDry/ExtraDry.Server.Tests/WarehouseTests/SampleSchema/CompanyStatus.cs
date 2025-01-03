@@ -4,8 +4,8 @@ namespace ExtraDry.Server.Tests.WarehouseTests;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 [DimensionTable]
-public enum CompanyStatus {
-
+public enum CompanyStatus
+{
     [Display(Order = 123, GroupName = "ForDisplay")]
     Active = 0,
 
@@ -13,5 +13,4 @@ public enum CompanyStatus {
     Inactive = 1,
 
     Deleted = 2,
-
 }

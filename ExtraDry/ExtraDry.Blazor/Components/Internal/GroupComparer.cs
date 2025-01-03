@@ -1,10 +1,10 @@
 ﻿namespace ExtraDry.Blazor.Components.Internal;
 
-internal class GroupComparer<T> : IComparer<ListItemInfo<T>> {
-
+internal class GroupComparer<T> : IComparer<ListItemInfo<T>>
+{
     /// <summary>
-    /// Creats a comparison that sorts items so they underneath the groups.
-    /// Within the groups, a stable (but non-meaningful) secondary sort is used.
+    /// Creats a comparison that sorts items so they underneath the groups. Within the groups, a
+    /// stable (but non-meaningful) secondary sort is used.
     /// </summary>
     public GroupComparer()
     {
@@ -12,8 +12,8 @@ internal class GroupComparer<T> : IComparer<ListItemInfo<T>> {
     }
 
     /// <summary>
-    /// Creats a comparison that sorts items so they underneath the groups.
-    /// Within the groups, the specified sort order is performed.
+    /// Creats a comparison that sorts items so they underneath the groups. Within the groups, the
+    /// specified sort order is performed.
     /// </summary>
     public GroupComparer(IComparer<ListItemInfo<T>> sortWithinGroupsComparer)
     {
@@ -24,7 +24,8 @@ internal class GroupComparer<T> : IComparer<ListItemInfo<T>> {
     /// Compare the two elements using the `Property` and sort order.
     /// </summary>
     /// <remarks>
-    /// Null handling: https://stackoverflow.com/questions/17025900/override-compareto-what-to-do-with-null-case
+    /// Null handling:
+    /// https://stackoverflow.com/questions/17025900/override-compareto-what-to-do-with-null-case
     /// </remarks>
     public int Compare(ListItemInfo<T>? x, ListItemInfo<T>? y)
     {
@@ -62,7 +63,8 @@ internal class GroupComparer<T> : IComparer<ListItemInfo<T>> {
 
     private readonly IComparer<ListItemInfo<T>> innerComparer;
 
-    private class HashCodeComparer : IComparer<ListItemInfo<T>> {
+    private class HashCodeComparer : IComparer<ListItemInfo<T>>
+    {
         public int Compare(ListItemInfo<T>? x, ListItemInfo<T>? y)
         {
             var xHash = x?.GetHashCode() ?? 0;
@@ -70,5 +72,4 @@ internal class GroupComparer<T> : IComparer<ListItemInfo<T>> {
             return xHash.CompareTo(yHash);
         }
     }
-
 }

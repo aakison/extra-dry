@@ -3,15 +3,14 @@ using Sample.Shared;
 
 namespace Sample.Tests.Shared.Entities;
 
-public class RegionTests {
-
+public class RegionTests
+{
     [Theory]
     [InlineData("Id", 2)]
     [InlineData("Slug", "US")]
     [InlineData("Level", RegionLevel.Subdivision)]
     [InlineData("Title", "USA")]
     [InlineData("Description", "United States of America")]
-
     public void RoundtripProperties(string propertyName, object propertyValue)
     {
         var region = ValidRegion;
@@ -107,7 +106,8 @@ public class RegionTests {
         property.SetValue(request, propertyValue);
         var json = JsonSerializer.Serialize(request);
 
-        // Check for the value as a complete json value, else the int or string could appear in the Uuid
+        // Check for the value as a complete json value, else the int or string could appear in the
+        // Uuid
         Assert.DoesNotContain($":{propertyValue}", json);
         Assert.DoesNotContain($":\"{propertyValue}\"", json);
     }
@@ -119,5 +119,4 @@ public class RegionTests {
         Title = "Australia",
         Description = "Commonwealth of Australia",
     };
-
 }

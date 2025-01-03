@@ -2,6 +2,7 @@
 
 [AttributeUsage(AttributeTargets.Interface, AllowMultiple = false)]
 public class JsonInterfaceConverterAttribute(
-    Type converterType) 
-    : JsonConverterAttribute(converterType) {
+    Type converterType)
+    : JsonConverterAttribute(converterType)
+{
 }

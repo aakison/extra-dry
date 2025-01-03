@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Blazor.Tests.Models;
 
-public class NakedParameterlessCommandInfoTests {
-
+public class NakedParameterlessCommandInfoTests
+{
     [Fact]
     public void DefaultValues()
     {
@@ -33,7 +33,7 @@ public class NakedParameterlessCommandInfoTests {
         Assert.Equal("NakedParameterlessCommand", lastMethodCalled);
     }
 
-    // TODO: Review correctness: Removed as model commands may choose not to have a context (e.g. Cancel) which is valid.  
+    // TODO: Review correctness: Removed as model commands may choose not to have a context (e.g. Cancel) which is valid.
     // Model is available the method doesn't want it so just don't pass it through.
     //[Fact]
     //public async Task FailWhenParameterProvided()
@@ -53,7 +53,6 @@ public class NakedParameterlessCommandInfoTests {
         Assert.Equal("NakedParameterlessCommandAsync", lastMethodCalled);
     }
 
-
     private void NakedParameterlessCommand()
     {
         lastMethodCalled = "NakedParameterlessCommand";
@@ -66,5 +65,4 @@ public class NakedParameterlessCommandInfoTests {
     }
 
     private string lastMethodCalled = string.Empty;
-
 }

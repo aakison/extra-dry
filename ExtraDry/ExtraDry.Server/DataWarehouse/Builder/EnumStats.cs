@@ -44,7 +44,5 @@ internal class EnumStats(Type enumType)
         public int? Order => Display?.GetOrder();
 
         public int Value => (int)(Field.GetValue(null) ?? 0);
-
     }
-
 }

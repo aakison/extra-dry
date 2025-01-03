@@ -4,7 +4,6 @@ namespace ExtraDry.Server;
 
 public class StatisticsQueryable<T> : BaseQueryable<T>
 {
-
     /// <inheritdoc cref="IFilteredQueryable{T}.ToStatistics" />
     public Statistics<T> ToStatistics()
     {
@@ -50,5 +49,4 @@ public class StatisticsQueryable<T> : BaseQueryable<T>
     {
         return filter?.Trim() ?? "";
     }
-
 }

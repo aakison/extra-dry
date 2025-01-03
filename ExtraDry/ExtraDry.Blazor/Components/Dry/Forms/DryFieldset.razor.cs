@@ -1,13 +1,13 @@
 ﻿namespace ExtraDry.Blazor.Forms;
 
 /// <summary>
-/// A representation of a fieldset in a form, typically rendered automatically by an enclosing
-/// <see cref="DryForm{T}"/>.  This component may be used to group a set of properties together on
-/// a form with a legend.  It may also be used to group a set of child items in a list, where each
-/// has their own small form or rendering.
+/// A representation of a fieldset in a form, typically rendered automatically by an enclosing <see
+/// cref="DryForm{T}" />. This component may be used to group a set of properties together on a
+/// form with a legend. It may also be used to group a set of child items in a list, where each has
+/// their own small form or rendering.
 /// </summary>
-public partial class DryFieldset<T> : ComponentBase, IExtraDryComponent {
-
+public partial class DryFieldset<T> : ComponentBase, IExtraDryComponent
+{
     /// <inheritdoc />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
@@ -64,5 +64,4 @@ public partial class DryFieldset<T> : ComponentBase, IExtraDryComponent {
             Console.WriteLine("  Not a list: " + items.GetType().ToString());
         }
     }
-
 }

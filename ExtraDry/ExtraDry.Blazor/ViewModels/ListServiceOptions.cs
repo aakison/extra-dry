@@ -8,7 +8,7 @@ public class ListServiceOptions : IHttpClientOptions, IValidatableObject
 
     public string HierarchyEndpoint { get; set; } = string.Empty;
 
-    [Range(1, int.MaxValue)] 
+    [Range(1, int.MaxValue)]
     public int PageSize { get; set; } = 100;
 
     public ListServiceMode ListMode { get; set; } = ListServiceMode.FilterSortAndPage;

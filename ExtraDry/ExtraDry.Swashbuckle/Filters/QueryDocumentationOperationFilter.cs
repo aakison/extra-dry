@@ -3,12 +3,14 @@
 namespace ExtraDry.Swashbuckle;
 
 /// <summary>
-/// During construction of the SwaggerGen, use the Attributes to intuit the likely HTTP response error codes.
+/// During construction of the SwaggerGen, use the Attributes to intuit the likely HTTP response
+/// error codes.
 /// </summary>
-public class QueryDocumentationOperationFilter : IOperationFilter {
-
+public class QueryDocumentationOperationFilter : IOperationFilter
+{
     /// <summary>
-    /// Scan through each operation, using attribute signatures to guess the typical client errors that will be surfaced.
+    /// Scan through each operation, using attribute signatures to guess the typical client errors
+    /// that will be surfaced.
     /// </summary>
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
@@ -35,7 +37,7 @@ public class QueryDocumentationOperationFilter : IOperationFilter {
 
         var modelDescription = new ModelDescription(returnType);
         if(supportsFiltering) {
-            operation.Description += FilterDescription([..modelDescription.FilterProperties]);
+            operation.Description += FilterDescription([.. modelDescription.FilterProperties]);
 
             var filterableQuotedNames = modelDescription.FilterProperties.Select(e => $"`{e.ExternalName}`");
             var filterable = string.Join(", ", filterableQuotedNames);
@@ -45,7 +47,7 @@ public class QueryDocumentationOperationFilter : IOperationFilter {
             }
         }
         if(supportsSorting) {
-            operation.Description += SortDescription([..modelDescription.SortProperties]);
+            operation.Description += SortDescription([.. modelDescription.SortProperties]);
 
             var sortableQuotedNames = modelDescription.SortProperties.Select(e => $"`{e.ExternalName}`");
             var sortable = string.Join(", ", sortableQuotedNames);
@@ -57,7 +59,7 @@ public class QueryDocumentationOperationFilter : IOperationFilter {
             }
         }
         if(supportsStatistics) {
-            operation.Description += StatisticsDescription([..modelDescription.StatisticsProperties]);
+            operation.Description += StatisticsDescription([.. modelDescription.StatisticsProperties]);
         }
         if(supportsPaging) {
             operation.Description += PagingDescription();

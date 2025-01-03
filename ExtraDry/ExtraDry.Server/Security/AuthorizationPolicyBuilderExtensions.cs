@@ -8,7 +8,6 @@ namespace ExtraDry.Server;
 /// </summary>
 public static class AuthorizationPolicyBuilderExtensions
 {
-
     /// <summary>
     /// Build a policy that requires a claim to match a route parameter to user claims.
     /// </summary>
@@ -31,5 +30,4 @@ public static class AuthorizationPolicyBuilderExtensions
         builder.AddRequirements(new RbacRequirement(abacPolicyName));
         return builder;
     }
-
 }

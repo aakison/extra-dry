@@ -1,13 +1,14 @@
 ﻿namespace ExtraDry.Blazor.Models;
 
 /// <summary>
-/// Represents a hyperlink which wraps a method call and additional information about how to present
-/// the hyperlink using the method's signature.
+/// Represents a hyperlink which wraps a method call and additional information about how to
+/// present the hyperlink using the method's signature.
 /// </summary>
 public partial class HyperlinkInfo
 {
     /// <summary>
-    /// Create a `HyperLinkInfo` with a reference to the ViewModel it will execute on and the method to call.
+    /// Create a `HyperLinkInfo` with a reference to the ViewModel it will execute on and the
+    /// method to call.
     /// </summary>
     public HyperlinkInfo(object viewModel, Type modelType, MethodInfo method)
     {
@@ -23,19 +24,19 @@ public partial class HyperlinkInfo
     public MethodInfo Method { get; set; }
 
     /// <summary>
-    /// The view model that this hyperlink is defined as being part of.
-    /// Used by `ExecuteAsync` to invoke the command on the correct object instance.
+    /// The view model that this hyperlink is defined as being part of. Used by `ExecuteAsync` to
+    /// invoke the command on the correct object instance.
     /// </summary>
     public object ViewModel { get; set; }
 
     public Type ModelType { get; set; }
 
     /// <inheritdoc cref="HyperlinkAttribute.PropertyName" />
-    public string? PropertyName{ get; set; }
+    public string? PropertyName { get; set; }
 
     public HyperlinkContext Execute(object? arg = null)
     {
-        return Method.Invoke(ViewModel, [arg]) as HyperlinkContext 
+        return Method.Invoke(ViewModel, [arg]) as HyperlinkContext
             ?? throw new InvalidOperationException("The hyperlink method is not correctly populated");
     }
 

@@ -6,10 +6,11 @@ namespace ExtraDry.Blazor.Models;
 /// Represents a command which wraps a method call and additional information about how to present
 /// the command using the method's signature and, optionally, the DisplayAttribute on the method.
 /// </summary>
-public partial class CommandInfo {
-
+public partial class CommandInfo
+{
     /// <summary>
-    /// Create a `CommandInfo` with a reference to the ViewModel it will execute on and the method to call.
+    /// Create a `CommandInfo` with a reference to the ViewModel it will execute on and the method
+    /// to call.
     /// </summary>
     public CommandInfo(object viewModel, MethodInfo method)
     {
@@ -21,7 +22,7 @@ public partial class CommandInfo {
     public CommandInfo(object viewModel, string methodName)
     {
         ViewModel = viewModel;
-        Method = viewModel.GetType().GetMethod(methodName) 
+        Method = viewModel.GetType().GetMethod(methodName)
             ?? throw new ArgumentException($"No method found named {methodName}");
         Initialize(Method);
     }
@@ -47,8 +48,8 @@ public partial class CommandInfo {
     }
 
     /// <summary>
-    /// The type which determines how this command relates to other commands.
-    /// This semantic information is used to determine UI layout.
+    /// The type which determines how this command relates to other commands. This semantic
+    /// information is used to determine UI layout.
     /// </summary>
     public CommandContext Context { get; set; }
 
@@ -63,8 +64,8 @@ public partial class CommandInfo {
     public MethodInfo Method { get; set; }
 
     /// <summary>
-    /// The caption of the command, taken from the `CommandAttribute` if available.
-    /// If not, this is inferred from the signature of the `Method` by convention.
+    /// The caption of the command, taken from the `CommandAttribute` if available. If not, this is
+    /// inferred from the signature of the `Method` by convention.
     /// </summary>
     public string? Caption { get; set; }
 
@@ -74,37 +75,40 @@ public partial class CommandInfo {
     public string? Icon { get; set; }
 
     /// <summary>
-    /// The optional key of an icon to be displayed on the right of the button indicating what the 
-    /// button will visually do, e.g. "chevron-down" to indicate the result is a drop-down 
+    /// The optional key of an icon to be displayed on the right of the button indicating what the
+    /// button will visually do, e.g. "chevron-down" to indicate the result is a drop-down
     /// mini-dialog.
     /// </summary>
     public string? Affordance { get; set; }
 
     /// <summary>
-    /// The view model that this command is defined as being part of.
-    /// Used by `ExecuteAsync` to invoke the command on the correct object instance.
+    /// The view model that this command is defined as being part of. Used by `ExecuteAsync` to
+    /// invoke the command on the correct object instance.
     /// </summary>
     public object ViewModel { get; set; }
 
     /// <summary>
-    /// The type of arguments that this command works with, used to determine if and how many items can be selected.
+    /// The type of arguments that this command works with, used to determine if and how many items
+    /// can be selected.
     /// </summary>
     public CommandArguments Arguments { get; set; }
 
     public string CssClass { get; set; } = string.Empty;
 
     /// <summary>
-    /// A CSS class that is added to elements that can trigger the command.
-    /// This has no intrinsic meaning but can be used by app to change appearance.
+    /// A CSS class that is added to elements that can trigger the command. This has no intrinsic
+    /// meaning but can be used by app to change appearance.
     /// </summary>
     public string DisplayClass => DataConverter.JoinNonEmpty(" ", CssClass, Context.ToString().ToLowerInvariant());
 
     public Func<bool> IsVisible { get; set; } = () => true;
 
     /// <summary>
-    /// Executes the underlying method with the provided arguments, ensuring that the proper number of arguments are provided.
+    /// Executes the underlying method with the provided arguments, ensuring that the proper number
+    /// of arguments are provided.
     /// </summary>
-    public async Task ExecuteAsync(object? arg = null) {
+    public async Task ExecuteAsync(object? arg = null)
+    {
         object?[]? args = Arguments switch {
             CommandArguments.Single => [arg],
             CommandArguments.Multiple => [GetStrongTypedSubset(arg)],
@@ -174,7 +178,7 @@ public partial class CommandInfo {
         var type = parameterType.GenericTypeArguments[0];
         var listType = typeof(List<>);
         var constructedListType = listType.MakeGenericType(type);
-        var typedCollection = Activator.CreateInstance(constructedListType) 
+        var typedCollection = Activator.CreateInstance(constructedListType)
             ?? throw new InvalidOperationException($"Could not create type List<{type}> for CommandInfo");
         var collection = (IList)typedCollection;
         var enumerable = (IEnumerable)arg;

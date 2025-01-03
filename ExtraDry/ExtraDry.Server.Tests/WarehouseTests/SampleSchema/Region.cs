@@ -6,8 +6,8 @@ namespace ExtraDry.Server.Tests.WarehouseTests;
 /// Represents a single geo-political region in a taxonomy of geo-political regions.
 /// </summary>
 [DimensionTable("Geographic Region")]
-public class Region : IHierarchyEntity<Region> { 
-
+public class Region : IHierarchyEntity<Region>
+{
     /// <summary>
     /// The principal ID for the region, internal to the database.
     /// </summary>
@@ -31,8 +31,8 @@ public class Region : IHierarchyEntity<Region> {
     public int Strata => (int)Level;
 
     /// <summary>
-    /// The code for the region, using the ISO-3166 standard.
-    /// Use alpha-2 codes for country, then country specific codes.  E.g. "AU", then "AU-QLD", then "AU-QLD-Brisbane".
+    /// The code for the region, using the ISO-3166 standard. Use alpha-2 codes for country, then
+    /// country specific codes. E.g. "AU", then "AU-QLD", then "AU-QLD-Brisbane".
     /// </summary>
     [Required, StringLength(32)]
     [Display(ShortName = "Code")]
@@ -53,10 +53,12 @@ public class Region : IHierarchyEntity<Region> {
     public HierarchyId Lineage { get; set; } = HierarchyId.GetRoot();
 
     /// <summary>
-    /// The full name of the country or region, such as 'Commonwealth of Australia', or 'United States of America'.
+    /// The full name of the country or region, such as 'Commonwealth of Australia', or 'United
+    /// States of America'.
     /// </summary>
     /// <remarks>
-    /// Limited to 100 characters based on full names of countries which, in English, max at 59 characters per ISO.
+    /// Limited to 100 characters based on full names of countries which, in English, max at 59
+    /// characters per ISO.
     /// </remarks>
     [Required, StringLength(100)]
     [Filter(FilterType.Contains)]
@@ -73,5 +75,4 @@ public class Region : IHierarchyEntity<Region> {
     [Required]
     [Display(Name = "Status", ShortName = "Status")]
     public RegionStatus Status { get; set; }
-
 }

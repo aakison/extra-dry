@@ -12,14 +12,14 @@ namespace Sample.Spa.Backend.Controllers;
 public class EmployeeController(
     EmployeeService employeeService)
 {
-
     /// <summary>
     /// Paginated list of all employees
     /// </summary>
     /// <remarks>
-    /// As a large number of employees are in the system, this allows for a set of query parameters to determine which 
-    /// subset of the total collection to return.  If too many results are present, the output collection will return 
-    /// a page of them along with a continuation token to use to consistently retrieve additional results.
+    /// As a large number of employees are in the system, this allows for a set of query parameters
+    /// to determine which subset of the total collection to return. If too many results are
+    /// present, the output collection will return a page of them along with a continuation token
+    /// to use to consistently retrieve additional results.
     /// </remarks>
     /// <param name="query"></param>
     /// <returns></returns>

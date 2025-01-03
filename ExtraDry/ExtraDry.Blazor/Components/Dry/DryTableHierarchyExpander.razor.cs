@@ -2,15 +2,16 @@
 
 namespace ExtraDry.Blazor;
 
-public partial class DryTableHierarchyExpander<TItem> : ComponentBase, IExtraDryComponent {
-
+public partial class DryTableHierarchyExpander<TItem> : ComponentBase, IExtraDryComponent
+{
     /// <summary>
-    /// The item that is to be expanded or collapsed in the hierarchy managed by the <see cref="QueryBuilder"/>.
+    /// The item that is to be expanded or collapsed in the hierarchy managed by the <see
+    /// cref="QueryBuilder" />.
     /// </summary>
     [Parameter, EditorRequired]
     public ListItemInfo<TItem> Item { get; set; } = default!;
 
-    /// <inheritdoc cref="IExtraDryComponent.CssClass "/>
+    /// <inheritdoc cref="IExtraDryComponent.CssClass " />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
@@ -48,7 +49,7 @@ public partial class DryTableHierarchyExpander<TItem> : ComponentBase, IExtraDry
 
     private string LevelCss => $"level-{Item.GroupDepth}";
 
-    private string Icon => 
+    private string Icon =>
         (Item.IsGroup, Item.IsExpanded) switch {
             (false, _) => "blank",
             (_, true) => "collapse",
@@ -56,5 +57,4 @@ public partial class DryTableHierarchyExpander<TItem> : ComponentBase, IExtraDry
         };
 
     private string Caption { get; set; } = "Expand";
-
 }

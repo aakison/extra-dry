@@ -2,8 +2,8 @@
 
 namespace ExtraDry.Server.Tests.Models;
 
-public class PagedHierarchyQueryableTests {
-
+public class PagedHierarchyQueryableTests
+{
     [Fact]
     public void QueryableInterfacePublished()
     {
@@ -82,5 +82,4 @@ public class PagedHierarchyQueryableTests {
         Assert.Equal(16, actual.Count);
         Assert.Equal(expected, actual.Items);
     }
-
 }

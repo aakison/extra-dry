@@ -1,37 +1,39 @@
 ﻿namespace ExtraDry.Blazor;
 
 /// <summary>
-/// Represents a value that requires an async operation to populate.
-/// Can be in the following states:
+/// Represents a value that requires an async operation to populate. Can be in the following
+/// states:
 /// - Loading
 /// - Error
 /// - Timeout
 /// - Complete - Loaded with Value
 /// </summary>
-public partial class Suspense<TModel> : ComponentBase, IExtraDryComponent {
+public partial class Suspense<TModel> : ComponentBase, IExtraDryComponent
+{
     /// <summary>
-    /// Render Fragment for when the value has been loaded. This will govern how the value is displayed
+    /// Render Fragment for when the value has been loaded. This will govern how the value is
+    /// displayed
     /// </summary>
     [Parameter, EditorRequired]
     public RenderFragment<TModel?>? ChildContent { get; set; }
 
     /// <summary>
-    /// Render Fragment for when an error is encountered during loading.
-    /// A default is provided but this can be used to override the display
+    /// Render Fragment for when an error is encountered during loading. A default is provided but
+    /// this can be used to override the display
     /// </summary>
     [Parameter]
     public RenderFragment<IndicatorContext>? Error { get; set; }
 
     /// <summary>
-    /// Render Fragment for when a timeout is encountered during loading.
-    /// A default is provided but this can be used to override the display
+    /// Render Fragment for when a timeout is encountered during loading. A default is provided but
+    /// this can be used to override the display
     /// </summary>
     [Parameter]
     public RenderFragment<IndicatorContext>? Timeout { get; set; }
 
     /// <summary>
-    /// Render Fragment for when a value is in the process of being loaded.
-    /// A default is provided but this can be used to override the display
+    /// Render Fragment for when a value is in the process of being loaded. A default is provided
+    /// but this can be used to override the display
     /// </summary>
     [Parameter]
     public RenderFragment<IndicatorContext>? Fallback { get; set; }
@@ -41,10 +43,10 @@ public partial class Suspense<TModel> : ComponentBase, IExtraDryComponent {
     public string CssClass { get; set; } = string.Empty;
 
     /// <summary>
-    /// Delegate function for how to retrieve it's Value 
-    /// Requires a method that is async and returns Task&lt;object?$gt;
+    /// Delegate function for how to retrieve it's Value Requires a method that is async and
+    /// returns Task&lt;object?$gt;
     /// </summary>
-    [Parameter, EditorRequired]    
+    [Parameter, EditorRequired]
     public SuspenseItemsProvider<TModel>? ItemProvider { get; set; }
 
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
@@ -80,21 +82,21 @@ public partial class Suspense<TModel> : ComponentBase, IExtraDryComponent {
     public TModel? Value { get; set; }
 
     /// <inheritdoc cref="LoadingState" />
-    public LoadingState State { get; set; }  
+    public LoadingState State { get; set; }
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass, "suspense", State.ToString().ToLower(CultureInfo.InvariantCulture));
 
-    protected async override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         await DoLoadData();
     }
 
     private IndicatorContext GetContext()
     {
-        return new IndicatorContext { 
-            Size = Size, 
-            Reload = Refresh, 
-            ShowIcon = ShowIcon 
+        return new IndicatorContext {
+            Size = Size,
+            Reload = Refresh,
+            ShowIcon = ShowIcon
         };
     }
 
@@ -110,7 +112,7 @@ public partial class Suspense<TModel> : ComponentBase, IExtraDryComponent {
 
         try {
             var tokenSource = new CancellationTokenSource(TimeoutDuration);
-            
+
             Value = await ItemProvider(tokenSource.Token);
             State = LoadingState.Complete;
         }
@@ -138,19 +140,23 @@ public partial class Suspense<TModel> : ComponentBase, IExtraDryComponent {
 /// Defines the state of the Suspense component
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum LoadingState {
+public enum LoadingState
+{
     /// <summary>
     /// Value is still loading
     /// </summary>
     Loading,
+
     /// <summary>
     /// An error has been encountered during loading
     /// </summary>
     Error,
+
     /// <summary>
     /// An timeout has been encountered during loading
     /// </summary>
     Timeout,
+
     /// <summary>
     /// The value has been loaded
     /// </summary>
@@ -161,6 +167,11 @@ public enum LoadingState {
 /// A function that provides the item to the Suspense component
 /// </summary>
 /// <typeparam name="TItem">The type of the context the item being loaded.</typeparam>
-/// <param name="cancellationToken">The <see cref="CancellationToken"/> for the consumer to make use of to handle cancellation events and timeouts.</param>
-/// <returns>A <see cref="Task"/> whose result is of type <c>TItem</c> upon successful completion.</returns>
+/// <param name="cancellationToken">
+/// The <see cref="CancellationToken" /> for the consumer to make use of to handle cancellation
+/// events and timeouts.
+/// </param>
+/// <returns>
+/// A <see cref="Task" /> whose result is of type <c>TItem</c> upon successful completion.
+/// </returns>
 public delegate Task<TItem> SuspenseItemsProvider<TItem>(CancellationToken cancellationToken);

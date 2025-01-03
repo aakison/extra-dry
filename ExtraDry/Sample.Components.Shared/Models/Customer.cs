@@ -5,44 +5,42 @@ using System.Text.Json.Serialization;
 namespace Sample.Components;
 
 /// <summary>
-/// Represents a single customer in a multi-tenanted system. 
+/// Represents a single customer in a multi-tenanted system.
 /// </summary>
 public class Customer : IResourceIdentifiers, ITenanted, IAudited, IRevisioned
 {
-
-    /// <inheritdoc/>
+    /// <inheritdoc />
     [JsonIgnore]
     public string Tenant {
         get => Slug;
         set => Slug = value;
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     [Rules(CreateAction = RuleAction.Allow, UpdateAction = RuleAction.IgnoreDefaults), Required, Key]
     public Guid Uuid { get; set; }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     [Required, StringLength(StringLength.Word), Slug]
     public string Slug { get; set; } = "";
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     [Required, StringLength(StringLength.Line)]
     public string Title { get; set; } = "";
 
     /// <summary>
-    /// The plan that the tenant is subscribed to.  This is a string value that is for ABAC 
+    /// The plan that the tenant is subscribed to. This is a string value that is for ABAC
     /// authorization of APIs based on a product bundle.
     /// </summary>
     [Filter(FilterType.Equals), StringLength(StringLength.Words)]
     public string Plan { get; set; } = "";
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     [JsonIgnore]
     [Rules(RuleAction.Block)]
     public UserTimestamp Audit { get; set; } = new();
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     [Rules(RuleAction.Ignore)]
     public UserTimestamp Revision { get; set; } = new();
-
 }

@@ -2,8 +2,8 @@
 
 namespace ExtraDry.Server.Tests.WarehouseTests;
 
-public class WarehouseDimensionTests {
-
+public class WarehouseDimensionTests
+{
     [Theory]
     [InlineData(typeof(Company), "Company Details")] // Both fact and dimension, so get "Details" appended.
     [InlineData(typeof(Region), "Geographic Region")] // explicit name.
@@ -89,5 +89,4 @@ public class WarehouseDimensionTests {
 
         Assert.Throws<DryException>(() => builder.Dimension<Company>().Attribute(e => e.field));
     }
-
 }

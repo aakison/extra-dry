@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Blazor;
 
 /// <summary>
-/// A filter component used by the DryFilter to provide a drop-down dialog that presents filtering 
+/// A filter component used by the DryFilter to provide a drop-down dialog that presents filtering
 /// options for a DateTime property.
 /// </summary>
 /// <remarks>
@@ -10,7 +10,6 @@
 /// </remarks>
 public partial class DryFilterDatePicker : ComponentBase, IExtraDryComponent, IDisposable
 {
-
     /// <inheritdoc cref="IExtraDryComponent.CssClass" />
     public string CssClass { get; set; } = string.Empty;
 
@@ -24,7 +23,7 @@ public partial class DryFilterDatePicker : ComponentBase, IExtraDryComponent, ID
     [Parameter]
     public PropertyDescription? Property { get; set; }
 
-    /// <inheritdoc cref="IComments.Placeholder"/>
+    /// <inheritdoc cref="IComments.Placeholder" />
     [Parameter]
     public string Placeholder { get; set; } = "Select...";
 
@@ -80,12 +79,10 @@ public partial class DryFilterDatePicker : ComponentBase, IExtraDryComponent, ID
     private TimeInterval? Selected { get; set; }
 
     /// <summary>
-    /// When parameters are set, check if the PageQuery has a filter that matches our property
-    /// by name.  If not, create one and add it to the PageQuery.
+    /// When parameters are set, check if the PageQuery has a filter that matches our property by
+    /// name. If not, create one and add it to the PageQuery.
     /// </summary>
-    /// <remarks>
-    /// Multiple filters mapped to the same PageQuery are not supported.
-    /// </remarks>
+    /// <remarks>Multiple filters mapped to the same PageQuery are not supported.</remarks>
     protected override void OnParametersSet()
     {
         if(Property != null && QueryBuilder != null) {
@@ -161,7 +158,6 @@ public partial class DryFilterDatePicker : ComponentBase, IExtraDryComponent, ID
     private Task SyncWithPageQuery()
     {
         if(QueryBuilder != null && Filter != null) {
-
             if(Selected == null) {
                 Filter.Reset();
             }
@@ -185,11 +181,7 @@ public partial class DryFilterDatePicker : ComponentBase, IExtraDryComponent, ID
         if(Filter == null) { return; }
 
         var timeInterval = new TimeInterval();
-        if(timeInterval.TryParseFilter(Filter)) {
-            Selected = timeInterval;
-        } else {
-            Selected = null;
-        }
+        Selected = timeInterval.TryParseFilter(Filter) ? timeInterval : null;
 
         StateHasChanged();
     }
@@ -203,13 +195,15 @@ public partial class DryFilterDatePicker : ComponentBase, IExtraDryComponent, ID
     }
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "dry-field-filter", "filter-date", CssClass);
+
     private bool filterInSync = true;
+
     private bool queryBuilderEventSet;
 
     private struct TimeIntervalGroup
     {
         public string Title { get; set; }
+
         public List<TimeInterval> TimeIntervals { get; set; }
     }
-
 }

@@ -7,8 +7,8 @@ namespace Sample.Shared;
 /// </summary>
 [DimensionTable]
 [DeleteRule(DeleteAction.Recycle, nameof(State), TemplateState.Inactive, TemplateState.Active)]
-public class Template : IResourceIdentifiers {
-
+public class Template : IResourceIdentifiers
+{
     /// <summary>
     /// A locally unique identifier, internal use only.
     /// </summary>
@@ -46,6 +46,6 @@ public class Template : IResourceIdentifiers {
     [NotMapped]
     public string Slug { get => Title.ToLower(CultureInfo.CurrentCulture); set { } }
 
-    /// <inheritdoc cref="ExpandoSchema"/>
+    /// <inheritdoc cref="ExpandoSchema" />
     public ExpandoSchema Schema { get; set; } = new();
 }

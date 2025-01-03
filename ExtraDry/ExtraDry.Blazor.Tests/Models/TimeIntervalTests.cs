@@ -501,9 +501,12 @@ public class TimeIntervalTests
     /// </summary>
     private sealed class TestableTimeInterval : TimeInterval
     {
-        public TestableTimeInterval() { }
+        public TestableTimeInterval()
+        { }
 
-        public TestableTimeInterval(TimeIntervalType type, int interval, string title) : base(type, interval, title) { }
+        public TestableTimeInterval(TimeIntervalType type, int interval, string title) : base(type, interval, title)
+        {
+        }
 
         /// <summary>
         /// Override the DateTimeNow property to create a fixed point in time.

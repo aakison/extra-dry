@@ -1,8 +1,6 @@
 ﻿@layer extra-dry {
-
   /* Some styles brought in from Normalize and adapted for CSS isolation and styling. */
   /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
-
 
   /* Sections
    ========================================================================== */
@@ -331,7 +329,6 @@
     display: none;
   }
 
-
   /* Some styles brought in from Bootstrap (but just a few) and adapted for CSS isolation and styling. */
 
   ::deep *,
@@ -357,6 +354,4 @@
     font-size: inherit;
     line-height: inherit;
   }
-
-
 }

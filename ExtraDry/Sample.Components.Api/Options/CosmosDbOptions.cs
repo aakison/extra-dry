@@ -1,5 +1,4 @@
 ﻿using ExtraDry.Core;
-using ExtraDry.Server.Agents;
 using System.ComponentModel.DataAnnotations;
 
 namespace Sample.Components.Api.Options;
@@ -25,7 +24,8 @@ public class CosmosDbOptions
     /// The authorization key for the Cosmos DB account.
     /// </summary>
     /// <remarks>
-    /// The default key here is not a secret.  It is the well-known key for the CosmosDB emulator for testing purposes.
+    /// The default key here is not a secret. It is the well-known key for the CosmosDB emulator
+    /// for testing purposes.
     /// </remarks>
     [Secret]
     [Required, Base64String]
@@ -38,13 +38,14 @@ public class CosmosDbOptions
     public string DatabaseName { get; set; } = "Components";
 
     /// <summary>
-    /// The fully qualified endpoint that the CosmosDB server is listening on, constructed from other settings.
+    /// The fully qualified endpoint that the CosmosDB server is listening on, constructed from
+    /// other settings.
     /// </summary>
     public string Endpoint => $"https://{Server}:{Port}/";
 
     /// <summary>
-    /// The fully qualified connection string for the CosmosDB account, constructed from other settings.
+    /// The fully qualified connection string for the CosmosDB account, constructed from other
+    /// settings.
     /// </summary>
     public string ConnectionString => $"AccountEndpoint={Endpoint};AccountKey={AuthKey};";
-
 }

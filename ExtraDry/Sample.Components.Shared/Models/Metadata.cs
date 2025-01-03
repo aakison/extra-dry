@@ -10,7 +10,7 @@ namespace Sample.Components;
 /// </summary>
 public class Metadata : ITenanted, IAudited, IRevisioned
 {
-    /// <inheritdoc/>
+    /// <inheritdoc />
     [JsonIgnore]
     public string Tenant { get; set; } = "";
 
@@ -27,10 +27,9 @@ public class Metadata : ITenanted, IAudited, IRevisioned
     /// </summary>
     public Collection<string> Tags { get; set; } = [];
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public UserTimestamp Audit { get; set; } = new();
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public UserTimestamp Revision { get; set; } = new();
-
 }

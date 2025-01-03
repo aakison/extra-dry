@@ -2,8 +2,8 @@
 
 namespace ExtraDry.Server.Internal;
 
-public class DataGeneratorConverter : JsonConverter<IDataGenerator> {
-
+public class DataGeneratorConverter : JsonConverter<IDataGenerator>
+{
     public override IDataGenerator Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         throw new NotImplementedException();

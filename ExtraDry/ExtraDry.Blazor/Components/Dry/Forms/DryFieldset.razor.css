@@ -1,5 +1,4 @@
 ﻿@layer extra-dry {
-  
   fieldset {
     display: flex;
     flex-direction: column;
@@ -7,25 +6,25 @@
   }
 
     fieldset legend {
-        font-size: 18px;
-        font-weight: bold;
-        padding: 0 0 5px 0;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 0 0 5px 0;
     }
 
     fieldset div.group {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
     }
 
     /*
         Style for the line properties so that multiple properties can be displayed in a row.
-        Size of properties is determined by small/medium/large/jumbo sizing.  
+        Size of properties is determined by small/medium/large/jumbo sizing.
     */
     fieldset div.line.properties {
-        display: flex;
-        flex-direction: row;
-        gap: 10px;
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
     }
 
       fieldset div.line.properties ::deep div.field.small {

@@ -3,14 +3,12 @@
 namespace ExtraDry.Server.DataWarehouse.Builder;
 
 /// <summary>
-/// 
 /// </summary>
 /// <remarks>
 /// Using a Get property with Set method to provide a fluent builder interface for developers.
 /// </remarks>
 public abstract class ColumnBuilder
 {
-
     internal ColumnBuilder(TableBuilder tableBuilder, Type entityType, PropertyInfo propertyInfo)
     {
         EntityType = entityType;
@@ -29,6 +27,7 @@ public abstract class ColumnBuilder
     public int? Length { get; private set; }
 
     public (int precision, int scale) Precision => precision;
+
     private (int precision, int scale) precision = (18, 2);
 
     public object Default { get; private set; } = new();
@@ -107,6 +106,4 @@ public abstract class ColumnBuilder
     internal PropertyInfo PropertyInfo { get; set; }
 
     protected TableBuilder TableBuilder { get; set; }
-
-
 }

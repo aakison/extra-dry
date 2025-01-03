@@ -4,7 +4,7 @@ namespace ExtraDry.Server.DataWarehouse;
 
 [DimensionTable(Name = "Date")]
 public class DateDimension(
-    int sequence, 
+    int sequence,
     DayType dayType)
 {
     [Key]
@@ -83,5 +83,4 @@ public class DateDimension(
     public string FiscalQuarterShortName => $"Q{FiscalQuarter}";
 
     public DayType DayType { get; set; } = dayType;
-
 }

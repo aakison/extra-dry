@@ -50,6 +50,7 @@ public class SignatureImpliesStatusCodesTests
     }
 
     private readonly SchemaGenerator schemaRegistry;
+
     private readonly SchemaRepository schemaRepository;
 }
 
@@ -57,23 +58,27 @@ public class SignatureImpliesStatusCodesTests
 internal class DummyController
 {
     [HttpGet]
-    public void GetMethod() { }
+    public void GetMethod()
+    { }
 
     [HttpGet]
     public object GetMethodWithResponsePayload() => new();
 
     [HttpPut]
-    public void PutMethod() { }
+    public void PutMethod()
+    { }
 
     [HttpPut]
     public object PutMethodWithResponsePayload() => new();
 
     [HttpPost]
-    public void PostMethod() { }
+    public void PostMethod()
+    { }
 
     [HttpPost]
     public object PostMethodWithResponsePayload() => new();
 
     [HttpDelete]
-    public void DeleteMethod() { }
+    public void DeleteMethod()
+    { }
 }

@@ -4,7 +4,6 @@ namespace ExtraDry.Blazor;
 
 public class StatServiceOptions : IHttpClientOptions, IValidatableObject
 {
-
     public string HttpClientName { get; set; } = string.Empty;
 
     public Type? HttpClientType { get; set; }

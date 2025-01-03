@@ -1,9 +1,9 @@
 ﻿namespace ExtraDry.Blazor.Components.Internal;
 
 internal class ItemComparer<T>(
-    PropertyDescription property, 
-    bool ascending) 
-    : IComparer<ListItemInfo<T>> 
+    PropertyDescription property,
+    bool ascending)
+    : IComparer<ListItemInfo<T>>
 {
     public PropertyDescription Property { get; } = property;
 
@@ -17,7 +17,8 @@ internal class ItemComparer<T>(
     /// Compare the two elements using the `Property` and sort order.
     /// </summary>
     /// <remarks>
-    /// Null handling: https://stackoverflow.com/questions/17025900/override-compareto-what-to-do-with-null-case
+    /// Null handling:
+    /// https://stackoverflow.com/questions/17025900/override-compareto-what-to-do-with-null-case
     /// </remarks>
     public int Compare(ListItemInfo<T>? x, ListItemInfo<T>? y)
     {

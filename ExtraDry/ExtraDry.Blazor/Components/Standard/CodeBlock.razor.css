@@ -5,58 +5,75 @@
   padding: 3px 5px;
   font-size: 16px;
 }
-div ::deep pre code .hljs {
-  color: #586e75;
-  background: #fdf6e3;
-}
-div ::deep pre code .hljs ::selection, div ::deep pre code .hljs::selection {
-  background-color: #93a1a1;
-  color: #586e75;
-}
-div ::deep pre code .hljs-comment {
-  color: #839496;
-}
-div ::deep pre code .hljs-tag {
-  color: #657b83;
-}
-div ::deep pre code .hljs-operator, div ::deep pre code .hljs-punctuation, div ::deep pre code .hljs-subst {
-  color: #586e75;
-}
-div ::deep pre code .hljs-operator {
-  opacity: 0.7;
-}
-div ::deep pre code .hljs-bullet, div ::deep pre code .hljs-deletion, div ::deep pre code .hljs-name, div ::deep pre code .hljs-selector-tag, div ::deep pre code .hljs-template-variable, div ::deep pre code .hljs-variable {
-  color: #dc322f;
-}
-div ::deep pre code .hljs-attr, div ::deep pre code .hljs-link, div ::deep pre code .hljs-literal, div ::deep pre code .hljs-number, div ::deep pre code .hljs-symbol, div ::deep pre code .hljs-variable.constant_ {
-  color: #cb4b16;
-}
-div ::deep pre code .hljs-class .hljs-title, div ::deep pre code .hljs-title, div ::deep pre code .hljs-title.class_ {
-  color: #8b6a00;
-}
-div ::deep pre code .hljs-strong {
-  font-weight: 700;
-  color: #8b6a00;
-}
-div ::deep pre code .hljs-addition, div ::deep pre code .hljs-code, div ::deep pre code .hljs-string, div ::deep pre code .hljs-title.class_.inherited__ {
-  color: #677600;
-}
-div ::deep pre code .hljs-built_in, div ::deep pre code .hljs-doctag, div ::deep pre code .hljs-keyword.hljs-atrule, div ::deep pre code .hljs-quote, div ::deep pre code .hljs-regexp {
-  color: #2aa198;
-}
-div ::deep pre code .hljs-attribute, div ::deep pre code .hljs-function .hljs-title, div ::deep pre code .hljs-section, div ::deep pre code .hljs-title.function_, div ::deep pre code .ruby .hljs-property {
-  color: #268bd2;
-}
-div ::deep pre code .diff .hljs-meta, div ::deep pre code .hljs-keyword, div ::deep pre code .hljs-template-tag, div ::deep pre code .hljs-type {
-  color: #4249bf;
-}
-div ::deep pre code .hljs-emphasis {
-  color: #4249bf;
-  font-style: italic;
-}
-div ::deep pre code .hljs-meta, div ::deep pre code .hljs-meta .hljs-keyword, div ::deep pre code .hljs-meta .hljs-string {
-  color: #d33682;
-}
-div ::deep pre code .hljs-meta .hljs-keyword, div ::deep pre code .hljs-meta-keyword {
-  font-weight: 700;
-}
+
+  div ::deep pre code .hljs {
+    color: #586e75;
+    background: #fdf6e3;
+  }
+
+    div ::deep pre code .hljs ::selection, div ::deep pre code .hljs::selection {
+      background-color: #93a1a1;
+      color: #586e75;
+    }
+
+  div ::deep pre code .hljs-comment {
+    color: #839496;
+  }
+
+  div ::deep pre code .hljs-tag {
+    color: #657b83;
+  }
+
+  div ::deep pre code .hljs-operator, div ::deep pre code .hljs-punctuation, div ::deep pre code .hljs-subst {
+    color: #586e75;
+  }
+
+  div ::deep pre code .hljs-operator {
+    opacity: 0.7;
+  }
+
+  div ::deep pre code .hljs-bullet, div ::deep pre code .hljs-deletion, div ::deep pre code .hljs-name, div ::deep pre code .hljs-selector-tag, div ::deep pre code .hljs-template-variable, div ::deep pre code .hljs-variable {
+    color: #dc322f;
+  }
+
+    div ::deep pre code .hljs-attr, div ::deep pre code .hljs-link, div ::deep pre code .hljs-literal, div ::deep pre code .hljs-number, div ::deep pre code .hljs-symbol, div ::deep pre code .hljs-variable.constant_ {
+      color: #cb4b16;
+    }
+
+  div ::deep pre code .hljs-class .hljs-title, div ::deep pre code .hljs-title, div ::deep pre code .hljs-title.class_ {
+    color: #8b6a00;
+  }
+
+  div ::deep pre code .hljs-strong {
+    font-weight: 700;
+    color: #8b6a00;
+  }
+
+  div ::deep pre code .hljs-addition, div ::deep pre code .hljs-code, div ::deep pre code .hljs-string, div ::deep pre code .hljs-title.class_.inherited__ {
+    color: #677600;
+  }
+
+  div ::deep pre code .hljs-built_in, div ::deep pre code .hljs-doctag, div ::deep pre code .hljs-keyword.hljs-atrule, div ::deep pre code .hljs-quote, div ::deep pre code .hljs-regexp {
+    color: #2aa198;
+  }
+
+  div ::deep pre code .hljs-attribute, div ::deep pre code .hljs-function .hljs-title, div ::deep pre code .hljs-section, div ::deep pre code .hljs-title.function_, div ::deep pre code .ruby .hljs-property {
+    color: #268bd2;
+  }
+
+  div ::deep pre code .diff .hljs-meta, div ::deep pre code .hljs-keyword, div ::deep pre code .hljs-template-tag, div ::deep pre code .hljs-type {
+    color: #4249bf;
+  }
+
+  div ::deep pre code .hljs-emphasis {
+    color: #4249bf;
+    font-style: italic;
+  }
+
+  div ::deep pre code .hljs-meta, div ::deep pre code .hljs-meta .hljs-keyword, div ::deep pre code .hljs-meta .hljs-string {
+    color: #d33682;
+  }
+
+    div ::deep pre code .hljs-meta .hljs-keyword, div ::deep pre code .hljs-meta-keyword {
+      font-weight: 700;
+    }

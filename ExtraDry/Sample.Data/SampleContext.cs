@@ -5,10 +5,9 @@ namespace Sample.Data;
 
 public class SampleContext(
     DbContextOptions<SampleContext> options,
-    IEnumerable<IDbAspect> aspects) 
-    : AspectDbContext(options, aspects) 
+    IEnumerable<IDbAspect> aspects)
+    : AspectDbContext(options, aspects)
 {
-
     public DbSet<Sector> Sectors { get; set; } = null!;
 
     public DbSet<Employee> Employees { get; set; } = null!;

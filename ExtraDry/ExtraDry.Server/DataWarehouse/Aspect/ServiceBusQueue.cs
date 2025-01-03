@@ -5,17 +5,17 @@ using System.Diagnostics.CodeAnalysis;
 namespace ExtraDry.Server.DataWarehouse;
 
 /// <summary>
-/// A dependency injectable service bus queue abstraction.
-/// This entity does not pool connections, but is safe to add as a singleton.
-/// Messages on this queue must conform to the signature of `T and be JSON serializable.
+/// A dependency injectable service bus queue abstraction. This entity does not pool connections,
+/// but is safe to add as a singleton. Messages on this queue must conform to the signature of `T
+/// and be JSON serializable.
 /// </summary>
 /// <remarks>
 /// Advice on singleton:
 /// https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-dotnet-get-started-with-queues
 /// </remarks>
 [SuppressMessage("Naming", "CA1711:Identifiers should not have incorrect suffix", Justification = "Name makes it clear that it is not an in-memory queue.")]
-public class ServiceBusQueue<T> {
-
+public class ServiceBusQueue<T>
+{
     public ServiceBusQueue(ServiceBusSenderOptions? options = null, IConfiguration? configuration = null)
     {
         Options = options ?? new();
@@ -46,5 +46,4 @@ public class ServiceBusQueue<T> {
     private ServiceBusClient Client { get; }
 
     private ServiceBusSender Sender { get; }
-
 }

@@ -20,11 +20,10 @@ public class MetaController(
     ILogger<TenantController> logger,
     CosmosClient cosmos,
     ComponentContext database,
-    ApiOptions options) 
+    ApiOptions options)
 {
-
     /// <summary>
-    /// For a new system, initialized the database to prepare for use.  While this is a one-time 
+    /// For a new system, initialized the database to prepare for use. While this is a one-time
     /// operation, it is idempotent and multiple calls will not hurt.
     /// </summary>
     /// <returns></returns>
@@ -50,8 +49,8 @@ public class MetaController(
     }
 
     /// <summary>
-    /// Similar to a health check, this endpoint returns the version of the API, but 
-    /// requires authorization.
+    /// Similar to a health check, this endpoint returns the version of the API, but requires
+    /// authorization.
     /// </summary>
     [HttpGet("/version")]
     [Authorize(Policies.Admin)]
@@ -59,6 +58,5 @@ public class MetaController(
     public Version RetrieveVersion()
     {
         return Assembly.GetExecutingAssembly().GetName().Version ?? new();
-    }   
-
+    }
 }

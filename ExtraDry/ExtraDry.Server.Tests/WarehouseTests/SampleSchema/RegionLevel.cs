@@ -4,8 +4,8 @@
 /// Represents the level of region in the ISO-3166 tree of geopolitical regions.
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum RegionLevel {
-    
+public enum RegionLevel
+{
     /// <summary>
     /// A global region, single root node for regions.
     /// </summary>
@@ -25,5 +25,4 @@ public enum RegionLevel {
     /// Represents a division within a division, such as a City, Municipality, etc.
     /// </summary>
     Subdivision = 3,
-
 }

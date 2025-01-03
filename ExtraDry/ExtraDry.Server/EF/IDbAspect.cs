@@ -6,7 +6,8 @@
 public interface IDbAspect
 {
     /// <summary>
-    /// Callback when entities are changing, allowing property updates and new entities to be populated.
+    /// Callback when entities are changing, allowing property updates and new entities to be
+    /// populated.
     /// </summary>
     void EntitiesChanging(EntitiesChanged args);
 
@@ -14,5 +15,4 @@ public interface IDbAspect
     /// Callback when entities have changed, allowing property updates, but no new entities.
     /// </summary>
     void EntitiesChanged(EntitiesChanged args);
-
 }

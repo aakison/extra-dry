@@ -1,6 +1,7 @@
 namespace ExtraDry.Server.Tests.Rules;
 
-public class RuleEngineCreateTests {
+public class RuleEngineCreateTests
+{
     [Fact]
     public async Task CreateRequiresItem()
     {
@@ -225,7 +226,7 @@ public class RuleEngineCreateTests {
         await Assert.ThrowsAsync<DryException>(async () => await rules.CreateAsync(exemplar));
     }
 
-    // TODO: What does it mean to block an object?  
+    // TODO: What does it mean to block an object?
     // Do we recursively check all fields that are 'allow' and turn them to blocked?
     // Is it just at the object level?
     //[Fact]
@@ -236,11 +237,10 @@ public class RuleEngineCreateTests {
 
     //    await Assert.ThrowsAsync<DryException>(async () => await rules.CreateAsync(exemplar));
     //}
-
 }
 
-public class IgnoreDefaultsEntity {
-
+public class IgnoreDefaultsEntity
+{
     [Rules(CreateAction = RuleAction.IgnoreDefaults)]
     public int IntValue { get; set; } = 1;
 
@@ -270,11 +270,10 @@ public class IgnoreDefaultsEntity {
 
     [Rules(CreateAction = RuleAction.IgnoreDefaults)]
     public State? NullableEnumValue { get; set; } = State.Active;
-
 }
 
-public class Entity {
-    
+public class Entity
+{
     public int DefaultInteger { get; set; }
 
     public string? DefaultString { get; set; }
@@ -305,7 +304,7 @@ public class Entity {
 
     [Rules(CreateAction = RuleAction.Ignore)]
     public int IgnoredProp { get; set; }
-    
+
     [Rules(CreateAction = RuleAction.Ignore)]
     public ChildEntity? IgnoredChild { get; set; }
 
@@ -316,8 +315,8 @@ public class Entity {
     public ChildEntity? JsonIgnoredChild { get; set; }
 }
 
-public class ValidatableEntity : IValidatableObject {
-
+public class ValidatableEntity : IValidatableObject
+{
     [Rules(CreateAction = RuleAction.Allow)]
     public ChildEntity? DesendantsTestObject { get; set; }
 
@@ -329,24 +328,26 @@ public class ValidatableEntity : IValidatableObject {
     }
 }
 
-
-public class BlockedPropertiesEntity {
-
+public class BlockedPropertiesEntity
+{
     [Rules(RuleAction.Block)]
     public string? DefaultBlockString { get; set; }
-        
+
     [Rules(CreateAction = RuleAction.Block)]
     public string? CreateBlockString { get; set; }
-        
+
     [Rules(CreateAction = RuleAction.Block)]
     public ChildEntity? BlockTestObject { get; set; }
-
 }
 
-public class ChildEntity {
+public class ChildEntity
+{
     public string? PropertyOne { get; set; }
+
     public string? PropertyTwo { get; set; }
+
     public string? PropertyThree { get; set; }
+
     public ChildEntity? TestObject { get; set; }
 
     internal bool CreatedFromResourceReference => string.IsNullOrEmpty(PropertyTwo);
@@ -355,20 +356,28 @@ public class ChildEntity {
 public class ChildEntityNoDefaultContructor(string prop1)
 {
     public string PropertyOne { get; set; } = prop1;
+
     public string? PropertyTwo { get; set; }
+
     public string? PropertyThree { get; set; }
+
     public ChildEntity? TestObject { get; set; }
 }
 
-internal sealed class InvalidReferenceTypes {
+internal sealed class InvalidReferenceTypes
+{
     public InvalidTestObject? TestObject { get; set; }
 }
 
-internal sealed class InvalidTestObject { }
+internal sealed class InvalidTestObject
+{ }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum State {
+public enum State
+{
     Unknown = 0,
+
     Active = 1,
+
     Another = 2,
 }

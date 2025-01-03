@@ -4,13 +4,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Sample.Shared;
 
 /// <summary>
-/// Represents a service that a company may provide.
-/// This is for properties that may appear as Enums, but have additional data associated with them.
+/// Represents a service that a company may provide. This is for properties that may appear as
+/// Enums, but have additional data associated with them.
 /// </summary>
 [DimensionTable]
 [DeleteRule(DeleteAction.Recycle, nameof(State), SectorState.Inactive, SectorState.Active)]
-public class Sector : IResourceIdentifiers {
-
+public class Sector : IResourceIdentifiers
+{
     private const string DefaultGroup = "Not a group";
 
     /// <summary>
@@ -69,7 +69,7 @@ public class Sector : IResourceIdentifiers {
     /// </summary>
     [Filter(FilterType.Equals)]
     [Statistics(Stats.Distribution)]
-    public SectorState State { get; set;  }
+    public SectorState State { get; set; }
 
     /// <summary>
     /// The version info which informs the audit log.
@@ -94,5 +94,4 @@ public class Sector : IResourceIdentifiers {
     /// Entity hash code, as uniquely defined by the `Uuid`.
     /// </summary>
     public override int GetHashCode() => Uuid.GetHashCode();
-
 }

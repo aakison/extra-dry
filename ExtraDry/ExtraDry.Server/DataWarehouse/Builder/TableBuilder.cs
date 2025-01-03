@@ -2,8 +2,8 @@
 
 namespace ExtraDry.Server.DataWarehouse.Builder;
 
-public abstract class TableBuilder {
-
+public abstract class TableBuilder
+{
     protected TableBuilder(WarehouseModelBuilder warehouseBuilder, Type entity, string? name = null)
     {
         WarehouseBuilder = warehouseBuilder;
@@ -25,7 +25,7 @@ public abstract class TableBuilder {
 
     public string TableName { get; private set; } = null!; // Constructor sets via method, analyzer misses it...
 
-    public EntitySource? Source { get; internal set; } 
+    public EntitySource? Source { get; internal set; }
 
     protected PropertyInfo GetKeyProperty()
     {
@@ -81,5 +81,4 @@ public abstract class TableBuilder {
         var builder = new SpokeBuilder(this, TableEntityType, spoke);
         SpokeBuilders.Add(spoke.Name, builder);
     }
-
 }

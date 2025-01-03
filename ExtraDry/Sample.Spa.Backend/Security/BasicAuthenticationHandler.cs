@@ -9,9 +9,9 @@ using System.Text.Encodings.Web;
 namespace Sample.Spa.Backend.Security;
 
 /// <summary>
-/// A worthless authentication handler that just allows any request to masquarade as an admin.
-/// This is here so that the use of the `[Authorize]` attribute can be demonstrated without implementing a
-/// real security system.
+/// A worthless authentication handler that just allows any request to masquarade as an admin. This
+/// is here so that the use of the `[Authorize]` attribute can be demonstrated without implementing
+/// a real security system.
 /// </summary>
 public class BasicAuthenticationHandler(
     IOptionsMonitor<AuthenticationSchemeOptions> options,
@@ -19,7 +19,6 @@ public class BasicAuthenticationHandler(
     UrlEncoder encoder)
     : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
 {
-
     /// <summary>
     /// Handles basic authentication by testing against hard-coded admin/admin credentials.
     /// </summary>

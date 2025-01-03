@@ -3,11 +3,11 @@
 namespace ExtraDry.Blazor.Internal;
 
 /// <summary>
-/// Represents the layout of a form for a given ViewModel type and Model object.
-/// This will link to the appropriate elements in the model or its contained sub-objects.
+/// Represents the layout of a form for a given ViewModel type and Model object. This will link to
+/// the appropriate elements in the model or its contained sub-objects.
 /// </summary>
-internal class FormDescription {
-
+internal class FormDescription
+{
     public FormDescription(ViewModelDescription description, object model)
     {
         ViewModelDescription = description;
@@ -68,7 +68,7 @@ internal class FormDescription {
 
     private void ExtendProperties(Collection<PropertyDescription> properties, string fieldsetName, FormGroupType formGroup, object? model, object? parentModel = null)
     {
-        foreach(var property in properties.OrderBy(p => FieldOrder(p)) ){            
+        foreach(var property in properties.OrderBy(p => FieldOrder(p))) {
             var groupName = property.Display?.GroupName ?? "Details";
             if(groupName != string.Empty) {
                 fieldsetName = groupName;
@@ -102,7 +102,7 @@ internal class FormDescription {
                 }
             }
             else if(model != null) {
-                ExtendedProperties.Add(new ExtendedProperty(property, model) { 
+                ExtendedProperties.Add(new ExtendedProperty(property, model) {
                     FieldsetTitle = fieldsetName,
                     GroupType = formGroup,
                     Length = property.Size,
@@ -112,8 +112,9 @@ internal class FormDescription {
         }
     }
 
-    // Use this value when an order is not specified. This value allows for explicitly-ordered fields to be displayed before
-    const int OrderNotSpecifiedOffset = 10000;
+    // Use this value when an order is not specified. This value allows for explicitly-ordered
+    // fields to be displayed before
+    private const int OrderNotSpecifiedOffset = 10000;
 
     private int FieldOrder(PropertyDescription p)
     {
@@ -121,16 +122,21 @@ internal class FormDescription {
     }
 
     private class ExtendedProperty(
-        PropertyDescription property, 
+        PropertyDescription property,
         object target)
     {
         public string FieldsetTitle { get; set; } = string.Empty;
+
         public FormGroupType GroupType { get; set; }
+
         public PropertySize Length { get; set; }
+
         public PropertyDescription? Property { get; set; } = property;
+
         public object Target { get; set; } = target;
+
         public object? ParentTarget { get; set; }
+
         public bool CommandRow { get; set; }
     }
-
 }

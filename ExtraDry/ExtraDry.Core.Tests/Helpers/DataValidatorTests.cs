@@ -2,7 +2,6 @@
 
 public class DataValidatorTests
 {
-
     [Fact]
     public void DefaultValues()
     {
@@ -110,7 +109,6 @@ public class DataValidatorTests
 
     public class Sample
     {
-
         [Required]
         public string? Text { get; set; }
 
@@ -118,7 +116,6 @@ public class DataValidatorTests
         public string? Second { get; set; }
 
         public string? Ignored { get; set; }
-
     }
 
     private static Sample ValidSample => new() {
@@ -135,5 +132,4 @@ public class DataValidatorTests
         Text = "something",
         Second = null,
     };
-
 }

@@ -1,7 +1,7 @@
 ﻿namespace Sample.Data.Services;
 
 public class EmployeeService(
-    SampleContext sampleContext, 
+    SampleContext sampleContext,
     RuleEngine ruleEngine)
 {
     public async Task<PagedCollection<Employee>> List(PageQuery query)

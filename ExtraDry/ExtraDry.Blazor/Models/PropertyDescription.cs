@@ -4,7 +4,6 @@ namespace ExtraDry.Blazor;
 
 public class PropertyDescription
 {
-
     public static PropertyDescription For(object model, string propertyName)
     {
         return For(model.GetType(), propertyName);
@@ -12,7 +11,7 @@ public class PropertyDescription
 
     public static PropertyDescription For(Type modelType, string propertyName)
     {
-        var propertyInfo = modelType.GetProperty(propertyName) 
+        var propertyInfo = modelType.GetProperty(propertyName)
             ?? throw new ArgumentException($"Property {propertyName} not found on {modelType.Name}");
         return new PropertyDescription(propertyInfo);
     }
@@ -30,7 +29,7 @@ public class PropertyDescription
         Filter = Property.GetCustomAttribute<FilterAttribute>();
         InputFormat = Property.GetCustomAttribute<InputFormatAttribute>();
         Sort = Property.GetCustomAttribute<SortAttribute>();
-        
+
         FieldCaption = Display?.Name ?? DataConverter.CamelCaseToTitleCase(Property.Name);
         ColumnCaption = Display?.ShortName ?? DataConverter.CamelCaseToTitleCase(Property.Name);
         Description = Display?.Description;
@@ -59,30 +58,31 @@ public class PropertyDescription
         --recursionDepth;
         AllowsNull = Property.PropertyType.IsGenericType && Property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>);
         PropertyType = AllowsNull
-            ? Property.PropertyType.GetGenericArguments()[0] 
+            ? Property.PropertyType.GetGenericArguments()[0]
             : Property.PropertyType;
 
         Formatter = CreateFormatter();
     }
 
     /// <summary>
-    /// It is possible that mapping through ChildModel's will create an infinite loop;
-    /// Check and limit the number of layers, in practice a UI will be horrible if recursion is even 2-3 levels.
+    /// It is possible that mapping through ChildModel's will create an infinite loop; Check and
+    /// limit the number of layers, in practice a UI will be horrible if recursion is even 2-3
+    /// levels.
     /// </summary>
     private static int recursionDepth;
 
     public ViewModelDescription? ChildModel { get; private set; }
 
     /// <summary>
-    /// When rendered as an input component, the label for the input field. This may be set in the 
-    /// <see cref="DisplayAttribute.Name" />, or will default to a title-case version of the 
+    /// When rendered as an input component, the label for the input field. This may be set in the
+    /// <see cref="DisplayAttribute.Name" />, or will default to a title-case version of the
     /// property name.
     /// </summary>
     public string FieldCaption { get; set; }
 
     /// <summary>
-    /// When rendered as a table colun, the label for the table header.  This may be set in the
-    /// <see cref="DisplayAttribute.ShortName" />, or will default to a title-case version of the
+    /// When rendered as a table colun, the label for the table header. This may be set in the <see
+    /// cref="DisplayAttribute.ShortName" />, or will default to a title-case version of the
     /// property name.
     /// </summary>
     public string ColumnCaption { get; set; }
@@ -324,20 +324,20 @@ public class PropertyDescription
     public int? FieldLength => StringLength?.MaximumLength ?? MaxLength?.Length;
 
     /// <summary>
-    /// Gets the type of the property.  If the property is a nullable type (e.g. 
-    /// Nullable&lt;DateTime&gt; or DateTime?) then just the inner type is returned (e.g. DateTime).
-    /// See <see cref="AllowsNull" /> for nullability.
+    /// Gets the type of the property. If the property is a nullable type (e.g.
+    /// Nullable&lt;DateTime&gt; or DateTime?) then just the inner type is returned (e.g.
+    /// DateTime). See <see cref="AllowsNull" /> for nullability.
     /// </summary>
     public Type PropertyType { get; }
 
     /// <summary>
-    /// Gets the nullability of the property.  See <see cref="PropertyType"/> for the base type.
+    /// Gets the nullability of the property. See <see cref="PropertyType" /> for the base type.
     /// </summary>
     public bool AllowsNull { get; }
 
     /// <summary>
-    /// Returns the type of the property as it should be displayed to users during input.  This
-    /// may vary slightly (e.g. PropertyType is DateTime, where the InputType is DateOnly).
+    /// Returns the type of the property as it should be displayed to users during input. This may
+    /// vary slightly (e.g. PropertyType is DateTime, where the InputType is DateOnly).
     /// </summary>
     public Type InputType => InputFormat?.DataTypeOverride ?? PropertyType;
 

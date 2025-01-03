@@ -1,13 +1,13 @@
 ﻿namespace ExtraDry.Blazor;
 
 /// <summary>
-/// Represents a consistent display for items in lists which may present as simple title,
-/// or which might also have a thumbnail and a subtitle.
-/// Used for consistency when rendering in dropdown lists, etc.
+/// Represents a consistent display for items in lists which may present as simple title, or which
+/// might also have a thumbnail and a subtitle. Used for consistency when rendering in dropdown
+/// lists, etc.
 /// </summary>
-public partial class MiniCard : ComponentBase, IExtraDryComponent {
-
-    /// <inheritdoc cref="IExtraDryComponent.CssClass "/>
+public partial class MiniCard : ComponentBase, IExtraDryComponent
+{
+    /// <inheritdoc cref="IExtraDryComponent.CssClass " />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
@@ -42,5 +42,4 @@ public partial class MiniCard : ComponentBase, IExtraDryComponent {
     private bool ShowSubtitle => Subtitle != null;
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "mini-card", CssClass, SemanticThumbnail, SemanticSubtitle);
-
 }

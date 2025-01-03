@@ -4,7 +4,6 @@ namespace ExtraDry.Server.Tests.Models;
 
 public class BaseQueryableTests
 {
-
     [Fact]
     public void QueryableInterfacePublished()
     {
@@ -62,21 +61,24 @@ public class BaseQueryableTests
         public class ModelsEnumerator : IAsyncEnumerator<Model>
         {
             public Model Current => Models[index];
+
             public ValueTask DisposeAsync()
             {
                 GC.SuppressFinalize(this);
                 return ValueTask.CompletedTask;
             }
+
             public ValueTask<bool> MoveNextAsync()
             {
                 return ValueTask.FromResult(++index < Models.Count);
             }
 
             private int index = -1;
-            public required List<Model> Models { get; init; }
+
+            public List<Model> Models { get; init; }
         }
 
-        public required List<Model> Models { get; init; }
+        public List<Model> Models { get; init; }
     }
 
     private readonly List<Model> Models = [
@@ -94,5 +96,4 @@ public class BaseQueryableTests
         new Model { Id = 12, Name = "Foxtrot", Soundex = "F236", Type = ModelType.Phonetic },
         new Model { Id = 13, Name = "Foxxy", Soundex = "F200", Type = ModelType.Hendrix, Notes = "Jimi" },
     ];
-
 }

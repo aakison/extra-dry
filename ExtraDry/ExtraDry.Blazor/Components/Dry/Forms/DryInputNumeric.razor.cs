@@ -3,14 +3,13 @@
 namespace ExtraDry.Blazor.Forms;
 
 /// <summary>
-/// A DRY wrapper around a numeric input field. Prefer the use of <see cref="DryInput{T}" /> instead
-/// of this component as it is more flexible and supports more data types.
+/// A DRY wrapper around a numeric input field. Prefer the use of <see cref="DryInput{T}" />
+/// instead of this component as it is more flexible and supports more data types.
 /// </summary>
-public partial class DryInputNumeric<T> 
+public partial class DryInputNumeric<T>
     : DryInputBase<T>
     where T : class
 {
-
     /// <inheritdoc cref="DryInput{T}.ReadOnly" />
     [Parameter]
     public bool ReadOnly { get; set; }
@@ -22,7 +21,7 @@ public partial class DryInputNumeric<T>
     }
 
     /// <summary>
-    /// Only allow digits, commas, periods and dollar signs. Injected into onkeypress event (not 
+    /// Only allow digits, commas, periods and dollar signs. Injected into onkeypress event (not
     /// onkeydown!) to prevent invalid characters from being displayed, but not stopping control
     /// sequences like Ctrl-A from being typed.
     /// </summary>
@@ -40,7 +39,8 @@ public partial class DryInputNumeric<T>
             Property.SetValue(Model, value);
             var newValue = Property.Formatter.Format(value);
             if(newValue == Value) {
-                // rare case where Value property doesn't change because of formatting issues.  E.g. 123.45 written as 1,2,3.45 won't trigger Value change refresh.
+                // rare case where Value property doesn't change because of formatting issues. E.g.
+                // 123.45 written as 1,2,3.45 won't trigger Value change refresh.
                 Value = $" {newValue}"; // stringly different but minimize UI flicker
                 StateHasChanged();
                 await Task.Delay(1); // let the UI update
@@ -60,5 +60,4 @@ public partial class DryInputNumeric<T>
             await InvokeOnValidationAsync(validation);
         }
     }
-
 }

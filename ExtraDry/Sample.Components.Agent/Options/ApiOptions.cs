@@ -1,6 +1,4 @@
-﻿using ExtraDry.Server.Agents;
-
-namespace Sample.Components.Agent;
+﻿namespace Sample.Components.Agent;
 
 public class ApiOptions
 {

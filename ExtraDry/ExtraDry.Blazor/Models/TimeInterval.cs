@@ -3,9 +3,11 @@
 public class TimeInterval
 {
     private DateTime? endDate;
+
     private DateTime? startDate;
 
-    public TimeInterval() { }
+    public TimeInterval()
+    { }
 
     public TimeInterval(string title, DateTime? start, DateTime? end)
     {
@@ -15,7 +17,9 @@ public class TimeInterval
         endDate = end;
     }
 
-    public TimeInterval(TimeIntervalType type, string title) : this(type, 0, title) { }
+    public TimeInterval(TimeIntervalType type, string title) : this(type, 0, title)
+    {
+    }
 
     public TimeInterval(TimeIntervalType type, int interval, string title)
     {
@@ -53,7 +57,7 @@ public class TimeInterval
 
     public void Previous()
     {
-        var interval = Interval == 0 
+        var interval = Interval == 0
             ? Type == TimeIntervalType.Quarters ? -3 : -1
             : Type == TimeIntervalType.Quarters ? Interval * 3 : Interval;
         MoveDates(interval);
@@ -61,7 +65,7 @@ public class TimeInterval
 
     public void Next()
     {
-        var interval = Interval == 0 
+        var interval = Interval == 0
             ? Type == TimeIntervalType.Quarters ? 3 : 1
             : Type == TimeIntervalType.Quarters ? PositiveInterval * 3 : PositiveInterval;
         MoveDates(interval);
@@ -81,12 +85,15 @@ public class TimeInterval
             case TimeIntervalType.Days:
                 SetDays();
                 break;
+
             case TimeIntervalType.Months:
                 SetMonths();
                 break;
+
             case TimeIntervalType.Quarters:
                 SetQuarter();
                 break;
+
             case TimeIntervalType.Years:
                 SetYears();
                 break;
@@ -104,7 +111,7 @@ public class TimeInterval
 
     private void SetDaysDescription()
     {
-        if (!startDate.HasValue || !endDate.HasValue) { return; }
+        if(!startDate.HasValue || !endDate.HasValue) { return; }
 
         /*
          *  For one day format as 'MMM d' i.e. Feb 28, unless the date is today then use 'Today'
@@ -130,7 +137,8 @@ public class TimeInterval
         endDate = DateTimeNow;
         startDate = endDate.Value.AddMonths(Interval);
         startDate = new DateTime(startDate.Value.Year, startDate.Value.Month, 1);
-        // If there is an interval then the range excludes this month, i.e. three months before this month.
+        // If there is an interval then the range excludes this month, i.e. three months before
+        // this month.
         endDate = Interval == 0 ? endDate : endDate.Value.AddMonths(-1);
         endDate = new DateTime(endDate.Value.Year, endDate.Value.Month, DateTime.DaysInMonth(endDate.Value.Year, endDate.Value.Month));
         SetMonthsDescription();
@@ -165,18 +173,22 @@ public class TimeInterval
                 startDate = new DateTime(workingDate.Year, 1, 1);
                 endDate = new DateTime(workingDate.Year, 3, DateTime.DaysInMonth(workingDate.Year, 3));
                 break;
+
             case 2:
                 startDate = new DateTime(workingDate.Year, 4, 1);
                 endDate = new DateTime(workingDate.Year, 6, DateTime.DaysInMonth(workingDate.Year, 6));
                 break;
+
             case 3:
                 startDate = new DateTime(workingDate.Year, 7, 1);
                 endDate = new DateTime(workingDate.Year, 9, DateTime.DaysInMonth(workingDate.Year, 9));
                 break;
+
             case 4:
                 startDate = new DateTime(workingDate.Year, 10, 1);
                 endDate = new DateTime(workingDate.Year, 12, DateTime.DaysInMonth(workingDate.Year, 12));
                 break;
+
             default:
                 break;
         }
@@ -203,7 +215,8 @@ public class TimeInterval
         endDate = DateTimeNow;
         startDate = Interval == 0 ? endDate : endDate.Value.AddYears(Interval);
         startDate = new DateTime(startDate.Value.Year, 1, 1);
-        // If there is an interval then the range excludes this year, i.e. three years before this year.
+        // If there is an interval then the range excludes this year, i.e. three years before this
+        // year.
         endDate = Interval == 0 ? endDate : endDate.Value.AddYears(-1);
         endDate = new DateTime(endDate.Value.Year, 12, 31);
         SetYearsDescription();
@@ -230,6 +243,7 @@ public class TimeInterval
                 endDate = endDate?.AddDays(interval);
                 SetDaysDescription();
                 break;
+
             case TimeIntervalType.Months:
                 startDate = startDate?.AddMonths(interval);
                 if(endDate.HasValue) {
@@ -238,6 +252,7 @@ public class TimeInterval
                 }
                 SetMonthsDescription();
                 break;
+
             case TimeIntervalType.Quarters:
                 startDate = startDate?.AddMonths(interval);
                 if(endDate.HasValue) {
@@ -246,6 +261,7 @@ public class TimeInterval
                 }
                 SetQuarterDescription();
                 break;
+
             case TimeIntervalType.Years:
                 startDate = startDate?.AddYears(interval);
                 if(endDate.HasValue) {
@@ -265,6 +281,7 @@ public class TimeInterval
             case TimeIntervalType.Static:
                 filter.SetDates(startDate, endDate);
                 break;
+
             case TimeIntervalType.Days:
             case TimeIntervalType.Months:
             case TimeIntervalType.Quarters:
@@ -273,6 +290,7 @@ public class TimeInterval
                     filter.SetDates(startDate, endDate);
                 }
                 break;
+
             default:
                 break;
         }
@@ -330,7 +348,7 @@ public class TimeInterval
         startDate = filter.Lower;
         Interval = (startDate.Value.Month == endDate.Value.Month) ? 0 : ((startDate.Value.Year - endDate.Value.Year) * 12) + startDate.Value.Month - (endDate.Value.Month + 1);
         SetMonthsDescription();
-        
+
         return true;
     }
 

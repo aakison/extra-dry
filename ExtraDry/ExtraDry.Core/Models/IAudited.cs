@@ -5,11 +5,9 @@
 /// </summary>
 public interface IAudited
 {
-
     /// <summary>
-    /// The last user, system, or agent to update the object.  This is automatically populated 
-    /// on save.
+    /// The last user, system, or agent to update the object. This is automatically populated on
+    /// save.
     /// </summary>
     public UserTimestamp Audit { get; set; }
-
 }

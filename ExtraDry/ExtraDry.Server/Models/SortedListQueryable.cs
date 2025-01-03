@@ -4,7 +4,8 @@ namespace ExtraDry.Server;
 
 public class SortedListQueryable<T> : FilteredListQueryable<T>
 {
-    protected SortedListQueryable() { }
+    protected SortedListQueryable()
+    { }
 
     public SortedListQueryable(IQueryable<T> queryable, SortQuery sortQuery, Expression<Func<T, bool>>? defaultFilter)
     {
@@ -38,5 +39,4 @@ public class SortedListQueryable<T> : FilteredListQueryable<T>
     {
         return queryable.Sort(query);
     }
-
 }

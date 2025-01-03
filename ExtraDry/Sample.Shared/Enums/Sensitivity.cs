@@ -1,8 +1,8 @@
 ﻿namespace Sample.Shared;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum Sensitivity {
-    
+public enum Sensitivity
+{
     [Display(ShortName = "Low", Name = "Low", Order = 0)]
     Low = 1,
 
@@ -11,5 +11,4 @@ public enum Sensitivity {
 
     [Display(ShortName = "High", Name = "High", Order = 2)]
     High = 2,
-
 }

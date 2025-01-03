@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Blazor.Internal;
 
 /// <summary>
-/// A base filter builder as used by the PageQueryBuilder.  Base classes support each of the 
+/// A base filter builder as used by the PageQueryBuilder. Base classes support each of the
 /// different filter tyes, such as free-text, enum select lists, etc.
 /// </summary>
 public abstract class FilterBuilder
@@ -12,8 +12,8 @@ public abstract class FilterBuilder
     public string FilterName { get; set; } = string.Empty;
 
     /// <summary>
-    /// When the filter has changed, builds up the ExtraDry filter query fragment that is
-    /// to be sent to the server.
+    /// When the filter has changed, builds up the ExtraDry filter query fragment that is to be
+    /// sent to the server.
     /// </summary>
     public abstract string Build();
 

@@ -5,7 +5,6 @@ namespace ExtraDry.Server.Internal;
 
 internal class ModelDescription
 {
-
     public ModelDescription(Type modelType)
     {
         GetReflectedModelProperties(modelType);
@@ -20,8 +19,8 @@ internal class ModelDescription
     public SortProperty? StabilizerProperty => multipleStabilizerProperties ? null : stabilizerProperty;
 
     /// <summary>
-    /// Determines if a given property is treated as sortable. This applies to the constructions 
-    /// of expressions as well as to Swagger documention.
+    /// Determines if a given property is treated as sortable. This applies to the constructions of
+    /// expressions as well as to Swagger documention.
     /// </summary>
     /// <remarks>
     /// 1. Ignore properties with specific attributes.
@@ -111,5 +110,4 @@ internal class ModelDescription
     private SortProperty? stabilizerProperty;
 
     private bool multipleStabilizerProperties;
-
 }

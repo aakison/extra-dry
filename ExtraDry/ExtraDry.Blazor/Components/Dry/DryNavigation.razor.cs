@@ -3,14 +3,14 @@
 namespace ExtraDry.Blazor;
 
 /// <summary>
-/// The DryNavigation component consistently displays navigation menus from either a local list of 
+/// The DryNavigation component consistently displays navigation menus from either a local list of
 /// menus or a global menu heirarchy.
 /// </summary>
-public partial class DryNavigation : ComponentBase, IExtraDryComponent, IDisposable {
-
+public partial class DryNavigation : ComponentBase, IExtraDryComponent, IDisposable
+{
     /// <summary>
-    /// The current menu that drives the navigation.  The actual navigation items are the Children
-    /// property of the indicate menu.  Optionally, if the MenuDepth is greater than 0, then the
+    /// The current menu that drives the navigation. The actual navigation items are the Children
+    /// property of the indicate menu. Optionally, if the MenuDepth is greater than 0, then the
     /// navigation will be aligned to the indicated depth along the currently active menu path.
     /// </summary>
     [Parameter, EditorRequired]
@@ -83,8 +83,8 @@ public partial class DryNavigation : ComponentBase, IExtraDryComponent, IDisposa
     }
 
     /// <summary>
-    /// Based on the currently active menus in the hierarchy, the menu that is active at the 
-    /// depth of this DryNavigation.
+    /// Based on the currently active menus in the hierarchy, the menu that is active at the depth
+    /// of this DryNavigation.
     /// </summary>
     private Menu? DisplayMenu => Menu?.ActiveMenu(Navigation.Uri, MenuDepth);
 
@@ -105,13 +105,11 @@ public partial class DryNavigation : ComponentBase, IExtraDryComponent, IDisposa
     /// then sort them as if they had an Order of 10,000 (aligned with Microsoft ordering advice)
     /// and then by the order they were declared in the Items collection.
     /// </summary>
-    /// <remarks>
-    /// Relies on OrderBy providing a stable sort.
-    /// </remarks>
+    /// <remarks>Relies on OrderBy providing a stable sort.</remarks>
     private IEnumerable<Menu> SortedItems => DisplayMenus.OrderBy(e => e.Order ?? 10_000);
 
     /// <summary>
-    /// When grouped, the sorted list of items within a group.  Constrained as SortedItems above.
+    /// When grouped, the sorted list of items within a group. Constrained as SortedItems above.
     /// </summary>
     private IEnumerable<Menu> SortedInGroup(string group)
     {
@@ -120,5 +118,4 @@ public partial class DryNavigation : ComponentBase, IExtraDryComponent, IDisposa
 
     [Inject]
     private NavigationManager Navigation { get; set; } = null!;
-
 }

@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Server.Tests.Rules;
 
-public class DryExceptionTests {
-
+public class DryExceptionTests
+{
     [Fact]
     public void DefaultValuesDefaultConstructor()
     {
@@ -51,5 +51,4 @@ public class DryExceptionTests {
 
         Assert.Equal("new-message", exception.ProblemDetails.Detail);
     }
-
 }

@@ -1,17 +1,17 @@
-﻿namespace ExtraDry.Blazor; 
+﻿namespace ExtraDry.Blazor;
 
-public class Menu : ISubjectViewModel {
-
+public class Menu : ISubjectViewModel
+{
     /// <summary>
-    /// The optional icon to render when creating the menu link.
-    /// Icon details are looked up in by key the `Theme` Icons collection, or can be a URL.
+    /// The optional icon to render when creating the menu link. Icon details are looked up in by
+    /// key the `Theme` Icons collection, or can be a URL.
     /// </summary>
     public string Icon { get; set; } = string.Empty;
 
     /// <summary>
     /// The title that is displayed for the navigation link.
     /// </summary>
-    public required string Title { get; set; }
+    public string Title { get; set; }
 
     /// <summary>
     /// The optional subtitle for the displayed link, typically only used for top-most navigations.
@@ -19,22 +19,22 @@ public class Menu : ISubjectViewModel {
     public string Subtitle { get; set; } = string.Empty;
 
     /// <summary>
-    /// The order that the Navigation should be displayed in.  If not provided, then defaults 
-    /// to order declared.
+    /// The order that the Navigation should be displayed in. If not provided, then defaults to
+    /// order declared.
     /// </summary>
     public int? Order { get; set; }
 
     /// <summary>
-    /// An navigation link for the menu.  This link is always shown to users in browsers on hover
-    /// but might not be the target.  If the menu defines a NavAction, that will be used instead.
+    /// An navigation link for the menu. This link is always shown to users in browsers on hover
+    /// but might not be the target. If the menu defines a NavAction, that will be used instead.
     /// </summary>
     public string? NavLink { get; set; }
 
     public Action? NavAction { get; set; }
 
     /// <summary>
-    /// An optional regex string that determines if a CSS class of "active" is applied
-    /// to the navigation link based on the current URI.
+    /// An optional regex string that determines if a CSS class of "active" is applied to the
+    /// navigation link based on the current URI.
     /// </summary>
     public string? ActiveMatch { get; set; }
 
@@ -44,7 +44,7 @@ public class Menu : ISubjectViewModel {
     public string Group { get; set; } = string.Empty;
 
     /// <summary>
-    /// A set of menus that are dependant or refine the current menu.  Typically used as a sub-menu
+    /// A set of menus that are dependant or refine the current menu. Typically used as a sub-menu
     /// that is revealed based on a parent-menu being selected.
     /// </summary>
     public Menu[] Children { get; set; } = [];

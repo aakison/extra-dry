@@ -2,11 +2,11 @@
 
 namespace ExtraDry.Server.DataWarehouse.Builder;
 
-public class KeyBuilder : ColumnBuilder {
-
-    internal KeyBuilder(TableBuilder tableBuilder, Type entityType, PropertyInfo propertyInfo) 
-        : base(tableBuilder, entityType, propertyInfo) 
-    { 
+public class KeyBuilder : ColumnBuilder
+{
+    internal KeyBuilder(TableBuilder tableBuilder, Type entityType, PropertyInfo propertyInfo)
+        : base(tableBuilder, entityType, propertyInfo)
+    {
         SetName($"{tableBuilder.TableName} ID");
         SetType(ColumnType.Key);
     }
@@ -35,5 +35,4 @@ public class KeyBuilder : ColumnBuilder {
             PropertyInfo = PropertyInfo,
         };
     }
-
 }

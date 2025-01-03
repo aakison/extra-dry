@@ -1,14 +1,13 @@
 ﻿namespace ExtraDry.Blazor;
 
-public partial class TriSwitch : ComponentBase, IExtraDryComponent {
-
+public partial class TriSwitch : ComponentBase, IExtraDryComponent
+{
     /// <inheritdoc cref="IExtraDryComponent.CssClass" />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
     /// <summary>
-    /// The value of the switch, allowing for indeterminate state.
-    /// Use with data binding.
+    /// The value of the switch, allowing for indeterminate state. Use with data binding.
     /// </summary>
     [Parameter]
     public TriSwitchState Value { get; set; } = TriSwitchState.Off;
@@ -63,12 +62,14 @@ public partial class TriSwitch : ComponentBase, IExtraDryComponent {
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "tri-switch", CssClass);
 
     private string CssSwitch => DataConverter.JoinNonEmpty(" ", "switch", Value.ToString().ToLowerInvariant());
-
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum TriSwitchState {
+public enum TriSwitchState
+{
     Off,
+
     On,
+
     Indeterminate,
 }

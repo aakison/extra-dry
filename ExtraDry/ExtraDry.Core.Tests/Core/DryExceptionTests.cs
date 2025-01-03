@@ -5,7 +5,6 @@ namespace ExtraDry.Core.Tests;
 
 public class DryExceptionTests
 {
-
     [Fact]
     public void ArgumentMismatchRoundtrip1()
     {
@@ -82,6 +81,4 @@ public class DryExceptionTests
         Assert.Equal("message", ex.ProblemDetails.Title);
         Assert.Null(ex.ProblemDetails.Status);
     }
-
 }
-

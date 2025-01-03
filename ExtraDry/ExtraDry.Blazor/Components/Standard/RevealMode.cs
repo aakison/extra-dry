@@ -7,8 +7,8 @@
 public enum RevealMode
 {
     /// <summary>
-    /// Use the built-in expand/collapse animation.  Also specify the Height attribute to adjust
-    /// the fully expanded height.
+    /// Use the built-in expand/collapse animation. Also specify the Height attribute to adjust the
+    /// fully expanded height.
     /// </summary>
     Expand,
 
@@ -18,9 +18,8 @@ public enum RevealMode
     Fade,
 
     /// <summary>
-    /// Do not provide any built-in animation, use CSS styles and the built-in CSS class changes
-    /// to control the animation.
+    /// Do not provide any built-in animation, use CSS styles and the built-in CSS class changes to
+    /// control the animation.
     /// </summary>
     CssOnly,
-
 }

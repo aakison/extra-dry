@@ -167,7 +167,8 @@ public class DryInputNumericTests
         public decimal Numeric { get; set; }
     }
 
-    public class NullNumericModel {
+    public class NullNumericModel
+    {
         [JsonIgnore]
         public int Id { get; set; }
 
@@ -176,5 +177,4 @@ public class DryInputNumericTests
         [InputFormat(Icon = "icon", Affordance = "affordance")]
         public decimal? Numeric { get; set; }
     }
-
 }

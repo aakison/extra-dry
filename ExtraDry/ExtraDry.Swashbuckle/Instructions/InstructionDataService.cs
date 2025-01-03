@@ -4,8 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace ExtraDry.Swashbuckle.Instructions;
 
-public class InstructionDataService {
-
+public class InstructionDataService
+{
     public async Task<FilteredCollection<Automobile>> ListAsync(FilterQuery query)
     {
         return await automobiles
@@ -165,5 +165,4 @@ public class InstructionDataService {
         "Everything I need comes to me",
         "All is well in my life",
     ];
-
 }

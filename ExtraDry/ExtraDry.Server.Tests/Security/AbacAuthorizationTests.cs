@@ -6,7 +6,6 @@ namespace ExtraDry.Server.Tests.Security;
 
 public class AbacAuthorizationTests
 {
-
     [Fact]
     public void DefaultConditionAllowAnonymous()
     {
@@ -142,7 +141,7 @@ public class AbacAuthorizationTests
     [InlineData("acme-corp")] // match static value
     [InlineData("{route.tenant}")] // match route parameter
     [InlineData("{target.Tenant}")] // match property in target
-    [InlineData("{attribute.tenant}")] // match attribute on target 
+    [InlineData("{attribute.tenant}")] // match attribute on target
     public void ConditionClaimMatchesValue(string claimValue)
     {
         var options = new AbacOptions() {
@@ -420,15 +419,15 @@ public class AbacAuthorizationTests
         return result;
     }
 
-    public class TestTarget : IAttributed { 
+    public class TestTarget : IAttributed
+    {
         public string Tenant { get; set; } = "acme-corp";
 
         public string AssignedUser { get; set; } = "Bob";
 
-        public Dictionary<string, string> Attributes { get; set; } = new Dictionary<string, string> { 
+        public Dictionary<string, string> Attributes { get; set; } = new Dictionary<string, string> {
             { "tenant", "acme-corp" },
             { "AssignedUser", "Bob" }
         };
     }
-
 }

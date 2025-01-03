@@ -5,8 +5,8 @@ using System.Text.Json;
 
 namespace ExtraDry.Blazor;
 
-public class ListService<TItem> : IListService<TItem> {
-
+public class ListService<TItem> : IListService<TItem>
+{
     public ListService(HttpClient client, string entitiesEndpointTemplate, ILogger<ListService<TItem>> iLogger, JsonSerializerOptions? jsonSerializerOptions = null)
     {
         throw new NotImplementedException();
@@ -120,7 +120,7 @@ public class ListService<TItem> : IListService<TItem> {
             if(Options.HierarchyMethod == HttpMethod.Get) {
                 AddIf(keys, Options.LevelParameterName, query.Level);
                 AddIf(keys, Options.FilterParameterName, query.Filter);
-                AddIf(keys, Options.SkipParameterName, query.Skip); 
+                AddIf(keys, Options.SkipParameterName, query.Skip);
                 AddIf(keys, Options.TakeParameterName, Options.PageSize);
                 AddIf(keys, Options.ExpandParameterName, query.Expand);
                 AddIf(keys, Options.CollapseParameterName, query.Collapse);
@@ -231,5 +231,4 @@ public class ListService<TItem> : IListService<TItem> {
     private readonly HttpClient http;
 
     private readonly ILogger<ListService<TItem>> logger;
-
 }

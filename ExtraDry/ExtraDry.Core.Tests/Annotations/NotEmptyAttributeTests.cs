@@ -2,7 +2,6 @@
 
 public class NotEmptyAttributeTests
 {
-
     [Fact]
     public void ActualGuidIsNotEmpty()
     {
@@ -62,5 +61,4 @@ public class NotEmptyAttributeTests
 
         Assert.True(result);
     }
-
 }

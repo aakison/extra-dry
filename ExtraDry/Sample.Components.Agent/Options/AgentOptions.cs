@@ -1,7 +1,4 @@
-﻿using ExtraDry.Server.Agents;
-using System.ComponentModel.DataAnnotations;
-
-namespace Sample.Components.Agent;
+﻿namespace Sample.Components.Agent;
 
 public partial class AgentOptions : IValidatableObject
 {
@@ -9,7 +6,7 @@ public partial class AgentOptions : IValidatableObject
 
     public ServiceBusTransport ServiceBus { get; set; } = ServiceBusTransport.InMemory;
 
-    public RabbitMQOptions? RabbitMQ { get; set; } 
+    public RabbitMQOptions? RabbitMQ { get; set; }
 
     public AzureServiceBusOptions? AzureServiceBus { get; set; }
 
@@ -22,7 +19,7 @@ public partial class AgentOptions : IValidatableObject
                 yield return new ValidationResult("AzureServiceBus Options are required when Transport is AzureServiceBus.");
             }
         }
-        if(ServiceBus == ServiceBusTransport.RabbitMQ) { 
+        if(ServiceBus == ServiceBusTransport.RabbitMQ) {
             if(RabbitMQ == null) {
                 yield return new ValidationResult("RabbitMQ Options are required when Transport is RabbitMQ.");
             }

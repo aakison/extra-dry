@@ -3,8 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ExtraDry.Server;
 
-public static class ExtraDryServiceCollectionExtensions {
-
+public static class ExtraDryServiceCollectionExtensions
+{
     /// <summary>
     /// Add the Core ExtraDry functionality to the server side application
     /// </summary>
@@ -17,7 +17,7 @@ public static class ExtraDryServiceCollectionExtensions {
             config?.Invoke(options);
 
             // manually inject where DI doesn't work
-            QueryableExtensions.Options = options; 
+            QueryableExtensions.Options = options;
 
             return options;
         });

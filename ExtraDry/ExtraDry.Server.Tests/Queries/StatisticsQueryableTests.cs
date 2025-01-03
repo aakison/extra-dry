@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Server.Tests.Models;
 
-public class StatisticsQueryableTests {
-
+public class StatisticsQueryableTests
+{
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -81,5 +81,4 @@ public class StatisticsQueryableTests {
         Assert.Equal(betaCount, byName["Beta"]);
         Assert.False(byName.ContainsKey("Charlie"));
     }
-
 }

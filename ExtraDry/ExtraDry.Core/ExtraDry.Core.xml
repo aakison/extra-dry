@@ -111,20 +111,20 @@
             <summary>
             Resolves an entity on the server from a sample of that entity, typically sent over the network.
             Service classes will typically implement this so that child objects of a resource can be resolved to the appropriate server-side entity.
-            E.g. When a controller recieves a `Company` with a child `Sector` it will have received a deserialized copy of sector, 
+            E.g. When a controller recieves a `Company` with a child `Sector` it will have received a deserialized copy of sector,
             this sector is not linked back to the data store and the system might need to have the 'right' instance of sector resolved.
             </summary>
         </member>
         <member name="M:ExtraDry.Core.IEntityResolver`1.ResolveAsync(`0)">
             <summary>
-            Returns the correct object for the given examplar.  This could be an existing one looked up by a Unique ID, 
+            Returns the correct object for the given examplar.  This could be an existing one looked up by a Unique ID,
             or the examplar could be returned after being attached to the database, etc.
             </summary>
         </member>
         <member name="T:ExtraDry.Core.NotEmptyAttribute">
             <summary>
-            Ensures that a Guid or Decimal is not the empty or default value.  
-            Distinct from null in that it exists but does not have a value.  
+            Ensures that a Guid or Decimal is not the empty or default value.
+            Distinct from null in that it exists but does not have a value.
             </summary>
         </member>
         <member name="T:ExtraDry.Core.RuleAction">
@@ -247,7 +247,7 @@
         </member>
         <member name="P:ExtraDry.Core.FilterQuery.Stabilizer">
             <summary>
-            A property that is used to break sorting ties, should be unique and 
+            A property that is used to break sorting ties, should be unique and
             ideally monotonically increasing.
             </summary>
         </member>
@@ -296,7 +296,7 @@
         </member>
         <member name="P:ExtraDry.Core.PageQuery.Take">
             <summary>
-            The requested number of records to take.  
+            The requested number of records to take.
             Actual result might be less based on available records or endpoint limitations.
             </summary>
         </member>
@@ -407,14 +407,14 @@
             Given a list of filter properties and a list of match strings, constructs a queryable for an existing queryable.
             </summary>
             <remarks>
-            This builds a Conjunctive Normal Form (CNF) linq expression where each string in `matchValues` must exist in 
+            This builds a Conjunctive Normal Form (CNF) linq expression where each string in `matchValues` must exist in
             at least one of the properties.  The exact comparison function is also determined by the properties' filter attribute.
             </remarks>
         </member>
         <member name="T:ExtraDry.Server.RuleEngine">
             <summary>
             Provides business rule logic for Creating, Updating and Deleting objects from untrusted sources.
-            The untrusted source is usually an object deserialized from JSON from an API or MVC call. 
+            The untrusted source is usually an object deserialized from JSON from an API or MVC call.
             The rules for overwriting, ignoring, or blocking changes are defined by applying the `RuleAttribute` to each property.
             The `RuleEngine` should then be dependency injected into services where its methods will consistently apply business rules.
             </summary>

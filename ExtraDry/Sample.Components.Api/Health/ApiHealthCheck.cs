@@ -4,12 +4,11 @@ using System.Reflection;
 namespace Sample.Components.Api;
 
 /// <summary>
-/// Health check for the API.  Contains simply logic to indicate if the system is running and to 
-/// provide version information - useful for blue-green deployments.  
+/// Health check for the API. Contains simply logic to indicate if the system is running and to
+/// provide version information - useful for blue-green deployments.
 /// </summary>
 public class ApiHealthCheck : IHealthCheck
 {
-
     /// <summary>
     /// Check just the internal workings of the system, not dependencies.
     /// </summary>

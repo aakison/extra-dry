@@ -2,8 +2,8 @@
 
 namespace ExtraDry.Blazor.Tests.Internals;
 
-public class SelectionSetEventTests {
-
+public class SelectionSetEventTests
+{
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
@@ -85,7 +85,7 @@ public class SelectionSetEventTests {
     [InlineData(false)]
     public void NoEventOnAddDuplicate(bool multi)
     {
-        var set = new SelectionSet() { MultipleSelect = multi } ;
+        var set = new SelectionSet() { MultipleSelect = multi };
 
         set.Add(obj1);
         set.Changed += (s, e) => { sender = s; args = e; };

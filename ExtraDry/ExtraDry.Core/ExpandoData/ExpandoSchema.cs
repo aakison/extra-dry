@@ -5,9 +5,9 @@
 /// </summary>
 public class ExpandoSchema : IValidatableObject
 {
-
     /// <summary>
-    /// The target type of the Subject that the <see cref="ExpandoSchema"/> provides custom fields for.
+    /// The target type of the Subject that the <see cref="ExpandoSchema" /> provides custom fields
+    /// for.
     /// </summary>
     [Required]
     [Rules(CreateAction = RuleAction.Allow, UpdateAction = RuleAction.Block)]
