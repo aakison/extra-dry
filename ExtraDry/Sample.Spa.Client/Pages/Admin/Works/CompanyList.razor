@@ -46,7 +46,7 @@
 
     private async Task CompanyStateHasChanged(Guid uuid)
     {
-        var updatedCompany = await CompanyCrudService.RetrieveAsync(uuid);
+        var updatedCompany = await CompanyCrudService.ReadAsync(uuid);
         if (updatedCompany == null) {
             return;
         }

@@ -5,7 +5,7 @@ public class DisplayNameProvider(CrudService<Employee> employeeService) : IDispl
     public async Task<string> ResolveDisplayNameAsync(string user)
     {
         try {
-            var employee = await employeeService.RetrieveAsync(user);
+            var employee = await employeeService.ReadAsync(user);
             return employee?.FirstName ?? "";
         }
         catch(Exception) {

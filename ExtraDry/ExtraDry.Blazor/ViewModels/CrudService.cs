@@ -22,8 +22,10 @@ public class CrudService<T>(
     CrudServiceOptions options,
     ILogger<CrudService<T>> logger)
 {
-    public CrudServiceOptions Options { get; } = options;
-
+    /// <summary>
+    /// Create a new resource in the resource. The item will be serialized to JSON and sent to the
+    /// POST endpoint for the resource collection.
+    /// </summary>
     public async Task CreateAsync(T item, CancellationToken cancellationToken = default)
     {
         var json = JsonSerializer.Serialize(item);
@@ -34,7 +36,12 @@ public class CrudService<T>(
         await response.AssertSuccess(logger);
     }
 
-    public async Task<T?> TryRetrieveAsync(object key, CancellationToken cancellationToken = default)
+    /// <summary>
+    /// Read an existing resource from the resource collection. The key is used to identify the
+    /// resource which is retrieved from the GET endpoint for the resource. Return null if not
+    /// found.
+    /// </summary>
+    public async Task<T?> TryReadAsync(object key, CancellationToken cancellationToken = default)
     {
         var endpoint = ApiEndpoint(key);
         logger.LogEndpointCall(typeof(T), endpoint);
@@ -44,12 +51,20 @@ public class CrudService<T>(
         return item;
     }
 
-    public async Task<T> RetrieveAsync(object key, CancellationToken cancellationToken = default)
+    /// <summary>
+    /// Read an existing resource from the resource collection. The key is used to identify the
+    /// resource which is retrieved from the GET endpoint for the resource.
+    /// </summary>
+    public async Task<T> ReadAsync(object key, CancellationToken cancellationToken = default)
     {
-        return await TryRetrieveAsync(key, cancellationToken)
+        return await TryReadAsync(key, cancellationToken)
             ?? throw new ArgumentOutOfRangeException(nameof(key), $"Item not found for key {key}");
     }
 
+    /// <summary>
+    /// Update an existing resource in the resource collection. The key is used to identify the
+    /// resource which is updated with the PUT endpoint for the resource.
+    /// </summary>
     public async Task UpdateAsync(object key, T item, CancellationToken cancellationToken = default)
     {
         var endpoint = ApiEndpoint(key);
@@ -58,6 +73,11 @@ public class CrudService<T>(
         await response.AssertSuccess(logger);
     }
 
+    /// <summary>
+    /// Delete an existing resource from the resource collection. The key is used to identify the
+    /// resource which is deleted using the DELETE endpoint for the resource.  This operation may
+    /// or may not delete the resource permanently, see the endpoint documentation for details.
+    /// </summary>
     public async Task DeleteAsync(object key, CancellationToken cancellationToken = default)
     {
         var endpoint = ApiEndpoint(key);
@@ -66,9 +86,29 @@ public class CrudService<T>(
         await response.AssertSuccess(logger);
     }
 
+    /// <summary>
+    /// Sends an RPC request to the resource identified by the key. As this is not strictly
+    /// RESTful, it should be used sparingly and only when the operation is not a standard CRUD
+    /// operation.
+    /// </summary>
+    /// <remarks>
+    /// The execution endpoint is the standard resource endpoint with string operation appended
+    /// after a colon.
+    /// </remarks>
+    public async Task ExecuteAsync(object key, string operation, object? payload = null, CancellationToken cancellationToken = default)
+    {
+        var endpoint = ApiEndpoint(key);
+        endpoint = $"{endpoint}:{operation}";
+        var json = JsonSerializer.Serialize(payload);
+        using var content = new StringContent(json, Encoding.UTF8, "application/json");
+        logger.LogEndpointCall(typeof(T), endpoint);
+        var response = await client.PostAsync(endpoint, content, cancellationToken);
+        await response.AssertSuccess(logger);
+    }
+
     private string ApiEndpoint(object key)
     {
-        var url = $"{Options.CrudEndpoint.TrimEnd('/')}/{key}".TrimEnd('/');
+        var url = $"{options.CrudEndpoint.TrimEnd('/')}/{key}".TrimEnd('/');
         return url;
     }
 }

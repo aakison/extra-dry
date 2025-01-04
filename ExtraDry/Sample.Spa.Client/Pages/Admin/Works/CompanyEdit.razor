@@ -18,7 +18,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        company = await Service.RetrieveAsync(Uuid);
+        company = await Service.ReadAsync(Uuid);
     }
 
     [Command(CommandContext.Primary, Name = "Save & Close")]
