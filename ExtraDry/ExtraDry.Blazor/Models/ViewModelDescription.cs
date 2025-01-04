@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ExtraDry.Blazor;
 
@@ -117,12 +118,14 @@ public class ViewModelDescription
         }
     }
 
+    [SuppressMessage("Style", "IDE0045:Convert to conditional expression", Justification = "False Positive")]
     private void SetListSelectMode()
     {
         if(Commands.Any(e => e.Arguments == CommandArguments.Multiple)) {
             ListSelectMode = ListSelectMode.Multiple;
         }
-        else if(Commands.Where(e => e.Arguments == CommandArguments.Single && e.Context == CommandContext.Primary).Count() == 1) {
+        else if(Commands.Where(e => e.Arguments == CommandArguments.Single
+                && e.Context == CommandContext.Primary).Count() == 1) {
             ListSelectMode = ListSelectMode.Action;
         }
         else if(ContextCommands.Count != 0) {

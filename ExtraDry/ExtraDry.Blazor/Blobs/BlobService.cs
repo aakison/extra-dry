@@ -35,12 +35,9 @@ public class BlobService<TBlob>(
             blob.Slug = $"{Slug.ToSlug(name)}{Path.GetExtension(blob.Title).ToLowerInvariant()}";
         }
 
-        if(options.ValidateHashOnCreate) {
-            blob.MD5Hash = MD5Core.GetHashString(blob.Content);
-        }
-        else {
-            blob.MD5Hash = string.Empty;
-        }
+        blob.MD5Hash = options.ValidateHashOnCreate
+            ? MD5Core.GetHashString(blob.Content)
+            : string.Empty;
 
         if(options.RewriteWebSafeFilename) {
             blob.Title = fileValidation?.CleanFilename(blob.Title) ?? blob.Title;

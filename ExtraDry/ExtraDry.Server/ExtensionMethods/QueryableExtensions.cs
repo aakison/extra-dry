@@ -166,16 +166,16 @@ public static class QueryableExtensions
         }
         if(!string.IsNullOrWhiteSpace(actualSort)) {
             // If set to always add key, we add a secondary sort to stabilize the sort
-            if(SortStabilization == SortStabilization.PrimaryKey) {
-                query = ascending ?
-                    query.OrderBy(sortProperty).ThenBy(modelDescription.StabilizerProperty.ExternalName) :
-                    query.OrderByDescending(sortProperty).ThenByDescending(modelDescription.StabilizerProperty.ExternalName);
-            }
-            else {
-                query = ascending ?
-                    query.OrderBy(sortProperty) :
-                    query.OrderByDescending(sortProperty);
-            }
+            query = (SortStabilization, ascending) switch {
+                (SortStabilization.PrimaryKey, true) =>
+                    query.OrderBy(sortProperty).ThenBy(modelDescription.StabilizerProperty.ExternalName),
+                (SortStabilization.PrimaryKey, false) =>
+                    query.OrderByDescending(sortProperty).ThenByDescending(modelDescription.StabilizerProperty.ExternalName),
+                (_, true) =>
+                    query.OrderBy(sortProperty),
+                (_, false) =>
+                    query.OrderByDescending(sortProperty),
+            };
         }
         else {
             // For anything other than ProviderDefaultsOnly, add a default sort for stabilization.

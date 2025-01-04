@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Blazor;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace ExtraDry.Blazor;
 
 public class TimeInterval
 {
@@ -109,6 +111,7 @@ public class TimeInterval
         SetDaysDescription();
     }
 
+    [SuppressMessage("Style", "IDE0045:Convert to conditional expression", Justification = "False Positive")]
     private void SetDaysDescription()
     {
         if(!startDate.HasValue || !endDate.HasValue) { return; }
@@ -144,6 +147,7 @@ public class TimeInterval
         SetMonthsDescription();
     }
 
+    [SuppressMessage("Style", "IDE0045:Convert to conditional expression", Justification = "False Positive")]
     private void SetMonthsDescription()
     {
         if(!startDate.HasValue || !endDate.HasValue) { return; }

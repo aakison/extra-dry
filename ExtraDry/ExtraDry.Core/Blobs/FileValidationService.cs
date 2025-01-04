@@ -21,12 +21,9 @@ public class FileValidationService
     /// </summary>
     public FileValidationService(FileValidationOptions options)
     {
-        if(options.OptionsFilepath != null) {
-            fileService = new FileTypeDefinitionSource(options.OptionsFilepath);
-        }
-        else {
-            fileService = new FileTypeDefinitionSource("");
-        }
+        fileService = options.OptionsFilepath != null
+            ? new FileTypeDefinitionSource(options.OptionsFilepath)
+            : new FileTypeDefinitionSource("");
         fileService.AddFileDefinitions(options.FileTypeDefinitions);
         Options = options;
         var canValidateContent = options.ContentBlacklist.All(e => options.FileTypeDefinitions.Any(f => f.Extensions.Contains(e)));

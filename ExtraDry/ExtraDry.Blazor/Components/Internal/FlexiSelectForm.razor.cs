@@ -140,20 +140,13 @@ public partial class FlexiSelectForm<TItem> : ComponentBase, IExtraDryComponent 
 
     private void ApplyFilter(DisplayItemViewModel value)
     {
-        bool match = true;
-        if(Filters.Length == 0) {
-            match = true;
-        }
-        else if(Filters.Length == 1 && Filters.First().Equals("checked", StringComparison.OrdinalIgnoreCase)) {
-            match = value.Selected;
-        }
-        else if(Filters.Length == 1 && Filters.First().Equals("unchecked", StringComparison.OrdinalIgnoreCase)) {
-            match = !value.Selected;
-        }
-        else {
-            match = Filters.Any(e => value.Title.Contains(e, StringComparison.OrdinalIgnoreCase)
-                || value.Subtitle.Contains(e, StringComparison.OrdinalIgnoreCase));
-        }
+        var match = Filters.Length switch {
+            0 => true,
+            1 when Filters.First().Equals("checked", StringComparison.OrdinalIgnoreCase) => value.Selected,
+            1 when Filters.First().Equals("unchecked", StringComparison.OrdinalIgnoreCase) => !value.Selected,
+            _ => Filters.Any(e => value.Title.Contains(e, StringComparison.OrdinalIgnoreCase)
+                || value.Subtitle.Contains(e, StringComparison.OrdinalIgnoreCase))
+        };
         value.FilterClass = match ? "unfiltered" : "filtered";
     }
 

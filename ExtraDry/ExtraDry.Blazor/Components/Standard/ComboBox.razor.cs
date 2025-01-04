@@ -522,12 +522,9 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent, IDispo
     /// </summary>
     private void SelectOptionIndex(int index)
     {
-        if(index < 0 || index >= InternalItems.FilteredItems.Count) {
-            SelectedOption = default;
-        }
-        else {
-            SelectedOption = InternalItems.FilteredItems[index];
-        }
+        SelectedOption = index < 0 || index >= InternalItems.FilteredItems.Count
+            ? default
+            : InternalItems.FilteredItems[index];
         ShouldRender();
     }
 

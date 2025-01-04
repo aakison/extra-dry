@@ -130,21 +130,15 @@ public partial class Reveal : ComponentBase, IExtraDryComponent
             var style = string.Empty;
             if(Mode == RevealMode.Fade) {
                 style = $"transition: opacity {AdjustedDuration / 1000f}s;";
-                if(State is RevealState.Concealing or RevealState.Concealed or RevealState.None) {
-                    style = $"{style} opacity: 0%;";
-                }
-                else {
-                    style = $"{style} opacity: 100%;";
-                }
+                style = State is RevealState.Concealing or RevealState.Concealed or RevealState.None
+                    ? $"{style} opacity: 0%;"
+                    : $"{style} opacity: 100%;";
             }
             else if(Mode == RevealMode.Expand) {
                 style = $"transition: height {AdjustedDuration / 1000f}s; overflow: hidden;";
-                if(State is RevealState.Concealing or RevealState.Concealed or RevealState.None) {
-                    style = $"{style} height: 0;";
-                }
-                else {
-                    style = $"{style} height: {Height}px";
-                }
+                style = State is RevealState.Concealing or RevealState.Concealed or RevealState.None
+                    ? $"{style} height: 0;"
+                    : $"{style} height: {Height}px";
             }
             return style;
         }

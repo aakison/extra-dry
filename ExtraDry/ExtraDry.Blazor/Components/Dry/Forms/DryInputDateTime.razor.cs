@@ -112,19 +112,12 @@ public partial class DryInputDateTime<T>
             throw new NotImplementedException("Unsupported property type, can't convert to DateTime");
         }
 
-        string? result;
-        if(ActualInputType == typeof(DateTime)) {
-            result = tempDateTime?.ToString(DateTimeFormat, CultureInfo.InvariantCulture);
-        }
-        else if(ActualInputType == typeof(DateOnly)) {
-            result = tempDateTime?.ToString(DateOnlyFormat, CultureInfo.InvariantCulture);
-        }
-        else if(ActualInputType == typeof(TimeOnly)) {
-            result = tempDateTime?.ToString(TimeOnlyFormat, CultureInfo.InvariantCulture);
-        }
-        else {
-            throw new NotImplementedException("Unsupported Actual InputType, can't convert to string representation.");
-        }
+        var result = ActualInputType switch {
+            Type T when T == typeof(DateTime) => tempDateTime?.ToString(DateTimeFormat, CultureInfo.InvariantCulture),
+            Type T when T == typeof(DateOnly) => tempDateTime?.ToString(DateOnlyFormat, CultureInfo.InvariantCulture),
+            Type T when T == typeof(TimeOnly) => tempDateTime?.ToString(TimeOnlyFormat, CultureInfo.InvariantCulture),
+            _ => throw new NotImplementedException("Unsupported ActualInputType, can't convert to string representation.")
+        };
 
         if(ActualInputType == typeof(DateTime)) {
             if(tempDateTime == null) {
