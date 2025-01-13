@@ -9,7 +9,7 @@ namespace ExtraDry.Core;
 /// </summary>
 public class Blob : IBlob, IValidatableObject
 {
-    public const string UuidHeaderName = "X-Extradry-Blob-Uuid";
+    public const string UuidHeaderName = "X-Blob-Uuid";
 
     /// <inheritdoc />
     [HttpHeader(UuidHeaderName)]
@@ -17,7 +17,7 @@ public class Blob : IBlob, IValidatableObject
 
     /// <inheritdoc />
     [Required, StringLength(64)]
-    [HttpHeader("X-Extradry-Blob-Slug")]
+    [HttpHeader("X-Blob-Slug")]
     public string Slug { get; set; } = "";
 
     /// <summary>
@@ -26,7 +26,7 @@ public class Blob : IBlob, IValidatableObject
     /// the file is not used in the URI. Instead, the title is used for display purposes only.
     /// </summary>
     [StringLength(100)]
-    [HttpHeader("X-Extradry-Blob-Title")]
+    [HttpHeader("X-Blob-Title")]
     public string Title { get; set; } = "";
 
     /// <inheritdoc />

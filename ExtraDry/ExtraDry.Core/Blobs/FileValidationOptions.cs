@@ -38,23 +38,10 @@ public class FileValidationOptions
     public ICollection<string> ContentBlacklist { get; set; } = ["exe", "vbe"];
 
     /// <summary>
-    /// Sets a value indicating whether the file service should be checking magic bytes and mime
-    /// types. Set to true for server-side validation, and false for client side.
-    /// </summary>
-    [Obsolete("Use ValidateContent and ValidateExtension instead")]
-    public bool CheckMagicBytesAndMimes { get; set; }
-
-    /// <summary>
     /// If set, defines a file location to load the options from. Additional option settings are
     /// applied after the file is read.
     /// </summary>
     public string? OptionsFilepath { get; set; }
-
-    [Obsolete("Use OptionsFilepath instead")]
-    public string? FileDatabaseLocation {
-        get => OptionsFilepath;
-        set => OptionsFilepath = value;
-    }
 
     /// <summary>
     /// A list of definitions for file types that you would like to check for when uploading a file

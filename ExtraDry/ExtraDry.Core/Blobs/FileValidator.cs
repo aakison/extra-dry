@@ -61,9 +61,6 @@ public class FileValidator(FileValidationService validator)
         }
     }
 
-    [Obsolete("Use ThrowIfInvalid instead.")]
-    public void ThrowIfNotValid() => ThrowIfInvalid();
-
     /// <summary>
     /// Clears the validator of errors so that it can be reused.
     /// </summary>

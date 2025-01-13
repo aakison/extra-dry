@@ -14,7 +14,7 @@ public static class BlobSerializer
     /// <summary>
     /// Serialize a Blob to a <see cref="HttpResponse" />.
     /// </summary>
-    public static async Task SerializeBlobAsync<T>(this HttpResponse response, T blob) where T : IBlob
+    public static async Task SerializeBlobAsync<T>(HttpResponse response, T blob) where T : IBlob
     {
         var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
         foreach(var property in properties) {
@@ -35,7 +35,7 @@ public static class BlobSerializer
     /// <summary>
     /// Deserialize a Blob from a <see cref="HttpRequest" />.
     /// </summary>
-    public static async Task<T> DeserializeBlobAsync<T>(HttpRequest request) where T : IBlob, new()
+    public static async Task<T> DeserializeBlobAsync<T>(HttpRequest request, CancellationToken cancellationToken = default) where T : IBlob, new()
     {
         var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
         var blob = Activator.CreateInstance<T>();
@@ -63,7 +63,7 @@ public static class BlobSerializer
             }
         }
         var memoryStream = new MemoryStream();
-        await request.Body.CopyToAsync(memoryStream);
+        await request.Body.CopyToAsync(memoryStream, cancellationToken);
         var bytes = memoryStream.ToArray(); // TODO: can be more efficient if no MD5.
         blob.Content = bytes;
         blob.Length = bytes.Length;
