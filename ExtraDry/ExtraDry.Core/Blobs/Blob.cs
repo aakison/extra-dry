@@ -54,6 +54,7 @@ public class Blob : IBlob, IValidatableObject, ITenanted
     /// <summary>
     /// The actual content of the Blob.
     /// </summary>
+    [Rules(RuleAction.Link)]
     public byte[]? Content { get; set; }
 
     /// <summary>
