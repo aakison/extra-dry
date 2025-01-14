@@ -188,7 +188,6 @@ public class FileValidationService
         }
     }
 
-    [SuppressMessage("Usage", "CA2249:Consider using 'string.Contains' instead of 'string.IndexOf'", Justification = "Doesn't work for .NET Framework 4.8 target, fix when Framework no longer supported.")]
     private IEnumerable<ValidationResult> ValidateFileContent(byte[]? content, IEnumerable<FileTypeDefinition> filenameInferredTypes, string extension)
     {
         bool validate = ShouldValidateContent();
@@ -226,7 +225,7 @@ public class FileValidationService
         if(extensionAliases.Intersect(KnownXmlFileTypes).Any()) {
             // Take the first 1000 characters, it's a sanity check, not anti-virus
             var filecontent = Encoding.UTF8.GetString(content.Take(1000).ToArray());
-            if(filecontent.IndexOf("<script", StringComparison.InvariantCultureIgnoreCase) >= 0) {
+            if(filecontent.Contains("<script", StringComparison.InvariantCultureIgnoreCase)) {
                 yield return new ValidationResult("Provided file is an XML filetype with protected tags", [nameof(content)]);
             }
         }

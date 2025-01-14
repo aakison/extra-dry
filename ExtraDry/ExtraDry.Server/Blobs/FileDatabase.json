@@ -1368,7 +1368,7 @@
   {
     "Description": "Scalable Vector Graphic",
     "Extensions": [ "svg" ],
-    "MimeTypes": [ "image/svg+xml", "image/svg" ],
+    "MimeTypes": [ "image/svg+xml", "image/svg", "text/xml" ],
     "MagicBytes": []
   }
 ]
