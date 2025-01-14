@@ -7,9 +7,15 @@ namespace ExtraDry.Core;
 /// object cloud account (e.g. Azure Storage Account). This Blob is suitable for most file storage
 /// solutions, but can be extended or replaced with a custom implementation if necessary.
 /// </summary>
-public class Blob : IBlob, IValidatableObject
+public class Blob : IBlob, IValidatableObject, ITenanted
 {
     public const string UuidHeaderName = "X-Blob-Uuid";
+
+    public const string TenantHeaderName = "X-Blob-Tenant";
+
+    /// <inheritdoc />
+    [HttpHeader(TenantHeaderName)]
+    public string Tenant { get; set; } = "";
 
     /// <inheritdoc />
     [HttpHeader(UuidHeaderName)]
