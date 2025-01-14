@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Pidgin;
 using System.Collections;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
@@ -392,6 +393,10 @@ public class RuleEngine(
             if(sourceValue == null && destinationValue == null) {
                 // Common occurrence which we can short circuit all future logic for performance.
                 // Also allows processing below to ignore this case.
+            }
+            else if(typeof(byte[]).IsAssignableFrom(property.PropertyType)) {
+                // Byte arrays are always copied, never linked.  Make them behave like strings.
+                property.SetValue(destination, sourceValue);
             }
             else if(typeof(IList).IsAssignableFrom(property.PropertyType)) {
                 var sourceList = sourceValue as IList;

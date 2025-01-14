@@ -247,6 +247,18 @@ public class RuleEngineUpdateIndividualAsyncTests
         Assert.Equal(output, destination.BlockChangesString);
     }
 
+    [Fact]
+    public async Task UpdateBlobTakesCopy()
+    {
+        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
+        var source = new Blob { Content = [1, 2, 3] };
+        var destination = new Blob { Content = [4, 5, 6] };
+
+        await rules.UpdateAsync(source, destination);
+
+        Assert.Equal(new byte[] { 1, 2, 3 }, destination.Content);
+    }
+
     [DeleteRule(DeleteAction.Recycle, nameof(Active), ActiveType.Deleted)]
     public class Entity
     {
@@ -285,6 +297,14 @@ public class RuleEngineUpdateIndividualAsyncTests
         public ActiveType Active { get; set; } = ActiveType.Pending;
 
         public ActiveType ChildStatus { get; set; } = ActiveType.Pending;
+    }
+
+    public class Blob
+    {
+        public int Id { get; set; }
+
+        //[Rules(RuleAction.Link)]
+        public byte[] Content { get; set; } 
     }
 
     private static Entity SampleEntity()
