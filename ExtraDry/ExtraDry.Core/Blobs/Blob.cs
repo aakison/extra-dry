@@ -13,17 +13,25 @@ public class Blob : IBlob, IValidatableObject, ITenanted
 
     public const string TenantHeaderName = "X-Blob-Tenant";
 
+    public const string SlugHeaderName = "X-Blob-Slug";
+
+    public const string TitleHeaderName = "X-Blob-Title";
+
+    public const string OwnerHeaderName = "X-Blob-Owner";
+
+    public const string OwnerTypeHeaderName = "X-Blob-Owner-Type";
+
     /// <inheritdoc />
     [HttpHeader(TenantHeaderName)]
     public string Tenant { get; set; } = "";
 
     /// <inheritdoc />
     [HttpHeader(UuidHeaderName)]
-    public Guid Uuid { get; set; } = Guid.NewGuid();
+    public Guid Uuid { get; set; } = Guid.CreateVersion7();
 
     /// <inheritdoc />
     [Required, StringLength(64)]
-    [HttpHeader("X-Blob-Slug")]
+    [HttpHeader(SlugHeaderName)]
     public string Slug { get; set; } = "";
 
     /// <summary>
@@ -31,9 +39,16 @@ public class Blob : IBlob, IValidatableObject, ITenanted
     /// These titles are typically unsafe for web use and for security reasons the actual name of
     /// the file is not used in the URI. Instead, the title is used for display purposes only.
     /// </summary>
-    [StringLength(100)]
-    [HttpHeader("X-Blob-Title")]
+    [StringLength(StringLength.Line)]
+    [HttpHeader(TitleHeaderName)]
     public string Title { get; set; } = "";
+
+    [HttpHeader(OwnerHeaderName)]
+    public Guid OwnerUuid { get; set; } = Guid.Empty;
+
+    [StringLength(StringLength.Line)]
+    [HttpHeader(OwnerTypeHeaderName)]
+    public string OwnerType { get; set; } = "";
 
     /// <inheritdoc />
     [RegularExpression(@"\w+/[-+.\w]+"), StringLength(128)]
