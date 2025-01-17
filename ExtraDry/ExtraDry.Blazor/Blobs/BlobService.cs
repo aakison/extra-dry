@@ -115,7 +115,14 @@ public class BlobService<TBlob>(
         return blob;
     }
 
-    private string ApiEndpoint(Guid uuid, string filename)
+    public async Task DeleteAsync(Guid uuid, CancellationToken cancellationToken = default)
+    {
+        var endpoint = ApiEndpoint(uuid);
+        var response = await client.DeleteAsync(endpoint, cancellationToken);
+        await response.AssertSuccess(logger);
+    }
+
+    private string ApiEndpoint(Guid uuid, string filename = "")
     {
         try {
             var url = $"{options.BlobEndpoint}/{uuid}/{filename}".TrimEnd('/');
