@@ -6,7 +6,7 @@
 /// cref="ServiceCollectionExtensions.AddBlobService(Microsoft.Extensions.DependencyInjection.IServiceCollection,
 /// Action{BlobServiceOptions})" /> method's Config action to set these values.
 /// </summary>
-public class BlobServiceOptions : IValidatableObject
+public class BlobServiceOptions : IValidatableObject, IHttpClientOptions
 {
     /// <inheritdoc />
     public string HttpClientName { get; set; } = string.Empty;

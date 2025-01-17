@@ -172,7 +172,7 @@ public static class ServiceCollectionExtensions
         validator.ThrowIfInvalid();
 
         services.AddScoped(e => {
-            var client = e.GetRequiredService<HttpClient>();
+            var client = GetHttpClient(e, options);
             var logger = e.GetRequiredService<ILogger<BlobService<T>>>();
             var validator = e.GetService<FileValidationService>();
             var service = new BlobService<T>(client, validator, options, logger);
