@@ -301,10 +301,10 @@ public class RuleEngineUpdateIndividualAsyncTests
 
     public class Blob
     {
+        [JsonIgnore]
         public int Id { get; set; }
 
-        //[Rules(RuleAction.Link)]
-        public byte[] Content { get; set; } 
+        public byte[] Content { get; set; } = [];
     }
 
     private static Entity SampleEntity()

@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace ExtraDry.Core;
 
-public class DataConverter
+public partial class DataConverter
 {
     /// <summary>
     /// Given a date, formats it for display using a relative time. For example, 5 minutes ago, or
@@ -56,16 +56,9 @@ public class DataConverter
     /// </summary>
     public static string CamelCaseToTitleCase(string value)
     {
-        var acronyms = new Regex(@"(\w)([A-Z][a-z])");
-        value = acronyms.Replace(value, "$1 $2");
-
-        var words = new Regex(@"([a-z])([A-Z])");
-        value = words.Replace(value, "$1 $2");
-
-        // lookbehind to avoid capitalizing small words at beginning of sentence
-        var smallWords = new Regex(@"(?<!^)\b(A|An|And|As|At|But|By|En|For|If|In|Of|On|Or|The|To|V[.]?|Via|Vs[.]?)\b");
-        value = smallWords.Replace(value, match => match.Value.ToLower());
-
+        value = AcronymsInString().Replace(value, "$1 $2");
+        value = WordsInString().Replace(value, "$1 $2");
+        value = SmallWordsInString().Replace(value, match => match.Value.ToLowerInvariant());
         return value;
     }
 
@@ -104,4 +97,15 @@ public class DataConverter
     {
         return string.Join(separator, args.Where(e => !string.IsNullOrWhiteSpace(e)).Select(e => e!.Trim()));
     }
+
+    [GeneratedRegex(@"(\w)([A-Z][a-z])")]
+    private static partial Regex AcronymsInString();
+
+    [GeneratedRegex(@"([a-z])([A-Z])")]
+    private static partial Regex WordsInString();
+
+    // lookbehind to avoid capitalizing small words at beginning of sentence
+    [GeneratedRegex(@"(?<!^)\b(A|An|And|As|At|But|By|En|For|If|In|Of|On|Or|The|To|V[.]?|Via|Vs[.]?)\b")]
+    private static partial Regex SmallWordsInString();
+
 }

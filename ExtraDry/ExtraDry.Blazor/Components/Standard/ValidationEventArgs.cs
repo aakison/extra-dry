@@ -13,10 +13,10 @@ public class ValidationEventArgs : EventArgs
     /// <summary>
     /// The name of the property that is being validated.
     /// </summary>
-    public string MemberName { get; set; }
+    public required string MemberName { get; set; }
 
     /// <summary>
     /// In invalid, a user-consumable message for the validation error.
     /// </summary>
-    public string Message { get; set; }
+    public required string Message { get; set; }
 }

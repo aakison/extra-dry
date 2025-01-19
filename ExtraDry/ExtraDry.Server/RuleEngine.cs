@@ -678,7 +678,7 @@ public class RuleEngine(
 
     private class DeleteItem
     {
-        public object Item { get; set; }
+        public required object Item { get; set; }
 
         public DeleteRuleAttribute? DeleteRuleAttribute { get; set; }
 

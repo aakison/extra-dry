@@ -12,7 +12,7 @@ namespace ExtraDry.Core;
 /// cref="ServiceCollectionExtensions.AddFileValidation" /> extension method during startup.
 /// </summary>
 /// <seealso href="https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html" />
-public class FileValidationService
+public partial class FileValidationService
 {
     /// <summary>
     /// Configures the file validation service. Not recommended to use directly, instead use the
@@ -43,15 +43,15 @@ public class FileValidationService
 
         // replace all the invalid characters
         var cleanedFilename = Options.FileCleanerAllowedNameCharacters switch {
-            FilenameCharacters.AsciiAlphaNumeric => Regex.Replace(fileOnly, InvalidAsciiCharacterRegex, "-"),
-            FilenameCharacters.UnicodeAlphaNumeric => Regex.Replace(fileOnly, InvalidUnicodeCharacterRegex, "-"),
+            FilenameCharacters.AsciiAlphaNumeric => InvalidAsciiCharacterRegex().Replace(fileOnly, "-"),
+            FilenameCharacters.UnicodeAlphaNumeric => InvalidUnicodeCharacterRegex().Replace(fileOnly, "-"),
             _ => fileOnly,
         };
 
         if(Options.FileCleanerCompressFilename) {
-            cleanedFilename = Regex.Replace(cleanedFilename, @"-+", "-"); // Collapse duplicate hyphens
-            cleanedFilename = Regex.Replace(cleanedFilename, @"_+", "_"); // Collapse duplicate underscores
-            cleanedFilename = Regex.Replace(cleanedFilename, @"[-\.]{2,}", "."); // Collapse -.- combinations to a .
+            cleanedFilename = DuplicateHyphens().Replace(cleanedFilename, "-"); // Collapse duplicate hyphens
+            cleanedFilename = DuplicateUnderscores().Replace(cleanedFilename, "_"); // Collapse duplicate underscores
+            cleanedFilename = SpacedOutDot().Replace(cleanedFilename, "."); // Collapse -.- combinations to a .
 
             cleanedFilename = cleanedFilename.Trim('-');
             cleanedFilename = cleanedFilename.TrimEnd('_');
@@ -64,8 +64,8 @@ public class FileValidationService
         // https://www.file-extensions.org/filetype/extension/name/miscellaneous-files
         var extension = Path.GetExtension(filename).TrimStart('.');
         var cleanedExtension = Options.FileCleanerAllowedExtensionCharacters switch {
-            FilenameCharacters.AsciiAlphaNumeric => Regex.Replace(extension, InvalidAsciiCharacterRegex, ""),
-            FilenameCharacters.UnicodeAlphaNumeric => Regex.Replace(extension, InvalidUnicodeCharacterRegex, ""),
+            FilenameCharacters.AsciiAlphaNumeric => InvalidAsciiCharacterRegex().Replace(extension, ""),
+            FilenameCharacters.UnicodeAlphaNumeric => InvalidUnicodeCharacterRegex().Replace(extension, ""),
             _ => extension,
         };
 
@@ -244,12 +244,24 @@ public class FileValidationService
     /// <summary>
     /// Regex that identifies non-letter characters that would not be valid in a Unicode filename.
     /// </summary>
-    private const string InvalidUnicodeCharacterRegex = @"[^\p{Lu}\p{Ll}\p{Lt}\p{Lm}\p{Lo}\p{Nd}\-_\.]";
+    [GeneratedRegex(@"[^\p{Lu}\p{Ll}\p{Lt}\p{Lm}\p{Lo}\p{Nd}\-_\.]")]
+    private static partial Regex InvalidUnicodeCharacterRegex();
 
     /// <summary>
     /// Regex that identifies non-letter characters that would not be valid in an Ascii filename.
     /// </summary>
-    private const string InvalidAsciiCharacterRegex = @"[^a-zA-Z0-9\-_\.]";
+    [GeneratedRegex(@"[^a-zA-Z0-9\-_\.]")]
+    private static partial Regex InvalidAsciiCharacterRegex();
+
+    [GeneratedRegex(@"[-\.]{2,}")]
+    private static partial Regex SpacedOutDot();
+
+    [GeneratedRegex(@"_+")]
+    private static partial Regex DuplicateUnderscores();
+
+    [GeneratedRegex(@"-+")]
+    private static partial Regex DuplicateHyphens();
+
 
     private FileTypeDefinitionSource fileService;
 }

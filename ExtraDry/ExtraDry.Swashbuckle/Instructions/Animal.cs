@@ -43,7 +43,7 @@ public class Animal : IHierarchyEntity<Animal>, IResourceIdentifiers
 
     /// <inheritdoc cref="IHierarchyEntity.Lineage" />
     [JsonIgnore]
-    public HierarchyId Lineage { get; set; }
+    public required HierarchyId Lineage { get; set; }
 
     /// <inheritdoc cref="IHierarchyEntity.Lineage" />
     /// <remarks>
