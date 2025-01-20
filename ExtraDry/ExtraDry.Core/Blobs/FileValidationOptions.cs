@@ -49,7 +49,7 @@ public class FileValidationOptions
     /// that indicate the file type.
     /// </summary>
     public ICollection<FileTypeDefinition> FileTypeDefinitions { get; set; } = [
-        new("exe", "application/x-dosexec", "DOS/Windows executable (EXE)") {
+        new("exe", "application/x-dosexec", "Windows Executable (EXE)") {
             MagicBytes = {
                 new MagicBytes {
                     Offset = 0,

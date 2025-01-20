@@ -207,7 +207,7 @@ public partial class FileValidationService
             .Intersect(Options.ContentBlacklist, StringComparer.OrdinalIgnoreCase)
             .Any();
         if(blacklistedContent) {
-            yield return new ValidationResult($"Provided file content belongs to a forbidden filetype, {blacklistedContent}", [nameof(content)]);
+            yield return new ValidationResult($"Provided file content belongs to a forbidden filetype.", [nameof(content)]);
         }
 
         // If there's both a filename and a magic byte type file definition, and they don't match,

@@ -226,7 +226,7 @@
     "MagicBytes": []
   },
   {
-    "Description": "DOS/Windows executable (EXE)",
+    "Description": "Windows Executable (EXE)",
     "Extensions": [ "exe" ],
     "MimeTypes": [ "application/x-dosexec" ],
     "MagicBytes": [
@@ -711,7 +711,7 @@
     "MagicBytes": []
   },
   {
-    "Description": "JPEG/JIFF Image",
+    "Description": "JPEG Image",
     "Extensions": [ "jpg", "jpeg", "jpe" ],
     "MimeTypes": [ "image/jpeg" ],
     "MagicBytes": [
