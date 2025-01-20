@@ -13,7 +13,7 @@ public class DryExceptionTests
         Assert.StartsWith("Error in the application", ex.Message);
         Assert.Null(ex.ProblemDetails.Detail);
         Assert.Null(ex.ProblemDetails.Instance);
-        Assert.Null(ex.ProblemDetails.Title);
+        Assert.Empty(ex.ProblemDetails.Title);
         Assert.Null(ex.ProblemDetails.Status);
     }
 
