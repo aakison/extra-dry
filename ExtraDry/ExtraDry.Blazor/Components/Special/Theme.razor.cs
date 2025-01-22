@@ -122,7 +122,8 @@ public partial class Theme : ComponentBase
             return;
         }
         try {
-            if(icon == null || icon.ImagePath == null || icon.SvgRenderType == SvgRenderType.Reference
+            var onServer = !OperatingSystem.IsBrowser();
+            if(onServer || icon == null || icon.ImagePath == null || icon.SvgRenderType == SvgRenderType.Reference
                 || !icon.ImagePath.EndsWith(".svg", StringComparison.InvariantCultureIgnoreCase)) {
                 return;
             }
