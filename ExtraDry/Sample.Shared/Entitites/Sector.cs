@@ -81,11 +81,6 @@ public class Sector : IResourceIdentifiers
     public string Slug { get => Title.ToLower(CultureInfo.InvariantCulture).Replace(' ', '-'); set { } }
 
     /// <summary>
-    /// Display title for the sector.
-    /// </summary>
-    public override string ToString() => Title;
-
-    /// <summary>
     /// Entity equality comparer, as uniquely defined by the `Uuid`.
     /// </summary>
     public override bool Equals(object? obj) => (obj as Sector)?.Uuid == Uuid;

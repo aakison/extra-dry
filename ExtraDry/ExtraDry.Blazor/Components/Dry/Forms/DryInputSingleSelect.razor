@@ -20,7 +20,7 @@
             @for(int i = 0; i < Values?.Count; ++i) {
                 var value = Values[i];
                 var selected = value?.Equals(SelectedValue) ?? false;
-                var display = value?.ToString() ?? "-empty-";
+                var display = (value is IResourceIdentifiers resource) ? resource.Title : value?.ToString() ?? "-empty-";
                 <option value="@i" selected="@selected">@display</option>
             }
         </select>
