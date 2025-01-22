@@ -52,9 +52,4 @@ Message = "Cron job '{Name}' triggered at {Time}")]
     [LoggerMessage(Level = LogLevel.Information, EventId = 65, Message = "Job '{JobName}' with schedule '{Schedule}' next 3 occurrences:\n\t{Time1}\n\t{Time2}\n\t{Time3}")]
     internal static partial void LogCronJobNexts(this ILogger logger, string JobName, string schedule, string time1, string time2, string time3);
 
-    [LoggerMessage(Level = LogLevel.Information, EventId = 70, Message = "Resolved Configuration for '{Name}':\n\t{List}")]
-    internal static partial void LogConfigurationList(this ILogger logger, string name, string list);
-
-    [LoggerMessage(Level = LogLevel.Warning, EventId = 71, Message = "Configuration Failed Validation:\n\t{Results}")]
-    internal static partial void LogConfigurationValidationError(this ILogger logger, string results);
 }

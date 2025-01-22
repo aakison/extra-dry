@@ -1,5 +1,5 @@
 using ExtraDry.Server;
-using ExtraDry.Server.Agents;
+using ExtraDry.Core;
 using ExtraDry.Server.EF;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;

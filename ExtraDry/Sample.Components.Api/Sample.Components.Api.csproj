@@ -22,8 +22,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\ExtraDry.Server\ExtraDry.Server.csproj" />
-		<ProjectReference Include="..\Sample.Components.Shared\Sample.Components.Shared.csproj" />
+    <ProjectReference Include="..\ExtraDry.Core\ExtraDry.Core.csproj" />
+    <ProjectReference Include="..\ExtraDry.Server\ExtraDry.Server.csproj" />
+    <ProjectReference Include="..\Sample.Components.Shared\Sample.Components.Shared.csproj" />
 	</ItemGroup>
 
 	<Import Project="..\CommonAnalyzers.targets" />
