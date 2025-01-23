@@ -35,7 +35,6 @@ public partial class Region : IHierarchyEntity<Region>, IResourceIdentifiers, IV
     /// <remarks>Do not set directly, use SetParent on the service.</remarks>
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonConverter(typeof(ResourceReferenceConverter<Region>))]
-    [Rules(RuleAction.Link)]
     public Region? Parent { get; set; }
 
     /// <summary>

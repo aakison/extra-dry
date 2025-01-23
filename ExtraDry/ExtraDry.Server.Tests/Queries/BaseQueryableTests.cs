@@ -75,10 +75,10 @@ public class BaseQueryableTests
 
             private int index = -1;
 
-            public List<Model> Models { get; init; }
+            public required List<Model> Models { get; init; }
         }
 
-        public List<Model> Models { get; init; }
+        public required List<Model> Models { get; init; }
     }
 
     private readonly List<Model> Models = [

@@ -45,7 +45,7 @@ public class PropertyDescription
             }
         }
         ++recursionDepth;
-        if(recursionDepth < 10 && Rules?.CreateAction != RuleAction.Link && (Rules?.CreateAction == RuleAction.Allow || Rules?.UpdateAction == RuleAction.Allow || Rules?.CreateAction == RuleAction.IgnoreDefaults || Rules?.CreateAction == RuleAction.IgnoreDefaults)) {
+        if(recursionDepth < 10 && (Rules?.CreateAction == RuleAction.Allow || Rules?.UpdateAction == RuleAction.Allow || Rules?.CreateAction == RuleAction.IgnoreDefaults || Rules?.CreateAction == RuleAction.IgnoreDefaults)) {
             if(HasArrayValues) {
                 var elementProperty = Property.PropertyType.SingleGenericType();
                 ChildModel = new ViewModelDescription(elementProperty, this);

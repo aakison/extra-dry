@@ -59,12 +59,10 @@ public class Company : IResourceIdentifiers
     public string Description { get; set; } = "";
 
     [Display(Name = "Primary Sector", ShortName = "Sector")]
-    [Rules(RuleAction.Link)]
     [JsonConverter(typeof(ResourceReferenceConverter<Sector>))]
     public Sector? PrimarySector { get; set; }
 
     [Display]
-    [Rules(RuleAction.Link)]
     public List<Sector> AdditionalSectors { get; set; } = [];
 
     [Rules(RuleAction.Allow)]

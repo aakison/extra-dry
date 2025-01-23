@@ -55,6 +55,7 @@ public class MetaController(
     [HttpGet("/version")]
     [Authorize(Policies.Admin)]
     [Produces("application/json")]
+    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Pattern for controllers is instance methods.")]
     public Version RetrieveVersion()
     {
         return Assembly.GetExecutingAssembly().GetName().Version ?? new();

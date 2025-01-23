@@ -22,7 +22,7 @@ public class Animal : IHierarchyEntity<Animal>, IResourceIdentifiers
     /// </summary>
     /// <example>Elephant</example>
     [Filter(FilterType.Contains)]
-    public string Title { get; set; }
+    public string Title { get; set; } = "";
 
     /// <summary>
     /// A description of the animal.

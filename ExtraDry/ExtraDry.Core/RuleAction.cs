@@ -28,10 +28,4 @@ public enum RuleAction
     /// </summary>
     Block,
 
-    /// <summary>
-    /// Incoming values are not copied, instead the matching Entity Resolver (implements
-    /// `IEntityResolver`) is used to lookup the existing entity to link to.
-    /// </summary>
-    //[Obsolete("Send Uuid down and explicitly change it, simpler JSON/REST interface.")]
-    Link,
 }
