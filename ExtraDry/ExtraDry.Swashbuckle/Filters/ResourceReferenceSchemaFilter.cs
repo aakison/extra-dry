@@ -63,9 +63,6 @@ public class ResourceReferenceSchemaFilter : IDocumentFilter
                     if(converter.ConverterType.IsGenericType == false) {
                         continue;
                     }
-                    if(converter.ConverterType.GetGenericTypeDefinition() != typeof(ResourceReferenceConverter<>)) {
-                        continue;
-                    }
 
                     var typeName = type.Name;
                     var propertyName = property.Name;

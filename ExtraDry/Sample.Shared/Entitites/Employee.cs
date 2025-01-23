@@ -49,7 +49,7 @@ public class Employee : IResourceIdentifiers, ICreatingCallback, IRevisioned
     [Display(ShortName = "Active")]
     public bool ActiveEmployee => TerminationDate == null || TerminationDate > DateTime.Now;
 
-    [JsonConverter(typeof(ResourceReferenceConverter<Company>))]
+    [JsonIgnore]
     public Company? Employer { get; set; }
 
     /// <summary>

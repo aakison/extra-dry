@@ -34,8 +34,9 @@ public partial class Region : IHierarchyEntity<Region>, IResourceIdentifiers, IV
     /// </summary>
     /// <remarks>Do not set directly, use SetParent on the service.</remarks>
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
-    [JsonConverter(typeof(ResourceReferenceConverter<Region>))]
     public Region? Parent { get; set; }
+
+    public int ParentId { get; set; }
 
     /// <summary>
     /// The hierarchy of this entity using the database-specific HierarchyId type.

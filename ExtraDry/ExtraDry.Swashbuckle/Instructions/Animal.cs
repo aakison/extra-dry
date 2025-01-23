@@ -38,7 +38,7 @@ public class Animal : IHierarchyEntity<Animal>, IResourceIdentifiers
     public string Slug { get; set; } = string.Empty;
 
     /// <inheritdoc cref="IHierarchyEntity{T}.Parent" />
-    [JsonConverter(typeof(ResourceReferenceConverter<Animal>))]
+    [JsonIgnore]
     public Animal? Parent { get; set; }
 
     /// <inheritdoc cref="IHierarchyEntity.Lineage" />
