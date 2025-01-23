@@ -91,7 +91,7 @@ public class Company : IResourceIdentifiers
 
     [Filter]
     [Display(Name = "Incorporation Date", ShortName = "Inc Date", Description = "Date stored as DateTime, informed by InputFormat")]
-    [InputFormat(DataTypeOverride = typeof(DateOnly))]
+    [InputFormat(DataType = typeof(DateOnly))]
     public DateTime IncorporationDate { get; set; }
 
     [Display(Name = "Dissolution Date", ShortName = "Diss Date", Description = "Date stored as DateTime?, informed by InputFormat")]
@@ -109,7 +109,7 @@ public class Company : IResourceIdentifiers
     public DateTime Timestamp { get; } = DateTime.UtcNow;
 
     [Display(Name = "Last Trademark Review", ShortName = "Trademark", Description = "Date stored as String, informed by InputFormat")]
-    [InputFormat(DataTypeOverride = typeof(DateOnly))]
+    [InputFormat(DataType = typeof(DateOnly))]
     public string LastTrademarkReview { get; set; } = "";
 
     public int NumberOfEmployees { get; set; }

@@ -176,8 +176,6 @@ public class PropertyDescription
 
     public string Icon => Control?.Icon ?? "";
 
-    public string CaptionTemplate => Control?.CaptionTemplate ?? "";
-
     public void SetValue(object item, object? value)
     {
         if(HasArrayValues) {
@@ -339,7 +337,7 @@ public class PropertyDescription
     /// Returns the type of the property as it should be displayed to users during input. This may
     /// vary slightly (e.g. PropertyType is DateTime, where the InputType is DateOnly).
     /// </summary>
-    public Type InputType => InputFormat?.DataTypeOverride ?? PropertyType;
+    public Type InputType => InputFormat?.DataType ?? PropertyType;
 
     private PropertySize PredictSize()
     {

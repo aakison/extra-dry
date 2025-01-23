@@ -15,7 +15,6 @@ public class ControlAttributeTests
 
     [Theory]
     [InlineData("Type", ControlType.BestMatch)]
-    [InlineData("CaptionTemplate", "{0}")]
     [InlineData("Icon", "")]
     public void DefaultValues(string propertyName, object defaultValue)
     {
@@ -29,7 +28,6 @@ public class ControlAttributeTests
 
     [Theory]
     [InlineData("Type", ControlType.RadioButtons)]
-    [InlineData("CaptionTemplate", "X")]
     [InlineData("Icon", "X")]
     public void RoundtripProperties(string propertyName, object propertyValue)
     {

@@ -147,13 +147,13 @@ public class DryInputDateTimeTests
         [JsonIgnore]
         public int Id { get; set; }
 
-        [InputFormat(DataTypeOverride = typeof(DateTime))]
+        [InputFormat(DataType = typeof(DateTime))]
         public string DateTime { get; set; } = string.Empty;
 
-        [InputFormat(DataTypeOverride = typeof(TimeOnly))]
+        [InputFormat(DataType = typeof(TimeOnly))]
         public DateTime TimeOnly { get; set; }
 
-        [InputFormat(DataTypeOverride = typeof(DateOnly))]
+        [InputFormat(DataType = typeof(DateOnly))]
         public DateTime DateOnly { get; set; }
     }
 }

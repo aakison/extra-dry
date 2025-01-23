@@ -17,6 +17,4 @@ public class ControlAttribute(ControlType type = ControlType.BestMatch) : Attrib
     // TODO: Evaluate usefulness, seems to be used for incomplete Content control
     public string Icon { get; set; } = string.Empty;
 
-    // TODO: Evaluate usefulness, seems to be used for incomplete Content control
-    public string CaptionTemplate { get; set; } = "{0}";
 }

@@ -150,7 +150,7 @@ public partial class DryContent : ComponentBase
         }
     }
 
-    [Control(ControlType.RadioButtons, CaptionTemplate = "", Icon = "_content/ExtraDry.Blazor/img/alignment-{0}.png")]
+    [Control(ControlType.RadioButtons, Icon = "_content/ExtraDry.Blazor/img/alignment-{0}.png")]
     [Display(Name = "Alignment")]
     public ContentAlignment CurrentContainerAlignment {
         get => CurrentContainer?.Alignment ?? ContentAlignment.TopLeft;

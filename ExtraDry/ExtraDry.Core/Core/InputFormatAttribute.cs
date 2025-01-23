@@ -10,7 +10,7 @@ public class InputFormatAttribute : Attribute
     /// <summary>
     /// Provides a means to override the default input that is rendered for this property.
     /// </summary>
-    public Type? DataTypeOverride { get; set; }
+    public Type? DataType { get; set; }
 
     /// <summary>
     /// The icon to be used in the display of this property's input, typically on the left of the
