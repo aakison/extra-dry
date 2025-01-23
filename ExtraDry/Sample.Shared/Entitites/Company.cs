@@ -81,7 +81,7 @@ public class Company : IResourceIdentifiers
     public string ContactEmail { get; set; } = "";
 
     [Precision(18, 2)]
-    [InputFormat(Icon = "currency")]
+    [InputField(Icon = "currency")]
     public decimal AnnualRevenue { get; set; }
 
     [Display(Prompt = "0.00", Description = "Clamped to range [0, 120]")]
@@ -91,7 +91,7 @@ public class Company : IResourceIdentifiers
 
     [Filter]
     [Display(Name = "Incorporation Date", ShortName = "Inc Date", Description = "Date stored as DateTime, informed by InputFormat")]
-    [InputFormat(DataType = typeof(DateOnly))]
+    [InputField(DataType = typeof(DateOnly))]
     public DateTime IncorporationDate { get; set; }
 
     [Display(Name = "Dissolution Date", ShortName = "Diss Date", Description = "Date stored as DateTime?, informed by InputFormat")]
@@ -109,7 +109,7 @@ public class Company : IResourceIdentifiers
     public DateTime Timestamp { get; } = DateTime.UtcNow;
 
     [Display(Name = "Last Trademark Review", ShortName = "Trademark", Description = "Date stored as String, informed by InputFormat")]
-    [InputFormat(DataType = typeof(DateOnly))]
+    [InputField(DataType = typeof(DateOnly))]
     public string LastTrademarkReview { get; set; } = "";
 
     public int NumberOfEmployees { get; set; }

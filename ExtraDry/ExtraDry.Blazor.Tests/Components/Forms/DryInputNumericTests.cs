@@ -174,7 +174,7 @@ public class DryInputNumericTests
 
         [Display(Prompt = "Enter a number")]
         [DisplayFormat(NullDisplayText = "empty")]
-        [InputFormat(Icon = "icon", Affordance = "affordance")]
+        [InputField(Icon = "icon", Affordance = "affordance")]
         public decimal? Numeric { get; set; }
     }
 }

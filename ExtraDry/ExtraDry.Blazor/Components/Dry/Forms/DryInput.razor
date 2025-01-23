@@ -37,7 +37,7 @@
         }
         else if(Property.HasDiscreteValues) {
             var selectedValue = Property.GetValue(Model);
-            @if(Property.ControlType == ControlType.RadioButtons) {
+            @* @if(Property.ControlType == ControlType.RadioButtons) {
                 <div class="radio-buttons @Property.DisplayClass">
                     @foreach (var value in Property.GetDiscreteValues()) {
                         var selected = value.Key.ToString() == selectedValue?.ToString(); // force object to enum compare
@@ -53,10 +53,10 @@
                     }
                 </div>
             }
-            else {
+            else { *@
                 var values = Property.GetDiscreteValues().ToList();
                 <DryInputFlexiSelect Model="@Model" Property="@Property" ReadOnly="@ReadOnly" OnValidation="@ValidationChanged" />
-            }
+            @* } *@ 
         }
         else if(Property.HasDateTimeRepresentation) {
             <DryInputDateTime Model="@Model" Property="@Property" ReadOnly="@ReadOnly" OnValidation="@ValidationChanged" />

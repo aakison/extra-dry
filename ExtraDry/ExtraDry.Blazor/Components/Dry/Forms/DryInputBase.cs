@@ -58,7 +58,7 @@ public class DryInputBase<T>
     /// The actual icon to display, resolved from the property's InputFormat or the Icon parameter.
     /// </summary>
     protected string ResolvedIcon =>
-        Icon == "" ? Property?.InputFormat?.Icon ?? "" : Icon;
+        Icon == "" ? Property?.InputField?.Icon ?? "" : Icon;
 
     /// <summary>
     /// Logger for DryInput controls, shares space with DryInput for consistency in logging
@@ -81,7 +81,7 @@ public class DryInputBase<T>
     public string Affordance { get; set; } = "";
 
     protected string ResolvedAffordance =>
-        Affordance == "" ? Property?.InputFormat?.Affordance ?? "" : Affordance;
+        Affordance == "" ? Property?.InputField?.Affordance ?? "" : Affordance;
 
     /// <summary>
     /// The title for the input field. If not set, the field caption from the property is used.

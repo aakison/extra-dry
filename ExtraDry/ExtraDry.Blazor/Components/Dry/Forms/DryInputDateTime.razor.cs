@@ -61,7 +61,7 @@ public partial class DryInputDateTime<T>
     private new string ResolvedAffordance =>
         Affordance == ""
 
-        ? Property?.InputFormat?.Affordance
+        ? Property?.InputField?.Affordance
         ?? Property?.InputType switch {
             Type t when t == typeof(DateOnly) => "select-date",
             Type t when t == typeof(DateOnly?) => "select-date",

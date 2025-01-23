@@ -25,9 +25,8 @@ public class PropertyDescription
         MaxLength = Property.GetCustomAttribute<MaxLengthAttribute>();
         StringLength = Property.GetCustomAttribute<StringLengthAttribute>();
         IsRequired = Property.GetCustomAttribute<RequiredAttribute>() != null;
-        Control = Property.GetCustomAttribute<ControlAttribute>();
         Filter = Property.GetCustomAttribute<FilterAttribute>();
-        InputFormat = Property.GetCustomAttribute<InputFormatAttribute>();
+        InputField = Property.GetCustomAttribute<InputFieldAttribute>();
         Sort = Property.GetCustomAttribute<SortAttribute>();
 
         FieldCaption = Display?.Name ?? DataConverter.CamelCaseToTitleCase(Property.Name);
@@ -95,7 +94,7 @@ public class PropertyDescription
 
     public FilterAttribute? Filter { get; }
 
-    public InputFormatAttribute? InputFormat { get; }
+    public InputFieldAttribute? InputField { get; }
 
     public SortAttribute? Sort { get; }
 
@@ -108,8 +107,6 @@ public class PropertyDescription
     /// Use FieldLength instead.
     /// </summary>
     private StringLengthAttribute? StringLength { get; }
-
-    public ControlAttribute? Control { get; }
 
     public string? Description { get; }
 
@@ -172,9 +169,7 @@ public class PropertyDescription
         }
     }
 
-    public ControlType ControlType => Control?.Type ?? ControlType.BestMatch;
-
-    public string Icon => Control?.Icon ?? "";
+    public string Icon => InputField?.Icon ?? "";
 
     public void SetValue(object item, object? value)
     {
@@ -343,7 +338,7 @@ public class PropertyDescription
     /// Returns the type of the property as it should be displayed to users during input. This may
     /// vary slightly (e.g. PropertyType is DateTime, where the InputType is DateOnly).
     /// </summary>
-    public Type InputType => InputFormat?.DataType ?? PropertyType;
+    public Type InputType => InputField?.DataType ?? PropertyType;
 
     private PropertySize PredictSize()
     {

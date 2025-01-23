@@ -126,7 +126,6 @@ public partial class DryContent : ComponentBase
 
     public ContentContainer? CurrentContainer { get; set; }
 
-    [Control(ControlType.RadioButtons)]
     [Display(Name = "Theme")]
     public ContentTheme CurrentSectionTheme {
         get => CurrentSection?.Theme ?? ContentTheme.Light;
@@ -138,7 +137,7 @@ public partial class DryContent : ComponentBase
         }
     }
 
-    [Control(ControlType.RadioButtons, Icon = "_content/ExtraDry.Blazor/img/layout-{0}.png")]
+    [InputField(Icon = "_content/ExtraDry.Blazor/img/layout-{0}.png")]
     [Display(Name = "Layout")]
     public SectionLayout CurrentSectionLayout {
         get => CurrentSection?.Layout ?? SectionLayout.SingleColumn;
@@ -150,7 +149,7 @@ public partial class DryContent : ComponentBase
         }
     }
 
-    [Control(ControlType.RadioButtons, Icon = "_content/ExtraDry.Blazor/img/alignment-{0}.png")]
+    [InputField(Icon = "_content/ExtraDry.Blazor/img/alignment-{0}.png")]
     [Display(Name = "Alignment")]
     public ContentAlignment CurrentContainerAlignment {
         get => CurrentContainer?.Alignment ?? ContentAlignment.TopLeft;
@@ -162,7 +161,7 @@ public partial class DryContent : ComponentBase
         }
     }
 
-    [Control(ControlType.RadioButtons, Icon = "_content/ExtraDry.Blazor/img/padding-{0}.png")]
+    [InputField(Icon = "_content/ExtraDry.Blazor/img/padding-{0}.png")]
     [Display(Name = "Padding")]
     public ContentPadding CurrentContainerPadding {
         get => CurrentContainer?.Padding ?? ContentPadding.None;
