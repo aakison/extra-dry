@@ -32,6 +32,9 @@
             var value = ((bool?)Property.GetValue(Model) ?? false) == true;
             <input type="checkbox" checked="@value" @onchange="HandleChange" />
         }
+        else if(Property.HasReferenceDataTypeRepresentation) {
+            <DryInputSingleSelect Model="@Model" Property="@Property" Values="@LookupValues" />
+        }
         else if(Property.HasDiscreteValues) {
             var selectedValue = Property.GetValue(Model);
             @if(Property.ControlType == ControlType.RadioButtons) {

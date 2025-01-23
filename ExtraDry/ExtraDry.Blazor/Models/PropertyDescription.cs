@@ -239,6 +239,8 @@ public class PropertyDescription
         return typeClass;
     }
 
+    public bool HasReferenceDataTypeRepresentation => Property.PropertyType == typeof(Guid) && InputType.IsClass;
+
     public bool HasDiscreteValues {
         get {
             if(Property.PropertyType.IsEnum) {
@@ -311,6 +313,10 @@ public class PropertyDescription
             if(Formatter.TryParse(value?.ToString() ?? "", out var result)) {
                 return result;
             }
+        }
+        else if(InputType.IsClass && value is IUniqueIdentifier resource && PropertyType == typeof(Guid)) {
+            Console.WriteLine(resource.Uuid);
+            return resource.Uuid;
         }
         else {
             // fallback for object types

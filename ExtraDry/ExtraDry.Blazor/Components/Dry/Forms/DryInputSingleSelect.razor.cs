@@ -11,15 +11,17 @@ public partial class DryInputSingleSelect<T>
     where T : class
 {
     /// <summary>
-    /// Set of values to select from, any object can be used and the ToString values are displayed.
+    /// Set of values to select from, any object can be used and the display text is either
+    /// IResourceIdentifier.Title or object.ToString() value.
     /// </summary>
     [Parameter, EditorRequired]
-    public List<object>? Values { get; set; }
+    public List<object> Values { get; set; } = null!;
 
     protected override void OnParametersSet()
     {
-        if(Model != null) {
-            SelectedValue = Property?.GetValue(Model);
+        SelectedValue = Property.GetValue(Model);
+        if(SelectedValue is Guid uuid && Property.InputType.IsClass) {
+            SelectedValue = Values.SingleOrDefault(e => (e as IResourceIdentifiers)?.Uuid == uuid);
         }
     }
 

@@ -84,7 +84,7 @@ public partial class DryInput<T>
             return;
         }
         var untypedOptionProvider = typeof(IOptionProvider<>);
-        var propertyType = Property.Property.PropertyType;
+        var propertyType = Property.InputType;
         if(propertyType.IsAssignableTo(typeof(IList))) {
             propertyType = propertyType.GetGenericArguments().First();
         }
@@ -101,7 +101,7 @@ public partial class DryInput<T>
                 .ToDictionary(e => e.Key.ToString(CultureInfo.InvariantCulture), e => e.Item);
         }
         else {
-            Logger.LogMissingOptionProvider(Property.Property.PropertyType.Name);
+            Logger.LogMissingOptionProvider(Property.InputType.Name);
         }
     }
 
