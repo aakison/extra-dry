@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Core;
+﻿using System.Globalization;
+
+namespace ExtraDry.Core;
 
 /// <summary>
 /// Represents an exception for an argument that is provided twice and doesn't match. In
@@ -10,7 +12,7 @@ public sealed class ArgumentMismatchException : ArgumentException
     /// <inheritdoc cref="ArgumentMismatchException" />
     public ArgumentMismatchException(string message, string paramName) : base(message, paramName)
     {
-        UserMessage = string.Format(UserMessage, paramName);
+        UserMessage = string.Format(CultureInfo.InvariantCulture, UserMessage, paramName);
     }
 
     /// <inheritdoc cref="ArgumentMismatchException" />

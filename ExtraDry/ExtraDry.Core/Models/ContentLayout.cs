@@ -110,9 +110,9 @@ public enum ContentPadding
     [Display(Name = "none")]
     None,
 
-    [Display(Name = "single")]
-    Single,
+    [Display(Name = "regular")]
+    Regular,
 
-    [Display(Name = "double")]
-    Double,
+    [Display(Name = "large")]
+    Large,
 }

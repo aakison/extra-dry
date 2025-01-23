@@ -15,8 +15,10 @@ internal class FileTypeDefinitionSource(string fileDatabasePath = "")
         else if(server != null) {
             var resourceName = "ExtraDry.Server.Blobs.FileDatabase.json";
             using var stream = server.GetManifestResourceStream(resourceName);
-            using var reader = new StreamReader(stream);
-            fileContent = reader.ReadToEnd();
+            if(stream != null) {
+                using var reader = new StreamReader(stream);
+                fileContent = reader.ReadToEnd();
+            }
         }
         return JsonSerializer.Deserialize<List<FileTypeDefinition>>(fileContent) ?? [];
     }

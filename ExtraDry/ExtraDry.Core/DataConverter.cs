@@ -73,9 +73,7 @@ public partial class DataConverter
     /// </summary>
     public static string DisplayEnum(Enum value)
     {
-        if(value == null) {
-            throw new ArgumentNullException(nameof(value));
-        }
+        ArgumentNullException.ThrowIfNull(value);
         var enumType = value.GetType();
         var enumValue = Enum.GetName(enumType, value);
         if(enumValue == null) {

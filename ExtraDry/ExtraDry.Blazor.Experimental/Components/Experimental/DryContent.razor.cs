@@ -40,7 +40,7 @@ public partial class DryContent : ComponentBase
             Containers = {
                 new ContentContainer {
                     Html = "<div>New Section</div>",
-                    Padding = ContentPadding.Single,
+                    Padding = ContentPadding.Regular,
                 }
             }
         });

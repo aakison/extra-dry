@@ -6,17 +6,17 @@ public class Menu : ISubjectViewModel
     /// The optional icon to render when creating the menu link. Icon details are looked up in by
     /// key the `Theme` Icons collection, or can be a URL.
     /// </summary>
-    public string Icon { get; set; } = string.Empty;
+    public string Icon { get; set; } = "";
 
     /// <summary>
     /// The title that is displayed for the navigation link.
     /// </summary>
-    public string Title { get; set; }
+    public string Title { get; set; } = "";
 
     /// <summary>
     /// The optional subtitle for the displayed link, typically only used for top-most navigations.
     /// </summary>
-    public string Subtitle { get; set; } = string.Empty;
+    public string Subtitle { get; set; } = "";
 
     /// <summary>
     /// The order that the Navigation should be displayed in. If not provided, then defaults to

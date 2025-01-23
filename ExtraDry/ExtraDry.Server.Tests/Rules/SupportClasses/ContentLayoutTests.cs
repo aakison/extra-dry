@@ -58,7 +58,7 @@ public class ContentLayoutTests
 
     [Theory]
     [InlineData("Html", "X")]
-    [InlineData("Padding", ContentPadding.Double)]
+    [InlineData("Padding", ContentPadding.Large)]
     [InlineData("Alignment", ContentAlignment.MiddleCenter)]
     public void RoundtripContainerProperties(string propertyName, object propertyValue)
     {

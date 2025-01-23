@@ -286,13 +286,13 @@ public partial class SampleDataService(
                         new ContentContainer {
                             Id = PseudoRandomGuid(),
                             Html = "<div>Hello Blazor</div>",
-                            Padding = ContentPadding.Single,
+                            Padding = ContentPadding.Regular,
                         },
                         new ContentContainer {
                             Id = PseudoRandomGuid(),
                             Html = "<div>Hello Blazor</div>",
                             Alignment = ContentAlignment.MiddleCenter,
-                            Padding = ContentPadding.Single,
+                            Padding = ContentPadding.Regular,
                         },
                     }
                 },
@@ -303,13 +303,13 @@ public partial class SampleDataService(
                         new ContentContainer {
                             Id = PseudoRandomGuid(),
                             Html = "<div>Hello Blazor</div>",
-                            Padding = ContentPadding.Single,
+                            Padding = ContentPadding.Regular,
                         },
                         new ContentContainer {
                             Id = PseudoRandomGuid(),
                             Html = "<div>Hello Blazor</div>",
                             Alignment = ContentAlignment.BottomCenter,
-                            Padding = ContentPadding.Single,
+                            Padding = ContentPadding.Regular,
                         },
                     }
                 },
@@ -319,7 +319,7 @@ public partial class SampleDataService(
                         new ContentContainer {
                             Id = PseudoRandomGuid(),
                             Html = "<div>Hello Blazor</div>",
-                            Padding = ContentPadding.Single,
+                            Padding = ContentPadding.Regular,
                         },
                     }
                 },

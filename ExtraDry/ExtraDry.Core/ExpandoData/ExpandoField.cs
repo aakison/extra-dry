@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Core;
+﻿using System.Globalization;
+
+namespace ExtraDry.Core;
 
 /// <summary>
 /// Represents a Field in a User Defined Schema, this defines the name, data type, ordering etc.
@@ -159,11 +161,13 @@ public class ExpandoField
 
     private void ValidateNumber(double number, ref List<ValidationResult> results)
     {
-        if(RangeMinimum.HasValue && double.TryParse(RangeMinimum.ToString(), out double intRangeMin) && number < intRangeMin) {
+        if(RangeMinimum.HasValue && double.TryParse(RangeMinimum?.ToString(CultureInfo.InvariantCulture), out double intRangeMin) 
+                && number < intRangeMin) {
             results.Add(new ValidationResult($"{Label} does not meet RangeMinimum set.", [Label]));
         }
 
-        if(RangeMaximum.HasValue && double.TryParse(RangeMaximum.ToString(), out double intRangeMax) && number > intRangeMax) {
+        if(RangeMaximum.HasValue && double.TryParse(RangeMaximum?.ToString(CultureInfo.InvariantCulture), out double intRangeMax) 
+                && number > intRangeMax) {
             results.Add(new ValidationResult($"{Label} exceeds RangeMaximum set.", [Label]));
         }
 

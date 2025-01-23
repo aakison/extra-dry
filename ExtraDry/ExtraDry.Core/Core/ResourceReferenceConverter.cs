@@ -10,7 +10,7 @@ namespace ExtraDry.Core;
 /// approximated by using default values and Id references. This is suitable for properties that
 /// are treated as RuleAction.Link.
 /// </summary>
-public class ResourceReferenceConverter<T> : JsonConverter<T> where T : IResourceIdentifiers
+public class ResourceReferenceConverter<T> : JsonConverter<T> where T : class, IResourceIdentifiers
 {
     /// <inheritdoc cref="JsonConverter{T}.ReadAsPropertyName(ref Utf8JsonReader, Type, JsonSerializerOptions)" />
     public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -19,7 +19,7 @@ public class ResourceReferenceConverter<T> : JsonConverter<T> where T : IResourc
         if(reference == null) {
             return default;
         }
-        var obj = (T)Activator.CreateInstance(typeof(T), true) ?? throw new DryException(System.Net.HttpStatusCode.InternalServerError,
+        var obj = Activator.CreateInstance(typeof(T), true) as T ?? throw new DryException(System.Net.HttpStatusCode.InternalServerError,
                 "An internal error has occurred and can only be resolved through a support request.",
                 $"Unable to create instance of resource '{typeof(T).Name}' from its resource reference.  Ensure the class has a default constructor.");
         foreach(var property in typeof(T).GetProperties()) {
