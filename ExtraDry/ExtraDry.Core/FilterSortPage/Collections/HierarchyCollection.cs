@@ -1,8 +1,11 @@
-﻿namespace ExtraDry.Core;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace ExtraDry.Core;
 
 /// <summary>
 /// A filtered collection of hierarcy items sorted depth-first from the API.
 /// </summary>
+[SuppressMessage("Naming", "CA1711:Identifiers should not have incorrect suffix", Justification = "Not a C# collection, but an over-the-wire collection.")]
 public class HierarchyCollection<T> : SortedCollection<T>
 {
     /// <summary>

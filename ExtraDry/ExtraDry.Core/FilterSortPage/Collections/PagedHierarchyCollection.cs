@@ -1,9 +1,12 @@
-﻿namespace ExtraDry.Core;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace ExtraDry.Core;
 
 /// <summary>
 /// A page of a filtered collection of hierarchy items items sorted breadth-first from the API with
 /// information on retrieving other pages.
 /// </summary>
+[SuppressMessage("Naming", "CA1711:Identifiers should not have incorrect suffix", Justification = "Not a C# collection, but an over-the-wire collection.")]
 public class PagedHierarchyCollection<T> : HierarchyCollection<T>
 {
     /// <inheritdoc cref="PagedCollection{T}.Start" />

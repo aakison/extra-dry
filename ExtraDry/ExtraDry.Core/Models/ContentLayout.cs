@@ -9,7 +9,7 @@ public class ContentLayout
 
 public class ContentSection
 {
-    public SectionLayout Layout { get; set; } = SectionLayout.Single;
+    public SectionLayout Layout { get; set; } = SectionLayout.SingleColumn;
 
     public ContentTheme Theme { get; set; } = ContentTheme.Light;
 
@@ -26,9 +26,9 @@ public class ContentSection
     }
 
     private int ContainerCount => Layout switch {
-        SectionLayout.Single => 1,
-        SectionLayout.Triple => 3,
-        SectionLayout.Quadruple => 4,
+        SectionLayout.SingleColumn => 1,
+        SectionLayout.TripleColumn => 3,
+        SectionLayout.QuadrupleColumn => 4,
         _ => 2,
     };
 }
@@ -86,13 +86,13 @@ public enum ContentTheme
 public enum SectionLayout
 {
     [Display(Name = "single")]
-    Single,
+    SingleColumn,
 
     [Display(Name = "double")]
-    Double,
+    DoubleColumn,
 
     [Display(Name = "triple")]
-    Triple,
+    TripleColumn,
 
     [Display(Name = "double left")]
     DoubleWeightedLeft,
@@ -101,7 +101,7 @@ public enum SectionLayout
     DoubleWeightedRight,
 
     [Display(Name = "quadruple")]
-    Quadruple,
+    QuadrupleColumn,
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]

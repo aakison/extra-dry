@@ -29,7 +29,7 @@ public class ContentLayoutTests
     }
 
     [Theory]
-    [InlineData("Layout", SectionLayout.Single)]
+    [InlineData("Layout", SectionLayout.SingleColumn)]
     [InlineData("Theme", ContentTheme.Dark)]
     [InlineData("Containers", null)]
     public void RoundtripSectionProperties(string propertyName, object? propertyValue)
@@ -97,12 +97,12 @@ public class ContentLayoutTests
     }
 
     [Theory]
-    [InlineData(SectionLayout.Double, 2)]
+    [InlineData(SectionLayout.DoubleColumn, 2)]
     [InlineData(SectionLayout.DoubleWeightedLeft, 2)]
     [InlineData(SectionLayout.DoubleWeightedRight, 2)]
-    [InlineData(SectionLayout.Quadruple, 4)]
-    [InlineData(SectionLayout.Single, 1)]
-    [InlineData(SectionLayout.Triple, 3)]
+    [InlineData(SectionLayout.QuadrupleColumn, 4)]
+    [InlineData(SectionLayout.SingleColumn, 1)]
+    [InlineData(SectionLayout.TripleColumn, 3)]
     public void SectionColumnCountsMatchLayout(SectionLayout layout, int count)
     {
         var content = ValidContent;

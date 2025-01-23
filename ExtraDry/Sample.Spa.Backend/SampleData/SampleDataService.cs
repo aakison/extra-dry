@@ -314,7 +314,7 @@ public partial class SampleDataService(
                     }
                 },
                 new ContentSection {
-                    Layout = SectionLayout.Single,
+                    Layout = SectionLayout.SingleColumn,
                     Containers = {
                         new ContentContainer {
                             Id = PseudoRandomGuid(),

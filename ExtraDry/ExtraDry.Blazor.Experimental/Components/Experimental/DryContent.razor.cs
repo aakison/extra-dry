@@ -141,7 +141,7 @@ public partial class DryContent : ComponentBase
     [Control(ControlType.RadioButtons, Icon = "_content/ExtraDry.Blazor/img/layout-{0}.png")]
     [Display(Name = "Layout")]
     public SectionLayout CurrentSectionLayout {
-        get => CurrentSection?.Layout ?? SectionLayout.Single;
+        get => CurrentSection?.Layout ?? SectionLayout.SingleColumn;
         set {
             if(CurrentSection != null) {
                 CurrentSection.Layout = value;
