@@ -1,3 +1,4 @@
+using ExtraDry.Core.Models;
 using Microsoft.AspNetCore.Components;
 
 namespace Sample.Spa.Client;

@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor;
+﻿namespace ExtraDry.Core;
 
 /// <summary>
 /// For SVG in the IconInfo, determines how the icon is rendered to the page.

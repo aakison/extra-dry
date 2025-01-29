@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor;
+﻿namespace ExtraDry.Core;
 
 /// <summary>
 /// Describes an Icon that can be used in the system, indexed by a `Key`. Use the key in the Icon
