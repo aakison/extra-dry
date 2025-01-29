@@ -6,7 +6,7 @@ namespace ExtraDry.Core;
 /// Service collection extensions to simplify the registration of services that are common to both
 /// Blazor and MVC server-side applications.
 /// </summary>
-public static class ServiceCollectionExtensions
+public static class ServiceCollectionFileExtensions
 {
     /// <summary>
     /// Registers the <see cref="FileValidationService" /> and the <see cref="FileValidator" />

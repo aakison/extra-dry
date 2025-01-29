@@ -1,4 +1,4 @@
-﻿using ExtraDry.Blazor.Extensions;
+﻿using ExtraDry.Core.Extensions;
 using System.Text.Json;
 
 namespace ExtraDry.Blazor;

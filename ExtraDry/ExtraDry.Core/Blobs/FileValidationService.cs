@@ -8,16 +8,13 @@ namespace ExtraDry.Core;
 /// <summary>
 /// Core service which provides functionality for validating files against a set of validation
 /// rules. The validation is partially performed client-side and a complete validation is performed
-/// server-side. Configuration of the file validation rules are done using the <see
-/// cref="ServiceCollectionExtensions.AddFileValidation" /> extension method during startup.
-/// </summary>
+/// server-side. 
 /// <seealso href="https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html" />
+/// </summary>
 public partial class FileValidationService
 {
     /// <summary>
-    /// Configures the file validation service. Not recommended to use directly, instead use the
-    /// <see cref="ServiceCollectionExtensions.AddFileValidation" /> extension method during
-    /// startup.
+    /// Configures the file validation service. 
     /// </summary>
     public FileValidationService(FileValidationOptions options)
     {

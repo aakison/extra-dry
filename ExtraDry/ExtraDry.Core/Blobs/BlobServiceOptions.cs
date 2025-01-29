@@ -1,10 +1,7 @@
-﻿namespace ExtraDry.Blazor;
+﻿namespace ExtraDry.Core;
 
 /// <summary>
-/// Configuration options for the <see cref="BlobService{TBlob}" />. This class is not intended to
-/// be used directly, instead use the <see
-/// cref="ServiceCollectionExtensions.AddBlobService(Microsoft.Extensions.DependencyInjection.IServiceCollection,
-/// Action{BlobServiceOptions})" /> method's Config action to set these values.
+/// Configuration options for the <see cref="BlobService{TBlob}" />. 
 /// </summary>
 public class BlobServiceOptions : IValidatableObject, IHttpClientOptions
 {

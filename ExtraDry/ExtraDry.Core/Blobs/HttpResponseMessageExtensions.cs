@@ -1,7 +1,8 @@
 ﻿using ExtraDry.Core.Models;
+using Microsoft.Extensions.Logging;
 using System.Net.Http.Json;
 
-namespace ExtraDry.Blazor.Extensions;
+namespace ExtraDry.Core.Extensions;
 
 public static class HttpResponseMessageExtensions
 {
@@ -21,10 +22,10 @@ public static class HttpResponseMessageExtensions
                         Instance = response.RequestMessage?.RequestUri?.AbsolutePath,
                     };
                 }
-                logger.LogProblemDetails(problem);
+                logger.LogError("HTTP request failed code {Status}, type {Type} at {Instance}; {Detail}", problem.Status, problem.Type, problem.Instance, problem.Detail);
             }
             catch {
-                logger.LogConsoleError($"Attempt to extract problem details from request failed.");
+                logger.LogError($"Attempt to extract problem details from request failed.");
             }
             throw new DryException(problem);
         }

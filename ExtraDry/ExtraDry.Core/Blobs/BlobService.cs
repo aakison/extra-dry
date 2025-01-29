@@ -1,8 +1,8 @@
-﻿using ExtraDry.Blazor.Extensions;
+﻿using ExtraDry.Core.Extensions;
 using ExtraDry.Core.Internal;
-using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.Extensions.Logging;
 
-namespace ExtraDry.Blazor;
+namespace ExtraDry.Core;
 
 /// <summary>
 /// Registers a API service for Blobs. This service is used to upload files to the server.
@@ -67,27 +67,6 @@ public class BlobService<TBlob>(
     }
 
     /// <summary>
-    /// Given a <see cref="IBrowserFile" /> from an <see cref="InputFile" />, create a new Blob by
-    /// calling the registered Blob endpoint. The URI of the blob will be created from an auto
-    /// generated UUID.
-    /// </summary>
-    /// <returns>The Blob that was created locally and corresponds to the remote Blob.</returns>
-    public async Task<TBlob> CreateAsync(IBrowserFile file, CancellationToken cancellationToken = default)
-    {
-        var blob = new TBlob {
-            Title = file.Name,
-            MimeType = file.ContentType,
-            Length = (int)file.Size,
-        };
-        var memoryStream = new MemoryStream();
-        using var stream = file.OpenReadStream(options.MaxBlobSize, cancellationToken);
-        await stream.CopyToAsync(memoryStream, cancellationToken);
-        blob.Content = memoryStream.ToArray();
-        await CreateAsync(blob, cancellationToken);
-        return blob;
-    }
-
-    /// <summary>
     /// Given a Blob's UUID, retrieve the Blob from the server. The URI for the blob will not
     /// contain the Blob's filename, so the default filename will be used. This is suitable for use
     /// inside the app, but not ideal for downloading the file.
@@ -121,6 +100,8 @@ public class BlobService<TBlob>(
         var response = await client.DeleteAsync(endpoint, cancellationToken);
         await response.AssertSuccess(logger);
     }
+
+    public long MaxBlobSize => options.MaxBlobSize;
 
     private string ApiEndpoint(Guid uuid, string filename = "")
     {

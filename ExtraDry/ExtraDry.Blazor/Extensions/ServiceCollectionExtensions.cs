@@ -149,38 +149,6 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    /// <summary>
-    /// Adds a strongly typed <see cref="BlobService{TBlob}" /> to the service collection. Use with
-    /// the built-in Blob class, or a custom class that implements <see cref="IBlob" />.
-    /// </summary>
-    public static IServiceCollection AddBlobService<T>(this IServiceCollection services, string endpointTemplate) where T : IBlob, new()
-    {
-        services.AddBlobService<T>(options => {
-            options.BlobEndpoint = endpointTemplate;
-        });
-        return services;
-    }
-
-    /// <inheritdoc cref="AddBlobService{T}(IServiceCollection, string)" />
-    public static IServiceCollection AddBlobService<T>(this IServiceCollection services, Action<BlobServiceOptions> config) where T : IBlob, new()
-    {
-        var options = new BlobServiceOptions();
-        config(options);
-
-        var validator = new DataValidator();
-        validator.ValidateObject(options);
-        validator.ThrowIfInvalid();
-
-        services.AddScoped(e => {
-            var client = GetHttpClient(e, options);
-            var logger = e.GetRequiredService<ILogger<BlobService<T>>>();
-            var validator = e.GetService<FileValidationService>();
-            var service = new BlobService<T>(client, validator, options, logger);
-            return service;
-        });
-        return services;
-    }
-
     private static HttpClient GetHttpClient(IServiceProvider provider, IHttpClientOptions options)
     {
         if(options.HttpClientType != null) {

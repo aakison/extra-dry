@@ -1,4 +1,4 @@
-﻿using ExtraDry.Blazor.Extensions;
+﻿using ExtraDry.Core.Extensions;
 using Microsoft.AspNetCore.Components.Web.Virtualization;
 using System.Collections.ObjectModel;
 using System.Text.Json;

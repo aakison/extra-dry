@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor;
+﻿namespace ExtraDry.Core;
 
 /// <summary>
 /// Base interface for options that configure an HttpClient.

@@ -53,13 +53,6 @@ internal static partial class LoggerExtensions
         Message = "{Method} failed to load icon {IconKey} from {IconImagePath}")]
     internal static partial void LogIconFailed(this ILogger logger, string? iconKey, string? iconImagePath, Exception ex, [CallerMemberName] string? method = null);
 
-    [LoggerMessage(Level = LogLevel.Error, EventId = 54,
-        Message = "{Method} HTTP request failed code {status}, type {Type} at {Instance}; {details}")]
-    internal static partial void LogProblemDetails(this ILogger logger, int status, string type, string instance, string details, [CallerMemberName] string? method = null);
-
-    internal static void LogProblemDetails(this ILogger logger, ProblemDetails problem, [CallerMemberName] string? method = null)
-        => LogProblemDetails(logger, problem.Status ?? 0, problem.Type ?? "unknown", problem.Instance ?? "unknown", problem.Detail ?? "", method);
-
     [LoggerMessage(Level = LogLevel.Error, EventId = 55,
         Message = "{Method} No option provider was registered.  An attempt to display a DryInput for type {PropertyType}, but no option provider was registered.  To enable select functionality for linked types, please add a scoped reference to the `IOptionProvider` in `Main`.  E.g. `builder.Services.AddScoped<IOptionProvider<{PropertyType}>>(e => new MyOptionProvider());`.  Also note that IListService implements IOptionProvider and can be used to register RESTful APIs")]
     internal static partial void LogMissingOptionProvider(this ILogger logger, string propertyType, [CallerMemberName] string? method = null);

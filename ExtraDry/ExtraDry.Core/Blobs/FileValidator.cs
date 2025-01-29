@@ -6,9 +6,7 @@ namespace ExtraDry.Core;
 /// Provides validation services for files that are uploaded from Blazor clients to MVC servers.
 /// The validation is partially performed client-side and a complete validation is performed
 /// server-side. Configuration of the file validation rules are done using <see
-/// cref="FileValidationOptions" /> and the <see cref="FileValidationService" />. Use the <see
-/// cref="ServiceCollectionExtensions.AddFileValidation" /> extension method register and configure
-/// the FileValidator.
+/// cref="FileValidationOptions" /> and the <see cref="FileValidationService" />. 
 /// </summary>
 /// <inheritdoc cref="FileValidator" />
 public class FileValidator(FileValidationService validator)
