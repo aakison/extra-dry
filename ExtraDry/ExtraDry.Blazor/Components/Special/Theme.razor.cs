@@ -143,7 +143,7 @@ public partial class Theme : ComponentBase
                     symbol = symbol.Replace(defs, "");
                 }
                 icon.SvgDatabaseBody = symbol;
-                icon.SvgInlineBody = $@"<svg class=""{icon.CssClass}""><use href=""#{icon.Key}""></use>{defs}</svg>";
+                icon.SvgInlineBody = $@"<svg class=""{icon.CssClass} additional-classes""><use href=""#{icon.Key}""></use>{defs}</svg>";
             }
         }
         catch(Exception ex) {

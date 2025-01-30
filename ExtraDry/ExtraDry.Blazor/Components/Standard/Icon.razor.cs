@@ -73,7 +73,7 @@ public partial class Icon : ComponentBase, IExtraDryComponent
 
     private bool RenderSvg => IconInfo.SvgRenderType != SvgRenderType.Reference && !string.IsNullOrEmpty(IconInfo.SvgInlineBody);
 
-    private MarkupString Svg => (MarkupString)IconInfo.SvgInlineBody;
+    private MarkupString Svg => (MarkupString)IconInfo.SvgInlineBody.Replace("additional-classes", CssClasses);
 
     private void LogNoThemeErrorOnce()
     {
