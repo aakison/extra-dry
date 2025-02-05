@@ -131,7 +131,7 @@ public partial class DryInput<T>
         if(LookupProviderOptions != null && value is string strValue) {
             value = LookupProviderOptions[strValue];
         }
-        Console.WriteLine($"Model: {Model} to Value: {value}");
+        //Console.WriteLine($"Model: {Model} to Value: {value}");
         Property.SetValue(Model, value);
         Validate();
         var task = OnChange.InvokeAsync(args);
@@ -149,7 +149,7 @@ public partial class DryInput<T>
         //if(LookupProviderOptions != null && value is string strValue) {
         //    value = LookupProviderOptions[strValue];
         //}
-        Console.WriteLine($"Model: {Model} to Value: {value}");
+        //Console.WriteLine($"Model: {Model} to Value: {value}");
         Property.SetValue(Model, value);
         Validate();
         // Ignore that it's a physical click and treat like value change for listeners.
