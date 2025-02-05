@@ -8,19 +8,19 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable
     /// <summary>
     /// Required parameter which is the view model description passed from the DryTable.
     /// </summary>
-    [Parameter]
+    [Parameter, EditorRequired]
     public ViewModelDescription Description { get; set; } = null!; // Only used in DryTable
 
     /// <summary>
     /// Required parameter which is the selection set for all items, passed from the DryTable.
     /// </summary>
-    [Parameter]
+    [Parameter, EditorRequired]
     public SelectionSet Selection { get; set; } = null!; // Only used in DryTable
 
     /// <summary>
     /// Required parameter which is the current item, passed from the DryTable.
     /// </summary>
-    [Parameter]
+    [Parameter, EditorRequired]
     public ListItemInfo<T> Item { get; set; } = null!; // Only used in DryTable
 
     [Parameter]
@@ -67,13 +67,7 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable
                 await Description.SelectCommand.ExecuteAsync(Item.Item);
             }
         }
-        else if(IsSelected) {
-            Deselect();
-        }
-        else {
-            Select();
-        }
-        StateHasChanged();
+        CheckChanged(new());
     }
 
     private async Task RowDoubleClick(MouseEventArgs _)
@@ -87,10 +81,10 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable
     private void CheckChanged(ChangeEventArgs _)
     {
         if(IsSelected) {
-            Select();
+            Deselect();
         }
         else {
-            Deselect();
+            Select();
         }
         StateHasChanged();
     }
@@ -109,15 +103,13 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable
     {
         if(IsSelected && Item.Item != null) {
             Selection.Remove(Item.Item);
-            if(!Selection.MultipleSelect) {
-                Selection.Changed -= OnExclusivity;
-            }
         }
     }
 
     private void OnExclusivity(object? sender, EventArgs args)
     {
         Deselect();
+        Selection.Changed -= OnExclusivity;
         StateHasChanged(); // external event, need to signal to update UI.
     }
 
