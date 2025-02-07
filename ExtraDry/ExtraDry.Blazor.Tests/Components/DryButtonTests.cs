@@ -11,7 +11,7 @@ public class DryButtonTests : IDisposable
         var button = fragment.Find("button");
         var span = button.FirstChild;
 
-        Assert.Contains(nameof(CommandContext.Alternate).ToLowerInvariant(), button.ClassName);
+        Assert.Contains(nameof(CommandContext.Regular).ToLowerInvariant(), button.ClassName);
         Assert.Null(button.Attributes["disabled"]);
         Assert.Equal("Parameterless Method", span?.TextContent); // Note spacing introduced.
     }

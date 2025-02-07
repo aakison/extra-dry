@@ -7,8 +7,8 @@ public class NakedParameterlessCommandInfoTests
     {
         var command = new CommandInfo(this, NakedParameterlessCommand);
 
-        Assert.Equal(CommandContext.Alternate, command.Context);
-        Assert.Equal("alternate", command.DisplayClass);
+        Assert.Equal(CommandContext.Regular, command.Context);
+        Assert.Equal("regular", command.DisplayClass);
         Assert.Equal(CommandArguments.None, command.Arguments);
         Assert.Null(command.Icon);
         Assert.Equal("NakedParameterlessCommand", command.Method.Name);
