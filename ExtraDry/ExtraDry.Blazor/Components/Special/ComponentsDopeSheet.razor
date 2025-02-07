@@ -8,8 +8,9 @@
 
     <h2>DRY Buttons</h2>
     <DryButton ViewModel="@this" MethodName="@nameof(Primary)" />
-    <DryButton ViewModel="@this" MethodName="@nameof(Alternate)" />
+    <DryButton ViewModel="@this" MethodName="@nameof(Normal)" />
     <DryButton ViewModel="@this" MethodName="@nameof(Danger)" />
+    <DryButton ViewModel="@this" MethodName="@nameof(Alternate)" />
 
 
 </section>
@@ -18,6 +19,12 @@
 
     [Command(CommandContext.Primary)]
     public void Primary()
+    {
+        ++ClickCount;
+    }
+
+    [Command(CommandContext.Regular)]
+    public void Normal()
     {
         ++ClickCount;
     }

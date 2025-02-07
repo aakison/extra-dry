@@ -1,16 +1,16 @@
 ﻿namespace ExtraDry.Blazor;
 
 /// <summary>
-/// Indicates that the specified method, typically on a ViewModel, is a valid command.
+/// Indicates that the specified method on a Decorator, is a valid command.
 /// </summary>
 /// <remarks>Flag the method as a command with the specified functional command context.</remarks>
 [AttributeUsage(AttributeTargets.Method)]
 public sealed class CommandAttribute(
-    CommandContext context = CommandContext.Alternate)
+    CommandContext context = CommandContext.Regular)
     : Attribute
 {
     /// <summary>
-    /// The context of the command, typically `Alternate`. On forms, one command should be
+    /// The context of the command, typically `Regular`. On forms, one command should be
     /// `Primary`.
     /// </summary>
     public CommandContext Context { get; set; } = context;

@@ -33,7 +33,7 @@ public partial class DryFieldset<T> : ComponentBase, IExtraDryComponent
     private CommandInfo AddNewCommand =>
         new(this, MethodInfoHelper.GetMethodInfo<DryFieldset<T>>(e => e.AddDefaultElementToList(Array.Empty<int>()))) {
             Arguments = CommandArguments.Single,
-            Context = CommandContext.Alternate
+            Context = CommandContext.Regular
         };
 
     [Command(Name = "Add New", Icon = "plus")]

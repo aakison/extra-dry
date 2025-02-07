@@ -4,16 +4,17 @@
 /// The semantic context of the command which assists in determining layout.
 /// </summary>
 /// <remarks>
-/// There should only be one `Primary` or `Default` command, and `Danger` should be used sparingly,
-/// so `Alternate` is explicitly the default.
+/// There should only be one `Primary` or `Default` command, and `Danger` should be used sparingly.
+/// `Normal` and `Alternate` can be used freely. `Normal` will typically be the main buttons, while
+/// `Alternate` will be collapable button-icons.
 /// </remarks>
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum CommandContext
 {
     /// <summary>
-    /// Alternate commands that are not destructive, e.g. 'Cancel'.
+    /// Regular commands that show as normal buttons.
     /// </summary>
-    Alternate = 0,
+    Regular = 0,
 
     /// <summary>
     /// The primary command, should only be one per ViewModel, e.g. 'Save'.
@@ -30,4 +31,9 @@ public enum CommandContext
     /// A command that might have adverse consequences, e.g. 'Delete'
     /// </summary>
     Danger,
+
+    /// <summary>
+    /// Alternate commands that are less important and might be button icons or collapsed.
+    /// </summary>
+    Alternate,
 }
