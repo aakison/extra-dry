@@ -51,7 +51,7 @@ public static class QueryableExtensions
     public static IQueryable<T> Sort<T>(this IQueryable<T> source, SortQuery query)
     {
         var token = (query as PageQuery)?.Token; // Only need the token if it's a PageQuery, null if FilterQuery.
-        return source.Sort(query.Sort, token, query.Stabilization);
+        return source.Sort(query.Sort, query.Stabilization, token);
     }
 
     /// <summary>
@@ -63,12 +63,12 @@ public static class QueryableExtensions
     /// The queryable source, typically from EF, this is from `DbSet.AsQueryable()`
     /// </param>
     /// <param name="sort">The name of the property to sort by (optional, case insensitive)</param>
+    /// <param name="stabilization">Determines if a stabalizer should be added to the sort.  Some data providers do not support this.</param>
     /// <param name="continuationToken">
     /// If this is not a new request, the token passed back from the previous request to maintain
     /// stability (optional)
     /// </param>
-    /// <param name="stabilization">Determines if a stabalizer should be added to the sort.  Some data providers do not support this.</param>
-    internal static IQueryable<T> Sort<T>(this IQueryable<T> source, string? sort, string? continuationToken, SortStabilization stabilization = SortStabilization.PrimaryKey)
+    internal static IQueryable<T> Sort<T>(this IQueryable<T> source, string? sort, SortStabilization stabilization = SortStabilization.PrimaryKey, string? continuationToken = null)
     {
         var token = ContinuationToken.FromString(continuationToken);
         var actualSort = (string.IsNullOrWhiteSpace(token?.Sort) ? sort : null) ?? "";
