@@ -13,7 +13,7 @@ public class DryInputNumericTests
     {
         using var context = new TestContext();
         var model = new BasicNumericModel();
-        var description = new ViewModelDescription(model.GetType(), model);
+        var description = new DecoratorInfo(model.GetType(), model);
         var property = description.FormProperties.First(e => e.Property.Name == nameof(BasicNumericModel.Numeric));
 
         var fragment = context.RenderComponent<DryInputNumeric<BasicNumericModel>>(
@@ -38,7 +38,7 @@ public class DryInputNumericTests
     {
         using var context = new TestContext();
         var model = new BasicNumericModel();
-        var description = new ViewModelDescription(model.GetType(), model);
+        var description = new DecoratorInfo(model.GetType(), model);
         var property = description.FormProperties.First(e => e.Property.Name == nameof(BasicNumericModel.Numeric));
 
         var fragment = context.RenderComponent<DryInputNumeric<BasicNumericModel>>(
@@ -62,7 +62,7 @@ public class DryInputNumericTests
     {
         using var context = new TestContext();
         var model = new BasicNumericModel();
-        var description = new ViewModelDescription(model.GetType(), model);
+        var description = new DecoratorInfo(model.GetType(), model);
         var property = description.FormProperties.First(e => e.Property.Name == nameof(BasicNumericModel.Numeric));
 
         var fragment = context.RenderComponent<DryInputNumeric<BasicNumericModel>>(
@@ -79,7 +79,7 @@ public class DryInputNumericTests
     {
         using var context = new TestContext();
         var model = new BasicNumericModel();
-        var description = new ViewModelDescription(model.GetType(), model);
+        var description = new DecoratorInfo(model.GetType(), model);
         var property = description.FormProperties.First(e => e.Property.Name == nameof(BasicNumericModel.Numeric));
 
         var fragment = context.RenderComponent<DryInputNumeric<BasicNumericModel>>(
@@ -104,7 +104,7 @@ public class DryInputNumericTests
     {
         using var context = new TestContext();
         var model = new NullNumericModel() { Numeric = (decimal?)value };
-        var description = new ViewModelDescription(model.GetType(), model);
+        var description = new DecoratorInfo(model.GetType(), model);
         var property = description.FormProperties.First(e => e.Property.Name == nameof(NullNumericModel.Numeric));
 
         var fragment = context.RenderComponent<DryInputNumeric<NullNumericModel>>(
@@ -121,7 +121,7 @@ public class DryInputNumericTests
     {
         using var context = new TestContext();
         var model = new NullNumericModel();
-        var description = new ViewModelDescription(model.GetType(), model);
+        var description = new DecoratorInfo(model.GetType(), model);
         var property = description.FormProperties.First(e => e.Property.Name == nameof(NullNumericModel.Numeric));
 
         var fragment = context.RenderComponent<DryInputNumeric<NullNumericModel>>(
@@ -142,7 +142,7 @@ public class DryInputNumericTests
     {
         using var context = new TestContext();
         var model = new NullNumericModel();
-        var description = new ViewModelDescription(model.GetType(), model);
+        var description = new DecoratorInfo(model.GetType(), model);
         var property = description.FormProperties.First(e => e.Property.Name == nameof(NullNumericModel.Numeric));
 
         var fragment = context.RenderComponent<DryInputNumeric<NullNumericModel>>(

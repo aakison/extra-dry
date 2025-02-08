@@ -12,7 +12,7 @@ public class DryInputTextTests
     {
         using var context = new TestContext();
         var model = new Model { Id = 1, Name = "TheModel" };
-        var description = new ViewModelDescription(typeof(Model), model);
+        var description = new DecoratorInfo(typeof(Model), model);
         var property = description.FormProperties.First(e => e.Property.Name == nameof(Model.Name));
 
         var fragment = context.RenderComponent<DryInputText<Model>>(

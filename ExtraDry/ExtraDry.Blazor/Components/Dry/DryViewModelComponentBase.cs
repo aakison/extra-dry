@@ -11,12 +11,12 @@ public abstract class DryViewModelComponentBase : ComponentBase
             BaseLogger.LogConsoleError($"Component '{GetType().Name}' requires a ViewModel");
             return;
         }
-        if(Description == null || Description.ViewModel != ViewModel) {
-            Description = new ViewModelDescription(ViewModel);
+        if(Description == null || Description.Decorator != ViewModel) {
+            Description = new DecoratorInfo(ViewModel);
         }
     }
 
-    protected ViewModelDescription? Description { get; set; }
+    protected DecoratorInfo? Description { get; set; }
 
     [Inject]
     private ILogger<DryViewModelComponentBase> BaseLogger { get; set; } = null!;

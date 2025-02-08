@@ -39,14 +39,14 @@ public partial class DryButtonBar : ComponentBase, IExtraDryComponent
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
-    private ViewModelDescription? Description { get; set; }
+    private DecoratorInfo? Description { get; set; }
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "buttons", CssClass);
 
     protected override void OnParametersSet()
     {
         if(!Commands.Any() && ViewModel != null && Description == null) {
-            Description = new ViewModelDescription(ViewModel);
+            Description = new DecoratorInfo(ViewModel);
             Commands = Description.Commands;
         }
     }

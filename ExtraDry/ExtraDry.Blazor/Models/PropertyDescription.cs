@@ -48,10 +48,10 @@ public class PropertyDescription
         if(recursionDepth < 10 && (Rules?.CreateAction == RuleAction.Allow || Rules?.UpdateAction == RuleAction.Allow || Rules?.CreateAction == RuleAction.IgnoreDefaults || Rules?.CreateAction == RuleAction.IgnoreDefaults)) {
             if(HasArrayValues) {
                 var elementProperty = Property.PropertyType.SingleGenericType();
-                ChildModel = new ViewModelDescription(elementProperty, this);
+                ChildModel = new DecoratorInfo(elementProperty, this);
             }
             else if(Property.PropertyType.IsClass && Property.PropertyType != typeof(string)) {
-                ChildModel = new ViewModelDescription(Property.PropertyType, this);
+                ChildModel = new DecoratorInfo(Property.PropertyType, this);
             }
         }
         --recursionDepth;
@@ -70,7 +70,7 @@ public class PropertyDescription
     /// </summary>
     private static int recursionDepth;
 
-    public ViewModelDescription? ChildModel { get; private set; }
+    public DecoratorInfo? ChildModel { get; private set; }
 
     /// <summary>
     /// When rendered as an input component, the label for the input field. This may be set in the

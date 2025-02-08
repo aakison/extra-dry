@@ -8,7 +8,7 @@ namespace ExtraDry.Blazor.Internal;
 /// </summary>
 internal class FormDescription
 {
-    public FormDescription(ViewModelDescription description, object model)
+    public FormDescription(DecoratorInfo description, object model)
     {
         ViewModelDescription = description;
         LoadOriginalPositions(description.FormProperties);
@@ -24,7 +24,7 @@ internal class FormDescription
         }
     }
 
-    public ViewModelDescription ViewModelDescription { get; init; }
+    public DecoratorInfo ViewModelDescription { get; init; }
 
     public List<FormFieldset> Fieldsets { get; } = [];
 

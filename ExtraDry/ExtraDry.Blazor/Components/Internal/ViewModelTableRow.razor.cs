@@ -9,7 +9,7 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable
     /// Required parameter which is the view model description passed from the DryTable.
     /// </summary>
     [Parameter, EditorRequired]
-    public ViewModelDescription Description { get; set; } = null!; // Only used in DryTable
+    public DecoratorInfo Description { get; set; } = null!; // Only used in DryTable
 
     /// <summary>
     /// Required parameter which is the selection set for all items, passed from the DryTable.

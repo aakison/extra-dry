@@ -15,7 +15,7 @@ public interface IDryInput<T>
     public T Model { get; set; }
 
     /// <summary>
-    /// The PropertyDescription, taken from the <see cref="ViewModelDescription" /> which controls
+    /// The PropertyDescription, taken from the <see cref="DecoratorInfo" /> which controls
     /// which property the component is for and the details about how it is rendered. Can be
     /// retrieved from one of the 'For' factory methods on PropertyDescription.
     /// </summary>

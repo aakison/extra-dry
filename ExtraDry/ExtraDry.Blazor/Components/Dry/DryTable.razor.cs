@@ -34,7 +34,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
-    private ViewModelDescription description = null!; // Set in OnInitialized
+    private DecoratorInfo description = null!; // Set in OnInitialized
 
     [Inject]
     private ILogger<DryTable<TItem>> Logger { get; set; } = null!;
@@ -69,7 +69,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     protected override void OnInitialized()
     {
         ViewModel ??= this;
-        description = new ViewModelDescription(typeof(TItem), ViewModel);
+        description = new DecoratorInfo(typeof(TItem), ViewModel);
     }
 
     protected override void OnParametersSet()

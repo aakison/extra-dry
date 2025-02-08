@@ -3,28 +3,28 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace ExtraDry.Blazor;
 
-public class ViewModelDescription
+public class DecoratorInfo
 {
-    public ViewModelDescription(object viewModel)
+    public DecoratorInfo(object decorator)
     {
-        ViewModel = viewModel;
-        GetReflectedViewModelCommands(viewModel);
-        GetReflectedModel(viewModel.GetType());
+        Decorator = decorator;
+        GetReflectedDecoratorCommands(decorator);
+        GetReflectedModel(decorator.GetType());
         SetListSelectMode();
     }
 
-    public ViewModelDescription(Type modelType, object viewModel)
+    public DecoratorInfo(Type modelType, object decorator)
     {
         ModelType = modelType;
-        ViewModel = viewModel;
-        GetReflectedViewModelHyperLinks(viewModel, modelType);
+        Decorator = decorator;
+        GetReflectedDecoratorHyperLinks(decorator, modelType);
         GetReflectedModelProperties(modelType);
-        GetReflectedViewModelCommands(viewModel);
+        GetReflectedDecoratorCommands(decorator);
         GetReflectedModel(modelType);
         SetListSelectMode();
     }
 
-    public object ViewModel { get; }
+    public object Decorator { get; }
 
     public Type? ModelType { get; }
 
@@ -69,50 +69,51 @@ public class ViewModelDescription
     private void GetReflectedModelProperties(Type modelType)
     {
         ModelDisplayName = modelType.GetCustomAttribute<DisplayAttribute>()?.Name ?? modelType.Name;
-        var properties = modelType.GetProperties();
-        foreach(var property in properties) {
-            var display = property.GetCustomAttribute<DisplayAttribute>();
-            var col = new PropertyDescription(property);
+        var properties = modelType.GetProperties().ToList();
+        var descriptions = properties.Select(e => new PropertyDescription(e)).ToList();
+        var ordered = descriptions.OrderBy(e => e.Order ?? 10_000 + descriptions.IndexOf(e));
+        foreach(var property in ordered) {
+            var display = property.Display;
             if(display?.GetAutoGenerateField() ?? true) {
-                FormProperties.Add(col);
+                FormProperties.Add(property);
             }
             if(!string.IsNullOrEmpty(display?.ShortName)) {
-                TableProperties.Add(col);
+                TableProperties.Add(property);
             }
-            if(col.Filter != null) {
-                FilterProperties.Add(col);
+            if(property.Filter != null) {
+                FilterProperties.Add(property);
             }
             if(UuidProperty == null && property.PropertyType == typeof(Guid)) {
-                UuidProperty = col;
+                UuidProperty = property;
             }
         }
     }
 
-    private void GetReflectedViewModelCommands(object viewModel)
+    private void GetReflectedDecoratorCommands(object decorator)
     {
-        if(viewModel == null) {
+        if(decorator == null) {
             return;
         }
-        var viewModelType = viewModel.GetType();
-        var methods = viewModelType.GetMethods(BindingFlags.Public | BindingFlags.Instance);
+        var decoratorType = decorator.GetType();
+        var methods = decoratorType.GetMethods(BindingFlags.Public | BindingFlags.Instance);
         var commands = methods.Where(e => e.GetParameters().Length < 2 && e.GetCustomAttribute<CommandAttribute>() != null);
         var infos = commands
-            .Select(e => new CommandInfo(viewModel, e))
+            .Select(e => new CommandInfo(decorator, e))
             .OrderBy(e => e.Context);
         foreach(var info in infos) {
             Commands.Add(info);
         }
     }
 
-    private void GetReflectedViewModelHyperLinks(object viewModel, Type modelType)
+    private void GetReflectedDecoratorHyperLinks(object decorator, Type modelType)
     {
-        if(viewModel == null) {
+        if(decorator == null) {
             return;
         }
-        var viewModelType = viewModel.GetType();
-        var methods = viewModelType.GetMethods(BindingFlags.Public | BindingFlags.Instance);
+        var decoratorType = decorator.GetType();
+        var methods = decoratorType.GetMethods(BindingFlags.Public | BindingFlags.Instance);
         var hyperlinks = methods.Where(e => e.GetParameters().Length < 2 && e.GetCustomAttribute<HyperlinkAttribute>() != null);
-        var infos = hyperlinks.Select(e => new HyperlinkInfo(viewModel, modelType, e));
+        var infos = hyperlinks.Select(e => new HyperlinkInfo(decorator, modelType, e));
         foreach(var info in infos) {
             HyperLinks.Add(info);
         }

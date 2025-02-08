@@ -13,7 +13,7 @@ public class DryInputDateTimeTests
     {
         using var context = new TestContext();
         var model = new DateTimeModel { Id = 1, DateTime = new DateTime(2024, 8, 12, 19, 30, 12, DateTimeKind.Local) };
-        var description = new ViewModelDescription(typeof(DateTimeModel), model);
+        var description = new DecoratorInfo(typeof(DateTimeModel), model);
         var property = description.FormProperties.First(e => e.Property.Name == nameof(DateTimeModel.DateTime));
 
         var fragment = context.RenderComponent<DryInputDateTime<DateTimeModel>>(
@@ -33,7 +33,7 @@ public class DryInputDateTimeTests
     {
         using var context = new TestContext();
         var model = new DateTimeModel { Id = 1, DateTime = new DateTime(2024, 8, 12, 19, 30, 12, DateTimeKind.Utc) };
-        var description = new ViewModelDescription(typeof(DateTimeModel), model);
+        var description = new DecoratorInfo(typeof(DateTimeModel), model);
         var property = description.FormProperties.First(e => e.Property.Name == nameof(DateTimeModel.DateTime));
 
         var fragment = context.RenderComponent<DryInputDateTime<DateTimeModel>>(
@@ -53,7 +53,7 @@ public class DryInputDateTimeTests
     {
         using var context = new TestContext();
         var model = new DateTimeModel { Id = 1, DateOnly = new DateOnly(2024, 8, 12) };
-        var description = new ViewModelDescription(typeof(DateTimeModel), model);
+        var description = new DecoratorInfo(typeof(DateTimeModel), model);
         var property = description.FormProperties.First(e => e.Property.Name == nameof(DateTimeModel.DateOnly));
 
         var fragment = context.RenderComponent<DryInputDateTime<DateTimeModel>>(
@@ -73,7 +73,7 @@ public class DryInputDateTimeTests
     {
         using var context = new TestContext();
         var model = new DateTimeModel { Id = 1, TimeOnly = new TimeOnly(19, 30) };
-        var description = new ViewModelDescription(typeof(DateTimeModel), model);
+        var description = new DecoratorInfo(typeof(DateTimeModel), model);
         var property = description.FormProperties.First(e => e.Property.Name == nameof(DateTimeModel.TimeOnly));
 
         var fragment = context.RenderComponent<DryInputDateTime<DateTimeModel>>(
@@ -94,7 +94,7 @@ public class DryInputDateTimeTests
     {
         using var context = new TestContext();
         var model = new DateTimeAttributedModel { Id = 1, DateOnly = new DateTime(2024, 8, 12, 19, 30, 12, DateTimeKind.Local) };
-        var description = new ViewModelDescription(typeof(DateTimeAttributedModel), model);
+        var description = new DecoratorInfo(typeof(DateTimeAttributedModel), model);
         var property = description.FormProperties.First(e => e.Property.Name == nameof(DateTimeAttributedModel.DateOnly));
 
         var fragment = context.RenderComponent<DryInputDateTime<DateTimeAttributedModel>>(
@@ -114,7 +114,7 @@ public class DryInputDateTimeTests
     {
         using var context = new TestContext();
         var model = new DateTimeAttributedModel { Id = 1, DateTime = "2024-8-12T19:30" };
-        var description = new ViewModelDescription(typeof(DateTimeAttributedModel), model);
+        var description = new DecoratorInfo(typeof(DateTimeAttributedModel), model);
         var property = description.FormProperties.First(e => e.Property.Name == nameof(DateTimeAttributedModel.DateTime));
 
         var fragment = context.RenderComponent<DryInputDateTime<DateTimeAttributedModel>>(

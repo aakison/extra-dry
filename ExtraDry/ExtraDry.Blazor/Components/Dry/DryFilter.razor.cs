@@ -4,7 +4,7 @@ public partial class DryFilter<TItem> : ComponentBase, IExtraDryComponent
 {
     public DryFilter()
     {
-        ViewModelDescription = new ViewModelDescription(typeof(TItem), this);
+        ViewModelDescription = new DecoratorInfo(typeof(TItem), this);
         AllFilters =
         [
             KeywordsFitlerIdentifier,
@@ -94,7 +94,7 @@ public partial class DryFilter<TItem> : ComponentBase, IExtraDryComponent
         return DisplayedFilters.Count == 0 || DisplayedFilters.Contains(name);
     }
 
-    private ViewModelDescription ViewModelDescription { get; set; }
+    private DecoratorInfo ViewModelDescription { get; set; }
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "dry-filter", CssClass);
 

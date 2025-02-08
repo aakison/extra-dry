@@ -56,16 +56,16 @@ public partial class DryForm<T> : ComponentBase, IExtraDryComponent
             Logger.LogConsoleError("DryForm requires a ViewModel");
             return;
         }
-        Description ??= new ViewModelDescription(typeof(T), ViewModel);
+        Description ??= new DecoratorInfo(typeof(T), ViewModel);
         if(Model != null) {
-            Description = new ViewModelDescription(Model.GetType(), ViewModel); // override the Description with the actual Description when we have the Model, which will account for polymorphism issues
+            Description = new DecoratorInfo(Model.GetType(), ViewModel); // override the Description with the actual Description when we have the Model, which will account for polymorphism issues
             FormDescription = new FormDescription(Description, Model);
         }
     }
 
     internal string ModelNameSlug => Slug.ToSlug(FormDescription?.ViewModelDescription?.ModelDisplayName ?? "");
 
-    internal ViewModelDescription? Description { get; set; }
+    internal DecoratorInfo? Description { get; set; }
 
     internal FormDescription? FormDescription { get; set; }
 

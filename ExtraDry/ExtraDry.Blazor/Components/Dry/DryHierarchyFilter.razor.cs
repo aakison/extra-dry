@@ -4,7 +4,7 @@ public partial class DryHierarchyFilter<TItem> : ComponentBase, IExtraDryCompone
 {
     public DryHierarchyFilter()
     {
-        ViewModelDescription = new ViewModelDescription(typeof(TItem), this);
+        ViewModelDescription = new DecoratorInfo(typeof(TItem), this);
     }
 
     /// <inheritdoc cref="IExtraDryComponent.CssClass " />
@@ -40,7 +40,7 @@ public partial class DryHierarchyFilter<TItem> : ComponentBase, IExtraDryCompone
         }
     }
 
-    private ViewModelDescription ViewModelDescription { get; set; }
+    private DecoratorInfo ViewModelDescription { get; set; }
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "dry-hierarchy-filter", CssClass);
 }
