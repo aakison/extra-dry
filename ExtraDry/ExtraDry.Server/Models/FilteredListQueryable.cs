@@ -11,7 +11,6 @@ public class FilteredListQueryable<T> : StatisticsQueryable<T>
 
     public FilteredListQueryable(IQueryable<T> queryable, FilterQuery filterQuery, Expression<Func<T, bool>>? defaultFilter)
     {
-        ForceStringComparison = (queryable as BaseQueryable<T>)?.ForceStringComparison;
         Query = filterQuery;
         FilteredQuery = ApplyKeywordFilter(queryable, filterQuery, defaultFilter);
         SortedQuery = FilteredQuery;

@@ -8,36 +8,36 @@ public class InstructionDataService
 {
     public async Task<FilteredCollection<Automobile>> ListAsync(FilterQuery query)
     {
+        query.Comparison = StringComparison.OrdinalIgnoreCase;
         return await automobiles
             .AsQueryable()
-            .ForceStringComparison(StringComparison.OrdinalIgnoreCase)
             .QueryWith(query)
             .ToFilteredCollectionAsync();
     }
 
     public async Task<FilteredCollection<Automobile>> ListAsync(SortQuery query)
     {
+        query.Comparison = StringComparison.OrdinalIgnoreCase;
         return await automobiles
             .AsQueryable()
-            .ForceStringComparison(StringComparison.OrdinalIgnoreCase)
             .QueryWith(query)
             .ToFilteredCollectionAsync();
     }
 
     public async Task<PagedCollection<Automobile>> ListAsync(PageQuery query)
     {
+        query.Comparison = StringComparison.OrdinalIgnoreCase;
         return await automobiles
             .AsQueryable()
-            .ForceStringComparison(StringComparison.OrdinalIgnoreCase)
             .QueryWith(query)
             .ToPagedCollectionAsync();
     }
 
     public async Task<Statistics<Automobile>> RetrieveStatsAsync(FilterQuery query)
     {
+        query.Comparison = StringComparison.OrdinalIgnoreCase;
         return await automobiles
             .AsQueryable()
-            .ForceStringComparison(StringComparison.OrdinalIgnoreCase)
             .QueryWith(query)
             .ToStatisticsAsync();
     }
@@ -45,9 +45,9 @@ public class InstructionDataService
     [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Service contract should be instance.")]
     public async Task<HierarchyCollection<Animal>> ListHierarchyAsync(HierarchyQuery query)
     {
+        query.Comparison = StringComparison.OrdinalIgnoreCase;
         return await Animals
             .AsQueryable()
-            .ForceStringComparison(StringComparison.OrdinalIgnoreCase)
             .QueryWith(query)
             .ToHierarchyCollectionAsync();
     }

@@ -9,4 +9,10 @@ public class FilterQuery
     /// The entity specific text filter for the collection.
     /// </summary>
     public string? Filter { get; set; }
+
+    /// <summary>
+    /// The string comparison to be used, defaults to `null` as EF database queries don't support
+    /// explicit StringComparison.
+    /// </summary>
+    public StringComparison? Comparison { get; set; }
 }

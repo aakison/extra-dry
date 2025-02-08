@@ -135,7 +135,7 @@ public class FilteredHierarchyQueryableTests
     public async Task SupportCaseInsensitiveForInstructions()
     {
         // filter to get rid of duplicate names
-        var query = new HierarchyQuery { Level = 4, Filter = "brisbane" };
+        var query = new HierarchyQuery { Level = 4, Filter = "brisbane", Comparison = StringComparison.OrdinalIgnoreCase };
         var regions = Samples.Regions;
         var slugs = new List<string> { "all", "AU", "AU-QLD", "AU-QLD-Brisbane" };
         var expected = Samples.Regions
@@ -143,7 +143,6 @@ public class FilteredHierarchyQueryableTests
             .OrderBy(e => e.Lineage);
 
         var actual = await regions.AsQueryable()
-            .ForceStringComparison(StringComparison.OrdinalIgnoreCase)
             .QueryWith(query).ToHierarchyCollectionAsync();
 
         Assert.Equal("brisbane", actual.Filter);

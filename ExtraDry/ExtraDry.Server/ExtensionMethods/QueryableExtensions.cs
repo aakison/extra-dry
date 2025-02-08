@@ -86,16 +86,6 @@ public static class QueryableExtensions
     }
 
     /// <summary>
-    /// Forces the underlying query mechanism to build string comparisons with the given comparison
-    /// type. This only works on in-memory databases and anything that executes on a remote
-    /// database will throw an exception.
-    /// </summary>
-    public static BaseQueryable<T> ForceStringComparison<T>(this IQueryable<T> source, StringComparison forceStringComparison)
-    {
-        return new BaseQueryable<T>(source, forceStringComparison);
-    }
-
-    /// <summary>
     /// Given a `FilterQuery`, dynamically constructs an expression query that applies the
     /// indicated filtering but not the indicated sorting.
     /// </summary>
@@ -104,7 +94,7 @@ public static class QueryableExtensions
     /// <param name="query">A filter query that contains filtering and sorting information.</param>
     public static IQueryable<T> Filter<T>(this IQueryable<T> source, FilterQuery query)
     {
-        return source.Filter(query.Filter);
+        return source.Filter(query.Filter, query.Comparison);
     }
 
     /// <summary>
@@ -114,7 +104,7 @@ public static class QueryableExtensions
     /// <typeparam name="T">The type of objects in the collection.</typeparam>
     /// <param name="source">The extension source</param>
     /// <param name="filter">A filter query that contains filtering information.</param>
-    public static IQueryable<T> Filter<T>(this IQueryable<T> source, string? filter)
+    public static IQueryable<T> Filter<T>(this IQueryable<T> source, string? filter, StringComparison? stringComparison = null)
     {
         if(string.IsNullOrWhiteSpace(filter)) {
             return source;
@@ -123,8 +113,7 @@ public static class QueryableExtensions
         if(description.FilterProperties.Count == 0) {
             return source;
         }
-        var comparison = (source as BaseQueryable<T>)?.ForceStringComparison;
-        return source.WhereFilterConditions([.. description.FilterProperties], filter.Trim(), comparison);
+        return source.WhereFilterConditions([.. description.FilterProperties], filter.Trim(), stringComparison);
     }
 
     /// <summary>

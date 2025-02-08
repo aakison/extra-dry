@@ -7,7 +7,7 @@ public class BaseQueryableTests
     [Fact]
     public void QueryableInterfacePublished()
     {
-        var query = new BaseQueryable<Model>(Models.AsQueryable(), StringComparison.OrdinalIgnoreCase);
+        var query = new BaseQueryable<Model>(Models.AsQueryable());
 
         Assert.NotNull(query.ElementType);
         Assert.NotNull(query.Expression);
@@ -19,7 +19,7 @@ public class BaseQueryableTests
     [Fact]
     public void QueryReturnsEverything()
     {
-        var query = new BaseQueryable<Model>(Models.AsQueryable(), StringComparison.OrdinalIgnoreCase);
+        var query = new BaseQueryable<Model>(Models.AsQueryable());
         var expected = Models.ToList();
 
         var actual = query.ToBaseCollection();
@@ -30,7 +30,7 @@ public class BaseQueryableTests
     [Fact]
     public async Task QueryReturnsEverythingAsync()
     {
-        var query = new BaseQueryable<Model>(Models.AsQueryable(), StringComparison.OrdinalIgnoreCase);
+        var query = new BaseQueryable<Model>(Models.AsQueryable());
         var expected = Models.ToList();
 
         var actual = await query.ToBaseCollectionAsync();

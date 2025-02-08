@@ -129,7 +129,7 @@ internal static class LinqBuilder
     /// `matchValues` must exist in at least one of the properties. The exact comparison function
     /// is also determined by the properties' filter attribute.
     /// </remarks>
-    public static IQueryable<T> WhereFilterConditions<T>(this IQueryable<T> source, FilterProperty[] filterProperties, string filterQuery, StringComparison? forceStringComparison = null)
+    public static IQueryable<T> WhereFilterConditions<T>(this IQueryable<T> source, FilterProperty[] filterProperties, string filterQuery, StringComparison? stringComparison = null)
     {
         var param = Expression.Parameter(typeof(T), "e");
         var terms = new List<Expression>();
@@ -140,7 +140,7 @@ internal static class LinqBuilder
                 var keywords = new List<Expression>();
                 foreach(var filterProperty in filterProperties) {
                     try {
-                        AddTerms(param, keywords, rule, filterProperty, forceStringComparison);
+                        AddTerms(param, keywords, rule, filterProperty, stringComparison);
                     }
                     catch {
                         // E.g. when "abc" is passed to an Int32, ignore when part of
@@ -163,7 +163,7 @@ internal static class LinqBuilder
                     terms.Add(AllOf(fields));
                 }
                 else {
-                    AddTerms(param, terms, rule, property, forceStringComparison);
+                    AddTerms(param, terms, rule, property, stringComparison);
                 }
             }
             else {
@@ -179,14 +179,14 @@ internal static class LinqBuilder
         return source;
     }
 
-    private static void AddTerms(ParameterExpression param, List<Expression> terms, FilterRule rule, FilterProperty property, StringComparison? forceStringComparison)
+    private static void AddTerms(ParameterExpression param, List<Expression> terms, FilterRule rule, FilterProperty property, StringComparison? stringComparison)
     {
         if(rule.Values is []) {
             throw new DryException("Filter expression for property was not provided.", $"Unable to apply filter for Property '{property.Property.Name}'. Make sure there are no spaces after '{property.Property.Name}:'  0x0F4042BE");
         }
 
         if(property.Property.PropertyType == typeof(string)) {
-            var fields = rule.Values.Select(e => StringExpression(param, property.Property, property.Filter.Type, e, forceStringComparison)).ToArray();
+            var fields = rule.Values.Select(e => StringExpression(param, property.Property, property.Filter.Type, e, stringComparison)).ToArray();
             terms.Add(AnyOf(fields));
         }
         else {
@@ -296,17 +296,17 @@ internal static class LinqBuilder
         }
     }
 
-    private static MethodCallExpression StringExpression(ParameterExpression parameter, PropertyInfo propertyInfo, FilterType filterType, string value, StringComparison? forceStringComparison)
+    private static MethodCallExpression StringExpression(ParameterExpression parameter, PropertyInfo propertyInfo, FilterType filterType, string value, StringComparison? stringComparison)
     {
         var property = Expression.Property(parameter, propertyInfo);
         var valueConstant = Expression.Constant(value);
-        if(forceStringComparison != null) {
+        if(stringComparison != null) {
             var method = filterType switch {
                 FilterType.Contains => StringContainsWithComparisonMethod,
                 FilterType.StartsWith => StringStartsWithWithComparisonMethod,
                 _ => StringEqualsWithComparisonMethod,
             };
-            var ignoreConstant = Expression.Constant(forceStringComparison);
+            var ignoreConstant = Expression.Constant(stringComparison);
             return Expression.Call(property, method, valueConstant, ignoreConstant);
         }
         else {

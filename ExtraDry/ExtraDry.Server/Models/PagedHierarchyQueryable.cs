@@ -8,7 +8,6 @@ public class PagedHierarchyQueryable<T> : FilteredHierarchyQueryable<T> where T 
     public PagedHierarchyQueryable(IQueryable<T> queryable, PageHierarchyQuery query, Expression<Func<T, bool>>? defaultFilter)
     {
         UnfilteredQuery = queryable;
-        ForceStringComparison = (queryable as BaseQueryable<T>)?.ForceStringComparison;
         Query = query;
         // Filter by level first, big performance gain.
         FilteredQuery = ApplyLevelFilter(queryable, query.Level);

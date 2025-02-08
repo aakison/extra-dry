@@ -45,7 +45,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
 
     private bool HasCommandsColumn => description.ContextCommands.Count != 0;
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", ModelClass, FilteredClass, StateClass, CssClass);
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "sortable", ModelClass, FilteredClass, StateClass, CssClass);
 
     private string ModelClass => description.ModelType?.Name?.ToLowerInvariant() ?? "";
 

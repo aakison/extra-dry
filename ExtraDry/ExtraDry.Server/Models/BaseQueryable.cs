@@ -11,9 +11,8 @@ public class BaseQueryable<T> : IQueryable<T>
     protected BaseQueryable()
     { }
 
-    public BaseQueryable(IQueryable<T> queryable, StringComparison? forceStringComparison = null)
+    public BaseQueryable(IQueryable<T> queryable)
     {
-        ForceStringComparison = forceStringComparison;
         Query = new();
         PagedQuery = SortedQuery = FilteredQuery = queryable;
     }
@@ -101,10 +100,4 @@ public class BaseQueryable<T> : IQueryable<T>
         };
     }
 
-    /// <summary>
-    /// Used for in-memory databases that are case sensitive when doing instructions page. Not
-    /// useful in general and can actually cause confusion. Consider a different mechanism that
-    /// doesn't raise this up to the end-developer level.
-    /// </summary>
-    public StringComparison? ForceStringComparison { get; protected set; }
 }
