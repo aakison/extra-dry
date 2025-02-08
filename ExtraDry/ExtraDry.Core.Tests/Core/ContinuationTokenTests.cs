@@ -1,6 +1,6 @@
-﻿using ExtraDry.Server.Internal;
+﻿using ExtraDry.Core.Parser.Internal;
 
-namespace ExtraDry.Server.Tests.Rules;
+namespace ExtraDry.Core.Tests.Rules;
 
 public class ContinuationTokenTests
 {

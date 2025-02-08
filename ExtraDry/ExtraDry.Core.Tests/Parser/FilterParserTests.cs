@@ -1,6 +1,6 @@
-﻿using ExtraDry.Server.Internal;
+﻿using ExtraDry.Core.Parser.Internal;
 
-namespace ExtraDry.Server.Tests.Internals;
+namespace ExtraDry.Core.Tests.Internals;
 
 public class FilterParserTests
 {

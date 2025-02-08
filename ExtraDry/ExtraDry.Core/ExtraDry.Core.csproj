@@ -31,10 +31,10 @@
 		<PackageReference Include="Microsoft.Extensions.Http" Version="9.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Options" Version="9.0.1" />
-	</ItemGroup>
+    <PackageReference Include="Pidgin" Version="3.3.0" />
+  </ItemGroup>
 
 	<Import Project="..\CommonAnalyzers.targets" />
-
 	<Import Project="..\VulnerabilityFixes.targets" />
 
 	<ItemGroup>

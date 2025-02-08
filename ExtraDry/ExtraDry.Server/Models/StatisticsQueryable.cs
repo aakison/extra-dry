@@ -1,4 +1,5 @@
-﻿using ExtraDry.Server.Internal;
+﻿using ExtraDry.Core.Parser.Internal;
+using ExtraDry.Server.Internal;
 
 namespace ExtraDry.Server;
 
@@ -11,7 +12,7 @@ public class StatisticsQueryable<T> : BaseQueryable<T>
             Distributions = [],
             Filter = TrimFilter(Query.Filter),
         };
-        var description = new ModelDescription(typeof(T));
+        var description = new ModelInfo(typeof(T));
 
         foreach(var statProp in description.StatisticsProperties) {
             var statsQuery = FilteredQuery
@@ -31,7 +32,7 @@ public class StatisticsQueryable<T> : BaseQueryable<T>
             Distributions = [],
             Filter = TrimFilter(Query.Filter),
         };
-        var description = new ModelDescription(typeof(T));
+        var description = new ModelInfo(typeof(T));
 
         foreach(var statProp in description.StatisticsProperties) {
             var statsQuery = FilteredQuery

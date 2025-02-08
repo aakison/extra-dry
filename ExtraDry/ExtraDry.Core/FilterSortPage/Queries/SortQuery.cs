@@ -10,4 +10,10 @@ public class SortQuery : FilterQuery
     /// '+' or '-' to order ascending or descending.
     /// </summary>
     public string? Sort { get; set; }
+
+    /// <summary>
+    /// Stabalization for the query which adds an additional property as a secondary sort. Some
+    /// providers don't support this so the default is `None`.
+    /// </summary>
+    public SortStabilization Stabilization { get; set; } = SortStabilization.None;
 }

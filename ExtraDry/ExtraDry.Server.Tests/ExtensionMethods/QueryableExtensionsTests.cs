@@ -10,7 +10,7 @@ public class QueryableExtensionsTests
             new() { Id = 3 },
             new() { Id = 2 },
         };
-        var query = new SortQuery();
+        var query = new SortQuery() { Stabilization = SortStabilization.PrimaryKey };
 
         var sorted = list.AsQueryable()
             .Sort(query)
@@ -29,7 +29,7 @@ public class QueryableExtensionsTests
             new() { ClassNameConventionKeyId = 3 },
             new() { ClassNameConventionKeyId = 2 },
         };
-        var query = new SortQuery();
+        var query = new SortQuery() { Stabilization = SortStabilization.PrimaryKey };
 
         var sorted = list.AsQueryable().Sort(query).ToList();
 
@@ -46,7 +46,7 @@ public class QueryableExtensionsTests
             new() { PrimaryKey = 3 },
             new() { PrimaryKey = 2 },
         };
-        var query = new SortQuery();
+        var query = new SortQuery() { Stabilization = SortStabilization.PrimaryKey };
 
         var sorted = list.AsQueryable().Sort(query).ToList();
 

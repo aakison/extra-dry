@@ -1,4 +1,4 @@
-﻿using ExtraDry.Server.Internal;
+﻿using ExtraDry.Core.Parser.Internal;
 
 namespace ExtraDry.Swashbuckle;
 
@@ -35,7 +35,7 @@ public class QueryDocumentationOperationFilter : IOperationFilter
             returnType = returnType.GenericTypeArguments.First();
         }
 
-        var modelDescription = new ModelDescription(returnType);
+        var modelDescription = new ModelInfo(returnType);
         if(supportsFiltering) {
             operation.Description += FilterDescription([.. modelDescription.FilterProperties]);
 
