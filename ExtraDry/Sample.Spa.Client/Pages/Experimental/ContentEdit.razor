@@ -23,6 +23,9 @@
     [Command(CommandContext.Primary, Name = "Save & Close")]
     public async Task SaveAsync()
     {
+        if(content == null) {
+            return;
+        }
         await Service.UpdateAsync(UniqueId, content);
         Navigation.NavigateTo("/contents");
     }
