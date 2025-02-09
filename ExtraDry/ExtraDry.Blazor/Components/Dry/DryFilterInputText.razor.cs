@@ -14,6 +14,18 @@ public partial class DryFilterInputText : ComponentBase, IExtraDryComponent, IDi
     [Parameter]
     public string Placeholder { get; set; } = "filter by keyword...";
 
+    [Parameter]
+    public string Icon { get; set; } = "";
+
+    [Parameter]
+    public bool ShowIcon { get; set; } = true;
+
+    [Parameter]
+    public string ResetIcon { get; set; } = "times";
+
+    [Parameter]
+    public bool ShowReset { get; set; } = false;
+
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
@@ -46,6 +58,10 @@ public partial class DryFilterInputText : ComponentBase, IExtraDryComponent, IDi
         }
     }
 
+    private bool DisplayIcon => ShowIcon && !string.IsNullOrWhiteSpace(Icon);
+
+    private bool DisplayReset => ShowReset && !string.IsNullOrWhiteSpace(ResetIcon);
+
     /// <summary>
     /// When the keyword input changes, update the PageQueryBuilder with the new keyword values.
     /// Normally a single keystroke won't trigger a change notification, but if the keywords are
@@ -59,6 +75,22 @@ public partial class DryFilterInputText : ComponentBase, IExtraDryComponent, IDi
             filterInSync = false;
             if(string.IsNullOrWhiteSpace(FreeTextFilter)) {
                 SyncPageQueryBuilder();
+            }
+        }
+    }
+
+    private async Task OnReset()
+    {
+        if(!string.IsNullOrWhiteSpace(FreeTextFilter)) {
+            FreeTextFilter = "";
+            StateHasChanged();
+            await Task.Delay(1); // let the input update
+            if(PageQueryBuilder != null) {
+                PageQueryBuilder.TextFilter.Keywords = FreeTextFilter;
+                filterInSync = false;
+                if(string.IsNullOrWhiteSpace(FreeTextFilter)) {
+                    SyncPageQueryBuilder();
+                }
             }
         }
     }

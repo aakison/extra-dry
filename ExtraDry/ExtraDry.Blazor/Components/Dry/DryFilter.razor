@@ -2,17 +2,14 @@
 @typeparam TItem
 
 <div class="@CssClasses" @attributes="@UnmatchedAttributes">
-    @if (DisplayKeywordFilter)
-    {
+    @if(DisplayKeywordFilter) {
         <DryFilterInputText Placeholder="@Placeholder" />
     }
-    @foreach (var property in DisplayedEnumFilters)
-    {
+    @foreach(var property in DisplayedEnumFilters) {
         var placeholder = string.Format(SelectPlaceholderPattern, property.ColumnCaption);
         <DryFilterEnumSelect Property="@property" FilterChanged="FilterChanged" Placeholder="@placeholder" />
     }
-    @foreach (var property in DisplayDateFilters)
-    {
+    @foreach(var property in DisplayDateFilters) {
         var placeholder = string.Format(SelectPlaceholderPattern, property.ColumnCaption);
         <DryFilterDatePicker Property="@property" Placeholder="@placeholder" />
     }
