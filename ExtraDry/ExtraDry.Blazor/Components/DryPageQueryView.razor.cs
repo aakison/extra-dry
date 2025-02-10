@@ -1,9 +1,10 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using ExtraDry.Blazor.Components.Internal;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ExtraDry.Blazor;
 
 [SuppressMessage("Usage", "DRY1500:Extra DRY Blazor components should have an interface.", Justification = "Used for cascading data, not visual component.")]
-public partial class DryPageQueryView
+public partial class DryPageQueryView : ComponentBase
 {
     [Parameter]
     public RenderFragment? ChildContent { get; set; }

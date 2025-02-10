@@ -39,8 +39,8 @@ public partial class DryButton : ComponentBase, IExtraDryComponent
     /// <summary>
     /// The optional argument for the command if the command takes one. Typically the model or
     /// models for the command are determined based on the context of the page and this is not set
-    /// directly. When unset, the active `SelectionSet` will have one or more models that will
-    /// determine the arguments for the method.
+    /// directly. When unset, the `SelectionSet` active for the Decorator will have one or more
+    /// models that will determine the arguments for the method.
     /// </summary>
     [Parameter]
     public object? Model { get; set; }
@@ -66,13 +66,13 @@ public partial class DryButton : ComponentBase, IExtraDryComponent
     public void Dispose()
     {
         GC.SuppressFinalize(this);
-        if(selection != null) {
-            selection.Changed -= SelectionChanged;
+
+        if(SelectionAccessor != null) {
+            SelectionAccessor.SelectionSet.Changed -= SelectionChanged;
         }
     }
 
-    [CascadingParameter]
-    protected SelectionSet? Selection { get; set; }
+    private SelectionSetAccessor? SelectionAccessor { get; set; }
 
     [Inject]
     protected ILogger<DryButton> Logger { get; set; } = null!;
@@ -96,14 +96,11 @@ public partial class DryButton : ComponentBase, IExtraDryComponent
         else {
             Logger.LogConsoleError("DryButton must define the command by either providing the Command parameter or both the ViewModel and the MethodName parameters.");
         }
-    }
 
-    protected override void OnInitialized()
-    {
-        if(Model is null) {
-            selection = Selection ?? SelectionSet.Lookup(ResolvedCommand?.ViewModel ?? this);
-            if(selection != null) {
-                selection.Changed += SelectionChanged;
+        if(Model is null && ResolvedCommand != null) {
+            if(SelectionAccessor is null) {
+                SelectionAccessor = new SelectionSetAccessor(ResolvedCommand.ViewModel);
+                SelectionAccessor.SelectionSet.Changed += SelectionChanged;
                 UpdateDisabled();
             }
         }
@@ -134,14 +131,14 @@ public partial class DryButton : ComponentBase, IExtraDryComponent
         if(ResolvedCommand is null) {
             SetEnabled(false);
         }
-        else if(selection is null) {
+        else if(SelectionAccessor is null) {
             SetEnabled(true);
         }
         else if(ResolvedCommand.Arguments == CommandArguments.Single) {
-            SetEnabled(selection.Single());
+            SetEnabled(SelectionAccessor.SelectionSet.Single());
         }
         else if(ResolvedCommand.Arguments == CommandArguments.Multiple) {
-            SetEnabled(selection.Any());
+            SetEnabled(SelectionAccessor.SelectionSet.Any());
         }
     }
 
@@ -154,6 +151,8 @@ public partial class DryButton : ComponentBase, IExtraDryComponent
         }
     }
 
+    private bool ResolvedEnabled => Enabled ?? !disabled;
+
     private async Task DoClick(MouseEventArgs args)
     {
         if(ResolvedCommand is null) {
@@ -162,19 +161,17 @@ public partial class DryButton : ComponentBase, IExtraDryComponent
         if(Model != null) {
             await ResolvedCommand.ExecuteAsync(Model);
         }
-        else if(ResolvedCommand.Arguments == CommandArguments.Multiple && (selection?.Any() ?? false)) {
-            await ResolvedCommand.ExecuteAsync(selection.Items);
+        else if(ResolvedCommand.Arguments == CommandArguments.Multiple && (SelectionAccessor?.SelectionSet.Any() ?? false)) {
+            await ResolvedCommand.ExecuteAsync(SelectionAccessor.SelectionSet.Items);
         }
-        else if(ResolvedCommand.Arguments == CommandArguments.Single && (selection?.Any() ?? false)) {
-            await ResolvedCommand.ExecuteAsync(selection.Items.First());
+        else if(ResolvedCommand.Arguments == CommandArguments.Single && (SelectionAccessor?.SelectionSet.Any() ?? false)) {
+            await ResolvedCommand.ExecuteAsync(SelectionAccessor.SelectionSet.Items.First());
         }
         else if(ResolvedCommand.Arguments == CommandArguments.None) {
             Console.WriteLine("No Args");
             await ResolvedCommand.ExecuteAsync();
         }
     }
-
-    private SelectionSet? selection;
 
     private bool disabled;
 }

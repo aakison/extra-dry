@@ -27,9 +27,6 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     [Parameter]
     public string? GroupColumn { get; set; }
 
-    [Parameter]
-    public SelectionSet? Selection { get; set; }
-
     /// <inheritdoc />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
@@ -60,7 +57,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
 
     private Virtualize<ListItemInfo<TItem>>? VirtualContainer { get; set; }
 
-    private SelectionSet? resolvedSelection;
+    private SelectionSetAccessor? SelectionAccessor { get; set; }
 
     private int ColumnCount => description.TableProperties.Count +
         ((HasCheckboxColumn || HasRadioColumn) ? 1 : 0) +
@@ -75,10 +72,10 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     protected override void OnParametersSet()
     {
         AssertItemsMutualExclusivity();
-        if(resolvedSelection == null) {
-            resolvedSelection = Selection ?? SelectionSet.Lookup(ViewModel) ?? SelectionSet.Register(ViewModel);
-            resolvedSelection.MultipleSelect = description.ListSelectMode == ListSelectMode.Multiple;
-            resolvedSelection.Changed += ResolvedSelection_Changed;
+        if(SelectionAccessor == null) {
+            SelectionAccessor = new SelectionSetAccessor(ViewModel);
+            SelectionAccessor.SelectionSet.MultipleSelect = description.ListSelectMode == ListSelectMode.Multiple;
+            SelectionAccessor.SelectionSet.Changed += ResolvedSelection_Changed;
         }
         if(QueryBuilder != null && !queryBuilderEventSet) {
             QueryBuilder.OnChanged += Notify_OnChanged;
@@ -170,18 +167,18 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
         InternalItems.Sort(comparer);
     }
 
-    private bool AllSelected => resolvedSelection?.All() ?? false;
+    private bool AllSelected => SelectionAccessor?.SelectionSet.All() ?? false;
 
     private void ToggleSelectAll()
     {
-        if(resolvedSelection == null) {
+        if(SelectionAccessor == null) {
             return;
         }
         if(AllSelected) {
-            resolvedSelection.Clear();
+            SelectionAccessor.SelectionSet.Clear();
         }
         else {
-            resolvedSelection.SelectAll();
+            SelectionAccessor.SelectionSet.SelectAll();
         }
     }
 
@@ -370,8 +367,9 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     public void Dispose()
     {
         GC.SuppressFinalize(this);
-        if(resolvedSelection != null) {
-            resolvedSelection.Changed -= ResolvedSelection_Changed;
+        // If table is removed but decorator remains, disconnect from events.
+        if(SelectionAccessor != null) {
+            SelectionAccessor.SelectionSet.Changed -= ResolvedSelection_Changed;
         }
         if(QueryBuilder != null && queryBuilderEventSet) {
             QueryBuilder.OnChanged -= Notify_OnChanged;

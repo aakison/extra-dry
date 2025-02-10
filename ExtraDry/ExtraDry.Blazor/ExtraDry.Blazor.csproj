@@ -4,7 +4,8 @@
 		<TargetFramework>net9.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-	</PropertyGroup>
+    <NoWarn>ENC0033;ENC0047</NoWarn>
+  </PropertyGroup>
 
 	<PropertyGroup>
 		<PackageId>ExtraDry.Blazor</PackageId>

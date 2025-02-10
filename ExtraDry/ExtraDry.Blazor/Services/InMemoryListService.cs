@@ -43,7 +43,7 @@ public class InMemoryListService<T>(
     {
         var result = items
             .AsQueryable()
-            .Where(e => filter == null ? true : filter.Invoke(e))
+            .Where(e => filter == null || filter.Invoke(e))
             .Filter(query.Filter, StringComparison.OrdinalIgnoreCase)
             .Sort(query.Sort, SortStabilization.PrimaryKey)
             .ToList();

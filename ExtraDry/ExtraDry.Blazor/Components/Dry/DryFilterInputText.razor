@@ -6,6 +6,6 @@
     }
     <InputText type="text" @bind-Value="@FreeTextFilter" placeholder="@Placeholder" @oninput="OnInput" @onfocusout="OnFocusOut" @onkeypress="OnKeyPress" />
     @if(DisplayReset) {
-        <Button Icon="@ResetIcon" @onclick="OnReset" CssClass="unobtrusive reset" />
+        <Button Icon="@ResetIcon" @onclick="OnReset" CssClass="unobtrusive reset" Caption="" />
     }
 </div>

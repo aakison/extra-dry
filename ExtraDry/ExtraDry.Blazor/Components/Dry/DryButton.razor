@@ -3,6 +3,6 @@
 
 @if(ResolvedCommand?.IsVisible() ?? false) {
     <Button CssClass="@CssClasses" Caption="@ButtonCaption" @attributes="@UnmatchedAttributes"
-        Icon="@ResolvedCommand.Icon" Affordance="@ResolvedCommand.Affordance" disabled="@disabled"
+        Icon="@ResolvedCommand.Icon" Affordance="@ResolvedCommand.Affordance" Enabled="@ResolvedEnabled"
         @onclick="DoClick" />
 }

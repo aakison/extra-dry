@@ -1,47 +1,41 @@
-﻿using ExtraDry.Blazor.Components.Internal;
+﻿using Bunit;
+using ExtraDry.Blazor.Components.Internal;
 
 namespace ExtraDry.Blazor.Tests.Internals;
 
 public class SelectionSetStaticTests
 {
-    [Theory]
-    [InlineData("")]
-    public void NullOnMissingDataLookup(string key)
-    {
-        var set = SelectionSet.Lookup(key);
 
-        Assert.Null(set);
+    [Fact]
+    public void AccessorHasSelectionSet()
+    {
+        var key1 = new object();
+        
+        var accessor = new SelectionSetAccessor(key1);
+
+        Assert.NotNull(accessor.SelectionSet);
     }
 
     [Fact]
-    public void ReturnRegistered()
+    public void DifferentKeysAreDifferentSelectionSets()
     {
         var key1 = new object();
         var key2 = new object();
 
-        SelectionSet.Register(key1);
-        SelectionSet.Register(key2);
-        var set1 = SelectionSet.Lookup(key1);
-        var set2 = SelectionSet.Lookup(key2);
-        var set3 = SelectionSet.Lookup(key1);
+        var accessor1 = new SelectionSetAccessor(key1);
+        var accessor2 = new SelectionSetAccessor(key2);
 
-        Assert.NotNull(set1);
-        Assert.NotNull(set2);
-        Assert.NotEqual(set1, set2);
-        Assert.Equal(set1, set3);
+        Assert.NotEqual(accessor1.SelectionSet, accessor2.SelectionSet);
     }
 
     [Fact]
-    public void NullAfterDeregister()
+    public void SameKeyAreSameSelectionSet()
     {
-        var key1 = new object();
-        var key2 = new object();
-        SelectionSet.Register(key1);
-        SelectionSet.Register(key2);
+        var key = new object();
 
-        SelectionSet.Deregister(key1);
-        var set1 = SelectionSet.Lookup(key1);
+        var accessor1 = new SelectionSetAccessor(key);
+        var accessor2 = new SelectionSetAccessor(key);
 
-        Assert.Null(set1);
+        Assert.Equal(accessor1.SelectionSet, accessor2.SelectionSet);
     }
 }
