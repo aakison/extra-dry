@@ -131,4 +131,6 @@ public partial class DryFilterInputText : ComponentBase, IExtraDryComponent, IDi
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "dry-field-filter", "filter-text", "keywords", CssClass);
 
     private bool filterInSync = true;
+
+    private string FakeName { get; } = $"no-autocomplete-{Guid.NewGuid()}";
 }

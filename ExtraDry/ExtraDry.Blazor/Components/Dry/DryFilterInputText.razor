@@ -4,7 +4,7 @@
     @if(DisplayIcon) {
         <Icon Key="@Icon" CssClass="icon" />
     }
-    <InputText type="text" @bind-Value="@FreeTextFilter" placeholder="@Placeholder" @oninput="OnInput" @onfocusout="OnFocusOut" @onkeypress="OnKeyPress" />
+    <InputText type="text" Name="@FakeName" @bind-Value="@FreeTextFilter" placeholder="@Placeholder" @oninput="OnInput" @onfocusout="OnFocusOut" @onkeypress="OnKeyPress" />
     @if(DisplayReset) {
         <Button Icon="@ResetIcon" @onclick="OnReset" CssClass="unobtrusive reset" Caption="" />
     }
