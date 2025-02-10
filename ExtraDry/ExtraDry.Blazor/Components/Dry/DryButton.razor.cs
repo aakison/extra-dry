@@ -39,8 +39,8 @@ public partial class DryButton : ComponentBase, IExtraDryComponent
     /// <summary>
     /// The optional argument for the command if the command takes one. Typically the model or
     /// models for the command are determined based on the context of the page and this is not set
-    /// directly. When unset, the active `SelectionSet` will have one or models that will determine
-    /// the arguments for the method.
+    /// directly. When unset, the active `SelectionSet` will have one or more models that will
+    /// determine the arguments for the method.
     /// </summary>
     [Parameter]
     public object? Model { get; set; }

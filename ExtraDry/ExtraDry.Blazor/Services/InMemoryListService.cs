@@ -4,7 +4,8 @@ using ExtraDry.Core;
 namespace ExtraDry.Blazor;
 
 public class InMemoryListService<T>(
-    IList<T> items)
+    IList<T> items,
+    Func<T, bool>? filter = null)
     : IListService<T>
 {
     /// <inheritdoc />
@@ -42,6 +43,7 @@ public class InMemoryListService<T>(
     {
         var result = items
             .AsQueryable()
+            .Where(e => filter == null ? true : filter.Invoke(e))
             .Filter(query.Filter, StringComparison.OrdinalIgnoreCase)
             .Sort(query.Sort, SortStabilization.PrimaryKey)
             .ToList();
