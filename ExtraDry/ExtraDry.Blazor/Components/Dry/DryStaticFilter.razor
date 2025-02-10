@@ -7,16 +7,19 @@
     [Parameter]
     public int? InitialHierarchyLevel { get; set; }
 
-    /// <inheritdoc cref="DryPageQueryView.PageQueryBuilder" />
-    [CascadingParameter]
-    public QueryBuilder? QueryBuilder { get; set; }
+    [Parameter, EditorRequired]
+    public object Decorator { get; set; } = null!;
+
+    private QueryBuilderAccessor? QueryBuilderAccessor { get; set; }
 
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        if (InitialHierarchyLevel.HasValue)
-        {
-            QueryBuilder?.Level.SetInitialLevel(InitialHierarchyLevel.Value);
+        if(QueryBuilderAccessor == null) {
+            QueryBuilderAccessor = new QueryBuilderAccessor(Decorator);
+        }
+        if(InitialHierarchyLevel.HasValue) {
+            QueryBuilderAccessor.QueryBuilder.Level.SetInitialLevel(InitialHierarchyLevel.Value);
         }
     }
 }

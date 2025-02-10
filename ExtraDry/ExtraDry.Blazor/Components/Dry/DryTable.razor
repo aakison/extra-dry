@@ -21,25 +21,26 @@
           }
         </colgroup>
         <thead>
-          <tr>
-            @if(HasCheckboxColumn) {
-              <th class="checkbox"><input type="checkbox" checked="@AllSelected" @onclick="@(() => ToggleSelectAll())" /></th>
-            }
-            @if(HasRadioColumn) {
-              <th class="radio"></th>
-            }
-            @foreach(var column in description.TableProperties) {
-                    var direction = QueryBuilder.Sort.Ascending ? "ascending" : "descending";
-                    var sortClasses = column.Property.Name == QueryBuilder.Sort.SortProperty ? $"sort {direction}" : "";
-              <th class="@column.DisplayClass @sortClasses" @onclick="@(e => SortBy(column))">
-                <span>@column.ColumnCaption</span>
-                <sup class="@sortClasses"></sup>
-              </th>
-            }
-            @if(HasCommandsColumn) {
-              <th class="commands"></th>
-            }
-          </tr>
+            <tr>
+                @if(HasCheckboxColumn) {
+                    <th class="checkbox"><input type="checkbox" checked="@AllSelected" @onclick="@(() => ToggleSelectAll())" /></th>
+                }
+                @if(HasRadioColumn) {
+                    <th class="radio"></th>
+                }
+                @foreach(var column in description.TableProperties) {
+                    var builder = QueryBuilderAccessor?.QueryBuilder;
+                    var direction = builder?.Sort.Ascending ?? true ? "ascending" : "descending";
+                    var sortClasses = column.Property.Name == builder?.Sort.SortProperty ? $"sort {direction}" : "";
+                    <th class="@column.DisplayClass @sortClasses" @onclick="@(e => SortBy(column))">
+                        <span>@column.ColumnCaption</span>
+                        <sup class="@sortClasses"></sup>
+                    </th>
+                }
+                @if(HasCommandsColumn) {
+                    <th class="commands"></th>
+                }
+            </tr>
         </thead>
         <tbody>
           <Virtualize ItemsProvider="GetItemsAsync" ItemSize="45" @ref="VirtualContainer">

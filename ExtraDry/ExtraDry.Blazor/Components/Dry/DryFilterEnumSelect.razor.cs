@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Blazor;
+﻿using ExtraDry.Blazor.Components.Internal;
+
+namespace ExtraDry.Blazor;
 
 /// <summary>
 /// A filter component used by the DryFilter to a drop-down dialog that presents filter options for
@@ -9,24 +11,25 @@ public partial class DryFilterEnumSelect : ComponentBase, IExtraDryComponent, ID
     /// <summary>
     /// The property that is used to present the options for the enum select.
     /// </summary>
-    [Parameter]
-    public PropertyDescription? Property { get; set; }
+    [Parameter, EditorRequired]
+    public PropertyDescription Property { get; set; } = null!;
 
     /// <inheritdoc cref="IExtraDryComponent.CssClass" />
     [Parameter]
-    public string CssClass { get; set; } = string.Empty;
+    public string CssClass { get; set; } = "";
 
     /// <inheritdoc cref="FlexiSelect{TItem}.Placeholder" />
     [Parameter]
     public string Placeholder { get; set; } = "Select...";
 
+    [Parameter, EditorRequired]
+    public object Decorator { get; set; } = null!;
+
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
-    /// <inheritdoc cref="DryPageQueryView.PageQueryBuilder" />
-    [CascadingParameter]
-    public QueryBuilder? PageQueryBuilder { get; set; }
+    private QueryBuilderAccessor? QueryBuilderAccessor { get; set; }
 
     /// <summary>
     /// When parameters are set, check if the PageQuery has a filter that matches our property by
@@ -35,21 +38,22 @@ public partial class DryFilterEnumSelect : ComponentBase, IExtraDryComponent, ID
     /// <remarks>Multiple filters mapped to the same PageQuery are not supported.</remarks>
     protected override void OnParametersSet()
     {
-        if(Property != null && PageQueryBuilder != null) {
-            Filter = PageQueryBuilder.Filters
-                .FirstOrDefault(e => string.Equals(e.FilterName, Property.Property.Name, StringComparison.OrdinalIgnoreCase))
-                as EnumFilterBuilder;
-            if(Filter == null) {
-                Filter = new EnumFilterBuilder { FilterName = Property.Property.Name };
-                PageQueryBuilder.Filters.Add(Filter);
-            }
-            else {
-                //There is an existing filter, check if we need to sync the FilterSelect Values
-                SyncValues();
-            }
-            EnumValues = Property.GetDiscreteValues();
-            PageQueryBuilder.OnChanged += PageQueryBuilder_OnChanged;
+        if(QueryBuilderAccessor == null) {
+            QueryBuilderAccessor = new QueryBuilderAccessor(Decorator);
+            QueryBuilderAccessor.QueryBuilder.OnChanged += PageQueryBuilder_OnChanged;
         }
+        Filter = QueryBuilderAccessor.QueryBuilder.Filters
+            .FirstOrDefault(e => string.Equals(e.FilterName, Property.Property.Name, StringComparison.OrdinalIgnoreCase))
+            as EnumFilterBuilder;
+        if(Filter == null) {
+            Filter = new EnumFilterBuilder { FilterName = Property.Property.Name };
+            QueryBuilderAccessor.QueryBuilder.Filters.Add(Filter);
+        }
+        else {
+            //There is an existing filter, check if we need to sync the FilterSelect Values
+            SyncValues();
+        }
+        EnumValues = Property.GetDiscreteValues();
     }
 
     private void PageQueryBuilder_OnChanged(object? sender, EventArgs e)
@@ -104,8 +108,9 @@ public partial class DryFilterEnumSelect : ComponentBase, IExtraDryComponent, ID
     public void Dispose()
     {
         GC.SuppressFinalize(this);
-        if(PageQueryBuilder != null) {
-            PageQueryBuilder.OnChanged -= PageQueryBuilder_OnChanged;
+        if(QueryBuilderAccessor != null) {
+            QueryBuilderAccessor.QueryBuilder.OnChanged -= PageQueryBuilder_OnChanged;
+            QueryBuilderAccessor = null;
         }
     }
 
@@ -116,7 +121,7 @@ public partial class DryFilterEnumSelect : ComponentBase, IExtraDryComponent, ID
             Filter?.Values?.AddRange(Values.Select(e => e.Title));
         }
         filterInSync = false;
-        PageQueryBuilder?.NotifyChanged();
+        QueryBuilderAccessor?.QueryBuilder.NotifyChanged();
         filterInSync = true;
         return Task.CompletedTask;
     }

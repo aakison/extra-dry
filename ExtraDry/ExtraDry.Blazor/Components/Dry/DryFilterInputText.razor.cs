@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Blazor;
+﻿using ExtraDry.Blazor.Components.Internal;
+
+namespace ExtraDry.Blazor;
 
 /// <summary>
 /// A filter component used by the DryFilter to display text input that is passed directly to the
@@ -26,26 +28,28 @@ public partial class DryFilterInputText : ComponentBase, IExtraDryComponent, IDi
     [Parameter]
     public bool ShowReset { get; set; } = false;
 
+    [Parameter, EditorRequired]
+    public object Decorator { get; set; } = null!;
+
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
-    /// <inheritdoc cref="DryPageQueryView.PageQueryBuilder" />
-    [CascadingParameter]
-    internal QueryBuilder? PageQueryBuilder { get; set; }
+    private QueryBuilderAccessor? QueryBuilderAccessor { get; set; }
 
     protected override void OnParametersSet()
     {
-        if(PageQueryBuilder != null) {
-            PageQueryBuilder.OnChanged += PageQueryBuilder_OnChanged;
+        if(QueryBuilderAccessor == null) {
+            QueryBuilderAccessor = new QueryBuilderAccessor(Decorator);
+            QueryBuilderAccessor.QueryBuilder.OnChanged += PageQueryBuilder_OnChanged;
         }
     }
 
     private void PageQueryBuilder_OnChanged(object? sender, EventArgs e)
     {
-        if(filterInSync && FreeTextFilter != PageQueryBuilder!.TextFilter.Keywords) {
+        if(filterInSync && FreeTextFilter != QueryBuilderAccessor?.QueryBuilder.TextFilter.Keywords) {
             // component thinks everything sync'd up, but changes made, must be by someone else...
-            FreeTextFilter = PageQueryBuilder!.TextFilter.Keywords;
+            FreeTextFilter = QueryBuilderAccessor?.QueryBuilder.TextFilter.Keywords ?? "";
             StateHasChanged();
         }
     }
@@ -53,8 +57,9 @@ public partial class DryFilterInputText : ComponentBase, IExtraDryComponent, IDi
     public void Dispose()
     {
         GC.SuppressFinalize(this);
-        if(PageQueryBuilder != null) {
-            PageQueryBuilder.OnChanged -= PageQueryBuilder_OnChanged;
+        if(QueryBuilderAccessor != null) {
+            QueryBuilderAccessor.QueryBuilder.OnChanged -= PageQueryBuilder_OnChanged;
+            QueryBuilderAccessor = null;
         }
     }
 
@@ -69,9 +74,9 @@ public partial class DryFilterInputText : ComponentBase, IExtraDryComponent, IDi
     /// </summary>
     private void OnInput(ChangeEventArgs args)
     {
-        if(PageQueryBuilder != null) {
+        if(QueryBuilderAccessor?.QueryBuilder != null) {
             FreeTextFilter = $"{args.Value}";
-            PageQueryBuilder.TextFilter.Keywords = FreeTextFilter;
+            QueryBuilderAccessor.QueryBuilder.TextFilter.Keywords = FreeTextFilter;
             filterInSync = false;
             if(string.IsNullOrWhiteSpace(FreeTextFilter)) {
                 SyncPageQueryBuilder();
@@ -85,8 +90,8 @@ public partial class DryFilterInputText : ComponentBase, IExtraDryComponent, IDi
             FreeTextFilter = "";
             StateHasChanged();
             await Task.Delay(1); // let the input update
-            if(PageQueryBuilder != null) {
-                PageQueryBuilder.TextFilter.Keywords = FreeTextFilter;
+            if(QueryBuilderAccessor?.QueryBuilder != null) {
+                QueryBuilderAccessor.QueryBuilder.TextFilter.Keywords = FreeTextFilter;
                 filterInSync = false;
                 if(string.IsNullOrWhiteSpace(FreeTextFilter)) {
                     SyncPageQueryBuilder();
@@ -116,7 +121,7 @@ public partial class DryFilterInputText : ComponentBase, IExtraDryComponent, IDi
     private void SyncPageQueryBuilder()
     {
         if(!filterInSync) {
-            PageQueryBuilder?.NotifyChanged();
+            QueryBuilderAccessor?.QueryBuilder.NotifyChanged();
             filterInSync = true;
         }
     }

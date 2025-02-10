@@ -6,11 +6,9 @@
 <h1>Companies</h1>
 
 <DryErrorBoundary>
-    <DryPageQueryView @ref=QueryView>
-        @*<TableMenu TItem="Company" />*@
-        <DryFilter TItem="Company" Affordance="" Icon="theme" ShowPreview="false" />
-        <DryTable TItem="Company" ViewModel="@this" ItemsService="@CompanyListService" @ref="companyTable" />
-    </DryPageQueryView>
+    @*<TableMenu TItem="Company" />*@
+    <DryFilter TItem="Company" Decorator="@this" Affordance="" Icon="theme" ShowPreview="false" />
+    <DryTable TItem="Company" ViewModel="@this" ItemsService="@CompanyListService" @ref="companyTable" />
 </DryErrorBoundary>
 
 @code {
@@ -32,17 +30,15 @@
         Navigation.NavigateTo(NavLink(company)?.Href ?? string.Empty);
     }
 
-    private DryPageQueryView QueryView { get; set; } = default!;
-
-    protected override void OnAfterRender(bool firstRender)
-    {
-        if (AppViewModel.Filter != null && QueryView != null)
-        {
-            QueryView.PageQueryBuilder.ParseFilters(AppViewModel.Filter);
-            AppViewModel.Filter = null;
-        }
-        base.OnAfterRender(firstRender);
-    }
+    // protected override void OnAfterRender(bool firstRender)
+    // {
+    //     if (AppViewModel.Filter != null && QueryView != null)
+    //     {
+    //         QueryView.PageQueryBuilder.ParseFilters(AppViewModel.Filter);
+    //         AppViewModel.Filter = null;
+    //     }
+    //     base.OnAfterRender(firstRender);
+    // }
 
     private async Task CompanyStateHasChanged(Guid uuid)
     {

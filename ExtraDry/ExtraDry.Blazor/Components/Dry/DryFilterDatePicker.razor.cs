@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Blazor;
+﻿using ExtraDry.Blazor.Components.Internal;
+
+namespace ExtraDry.Blazor;
 
 /// <summary>
 /// A filter component used by the DryFilter to provide a drop-down dialog that presents filtering
@@ -11,6 +13,7 @@
 public partial class DryFilterDatePicker : ComponentBase, IExtraDryComponent, IDisposable
 {
     /// <inheritdoc cref="IExtraDryComponent.CssClass" />
+    [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
@@ -20,8 +23,8 @@ public partial class DryFilterDatePicker : ComponentBase, IExtraDryComponent, ID
     /// <summary>
     /// The property that the filter is being applied to.
     /// </summary>
-    [Parameter]
-    public PropertyDescription? Property { get; set; }
+    [Parameter, EditorRequired]
+    public PropertyDescription Property { get; set; } = null!;
 
     /// <inheritdoc cref="IComments.Placeholder" />
     [Parameter]
@@ -37,9 +40,10 @@ public partial class DryFilterDatePicker : ComponentBase, IExtraDryComponent, ID
     [Parameter]
     public string NextAffordance { get; set; } = "forward";
 
-    /// <inheritdoc cref="DryPageQueryView.PageQueryBuilder" />
-    [CascadingParameter]
-    public QueryBuilder? QueryBuilder { get; set; }
+    [Parameter, EditorRequired]
+    public object Decorator { get; set; } = null!;
+
+    private QueryBuilderAccessor? QueryBuilderAccessor { get; set; }
 
     [Inject]
     private ILogger<DryFilterDatePicker> Logger { get; set; } = null!;
@@ -85,21 +89,19 @@ public partial class DryFilterDatePicker : ComponentBase, IExtraDryComponent, ID
     /// <remarks>Multiple filters mapped to the same PageQuery are not supported.</remarks>
     protected override void OnParametersSet()
     {
-        if(Property != null && QueryBuilder != null) {
-            Filter = QueryBuilder.Filters
-                .FirstOrDefault(e => string.Equals(e.FilterName, Property.Property.Name, StringComparison.OrdinalIgnoreCase))
-                as DateTimeFilterBuilder;
-            if(Filter == null) {
-                Filter = new DateTimeFilterBuilder { FilterName = Property.Property.Name };
-                QueryBuilder.Filters.Add(Filter);
-            }
-            else {
-                SyncValues();
-            }
-            if(!queryBuilderEventSet) {
-                QueryBuilder.OnChanged += QueryBuilder_OnChanged;
-                queryBuilderEventSet = true;
-            }
+        if(QueryBuilderAccessor == null) {
+            QueryBuilderAccessor = new QueryBuilderAccessor(Decorator);
+            QueryBuilderAccessor.QueryBuilder.OnChanged += QueryBuilder_OnChanged;
+        }
+        Filter = QueryBuilderAccessor.QueryBuilder.Filters
+            .FirstOrDefault(e => string.Equals(e.FilterName, Property.Property.Name, StringComparison.OrdinalIgnoreCase))
+            as DateTimeFilterBuilder;
+        if(Filter == null) {
+            Filter = new DateTimeFilterBuilder { FilterName = Property.Property.Name };
+            QueryBuilderAccessor.QueryBuilder.Filters.Add(Filter);
+        }
+        else {
+            SyncValues();
         }
     }
 
@@ -157,7 +159,7 @@ public partial class DryFilterDatePicker : ComponentBase, IExtraDryComponent, ID
 
     private Task SyncWithPageQuery()
     {
-        if(QueryBuilder != null && Filter != null) {
+        if(Filter != null) {
             if(Selected == null) {
                 Filter.Reset();
             }
@@ -167,7 +169,7 @@ public partial class DryFilterDatePicker : ComponentBase, IExtraDryComponent, ID
             }
 
             filterInSync = false;
-            QueryBuilder?.NotifyChanged();
+            QueryBuilderAccessor?.QueryBuilder.NotifyChanged();
             filterInSync = true;
         }
         return Task.CompletedTask;
@@ -189,8 +191,9 @@ public partial class DryFilterDatePicker : ComponentBase, IExtraDryComponent, ID
     public void Dispose()
     {
         GC.SuppressFinalize(this);
-        if(QueryBuilder != null && queryBuilderEventSet) {
-            QueryBuilder.OnChanged -= QueryBuilder_OnChanged;
+        if(QueryBuilderAccessor != null) {
+            QueryBuilderAccessor.QueryBuilder.OnChanged -= QueryBuilder_OnChanged;
+            QueryBuilderAccessor = null;
         }
     }
 
@@ -198,7 +201,6 @@ public partial class DryFilterDatePicker : ComponentBase, IExtraDryComponent, ID
 
     private bool filterInSync = true;
 
-    private bool queryBuilderEventSet;
 
     private struct TimeIntervalGroup
     {

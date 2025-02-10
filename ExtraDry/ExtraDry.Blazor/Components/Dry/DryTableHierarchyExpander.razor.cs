@@ -19,13 +19,11 @@ public partial class DryTableHierarchyExpander<TItem> : ComponentBase, IExtraDry
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
-    /// <inheritdoc cref="DryPageQueryView.PageQueryBuilder" />
-    [CascadingParameter]
-    public QueryBuilder? QueryBuilder { get; set; }
+    private QueryBuilderAccessor? QueryBuilderAccessor { get; set; }
 
     private void DoFiltersExpandCollapse(MouseEventArgs _)
     {
-        if(QueryBuilder == null || Item.Item == null) {
+        if(QueryBuilderAccessor == null || Item.Item == null) {
             return;
         }
         if(Item.Item is not IHierarchyEntity item) {
@@ -34,14 +32,14 @@ public partial class DryTableHierarchyExpander<TItem> : ComponentBase, IExtraDry
         var slug = item.Slug;
         if(Item.IsGroup) {
             if(Item.IsExpanded) {
-                QueryBuilder.Hierarchy.Collapse(slug);
+                QueryBuilderAccessor.QueryBuilder.Hierarchy.Collapse(slug);
                 Item.IsExpanded = false;
             }
             else {
-                QueryBuilder.Hierarchy.Expand(slug);
+                QueryBuilderAccessor.QueryBuilder.Hierarchy.Expand(slug);
                 Item.IsExpanded = true;
             }
-            QueryBuilder.NotifyChanged();
+            QueryBuilderAccessor.QueryBuilder.NotifyChanged();
         }
     }
 

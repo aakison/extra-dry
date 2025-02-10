@@ -8,7 +8,7 @@
 public class QueryBuilder
 {
     /// <inheritdoc cref="QueryBuilder" />
-    public QueryBuilder()
+    internal QueryBuilder()
     {
         TextFilter = new TextFilterBuilder() { FilterName = "Keywords" };
         Filters.Add(TextFilter);

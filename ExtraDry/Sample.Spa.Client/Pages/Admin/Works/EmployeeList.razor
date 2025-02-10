@@ -4,11 +4,9 @@
 <h1>Employees</h1>
 
 <DryErrorBoundary>
-    <DryPageQueryView>
-        @*<TableMenu TItem="Employee" />*@
-        <DryFilter TItem="Employee" Affordance="" Icon="theme" ShowPreview="false" />
-        <DryTable TItem="Employee" ViewModel="@this" ItemsService="@EmployeeService" />
-    </DryPageQueryView>
+    @*<TableMenu TItem="Employee" />*@
+    <DryFilter TItem="Employee" Decorator="@this" Affordance="" Icon="theme" ShowPreview="false" />
+    <DryTable TItem="Employee" ViewModel="@this" ItemsService="@EmployeeService" />
 </DryErrorBoundary>
 
 @code {

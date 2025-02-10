@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Blazor;
+﻿using ExtraDry.Blazor.Components.Internal;
+
+namespace ExtraDry.Blazor;
 
 public partial class DryHierarchyFilter<TItem> : ComponentBase, IExtraDryComponent
 {
@@ -22,21 +24,19 @@ public partial class DryHierarchyFilter<TItem> : ComponentBase, IExtraDryCompone
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
-    /// <inheritdoc cref="DryPageQueryView.PageQueryBuilder" />
-    [CascadingParameter]
-    public QueryBuilder? QueryBuilder { get; set; }
+    private QueryBuilderAccessor? QueryBuilderAccessor { get; set; }
 
     protected void DoFiltersExpand(MouseEventArgs _)
     {
-        if(QueryBuilder?.Level?.Expand() ?? false) {
-            QueryBuilder.NotifyChanged();
+        if(QueryBuilderAccessor?.QueryBuilder.Level.Expand() ?? false) {
+            QueryBuilderAccessor.QueryBuilder.NotifyChanged();
         }
     }
 
     protected void DoFiltersCollapse(MouseEventArgs _)
     {
-        if(QueryBuilder?.Level?.Collapse() ?? false) {
-            QueryBuilder.NotifyChanged();
+        if(QueryBuilderAccessor?.QueryBuilder.Level.Collapse() ?? false) {
+            QueryBuilderAccessor.QueryBuilder.NotifyChanged();
         }
     }
 

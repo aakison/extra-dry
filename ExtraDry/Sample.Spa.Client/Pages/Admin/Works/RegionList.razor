@@ -1,11 +1,9 @@
 ﻿@inject IListService<Region> RegionService;
 @inject NavigationManager Navigation;
 
-<DryPageQueryView>
-    <TableMenu TItem="Region" />
-    <DryHierarchyFilter TItem="Region" />
-    <DryTable TItem="Region" ViewModel="@this" ItemsService="@RegionService" GroupColumn="Slug" />
-</DryPageQueryView>
+<TableMenu TItem="Region" />
+<DryHierarchyFilter TItem="Region" />
+<DryTable TItem="Region" ViewModel="@this" ItemsService="@RegionService" GroupColumn="Slug" />
 
 @code {
 

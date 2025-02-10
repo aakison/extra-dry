@@ -1,3 +1,5 @@
+using ExtraDry.Blazor.Components.Internal;
+
 namespace ExtraDry.Blazor;
 
 public partial class DryFilter<TItem> : ComponentBase, IExtraDryComponent
@@ -35,6 +37,9 @@ public partial class DryFilter<TItem> : ComponentBase, IExtraDryComponent
     [Parameter]
     public string Placeholder { get; set; } = "filter by keyword...";
 
+    [Parameter, EditorRequired]
+    public object Decorator { get; set; } = null!;
+
     /// <summary>
     /// The optional content that is displayed alongside the filter. This is useful to augment the
     /// filter with additional controls that are rendered inside the filter dialog.
@@ -57,9 +62,14 @@ public partial class DryFilter<TItem> : ComponentBase, IExtraDryComponent
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
-    /// <inheritdoc cref="DryPageQueryView.PageQueryBuilder" />
-    [CascadingParameter]
-    public QueryBuilder? PageQueryBuilder { get; set; }
+    private QueryBuilderAccessor? QueryBuilderAccessor { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if(QueryBuilderAccessor == null) {
+            QueryBuilderAccessor = new QueryBuilderAccessor(Decorator);
+        }
+    }
 
     protected void DoFiltersSubmit(DialogEventArgs _)
     {
@@ -73,7 +83,7 @@ public partial class DryFilter<TItem> : ComponentBase, IExtraDryComponent
 
     private void DoFiltersReset(MouseEventArgs _)
     {
-        PageQueryBuilder?.Reset();
+        QueryBuilderAccessor?.QueryBuilder.Reset();
     }
 
     private List<string> AllFilters { get; }

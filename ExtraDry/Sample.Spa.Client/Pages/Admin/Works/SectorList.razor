@@ -2,10 +2,8 @@
 @inject CrudService<Sector> SectorCrudService;
 @inject NavigationManager Navigation;
 
-<DryPageQueryView>
-    <TableMenu TItem="Sector" />
-    <DryTable TItem="Sector" ViewModel="@this" ItemsService="@SectorService" @ref="SectorTable" />
-</DryPageQueryView>
+<TableMenu TItem="Sector" />
+<DryTable TItem="Sector" ViewModel="@this" ItemsService="@SectorService" @ref="SectorTable" />
 
 @code {
 

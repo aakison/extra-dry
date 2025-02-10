@@ -9,7 +9,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
-    [Parameter]
+    [Parameter, EditorRequired]
     public object ViewModel { get; set; } = null!; // If not overridden, set to this in OnInitialized.
 
     [Parameter]
@@ -18,14 +18,13 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     [Parameter]
     public IListService<TItem>? ItemsService { get; set; }
 
-    [CascadingParameter]
-    internal QueryBuilder QueryBuilder { get; set; } = new QueryBuilder();
-
     [Parameter]
     public Func<TItem, TItem>? GroupFunc { get; set; }
 
     [Parameter]
     public string? GroupColumn { get; set; }
+
+    private QueryBuilderAccessor? QueryBuilderAccessor { get; set; }
 
     /// <inheritdoc />
     [Parameter(CaptureUnmatchedValues = true)]
@@ -46,7 +45,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
 
     private string ModelClass => description.ModelType?.Name?.ToLowerInvariant() ?? "";
 
-    private string FilteredClass => string.IsNullOrWhiteSpace(QueryBuilder?.Build()?.Filter) ? "unfiltered" : "filtered";
+    private string FilteredClass => string.IsNullOrWhiteSpace(QueryBuilderAccessor?.QueryBuilder.Build().Filter) ? "unfiltered" : "filtered";
 
     private string StateClass =>
         InternalItems.Any() ? "full"
@@ -77,9 +76,9 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
             SelectionAccessor.SelectionSet.MultipleSelect = description.ListSelectMode == ListSelectMode.Multiple;
             SelectionAccessor.SelectionSet.Changed += ResolvedSelection_Changed;
         }
-        if(QueryBuilder != null && !queryBuilderEventSet) {
-            QueryBuilder.OnChanged += Notify_OnChanged;
-            queryBuilderEventSet = true;
+        if(QueryBuilderAccessor == null) {
+            QueryBuilderAccessor = new QueryBuilderAccessor(ViewModel);
+            QueryBuilderAccessor.QueryBuilder.OnChanged += Notify_OnChanged;
         }
     }
 
@@ -115,12 +114,12 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     private void PerformInitialSort()
     {
         CalculateGroupDepth();
-        if(!string.IsNullOrWhiteSpace(QueryBuilder.Sort.SortProperty)) {
-            var property = description.TableProperties.FirstOrDefault(e => string.Equals(e.Property.Name, QueryBuilder.Sort.SortProperty, StringComparison.OrdinalIgnoreCase));
+        if(!string.IsNullOrWhiteSpace(QueryBuilderAccessor?.QueryBuilder.Sort.SortProperty)) {
+            var property = description.TableProperties.FirstOrDefault(e => string.Equals(e.Property.Name, QueryBuilderAccessor.QueryBuilder.Sort.SortProperty, StringComparison.OrdinalIgnoreCase));
             if(property == null) {
-                QueryBuilder.Sort.SortProperty = "";
+                QueryBuilderAccessor.QueryBuilder.Sort.SortProperty = "";
             }
-            else if(QueryBuilder.Sort.SortProperty != property.Property.Name) {
+            else if(QueryBuilderAccessor.QueryBuilder.Sort.SortProperty != property.Property.Name) {
                 SortBy(property, false);
                 StateHasChanged();
             }
@@ -186,31 +185,31 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
 
     private void SortBy(PropertyDescription property, bool reverseOrder = true)
     {
-        if(IsHierarchyList || property.Sort?.Type == SortType.NotSortable) {
+        if(QueryBuilderAccessor == null || IsHierarchyList || property.Sort?.Type == SortType.NotSortable) {
             return;
         }
 
         var sort = property.Property.Name;
-        if(sort == QueryBuilder.Sort.SortProperty) {
+        if(sort == QueryBuilderAccessor.QueryBuilder.Sort.SortProperty) {
             if(reverseOrder) {
-                QueryBuilder.Sort.Ascending = !QueryBuilder.Sort.Ascending;
+                QueryBuilderAccessor.QueryBuilder.Sort.Ascending = !QueryBuilderAccessor.QueryBuilder.Sort.Ascending;
             }
         }
         else {
-            QueryBuilder.Sort.SortProperty = property.Property.Name;
-            QueryBuilder.Sort.Ascending = true;
+            QueryBuilderAccessor.QueryBuilder.Sort.SortProperty = property.Property.Name;
+            QueryBuilderAccessor.QueryBuilder.Sort.Ascending = true;
         }
 
         if(Items != null) {
             // Client side sort, we've got all items.
-            IComparer<ListItemInfo<TItem>> comparer = new ItemComparer<TItem>(property, QueryBuilder.Sort.Ascending);
+            IComparer<ListItemInfo<TItem>> comparer = new ItemComparer<TItem>(property, QueryBuilderAccessor.QueryBuilder.Sort.Ascending);
             if(GroupFunc != null) {
                 comparer = new GroupComparer<TItem>(comparer);
             }
             InternalItems.Sort(comparer);
         }
         else {
-            QueryBuilder.NotifyChanged();
+            QueryBuilderAccessor.QueryBuilder.NotifyChanged();
         }
     }
 
@@ -264,22 +263,23 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
 
     private async ValueTask<ItemsProviderResult<ListItemInfo<TItem>>> GetItemsAsync(ItemsProviderRequest request)
     {
-        if(ItemsService == null) {
+        if(ItemsService == null || QueryBuilderAccessor == null) {
             return new ItemsProviderResult<ListItemInfo<TItem>>();
         }
         await serviceLock.WaitAsync();
+        var builder = QueryBuilderAccessor.QueryBuilder;
         try {
             request.CancellationToken.ThrowIfCancellationRequested();
             if(!InternalItems.Any()) {
                 Logger.LogConsoleVerbose("Loading initial items from remote service.");
                 var firstPage = PageFor(request.StartIndex);
                 var firstIndex = FirstItemOnPage(firstPage);
-                QueryBuilder.Skip = firstIndex;
-                var container = await ItemsService.GetListItemsAsync(QueryBuilder.Build(), request.CancellationToken);
+                builder.Skip = firstIndex;
+                var container = await ItemsService.GetListItemsAsync(builder.Build(), request.CancellationToken);
                 var count = container.ItemInfos.Count;
                 var total = container.Total;
-                QueryBuilder.Level.UpdateMaxLevel(ItemsService.MaxLevel);
-                QueryBuilder.Level.UpdateMinLevel(ItemsService.MinLevel);
+                builder.Level.UpdateMaxLevel(ItemsService.MaxLevel);
+                builder.Level.UpdateMinLevel(ItemsService.MinLevel);
 
                 InternalItems.AddRange(container.ItemInfos);
                 InternalItems.AddRange(Enumerable.Range(0, total - count).Select(e => new ListItemInfo<TItem>()));
@@ -294,13 +294,13 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
                 var lastPage = PageFor(request.StartIndex + request.Count);
                 for(int pageNumber = firstPage; pageNumber <= lastPage; ++pageNumber) {
                     var firstIndex = FirstItemOnPage(pageNumber);
-                    QueryBuilder.Skip = firstIndex;
+                    builder.Skip = firstIndex;
                     if(!AllItemsCached(firstIndex, ItemsService.PageSize)) {
-                        var container = await ItemsService.GetListItemsAsync(QueryBuilder.Build(), request.CancellationToken);
+                        var container = await ItemsService.GetListItemsAsync(builder.Build(), request.CancellationToken);
                         var count = container.ItemInfos.Count;
                         var total = container.Total;
-                        QueryBuilder.Level.UpdateMaxLevel(ItemsService.MaxLevel);
-                        QueryBuilder.Level.UpdateMinLevel(ItemsService.MinLevel);
+                        builder.Level.UpdateMaxLevel(ItemsService.MaxLevel);
+                        builder.Level.UpdateMinLevel(ItemsService.MinLevel);
                         var index = firstIndex;
                         foreach(var item in container.ItemInfos) {
                             var info = InternalItems[index++];
@@ -370,13 +370,14 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
         // If table is removed but decorator remains, disconnect from events.
         if(SelectionAccessor != null) {
             SelectionAccessor.SelectionSet.Changed -= ResolvedSelection_Changed;
+            SelectionAccessor = null;
         }
-        if(QueryBuilder != null && queryBuilderEventSet) {
-            QueryBuilder.OnChanged -= Notify_OnChanged;
+        if(QueryBuilderAccessor != null) {
+            QueryBuilderAccessor.QueryBuilder.OnChanged -= Notify_OnChanged;
+            QueryBuilderAccessor = null;
         }
     }
 
     private readonly SemaphoreSlim serviceLock = new(1, 1);
 
-    private bool queryBuilderEventSet;
 }
