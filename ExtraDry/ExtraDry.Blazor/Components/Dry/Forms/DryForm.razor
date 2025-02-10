@@ -33,7 +33,7 @@
                 </div>
                 <ValidationBoundary>
                     <div class="@ModelNameSlug entity-actions">
-                        <DryButtonBar Commands="@Description?.Commands" Target="@Model" />
+                        <DryButtonBar Decorator="@ViewModel" Commands="@Description?.Commands" Target="@Model" />
                     </div>
                 </ValidationBoundary>
             }

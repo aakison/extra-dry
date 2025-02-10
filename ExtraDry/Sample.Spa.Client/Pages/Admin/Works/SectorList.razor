@@ -3,7 +3,7 @@
 @inject NavigationManager Navigation;
 
 <TableMenu TItem="Sector" />
-<DryTable TItem="Sector" ViewModel="@this" ItemsService="@SectorService" @ref="SectorTable" />
+<DryTable TItem="Sector" Decorator="@this" ItemsService="@SectorService" @ref="SectorTable" />
 
 @code {
 

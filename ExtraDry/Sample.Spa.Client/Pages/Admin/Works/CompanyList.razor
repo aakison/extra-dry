@@ -8,7 +8,7 @@
 <DryErrorBoundary>
     @*<TableMenu TItem="Company" />*@
     <DryFilter TItem="Company" Decorator="@this" Affordance="" Icon="theme" ShowPreview="false" />
-    <DryTable TItem="Company" ViewModel="@this" ItemsService="@CompanyListService" @ref="companyTable" />
+    <DryTable TItem="Company" Decorator="@this" ItemsService="@CompanyListService" @ref="companyTable" />
 </DryErrorBoundary>
 
 @code {

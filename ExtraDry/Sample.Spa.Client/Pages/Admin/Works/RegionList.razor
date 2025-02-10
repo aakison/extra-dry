@@ -3,7 +3,7 @@
 
 <TableMenu TItem="Region" />
 <DryHierarchyFilter TItem="Region" />
-<DryTable TItem="Region" ViewModel="@this" ItemsService="@RegionService" GroupColumn="Slug" />
+<DryTable TItem="Region" Decorator="@this" ItemsService="@RegionService" GroupColumn="Slug" />
 
 @code {
 

@@ -66,9 +66,7 @@ public partial class DryFilter<TItem> : ComponentBase, IExtraDryComponent
 
     protected override void OnParametersSet()
     {
-        if(QueryBuilderAccessor == null) {
-            QueryBuilderAccessor = new QueryBuilderAccessor(Decorator);
-        }
+        QueryBuilderAccessor ??= new QueryBuilderAccessor(Decorator);
     }
 
     protected void DoFiltersSubmit(DialogEventArgs _)

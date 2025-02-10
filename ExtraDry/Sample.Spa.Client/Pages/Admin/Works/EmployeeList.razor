@@ -6,7 +6,7 @@
 <DryErrorBoundary>
     @*<TableMenu TItem="Employee" />*@
     <DryFilter TItem="Employee" Decorator="@this" Affordance="" Icon="theme" ShowPreview="false" />
-    <DryTable TItem="Employee" ViewModel="@this" ItemsService="@EmployeeService" />
+    <DryTable TItem="Employee" Decorator="@this" ItemsService="@EmployeeService" />
 </DryErrorBoundary>
 
 @code {

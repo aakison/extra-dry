@@ -10,7 +10,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     public string CssClass { get; set; } = string.Empty;
 
     [Parameter, EditorRequired]
-    public object ViewModel { get; set; } = null!; // If not overridden, set to this in OnInitialized.
+    public object Decorator { get; set; } = null!; 
 
     [Parameter]
     public ICollection<TItem>? Items { get; set; }
@@ -64,20 +64,20 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
 
     protected override void OnInitialized()
     {
-        ViewModel ??= this;
-        description = new DecoratorInfo(typeof(TItem), ViewModel);
+        Decorator ??= this;
+        description = new DecoratorInfo(typeof(TItem), Decorator);
     }
 
     protected override void OnParametersSet()
     {
         AssertItemsMutualExclusivity();
         if(SelectionAccessor == null) {
-            SelectionAccessor = new SelectionSetAccessor(ViewModel);
+            SelectionAccessor = new SelectionSetAccessor(Decorator);
             SelectionAccessor.SelectionSet.MultipleSelect = description.ListSelectMode == ListSelectMode.Multiple;
             SelectionAccessor.SelectionSet.Changed += ResolvedSelection_Changed;
         }
         if(QueryBuilderAccessor == null) {
-            QueryBuilderAccessor = new QueryBuilderAccessor(ViewModel);
+            QueryBuilderAccessor = new QueryBuilderAccessor(Decorator);
             QueryBuilderAccessor.QueryBuilder.OnChanged += Notify_OnChanged;
         }
     }

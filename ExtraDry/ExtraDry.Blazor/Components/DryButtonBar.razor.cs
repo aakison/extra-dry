@@ -23,11 +23,11 @@ public partial class DryButtonBar : ComponentBase, IExtraDryComponent
     public object? Target { get; set; }
 
     /// <summary>
-    /// A link to the ViewModel that contains the method to call on the button click. Typically
-    /// `this`. If set, the `Commands` parameter will be populated from the ViewModel's commands.
+    /// A link to the Decorator that contains the method to call on the button click. Typically
+    /// `this` when View is doubling as Decorator. 
     /// </summary>
-    [Parameter]
-    public object? ViewModel { get; set; }
+    [Parameter, EditorRequired]
+    public object Decorator { get; set; } = null!;
 
     /// <summary>
     /// Filter the view model's commands by this category.
@@ -45,8 +45,8 @@ public partial class DryButtonBar : ComponentBase, IExtraDryComponent
 
     protected override void OnParametersSet()
     {
-        if(!Commands.Any() && ViewModel != null && Description == null) {
-            Description = new DecoratorInfo(ViewModel);
+        if(!Commands.Any() && Decorator != null && Description == null) {
+            Description = new DecoratorInfo(Decorator);
             Commands = Description.Commands;
         }
     }
