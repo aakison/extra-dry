@@ -3,7 +3,7 @@
 namespace ExtraDry.Blazor.Components.Internal;
 
 [SuppressMessage("Usage", "DRY1500:Extra DRY Blazor components should have an interface.", Justification = "Internal component not for general use.")]
-public partial class ViewModelTableRow<T> : ComponentBase, IDisposable
+public partial class DryTableRow<T> : ComponentBase, IDisposable
 {
     /// <summary>
     /// Required parameter which is the view model description passed from the DryTable.
@@ -38,13 +38,13 @@ public partial class ViewModelTableRow<T> : ComponentBase, IDisposable
     protected override void OnParametersSet()
     {
         if(Description == null) {
-            throw new InvalidOperationException("The parameter `Description` is required in ViewModelTableRow.");
+            throw new InvalidOperationException("The parameter `Description` is required in DryTableRow.");
         }
         if(Selection == null) {
-            throw new InvalidOperationException("The parameter `Selection` is required in ViewModelTableRow.");
+            throw new InvalidOperationException("The parameter `Selection` is required in DryTableRow.");
         }
         if(Item == null) {
-            throw new InvalidOperationException("The parameter `Item` is required in ViewModelTableRow.");
+            throw new InvalidOperationException("The parameter `Item` is required in DryTableRow.");
         }
     }
 

@@ -44,7 +44,7 @@
         <tbody>
           <Virtualize ItemsProvider="GetItemsAsync" ItemSize="45" @ref="VirtualContainer">
             <ItemContent>
-              <ViewModelTableRow Item="@context" Description="@description" Selection="@SelectionAccessor?.SelectionSet" Height="45" GroupColumn="@GroupColumn" />
+              <DryTableRow Item="@context" Description="@description" Selection="@SelectionAccessor?.SelectionSet" Height="45" GroupColumn="@GroupColumn" />
             </ItemContent>
           </Virtualize>
         </tbody>
