@@ -43,7 +43,7 @@ public class RuleEngine(
         validator.ValidateObject(exemplar);
         validator.ThrowIfInvalid();
         var destination = Activator.CreateInstance<T>();
-        if(destination is ICreatingCallback creating) {
+        if(exemplar is ICreatingCallback creating) {
             await creating.OnCreatingAsync();
         }
         await UpdatePropertiesAsync(exemplar, destination, MaxRecursionDepth, e => e.CreateAction);

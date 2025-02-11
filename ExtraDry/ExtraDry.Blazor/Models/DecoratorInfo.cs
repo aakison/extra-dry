@@ -48,11 +48,11 @@ public class DecoratorInfo
 
     public HyperlinkInfo? HyperLinkFor(string propertyName) => HyperLinks.FirstOrDefault(e => e.PropertyName == propertyName);
 
-    public ReadOnlyCollection<CommandInfo> MenuCommands => new(Commands.Where(e => e.Arguments == CommandArguments.None).ToList());
+    public IEnumerable<CommandInfo> MenuCommands => Commands.Where(e => e.Arguments == CommandArguments.None);
 
-    public ReadOnlyCollection<CommandInfo> ContextCommands => new(Commands.Where(e => e.Arguments == CommandArguments.Single).ToList());
+    public IEnumerable<CommandInfo> ContextCommands => Commands.Where(e => e.Arguments == CommandArguments.Single);
 
-    public ReadOnlyCollection<CommandInfo> MultiContextCommands => new(Commands.Where(e => e.Arguments == CommandArguments.Multiple).ToList());
+    public IEnumerable<CommandInfo> MultiContextCommands => Commands.Where(e => e.Arguments == CommandArguments.Multiple);
 
     public string ModelDisplayName { get; private set; } = string.Empty;
 
@@ -129,7 +129,7 @@ public class DecoratorInfo
                 && e.Context == CommandContext.Primary).Count() == 1) {
             ListSelectMode = ListSelectMode.Action;
         }
-        else if(ContextCommands.Count != 0) {
+        else if(ContextCommands.Any()) {
             ListSelectMode = ListSelectMode.Single;
         }
         else {
