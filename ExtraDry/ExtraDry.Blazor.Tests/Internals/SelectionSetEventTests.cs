@@ -10,6 +10,7 @@ public class SelectionSetEventTests
     public void EventOnClear(bool multi)
     {
         var set = new SelectionSet() { MultipleSelect = multi };
+        set.SetVisible([obj1, obj2]);
 
         set.Add(obj1);
         set.Changed += (s, e) => { sender = s; args = e; };
@@ -21,8 +22,8 @@ public class SelectionSetEventTests
         Assert.Equal(SelectionSetChangedType.Cleared, args?.Type);
         Assert.NotNull(args!.Added);
         Assert.NotNull(args!.Removed);
-        Assert.Empty(args!.Added!);
-        Assert.Empty(args!.Removed!);
+        Assert.Empty(args!.Added);
+        Assert.Single(args!.Removed);
     }
 
     [Theory]
@@ -43,6 +44,7 @@ public class SelectionSetEventTests
     public void ExclusiveImplementationEventOnClear()
     {
         var set = new SelectionSet() { MultipleSelect = true };
+        set.SetVisible([obj1, obj2, obj3]);
 
         set.SelectAll();
         set.Remove(obj1);
@@ -56,7 +58,24 @@ public class SelectionSetEventTests
         Assert.NotNull(args!.Added);
         Assert.NotNull(args!.Removed);
         Assert.Empty(args!.Added);
-        Assert.Empty(args!.Removed);
+        Assert.Equal(2, args!.Removed.Count);
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void AddOnNonVisibleDoesntAdd(bool multi)
+    {
+        var set = new SelectionSet() { MultipleSelect = multi };
+
+        set.SetVisible([obj1, obj2]);
+        set.SetVisible([]);
+        set.Changed += (s, e) => { sender = s; args = e; };
+        set.Add(obj1);
+        
+        Assert.Null(sender);
+        Assert.Null(args);
+        Assert.Empty(set.Items);
     }
 
     [Theory]
@@ -66,6 +85,7 @@ public class SelectionSetEventTests
     {
         var set = new SelectionSet() { MultipleSelect = multi };
 
+        set.SetVisible([obj1, obj2]);
         set.Changed += (s, e) => { sender = s; args = e; };
         set.Add(obj1);
 
@@ -100,6 +120,7 @@ public class SelectionSetEventTests
     {
         var set = new SelectionSet() { MultipleSelect = false };
 
+        set.SetVisible([obj1, obj2]);
         set.Changed += (s, e) => { sender = s; args = e; };
         set.Add(obj1);
         set.Add(obj2);
@@ -120,6 +141,7 @@ public class SelectionSetEventTests
     public void MultiSelectEventOnMultipleAdd()
     {
         var set = new SelectionSet() { MultipleSelect = true };
+        set.SetVisible([obj1, obj2]);
 
         set.Changed += (s, e) => { sender = s; args = e; };
         set.Add(obj1);
@@ -142,6 +164,7 @@ public class SelectionSetEventTests
     public void EventOnRemove(bool multi)
     {
         var set = new SelectionSet() { MultipleSelect = multi };
+        set.SetVisible([obj1, obj2]);
 
         set.Add(obj1);
         set.Changed += (s, e) => { sender = s; args = e; };
@@ -176,6 +199,7 @@ public class SelectionSetEventTests
     public void EventOnSelectAll()
     {
         var set = new SelectionSet() { MultipleSelect = true };
+        set.SetVisible([obj1, obj2]);
 
         set.Changed += (s, e) => { sender = s; args = e; };
         set.SelectAll();
@@ -186,7 +210,7 @@ public class SelectionSetEventTests
         Assert.Equal(SelectionSetChangedType.SelectAll, args?.Type);
         Assert.NotNull(args!.Added);
         Assert.NotNull(args!.Removed);
-        Assert.Empty(args!.Added);
+        Assert.Equal(2, args!.Added.Count);
         Assert.Empty(args!.Removed);
     }
 
@@ -203,6 +227,95 @@ public class SelectionSetEventTests
         Assert.Null(args);
     }
 
+    [Fact]
+    public void AddNonVisibleItemDoesNotAdd()
+    {
+        var set = new SelectionSet() { MultipleSelect = true };
+        set.SetVisible([obj1, obj2]);
+        var nonVisibleItem = new object();
+
+        set.Changed += (s, e) => { sender = s; args = e; };
+        set.Add(nonVisibleItem);
+
+        Assert.Null(sender);
+        Assert.Null(args);
+        Assert.DoesNotContain(nonVisibleItem, set.Items);
+    }
+
+    [Fact]
+    public void AddVisibleItemInSingleSelectModeReplacesSelection()
+    {
+        var set = new SelectionSet() { MultipleSelect = false };
+        set.SetVisible(new[] { obj1, obj2 });
+
+        set.Changed += (s, e) => { sender = s; args = e; };
+        set.Add(obj1);
+        set.Add(obj2);
+
+        Assert.NotNull(sender);
+        Assert.NotNull(args);
+        Assert.Equal(SelectionSetChangedType.Changed, args?.Type);
+        Assert.Contains(obj2, set.Items);
+        Assert.DoesNotContain(obj1, set.Items);
+    }
+
+    [Fact]
+    public void RemoveNonSelectedItemDoesNotTriggerEvent()
+    {
+        var set = new SelectionSet() { MultipleSelect = true };
+        set.SetVisible([obj1, obj2]);
+
+        set.Changed += (s, e) => { sender = s; args = e; };
+        set.Remove(obj1);
+
+        Assert.Null(sender);
+        Assert.Null(args);
+    }
+
+    [Fact]
+    public void RemoveSelectedItemUpdatesSelection()
+    {
+        var set = new SelectionSet() { MultipleSelect = true };
+        set.SetVisible([obj1, obj2]);
+        set.Add(obj1);
+
+        set.Changed += (s, e) => { sender = s; args = e; };
+        set.Remove(obj1);
+
+        Assert.NotNull(sender);
+        Assert.NotNull(args);
+        Assert.Equal(SelectionSetChangedType.Removed, args?.Type);
+        Assert.DoesNotContain(obj1, set.Items);
+    }
+
+    [Fact]
+    public void ClearNonEmptySelectionUpdatesSelection()
+    {
+        var set = new SelectionSet() { MultipleSelect = true };
+        set.SetVisible([obj1, obj2]);
+        set.Add(obj1);
+
+        set.Changed += (s, e) => { sender = s; args = e; };
+        set.Clear();
+
+        Assert.NotNull(sender);
+        Assert.NotNull(args);
+        Assert.Equal(SelectionSetChangedType.Cleared, args?.Type);
+        Assert.Empty(set.Items);
+    }
+
+    [Fact]
+    public void ClearEmptySelectionDoesNotTriggerEvent()
+    {
+        var set = new SelectionSet() { MultipleSelect = true };
+
+        set.Changed += (s, e) => { sender = s; args = e; };
+        set.Clear();
+
+        Assert.Null(sender);
+        Assert.Null(args);
+    }
+
     private object? sender;
 
     private SelectionSetChangedEventArgs? args;
@@ -210,4 +323,6 @@ public class SelectionSetEventTests
     private readonly object obj1 = new();
 
     private readonly object obj2 = new();
+
+    private readonly object obj3 = new();
 }

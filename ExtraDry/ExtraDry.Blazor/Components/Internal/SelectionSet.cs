@@ -9,128 +9,101 @@ namespace ExtraDry.Blazor.Components.Internal;
 /// cref="SelectionSetAccessor" /> which is a lightweight object for accessing the shared
 /// SelectionSet in multiple locations.
 /// </summary>
-// This seemingly simple class has a (nearly) too complex implementation. The backing unit tests
-// are critical to its operation. The cause is the implementation of the `SelectAll`, where the
-// selection extends to items that are possibly virtual and not downloaded to the current list
-// view. This is done by implementing both the obvious "inclusive" list of items as well as the
-// less obvious (and harder to debug) "exclusive" list of items. In the exclusive mode, the list of
-// un-checked items is stored. In a set of 10,000 items this aligns with a human's typical use-case
-// of "select a few" or "select all but a few". The worst case would be 5,000 selected and 5,000
-// unselected.
-public class SelectionSet
+public class SelectionSet 
 {
-    internal SelectionSet()
-    { }
+    internal SelectionSet() { }
 
-    public void Clear()
+    public void SetVisible(IEnumerable<object> items)
     {
-        if(!inclusiveStorage || items.Count != 0) {
-            items.Clear();
-            inclusiveStorage = true;
-            var args = new SelectionSetChangedEventArgs() { Type = SelectionSetChangedType.Cleared };
-            Changed?.Invoke(this, args);
-        }
+        Console.WriteLine($"SetVisible {items.Count()}");
+        visibleItems.Clear();
+        visibleItems.AddRange(items);
     }
 
-    public void Add(object item)
-    {
-        if((ExclusiveStorage && !items.Contains(item)) || (!ExclusiveStorage && items.Contains(item))) {
-            return;
-        }
-        var args = new SelectionSetChangedEventArgs() { Type = SelectionSetChangedType.Added };
-        if(MultipleSelect) {
-            args.Added.Add(item);
-            if(inclusiveStorage) {
-                items.Add(item);
-            }
-            else {
-                items.Remove(item);
-            }
-        }
-        else {
-            args.Removed.AddRange(items);
-            if(items.Count != 0) {
-                args.Type = SelectionSetChangedType.Changed;
-                items.Clear();
-            }
-            args.Added.Add(item);
-            items.Add(item);
-        }
-        Changed?.Invoke(this, args);
-    }
-
-    public void Remove(object item)
-    {
-        if(!MultipleSelect && !items.Contains(item)) {
-            return;
-        }
-        if(MultipleSelect && inclusiveStorage && !items.Contains(item)) {
-            return;
-        }
-        if(ExclusiveStorage && items.Contains(item)) {
-            return;
-        }
-        var args = new SelectionSetChangedEventArgs() { Type = SelectionSetChangedType.Removed };
-        args.Removed.Add(item);
-        if(MultipleSelect && !inclusiveStorage) {
-            items.Add(item);
-        }
-        else {
-            items.Remove(item);
-        }
-        Changed?.Invoke(this, args);
-    }
-
-    public void SelectAll()
-    {
-        if(ExclusiveStorage && items.Count == 0) {
-            return;
-        }
-        if(MultipleSelect) {
-            items.Clear();
-            inclusiveStorage = false;
-        }
-        else {
-            throw new InvalidOperationException("Can't perform SelectAll() on a single selection set.");
-        }
-        var args = new SelectionSetChangedEventArgs() { Type = SelectionSetChangedType.SelectAll };
-        Changed?.Invoke(this, args);
-    }
-
-    public bool Contains(object item)
-    {
-        return ExclusiveStorage ? !items.Contains(item) : items.Contains(item);
-    }
-
-    public bool Any()
-    {
-        return ExclusiveStorage || items.Count != 0;
-    }
-
-    /// <summary>
-    /// Indicates if a single selection is made, independent of whether multiple or single select
-    /// mode is on.
-    /// </summary>
-    [SuppressMessage("Naming", "CA1720:Identifier contains type name", Justification = "Good enough for LINQ, good enough here.")]
-    public bool Single()
-    {
-        return (!MultipleSelect || inclusiveStorage) && items.Count == 1;
-    }
-
-    public bool All()
-    {
-        return ExclusiveStorage && items.Count == 0;
-    }
-
-    public IEnumerable<object> Items => items.AsEnumerable(); // TODO: Make function that can optionally supply super-set?
+    public IEnumerable<object> Items => selectedItems.Intersect(visibleItems);
 
     public bool MultipleSelect { get; set; }
 
     public event EventHandler<SelectionSetChangedEventArgs> Changed = null!;
 
-    private bool inclusiveStorage = true;
+    public void Add(object item)
+    {
+        Console.WriteLine($"Add {item.GetHashCode()}");
+        if(selectedItems.Contains(item)) {
+            return;
+        }
+        if(!visibleItems.Contains(item)) {
+            return;
+        }
+        var args = new SelectionSetChangedEventArgs() { Type = SelectionSetChangedType.Added };
+        if(!MultipleSelect) {
+            args.Removed.AddRange(selectedItems);
+            if(selectedItems.Count != 0) {
+                args.Type = SelectionSetChangedType.Changed;
+                selectedItems.Clear();
+            }
+        }
+        args.Added.Add(item);
+        selectedItems.Add(item);
+        Changed?.Invoke(this, args);
+    }
 
-    private bool ExclusiveStorage => MultipleSelect && !inclusiveStorage;
+    public bool All() => visibleItems.Count > 0 && visibleItems.All(selectedItems.Contains);
 
-    private readonly List<object> items = [];
+    public bool Any() => visibleItems.Count > 0 && selectedItems.Count > 0;
+
+    public void Clear()
+    {
+        Console.WriteLine($"Clear");
+        if(selectedItems.Count == 0) {
+            return;
+        }
+        var args = new SelectionSetChangedEventArgs() { Type = SelectionSetChangedType.Cleared };
+        args.Removed.AddRange(selectedItems);
+        selectedItems.Clear();
+        Changed?.Invoke(this, args);
+    }
+
+    public bool Contains(object item) => selectedItems.Contains(item);
+
+    public void Remove(object item)
+    {
+        Console.WriteLine($"Remove {item.GetHashCode()}");
+        if(Contains(item)) {
+            var args = new SelectionSetChangedEventArgs() { Type = SelectionSetChangedType.Removed };
+            args.Removed.Add(item);
+            selectedItems.Remove(item);
+            Changed?.Invoke(this, args);
+        }
+    }
+
+    /// <summary>
+    /// Selects all of the visible items.  This does not remove items that are shadow-selected.
+    /// </summary>
+    public void SelectAll()
+    {
+        Console.WriteLine($"Select All");
+        if(MultipleSelect == false) { 
+            throw new InvalidOperationException("Can't perform SelectAll() on a single selection set.");
+        }
+        var args = new SelectionSetChangedEventArgs() { Type = SelectionSetChangedType.SelectAll };
+        foreach(var item in visibleItems) {
+            if(!Contains(item)) {
+                args.Added.Add(item);
+                selectedItems.Add(item);
+            }
+        }
+        if(args.Added.Count > 0) {
+            Changed?.Invoke(this, args);
+        }
+    }
+
+
+    [SuppressMessage("Naming", "CA1720:Identifier contains type name", Justification = "Good enough for LINQ, good enough here.")]
+    public bool Single() => selectedItems.Count == 1;
+
+    private readonly List<object> selectedItems = [];
+
+    private readonly List<object> visibleItems = [];
 }
+

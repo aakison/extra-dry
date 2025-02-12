@@ -48,7 +48,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     private string FilteredClass => string.IsNullOrWhiteSpace(QueryBuilderAccessor?.QueryBuilder.Build().Filter) ? "unfiltered" : "filtered";
 
     private string StateClass =>
-        InternalItems.Any() ? "full"
+        InternalItems.Count > 0 ? "full"
         : changing ? "changing"
         : validationError ? "invalid-filter"
         : firstLoadCompleted ? "empty"
@@ -74,15 +74,15 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
         if(SelectionAccessor == null) {
             SelectionAccessor = new SelectionSetAccessor(Decorator);
             SelectionAccessor.SelectionSet.MultipleSelect = description.ListSelectMode == ListSelectMode.Multiple;
-            SelectionAccessor.SelectionSet.Changed += ResolvedSelection_Changed;
+            SelectionAccessor.SelectionSet.Changed += Selection_Changed;
         }
         if(QueryBuilderAccessor == null) {
             QueryBuilderAccessor = new QueryBuilderAccessor(Decorator);
-            QueryBuilderAccessor.QueryBuilder.OnChanged += Notify_OnChanged;
+            QueryBuilderAccessor.QueryBuilder.OnChanged += Query_Changed;
         }
     }
 
-    private void ResolvedSelection_Changed(object? sender, SelectionSetChangedEventArgs e)
+    private void Selection_Changed(object? sender, SelectionSetChangedEventArgs e)
     {
         Logger.LogConsoleVerbose("Got selection notification");
         // Checking/unchecking a row could affect the column checkbox...
@@ -91,7 +91,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
 
     private bool changing;
 
-    private async void Notify_OnChanged(object? sender, EventArgs e)
+    private async void Query_Changed(object? sender, EventArgs e)
     {
         Logger.LogConsoleVerbose("Got notification");
         changing = true;
@@ -101,6 +101,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
             await VirtualContainer.RefreshDataAsync();
         }
         changing = false;
+        SelectionAccessor?.SelectionSet.SetVisible(InternalItems.Where(e => e.Item is not null).Select(e => (object)e.Item!));
         StateHasChanged();
     }
 
@@ -220,7 +221,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
         StateHasChanged();
     }
 
-    private ItemCollection<TItem> InternalItems { get; } = [];
+    private List<ListItemInfo<TItem>> InternalItems { get; } = [];
 
     private IEnumerable<ListItemInfo<TItem>> ShownItems => InternalItems.Where(e => e.IsShown);
 
@@ -270,7 +271,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
         var builder = QueryBuilderAccessor.QueryBuilder;
         try {
             request.CancellationToken.ThrowIfCancellationRequested();
-            if(!InternalItems.Any()) {
+            if(InternalItems.Count == 0) {
                 Logger.LogConsoleVerbose("Loading initial items from remote service.");
                 var firstPage = PageFor(request.StartIndex);
                 var firstIndex = FirstItemOnPage(firstPage);
@@ -316,7 +317,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
                 }
             }
             ItemsProviderResult<ListItemInfo<TItem>> result;
-            if(InternalItems.Any()) {
+            if(InternalItems.Count > 0) {
                 var count = Math.Min(request.Count, InternalItems.Count);
                 var items = InternalItems.GetRange(request.StartIndex, count);
                 if(!IsHierarchyList) {
@@ -329,6 +330,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
             }
             firstLoadCompleted = true;
             validationError = false;
+            SelectionAccessor?.SelectionSet.SetVisible(ShownItems.Where(e => e.Item is not null).Select(e => (object)e.Item!));
             return result;
         }
         catch(OperationCanceledException) {
@@ -369,11 +371,11 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
         GC.SuppressFinalize(this);
         // If table is removed but decorator remains, disconnect from events.
         if(SelectionAccessor != null) {
-            SelectionAccessor.SelectionSet.Changed -= ResolvedSelection_Changed;
+            SelectionAccessor.SelectionSet.Changed -= Selection_Changed;
             SelectionAccessor = null;
         }
         if(QueryBuilderAccessor != null) {
-            QueryBuilderAccessor.QueryBuilder.OnChanged -= Notify_OnChanged;
+            QueryBuilderAccessor.QueryBuilder.OnChanged -= Query_Changed;
             QueryBuilderAccessor = null;
         }
     }

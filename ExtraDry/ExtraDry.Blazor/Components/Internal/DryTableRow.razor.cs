@@ -35,6 +35,8 @@ public partial class DryTableRow<T> : ComponentBase, IDisposable
 
     private string LevelCss => Item.Item is IHierarchyEntity ? $"level-{Item.GroupDepth}" : "";
 
+    private bool initialized;
+
     protected override void OnParametersSet()
     {
         if(Description == null) {
@@ -45,6 +47,10 @@ public partial class DryTableRow<T> : ComponentBase, IDisposable
         }
         if(Item == null) {
             throw new InvalidOperationException("The parameter `Item` is required in DryTableRow.");
+        }
+        if(!initialized) {
+            initialized = true;
+            Selection.Changed += Selection_Changed;
         }
     }
 
@@ -91,31 +97,26 @@ public partial class DryTableRow<T> : ComponentBase, IDisposable
 
     private void Select()
     {
-        if(!IsSelected && Item.Item != null) {
+        if(Item.Item != null) {
             Selection.Add(Item.Item);
-            if(!Selection.MultipleSelect) {
-                Selection.Changed += OnExclusivity;
-            }
         }
     }
 
     private void Deselect()
     {
-        if(IsSelected && Item.Item != null) {
+        if(Item.Item != null) {
             Selection.Remove(Item.Item);
         }
     }
 
-    private void OnExclusivity(object? sender, EventArgs args)
+    private void Selection_Changed(object? sender, SelectionSetChangedEventArgs args)
     {
-        Deselect();
-        Selection.Changed -= OnExclusivity;
         StateHasChanged(); // external event, need to signal to update UI.
     }
 
     public void Dispose()
     {
         GC.SuppressFinalize(this);
-        Selection.Changed -= OnExclusivity;
+        Selection.Changed -= Selection_Changed;
     }
 }

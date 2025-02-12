@@ -21,9 +21,11 @@ public class SelectionSetTests
     public void SelectOne(bool multi)
     {
         var set = new SelectionSet() { MultipleSelect = multi };
-        var obj = new object();
+        var obj1 = new object();
+        var obj2 = new object();
 
-        set.Add(obj);
+        set.SetVisible([obj1, obj2]);
+        set.Add(obj1);
 
         Assert.True(set.Any());
         Assert.True(set.Single());
@@ -35,14 +37,15 @@ public class SelectionSetTests
     {
         var set = new SelectionSet() { MultipleSelect = true };
         var obj1 = new object();
+        var obj2 = new object();
 
+        set.SetVisible([obj1, obj2]);
         set.SelectAll();
         set.Add(obj1);
 
         Assert.True(set.Any());
         Assert.True(set.All());
         Assert.False(set.Single());
-        Assert.True(set.Contains(new object()));
         Assert.True(set.Contains(obj1));
     }
 
@@ -52,7 +55,9 @@ public class SelectionSetTests
         var set = new SelectionSet() { MultipleSelect = false };
         var obj1 = new object();
         var obj2 = new object();
+        var obj3 = new object();
 
+        set.SetVisible([obj1, obj2, obj3]);
         set.Add(obj1);
         set.Add(obj2);
 
@@ -69,7 +74,9 @@ public class SelectionSetTests
         var set = new SelectionSet() { MultipleSelect = true };
         var obj1 = new object();
         var obj2 = new object();
+        var obj3 = new object();
 
+        set.SetVisible([obj1, obj2, obj3]);
         set.Add(obj1);
         set.Add(obj2);
 
@@ -85,14 +92,16 @@ public class SelectionSetTests
     {
         var set = new SelectionSet() { MultipleSelect = true };
         var obj1 = new object();
+        var obj2 = new object();
 
+        set.SetVisible([obj1, obj2]);
         set.SelectAll();
         set.Remove(obj1);
 
         Assert.True(set.Any());
         Assert.False(set.All());
-        Assert.False(set.Single());
-        Assert.True(set.Contains(new object()));
+        Assert.True(set.Single());
+        Assert.False(set.Contains(new object()));
         Assert.False(set.Contains(obj1));
     }
 
@@ -104,6 +113,7 @@ public class SelectionSetTests
         var set = new SelectionSet() { MultipleSelect = multi };
         var obj1 = new object();
         var obj2 = new object();
+        set.SetVisible([obj1, obj2]);
         set.Add(obj1);
         set.Add(obj2);
 
@@ -120,7 +130,9 @@ public class SelectionSetTests
     {
         var set = new SelectionSet();
         var obj1 = new object();
+        var obj2 = new object();
 
+        set.SetVisible([obj1, obj2]);
         set.Add(obj1);
         set.Add(obj1);
 
@@ -135,7 +147,9 @@ public class SelectionSetTests
     {
         var set = new SelectionSet() { MultipleSelect = true };
         var obj1 = new object();
+        var obj2 = new object();
 
+        set.SetVisible([obj1, obj2]);
         set.SelectAll();
 
         Assert.True(set.Any());
@@ -149,7 +163,41 @@ public class SelectionSetTests
     {
         var set = new SelectionSet() { MultipleSelect = false };
         var obj1 = new object();
+        var obj2 = new object();
 
         Assert.Throws<InvalidOperationException>(() => set.SelectAll());
     }
+
+    [Fact]
+    public void SetVisibleWithEmptyListClearsSelection()
+    {
+        var set = new SelectionSet() { MultipleSelect = true };
+        set.SetVisible([obj1, obj2]);
+        set.Add(obj1);
+        set.Add(obj2);
+
+        set.SetVisible([]);
+
+        Assert.Empty(set.Items);
+        Assert.False(set.Any());
+        Assert.False(set.All());
+        Assert.False(set.Single());
+    }
+
+    [Fact]
+    public void SetVisibleDoesNetSetItems()
+    {
+        var set = new SelectionSet() { MultipleSelect = true };
+        
+        set.SetVisible([obj1, obj2]);
+
+        Assert.Empty(set.Items);
+        Assert.False(set.Any());
+        Assert.False(set.All());
+        Assert.False(set.Single());
+    }
+
+    private readonly object obj1 = new();
+
+    private readonly object obj2 = new();
 }

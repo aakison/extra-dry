@@ -3,10 +3,10 @@
 <tr data-uuid="@UuidValue" class="@CssClasses" @onclick="RowClick" @ondblclick="RowDoubleClick" style="height: @($"{Height}px")">
     @switch(Description.ListSelectMode) {
         case ListSelectMode.Multiple:
-            <td class="checkbox"><input type="checkbox" @onchange="CheckChanged" checked="@IsSelected" /></td>
+            <td class="checkbox"><input type="checkbox" checked="@IsSelected" /></td>
             break;
         case ListSelectMode.Single:
-            <td class="radio"><input type="radio" @onchange="CheckChanged" checked="@IsSelected" name="@RadioButtonScope" /></td>
+            <td class="radio"><input type="radio" checked="@IsSelected" name="@RadioButtonScope" /></td>
             break;
         default:
             break;
@@ -26,8 +26,7 @@
                     (true, false) => "collapsed",
                     (true, true) => "expanded"
                 };
-                @if (Item.Item is IHierarchyEntity)
-                {
+                @if(Item.Item is IHierarchyEntity) {
                     <DryTableHierarchyExpander Item="@Item" />
                 }
                 <span class="group @cssAction">@displayValue</span>
