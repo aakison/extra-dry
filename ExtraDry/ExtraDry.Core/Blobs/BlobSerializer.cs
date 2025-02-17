@@ -86,7 +86,7 @@ public static class BlobSerializer
     /// <summary>
     /// Serialize a Blob to a <see cref="HttpResponse" />.
     /// </summary>
-    public static async Task SerializeBlobAsync<T>(HttpResponse response, T blob) where T : IBlob
+    public static async Task SerializeBlobAsync<T>(HttpResponse response, T blob, CancellationToken cancellationToken = default) where T : IBlob
     {
         var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
         foreach(var property in properties) {
@@ -101,7 +101,7 @@ public static class BlobSerializer
                 response.Headers.Append(headerName, headerValue);
             }
         }
-        await response.Body.WriteAsync(blob.Content);
+        await response.Body.WriteAsync(blob.Content, cancellationToken);
     }
 
     /// <summary>
