@@ -17,7 +17,7 @@
 		<ProjectReference Include="..\ExtraDry.Swashbuckle\ExtraDry.Swashbuckle.csproj" />
 		<ProjectReference Include="..\Sample.Data\Sample.Data.csproj" />
 		<ProjectReference Include="..\Sample.Spa.Client\Sample.Spa.Client.csproj" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.2" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
 		<ProjectReference Include="..\Sample.Data\Sample.Data.csproj" />
 		<ProjectReference Include="..\Sample.Shared\Sample.Shared.csproj" />
@@ -33,11 +33,6 @@
 	  <None Update="SampleData\Localities.csv">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <PackageReference Update="Azure.Identity" Version="1.13.2" />
-	  <PackageReference Update="System.Formats.Asn1" Version="9.0.1" />
 	</ItemGroup>
 
 </Project>

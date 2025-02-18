@@ -13,10 +13,10 @@
 	<ItemGroup>
 		<PackageReference Include="AspNetCore.HealthChecks.CosmosDb" Version="9.0.0" />
 		<PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.2" />
 		<PackageReference Include="Microsoft.Azure.Cosmos" Version="3.46.1" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="9.0.1" />
-		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="9.0.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="9.0.2" />
+		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="9.0.2" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.1" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
 	</ItemGroup>
@@ -33,10 +33,6 @@
 	  <None Update="startup.sh">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
-	</ItemGroup>
-	<ItemGroup>
-	  <PackageReference Update="Azure.Identity" Version="1.13.2" />
-	  <PackageReference Update="System.Formats.Asn1" Version="9.0.1" />
 	</ItemGroup>
 	
 </Project>

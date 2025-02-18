@@ -12,10 +12,10 @@
 		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.22.0" />
 		<PackageReference Include="Microsoft.Azure.WebJobs.Extensions" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Azure.WebJobs.Extensions.ServiceBus" Version="5.16.4" />
-		<PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="5.3.3" />
+		<PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="5.3.4" />
 		<PackageReference Include="Microsoft.Azure.WebJobs.Logging.ApplicationInsights" Version="3.0.41" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.1" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.2" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.2" />
 		<PackageReference Include="Azure.Storage.Blobs" Version="12.23.0" />
 		<PackageReference Include="Azure.Storage.Queues" Version="12.21.0" />
 	</ItemGroup>
@@ -28,9 +28,5 @@
 
 	<Import Project="..\CommonAnalyzers.targets" />
 	<Import Project="..\VulnerabilityFixes.targets" />
-	<ItemGroup>
-	  <PackageReference Update="Azure.Identity" Version="1.13.2" />
-	  <PackageReference Update="System.Formats.Asn1" Version="9.0.1" />
-	</ItemGroup>
 
 </Project>

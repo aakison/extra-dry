@@ -246,7 +246,7 @@ public class SelectionSetEventTests
     public void AddVisibleItemInSingleSelectModeReplacesSelection()
     {
         var set = new SelectionSet() { MultipleSelect = false };
-        set.SetVisible(new[] { obj1, obj2 });
+        set.SetVisible([obj1, obj2]);
 
         set.Changed += (s, e) => { sender = s; args = e; };
         set.Add(obj1);
