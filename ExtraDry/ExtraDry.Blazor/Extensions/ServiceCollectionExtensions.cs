@@ -20,7 +20,7 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Adds a strongly typed <see cref="CrudService{T}" /> to the service collection. See <see
     /// cref="AddCrudService{T}(IServiceCollection, Action{CrudServiceOptions})" /> for additional
-    /// options. Particlularly useful for specifying the HttpClient to use in multi- tenant
+    /// options. Particularly useful for specifying the HttpClient to use in multi- tenant
     /// deployments.
     /// </summary>
     public static IServiceCollection AddCrudService<T>(this IServiceCollection services, string endpointTemplate)
