@@ -24,18 +24,17 @@ public class QueryBuilderAccessor(object decorator)
 
     private static QueryBuilder Register(object decorator)
     {
-        Console.WriteLine($"Cleaning collection of {QueryBuilders.Count} items");
+        //Console.WriteLine($"Cleaning collection of {QueryBuilders.Count} items");
         QueryBuilders.RemoveAll(r => !r.Decorator.TryGetTarget(out _));
-        Console.WriteLine($"Collection now has {QueryBuilders.Count} items");
-        Console.WriteLine($"Looking up {decorator} in collection ");
+        //Console.WriteLine($"Collection now has {QueryBuilders.Count} items");
+        //Console.WriteLine($"Looking up {decorator} in collection ");
         var existing = QueryBuilders.FirstOrDefault(r => r.Decorator.TryGetTarget(out var target) && target == decorator);
         if(existing == null) {
-            Console.WriteLine($"Not found, adding new Selection Set ");
+            //Console.WriteLine($"Not found, adding new Selection Set ");
             existing = new WeakRegistration(decorator);
             QueryBuilders.Add(existing);
         }
-        Console.WriteLine($"Registration finished with {QueryBuilders.Count} items");
+        //Console.WriteLine($"Registration finished with {QueryBuilders.Count} items");
         return existing.QueryBuilder;
     }
 }
-

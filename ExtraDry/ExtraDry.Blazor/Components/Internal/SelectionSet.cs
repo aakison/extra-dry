@@ -15,7 +15,7 @@ public class SelectionSet
 
     public void SetVisible(IEnumerable<object> items)
     {
-        Console.WriteLine($"SetVisible {items.Count()}");
+        //Console.WriteLine($"SetVisible {items.Count()}");
         visibleItems.Clear();
         visibleItems.AddRange(items);
     }
