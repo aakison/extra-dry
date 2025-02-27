@@ -1,5 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Configuration.EnvironmentVariables;
+using Microsoft.Extensions.Configuration.Json;
+using Microsoft.Extensions.Configuration.Memory;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System.Globalization;
 using System.Reflection;
+using System.Text;
 
 namespace ExtraDry.Core;
 
@@ -10,6 +16,43 @@ namespace ExtraDry.Core;
 /// </summary>
 public static class LoggerExtensions
 {
+    /// <summary>
+    /// Logs the list of sources that were used to configure the application. This is useful for
+    /// determining if the correct configuration files were loaded and in the correct order.
+    /// </summary>
+    public static void LogSources(this ILogger logger, ConfigurationManager configuration)
+    {
+        var sb = new StringBuilder();
+        foreach(var source in configuration.Sources) {
+            //logger.LogInformation("Configuration source: {Source}", source.ToString());
+            if(source is JsonConfigurationSource jsonSource) {
+                sb.AppendLine(CultureInfo.InvariantCulture, $"  Json File: {jsonSource.Path}");
+                //logger.LogInformation("Configuration source: {Source}", jsonSource.Path);
+            }
+            else if(source is MemoryConfigurationSource memSource) {
+                sb.AppendLine($"  Memory Source");
+                if(memSource.InitialData == null) {
+                    sb.AppendLine("    (empty)");
+                }
+                else {
+                    foreach(var entry in memSource.InitialData) {
+                        sb.AppendLine(CultureInfo.InvariantCulture, $"    {entry.Key} = {entry.Value}");
+                    }
+                }
+            }
+            else if(source is EnvironmentVariablesConfigurationSource) {
+                sb.AppendLine($"  Environment Variables");
+            }
+            else if(source is ChainedConfigurationSource) {
+                sb.AppendLine($"  Chained Source");
+            }
+            else {
+                sb.AppendLine(CultureInfo.InvariantCulture, $"  Misc Source: {source.ToString()}");
+            }
+        }
+        logger.LogInformation("Configuration sources (in order):\r\n{Sources}", sb.ToString().TrimEnd());
+    }
+
     /// <summary>
     /// Logs the properties of the object and its children. Any properties that are marked with the
     /// <see cref="SecretAttribute" /> will be dispalyed as "*****" instead of their actual value.
