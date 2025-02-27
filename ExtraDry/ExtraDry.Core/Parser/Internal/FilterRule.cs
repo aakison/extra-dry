@@ -22,7 +22,7 @@ public class FilterRule
     public FilterRule(string propertyName, IEnumerable<string> values)
     {
         PropertyName = propertyName;
-        Values = new List<string>(values);
+        Values = [.. values];
     }
 
     public FilterRule(string propertyName, string value)

@@ -9,8 +9,8 @@ public class WarehouseModel
     {
         EntityContextType = entityContextType;
         Group = group;
-        DimensionTables = new List<Table>(builder.BuildDimensions());
-        FactTables = new List<Table>(builder.BuildFacts());
+        DimensionTables = [.. builder.BuildDimensions()];
+        FactTables = [.. builder.BuildFacts()];
     }
 
     public WarehouseModel(Type entityContextType, string group) : this(entityContextType, null, group)
@@ -27,8 +27,8 @@ public class WarehouseModel
         onCreating?.Invoke(builder);
         OnCreating(builder);
 
-        DimensionTables = new List<Table>(builder.BuildDimensions());
-        FactTables = new List<Table>(builder.BuildFacts());
+        DimensionTables = [.. builder.BuildDimensions()];
+        FactTables = [.. builder.BuildFacts()];
     }
 
     protected virtual void OnCreating(WarehouseModelBuilder builder)

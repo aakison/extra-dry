@@ -30,7 +30,7 @@ public class PagedHierarchyCollection<T> : HierarchyCollection<T>
         Start = Start,
         Total = Total,
         Level = Level,
-        Expand = Expand == null ? null : new List<string>(Expand),
-        Collapse = Collapse == null ? null : new List<string>(Collapse),
+        Expand = Expand == null ? null : [.. Expand],
+        Collapse = Collapse == null ? null : [.. Collapse],
     };
 }
