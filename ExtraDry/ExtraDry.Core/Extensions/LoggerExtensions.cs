@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
+using System;
 
 namespace ExtraDry.Core;
 
@@ -23,34 +24,35 @@ public static class LoggerExtensions
     public static void LogSources(this ILogger logger, ConfigurationManager configuration)
     {
         var sb = new StringBuilder();
+        int index = 0;
         foreach(var source in configuration.Sources) {
-            //logger.LogInformation("Configuration source: {Source}", source.ToString());
             if(source is JsonConfigurationSource jsonSource) {
-                sb.AppendLine(CultureInfo.InvariantCulture, $"  Json File: {jsonSource.Path}");
-                //logger.LogInformation("Configuration source: {Source}", jsonSource.Path);
+                sb.AppendLine(CultureInfo.InvariantCulture, $"{Prefix()}Json File: {jsonSource.Path}");
             }
             else if(source is MemoryConfigurationSource memSource) {
-                sb.AppendLine($"  Memory Source");
+                sb.AppendLine(CultureInfo.InvariantCulture, $"{Prefix()}Memory Source");
                 if(memSource.InitialData == null) {
-                    sb.AppendLine("    (empty)");
+                    sb.AppendLine("    * (empty)");
                 }
                 else {
                     foreach(var entry in memSource.InitialData) {
-                        sb.AppendLine(CultureInfo.InvariantCulture, $"    {entry.Key} = {entry.Value}");
+                        sb.AppendLine(CultureInfo.InvariantCulture, $"{Prefix()}{entry.Key} = {entry.Value}");
                     }
                 }
             }
             else if(source is EnvironmentVariablesConfigurationSource) {
-                sb.AppendLine($"  Environment Variables");
+                sb.AppendLine(CultureInfo.InvariantCulture, $"{Prefix()}Environment Variables");
             }
             else if(source is ChainedConfigurationSource) {
-                sb.AppendLine($"  Chained Source");
+                sb.AppendLine(CultureInfo.InvariantCulture, $"{Prefix()}Chained Source");
             }
             else {
-                sb.AppendLine(CultureInfo.InvariantCulture, $"  Misc Source: {source.ToString()}");
+                sb.AppendLine(CultureInfo.InvariantCulture, $"{Prefix()}Misc Source: {source.ToString()}");
             }
         }
-        logger.LogInformation("Configuration sources (in order):\r\n{Sources}", sb.ToString().TrimEnd());
+        logger.LogInformation("Configuration sources:\n{Sources}", sb.ToString().TrimEnd());
+
+        string Prefix() => $"  {++index}. ";
     }
 
     /// <summary>
@@ -69,11 +71,11 @@ public static class LoggerExtensions
         displayOptions.ReadAndExpand(target);
         var list = displayOptions.Properties.Select(e => $"{e.Key}: {e.Value}");
 
-        logger.LogInformation("Resolved Configuration for '{Name}':\n\t{List}",
-            displayOptions.Name, string.Join("\n\t", list));
+        logger.LogInformation("Resolved Configuration for '{Name}':\n  * {List}",
+            displayOptions.Name, string.Join($"\n  * ", list));
         if(displayOptions.ValidationErrors.Count > 0) {
-            var results = string.Join("\n\t", displayOptions.ValidationErrors);
-            logger.LogWarning("Configuration Failed Validation:\n\t{Results}", results);
+            var results = string.Join($"\n  * ", displayOptions.ValidationErrors);
+            logger.LogWarning("Configuration Failed Validation:\n  * {Results}", results);
         }
     }
 
