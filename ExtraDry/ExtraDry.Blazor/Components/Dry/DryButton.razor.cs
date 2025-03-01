@@ -101,9 +101,10 @@ public partial class DryButton : ComponentBase, IExtraDryComponent
             if(SelectionAccessor is null) {
                 SelectionAccessor = new SelectionSetAccessor(ResolvedCommand.ViewModel);
                 SelectionAccessor.SelectionSet.Changed += SelectionChanged;
-                UpdateDisabled();
             }
         }
+
+        UpdateDisabled();
     }
 
     /// <summary>
@@ -135,7 +136,12 @@ public partial class DryButton : ComponentBase, IExtraDryComponent
             SetEnabled(true);
         }
         else if(ResolvedCommand.Arguments == CommandArguments.Single) {
-            SetEnabled(SelectionAccessor.SelectionSet.Single());
+            if(Model is null) {
+                SetEnabled(SelectionAccessor.SelectionSet.Single());
+            }
+            else {
+                SetEnabled(true);
+            }
         }
         else if(ResolvedCommand.Arguments == CommandArguments.Multiple) {
             SetEnabled(SelectionAccessor.SelectionSet.Any());
