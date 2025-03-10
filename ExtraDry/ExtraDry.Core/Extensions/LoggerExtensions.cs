@@ -51,6 +51,8 @@ public static class LoggerExtensions
             }
         }
         logger.LogInformation("Configuration sources:\n{Sources}", sb.ToString().TrimEnd());
+        var time = DateTime.UtcNow.ToString("O");
+        File.WriteAllTextAsync(logfile, $"Configuration Loaded: {time}\n\nConfiguration sources:\n{sb.ToString().TrimEnd()}\n\n");
 
         string Prefix() => $"  {++index}. ";
     }
@@ -73,11 +75,15 @@ public static class LoggerExtensions
 
         logger.LogInformation("Resolved Configuration for '{Name}':\n  * {List}",
             displayOptions.Name, string.Join($"\n  * ", list));
+        var bullets = "  * " + string.Join($"\n  * ", list);
+        File.AppendAllText(logfile, $"\nResolved Configuration for '{displayOptions.Name}':\n{bullets}\n");
         if(displayOptions.ValidationErrors.Count > 0) {
             var results = string.Join($"\n  * ", displayOptions.ValidationErrors);
             logger.LogWarning("Configuration Failed Validation:\n  * {Results}", results);
         }
     }
+
+    private const string logfile = "./appsettings.log";
 
     private class DisplayOptions
     {
