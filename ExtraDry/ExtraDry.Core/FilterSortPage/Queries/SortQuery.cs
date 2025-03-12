@@ -15,5 +15,5 @@ public class SortQuery : FilterQuery
     /// Stabalization for the query which adds an additional property as a secondary sort. Some
     /// providers don't support this so the default is `None`.
     /// </summary>
-    public SortStabilization Stabilization { get; set; } = SortStabilization.None;
+    internal SortStabilization Stabilization { get; set; } = SortStabilization.None;
 }

@@ -14,5 +14,5 @@ public class FilterQuery
     /// The string comparison to be used, defaults to `null` as EF database queries don't support
     /// explicit StringComparison.
     /// </summary>
-    public StringComparison? Comparison { get; set; }
+    internal StringComparison? Comparison { get; set; }
 }
