@@ -9,6 +9,9 @@ public static class FilterParser
     public static Filter Parse(string filter)
     {
         var parsed = Filters.Parse(filter);
+        if(!parsed.Success) {
+            parsed = Filters.Parse($"""{filter}""");
+        }
         return parsed.Success
             ? parsed.Value
             : throw new DryException($"Invalid filter expression '{filter}' resulted in '{parsed.Error}'", "Unable to apply filter. 0x0F947CB5");
@@ -22,7 +25,7 @@ public static class FilterParser
 
     private static readonly Parser<char, char> Comma = Char(',');
 
-    private static readonly Parser<char, char> ValueCharacter = Token(c => char.IsLetterOrDigit(c) || c == '-' || c == '.');
+    private static readonly Parser<char, char> ValueCharacter = Token(c => char.IsLetterOrDigit(c) || c == '@' || c == '-' || c == '.');
 
     private static readonly Parser<char, char> ExtendedValueCharacter = Token(c => char.IsLetterOrDigit(c) || c == '-' || c == '.' || c == ':');
 

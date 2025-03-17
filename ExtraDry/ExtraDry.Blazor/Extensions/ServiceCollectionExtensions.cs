@@ -149,6 +149,37 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    /// <summary>
+    /// Adds a strongly typed <see cref="ListService{TItem}" /> to the service collection. Also
+    /// registers the service using the interfaces <see cref="IListService{T}" /> and <see
+    /// cref="IOptionProvider{T}" />.
+    /// </summary>
+    public static IServiceCollection AddKeyedListService<T>(this IServiceCollection services, string key, Action<ListServiceOptions> config)
+    {
+        var options = new ListServiceOptions();
+        config(options);
+
+        new DataValidator().ValidateObject(options);
+
+        services.AddKeyedScoped(key, (e, key) => {
+            var client = GetHttpClient(e, options);
+            var logger = e.GetRequiredService<ILogger<ListService<T>>>();
+            var service = new ListService<T>(client, options, logger);
+            return service;
+        });
+        services.AddKeyedScoped(key, (e, key) => {
+            IListService<T> upcasted = e.GetRequiredService<ListService<T>>();
+            return upcasted;
+        });
+        services.AddKeyedScoped(key, (e, key) => {
+            IOptionProvider<T> upcasted = e.GetRequiredService<ListService<T>>();
+            return upcasted;
+        });
+
+        return services;
+    }
+
+
     private static HttpClient GetHttpClient(IServiceProvider provider, IHttpClientOptions options)
     {
         if(options.HttpClientType != null) {

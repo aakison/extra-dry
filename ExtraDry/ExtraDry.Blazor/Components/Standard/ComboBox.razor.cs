@@ -321,6 +321,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent, IDispo
     /// </summary>
     private async Task ConfirmInputAsync(TItem? selectedItem)
     {
+        Console.WriteLine("ConfirmInputAsync"); 
         Assert(ShowOptions == true, "ConfirmInputAsync expects that the options are shown.");
         if(selectedItem != null) {
             // Valid Item selected and want to lock it in
@@ -333,7 +334,8 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent, IDispo
             ShowOptions = false;
             DisplayFilter = DisplayItemTitle(SelectedOption);
         }
-        if(!(Value?.Equals(SelectedOption) ?? SelectedOption == null)) {
+        var hasChanged = Value is null ? SelectedOption is not null : !Value.Equals(SelectedOption);
+        if(hasChanged) {
             Value = SelectedOption;
             await ValueChanged.InvokeAsync(Value);
         }
@@ -475,6 +477,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent, IDispo
         // 9 lines shown so page up/down should be one less so we have one line overlap for
         // context.
         var pageSize = 8;
+        Console.WriteLine(args.Code);
         if(args.Code is "Enter" or "NumpadEnter") {
             PreventDefault = true; // must occur before await, as needed to prevent button clicks.
             if(ShowOptions) {

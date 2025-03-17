@@ -94,6 +94,11 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     private async void Query_Changed(object? sender, EventArgs e)
     {
         Logger.LogConsoleVerbose("Got notification");
+        await RefreshAsync();
+    }
+
+    public async Task RefreshAsync()
+    {
         changing = true;
         StateHasChanged();
         InternalItems.Clear();

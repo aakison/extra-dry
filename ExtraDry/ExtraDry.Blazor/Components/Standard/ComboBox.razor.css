@@ -1,91 +1,95 @@
-﻿div {
-  position: relative;
-}
+﻿@layer extra-dry {
 
-  div > label {
-    display: flex;
-    flex-direction: row;
+  div.combo-box {
+    position: relative;
     border: solid 1px gray;
     border-radius: 1px;
     padding: 0 0 0 4px;
-    align-items: center;
-    height: 100%;
   }
 
-    div > label:focus-within {
-      outline: solid 1px black;
-    }
-
-    div > label > img {
-      width: 24px;
-      height: 24px;
-    }
-
-    div > label > input {
-      flex: 100%;
-      border: none;
-    }
-
-      div > label > input:focus-visible {
-        outline: none;
-      }
-
-    div > label > div {
-      color: silver;
-    }
-
-    div > label > progress {
-      width: 24px;
-      height: 24px;
-    }
-
-    div > label > button {
+    div.combo-box > label {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
       height: 100%;
     }
 
-  div > div {
-    position: absolute;
-    --chromium-workaround: "Setting background color on <ol> directly masks mouse drag on scrollbar.";
-    background-color: white;
-    width: auto;
-    left: 0;
-    right: 0;
-    z-index: 1;
-  }
+      div.combo-box > label:focus-within {
+        outline: solid 1px black;
+      }
 
-  div ol {
-    border: solid 1px silver;
-    padding: 0;
-    line-height: 1.5em;
-    min-width: 250px;
-    min-height: calc(4.5em + 14px);
-    max-height: calc(13.5em + 38px);
-    overflow: scroll;
-    overflow-x: clip;
-  }
+      div.combo-box > label > img {
+        width: 24px;
+        height: 24px;
+      }
 
-    div ol li {
-      padding: 2px 5px;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      div.combo-box > label > input {
+        flex: 100%;
+        border: none;
+      }
+
+        div.combo-box > label > input:focus-visible {
+          outline: none;
+        }
+
+      div.combo-box > label > div {
+        color: silver;
+      }
+
+      div.combo-box > label > progress {
+        width: 24px;
+        height: 24px;
+      }
+
+      div.combo-box > label > button {
+        height: 100%;
+      }
+
+    div.combo-box > div {
+      position: absolute;
+      --chromium-workaround: "Setting background color on <ol> directly masks mouse drag on scrollbar.";
+      background-color: white;
+      width: auto;
+      left: 0;
+      right: 0;
+      z-index: 1;
     }
 
-      div ol li.header {
-        font-weight: bold;
+    div.combo-box ol {
+      border: solid 1px silver;
+      padding: 0;
+      line-height: 1.5em;
+      min-width: 250px;
+      min-height: calc(4.5em + 14px);
+      max-height: calc(13.5em + 38px);
+      overflow: scroll;
+      overflow-x: clip;
+    }
+
+      div.combo-box ol li {
+        padding: 2px 5px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
-      div ol li.option {
-        padding: 2px 10px;
-      }
-
-        div ol li.option:hover {
-          background-color: #eeeeee;
+        div.combo-box ol li.header {
+          font-weight: bold;
         }
 
-        div ol li.option.selected {
-          background-color: silver;
+        div.combo-box ol li.option {
+          padding: 2px 10px;
         }
 
-      div ol li.more {
-        font-style: italic;
-      }
+          div.combo-box ol li.option:hover {
+            background-color: #eeeeee;
+          }
+
+          div.combo-box ol li.option.selected {
+            background-color: silver;
+          }
+
+        div.combo-box ol li.more {
+          font-style: italic;
+        }
+}
+

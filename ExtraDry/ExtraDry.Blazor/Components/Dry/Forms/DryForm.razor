@@ -4,7 +4,7 @@
 @using ExtraDry.Core.Models
 @typeparam T
 
-<form class="@CssClasses" onsubmit="return false;" action="/" method="GET" @attributes="@UnmatchedAttributes">
+<form class="@CssClasses" onsubmit="return false;" action="/" method="GET" @attributes="@UnmatchedAttributes" autocomplete="off">
     <CascadingValue Value="@EditMode">
         <CascadingValue Value="@this">
             @if(Model == null) {
