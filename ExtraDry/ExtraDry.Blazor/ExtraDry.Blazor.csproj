@@ -33,11 +33,6 @@
 
 	<ItemGroup>
 		<Content Remove="bundleconfig.json" />
-		<Content Remove="wwwroot\js\extra-dry-blazor-module.js" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <EmbeddedResource Include="wwwroot\js\extra-dry-blazor-module.js" />
 	</ItemGroup>
 
 	<ItemGroup>
