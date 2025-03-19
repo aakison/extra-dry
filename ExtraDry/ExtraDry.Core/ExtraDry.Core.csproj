@@ -33,7 +33,7 @@
 		<PackageReference Include="Microsoft.Extensions.Http" Version="9.0.3" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.3" />
 		<PackageReference Include="Microsoft.Extensions.Options" Version="9.0.3" />
-    <PackageReference Include="Pidgin" Version="3.3.0" />
+    <PackageReference Include="Pidgin" Version="3.4.0" />
   </ItemGroup>
 
 	<Import Project="..\CommonAnalyzers.targets" />
