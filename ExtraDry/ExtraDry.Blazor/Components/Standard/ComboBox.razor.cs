@@ -6,7 +6,7 @@
 /// platforms. Includes list management and filtering.
 /// </summary>
 /// <typeparam name="TItem">The type for items in the select list.</typeparam>
-public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent, IDisposable where TItem : class
+public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent, IDisposable where TItem : notnull
 {
     /// <inheritdoc cref="IExtraDryComponent.CssClass" />
     [Parameter]
@@ -189,10 +189,10 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent, IDispo
         await ScrollIntoView(OptionsId);
         if(SelectedOption != null && ShowOptions) {
             var id = DisplayItemID(SelectedOption);
-            if(Group && SelectedOption == InternalItems.FilteredItems.FirstOrDefault()) {
+            if(Group && SelectedOption.Equals(InternalItems.FilteredItems.FirstOrDefault())) {
                 id = DisplayFirstHeaderId;
             }
-            if(MoreCount > 0 && SelectedOption == InternalItems.FilteredItems.LastOrDefault()) {
+            if(MoreCount > 0 && SelectedOption.Equals(InternalItems.FilteredItems.LastOrDefault())) {
                 id = DisplayMoreCaptionId;
             }
             await ScrollIntoView(id);
