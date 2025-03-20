@@ -49,4 +49,27 @@
         align-items: center;
         justify-content: center;
       }
+
+  table tr.state td {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+    table tr.state td progress {
+      display: none;
+    }
+
+  table tr.full, table tr.changing, table tr.invalid-filter {
+    display: none;
+  }
+
+  table tr.empty {
+    /* background-color: blue; */
+  }
+
+  table tr.loading td progress {
+    display: initial;
+  }
 }

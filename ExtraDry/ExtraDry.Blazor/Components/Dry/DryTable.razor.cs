@@ -1,5 +1,6 @@
 using ExtraDry.Blazor.Components.Internal;
 using Microsoft.AspNetCore.Components.Web.Virtualization;
+using System;
 
 namespace ExtraDry.Blazor;
 
@@ -370,6 +371,11 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     private bool firstLoadCompleted;
 
     private bool validationError;
+
+    private int TotalColumns => (HasCheckboxColumn ? 1 : 0) + 
+        (HasRadioColumn ? 1 : 0) + 
+        (HasCommandsColumn ? 1 : 0) + 
+        description.TableProperties.Count;
 
     public void Dispose()
     {
