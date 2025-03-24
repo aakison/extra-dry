@@ -108,7 +108,8 @@ public class CrudService<T>(
 
     private string ApiEndpoint(object key)
     {
-        var url = $"{options.CrudEndpoint.TrimEnd('/')}/{key}".TrimEnd('/');
+        var formattedKey = options.KeyFormatter(key);
+        var url = $"{options.CrudEndpoint.TrimEnd('/')}/{formattedKey}".TrimEnd('/');
         return url;
     }
 }

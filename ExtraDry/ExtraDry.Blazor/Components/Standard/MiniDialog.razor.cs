@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Blazor;
+﻿using Microsoft.AspNetCore.Components.Routing;
+
+namespace ExtraDry.Blazor;
 
 /// <summary>
 /// A mini-dialog box that can be used to edit a single property or field. Is typically shown as a
@@ -182,7 +184,21 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent, IDisposable
 
     protected ElementReference Form { get; set; }
 
+    protected override void OnParametersSet()
+    {
+        Navigation.LocationChanged += HideImmediate;
+    }
+
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "mini-dialog", StateClass, CssClass);
+
+    [Inject]
+    private NavigationManager Navigation { get; set; } = null!;
+
+    private string StateClass => State.ToString().ToLowerInvariant();
+
+    private bool Visible => State != DialogState.NotLoaded;
+
+    private int ActualAnimationDuration => Math.Clamp(AnimationDuration, 0, maximumDuration);
 
     private async Task<bool> ChangeStateAsync(DialogState from, DialogState to, int duration)
     {
@@ -264,19 +280,20 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent, IDisposable
         }
     }
 
-    private string StateClass => State.ToString().ToLowerInvariant();
-
-    private bool Visible => State != DialogState.NotLoaded;
-
-    private CancellationTokenSource stateChangeCancellation = new();
-
-    private bool shouldCollapse;
-
-    private int ActualAnimationDuration => Math.Clamp(AnimationDuration, 0, maximumDuration);
+    private void HideImmediate(object? sender, LocationChangedEventArgs args)
+    {
+        State = DialogState.NotLoaded;
+        Navigation.LocationChanged -= HideImmediate;
+        StateHasChanged();
+    }
 
     // One frame to allow refresh to happen.
     private const int minimumDuration = 1000 / 60;
 
     // Maximum to some logical upper bound that prevents app-destructive behavior.
     private const int maximumDuration = 5000;
+
+    private CancellationTokenSource stateChangeCancellation = new();
+
+    private bool shouldCollapse;
 }

@@ -19,6 +19,13 @@ public class CrudServiceOptions : IHttpClientOptions, IValidatableObject
     public string CrudEndpoint { get; set; } = string.Empty;
 
     /// <summary>
+    /// A formatting function that translates the `key` object taken by the CRUD endpoints into a
+    /// string which is appended to the `CrudEndpoint` to create the full endpoint URL. The default
+    /// implementation is the object's built in string transformation.
+    /// </summary>
+    public Func<object, string> KeyFormatter { get; set; } = e => e.ToString() ?? "";
+
+    /// <summary>
     /// Validates the inter-dependant options for the CrudService.
     /// </summary>
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

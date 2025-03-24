@@ -115,9 +115,9 @@ internal class AbacAuthorizationHelper(AbacOptions options)
         return expanded;
     }
 
-    private const string SoapSubClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name";
+    private const string SoapSubClaimType = ClaimTypes.Name; // "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name";
 
-    private const string SoapUniqueNameClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
+    private const string SoapUniqueNameClaimType = ClaimTypes.NameIdentifier; // "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
 
     [SuppressMessage("Performance", "CA1854:Prefer the 'IDictionary.TryGetValue(TKey, out TValue)' method", Justification = "False positive.")]
     private static bool HasAttribute(object target, string key, string value)
