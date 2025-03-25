@@ -51,6 +51,25 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
+    /// Adds a strongly typed <see cref="CrudService{T}" /> to the service collection.
+    /// </summary>
+    public static IServiceCollection AddKeyedCrudService<T>(this IServiceCollection services, string key, Action<CrudServiceOptions> config)
+    {
+        var options = new CrudServiceOptions();
+        config(options);
+
+        DataValidator.ThrowIfInvalid(options);
+
+        services.AddKeyedScoped(key, (e, key) => {
+            var client = GetHttpClient(e, options);
+            var logger = e.GetRequiredService<ILogger<CrudService<T>>>();
+            var service = new CrudService<T>(client, options, logger);
+            return service;
+        });
+        return services;
+    }
+
+    /// <summary>
     /// Adds a strongly typed <see cref="StatService{T}" /> to the service collection.
     /// </summary>
     public static IServiceCollection AddStatService<T>(this IServiceCollection services, string endpointTemplate)
