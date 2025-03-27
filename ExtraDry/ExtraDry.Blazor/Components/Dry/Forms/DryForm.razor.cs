@@ -1,10 +1,14 @@
-﻿namespace ExtraDry.Blazor;
+﻿using System.Reflection;
+
+namespace ExtraDry.Blazor;
 
 /// <summary>
 /// Generates a generic form for the creation and updating of a model. Form layout is based on the
 /// attributes of the fields of the model, as well as the optional view model.
 /// </summary>
-public partial class DryForm<T> : ComponentBase, IExtraDryComponent
+public partial class DryForm<T>
+    : ComponentBase, IExtraDryComponent, IDryForm
+    where T : class
 {
     /// <inheritdoc />
     [Parameter]
@@ -15,6 +19,10 @@ public partial class DryForm<T> : ComponentBase, IExtraDryComponent
     /// </summary>
     [Parameter, EditorRequired]
     public T? Model { get; set; }
+
+    public object? UntypedModel {
+        get => Model;
+    }
 
     [Parameter]
     public object? ViewModel { get; set; }
@@ -38,8 +46,11 @@ public partial class DryForm<T> : ComponentBase, IExtraDryComponent
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
-    [Inject]
-    private ILogger<DryForm<T>> Logger { get; set; } = null!;
+    public string ModelNameSlug => Slug.ToSlug(FormDescription?.ViewModelDescription?.ModelDisplayName ?? "");
+
+    public DecoratorInfo? Description { get; set; }
+
+    public FormDescription? FormDescription { get; set; }
 
     internal string GetEntityInfoCaption()
     {
@@ -63,11 +74,8 @@ public partial class DryForm<T> : ComponentBase, IExtraDryComponent
         }
     }
 
-    internal string ModelNameSlug => Slug.ToSlug(FormDescription?.ViewModelDescription?.ModelDisplayName ?? "");
-
-    internal DecoratorInfo? Description { get; set; }
-
-    internal FormDescription? FormDescription { get; set; }
+    [Inject]
+    private ILogger<DryForm<T>> Logger { get; set; } = null!;
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "dry-form", ModelNameSlug, CssClass);
 

@@ -1,10 +1,11 @@
 ﻿namespace ExtraDry.Blazor.Internal;
 
-internal enum FormGroupType
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum FormGroupType
 {
     Properties,
 
-    Object,
+    Objects,
 
     Element,
 

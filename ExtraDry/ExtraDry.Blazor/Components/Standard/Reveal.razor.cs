@@ -6,6 +6,9 @@
 /// </summary>
 public partial class Reveal : ComponentBase, IExtraDryComponent
 {
+    [Parameter]
+    public string Caption { get; set; } = "";
+
     /// <summary>
     /// The child content to be displayed.
     /// </summary>
@@ -46,6 +49,15 @@ public partial class Reveal : ComponentBase, IExtraDryComponent
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
+
+    /// <summary>
+    /// The state of the reveal (e.g. expanding or showing). Ties into the styles on the component
+    /// to perform CSS based animations. None -&gt; Concealed -&gt; Revealing -&gt; Revealed -&gt;
+    /// Concealing -\ ^-----------------------------------------------/
+    /// </summary>
+    public RevealState State { get; set; } = RevealState.None;
+
+    public bool IsShown => State is RevealState.Revealed or RevealState.Concealing or RevealState.Revealing;
 
     /// <summary>
     /// Reveals the components children as necessary. Will start in Concealed state, progress
@@ -101,16 +113,7 @@ public partial class Reveal : ComponentBase, IExtraDryComponent
         }
     }
 
-    /// <summary>
-    /// The state of the reveal (e.g. expanding or showing). Ties into the styles on the component
-    /// to perform CSS based animations. None -&gt; Concealed -&gt; Revealing -&gt; Revealed -&gt;
-    /// Concealing -\ ^-----------------------------------------------/
-    /// </summary>
-    public RevealState State { get; set; } = RevealState.None;
-
-    public bool IsShown => State is RevealState.Revealed or RevealState.Concealing or RevealState.Revealing;
-
-    private const int minimumDuration = 15; // One frame to allow refresh to happen.
+    private bool AutoReveal => !string.IsNullOrWhiteSpace(Caption);
 
     private int AdjustedDuration => Math.Clamp(Duration, minimumDuration, 3000);
 
@@ -143,4 +146,6 @@ public partial class Reveal : ComponentBase, IExtraDryComponent
             return style;
         }
     }
+
+    private const int minimumDuration = 15; // One frame to allow refresh to happen.
 }

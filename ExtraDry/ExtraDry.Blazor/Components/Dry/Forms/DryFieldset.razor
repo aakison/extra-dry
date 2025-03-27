@@ -1,12 +1,11 @@
 ﻿@namespace ExtraDry.Blazor.Forms
 @using ExtraDry.Blazor.Internal
-@typeparam T
 
 <fieldset class="@CssClasses">
-    @if(!string.IsNullOrWhiteSpace(FormFieldset.Legend)) {
+    @if(!string.IsNullOrWhiteSpace(FormFieldset?.Legend)) {
         <legend class="@CssClasses">@FormFieldset.Legend</legend>
     }
-    @foreach(var group in FormFieldset.Groups) {
+    @foreach(var group in FormFieldset?.Groups ?? []) {
         var redundant = "";// line.FormProperties.Count == 1 && line.FormProperties.First().FieldCaption == fieldset.Legend ? "redundant" : "";
         <div class="group @group.ClassName">
             @if(group.Type == FormGroupType.Element) {

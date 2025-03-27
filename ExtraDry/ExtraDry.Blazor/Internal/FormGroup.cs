@@ -4,7 +4,7 @@
 /// Represents a logical group of lines inside a form. These might be grouped for different reasons
 /// as specifie by the `Type` property.
 /// </summary>
-internal class FormGroup(
+public class FormGroup(
     object target)
 {
     public FormGroupType Type { get; set; } = FormGroupType.Properties;

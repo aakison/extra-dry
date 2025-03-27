@@ -6,7 +6,7 @@ namespace ExtraDry.Blazor.Internal;
 /// Represents the layout of a form for a given ViewModel type and Model object. This will link to
 /// the appropriate elements in the model or its contained sub-objects.
 /// </summary>
-internal class FormDescription
+public class FormDescription
 {
     public FormDescription(DecoratorInfo description, object model)
     {
@@ -76,7 +76,7 @@ internal class FormDescription
             if(property.ChildModel != null) {
                 if(!property.HasArrayValues) {
                     var submodel = property.GetValue(model);
-                    ExtendProperties(property.ChildModel.FormProperties, fieldsetName, FormGroupType.Object, submodel);
+                    ExtendProperties(property.ChildModel.FormProperties, fieldsetName, FormGroupType.Objects, submodel);
                 }
                 else {
                     var collection = property.GetValue(model) as ICollection;

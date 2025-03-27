@@ -7,7 +7,7 @@ namespace ExtraDry.Blazor.Internal;
 /// `FormLine`s will contain a single property or a single header. Others will contain several
 /// short properties that can be stacked together.
 /// </summary>
-internal class FormLine(
+public class FormLine(
     object model)
 {
     public Collection<PropertyDescription> FormProperties { get; } = [];

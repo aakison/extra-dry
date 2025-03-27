@@ -1,53 +1,56 @@
-﻿/*
+﻿@layer extra-dry {
+
+  /*
   Styles for the individual input fields, stacked as a vertical flex container. Spans are used for
   both description and validation messages, use sibling selectors so consumers can override easily.
 */
-div {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-tiny);
-}
-
-  div > label {
-    flex: 0 0 auto;
-    font-size: var(--text-small);
+  div {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-tiny);
   }
 
-    div > label + span { /* description span, when rendered */
+    div > label {
       flex: 0 0 auto;
-      font-size: var(--text-tiny);
-      color: var(--info-dark);
+      font-size: var(--text-small);
     }
 
-  div > ::deep div {
-    flex: 0 0 28px;
-  }
+      div > label + span { /* description span, when rendered */
+        flex: 0 0 auto;
+        font-size: var(--text-small);
+        color: var(--info-dark);
+      }
 
-  div > div + span { /* validation span, when rendered */
-    flex: 0 0 auto;
-    font-size: var(--text-small);
-    color: var(--danger-dark);
-  }
+    div > ::deep div {
+      flex: 0 0 28px;
+    }
 
-  /*
+    div > div + span { /* validation span, when rendered */
+      flex: 0 0 auto;
+      font-size: var(--text-small);
+      color: var(--danger-dark);
+    }
+
+    /*
     Common text styles for children that use div.input
 */
-  div > ::deep div input {
-    font-family: inherit;
-    font-size: var(--text-normal);
-  }
+    div > ::deep div input {
+      font-family: inherit;
+      font-size: var(--text-normal);
+    }
 
-  /*
+    /*
     Validation styles for children that use div.input
 */
-  div.invalid > ::deep div {
-    background: repeating-linear-gradient( -45deg, var(--danger-light), var(--danger-light) 10px, var(--warning-light) 10px, var(--warning-light) 20px );
-  }
+    div.invalid > ::deep div {
+      background: repeating-linear-gradient( -45deg, var(--danger-light), var(--danger-light) 10px, var(--warning-light) 10px, var(--warning-light) 20px );
+    }
 
-  /*
+    /*
     Style for the custom icons and affordances for most common images.
 */
-  div ::deep img, div ::deep i {
-    width: var(--icon-tiny);
-    height: var(--icon-tiny);
-  }
+    div ::deep img, div ::deep i {
+      width: var(--icon-tiny);
+      height: var(--icon-tiny);
+    }
+}

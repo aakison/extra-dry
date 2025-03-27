@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents an HTML fieldset, visually boxing groups of input controls.
 /// </summary>
-internal class FormFieldset
+public class FormFieldset
 {
     public FormFieldset(string legend, string name)
     {

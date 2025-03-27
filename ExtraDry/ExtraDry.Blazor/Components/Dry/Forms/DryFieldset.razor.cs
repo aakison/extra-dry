@@ -6,7 +6,7 @@
 /// form with a legend. It may also be used to group a set of child items in a list, where each has
 /// their own small form or rendering.
 /// </summary>
-public partial class DryFieldset<T> : ComponentBase, IExtraDryComponent
+public partial class DryFieldset : ComponentBase, IExtraDryComponent
 {
     /// <inheritdoc />
     [Parameter]
@@ -20,18 +20,26 @@ public partial class DryFieldset<T> : ComponentBase, IExtraDryComponent
     /// Cascading parameter so the model can be internal and not exposed to users.
     /// </summary>
     [CascadingParameter]
-    internal DryForm<T> Form { get; set; } = null!;
+    internal IDryForm Form { get; set; } = null!;
 
     /// <summary>
     /// Cascading parameter so the model can be internal and not exposed to users.
     /// </summary>
-    [CascadingParameter]
-    internal FormFieldset FormFieldset { get; set; } = null!;
+    //[CascadingParameter]
+    private FormFieldset? FormFieldset { get; set; }
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", "dry-fieldset", Form.ModelNameSlug, FormFieldset.CssClass, CssClass);
+    [Parameter]
+    public string GroupName { get; set; } = "";
+
+    protected override void OnParametersSet()
+    {
+        FormFieldset = Form.FormDescription?.Fieldsets?.FirstOrDefault(e => string.Equals(e.Name, GroupName, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "dry-fieldset", FormFieldset?.Name, Form.ModelNameSlug, FormFieldset?.CssClass, CssClass);
 
     private CommandInfo AddNewCommand =>
-        new(this, MethodInfoHelper.GetMethodInfo<DryFieldset<T>>(e => e.AddDefaultElementToList(Array.Empty<int>()))) {
+        new(this, MethodInfoHelper.GetMethodInfo<DryFieldset>(e => e.AddDefaultElementToList(Array.Empty<int>()))) {
             Arguments = CommandArguments.Single,
             Context = CommandContext.Regular
         };
@@ -42,8 +50,8 @@ public partial class DryFieldset<T> : ComponentBase, IExtraDryComponent
         var type = items.GetType().SingleGenericType();
         var instance = type.CreateDefaultInstance();
         items.Add(instance);
-        if(Form.Description != null && Form.Model != null) {
-            Form.FormDescription = new FormDescription(Form.Description, Form.Model); // re-build description to add/remove UI elements.
+        if(Form.Description != null && Form.UntypedModel != null) {
+            Form.FormDescription = new FormDescription(Form.Description, Form.UntypedModel); // re-build description to add/remove UI elements.
         }
         StateHasChanged();
     }
@@ -55,8 +63,8 @@ public partial class DryFieldset<T> : ComponentBase, IExtraDryComponent
         if(items is IList list) {
             Console.WriteLine("  A list");
             list.Remove(item);
-            if(Form.Description != null && Form.Model != null) {
-                Form.FormDescription = new FormDescription(Form.Description, Form.Model); // re-build description to add/remove UI elements.
+            if(Form.Description != null && Form.UntypedModel != null) {
+                Form.FormDescription = new FormDescription(Form.Description, Form.UntypedModel); // re-build description to add/remove UI elements.
             }
             StateHasChanged();
         }

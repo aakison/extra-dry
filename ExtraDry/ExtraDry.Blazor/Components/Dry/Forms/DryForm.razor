@@ -16,16 +16,12 @@
                 </div>
                 <div class="@ModelNameSlug fixed-fieldsets">
                     @foreach(var fieldset in FormDescription?.Fieldsets?.Take(FixedFieldsets) ?? Array.Empty<FormFieldset>()) {
-                        <CascadingValue Value="@fieldset">
-                            <DryFieldset T="@T" />
-                        </CascadingValue>
+                        <DryFieldset GroupName="@fieldset.Name" />
                     }
                 </div>
                 <div class="@ModelNameSlug variable-fieldsets">
                     @foreach(var fieldset in FormDescription?.Fieldsets?.Skip(FixedFieldsets) ?? Array.Empty<FormFieldset>()) {
-                        <CascadingValue Value="@fieldset">
-                            <DryFieldset T="@T" />
-                        </CascadingValue>
+                        <DryFieldset GroupName="@fieldset.Name" />
                     }
                     <div class="content">
                         @ChildContent
