@@ -29,9 +29,8 @@
     Default layout paddings and gaps for form and groups.
   */
   form {
-    padding: 10px;
     gap: 5px;
-  }
+  }   
 
     /*
     Style for the header of the form.
