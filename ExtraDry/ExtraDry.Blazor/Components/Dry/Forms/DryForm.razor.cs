@@ -25,7 +25,7 @@ public partial class DryForm<T>
     }
 
     [Parameter]
-    public object? ViewModel { get; set; }
+    public object? Decorator { get; set; }
 
     /// <inheritdoc cref="Blazor.EditMode" />
     [Parameter]
@@ -38,6 +38,14 @@ public partial class DryForm<T>
     /// </summary>
     [Parameter]
     public int FixedFieldsets { get; set; }
+
+    /// <summary>
+    /// A comma-separate list of fieldsets that are not displayed by the form. This is useful if
+    /// those fieldsets are not used for the view (e.g. no advanced settings during creation), or
+    /// if an alternate visualization is used (e.g. using a DryFieldset in tab).
+    /// </summary>
+    [Parameter]
+    public string HiddenFieldsets { get; set; } = "";
 
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
@@ -55,21 +63,22 @@ public partial class DryForm<T>
     internal string GetEntityInfoCaption()
     {
         string caption = string.Empty;
-        if(ViewModel is IViewModelCaption viewModelCaption) {
-            caption = viewModelCaption.Caption(ViewModel);
+        if(Decorator is IViewModelCaption viewModelCaption) {
+            caption = viewModelCaption.Caption(Decorator);
         }
         return string.IsNullOrEmpty(caption) ? Description?.ModelDisplayName ?? string.Empty : caption;
     }
 
     protected override void OnParametersSet()
     {
-        if(ViewModel == null) {
-            Logger.LogConsoleError("DryForm requires a ViewModel");
+        HiddenFieldsetNames = HiddenFieldsets.Split(',');
+        if(Decorator == null) {
+            Logger.LogConsoleError("DryForm requires a Decorator");
             return;
         }
-        Description ??= new DecoratorInfo(typeof(T), ViewModel);
+        Description ??= new DecoratorInfo(typeof(T), Decorator);
         if(Model != null) {
-            Description = new DecoratorInfo(Model.GetType(), ViewModel); // override the Description with the actual Description when we have the Model, which will account for polymorphism issues
+            Description = new DecoratorInfo(Model.GetType(), Decorator); // override the Description with the actual Description when we have the Model, which will account for polymorphism issues
             FormDescription = new FormDescription(Description, Model);
         }
     }
@@ -80,4 +89,14 @@ public partial class DryForm<T>
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "dry-form", ModelNameSlug, CssClass);
 
     private List<string> AlertMessages { get; set; } = [];
+
+    private IEnumerable<FormFieldset> DisplayFixedFieldsets => VisibleFieldsets.Take(FixedFieldsets) ?? [];
+
+    private IEnumerable<FormFieldset> DisplayVariableFieldsets => VisibleFieldsets.Skip(FixedFieldsets) ?? [];
+
+    private string[] HiddenFieldsetNames { get; set; } = [];
+
+    private IEnumerable<FormFieldset> VisibleFieldsets => FormDescription?.Fieldsets
+        .Where(e => !HiddenFieldsetNames.Contains(e.Name, StringComparer.OrdinalIgnoreCase))
+        ?? [];
 }

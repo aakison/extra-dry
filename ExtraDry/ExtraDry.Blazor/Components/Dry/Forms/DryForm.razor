@@ -15,12 +15,12 @@
                     <label>@GetEntityInfoCaption()</label>
                 </div>
                 <div class="@ModelNameSlug fixed-fieldsets">
-                    @foreach(var fieldset in FormDescription?.Fieldsets?.Take(FixedFieldsets) ?? Array.Empty<FormFieldset>()) {
+                    @foreach(var fieldset in DisplayFixedFieldsets) {
                         <DryFieldset GroupName="@fieldset.Name" />
                     }
                 </div>
                 <div class="@ModelNameSlug variable-fieldsets">
-                    @foreach(var fieldset in FormDescription?.Fieldsets?.Skip(FixedFieldsets) ?? Array.Empty<FormFieldset>()) {
+                    @foreach(var fieldset in DisplayVariableFieldsets) {
                         <DryFieldset GroupName="@fieldset.Name" />
                     }
                     <div class="content">
@@ -29,7 +29,7 @@
                 </div>
                 <ValidationBoundary>
                     <div class="@ModelNameSlug entity-actions">
-                        <DryButtonBar Decorator="@ViewModel" Commands="@Description?.Commands" Target="@Model" />
+                        <DryButtonBar Decorator="@Decorator" Commands="@Description?.Commands" Target="@Model" />
                     </div>
                 </ValidationBoundary>
             }
