@@ -52,14 +52,19 @@
 
   table tr.state td {
     min-height: 48px;
-    display: flex;
     align-items: center;
     justify-content: center;
   }
 
-    table tr.state td progress {
+    table tr.state td div {
       display: none;
+      min-height: 48px;
     }
+
+  table tr.state.loading div {
+    display: flex;
+    padding: var(--spacing-large);
+  }
 
   table tr.full, table tr.changing, table tr.invalid-filter {
     display: none;

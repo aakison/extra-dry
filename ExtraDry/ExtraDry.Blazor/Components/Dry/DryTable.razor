@@ -41,9 +41,9 @@
     <tbody>
         <tr class="state @StateClass">
             <td colspan="@TotalColumns">
-                <div></div>
-                <progress />
-                <div></div>
+                <div>
+                    <progress />
+                </div>
             </td>
         </tr>
         <Virtualize ItemsProvider="GetItemsAsync" ItemSize="45" @ref="VirtualContainer">
