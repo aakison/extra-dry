@@ -6,7 +6,8 @@ namespace ExtraDry.Blazor;
 /// Generates a generic form for the creation and updating of a model. Form layout is based on the
 /// attributes of the fields of the model, as well as the optional view model.
 /// </summary>
-public partial class DryForm<T>
+public partial class DryForm<T>(
+    ILogger<DryForm<T>> Logger)
     : ComponentBase, IExtraDryComponent, IDryForm
     where T : class
 {
@@ -19,6 +20,12 @@ public partial class DryForm<T>
     /// </summary>
     [Parameter, EditorRequired]
     public T? Model { get; set; }
+
+    /// <summary>
+    /// Determines if the form has a title with descriptive information
+    /// </summary>
+    [Parameter]
+    public bool ShowTitle { get; set; } = true;
 
     public object? UntypedModel {
         get => Model;
@@ -83,8 +90,7 @@ public partial class DryForm<T>
         }
     }
 
-    [Inject]
-    private ILogger<DryForm<T>> Logger { get; set; } = null!;
+    private bool DisplayTitle => ShowTitle;
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "dry-form", ModelNameSlug, CssClass);
 
