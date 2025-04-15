@@ -93,6 +93,10 @@ public partial class CommandInfo
     /// </summary>
     public CommandArguments Arguments { get; set; }
 
+    /// <summary>
+    /// A CSS class that is added to the button. This has no intrinsic meaning but can be used to
+    /// inform additional styling.
+    /// </summary>
     public string CssClass { get; set; } = string.Empty;
 
     /// <summary>
@@ -117,22 +121,6 @@ public partial class CommandInfo
         var result = Method.Invoke(ViewModel, args);
         if(result is Task task) {
             await task;
-        }
-    }
-
-    /// <summary>
-    /// Helper for constructors.
-    /// </summary>
-    private void Initialize(MethodInfo method)
-    {
-        var attribute = method.GetCustomAttribute<CommandAttribute>();
-        CssClass = attribute?.CssClass ?? "";
-        Caption = attribute?.Name ?? DefaultName(method.Name);
-        Arguments = GetArgumentsType(method);
-        if(attribute != null) {
-            Icon = attribute.Icon;
-            Context = attribute.Context;
-            Category = attribute.Category;
         }
     }
 
@@ -165,6 +153,23 @@ public partial class CommandInfo
         }
         else {
             return CommandArguments.Single;
+        }
+    }
+
+    /// <summary>
+    /// Helper for constructors.
+    /// </summary>
+    private void Initialize(MethodInfo method)
+    {
+        var attribute = method.GetCustomAttribute<CommandAttribute>();
+        CssClass = attribute?.CssClass ?? "";
+        Caption = attribute?.Name ?? DefaultName(method.Name);
+        Arguments = GetArgumentsType(method);
+        if(attribute != null) {
+            Icon = attribute.Icon;
+            Affordance = attribute.Affordance;
+            Context = attribute.Context;
+            Category = attribute.Category;
         }
     }
 
