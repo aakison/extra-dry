@@ -12,9 +12,15 @@ public partial class DryFieldset : ComponentBase, IExtraDryComponent
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
+    [Parameter]
+    public EventCallback<ChangeEventArgs> OnChange { get; set; }
+
     /// <inheritdoc />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
+
+    [Parameter]
+    public string GroupName { get; set; } = "";
 
     /// <summary>
     /// Cascading parameter so the model can be internal and not exposed to users.
@@ -22,19 +28,16 @@ public partial class DryFieldset : ComponentBase, IExtraDryComponent
     [CascadingParameter]
     internal IDryForm Form { get; set; } = null!;
 
+    protected override void OnParametersSet()
+    {
+        FormFieldset = Form.FormDescription?.Fieldsets?.FirstOrDefault(e => string.Equals(e.Name, GroupName, StringComparison.OrdinalIgnoreCase));
+    }
+
     /// <summary>
     /// Cascading parameter so the model can be internal and not exposed to users.
     /// </summary>
     //[CascadingParameter]
     private FormFieldset? FormFieldset { get; set; }
-
-    [Parameter]
-    public string GroupName { get; set; } = "";
-
-    protected override void OnParametersSet()
-    {
-        FormFieldset = Form.FormDescription?.Fieldsets?.FirstOrDefault(e => string.Equals(e.Name, GroupName, StringComparison.OrdinalIgnoreCase));
-    }
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "dry-fieldset", FormFieldset?.Name, Form.ModelNameSlug, FormFieldset?.CssClass, CssClass);
 
@@ -43,6 +46,11 @@ public partial class DryFieldset : ComponentBase, IExtraDryComponent
             Arguments = CommandArguments.Single,
             Context = CommandContext.Regular
         };
+
+    private async Task InputChanged(ChangeEventArgs args)
+    {
+        await OnChange.InvokeAsync(args);
+    }
 
     [Command(Name = "Add New", Icon = "plus")]
     private void AddDefaultElementToList(IList items)

@@ -33,13 +33,8 @@ public partial class DryInputSingleSelect<T>
         SelectedValue = Values[index];
         if(Model != null) {
             Property?.SetValue(Model, SelectedValue);
-            await InvokeOnChange(args);
+            await OnChange.InvokeAsync(args);
         }
-    }
-
-    private async Task InvokeOnChange(ChangeEventArgs args)
-    {
-        await OnChange.InvokeAsync(args);
     }
 
     private bool ReadOnly => EditMode == EditMode.ReadOnly;

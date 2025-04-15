@@ -6,7 +6,7 @@
     @if(ResolvedIcon != "") {
         <Icon CssClass="context" Key="@ResolvedIcon"/>
     }
-    <input class="value" title="@ResolvedTitle" type="text" value="@Value" readonly="@ReadOnly" placeholder="@ResolvedPlaceholder" @onchange="HandleChange" />
+    <input class="value" title="@ResolvedTitle" type="text" value="@Value" readonly="@ReadOnly" placeholder="@ResolvedPlaceholder" @onchange="@HandleChange" />
     @if(ResolvedAffordance != "" && !ReadOnly) {
         <Icon CssClass="affordance" Key="@ResolvedAffordance" />
     }

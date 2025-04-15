@@ -33,7 +33,7 @@
             <input type="checkbox" checked="@value" @onchange="HandleChange" />
         }
         else if(Property.HasReferenceDataTypeRepresentation) {
-            <DryInputSingleSelect Model="@Model" Property="@Property" Values="@LookupValues" />
+            <DryInputSingleSelect Model="@Model" Property="@Property" Values="@LookupValues" OnChange="@NotifyChange" />
         }
         else if(Property.HasDiscreteValues) {
             var selectedValue = Property.GetValue(Model);
@@ -70,7 +70,7 @@
                 <textarea class="@CssClasses" rows="@rows" readonly="@ReadOnly" placeholder="@Property.Display?.Prompt" @onchange="HandleChange">@Value</textarea>
             }
             else { 
-                <DryInputText Model="@Model" Property="@Property" ReadOnly="@ReadOnly" OnValidation="@ValidationChanged"/>
+                <DryInputText Model="@Model" Property="@Property" ReadOnly="@ReadOnly" OnValidation="@ValidationChanged" OnChange="@NotifyChange" />
             }
         } 
         else if(Property.HasNumericRepresentation) {

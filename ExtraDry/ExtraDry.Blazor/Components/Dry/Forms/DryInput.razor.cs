@@ -122,6 +122,11 @@ public partial class DryInput<T>
         ShowDescription = !ShowDescription;
     }
 
+    private async Task NotifyChange(ChangeEventArgs args)
+    {
+        await OnChange.InvokeAsync(args);
+    }
+
     private async Task HandleChange(ChangeEventArgs args)
     {
         if(Property == null || Model == null) {
