@@ -1,5 +1,6 @@
 using ExtraDry.Blazor.Models.InputValueFormatters;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace ExtraDry.Blazor;
 
@@ -36,12 +37,24 @@ public class PropertyDescription
 
     public static PropertyDescription Lookup(Type modelType, string propertyName)
     {
-        var propertyInfo = modelType.GetProperty(propertyName)
+        var propertyInfo = modelType.GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
             ?? throw new ArgumentException($"Property {propertyName} not found on {modelType.Name}");
-        return new PropertyDescription(propertyInfo);
+        return Lookup(propertyInfo);
     }
 
-    public PropertyDescription(PropertyInfo property)
+    public static PropertyDescription Lookup(PropertyInfo propertyInfo)
+    {
+        if(cache.TryGetValue(propertyInfo, out var cachedProperty)) {
+            return cachedProperty;
+        }
+        var description = new PropertyDescription(propertyInfo);
+        cache[propertyInfo] = description;
+        return description;
+    }
+
+    private static readonly Dictionary<PropertyInfo, PropertyDescription> cache = [];
+
+    private PropertyDescription(PropertyInfo property)
     {
         Property = property;
         Display = Property.GetCustomAttribute<DisplayAttribute>();

@@ -37,12 +37,7 @@ public abstract class DryPropertyComponentBase : ComponentBase
                 Logger.LogConsoleError("A property must be specified using either Property or PropertyName.");
                 return;
             }
-            var propInfo = Model.GetType().GetProperty(PropertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-            if(propInfo == null) {
-                Logger.LogConsoleError($"The {PropertyName} did not specify a valid property on {Model.GetType()} in component {GetType()}");
-                return;
-            }
-            Property = new PropertyDescription(propInfo);
+            Property = PropertyDescription.Lookup(Model.GetType(), PropertyName);
         }
     }
 

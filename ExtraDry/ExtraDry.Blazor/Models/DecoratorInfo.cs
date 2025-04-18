@@ -70,7 +70,7 @@ public class DecoratorInfo
     {
         ModelDisplayName = modelType.GetCustomAttribute<DisplayAttribute>()?.Name ?? modelType.Name;
         var properties = modelType.GetProperties().ToList();
-        var descriptions = properties.Select(e => new PropertyDescription(e)).ToList();
+        var descriptions = properties.Select(PropertyDescription.Lookup).ToList();
         var ordered = descriptions.OrderBy(e => e.Order ?? 10_000 + descriptions.IndexOf(e));
         foreach(var property in ordered) {
             var display = property.Display;
