@@ -1,15 +1,40 @@
 using ExtraDry.Blazor.Models.InputValueFormatters;
+using System.Linq.Expressions;
 
 namespace ExtraDry.Blazor;
 
 public class PropertyDescription
 {
-    public static PropertyDescription For(object model, string propertyName)
+    /// <summary>
+    /// Lookup the property description based on a property selector lambda, e.g. `() => Object.Property`.
+    /// </summary>
+    public static PropertyDescription Lookup(Expression expression)
     {
-        return For(model.GetType(), propertyName);
+        // Ensure the expression is a lambda
+        if(expression is not LambdaExpression lambda) {
+            throw new ArgumentException("Expression must be a lambda expression.");
+        }
+
+        // Ensure the body is a member access (e.g., Object.Property)
+        if(lambda.Body is not MemberExpression memberExpression) {
+            throw new ArgumentException("Expression body must be a member access expression.");
+        }
+
+        // Get the property name from the member expression
+        string propertyName = memberExpression.Member.Name;
+
+        // Get the type of the object (the type of the expression's parent)
+        Type objectType = memberExpression.Expression!.Type;
+
+        return Lookup(objectType, propertyName);
     }
 
-    public static PropertyDescription For(Type modelType, string propertyName)
+    public static PropertyDescription Lookup(object model, string propertyName)
+    {
+        return Lookup(model.GetType(), propertyName);
+    }
+
+    public static PropertyDescription Lookup(Type modelType, string propertyName)
     {
         var propertyInfo = modelType.GetProperty(propertyName)
             ?? throw new ArgumentException($"Property {propertyName} not found on {modelType.Name}");

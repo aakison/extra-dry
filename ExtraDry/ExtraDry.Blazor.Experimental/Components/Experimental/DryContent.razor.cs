@@ -239,5 +239,5 @@ public partial class DryContent : ComponentBase
         container.Html = value;
     }
 
-    private PropertyDescription Property(string name) => PropertyDescription.For(this, name);
+    private PropertyDescription Property(string name) => PropertyDescription.Lookup(this, name);
 }
