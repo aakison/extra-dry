@@ -78,7 +78,7 @@ public partial class DryValidationSummary : ComponentBase, IExtraDryComponent
     /// <param name="propertyName">The name of the property.</param>
     /// <param name="message">The validation messages</param>
     /// <returns>The formatted message</returns>
-    internal static string FormatMessage(string propertyName, string message)
+    public static string FormatMessage(string propertyName, string message)
     {
         message = message.Replace($"The {propertyName} field ", "");
         message = message.Replace($"The field {propertyName} ", "");
