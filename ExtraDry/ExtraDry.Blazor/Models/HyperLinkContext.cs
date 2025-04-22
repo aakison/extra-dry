@@ -15,7 +15,8 @@ public class HyperlinkContext
     }
 
     /// <summary>
-    /// The Url for the hyperlink to reference
+    /// The Url for the hyperlink to reference. Always displayed to the user, but only used as a
+    /// link if the `Action` is not set.
     /// </summary>
     public string Href { get; }
 
@@ -28,4 +29,9 @@ public class HyperlinkContext
     /// The display CSS class to attach to the hyperlink
     /// </summary>
     public string DisplayClass { get; set; } = string.Empty;
+
+    /// <summary>
+    /// If present, this will be a action that is called instead of using the default navigation.
+    /// </summary>
+    public Func<HyperlinkContext, Task>? Action { get; set; }
 }

@@ -36,7 +36,12 @@
             }
             else {
                 var context = @hyperlink.Execute(Item.Item);
-                <span class="@cssClass"><a class="@context.DisplayClass" href="@context.Href" title="@context.Title">@displayValue</a></span>
+                if(context.Action != null) {
+                    <span class="@cssClass"><a class="@context.DisplayClass" href="@context.Href" title="@context.Title" @onclick="@(async () => await context.Action(context))" @onclick:preventDefault="true">@displayValue</a></span>
+                }
+                else {
+                    <span class="@cssClass"><a class="@context.DisplayClass" href="@context.Href" title="@context.Title">@displayValue</a></span>
+                }
             }
         </td>
     }
