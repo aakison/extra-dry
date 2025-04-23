@@ -43,7 +43,7 @@ public partial class DryInputNumeric<T>
                 // 123.45 written as 1,2,3.45 won't trigger Value change refresh.
                 Value = $" {newValue}"; // stringly different but minimize UI flicker
                 StateHasChanged();
-                await Task.Delay(1); // let the UI update
+                await Task.Yield(); // let the UI update
             }
             Value = newValue;
             StateHasChanged();

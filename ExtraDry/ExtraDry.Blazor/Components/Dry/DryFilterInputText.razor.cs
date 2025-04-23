@@ -89,7 +89,7 @@ public partial class DryFilterInputText : ComponentBase, IExtraDryComponent, IDi
         if(!string.IsNullOrWhiteSpace(FreeTextFilter)) {
             FreeTextFilter = "";
             StateHasChanged();
-            await Task.Delay(1); // let the input update
+            await Task.Yield();
             if(QueryBuilderAccessor?.QueryBuilder != null) {
                 QueryBuilderAccessor.QueryBuilder.TextFilter.Keywords = FreeTextFilter;
                 filterInSync = false;

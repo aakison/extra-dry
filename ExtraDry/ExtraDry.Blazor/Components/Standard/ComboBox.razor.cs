@@ -160,7 +160,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent, IDispo
     protected async Task DoFocusOut(FocusEventArgs _)
     {
         haveActuallyLostFocus = true;
-        await Task.Delay(1); // KLUDGE: process other events, but get right back in queue...
+        await Task.Yield(); // KLUDGE: process other events, but get right back in queue...
         if(haveActuallyLostFocus) {
             CancelInput();
         }
@@ -294,7 +294,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent, IDispo
             var showAll = string.IsNullOrWhiteSpace(DisplayFilter) || SelectedOption != null;
             if(computeFilterCancellationSource != null) {
                 computeFilterCancellationSource.Cancel();
-                await Task.Delay(1); // KLUDGE: From .NET6 to .NET7 need to let some event through to keep this working...
+                await Task.Yield(); // KLUDGE: From .NET6 to .NET7 need to let some event through to keep this working...
             }
             ShowProgress = true;
             using(computeFilterCancellationSource = new CancellationTokenSource()) {

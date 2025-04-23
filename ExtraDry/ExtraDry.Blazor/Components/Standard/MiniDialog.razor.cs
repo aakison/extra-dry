@@ -268,7 +268,7 @@ public partial class MiniDialog : ComponentBase, IExtraDryComponent, IDisposable
         }
         shouldCollapse = true;
         // wait and see if we should ignore the out because we're switching focus within control.
-        await Task.Delay(1);
+        await Task.Yield();
         if(shouldCollapse) {
             if(LoseFocusAction is MiniDialogAction.Save or MiniDialogAction.SaveAndClose) {
                 await DoSubmit(null);

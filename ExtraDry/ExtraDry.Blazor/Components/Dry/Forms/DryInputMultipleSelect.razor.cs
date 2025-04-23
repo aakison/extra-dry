@@ -86,7 +86,7 @@ public partial class DryInputMultipleSelect<T>
     {
         // HACK: Want to re-select the blank row
         BlankSelected = false;
-        await Task.Delay(16); // one frame, let selected be removed then re-add to force DOM update.
+        await Task.Yield();
         BlankSelected = true;
     }
 
