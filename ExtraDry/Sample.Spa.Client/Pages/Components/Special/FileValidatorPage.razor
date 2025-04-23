@@ -94,7 +94,7 @@
             await Task.Delay(100);
             Md5Validation = "Downloading...";
             await Task.Delay(100);
-            var retrieved = await Blobs.RetrieveAsync(blob.Uuid, blob.Slug);
+            var retrieved = await Blobs.ReadAsync(blob.Uuid, blob.Slug);
             Md5Validation = "Downloaded";
             await Task.Delay(100);
             Md5Validation = blob.MD5Hash == retrieved.MD5Hash ? "Valid" : "MD5 Hashes Do Not Match";

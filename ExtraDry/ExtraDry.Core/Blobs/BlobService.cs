@@ -1,6 +1,7 @@
 ﻿using ExtraDry.Core.Extensions;
 using ExtraDry.Core.Internal;
 using Microsoft.Extensions.Logging;
+using System.Reflection.Metadata;
 
 namespace ExtraDry.Core;
 
@@ -71,16 +72,16 @@ public class BlobService<TBlob>(
     /// contain the Blob's filename, so the default filename will be used. This is suitable for use
     /// inside the app, but not ideal for downloading the file.
     /// </summary>
-    public async Task<TBlob> RetrieveAsync(Guid uuid, CancellationToken cancellationToken = default)
+    public async Task<TBlob> ReadAsync(Guid uuid, CancellationToken cancellationToken = default)
     {
-        return await RetrieveAsync(uuid, "unnamed-file", cancellationToken);
+        return await ReadAsync(uuid, "unnamed-file", cancellationToken);
     }
 
     /// <summary>
     /// Given a Blob's UUID, retrieve the Blob from the server. The URI for the blob will contain
     /// the slug provided which improves the URI and allows for downloading files.
     /// </summary>
-    public async Task<TBlob> RetrieveAsync(Guid uuid, string slug, CancellationToken cancellationToken = default)
+    public async Task<TBlob> ReadAsync(Guid uuid, string slug, CancellationToken cancellationToken = default)
     {
         var endpoint = ApiEndpoint(uuid, slug);
         var response = await client.GetAsync(endpoint, cancellationToken);
@@ -92,6 +93,32 @@ public class BlobService<TBlob>(
         validator.ValidateObject(blob);
         validator.ThrowIfInvalid();
         return blob;
+    }
+
+    public async Task UpdateAsync(TBlob blob, CancellationToken cancellationToken = default)
+    {
+        if(blob.Content == null) {
+            throw new InvalidOperationException("Blob content must be set before calling UpdateAsync.");
+        }
+
+        if(string.IsNullOrEmpty(blob.Slug)) {
+            var name = fileValidation == null ? blob.Uuid.ToString() : fileValidation.CleanFilename(Path.GetFileNameWithoutExtension(blob.Title));
+            blob.Slug = $"{Slug.ToSlug(name)}{Path.GetExtension(blob.Title).ToLowerInvariant()}";
+        }
+
+        blob.MD5Hash = options.ValidateHashOnCreate
+            ? MD5Core.GetHashString(blob.Content)
+            : string.Empty;
+
+        if(options.RewriteWebSafeFilename) {
+            blob.Title = fileValidation?.CleanFilename(blob.Title) ?? blob.Title;
+        }
+
+        blob.Length = blob.Content.Length;
+        using var bytes = BlobSerializer.SerializeBlob(blob);
+        var endpoint = ApiEndpoint(blob.Uuid, blob.Slug);
+        var response = await client.PutAsync(endpoint, bytes, cancellationToken);
+        await response.AssertSuccess(logger);
     }
 
     public async Task DeleteAsync(Guid uuid, CancellationToken cancellationToken = default)
