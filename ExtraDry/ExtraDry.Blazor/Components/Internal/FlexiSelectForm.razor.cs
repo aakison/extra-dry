@@ -3,7 +3,9 @@
 /// <summary>
 /// The internal form for the Flexi-Select component. Do not use directly.
 /// </summary>
-public partial class FlexiSelectForm<TItem> : ComponentBase, IExtraDryComponent where TItem : notnull
+public partial class FlexiSelectForm<TItem> 
+    : ComponentBase, IExtraDryComponent 
+    where TItem : notnull
 {
     /// <inheritdoc cref="IExtraDryComponent.CssClass" />
     [Parameter]

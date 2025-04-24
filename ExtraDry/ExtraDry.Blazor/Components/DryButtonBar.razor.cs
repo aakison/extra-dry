@@ -20,7 +20,7 @@ public partial class DryButtonBar : ComponentBase, IExtraDryComponent
     /// from the active `SelectionSet`.
     /// </summary>
     [Parameter]
-    public object? Target { get; set; }
+    public object? Model { get; set; }
 
     /// <summary>
     /// A link to the Decorator that contains the method to call on the button click. Typically
