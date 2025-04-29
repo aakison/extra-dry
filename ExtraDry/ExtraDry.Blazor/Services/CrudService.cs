@@ -19,8 +19,9 @@ namespace ExtraDry.Blazor;
 /// </remarks>
 public class CrudService<T>(
     HttpClient client,
-    CrudServiceOptions options,
+    CrudServiceOptions<T> options,
     ILogger<CrudService<T>> logger)
+    where T : notnull
 {
     /// <summary>
     /// Create a new resource in the resource. The item will be serialized to JSON and sent to the
@@ -28,6 +29,10 @@ public class CrudService<T>(
     /// </summary>
     public async Task CreateAsync(T item, CancellationToken cancellationToken = default)
     {
+        options.OnCreate?.Invoke(item);
+        if(options.OnCreateAsync != null) {
+            await options.OnCreateAsync(item);
+        }
         var json = JsonSerializer.Serialize(item);
         using var content = new StringContent(json, Encoding.UTF8, "application/json");
         var endpoint = ApiEndpoint(string.Empty);
@@ -48,6 +53,12 @@ public class CrudService<T>(
         var response = await client.GetAsync(endpoint, cancellationToken);
         await response.AssertSuccess(logger);
         var item = await response.Content.ReadFromJsonAsync<T>(cancellationToken: cancellationToken);
+        if(options.OnRead != null && item != null) {
+            options.OnRead(item);
+        }
+        if(options.OnReadAsync != null && item != null) {
+            await options.OnReadAsync(item);
+        }
         return item;
     }
 
@@ -67,6 +78,10 @@ public class CrudService<T>(
     /// </summary>
     public async Task UpdateAsync(object key, T item, CancellationToken cancellationToken = default)
     {
+        options.OnUpdate?.Invoke(item);
+        if(options.OnUpdateAsync != null) {
+            await options.OnUpdateAsync(item);
+        }
         var endpoint = ApiEndpoint(key);
         logger.LogEndpointCall(typeof(T), endpoint);
         var response = await client.PutAsJsonAsync(endpoint, item, cancellationToken);

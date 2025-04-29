@@ -3,7 +3,7 @@
 /// <summary>
 /// Options for a CRUD service.
 /// </summary>
-public class CrudServiceOptions : IHttpClientOptions, IValidatableObject
+public class CrudServiceOptions<T> : IHttpClientOptions, IValidatableObject
 {
     /// <inheritdoc />
     public string HttpClientName { get; set; } = string.Empty;
@@ -38,4 +38,35 @@ public class CrudServiceOptions : IHttpClientOptions, IValidatableObject
             yield return new ValidationResult("HttpClientType must define a subtype of HttpClient.");
         }
     }
+
+    /// <summary>
+    /// Provides an action that is executed when an item is created.  Useful for pre-serialization processing.
+    /// </summary>
+    public Action<T>? OnCreate { get; set; }
+
+    /// <summary>
+    /// Provides an async action that is executed when an item is created.  Useful for pre-serialization processing.
+    /// </summary>
+    public Func<T, Task>? OnCreateAsync { get; set; }
+
+    /// <summary>
+    /// Provides an action that is called when an item is read.  Useful for post-deserialization processing.
+    /// </summary>
+    public Action<T>? OnRead { get; set; }
+
+    /// <summary>
+    /// Provides an async action that is called when an item is read.  Useful for post-deserialization processing.
+    /// </summary>
+    public Func<T, Task>? OnReadAsync { get; set; }
+
+    /// <summary>
+    /// Provides an action that is called when an item is updated.  Useful for pre-serialization processing.
+    /// </summary>
+    public Action<T>? OnUpdate { get; set; }
+
+    /// <summary>
+    /// Provides an async action that is called when an item is updated.  Useful for pre-serialization processing.
+    /// </summary>
+    public Func<T, Task>? OnUpdateAsync { get; set; }
+
 }

@@ -19,11 +19,12 @@ public static class ServiceCollectionExtensions
 
     /// <summary>
     /// Adds a strongly typed <see cref="CrudService{T}" /> to the service collection. See <see
-    /// cref="AddCrudService{T}(IServiceCollection, Action{CrudServiceOptions})" /> for additional
+    /// cref="AddCrudService{T}(IServiceCollection, Action{CrudServiceOptions{T}})" /> for additional
     /// options. Particularly useful for specifying the HttpClient to use in multi- tenant
     /// deployments.
     /// </summary>
     public static IServiceCollection AddCrudService<T>(this IServiceCollection services, string endpointTemplate)
+        where T : notnull
     {
         services.AddCrudService<T>(options => {
             options.CrudEndpoint = endpointTemplate;
@@ -34,9 +35,10 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Adds a strongly typed <see cref="CrudService{T}" /> to the service collection.
     /// </summary>
-    public static IServiceCollection AddCrudService<T>(this IServiceCollection services, Action<CrudServiceOptions> config)
+    public static IServiceCollection AddCrudService<T>(this IServiceCollection services, Action<CrudServiceOptions<T>> config)
+        where T : notnull
     {
-        var options = new CrudServiceOptions();
+        var options = new CrudServiceOptions<T>();
         config(options);
 
         DataValidator.ThrowIfInvalid(options);
@@ -53,9 +55,10 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Adds a strongly typed <see cref="CrudService{T}" /> to the service collection.
     /// </summary>
-    public static IServiceCollection AddKeyedCrudService<T>(this IServiceCollection services, string key, Action<CrudServiceOptions> config)
+    public static IServiceCollection AddKeyedCrudService<T>(this IServiceCollection services, string key, Action<CrudServiceOptions<T>> config)
+        where T : notnull
     {
-        var options = new CrudServiceOptions();
+        var options = new CrudServiceOptions<T>();
         config(options);
 
         DataValidator.ThrowIfInvalid(options);
