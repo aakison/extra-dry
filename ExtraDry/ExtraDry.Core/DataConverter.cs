@@ -68,6 +68,18 @@ public partial class DataConverter
     public static string CamelCaseToKebabCase(string value) => Slug.ToSlug(CamelCaseToTitleCase(value));
 
     /// <summary>
+    /// Given a kebab-case string, converts it to title case. E.g. "two-words" becomes "Two Words".
+    /// </summary>
+    public static string KebabCaseToTitleCase(string value)
+    {
+        // remove dashes and convert to title case
+        value = value.Replace("-", " ");
+        value = FirstLetters().Replace(value, match => match.Value.ToUpperInvariant());
+        value = SmallWordsInString().Replace(value, match => match.Value.ToLowerInvariant());
+        return CamelCaseToTitleCase(value);
+    }
+
+    /// <summary>
     /// Gets the DataAnnotation DisplayName attribute for a given enum (for displaying enums values
     /// nicely to users)
     /// </summary>
@@ -105,5 +117,8 @@ public partial class DataConverter
     // lookbehind to avoid capitalizing small words at beginning of sentence
     [GeneratedRegex(@"(?<!^)\b(A|An|And|As|At|But|By|En|For|If|In|Of|On|Or|The|To|V[.]?|Via|Vs[.]?)\b")]
     private static partial Regex SmallWordsInString();
+
+    [GeneratedRegex(@"^\w|\s\w")]
+    private static partial Regex FirstLetters();
 
 }
