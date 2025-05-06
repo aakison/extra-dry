@@ -1,3 +1,5 @@
-﻿div.none, div.collapsed, div.collapsing, div.expanding {
-  overflow: hidden;
+﻿@layer extra-dry {
+  div.none, div.collapsed, div.collapsing, div.expanding {
+    overflow: hidden;
+  }
 }

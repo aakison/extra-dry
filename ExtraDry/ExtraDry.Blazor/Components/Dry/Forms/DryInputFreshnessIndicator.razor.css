@@ -1,12 +1,14 @@
-﻿/*
+﻿@layer extra-dry {
+  /*
     Basic design and style for a freshness indicator with a div surrounding the span.
 */
-div {
-  display: flex;
-  align-items: center;
-}
-
-  div span {
-    flex: 1 1 auto;
-    text-align: left;
+  div {
+    display: flex;
+    align-items: center;
   }
+
+    div span {
+      flex: 1 1 auto;
+      text-align: left;
+    }
+}

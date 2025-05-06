@@ -1,70 +1,72 @@
-﻿/*
+﻿@layer extra-dry {
+  /*
     Basic design and style for a date time input with a div surrounding the input.
 */
-div {
-  border: solid 1px black;
-  display: flex;
-  align-items: center;
-  border-radius: var(--input-rounding);
-  padding: 0 4px;
-}
+  div {
+    border: solid 1px black;
+    display: flex;
+    align-items: center;
+    border-radius: var(--input-rounding);
+    padding: 0 4px;
+  }
 
-::deep div.flexi-select {
-  flex: 1 1 auto;
-  border: none;
-  background-color: transparent;
-}
-
-  ::deep div.flexi-select button {
+  ::deep div.flexi-select {
+    flex: 1 1 auto;
     border: none;
     background-color: transparent;
   }
 
-  ::deep div.flexi-select input:focus, ::deep div.flexi-select input:focus-visible {
-    outline: none;
-  }
+    ::deep div.flexi-select button {
+      border: none;
+      background-color: transparent;
+    }
 
-  /*
+    ::deep div.flexi-select input:focus, ::deep div.flexi-select input:focus-visible {
+      outline: none;
+    }
+
+    /*
     Hide the default calendar input icon, replace with a custom icon.
     Note: the HTML has a JavaScript event handler to open the calendar on click.
   */
-  ::deep div.flexi-select input::-webkit-calendar-picker-indicator {
+    ::deep div.flexi-select input::-webkit-calendar-picker-indicator {
+      display: none;
+    }
+
+    /*
+    Styling for the element to be readonly
+  */
+    ::deep div.flexi-select.readonly {
+      background-color: #efefef;
+    }
+
+  /*
+    Re-style the flexi-select so it appears better as a select replacement.
+*/
+  div ::deep section > div {
+    width: initial;
+    height: initial;
+    min-width: 100%;
+  }
+
+  /*
+    Give the input the normal text treatment
+*/
+  div ::deep button {
+    font-size: var(--text-normal);
+  }
+
+  /*
+    Hide the submit button and the entire mini-dialog footer.
+*/
+  div ::deep footer {
     display: none;
   }
 
   /*
-    Styling for the element to be readonly
-  */
-  ::deep div.flexi-select.readonly {
-    background-color: #efefef;
-  }
-
-/*
-    Re-style the flexi-select so it appears better as a select replacement.
-*/
-div ::deep section > div {
-  width: initial;
-  height: initial;
-  min-width: 100%;
-}
-
-/*
-    Give the input the normal text treatment
-*/
-div ::deep button {
-  font-size: var(--text-normal);
-}
-
-/*
-    Hide the submit button and the entire mini-dialog footer.
-*/
-div ::deep footer {
-  display: none;
-}
-
-/*
     Bump the dialog down a smidge as the input is a bit taller
 */
-div ::deep section > div {
-  top: 6px;
+  div ::deep section > div {
+    top: 6px;
+  }
 }

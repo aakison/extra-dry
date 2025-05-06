@@ -1,35 +1,37 @@
-﻿/*
+﻿@layer extra-dry {
+  /*
     Basic design and style for a date time input with a div surrounding the input.
 */
-div {
-  border: solid 1px black;
-  display: flex;
-  align-items: center;
-  border-radius: var(--input-rounding);
-  padding: 0 4px;
-}
-
-  div input {
-    flex: 1 1 auto;
-    border: none;
-    background-color: transparent;
+  div {
+    border: solid 1px black;
+    display: flex;
+    align-items: center;
+    border-radius: var(--input-rounding);
+    padding: 0 4px;
   }
 
-    div input:focus, div input:focus-visible {
-      outline: none;
+    div input {
+      flex: 1 1 auto;
+      border: none;
+      background-color: transparent;
     }
 
-    /*
+      div input:focus, div input:focus-visible {
+        outline: none;
+      }
+
+      /*
     Hide the default calendar input icon, replace with a custom icon.
     Note: the HTML has a JavaScript event handler to open the calendar on click.
 */
-    div input::-webkit-calendar-picker-indicator {
-      display: none;
-    }
+      div input::-webkit-calendar-picker-indicator {
+        display: none;
+      }
 
-  /*
+    /*
     Styling for the element to be readonly
 */
-  div.readonly {
-    background-color: #efefef;
-  }
+    div.readonly {
+      background-color: #efefef;
+    }
+}

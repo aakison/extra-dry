@@ -1,7 +1,9 @@
-﻿div {
-  display: flex;
-}
-
-  div ::deep input {
-    flex: 1 1 auto;
+﻿@layer extra-dry {
+  div {
+    display: flex;
   }
+
+    div ::deep input {
+      flex: 1 1 auto;
+    }
+}

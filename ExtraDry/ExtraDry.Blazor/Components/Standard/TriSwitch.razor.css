@@ -1,39 +1,41 @@
-﻿div {
-  display: flex;
-  align-items: center;
-}
-
-  div span {
-    display: inline-flex;
+﻿@layer extra-dry {
+  div {
+    display: flex;
     align-items: center;
-    position: relative;
-    width: 40px;
-    height: 20px;
-    border: 1px solid #333;
-    border-radius: 12px;
   }
 
-    div span::after {
-      content: "";
-      display: block;
-      position: absolute;
-      left: 0;
-      width: 12px;
-      height: 12px;
-      margin: 0 4px;
-      background: #767676;
-      border-radius: 100%;
-      transition: 0.3s;
+    div span {
+      display: inline-flex;
+      align-items: center;
+      position: relative;
+      width: 40px;
+      height: 20px;
+      border: 1px solid #333;
+      border-radius: 12px;
     }
 
-  div .on {
-    background: #e9e9ed;
-  }
+      div span::after {
+        content: "";
+        display: block;
+        position: absolute;
+        left: 0;
+        width: 12px;
+        height: 12px;
+        margin: 0 4px;
+        background: #767676;
+        border-radius: 100%;
+        transition: 0.3s;
+      }
 
-    div .on::after {
-      left: 18px;
+    div .on {
+      background: #e9e9ed;
     }
 
-  div .indeterminate::after {
-    left: 9px;
-  }
+      div .on::after {
+        left: 18px;
+      }
+
+    div .indeterminate::after {
+      left: 9px;
+    }
+}

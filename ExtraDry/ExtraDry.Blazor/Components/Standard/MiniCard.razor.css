@@ -1,11 +1,14 @@
-﻿div {
-  display: flex;
-  align-items: center;
-}
+﻿@layer extra-dry {
 
-  div > div {
+  div {
     display: flex;
-    flex-direction: column;
-    align-items: start;
-    height: initial;
+    align-items: center;
   }
+
+    div > div {
+      display: flex;
+      flex-direction: column;
+      align-items: start;
+      height: initial;
+    }
+}
