@@ -159,7 +159,7 @@ public partial class DryButton : ComponentBase, IExtraDryComponent
 
     private bool ResolvedEnabled => Enabled ?? !disabled;
 
-    private async Task DoClick(MouseEventArgs args)
+    private async Task DoClick(MouseEventArgs _)
     {
         if(ResolvedCommand is null) {
             return;

@@ -38,10 +38,10 @@ public class RbacRouteMatchesClaimRequirementHandler(
             return;
         }
         Func<Claim, string, bool> valueMatch = requirement.ClaimValueMatch switch {
-            ClaimValueMatch.Exact => (Claim c, string e) => c.Value.Equals(e, StringComparison.Ordinal),
-            ClaimValueMatch.FirstPath => (Claim c, string e) => c.Value.Equals(e, StringComparison.Ordinal) || c.Value.StartsWith($"{e}@", StringComparison.Ordinal),
-            ClaimValueMatch.LastPath => (Claim c, string e) => c.Value.Equals(e, StringComparison.Ordinal) || c.Value.EndsWith($"@{e}", StringComparison.Ordinal),
-            _ => (Claim c, string e) => false
+            ClaimValueMatch.Exact => (c, e) => c.Value.Equals(e, StringComparison.Ordinal),
+            ClaimValueMatch.FirstPath => (c, e) => c.Value.Equals(e, StringComparison.Ordinal) || c.Value.StartsWith($"{e}@", StringComparison.Ordinal),
+            ClaimValueMatch.LastPath => (c, e) => c.Value.Equals(e, StringComparison.Ordinal) || c.Value.EndsWith($"@{e}", StringComparison.Ordinal),
+            _ => (c, e) => false
         };
         var matchingClaim = claims.FirstOrDefault(e => requirement.ClaimKeys.Contains(e.Type) && valueMatch(e, routeValue));
         if(matchingClaim != null) {

@@ -30,7 +30,7 @@ public class AbacOptions : IValidatableObject
     /// should be modified to return the appropriate type name for the target object.
     /// </summary>
     public Func<object?, string> AbacTypeResolver { get; set; }
-        = (object? target) => target == null ? "null" : target.GetType().Name;
+        = target => target == null ? "null" : target.GetType().Name;
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
