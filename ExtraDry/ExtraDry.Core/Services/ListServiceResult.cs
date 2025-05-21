@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor;
+﻿namespace ExtraDry.Core;
 
 public readonly struct ListServiceResult<TItem>(IEnumerable<TItem> items, int count, int total)
 {

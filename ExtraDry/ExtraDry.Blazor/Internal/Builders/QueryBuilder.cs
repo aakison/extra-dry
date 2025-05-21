@@ -39,7 +39,6 @@ public class QueryBuilder
             Level = BuildLevel(),
             Expand = Hierarchy.ExpandNodes.ToArray(),
             Collapse = Hierarchy.CollapseNodes.ToArray(),
-            Source = Source,
         };
         return Query;
     }

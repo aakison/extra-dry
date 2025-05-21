@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Web.Virtualization;
-
-namespace ExtraDry.Blazor;
+﻿namespace ExtraDry.Core;
 
 public interface IListService<T>
 {

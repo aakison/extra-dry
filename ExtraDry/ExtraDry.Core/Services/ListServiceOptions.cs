@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace ExtraDry.Blazor;
+namespace ExtraDry.Core;
 
 public class ListServiceOptions : IHttpClientOptions, IValidatableObject
 {
@@ -12,8 +12,6 @@ public class ListServiceOptions : IHttpClientOptions, IValidatableObject
     public int PageSize { get; set; } = 100;
 
     public ListServiceMode ListMode { get; set; } = ListServiceMode.FilterSortAndPage;
-
-    public HierarchyServiceMode HierarchyMode { get; set; } = HierarchyServiceMode.FilterAndPage;
 
     public HttpMethod HierarchyMethod { get; set; } = HttpMethod.Post;
 

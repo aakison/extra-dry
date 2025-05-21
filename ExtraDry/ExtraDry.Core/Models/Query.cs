@@ -1,12 +1,10 @@
-﻿namespace ExtraDry.Blazor.Internal;
+﻿namespace ExtraDry.Core;
 
 /// <summary>
 /// An immutable query object that is used to build the query string for the request.
 /// </summary>
 public sealed class Query
 {
-    public ListSource Source { get; init; }
-
     public string? Filter { get; init; }
 
     public string? Sort { get; init; }

@@ -1,10 +1,11 @@
 ﻿using ExtraDry.Core.Extensions;
-using Microsoft.AspNetCore.Components.Web.Virtualization;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Net;
 using System.Text.Json;
 
-namespace ExtraDry.Blazor;
+namespace ExtraDry.Core;
 
 public class ListService<TItem> : IListService<TItem>
 {

@@ -12,7 +12,7 @@ public static class ListServiceExtensions
 
     public static async ValueTask<ItemsProviderResult<T>> GetItemsAsync<T>(this ListService<T> list, CancellationToken cancellationToken)
     {
-        var query = new Query { Source = ListSource.List };
+        var query = new Query { };
         return await GetItemsAsync(list, query, cancellationToken);
     }
 

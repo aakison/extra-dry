@@ -1,9 +1,10 @@
 ﻿using ExtraDry.Core.Models;
+using Microsoft.Extensions.Logging;
 using System.Runtime.CompilerServices;
 
-namespace ExtraDry.Blazor;
+namespace ExtraDry.Core;
 
-internal static partial class LoggerExtensions
+internal static partial class LoggerPartials
 {
     [LoggerMessage(Level = LogLevel.Debug, EventId = 10,
         Message = "{Method} info: {Message}")]

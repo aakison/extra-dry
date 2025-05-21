@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor;
+﻿namespace ExtraDry.Core;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ListServiceMode

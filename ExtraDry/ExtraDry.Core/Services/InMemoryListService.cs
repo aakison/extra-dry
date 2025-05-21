@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Web.Virtualization;
-using ExtraDry.Core;
-
-namespace ExtraDry.Blazor;
+﻿namespace ExtraDry.Core;
 
 public class InMemoryListService<T>(
     IList<T> items,
@@ -20,20 +17,6 @@ public class InMemoryListService<T>(
     {
         var adjusted = FilterAndSort(query);
         return ValueTask.FromResult(new ListServiceResult<T>(adjusted, adjusted.Count, adjusted.Count));
-    }
-
-    public ValueTask<ItemsProviderResult<T>> GetItemsAsync(CancellationToken _ = default)
-    {
-        return ValueTask.FromResult(new ItemsProviderResult<T>(items, items.Count));
-    }
-
-    public ValueTask<ListItemsProviderResult<T>> GetListItemsAsync(Query query, CancellationToken _ = default)
-    {
-        var adjusted = FilterAndSort(query);
-        var collection = new BaseCollection<T> {
-            Items = adjusted
-        };
-        return ValueTask.FromResult(new ListItemsProviderResult<T>(collection));
     }
 
     public IList<T> FilterAndSort(Query query)
