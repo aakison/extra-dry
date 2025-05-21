@@ -171,29 +171,15 @@ public partial class ComboBoxComponentPage : ComponentBase, IListItemViewModel<S
 
         public int PageSize { get; set; } = 20;
 
-        public int MaxLevel { get; set; }
-
-        public int MinLevel { get; set; }
-
         private List<Sector> Sectors { get; set; } = [];
 
-        public async ValueTask<ItemsProviderResult<Sector>> GetItemsAsync(CancellationToken cancellationToken = default)
+        public async ValueTask<ListServiceResult<Sector>> GetItemsAsync(Query query, CancellationToken cancellationToken)
         {
-            var query = Sectors.Take(PageSize);
-            var result = new ItemsProviderResult<Sector>(query, Sectors.Count);
+            var items = Sectors.Take(PageSize);
+            var result = new ListServiceResult<Sector>(items, Sectors.Count, Sectors.Count);
             cancellationToken.ThrowIfCancellationRequested();
             await Task.Delay(500, cancellationToken);
             return result;
-        }
-
-        public ValueTask<ItemsProviderResult<Sector>> GetItemsAsync(Query query, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ValueTask<ListItemsProviderResult<Sector>> GetListItemsAsync(Query query, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -282,13 +282,12 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
                 var firstPage = PageFor(request.StartIndex);
                 var firstIndex = FirstItemOnPage(firstPage);
                 builder.Skip = firstIndex;
-                var container = await ItemsService.GetListItemsAsync(builder.Build(), request.CancellationToken);
-                var count = container.ItemInfos.Count;
-                var total = container.Total;
-                builder.Level.UpdateMaxLevel(ItemsService.MaxLevel);
-                builder.Level.UpdateMinLevel(ItemsService.MinLevel);
+                var items = await ItemsService.GetItemsAsync(builder.Build(), request.CancellationToken);
+                var infos = new ListItemsProviderResult<TItem>(items);
+                var count = infos.ItemInfos.Count;
+                var total = infos.Total;
 
-                InternalItems.AddRange(container.ItemInfos);
+                InternalItems.AddRange(infos.ItemInfos);
                 InternalItems.AddRange(Enumerable.Range(0, total - count).Select(e => new ListItemInfo<TItem>()));
                 Logger.LogPartialResults(typeof(TItem), 0, count, total);
             }
@@ -303,13 +302,12 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
                     var firstIndex = FirstItemOnPage(pageNumber);
                     builder.Skip = firstIndex;
                     if(!AllItemsCached(firstIndex, ItemsService.PageSize)) {
-                        var container = await ItemsService.GetListItemsAsync(builder.Build(), request.CancellationToken);
-                        var count = container.ItemInfos.Count;
-                        var total = container.Total;
-                        builder.Level.UpdateMaxLevel(ItemsService.MaxLevel);
-                        builder.Level.UpdateMinLevel(ItemsService.MinLevel);
+                        var items = await ItemsService.GetItemsAsync(builder.Build(), request.CancellationToken);
+                        var infos = new ListItemsProviderResult<TItem>(items);
+                        var count = infos.ItemInfos.Count;
+                        var total = infos.Total;
                         var index = firstIndex;
-                        foreach(var item in container.ItemInfos) {
+                        foreach(var item in infos.ItemInfos) {
                             var info = InternalItems[index++];
                             info.Item = item.Item;
                             info.IsLoaded = item.IsLoaded;

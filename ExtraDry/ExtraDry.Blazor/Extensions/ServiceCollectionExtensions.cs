@@ -164,7 +164,7 @@ public static class ServiceCollectionExtensions
             return upcasted;
         });
         services.AddScoped(e => {
-            IOptionProvider<T> upcasted = e.GetRequiredService<ListService<T>>();
+            IOptionProvider<T> upcasted = new ListServiceOptionProvider<T>(e.GetRequiredService<ListService<T>>());
             return upcasted;
         });
 
@@ -194,7 +194,7 @@ public static class ServiceCollectionExtensions
             return upcasted;
         });
         services.AddKeyedScoped(key, (e, key) => {
-            IOptionProvider<T> upcasted = e.GetRequiredService<ListService<T>>();
+            IOptionProvider<T> upcasted = new ListServiceOptionProvider<T>(e.GetRequiredService<ListService<T>>());
             return upcasted;
         });
 

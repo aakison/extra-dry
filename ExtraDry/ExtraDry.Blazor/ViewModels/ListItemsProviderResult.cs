@@ -4,6 +4,22 @@ namespace ExtraDry.Blazor;
 
 public class ListItemsProviderResult<T>
 {
+    public ListItemsProviderResult(ListServiceResult<T> result)
+    {
+        Collection = new BaseCollection<T> { Items = result.Items.ToList() };
+        ItemInfos = result.Items.Select(e => new ListItemInfo<T> {
+            Item = e,
+            IsLoaded = true,
+            IsGroup = IsGroup(e),
+            GroupDepth = GroupDepth(e),
+            IsExpanded = IsExpanded(e),
+        }).ToList();
+        Count = result.Count;
+        Total = Collection is PagedCollection<T> paged ? paged.Total :
+                Collection is PagedHierarchyCollection<T> pagedHierarchy ? pagedHierarchy.Total :
+                Collection.Count;
+    }
+
     public ListItemsProviderResult(BaseCollection<T> collection)
     {
         Collection = collection;

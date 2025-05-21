@@ -303,7 +303,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent, IDispo
                 cancellationToken.ThrowIfCancellationRequested();
                 var items = await ItemsSource.GetItemsAsync(new Query { Filter = filter }, cancellationToken);
                 InternalItems.SetItems(items.Items, Group, Sort, filter);
-                MoreCount = items.TotalItemCount - items.Items.Count();
+                MoreCount = items.Total - items.Count;
             }
             ShowProgress = false;
         }

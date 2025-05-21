@@ -15,22 +15,19 @@ public class InMemoryListService<T>(
     /// </remarks>
     public int PageSize => Math.Max(1, items.Count);
 
-    public int MaxLevel => 1;
 
-    public int MinLevel => 1;
-
-    public ValueTask<ItemsProviderResult<T>> GetItemsAsync(Query query, CancellationToken cancellationToken = default)
+    public ValueTask<ListServiceResult<T>> GetItemsAsync(Query query, CancellationToken cancellationToken)
     {
         var adjusted = FilterAndSort(query);
-        return ValueTask.FromResult(new ItemsProviderResult<T>(adjusted, adjusted.Count));
+        return ValueTask.FromResult(new ListServiceResult<T>(adjusted, adjusted.Count, adjusted.Count));
     }
 
-    public ValueTask<ItemsProviderResult<T>> GetItemsAsync(CancellationToken cancellationToken = default)
+    public ValueTask<ItemsProviderResult<T>> GetItemsAsync(CancellationToken _ = default)
     {
         return ValueTask.FromResult(new ItemsProviderResult<T>(items, items.Count));
     }
 
-    public ValueTask<ListItemsProviderResult<T>> GetListItemsAsync(Query query, CancellationToken cancellationToken = default)
+    public ValueTask<ListItemsProviderResult<T>> GetListItemsAsync(Query query, CancellationToken _ = default)
     {
         var adjusted = FilterAndSort(query);
         var collection = new BaseCollection<T> {
