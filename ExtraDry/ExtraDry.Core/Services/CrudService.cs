@@ -1,9 +1,10 @@
 ﻿using ExtraDry.Core.Extensions;
+using Microsoft.Extensions.Logging;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 
-namespace ExtraDry.Blazor;
+namespace ExtraDry.Core;
 
 /// <summary>
 /// A simple CRUD API service wrapper for Extra Dry service endpoints. This wrapper assumes that 4
@@ -36,7 +37,7 @@ public class CrudService<T>(
         var json = JsonSerializer.Serialize(item);
         using var content = new StringContent(json, Encoding.UTF8, "application/json");
         var endpoint = ApiEndpoint(string.Empty);
-        logger.LogEndpointCall(typeof(T), endpoint);
+        //logger.LogEndpointCall(typeof(T), endpoint);
         var response = await client.PostAsync(endpoint, content, cancellationToken);
         await response.AssertSuccess(logger);
     }
@@ -49,7 +50,7 @@ public class CrudService<T>(
     public async Task<T?> TryReadAsync(object key, CancellationToken cancellationToken = default)
     {
         var endpoint = ApiEndpoint(key);
-        logger.LogEndpointCall(typeof(T), endpoint);
+        //logger.LogEndpointCall(typeof(T), endpoint);
         var response = await client.GetAsync(endpoint, cancellationToken);
         await response.AssertSuccess(logger);
         var item = await response.Content.ReadFromJsonAsync<T>(cancellationToken: cancellationToken);
@@ -83,7 +84,7 @@ public class CrudService<T>(
             await options.OnUpdateAsync(item);
         }
         var endpoint = ApiEndpoint(key);
-        logger.LogEndpointCall(typeof(T), endpoint);
+        //logger.LogEndpointCall(typeof(T), endpoint);
         var response = await client.PutAsJsonAsync(endpoint, item, cancellationToken);
         await response.AssertSuccess(logger);
     }
@@ -96,7 +97,7 @@ public class CrudService<T>(
     public async Task DeleteAsync(object key, CancellationToken cancellationToken = default)
     {
         var endpoint = ApiEndpoint(key);
-        logger.LogEndpointCall(typeof(T), endpoint);
+        //logger.LogEndpointCall(typeof(T), endpoint);
         var response = await client.DeleteAsync(endpoint, cancellationToken);
         await response.AssertSuccess(logger);
     }
@@ -116,7 +117,7 @@ public class CrudService<T>(
         endpoint = $"{endpoint}:{operation}";
         var json = JsonSerializer.Serialize(payload);
         using var content = new StringContent(json, Encoding.UTF8, "application/json");
-        logger.LogEndpointCall(typeof(T), endpoint);
+        //logger.LogEndpointCall(typeof(T), endpoint);
         var response = await client.PostAsync(endpoint, content, cancellationToken);
         await response.AssertSuccess(logger);
     }
