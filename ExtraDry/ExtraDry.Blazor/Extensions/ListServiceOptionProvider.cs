@@ -1,4 +1,8 @@
-﻿namespace ExtraDry.Blazor;
+﻿using ExtraDry.Core;
+using Microsoft.AspNetCore.Components.Web.Virtualization;
+using System.Collections.Generic;
+
+namespace ExtraDry.Blazor;
 
 /// <summary>
 /// Wrapper for ListService to IOptionService so that the list can be in Core (the options are Web/Blazor only).
@@ -7,8 +11,9 @@ public class ListServiceOptionProvider<T>(
     ListService<T> source)
     : IOptionProvider<T>
 {
-    public async ValueTask<Microsoft.AspNetCore.Components.Web.Virtualization.ItemsProviderResult<T>> GetItemsAsync(CancellationToken cancellationToken = default)
+    public async ValueTask<ItemsProviderResult<T>> GetItemsAsync(CancellationToken cancellationToken = default)
     {
-        return await source.GetItemsAsync(cancellationToken);
+        var result = await source.GetItemsAsync(new Query(), cancellationToken);
+        return new ItemsProviderResult<T>(result.Items, result.Count);
     }
 }

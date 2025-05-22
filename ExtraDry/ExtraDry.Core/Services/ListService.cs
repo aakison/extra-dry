@@ -103,7 +103,12 @@ public class ListService<TItem> : IListService<TItem>
         }
     }
 
-    public async ValueTask<ListServiceResult<TItem>> GetItemsAsync(Query query, CancellationToken cancellationToken)
+    public async ValueTask<ListServiceResult<TItem>> GetItemsAsync(CancellationToken cancellationToken = default)
+    {
+        return await GetItemsAsync(new Query(), cancellationToken);
+    }
+
+    public async ValueTask<ListServiceResult<TItem>> GetItemsAsync(Query query, CancellationToken cancellationToken = default)
     {
         var result = await GetItemsInternalAsync(query, cancellationToken);
         return new ListServiceResult<TItem>(result.Item2, result.Item2.Count, result.Item3);
