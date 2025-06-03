@@ -1,0 +1,43 @@
+﻿@layer extra-dry {
+  /*
+    Basic design and style for a date time input with a div surrounding the input.
+*/
+  div.input {
+    border: solid 1px black;
+    display: flex;
+    align-items: center;
+    border-radius: var(--input-rounding);
+    padding: 0 0 0 var(--spacing-tiny);
+    gap: var(--spacing-small);
+  }
+
+    div.input ::deep div.combo-box {
+      flex: 1 1 auto;
+      width: 100%;
+      border: none;
+      background-color: transparent;
+    }
+
+      div.input ::deep div.combo-box label:focus,
+      div.input ::deep div.combo-box label:focus-visible,
+      div.input ::deep div.combo-box label:focus-within,
+      div.input ::deep div.combo-box input:focus,
+      div.input ::deep div.combo-boxinput:focus-visible {
+        outline: none;
+      }
+
+    /*
+        Styling for the element to be readonly
+    */
+    div.input.readonly {
+      background-color: #efefef;
+    }
+
+  /*
+      Icons in the control (and even further down the tree) should be small.
+  */
+  ::deep svg, ::deep img {
+    width: var(--icon-tiny);
+    height: var(--icon-tiny);
+  }
+}

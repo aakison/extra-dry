@@ -10,7 +10,7 @@
         @if(Icon != null) {
             <Icon Key="@Icon" />
         }
-        <input type="text" name="@Name" placeholder="@Placeholder" value="@DisplayFilter" @oninput="DoFilterInput" />
+        <input type="text" name="@Name" placeholder="@Placeholder" value="@DisplayFilter" @oninput="DoFilterInput" autocomplete="off" />
         @if(ShowProgress) {
             <progress></progress>
         }
