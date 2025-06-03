@@ -175,6 +175,9 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent, IDispo
         if(Items != null) {
             InternalItems.SetItems(Items, Group, Sort, DisplayFilter);
         }
+        else {
+            InternalItems.UseFilter = false;
+        }
 
         await base.OnParametersSetAsync();
     }
@@ -612,6 +615,8 @@ internal class SortedFilteredCollection<T>
 
     public string Filter { get; private set; } = string.Empty;
 
+    public bool UseFilter { get; set; } = true;
+
     private void ApplySort()
     {
         SortedItems = (SourceItems, Group, Sort) switch {
@@ -625,9 +630,9 @@ internal class SortedFilteredCollection<T>
 
     private void ApplyFilter()
     {
-        FilteredItems = string.IsNullOrWhiteSpace(Filter)
-            ? SortedItems
-            : SortedItems.Where(e => DisplayFunc(e).Contains(Filter, StringComparison.OrdinalIgnoreCase)).ToList();
+        FilteredItems = UseFilter && !string.IsNullOrWhiteSpace(Filter)
+            ? SortedItems.Where(e => DisplayFunc(e).Contains(Filter, StringComparison.OrdinalIgnoreCase)).ToList()
+            : SortedItems;
     }
 
     private List<T> SortedItems { get; set; } = [];
