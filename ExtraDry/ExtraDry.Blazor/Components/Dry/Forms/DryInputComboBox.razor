@@ -6,7 +6,7 @@
     @if(ResolvedIcon != "") {
         <Icon CssClass="context" Key="@ResolvedIcon"/>
     }
-    <ComboBox CssClass="value" Value="@Value" Placeholder="@ResolvedPlaceholder" @onchange="@HandleChange" Items="@Items" ItemsSource="@ItemsSource" />
+    <ComboBox CssClass="value" Value="@Value" Placeholder="@ResolvedPlaceholder" @onchange="@HandleChange" Items="@Items" ItemsSource="@ResolvedItemsSource" />
     @* <input class="value" title="@ResolvedTitle" type="text" value="@Value" readonly="@ReadOnly" placeholder="@ResolvedPlaceholder" @onchange="@HandleChange" /> *@
     @if(ResolvedAffordance != "" && !ReadOnly) {
         <Icon CssClass="affordance" Key="@ResolvedAffordance" />

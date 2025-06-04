@@ -39,9 +39,10 @@ public partial class DryInput<T>
     protected override async Task OnInitializedAsync()
     {
         if(Property.Rules?.UpdateAction == RuleAction.Block) {
+            return;
         }
-        else if(Property.HasTextRepresentation == false && Property?.HasDateTimeRepresentation == false && Property.HasNumericRepresentation == false) {
-            await FetchLookupProviderOptions();
+        if(Property.HasTextRepresentation == false && Property?.HasDateTimeRepresentation == false && Property.HasNumericRepresentation == false) {
+            await FetchTypedOptionProvider();
         }
     }
 
@@ -78,7 +79,7 @@ public partial class DryInput<T>
 
     private bool HasDescription => Property?.HasDescription ?? false;
 
-    private async Task FetchLookupProviderOptions()
+    private async Task FetchTypedOptionProvider()
     {
         if(Property == null) {
             return;

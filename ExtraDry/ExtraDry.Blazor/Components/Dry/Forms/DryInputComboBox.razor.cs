@@ -6,7 +6,8 @@ namespace ExtraDry.Blazor.Forms;
 /// A DRY wrapper around a combo box input field. Prefer the use of <see cref="DryInput{T}" /> instead
 /// of this component as it is more flexible and supports more data types.
 /// </summary>
-public partial class DryInputComboBox<T>
+public partial class DryInputComboBox<T>(
+    IServiceProvider services)
     : DryInputBase<T>
     where T : class
 {
@@ -19,6 +20,19 @@ public partial class DryInputComboBox<T>
     [Parameter]
     public IListService<string>? ItemsSource { get; set; }
 
+    protected override void OnInitialized()
+    {
+        if(Property?.Options == null) {
+            return;
+        }
+        var options = services.GetService(Property.Options.ProviderType) as IListService<string>
+            ?? Activator.CreateInstance(Property.Options.ProviderType) as IListService<string>;
+        if(options is null) {
+            Logger.LogWarning("Property {PropertyName} has an options provider of type {ProviderType} but it is not a valid IOptionProvider<string>.", Property.Property.Name, Property.Options.ProviderType);
+        }
+        ResolvedItemsSource = options ?? ItemsSource;
+    }
+
     protected override void OnParametersSet()
     {
         if(Model == null || Property == null) {
@@ -26,6 +40,8 @@ public partial class DryInputComboBox<T>
         }
         Value = Property.DisplayValue(Model);
     }
+
+    private IListService<string>? ResolvedItemsSource { get; set; }
 
     private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
 

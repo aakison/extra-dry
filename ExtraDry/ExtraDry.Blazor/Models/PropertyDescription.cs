@@ -66,6 +66,7 @@ public class PropertyDescription
         Filter = Property.GetCustomAttribute<FilterAttribute>();
         InputField = Property.GetCustomAttribute<InputFieldAttribute>();
         Sort = Property.GetCustomAttribute<SortAttribute>();
+        Options = Property.GetCustomAttribute<ListServiceAttribute>();
 
         FieldCaption = Display?.Name ?? DataConverter.CamelCaseToTitleCase(Property.Name);
         ColumnCaption = Display?.ShortName ?? DataConverter.CamelCaseToTitleCase(Property.Name);
@@ -135,6 +136,8 @@ public class PropertyDescription
     public InputFieldAttribute? InputField { get; }
 
     public SortAttribute? Sort { get; }
+
+    public ListServiceAttribute? Options { get; }
 
     /// <summary>
     /// Use FieldLength instead.
@@ -273,6 +276,12 @@ public class PropertyDescription
     }
 
     public bool HasReferenceDataTypeRepresentation => Property.PropertyType == typeof(Guid) && InputType.IsClass;
+
+    public bool HasDiscreteStringValues {
+        get {
+            return (Property.PropertyType == typeof(string) || Property.PropertyType == typeof(Uri)) && Options is not null;
+        }
+    }
 
     public bool HasDiscreteValues {
         get {

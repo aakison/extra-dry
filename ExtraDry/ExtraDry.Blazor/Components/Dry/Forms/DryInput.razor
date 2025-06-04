@@ -35,6 +35,9 @@
         else if(Property.HasReferenceDataTypeRepresentation) {
             <DryInputSingleSelect Model="@Model" Property="@Property" Values="@LookupValues" OnChange="@NotifyChange" />
         }
+        else if(Property.HasDiscreteStringValues) {
+            <DryInputComboBox Model="@Model" Property="@Property" />
+        }
         else if(Property.HasDiscreteValues) {
             var selectedValue = Property.GetValue(Model);
             @* @if(Property.ControlType == ControlType.RadioButtons) {
