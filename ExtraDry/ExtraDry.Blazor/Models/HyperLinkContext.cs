@@ -33,5 +33,8 @@ public class HyperlinkContext
     /// <summary>
     /// If present, this will be a action that is called instead of using the default navigation.
     /// </summary>
+    /// <example>
+    /// async e => Console.WriteLine($"Hyperlink clicked: {e.Href}");
+    /// </example>
     public Func<HyperlinkContext, Task>? Action { get; set; }
 }
