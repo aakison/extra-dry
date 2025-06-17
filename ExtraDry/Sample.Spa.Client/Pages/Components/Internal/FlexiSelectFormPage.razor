@@ -1,5 +1,5 @@
 ﻿@page "/components/internal/flexi-select-form"
-@implements ISubjectViewModel<Employee>
+@implements ISubjectViewModel<Employee?>
 
 <section>
     <h2>FlexiSelectForm</h2>
@@ -71,17 +71,17 @@
 
 @code {
 
-    public string Code(Employee _) => string.Empty;
+    public string Code(Employee? _) => string.Empty;
 
-    public string Title(Employee employee) => $"{employee?.FirstName} {employee?.LastName}";
+    public string Title(Employee? employee) => $"{employee?.FirstName} {employee?.LastName}";
 
-    public string Subtitle(Employee employee) => employee?.Email ?? string.Empty;
+    public string Subtitle(Employee? employee) => employee?.Email ?? string.Empty;
 
-    public string Caption(Employee employee) => $"{employee?.FirstName} {employee?.LastName} ({employee?.Email})";
+    public string Caption(Employee? employee) => $"{employee?.FirstName} {employee?.LastName} ({employee?.Email})";
 
-    public string Icon(Employee employee) => Gravatar.ToGravatarUrl(employee?.Email, 40);
+    public string Icon(Employee? employee) => Gravatar.ToGravatarUrl(employee?.Email, 40);
 
-    public string Description(Employee _) => string.Empty;
+    public string Description(Employee? _) => string.Empty;
 
     private bool MultiSelect { get; set; }
 
