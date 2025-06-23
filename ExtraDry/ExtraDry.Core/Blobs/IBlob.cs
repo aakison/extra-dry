@@ -1,8 +1,7 @@
 ﻿namespace ExtraDry.Core;
 
 /// <summary>
-/// The interface for Extra Dry support for Blobs. Use the <see cref="Blob" /> class for simple
-/// scenarios, or expand the metadata for Blobs with your own class that implements this interface.
+/// The interface for Extra Dry support for Blobs. 
 /// </summary>
 public interface IBlob : IResourceIdentifiers
 {
