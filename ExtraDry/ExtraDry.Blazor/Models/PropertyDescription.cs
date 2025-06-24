@@ -244,7 +244,6 @@ public class PropertyDescription
         }
         var propertyList = propertyObject as IList;
         if(propertyList == null) {
-            // TODO: Change to logging, better behavior here?
             Console.WriteLine("Not castable to IList");
         }
         return propertyList ?? Array.Empty<object>();
@@ -288,7 +287,6 @@ public class PropertyDescription
             if(Property.PropertyType.IsEnum) {
                 return true;
             }
-            // TODO: Check about other discrete options, like valid values in a database.
             return false;
         }
     }

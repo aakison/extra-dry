@@ -66,8 +66,6 @@ public partial class FileValidationService
             _ => extension,
         };
 
-        // TODO: Clean up diacritics? https://stackoverflow.com/questions/249087/how-do-i-remove-diacritics-accents-from-a-string-in-net
-
         return $"{cleanedFilename}.{cleanedExtension}";
     }
 

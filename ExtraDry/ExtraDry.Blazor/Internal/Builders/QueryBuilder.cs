@@ -35,7 +35,7 @@ public class QueryBuilder
             Filter = BuildFilter(),
             Sort = BuildSort(),
             Skip = Skip,
-            Take = 50, // TODO: Make this configurable
+            Take = 50,
             Level = BuildLevel(),
             Expand = Hierarchy.ExpandNodes.ToArray(),
             Collapse = Hierarchy.CollapseNodes.ToArray(),

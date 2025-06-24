@@ -34,8 +34,6 @@ public class AbacOptions : IValidatableObject
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        // TODO: AbacConditions
-        // TODO: AbacPolicies
         var referencedConditions = Policies.SelectMany(p => p.Conditions).Distinct() ?? [];
         var actualConditions = Conditions.Select(e => e.Key);
         foreach(var missing in referencedConditions.Except(actualConditions)) {

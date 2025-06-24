@@ -110,7 +110,6 @@ public static class QueryableExtensions
     /// <param name="query">A page query that contains paging information.</param>
     public static IQueryable<T> Page<T>(this IQueryable<T> source, IPageQuery query)
     {
-        // TODO: Implement stabilizer using model meta-data.
         return source.Page(query.Skip, query.Take, query.Token);
     }
 

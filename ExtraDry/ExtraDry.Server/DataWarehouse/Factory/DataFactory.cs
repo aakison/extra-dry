@@ -70,7 +70,6 @@ public class DataFactory(
         foreach(var table in tables) {
             count += await ProcessTableBatchAsync(table);
         }
-        // TODO: Expand for custom date tables
         var dateTables = model.Dimensions.Where(e => e.Generator != null);
         foreach(var table in dateTables) {
             count += await ProcessGeneratorBatchAsync(table);
@@ -133,13 +132,13 @@ public class DataFactory(
         logger.LogTableChange("Modified entities, processing upserts.", table.Name);
         foreach(var item in batch) {
             var sql = Upsert(table, item);
-            logger.LogTextVerbose($"Executing Upsert SQL: {sql}"); // TODO: remove when tested.
+            logger.LogTextVerbose($"Executing Upsert SQL: {sql}"); 
             await target.Database.ExecuteSqlRawAsync(sql);
         }
         batchStats.SyncTimestamp = table.Generator?.GetSyncTimestamp()
             ?? batch.Max(e => GetVersionInfo(e)?.DateModified ?? DateTime.MinValue);
         await target.SaveChangesAsync();
-        logger.LogTextVerbose($"Processed {batch.Count} upserts on [{table.Name}], updating sync timestamp to {batchStats.SyncTimestamp}."); // TODO: remove when tested.
+        logger.LogTextVerbose($"Processed {batch.Count} upserts on [{table.Name}], updating sync timestamp to {batchStats.SyncTimestamp}."); 
     }
 
     private async Task<List<object>> GetBatchAfterTimestampAsync(PropertyInfo entitiesDbSet, DataTableSync batchStats)
@@ -211,7 +210,7 @@ public class DataFactory(
     {
         logger.LogTableChange("Creating warehouse table", table.Name);
         var sqlTable = Sql.CreateTable(table);
-        logger.LogTextVerbose($"Executing Create TAble SQL: {sqlTable}");
+        logger.LogTextVerbose($"Executing Create Table SQL: {sqlTable}");
         await target.Database.ExecuteSqlRawAsync(sqlTable);
         var sqlData = Sql.InsertData(table);
         if(!string.IsNullOrWhiteSpace(sqlData)) {

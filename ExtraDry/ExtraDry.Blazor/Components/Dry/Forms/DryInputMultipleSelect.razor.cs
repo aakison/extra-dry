@@ -84,7 +84,7 @@ public partial class DryInputMultipleSelect<T>
 
     private async Task SelectBlankRow()
     {
-        // HACK: Want to re-select the blank row
+        // Re-select the blank row
         BlankSelected = false;
         await Task.Yield();
         BlankSelected = true;

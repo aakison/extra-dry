@@ -29,11 +29,6 @@ public partial class DryValidationSummary : ComponentBase, IExtraDryComponent
     public List<string> GetValidationMessages()
     {
         if(!IsValidationError) {
-            // TODO: Propogate non validation exceptions to a higher ErrorBoundary? Throwing the
-            // exception here doesn't get handled by DryErrorBoundary it goes unhandled and the
-            // alert bar at bottom of the screen appears. For now it's handled by the
-            // DryValidationSummary to display a "A problem has occurred. Please try again" message
-            // throw Exception;
             return [];
         }
         if(!ProblemDetails!.Extensions.TryGetValue("errors", out var errors)) {

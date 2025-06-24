@@ -9,7 +9,6 @@ public class ValueDescription : ISubjectViewModel
         var display = memberInfo.GetCustomAttribute<DisplayAttribute>();
         Title = display?.Name
             ?? memberInfo.Name;
-        // TODO: Format display name with global title case converter.
         AutoGenerate = display?.GetAutoGenerateField() ?? true;
     }
 

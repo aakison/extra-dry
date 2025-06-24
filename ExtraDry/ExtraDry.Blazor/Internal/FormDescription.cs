@@ -85,7 +85,6 @@ public class FormDescription
                         foreach(var submodel in collection!) {
                             ExtendProperties(property.ChildModel.FormProperties, fieldsetName, FormGroupType.Element, submodel, collection);
                         }
-                        // TODO: different for IEnumerable?
                         if(collection is IList list && type.HasDefaultConstructor()) {
                             ExtendedProperties.Add(new ExtendedProperty(property, list) {
                                 FieldsetTitle = fieldsetName,
@@ -97,7 +96,6 @@ public class FormDescription
                     }
                     catch(DryException ex) {
                         Console.WriteLine(ex.Message);
-                        // TODO: Determine correct error behavior.
                     }
                 }
             }

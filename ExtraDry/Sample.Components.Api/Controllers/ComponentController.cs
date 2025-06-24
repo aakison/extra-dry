@@ -27,9 +27,7 @@ public class ComponentController(
     [Produces("application/json")]
     public async Task<PagedCollection<Component>> ListComponents(string tenant, [FromQuery] PageQuery query)
     {
-        // TODO: Apply ABAC as part of query
         var results = await components.ListComponentsAsync(tenant, query);
-        // TODO: Double-check ABAC filter on results.
         return results;
     }
 

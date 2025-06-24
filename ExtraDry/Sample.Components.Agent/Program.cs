@@ -42,7 +42,7 @@ builder.Services.AddMassTransit(config => {
         });
     }
     else if(options.ServiceBus == ServiceBusTransport.AzureServiceBus) {
-        // TODO:
+        // Not used/supported in Sample.  
     }
     else if(options.ServiceBus == ServiceBusTransport.InMemory) {
         config.UsingInMemory((context, cfg) => {

@@ -136,7 +136,7 @@ public static class BlobSerializer
         }
         var memoryStream = new MemoryStream();
         await request.Body.CopyToAsync(memoryStream, cancellationToken);
-        var bytes = memoryStream.ToArray(); // TODO: can be more efficient if no MD5.
+        var bytes = memoryStream.ToArray();
         blob.Content = bytes;
         blob.Length = bytes.Length;
         return blob;

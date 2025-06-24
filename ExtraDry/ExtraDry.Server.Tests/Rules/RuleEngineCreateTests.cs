@@ -226,17 +226,6 @@ public class RuleEngineCreateTests
         await Assert.ThrowsAsync<DryException>(async () => await rules.CreateAsync(exemplar));
     }
 
-    // TODO: What does it mean to block an object?
-    // Do we recursively check all fields that are 'allow' and turn them to blocked?
-    // Is it just at the object level?
-    //[Fact]
-    //public async Task CreateFailsOnExplicitObjectPropertyBlock()
-    //{
-    //    var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
-    //    var exemplar = new BlockedPropertiesEntity { BlockTestObject = new ChildEntity() };
-
-    //    await Assert.ThrowsAsync<DryException>(async () => await rules.CreateAsync(exemplar));
-    //}
 }
 
 public class IgnoreDefaultsEntity
