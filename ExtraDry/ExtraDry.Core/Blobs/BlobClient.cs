@@ -14,11 +14,11 @@ namespace ExtraDry.Core;
 /// cref="ServiceCollectionExtensions.AddBlobService(Microsoft.Extensions.DependencyInjection.IServiceCollection,
 /// Action{BlobServiceOptions})" /> extension method.
 /// </remarks>
-public class BlobService<TBlob>(
+public class BlobClient<TBlob>(
     HttpClient client,
     FileValidationService? fileValidation,
     BlobServiceOptions options,
-    ILogger<BlobService<TBlob>> logger)
+    ILogger<BlobClient<TBlob>> logger)
     where TBlob : IBlob, new()
 {
     /// <summary>

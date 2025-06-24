@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Core;
 
 /// <summary>
-/// Configuration options for the <see cref="BlobService{TBlob}" />. 
+/// Configuration options for the <see cref="BlobClient{TBlob}" />. 
 /// </summary>
 public class BlobServiceOptions : IValidatableObject, IHttpClientOptions
 {

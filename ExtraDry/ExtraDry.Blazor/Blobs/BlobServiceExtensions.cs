@@ -10,7 +10,7 @@ public static class BlobServiceExtensions
     /// generated UUID.
     /// </summary>
     /// <returns>The Blob that was created locally and corresponds to the remote Blob.</returns>
-    public static async Task<TBlob> CreateAsync<TBlob>(this BlobService<TBlob> blobs, IBrowserFile file, CancellationToken cancellationToken = default) where TBlob : IBlob, new()
+    public static async Task<TBlob> CreateAsync<TBlob>(this BlobClient<TBlob> blobs, IBrowserFile file, CancellationToken cancellationToken = default) where TBlob : IBlob, new()
     {
         var blob = new TBlob {
             Title = file.Name,
