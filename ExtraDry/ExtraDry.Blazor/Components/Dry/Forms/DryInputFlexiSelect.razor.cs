@@ -30,7 +30,7 @@ public partial class DryInputFlexiSelect<T>
 
     private ValueDescription? Value { get; set; }
 
-    private List<ValueDescription>? Values { get; set; }
+    private List<ValueDescription?>? Values { get; set; }
 
     private async Task HandleChange(DialogEventArgs args)
     {

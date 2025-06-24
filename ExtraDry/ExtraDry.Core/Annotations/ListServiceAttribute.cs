@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Core;
 
 /// <summary>
-/// Provides a type of a <see cref="IListService{T}"/> that can be used to populate a list of options for a property in a form.
+/// Provides a type of a <see cref="IListClient{T}"/> that can be used to populate a list of options for a property in a form.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property)]
 public class ListServiceAttribute(Type providerType) : Attribute

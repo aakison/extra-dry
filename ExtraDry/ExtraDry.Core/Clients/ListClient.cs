@@ -7,14 +7,14 @@ using System.Text.Json;
 
 namespace ExtraDry.Core;
 
-public class ListService<TItem> : IListService<TItem>
+public class ListClient<TItem> : IListClient<TItem>
 {
-    public ListService(HttpClient client, string entitiesEndpointTemplate, ILogger<ListService<TItem>> iLogger, JsonSerializerOptions? jsonSerializerOptions = null)
+    public ListClient(HttpClient client, string entitiesEndpointTemplate, ILogger<ListClient<TItem>> iLogger, JsonSerializerOptions? jsonSerializerOptions = null)
     {
         throw new NotImplementedException();
     }
 
-    public ListService(HttpClient client, ListServiceOptions options, ILogger<ListService<TItem>> iLogger)
+    public ListClient(HttpClient client, ListClientOptions options, ILogger<ListClient<TItem>> iLogger)
     {
         http = client;
         logger = iLogger;
@@ -26,17 +26,17 @@ public class ListService<TItem> : IListService<TItem>
         };
         ListType = typeof(Collection<TItem>);
         if(options.ListEndpoint != string.Empty) {
-            if(options.ListMode == ListServiceMode.FilterSortAndPage) {
+            if(options.ListMode == ListClientMode.FilterSortAndPage) {
                 ListType = typeof(PagedCollection<TItem>);
                 ListUnpacker = e => (e as PagedCollection<TItem>)?.Items ?? [];
                 ListCounter = e => (e as PagedCollection<TItem>)?.Total ?? 0;
             }
-            else if(options.ListMode == ListServiceMode.FilterAndSort) {
+            else if(options.ListMode == ListClientMode.FilterAndSort) {
                 ListType = typeof(SortedCollection<TItem>);
                 ListUnpacker = e => (e as SortedCollection<TItem>)?.Items ?? [];
                 ListCounter = e => (e as SortedCollection<TItem>)?.Count ?? 0;
             }
-            else if(options.ListMode == ListServiceMode.Filter) {
+            else if(options.ListMode == ListClientMode.Filter) {
                 ListType = typeof(FilteredCollection<TItem>);
                 ListUnpacker = e => (e as FilteredCollection<TItem>)?.Items ?? [];
                 ListCounter = e => (e as FilteredCollection<TItem>)?.Count ?? 0;
@@ -50,7 +50,7 @@ public class ListService<TItem> : IListService<TItem>
 
     public int PageSize => Options.PageSize;
 
-    private ListServiceOptions Options { get; set; }
+    private ListClientOptions Options { get; set; }
 
     private Type ListType { get; set; }
 
@@ -103,15 +103,15 @@ public class ListService<TItem> : IListService<TItem>
         }
     }
 
-    public async ValueTask<ListServiceResult<TItem>> GetItemsAsync(CancellationToken cancellationToken = default)
+    public async ValueTask<ListClientResult<TItem>> GetItemsAsync(CancellationToken cancellationToken = default)
     {
         return await GetItemsAsync(new Query(), cancellationToken);
     }
 
-    public async ValueTask<ListServiceResult<TItem>> GetItemsAsync(Query query, CancellationToken cancellationToken = default)
+    public async ValueTask<ListClientResult<TItem>> GetItemsAsync(Query query, CancellationToken cancellationToken = default)
     {
         var result = await GetItemsInternalAsync(query, cancellationToken);
-        return new ListServiceResult<TItem>(result.Item2, result.Item2.Count, result.Item3);
+        return new ListClientResult<TItem>(result.Item2, result.Item2.Count, result.Item3);
     }
 
     internal async ValueTask<(object, ICollection<TItem>, int)> GetItemsInternalAsync(Query query, CancellationToken cancellationToken)
@@ -134,5 +134,5 @@ public class ListService<TItem> : IListService<TItem>
 
     private readonly HttpClient http;
 
-    private readonly ILogger<ListService<TItem>> logger;
+    private readonly ILogger<ListClient<TItem>> logger;
 }

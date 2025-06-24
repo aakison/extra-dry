@@ -4,7 +4,7 @@ namespace ExtraDry.Blazor;
 
 public class ListItemsProviderResult<T>
 {
-    public ListItemsProviderResult(ListServiceResult<T> result)
+    public ListItemsProviderResult(ListClientResult<T> result)
     {
         Collection = new BaseCollection<T> { Items = result.Items.ToList() };
         ItemInfos = result.Items.Select(e => new ListItemInfo<T> {

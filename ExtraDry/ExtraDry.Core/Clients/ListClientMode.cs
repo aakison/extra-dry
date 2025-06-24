@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Core;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum ListServiceMode
+public enum ListClientMode
 {
     FullCollection,
 

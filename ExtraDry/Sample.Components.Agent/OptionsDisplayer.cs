@@ -6,7 +6,7 @@ namespace Sample.Components.Agent;
 
 internal class OptionsDisplayer(
     ILogger<OptionsDisplayer> logger,
-    IListService<Customer> tenants)
+    IListClient<Customer> tenants)
     : ICronJob
 {
     public async Task ExecuteAsync(CancellationToken cancellationToken)

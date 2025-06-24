@@ -36,7 +36,7 @@ internal interface IComments<TItem>
     /// deterministic, consider using `Items` instead. `Items` and `ItemsSource` are mutually
     /// exclusive.
     /// </summary>
-    IListService<TItem>? ItemsSource { get; set; }
+    IListClient<TItem>? ItemsSource { get; set; }
 
     /// <summary>
     /// Provides a ViewModel for the component which is used to provide additional information

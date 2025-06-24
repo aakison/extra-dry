@@ -8,7 +8,7 @@ namespace ExtraDry.Blazor;
 /// Wrapper for ListService to IOptionService so that the list can be in Core (the options are Web/Blazor only).
 /// </summary>
 public class ListServiceOptionProvider<T>(
-    ListService<T> source)
+    ListClient<T> source)
     : IOptionProvider<T>
 {
     public async ValueTask<ItemsProviderResult<T>> GetItemsAsync(CancellationToken cancellationToken = default)

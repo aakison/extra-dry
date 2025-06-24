@@ -1,6 +1,6 @@
 ﻿namespace Sample.Spa.Client;
 
-public class DisplayNameProvider(CrudService<Employee> employeeService) : IDisplayNameProvider
+public class DisplayNameProvider(CrudClient<Employee> employeeService) : IDisplayNameProvider
 {
     public async Task<string> ResolveDisplayNameAsync(string user)
     {

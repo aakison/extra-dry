@@ -17,7 +17,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     public ICollection<TItem>? Items { get; set; }
 
     [Parameter]
-    public IListService<TItem>? ItemsService { get; set; }
+    public IListClient<TItem>? ItemsService { get; set; }
 
     [Parameter]
     public Func<TItem, TItem>? GroupFunc { get; set; }

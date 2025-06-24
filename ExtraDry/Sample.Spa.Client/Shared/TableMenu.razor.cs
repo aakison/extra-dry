@@ -10,7 +10,7 @@ public sealed partial class TableMenu<TItem> : ComponentBase
     [CascadingParameter]
     public MainLayout? Layout { get; set; }
 
-    public IListService<TItem>? ItemsSource { get; set; }
+    public IListClient<TItem>? ItemsSource { get; set; }
 
     [Parameter]
     public Reveal Reveal { get; set; } = null!;

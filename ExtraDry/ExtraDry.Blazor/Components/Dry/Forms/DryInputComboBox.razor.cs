@@ -18,15 +18,15 @@ public partial class DryInputComboBox<T>(
     public IEnumerable<string>? Items { get; set; }
 
     [Parameter]
-    public IListService<string>? ItemsSource { get; set; }
+    public IListClient<string>? ItemsSource { get; set; }
 
     protected override void OnInitialized()
     {
         if(Property?.Options == null) {
             return;
         }
-        var options = services.GetService(Property.Options.ProviderType) as IListService<string>
-            ?? Activator.CreateInstance(Property.Options.ProviderType) as IListService<string>;
+        var options = services.GetService(Property.Options.ProviderType) as IListClient<string>
+            ?? Activator.CreateInstance(Property.Options.ProviderType) as IListClient<string>;
         if(options is null) {
             Logger.LogWarning("Property {PropertyName} has an options provider of type {ProviderType} but it is not a valid IOptionProvider<string>.", Property.Property.Name, Property.Options.ProviderType);
         }
@@ -41,7 +41,7 @@ public partial class DryInputComboBox<T>(
         Value = Property.DisplayValue(Model);
     }
 
-    private IListService<string>? ResolvedItemsSource { get; set; }
+    private IListClient<string>? ResolvedItemsSource { get; set; }
 
     private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
 

@@ -1,6 +1,6 @@
 ﻿namespace ExtraDry.Core;
 
-public readonly struct ListServiceResult<TItem>(IEnumerable<TItem> items, int count, int total)
+public readonly struct ListClientResult<TItem>(IEnumerable<TItem> items, int count, int total)
 {
     /// <summary>
     /// The items to provide.

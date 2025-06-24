@@ -22,7 +22,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent, IDispo
 
     /// <inheritdoc cref="IComments{TItem}.ItemsSource" />
     [Parameter]
-    public IListService<TItem>? ItemsSource { get; set; }
+    public IListClient<TItem>? ItemsSource { get; set; }
 
     /// <summary>
     /// Provides a name for the embedded input tag, not generally needed for Blazor applications.

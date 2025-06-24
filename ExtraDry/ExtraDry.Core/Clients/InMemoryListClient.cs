@@ -1,9 +1,9 @@
 ﻿namespace ExtraDry.Core;
 
-public class InMemoryListService<T>(
+public class InMemoryListClient<T>(
     IList<T> items,
     Func<T, bool>? filter = null)
-    : IListService<T>
+    : IListClient<T>
 {
     /// <inheritdoc />
     /// <remarks>
@@ -13,10 +13,10 @@ public class InMemoryListService<T>(
     public int PageSize => Math.Max(1, items.Count);
 
 
-    public ValueTask<ListServiceResult<T>> GetItemsAsync(Query query, CancellationToken cancellationToken)
+    public ValueTask<ListClientResult<T>> GetItemsAsync(Query query, CancellationToken cancellationToken)
     {
         var adjusted = FilterAndSort(query);
-        return ValueTask.FromResult(new ListServiceResult<T>(adjusted, adjusted.Count, adjusted.Count));
+        return ValueTask.FromResult(new ListClientResult<T>(adjusted, adjusted.Count, adjusted.Count));
     }
 
     public IList<T> FilterAndSort(Query query)

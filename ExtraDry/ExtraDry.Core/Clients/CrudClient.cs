@@ -18,10 +18,10 @@ namespace ExtraDry.Core;
 /// Create a CRUD service with the specified configuration. This service should not be manually
 /// added to the IServiceCollection. Instead, use the AddCrudService`T extension method.
 /// </remarks>
-public class CrudService<T>(
+public class CrudClient<T>(
     HttpClient client,
-    CrudServiceOptions<T> options,
-    ILogger<CrudService<T>> logger)
+    CrudClientOptions<T> options,
+    ILogger<CrudClient<T>> logger)
     where T : notnull
 {
     /// <summary>

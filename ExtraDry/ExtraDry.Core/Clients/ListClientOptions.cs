@@ -2,7 +2,7 @@
 
 namespace ExtraDry.Core;
 
-public class ListServiceOptions : IHttpClientOptions, IValidatableObject
+public class ListClientOptions : IHttpClientOptions, IValidatableObject
 {
     public string ListEndpoint { get; set; } = string.Empty;
 
@@ -11,7 +11,7 @@ public class ListServiceOptions : IHttpClientOptions, IValidatableObject
     [Range(1, int.MaxValue)]
     public int PageSize { get; set; } = 100;
 
-    public ListServiceMode ListMode { get; set; } = ListServiceMode.FilterSortAndPage;
+    public ListClientMode ListMode { get; set; } = ListClientMode.FilterSortAndPage;
 
     public HttpMethod HierarchyMethod { get; set; } = HttpMethod.Post;
 

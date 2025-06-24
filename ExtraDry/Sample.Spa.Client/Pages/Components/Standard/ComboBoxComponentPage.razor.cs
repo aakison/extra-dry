@@ -158,7 +158,7 @@ public partial class ComboBoxComponentPage : ComponentBase, IListItemViewModel<S
     /// Provides list of sectors as a service with a max size of 20 and simulating a slow
     /// connection.
     /// </summary>
-    public class SectorListService : IListService<Sector>
+    public class SectorListService : IListClient<Sector>
     {
         public void Initialize(IEnumerable<Sector> sectors)
         {
@@ -173,10 +173,10 @@ public partial class ComboBoxComponentPage : ComponentBase, IListItemViewModel<S
 
         private List<Sector> Sectors { get; set; } = [];
 
-        public async ValueTask<ListServiceResult<Sector>> GetItemsAsync(Query query, CancellationToken cancellationToken)
+        public async ValueTask<ListClientResult<Sector>> GetItemsAsync(Query query, CancellationToken cancellationToken)
         {
             var items = Sectors.Take(PageSize);
-            var result = new ListServiceResult<Sector>(items, Sectors.Count, Sectors.Count);
+            var result = new ListClientResult<Sector>(items, Sectors.Count, Sectors.Count);
             cancellationToken.ThrowIfCancellationRequested();
             await Task.Delay(500, cancellationToken);
             return result;
