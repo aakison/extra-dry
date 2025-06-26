@@ -68,6 +68,27 @@ public class BlobClient<TBlob>(
     }
 
     /// <summary>
+    /// Given a Blob's UUID, retrieve the Blob from the server. The URI for the blob will contain
+    /// the slug provided which improves the URI and allows for downloading files.
+    /// </summary>
+    public async Task<TBlob?> TryReadAsync(Guid uuid, CancellationToken cancellationToken = default)
+    {
+        var endpoint = ApiEndpoint(uuid, "unnamed-file");
+        var response = await client.GetAsync(endpoint, cancellationToken);
+        if(response.StatusCode == System.Net.HttpStatusCode.NotFound) {
+            return default; // Blob not found
+        }
+        await response.AssertSuccess(logger);
+
+        var blob = await BlobSerializer.DeserializeBlobAsync<TBlob>(response, cancellationToken);
+
+        var validator = new DataValidator();
+        validator.ValidateObject(blob);
+        validator.ThrowIfInvalid();
+        return blob;
+    }
+
+    /// <summary>
     /// Given a Blob's UUID, retrieve the Blob from the server. The URI for the blob will not
     /// contain the Blob's filename, so the default filename will be used. This is suitable for use
     /// inside the app, but not ideal for downloading the file.
@@ -140,4 +161,5 @@ public class BlobClient<TBlob>(
             throw new DryException("Error occurred connecting to server", $"This is a mis-configuration and not a user error, please see the console output for more information.  Error: {ex.Message}");
         }
     }
+
 }
