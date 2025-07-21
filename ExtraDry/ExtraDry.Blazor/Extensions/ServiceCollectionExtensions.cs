@@ -17,60 +17,11 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    /// <summary>
-    /// Adds a strongly typed <see cref="CrudClient{T}" /> to the service collection. See <see
-    /// cref="AddCrudService{T}(IServiceCollection, Action{CrudClientOptions{T}})" /> for additional
-    /// options. Particularly useful for specifying the HttpClient to use in multi- tenant
-    /// deployments.
-    /// </summary>
-    public static IServiceCollection AddCrudService<T>(this IServiceCollection services, string endpointTemplate)
-        where T : notnull
-    {
-        services.AddCrudService<T>(options => {
-            options.CrudEndpoint = endpointTemplate;
-        });
-        return services;
-    }
 
-    /// <summary>
-    /// Adds a strongly typed <see cref="CrudClient{T}" /> to the service collection.
-    /// </summary>
-    public static IServiceCollection AddCrudService<T>(this IServiceCollection services, Action<CrudClientOptions<T>> config)
-        where T : notnull
-    {
-        var options = new CrudClientOptions<T>();
-        config(options);
 
-        DataValidator.ThrowIfInvalid(options);
 
-        services.AddScoped(e => {
-            var client = GetHttpClient(e, options);
-            var logger = e.GetRequiredService<ILogger<CrudClient<T>>>();
-            var service = new CrudClient<T>(client, options, logger);
-            return service;
-        });
-        return services;
-    }
 
-    /// <summary>
-    /// Adds a strongly typed <see cref="CrudClient{T}" /> to the service collection.
-    /// </summary>
-    public static IServiceCollection AddKeyedCrudService<T>(this IServiceCollection services, string key, Action<CrudClientOptions<T>> config)
-        where T : notnull
-    {
-        var options = new CrudClientOptions<T>();
-        config(options);
 
-        DataValidator.ThrowIfInvalid(options);
-
-        services.AddKeyedScoped(key, (e, key) => {
-            var client = GetHttpClient(e, options);
-            var logger = e.GetRequiredService<ILogger<CrudClient<T>>>();
-            var service = new CrudClient<T>(client, options, logger);
-            return service;
-        });
-        return services;
-    }
 
     /// <summary>
     /// Adds a strongly typed <see cref="StatService{T}" /> to the service collection.

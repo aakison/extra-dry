@@ -26,7 +26,7 @@ public class CrudClientOptions<T> : IHttpClientOptions, IValidatableObject
     public Func<object, string> KeyFormatter { get; set; } = e => e.ToString() ?? "";
 
     /// <summary>
-    /// Validates the inter-dependant options for the CrudService.
+    /// Validates the inter-dependant options for the CrudClient.
     /// </summary>
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {

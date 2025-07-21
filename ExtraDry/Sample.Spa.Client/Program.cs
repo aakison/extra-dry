@@ -33,13 +33,13 @@ services.AddListService<Region>(options => {
 
 services.AddStatService<Sector>("/api/sectors/stats");
 
-services.AddCrudService<Sector>("/api/sectors");
-services.AddCrudService<Company>("/api/companies");
-services.AddCrudService<Content>("/api/contents");
-services.AddCrudService<Region>("/api/regions");
-services.AddCrudService<Employee>("/api/employees");
+services.AddCrudClient<Sector>("/api/sectors");
+services.AddCrudClient<Company>("/api/companies");
+services.AddCrudClient<Content>("/api/contents");
+services.AddCrudClient<Region>("/api/regions");
+services.AddCrudClient<Employee>("/api/employees");
 
-services.AddBlobService<Blob>(config => {
+services.AddBlobClient<Blob>(config => {
     config.BlobEndpoint = "/api/blobs";
     config.MaxBlobSize = 1 * 1024 * 1024;
 });

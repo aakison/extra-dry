@@ -39,7 +39,7 @@ public partial class DryInputSingleSelect<T>
             return; // Selected blank line or invalid value
         }
         SelectedOption = Options.FirstOrDefault(e => e.Key == args.Value.ToString());
-        SelectedValue = SelectedOption.Value;
+        SelectedValue = SelectedOption?.Value;
         if(Model != null) {
             Property?.SetValue(Model, SelectedValue);
             await OnChange.InvokeAsync(args);

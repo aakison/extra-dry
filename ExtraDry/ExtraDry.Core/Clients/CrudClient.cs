@@ -16,7 +16,7 @@ namespace ExtraDry.Core;
 /// </summary>
 /// <remarks>
 /// Create a CRUD service with the specified configuration. This service should not be manually
-/// added to the IServiceCollection. Instead, use the AddCrudService`T extension method.
+/// added to the IServiceCollection. Instead, use the AddCrudClient`T extension method.
 /// </remarks>
 public class CrudClient<T>(
     HttpClient client,
