@@ -97,9 +97,16 @@ public partial class DryInput<T>
             dynamic task = method!.Invoke(optionProvider, [token])!;
             var optList = (await task).Items as ICollection;
             var options = optList?.Cast<object>()?.ToList() ?? [];
-            LookupProviderOptions = options
-                .Select((e, i) => new { Key = i, Item = e })
-                .ToDictionary(e => e.Key.ToString(CultureInfo.InvariantCulture), e => e.Item);
+            if(options.FirstOrDefault() is IndexOutOfRangeException resource) {
+                LookupProviderOptions = options
+                    .Select(e => new { Key = (e as IResourceIdentifiers)?.Uuid.ToString() ?? Guid.NewGuid().ToString(), Item = e })
+                    .ToDictionary(e => e.Key.ToString(CultureInfo.InvariantCulture), e => e.Item);
+            }
+            else {
+                LookupProviderOptions = options
+                    .Select((e, i) => new { Key = i, Item = e })
+                    .ToDictionary(e => e.Key.ToString(CultureInfo.InvariantCulture), e => e.Item);
+            }
         }
         else {
             Logger.LogMissingOptionProvider(Property.InputType.Name);
@@ -125,11 +132,13 @@ public partial class DryInput<T>
 
     private async Task NotifyChange(ChangeEventArgs args)
     {
+        Console.WriteLine($"NotifyChange called with args: {args.Value}");
         await OnChange.InvokeAsync(args);
     }
 
     private async Task HandleChange(ChangeEventArgs args)
     {
+        Console.WriteLine($"HandleChange called with args: {args.Value}");
         if(Property == null || Model == null) {
             return;
         }

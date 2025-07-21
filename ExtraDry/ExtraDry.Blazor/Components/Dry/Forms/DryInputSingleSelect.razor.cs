@@ -1,4 +1,5 @@
-﻿using System.Reflection.Metadata;
+﻿using Microsoft.Extensions.Options;
+using System.Reflection.Metadata;
 
 namespace ExtraDry.Blazor.Forms;
 
@@ -12,7 +13,7 @@ public partial class DryInputSingleSelect<T>
 {
     /// <summary>
     /// Set of values to select from, any object can be used and the display text is either
-    /// IResourceIdentifier.Title or object.ToString() value.
+    /// IResourceIdentifiers.Title or object.ToString() value.
     /// </summary>
     [Parameter, EditorRequired]
     public List<object> Values { get; set; } = null!;
@@ -23,14 +24,22 @@ public partial class DryInputSingleSelect<T>
         if(SelectedValue is Guid uuid && Property.InputType.IsClass) {
             SelectedValue = Values.SingleOrDefault(e => (e as IResourceIdentifiers)?.Uuid == uuid);
         }
+        Options = Values.Select((e, i) => new DryInputOption(e, i)).ToList();
+        if(SelectedValue is IResourceIdentifiers resource) {
+            SelectedOption = Options.FirstOrDefault(e => e.Key == resource.Uuid.ToString());
+        }
+        else if(SelectedValue != null) {
+            SelectedOption = Options.FirstOrDefault(e => e.Value.Equals(SelectedValue));
+        }
     }
 
     private async Task SelectOption(ChangeEventArgs args)
     {
-        if(Values == null || !int.TryParse(args.Value as string, out var index)) {
-            return; // selected blank line
+        if(Values == null || string.IsNullOrEmpty(args.Value?.ToString())) {
+            return; // Selected blank line or invalid value
         }
-        SelectedValue = Values[index];
+        SelectedOption = Options.FirstOrDefault(e => e.Key == args.Value.ToString());
+        SelectedValue = SelectedOption.Value;
         if(Model != null) {
             Property?.SetValue(Model, SelectedValue);
             await OnChange.InvokeAsync(args);
@@ -44,4 +53,33 @@ public partial class DryInputSingleSelect<T>
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", "select", ReadOnlyCss, CssClass);
 
     private object? SelectedValue { get; set; }
+
+    private List<DryInputOption> Options { get; set; } = [];
+
+    private DryInputOption? SelectedOption { get; set; }
+
+    public class DryInputOption { 
+    
+        public DryInputOption(object source, int index)
+        {
+            if(source is IResourceIdentifiers resource) {
+                Key = resource.Uuid.ToString();
+                DisplayText = resource.Title ?? source.ToString() ?? "--empty--";
+            } else {
+                Key = Guid.NewGuid().ToString();
+                DisplayText = source.ToString() ?? "--empty--";
+            }
+            Value = source;
+            Index = index;
+        }
+
+        public string Key { get; init; }
+
+        public string DisplayText { get; init; }
+
+        public int Index { get; init; }
+
+        public object Value { get; init; }
+    }
+
 }
