@@ -28,7 +28,7 @@ public class CrudClient<T>(
     /// Create a new resource in the resource. The item will be serialized to JSON and sent to the
     /// POST endpoint for the resource collection.
     /// </summary>
-    public async Task CreateAsync(T item, CancellationToken cancellationToken = default)
+    public async Task<ResourceReference> CreateAsync(T item, CancellationToken cancellationToken = default)
     {
         options.OnCreate?.Invoke(item);
         if(options.OnCreateAsync != null) {
@@ -40,6 +40,8 @@ public class CrudClient<T>(
         //logger.LogEndpointCall(typeof(T), endpoint);
         var response = await client.PostAsync(endpoint, content, cancellationToken);
         await response.AssertSuccess(logger);
+        var reference = await response.Content.ReadFromJsonAsync<ResourceReference>(cancellationToken: cancellationToken);
+        return reference ?? new();
     }
 
     /// <summary>
