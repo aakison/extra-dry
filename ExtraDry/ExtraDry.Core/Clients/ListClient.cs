@@ -110,16 +110,29 @@ public class ListClient<TItem> : IListClient<TItem>
 
     public async ValueTask<ListClientResult<TItem>> GetItemsAsync(Query query, CancellationToken cancellationToken = default)
     {
-        var result = await GetItemsInternalAsync(query, cancellationToken);
+        return await GetItemsAsync(new Dictionary<string, string>(), query, cancellationToken);
+    }
+
+    public async ValueTask<ListClientResult<TItem>> GetItemsAsync(Dictionary<string, string> variables, CancellationToken cancellationToken = default)
+    {
+        return await GetItemsAsync(variables, new Query(), cancellationToken);
+    }
+
+    public async ValueTask<ListClientResult<TItem>> GetItemsAsync(Dictionary<string, string> variables, Query query, CancellationToken cancellationToken = default)
+    {
+        var result = await GetItemsInternalAsync(variables, query, cancellationToken);
         return new ListClientResult<TItem>(result.Item2, result.Item2.Count, result.Item3);
     }
 
-    internal async ValueTask<(object, ICollection<TItem>, int)> GetItemsInternalAsync(Query query, CancellationToken cancellationToken)
+    internal async ValueTask<(object, ICollection<TItem>, int)> GetItemsInternalAsync(Dictionary<string, string> variables, Query query, CancellationToken cancellationToken)
     {
         if(string.IsNullOrWhiteSpace(Options.ListEndpoint)) {
             throw new DryException(HttpStatusCode.NotFound, "No endpoints defined", "When configuring a ListService, either or both of ListEndpoint and/or HierarchyEndpoint must be provided.");
         }
         var endpoint = ListEndpoint(query);
+        foreach(var variable in variables) {
+            endpoint = endpoint.Replace($"{{{variable.Key}}}", variable.Value, StringComparison.OrdinalIgnoreCase);
+        }
         logger.LogEndpointCall(typeof(TItem), endpoint);
         var response = await http.GetAsync(endpoint, cancellationToken);
         await response.AssertSuccess(logger);
