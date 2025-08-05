@@ -49,8 +49,25 @@ public partial class DryButton : ComponentBase, IExtraDryComponent
     /// If both an icon and a caption are available (as defined in the `CommandAttribute` on the
     /// method), then display as an Icon only.
     /// </summary>
+    public bool IconOnly => ShowIcon && !ShowCaption && !ShowAffordance;
+
+    /// <summary>
+    /// Determines if the icon is shown, use with ShowCaption and ShowAffordance.
+    /// </summary>
     [Parameter]
-    public bool IconOnly { get; set; }
+    public bool ShowIcon { get; set; } = true;
+
+    /// <summary>
+    /// Determines if the caption is shown, use with ShowIcon and ShowAffordance.
+    /// </summary>
+    [Parameter]
+    public bool ShowCaption { get; set; } = true;
+
+    /// <summary>
+    /// Determines if the affordance is shown, use with ShowIcon and ShowCaption.
+    /// </summary>
+    [Parameter]
+    public bool ShowAffordance { get; set; } = true;
 
     /// <summary>
     /// Set to enable/disable the button. Set to `null` (the default) to use the existence of
@@ -114,13 +131,13 @@ public partial class DryButton : ComponentBase, IExtraDryComponent
     //[Parameter]
     private CommandInfo? ResolvedCommand { get; set; }
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass, ResolvedCommand?.DisplayClass);
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass, ResolvedCommand?.DisplayClass, IconOnly ? "unobtrusive" : "");
 
     private bool HasIcon => !string.IsNullOrWhiteSpace(ResolvedCommand?.Icon);
 
-    private bool ShowCaption => !string.IsNullOrWhiteSpace(ResolvedCommand?.Caption) && !(HasIcon && IconOnly);
+    private bool DisplayCaption => !string.IsNullOrWhiteSpace(ResolvedCommand?.Caption) && !(HasIcon && IconOnly);
 
-    private string ButtonCaption => ShowCaption ? ResolvedCommand?.Caption! : string.Empty;
+    private string ButtonCaption => DisplayCaption ? ResolvedCommand?.Caption! : string.Empty;
 
     private void SelectionChanged(object? sender, SelectionSetChangedEventArgs args)
     {
