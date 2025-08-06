@@ -17,6 +17,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     public ICollection<TItem>? Items { get; set; }
 
     [Parameter]
+    // TODO: Should rename to ItemsClient.
     public IListClient<TItem>? ItemsService { get; set; }
 
     [Parameter]
