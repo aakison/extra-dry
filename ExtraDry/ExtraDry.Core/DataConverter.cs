@@ -11,7 +11,12 @@ public partial class DataConverter
     /// </summary>
     public static string DateToRelativeTime(DateTime dateTime)
     {
-        var utc = dateTime.ToUniversalTime();
+        // Assume Unspecified is UTC, which is how we store dates in databases.
+        var utc = dateTime.Kind switch {
+            DateTimeKind.Utc => dateTime,
+            DateTimeKind.Local => dateTime.ToUniversalTime(),
+            _ => DateTime.SpecifyKind(dateTime, DateTimeKind.Utc)
+        };
         var current = CurrentDateTime().ToUniversalTime();
         var delta = current - utc;
         var today = current.Date == utc.Date;

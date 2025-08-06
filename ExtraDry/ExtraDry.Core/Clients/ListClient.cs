@@ -110,7 +110,7 @@ public class ListClient<TItem> : IListClient<TItem>
 
     public async ValueTask<ListClientResult<TItem>> GetItemsAsync(Query query, CancellationToken cancellationToken = default)
     {
-        return await GetItemsAsync(new Dictionary<string, string>(), query, cancellationToken);
+        return await GetItemsAsync([], query, cancellationToken);
     }
 
     public async ValueTask<ListClientResult<TItem>> GetItemsAsync(Dictionary<string, string> variables, CancellationToken cancellationToken = default)
