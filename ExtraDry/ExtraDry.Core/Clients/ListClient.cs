@@ -64,7 +64,7 @@ public class ListClient<TItem> : IListClient<TItem>
 
     public JsonSerializerOptions JsonSerializerOptions { get; set; }
 
-    public Dictionary<string, string> Variables { get; } = new();
+    public Dictionary<string, string> Variables { get; } = [];
 
     internal string ListEndpoint(Query query)
     {

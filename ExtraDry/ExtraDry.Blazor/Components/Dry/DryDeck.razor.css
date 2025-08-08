@@ -1,0 +1,28 @@
+@layer extra-dry {
+
+  /* Show progress bar while loading, hide otherwise */
+  .deck .state {
+    display: none;
+  }
+
+    .deck .state.loading {
+      display: initial;
+    }
+
+  /* Rudimentary deck and card backgrounds */
+  .deck {
+      border: solid 1px var(--neutral-4);
+      background-color: var(--neutral-2);
+      padding: var(--spacing-medium);
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-medium);
+  }
+
+  .deck .card {
+      border: solid 1px var(--neutral-4);
+      padding: var(--spacing-small);
+      background-color: var(--neutral-0);
+  }
+
+}

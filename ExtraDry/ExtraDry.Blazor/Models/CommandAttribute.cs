@@ -54,13 +54,6 @@ public sealed class CommandAttribute(
     public CommandCollapse Collapse { get; set; }
 
     /// <summary>
-    /// An optional name of a property on the target model which may be bound to this command. For
-    /// example, as a hyperlink in a table view.
-    /// </summary>
-    [Obsolete("Use HyperLink attribute instead")]
-    public string? PropertyName { get; set; }
-
-    /// <summary>
     /// The display CSS class to attach to the button.
     /// </summary>
     public string? CssClass { get; set; }

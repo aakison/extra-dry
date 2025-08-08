@@ -1,0 +1,56 @@
+@namespace ExtraDry.Blazor
+@typeparam TItem
+@implements IDisposable
+
+<div class="@CssClasses" role="list" @attributes="@UnmatchedAttributes">
+    <div class="state @StateClass">
+        <div>
+            <progress />
+        </div>
+    </div>
+    <Virtualize ItemsProvider="GetItemsAsync" ItemSize="@ItemSize" @ref="VirtualContainer">
+        <ItemContent>
+            @{
+                var item = context.Item;
+                var uuid = GetItemUuid(item);
+                var cardCssClass = GetCardCssClass(context);
+            }
+            <div class="card @cardCssClass" data-uuid="@uuid" role="listitem" @onclick="@(() => HandleCardClick(context))" @onclick:stopPropagation="true">
+                @if (HasCheckboxSelection)
+                {
+                    <div class="selection">
+                        <input type="checkbox" checked="@IsSelected(item)" @onchange="@((e) => ToggleSelection(item, e))" @onclick:stopPropagation="true" />
+                    </div>
+                }
+                @if (HasRadioSelection)
+                {
+                    <div class="selection">
+                        <input type="radio" name="@RadioButtonScope" checked="@IsSelected(item)" @onchange="@((e) => ToggleSelection(item, e))" @onclick:stopPropagation="true" />
+                    </div>
+                }
+                @if (CardContent != null && item != null)
+                {
+                    try
+                    {
+                        @CardContent(item)
+                    }
+                    catch (Exception ex)
+                    {
+                        <div class="error">
+                            <span>Error rendering card: @ex.Message</span>
+                        </div>
+                    }
+                }
+                @if (HasCommands && item != null)
+                {
+                    <div class="commands">
+                        @foreach (var command in description.ContextCommands)
+                        {
+                            <DryButton Command="@command" Model="@item" ShowIcon="true" ShowCaption="false" ShowAffordance="false" />
+                        }
+                    </div>
+                }
+            </div>
+        </ItemContent>
+    </Virtualize>
+</div>
