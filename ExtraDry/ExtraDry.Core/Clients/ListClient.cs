@@ -134,8 +134,14 @@ public class ListClient<TItem> : IListClient<TItem>
             ?? throw new DryException($"Call to endpoint returned nothing or couldn't be converted to a result.");
         var items = ListUnpacker!(packedResult);
         var total = ListCounter!(packedResult);
+        OnItemsLoaded?.Invoke(this, EventArgs.Empty);
         return (packedResult, items, total);
     }
+
+    /// <summary>
+    /// Event to subscribe to be notified when a list has returned results.
+    /// </summary>
+    public event EventHandler? OnItemsLoaded;
 
     private readonly HttpClient http;
 
