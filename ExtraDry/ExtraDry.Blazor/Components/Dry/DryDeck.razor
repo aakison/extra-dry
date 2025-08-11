@@ -16,36 +16,29 @@
                 var cardCssClass = GetCardCssClass(context);
             }
             <div class="card @cardCssClass" data-uuid="@uuid" role="listitem" @onclick="@(() => HandleCardClick(context))" @onclick:stopPropagation="true">
-                @if (HasCheckboxSelection)
-                {
+                @if(HasCheckboxSelection) {
                     <div class="selection">
                         <input type="checkbox" checked="@IsSelected(item)" @onchange="@((e) => ToggleSelection(item, e))" @onclick:stopPropagation="true" />
                     </div>
                 }
-                @if (HasRadioSelection)
-                {
+                @if(HasRadioSelection) {
                     <div class="selection">
                         <input type="radio" name="@RadioButtonScope" checked="@IsSelected(item)" @onchange="@((e) => ToggleSelection(item, e))" @onclick:stopPropagation="true" />
                     </div>
                 }
-                @if (CardContent != null && item != null)
-                {
-                    try
-                    {
+                @if(CardContent != null && item != null) {
+                    try {
                         @CardContent(item)
                     }
-                    catch (Exception ex)
-                    {
+                    catch(Exception ex) {
                         <div class="error">
                             <span>Error rendering card: @ex.Message</span>
                         </div>
                     }
                 }
-                @if (HasCommands && item != null)
-                {
+                @if(HasCommands && item != null) {
                     <div class="commands">
-                        @foreach (var command in description.ContextCommands)
-                        {
+                        @foreach (var command in description.ContextCommands) {
                             <DryButton Command="@command" Model="@item" ShowIcon="true" ShowCaption="false" ShowAffordance="false" />
                         }
                     </div>
