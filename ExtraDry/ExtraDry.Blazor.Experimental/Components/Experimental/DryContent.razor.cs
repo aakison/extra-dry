@@ -56,7 +56,7 @@ public partial class DryContent : ComponentBase
         throw new NotImplementedException();
     }
 
-    [Command(Category = "Selection", Icon = "bold", Collapse = CommandCollapse.Always)]
+    [Command(Category = "Selection", Icon = "bold")]
     public async Task ToggleBold()
     {
         await JSRuntime.InvokeVoidAsync("roosterToggleBold");
@@ -110,7 +110,7 @@ public partial class DryContent : ComponentBase
         await JSRuntime.InvokeVoidAsync("roosterHorizontalRule");
     }
 
-    [Command(Icon = "Eraser", Collapse = CommandCollapse.Always)]
+    [Command(Icon = "Eraser")]
     public async Task ClearFormat()
     {
         await JSRuntime.InvokeVoidAsync("roosterClearFormat");

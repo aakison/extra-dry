@@ -41,6 +41,13 @@ public partial class Button : ComponentBase, IExtraDryComponent
     public string Caption { get; set; } = null!;
 
     /// <summary>
+    /// The title of the button, which is displayed as a tooltip when hovering over the button.
+    /// If not set, the Caption is used as the title.
+    /// </summary>
+    [Parameter]
+    public string? Title { get; set; }
+
+    /// <summary>
     /// The key for an icon to indicate the UI functionality of the button. This is a visual
     /// indicator for the user providing UI expectations, such as "chevron-down" for a button that
     /// reveals a drop-down select list.
@@ -94,6 +101,8 @@ public partial class Button : ComponentBase, IExtraDryComponent
     private bool DisplayIcon => ShowIcon && !string.IsNullOrWhiteSpace(Icon);
 
     private bool DisplayCaption => ShowCaption && !string.IsNullOrWhiteSpace(Caption);
+
+    private string DisplayTitle => Title ?? Caption;
 
     private bool DisplayAffordance => ShowAffordance && !string.IsNullOrWhiteSpace(Affordance);
 

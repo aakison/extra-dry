@@ -70,6 +70,11 @@ public partial class CommandInfo
     public string? Caption { get; set; }
 
     /// <summary>
+    /// The title of the command, which is displayed as a tooltip when hovering over the button.
+    /// </summary>
+    public string? Title { get; set; }
+
+    /// <summary>
     /// The optional key of the icon to be displayed on buttons.
     /// </summary>
     public string? Icon { get; set; }
@@ -170,6 +175,7 @@ public partial class CommandInfo
             Affordance = attribute.Affordance;
             Context = attribute.Context;
             Category = attribute.Category;
+            Title = attribute.Title;
         }
     }
 

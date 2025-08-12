@@ -40,18 +40,16 @@ public sealed class CommandAttribute(
     public string? Category { get; set; }
 
     /// <summary>
+    /// The title of the command button, which is displayed as a tooltip when hovering over the button.
+    /// </summary>
+    public string? Title { get; set; }
+
+    /// <summary>
     /// The relative order of this button amongst others. This order is evaluated after groupings
     /// based on `Context` and `Collapse` settings.
     /// </summary>
     /// <remarks>TODO: Implement explicit order on buttons</remarks>
     public int Order { get; set; }
-
-    /// <summary>
-    /// Indicates the desired collapse behavior for the command when displayed with other commands
-    /// in a bar and the screen width is limited.
-    /// </summary>
-    /// <remarks>TODO: Implement Collapse on Button Bar</remarks>
-    public CommandCollapse Collapse { get; set; }
 
     /// <summary>
     /// The display CSS class to attach to the button.
