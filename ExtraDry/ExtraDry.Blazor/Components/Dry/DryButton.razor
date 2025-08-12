@@ -2,7 +2,7 @@
 @implements IDisposable
 
 @if(ResolvedCommand?.IsVisible() ?? false) {
-    <Button CssClass="@CssClasses" Caption="@ButtonCaption" @attributes="@UnmatchedAttributes" 
+    <Button CssClass="@CssClasses" Caption="@ButtonCaption" Title="@ButtonTitle" @attributes="@UnmatchedAttributes" 
         ShowIcon="@ShowIcon" ShowCaption="@ShowCaption" ShowAffordance="@ShowAffordance"
         Icon="@ResolvedCommand.Icon" Affordance="@ResolvedCommand.Affordance" Enabled="@ResolvedEnabled"
         @onclick="DoClick" />

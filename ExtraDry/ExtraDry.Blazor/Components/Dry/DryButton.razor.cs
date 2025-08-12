@@ -139,6 +139,8 @@ public partial class DryButton : ComponentBase, IExtraDryComponent
 
     private string ButtonCaption => DisplayCaption ? ResolvedCommand?.Caption! : string.Empty;
 
+    private string ButtonTitle => ResolvedCommand?.Title ?? ButtonCaption;
+
     private void SelectionChanged(object? sender, SelectionSetChangedEventArgs args)
     {
         UpdateDisabled();

@@ -14,8 +14,9 @@
                 var item = context.Item;
                 var uuid = GetItemUuid(item);
                 var cardCssClass = GetCardCssClass(context);
+                var itemCssClass = item is null ? "" : ItemCssSelector?.Invoke(item) ?? "";
             }
-            <div class="card @cardCssClass" data-uuid="@uuid" role="listitem" @onclick="@(() => HandleCardClick(context))" @onclick:stopPropagation="true">
+            <div class="card @cardCssClass @itemCssClass" data-uuid="@uuid" role="listitem" @onclick="@(() => HandleCardClick(context))" @onclick:stopPropagation="true">
                 @if(HasCheckboxSelection) {
                     <div class="selection">
                         <input type="checkbox" checked="@IsSelected(item)" @onchange="@((e) => ToggleSelection(item, e))" @onclick:stopPropagation="true" />

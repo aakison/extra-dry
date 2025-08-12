@@ -46,6 +46,9 @@ public partial class DryDeck<TItem> : ComponentBase, IDisposable, IExtraDryCompo
     [Parameter]
     public float ItemSize { get; set; } = 200f;
 
+    [Parameter]
+    public Func<TItem, string>? ItemCssSelector { get; set; }
+
     /// <inheritdoc />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }

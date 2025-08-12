@@ -1,0 +1,6 @@
+/*
+  Title of SVGs will override the title of the button unless turned off (after all, the button should own the events).
+*/
+::deep svg {
+  pointer-events: none;
+}
