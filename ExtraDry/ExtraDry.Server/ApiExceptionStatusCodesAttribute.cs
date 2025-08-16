@@ -21,7 +21,7 @@ public class ApiExceptionStatusCodesAttribute : ExceptionFilterAttribute
         else if(context.Exception is ArgumentOutOfRangeException or KeyNotFoundException) {
             ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.NotFound);
         }
-        else if(context.Exception is ArgumentException or ArgumentNullException) {
+        else if(context.Exception is ArgumentException or ArgumentNullException or InvalidOperationException) {
             ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.BadRequest);
         }
         else if(context.Exception is ValidationException ve) {

@@ -132,13 +132,11 @@ public partial class DryInput<T>
 
     private async Task NotifyChange(ChangeEventArgs args)
     {
-        Console.WriteLine($"NotifyChange called with args: {args.Value}");
         await OnChange.InvokeAsync(args);
     }
 
     private async Task HandleChange(ChangeEventArgs args)
     {
-        Console.WriteLine($"HandleChange called with args: {args.Value}");
         if(Property == null || Model == null) {
             return;
         }

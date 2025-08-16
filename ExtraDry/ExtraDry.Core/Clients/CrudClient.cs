@@ -113,7 +113,7 @@ public class CrudClient<T>(
     /// The execution endpoint is the standard resource endpoint with string operation appended
     /// after a colon.
     /// </remarks>
-    public async Task ExecuteAsync(object key, string operation, object? payload = null, CancellationToken cancellationToken = default)
+    public async Task<HttpResponseMessage> ExecuteAsync(object key, string operation, object? payload = null, CancellationToken cancellationToken = default)
     {
         var endpoint = ApiEndpoint(key);
         endpoint = $"{endpoint}:{operation}";
@@ -122,6 +122,7 @@ public class CrudClient<T>(
         //logger.LogEndpointCall(typeof(T), endpoint);
         var response = await client.PostAsync(endpoint, content, cancellationToken);
         await response.AssertSuccess(logger);
+        return response;
     }
 
     private string ApiEndpoint(object key)
