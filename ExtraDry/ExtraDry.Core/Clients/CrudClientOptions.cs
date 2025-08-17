@@ -19,6 +19,12 @@ public class CrudClientOptions<T> : IHttpClientOptions, IValidatableObject
     public string CrudEndpoint { get; set; } = string.Empty;
 
     /// <summary>
+    /// The amount of time to cache the results of read operations.  This is useful for
+    /// frequently accessed data that does not change often, such as username lookups.
+    /// </summary>
+    public TimeSpan ReadCache { get; set; } = TimeSpan.Zero;
+
+    /// <summary>
     /// A formatting function that translates the `key` object taken by the CRUD endpoints into a
     /// string which is appended to the `CrudEndpoint` to create the full endpoint URL. The default
     /// implementation is the object's built in string transformation.
