@@ -3,34 +3,19 @@
 @using Microsoft.AspNetCore.Components.Authorization
 
 <div class="command-bar">
-    @if(description != null) {
-        @foreach (var command in description.MenuCommands) {
-            <AuthorizeView Roles="@command.Roles">
-                <DryButton Command="@command" />
-            </AuthorizeView>
+    @if(Description != null) {
+        @foreach(var command in AuthorizedMenuCommands) {
+            <DryButton Command="@command" />
         }
-        @if(description.ListSelectMode == ListSelectMode.Multiple) {
-            foreach (var command in description.MultiContextCommands) {
+        @if(Description.ListSelectMode == ListSelectMode.Multiple) {
+            foreach (var command in AuthorizedMultiContextCommands) {
                 <DryButton Command="@command" />
             }
         }
-        @if(description.ListSelectMode == ListSelectMode.Single) {
-            @foreach (var command in description.ContextCommands) {
+        @if(Description.ListSelectMode == ListSelectMode.Single) {
+            @foreach (var command in AuthorizedContextCommands) {
                 <DryButton Command="@command" />
             }
         }
     }
 </div>
-
-@code {
-    [Parameter, EditorRequired]
-    public object ViewModel { get; set; } = null!;
-
-    private DecoratorInfo? description;
-
-    protected override void OnInitialized()
-    {
-        description = new DecoratorInfo(ViewModel);
-    }
-
-}

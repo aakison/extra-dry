@@ -1,7 +1,12 @@
-﻿namespace ExtraDry.Blazor;
+﻿using Microsoft.AspNetCore.Components.Authorization;
+using System.Security.Claims;
+
+namespace ExtraDry.Blazor;
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "DRY1500:Extra DRY Blazor components should have an interface.", Justification = "Pending decision on fate of component.")]
-public partial class DryButtonBar : ComponentBase, IExtraDryComponent
+public partial class DryButtonBar(
+    AuthenticationStateProvider AuthProvider) 
+    : ComponentBase, IExtraDryComponent
 {
     /// <inheritdoc />
     [Parameter]
@@ -43,17 +48,22 @@ public partial class DryButtonBar : ComponentBase, IExtraDryComponent
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "buttons", CssClass);
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
         if(!Commands.Any() && Decorator != null && Description == null) {
             Description = new DecoratorInfo(Decorator);
             Commands = Description.Commands;
         }
+        var provider = await AuthProvider.GetAuthenticationStateAsync();
+        var user = provider.User;
+        AuthorizedCommands = Commands.Where(e => user.IsInAnyRole(e.Roles));
     }
+
+    private IEnumerable<CommandInfo> AuthorizedCommands { get; set; } = [];
 
     private IEnumerable<CommandInfo> SelectCommands(CommandContext context)
     {
-        return Commands
+        return AuthorizedCommands
             .Where(e => e.Context == context)
             .Where(e => Category == null || Category == e.Category);
     }

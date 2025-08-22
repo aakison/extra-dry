@@ -7,10 +7,8 @@
         if(commands.Any()) {
             var className = $"{context.ToString().ToLowerInvariant()}-buttons";
             <div class="@className">
-                @foreach(var command in commands) { 
-                    <AuthorizeView Roles="@command.Roles">
-                        <DryButton Command="@command" Model="@Model" />
-                    </AuthorizeView>
+                @foreach(var command in commands) {
+                    <DryButton Command="@command" Model="@Model" />
                 }
             </div>
         }
