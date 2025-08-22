@@ -52,6 +52,11 @@ public sealed class CommandAttribute(
     public int Order { get; set; }
 
     /// <summary>
+    /// Comma-seperated list of roles required for the command to be displayed.
+    /// </summary>
+    public string? Roles { get; set; }
+
+    /// <summary>
     /// The display CSS class to attach to the button.
     /// </summary>
     public string? CssClass { get; set; }

@@ -1,9 +1,13 @@
 ﻿@namespace ExtraDry.Blazor
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
 
 <div class="command-bar">
     @if(description != null) {
         @foreach (var command in description.MenuCommands) {
-            <DryButton Command="@command" />
+            <AuthorizeView Roles="@command.Roles">
+                <DryButton Command="@command" />
+            </AuthorizeView>
         }
         @if(description.ListSelectMode == ListSelectMode.Multiple) {
             foreach (var command in description.MultiContextCommands) {

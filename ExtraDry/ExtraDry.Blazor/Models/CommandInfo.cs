@@ -75,6 +75,11 @@ public partial class CommandInfo
     public string? Title { get; set; }
 
     /// <summary>
+    /// A comma-separated list of roles required for the command to be displayed. 
+    /// </summary>
+    public string? Roles { get; set; }
+
+    /// <summary>
     /// The optional key of the icon to be displayed on buttons.
     /// </summary>
     public string? Icon { get; set; }
@@ -176,6 +181,7 @@ public partial class CommandInfo
             Context = attribute.Context;
             Category = attribute.Category;
             Title = attribute.Title;
+            Roles = attribute.Roles;
         }
     }
 
