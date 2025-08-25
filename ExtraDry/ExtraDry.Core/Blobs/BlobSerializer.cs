@@ -125,6 +125,10 @@ public static class BlobSerializer
                 else if(property.PropertyType == typeof(int)) {
                     property.SetValue(blob, int.Parse(headerValue, CultureInfo.InvariantCulture));
                 }
+                else if(property.PropertyType.IsEnum) {
+                    var enumValue = Enum.Parse(property.PropertyType, headerValue.ToString());
+                    property.SetValue(blob, enumValue);
+                }
                 else if(headerAttribute != null) {
                     throw new NotImplementedException("HttpHeaderAttribute only supports string, int, and Guid types.");
                 }
