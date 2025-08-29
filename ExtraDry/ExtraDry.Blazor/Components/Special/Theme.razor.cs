@@ -1,6 +1,7 @@
 ﻿using ExtraDry.Core.Models;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 namespace ExtraDry.Blazor;
@@ -27,6 +28,19 @@ public partial class Theme : ComponentBase
     /// </summary>
     [Parameter]
     public IEnumerable<IconInfo>? Icons { get; set; }
+
+    /// <summary>
+    /// If set, will append this version string to any SVG icons loaded. Combine this with
+    /// server-side identification and 
+    /// </summary>
+    [Parameter]
+    public string Version { get; set; } = "";
+
+    /// <summary>
+    /// When the `Version` is set, this prefix is applied before the version string. Defaults to "v".
+    /// </summary>
+    [Parameter]
+    public string VersionPrefix { get; set; } = "v";
 
     /// <inheritdoc cref="Blazor.ThemeInfo" />
     [CascadingParameter]
@@ -129,7 +143,12 @@ public partial class Theme : ComponentBase
                 return;
             }
             Logger.LogLoadingIcon(icon.Key, icon.ImagePath);
-            var content = await Http.GetStringAsync(icon.ImagePath);
+            var path = string.IsNullOrWhiteSpace(Version)
+                ? icon.ImagePath
+                : $"{icon.ImagePath}?{VersionPrefix}={Version}";
+
+            var content = await Http.GetStringAsync(path);
+
             icon.SvgInlineBody = content;
             if(icon.SvgRenderType == SvgRenderType.Document) {
                 var svgTag = SvgTagRegex().Match(content).Value;
