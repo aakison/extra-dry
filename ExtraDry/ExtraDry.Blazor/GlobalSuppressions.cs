@@ -7,3 +7,4 @@ using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Security", "DRY1304:Properties that might leak PID should be JsonIgnore.", Justification = "<Pending>", Scope = "member", Target = "~P:ExtraDry.Blazor.Theme.VersionPrefix")]
 [assembly: SuppressMessage("Security", "DRY1304:Properties that might leak PID should be JsonIgnore.", Justification = "<Pending>", Scope = "member", Target = "~P:ExtraDry.Blazor.Theme.Version")]
+[assembly: SuppressMessage("Security", "DRY1304:Properties that might leak PID should be JsonIgnore.", Justification = "<Pending>", Scope = "member", Target = "~P:ExtraDry.Blazor.ThemeInfo.Version")]

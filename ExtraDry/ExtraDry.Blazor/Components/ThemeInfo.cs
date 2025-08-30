@@ -47,4 +47,6 @@ public class ThemeInfo
     /// <inheritdoc cref="Suspense{TModel}.Fallback" />
     /// <see cref="Suspense{TModel}" />
     public RenderFragment<IndicatorContext>? SuspenseFallback { get; set; }
+
+    public string Version { get; set; } = "";
 }

@@ -99,6 +99,8 @@ public partial class Theme : ComponentBase
             ThemeInfo.SuspenseFallback = SuspenseFallback;
         }
 
+        ThemeInfo.Version = Version;
+
         await LoadSvgDatabaseAsync();
         ThemeInfo.Icons = CachedIcons.ToDictionary(e => e.Key, e => e.Value);
     }
