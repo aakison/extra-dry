@@ -1,4 +1,5 @@
 ﻿using ExtraDry.Blazor.Components.Internal;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace ExtraDry.Blazor;
 
@@ -42,6 +43,13 @@ public partial class DryFilterInputText : ComponentBase, IExtraDryComponent, IDi
         if(QueryBuilderAccessor == null) {
             QueryBuilderAccessor = new QueryBuilderAccessor(Decorator);
             QueryBuilderAccessor.QueryBuilder.OnChanged += PageQueryBuilder_OnChanged;
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender && InputText.Element is not null) {
+            await InputText.Element.Value.FocusAsync();
         }
     }
 
@@ -126,11 +134,18 @@ public partial class DryFilterInputText : ComponentBase, IExtraDryComponent, IDi
         }
     }
 
-    private string FreeTextFilter { get; set; } = string.Empty;
+    public async Task ClearAsync()
+    {
+        await OnReset();
+    }
+
+    public string FreeTextFilter { get; private set; } = string.Empty;
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "dry-field-filter", "filter-text", "keywords", CssClass);
 
     private bool filterInSync = true;
+
+    private InputText InputText { get; set; } = default!;
 
     private string FakeName { get; } = $"no-autocomplete-{Guid.NewGuid()}";
 }

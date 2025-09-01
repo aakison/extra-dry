@@ -41,8 +41,8 @@ public partial class Button : ComponentBase, IExtraDryComponent
     public string Caption { get; set; } = null!;
 
     /// <summary>
-    /// The title of the button, which is displayed as a tooltip when hovering over the button.
-    /// If not set, the Caption is used as the title.
+    /// The title of the button, which is displayed as a tooltip when hovering over the button. If
+    /// not set, the Caption is used as the title.
     /// </summary>
     [Parameter]
     public string? Title { get; set; }
@@ -88,13 +88,19 @@ public partial class Button : ComponentBase, IExtraDryComponent
     [Parameter]
     public bool Enabled { get; set; } = true;
 
-    /// <inheritdoc cref="Blazor.ThemeInfo" />
-    [CascadingParameter]
-    protected ThemeInfo? ThemeInfo { get; set; }
+    /// <summary>
+    /// Event callback for clicking on the button, fired on user-input.
+    /// </summary>
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClick { get; set; }
 
     /// <inheritdoc />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
+
+    /// <inheritdoc cref="Blazor.ThemeInfo" />
+    [CascadingParameter]
+    protected ThemeInfo? ThemeInfo { get; set; }
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", Slug.ToTitleSlug(Theme.ToString()), CssClass);
 
@@ -109,4 +115,11 @@ public partial class Button : ComponentBase, IExtraDryComponent
     private bool DisplayContent => ShowContent && ChildContent != null;
 
     private bool Disabled => !Enabled;
+
+    private async Task HandleClick(MouseEventArgs args)
+    {
+        if(OnClick.HasDelegate) {
+            await OnClick.InvokeAsync(args);
+        }
+    }
 }

@@ -2,7 +2,7 @@
 @typeparam TItem
 
 <div class="@CssClasses" @attributes="@UnmatchedAttributes">
-    <Button Caption="Expand" CssClass="filter-expand" @onclick="DoFiltersExpand" />
-    <Button Caption="Collapse" CssClass="filter-collapse" @onclick="DoFiltersCollapse" />
+    <Button Caption="Expand" CssClass="filter-expand" OnClick="DoFiltersExpand" />
+    <Button Caption="Collapse" CssClass="filter-collapse" OnClick="DoFiltersCollapse" />
     @ChildContent
 </div>

@@ -5,6 +5,9 @@
 <section>
     <h2>Buttons</h2>
     <Button Caption="Click Me" />
+    <Button Caption="Test Shortcut (Ctrl+Shift+T)" OnClick="OnShortcutTest" />
+    <Shortcut Keys="Ctrl+Shift+T" OnClick="OnShortcutTest" />
+    <p>Shortcut pressed: @ShortcutTestCount times</p>
 
     <h2>DRY Buttons</h2>
     <DryButton ViewModel="@this" MethodName="@nameof(Primary)" />
@@ -41,5 +44,12 @@
         ++ClickCount;
     }
 
+    private void OnShortcutTest(Microsoft.AspNetCore.Components.Web.MouseEventArgs args)
+    {
+        ++ShortcutTestCount;
+        StateHasChanged();
+    }
+
     private int ClickCount = 0;
+    private int ShortcutTestCount = 0;
 }

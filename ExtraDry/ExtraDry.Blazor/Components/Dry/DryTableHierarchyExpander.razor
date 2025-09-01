@@ -3,6 +3,6 @@
 
 <div class="@CssClasses" @onclick:stopPropagation="true">
     @if(Item.IsGroup) {
-       <Button Theme="ButtonTheme.Unobtrusive" Icon="@Icon" Caption="@Caption" ShowCaption="false" CssClass="filter-expand" @onclick="DoFiltersExpandCollapse" />
+       <Button Theme="ButtonTheme.Unobtrusive" Icon="@Icon" Caption="@Caption" ShowCaption="false" CssClass="filter-expand" OnClick="DoFiltersExpandCollapse" />
     }
 </div>
