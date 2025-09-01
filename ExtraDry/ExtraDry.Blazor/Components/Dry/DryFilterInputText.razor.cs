@@ -32,6 +32,9 @@ public partial class DryFilterInputText : ComponentBase, IExtraDryComponent, IDi
     [Parameter, EditorRequired]
     public object Decorator { get; set; } = null!;
 
+    [Parameter]
+    public bool AutoFocus { get; set; }
+
     /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
@@ -42,13 +45,14 @@ public partial class DryFilterInputText : ComponentBase, IExtraDryComponent, IDi
     {
         if(QueryBuilderAccessor == null) {
             QueryBuilderAccessor = new QueryBuilderAccessor(Decorator);
+            FreeTextFilter = QueryBuilderAccessor.QueryBuilder.TextFilter.Keywords ?? "";
             QueryBuilderAccessor.QueryBuilder.OnChanged += PageQueryBuilder_OnChanged;
         }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if(firstRender && InputText.Element is not null) {
+        if(firstRender && AutoFocus && InputText.Element is not null) {
             await InputText.Element.Value.FocusAsync();
         }
     }
@@ -143,7 +147,7 @@ public partial class DryFilterInputText : ComponentBase, IExtraDryComponent, IDi
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "dry-field-filter", "filter-text", "keywords", CssClass);
 
-    private bool filterInSync = true;
+    private bool filterInSync;
 
     private InputText InputText { get; set; } = default!;
 
