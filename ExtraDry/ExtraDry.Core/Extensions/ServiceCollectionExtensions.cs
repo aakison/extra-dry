@@ -177,9 +177,9 @@ public static class ServiceCollectionExtensions
     }
 
     /// <inheritdoc cref="AddBlobClient{T}(IServiceCollection, string)" />
-    public static IServiceCollection AddBlobClient<T>(this IServiceCollection services, Action<BlobServiceOptions> config) where T : IBlob, new()
+    public static IServiceCollection AddBlobClient<T>(this IServiceCollection services, Action<BlobClientOptions> config) where T : IBlob, new()
     {
-        var options = new BlobServiceOptions();
+        var options = new BlobClientOptions();
         config(options);
 
         var validator = new DataValidator();

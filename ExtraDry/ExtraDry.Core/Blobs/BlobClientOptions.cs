@@ -3,7 +3,7 @@
 /// <summary>
 /// Configuration options for the <see cref="BlobClient{TBlob}" />. 
 /// </summary>
-public class BlobServiceOptions : IValidatableObject, IHttpClientOptions
+public class BlobClientOptions : IValidatableObject, IHttpClientOptions
 {
     /// <inheritdoc />
     public string HttpClientName { get; set; } = string.Empty;

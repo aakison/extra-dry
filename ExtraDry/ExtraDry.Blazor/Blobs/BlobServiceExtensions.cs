@@ -2,7 +2,7 @@
 
 namespace ExtraDry.Blazor;
 
-public static class BlobServiceExtensions
+public static class BlobClientExtensions
 {
     /// <summary>
     /// Given a <see cref="IBrowserFile" /> from an <see cref="InputFile" />, create a new Blob by
