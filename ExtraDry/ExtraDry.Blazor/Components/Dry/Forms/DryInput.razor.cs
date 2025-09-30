@@ -87,7 +87,11 @@ public partial class DryInput<T>
         var untypedOptionProvider = typeof(IOptionProvider<>);
         var propertyType = Property.InputType;
         if(propertyType.IsAssignableTo(typeof(IList))) {
-            propertyType = propertyType.GetGenericArguments().First();
+            propertyType = propertyType.GetGenericArguments().FirstOrDefault();
+            if(propertyType == null) {
+                Logger.LogError("Could not determine generic argument of IList for property {PropertyName} on {ModelType}", Property.Property.Name, typeof(T).Name);
+                return;
+            }
         }
         var typedOptionProvider = untypedOptionProvider.MakeGenericType(propertyType);
         var optionProvider = ScopedServices.GetService(typedOptionProvider);
