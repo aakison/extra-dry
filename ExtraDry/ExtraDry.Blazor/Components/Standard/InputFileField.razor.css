@@ -1,0 +1,18 @@
+/*
+    Hide the HTML input file field as it's ugly.
+*/
+div ::deep input.actual {
+  display: none;
+}
+
+/*
+    Show the replacement value for the input file field, with different styling.
+*/
+::deep div.value {
+  flex: 1 1 auto;
+}
+
+  ::deep div.value.placeholder {
+    color: var(--neutral-6);
+  }
+

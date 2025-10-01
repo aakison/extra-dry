@@ -1,0 +1,16 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+
+<InputFieldFrame Size="@Size" Description="@Description" ShowDescription="@ShowDescription" Caption="@Caption" For="@InputId">
+    <label>
+        <div class="@CssClasses">
+            @if(DisplayIcon) {
+                <Icon CssClass="context" Key="@Icon" />
+            }
+            <InputFile id="@InputId" class="actual" OnChange="@OnChangeAsync" accept="@Accept" />
+            <div class="@DisplayValueCssClasses" title="@Caption">@DisplayValue</div>
+            @if(DisplayAffordance) {
+                <Icon CssClass="affordance" Key="@Affordance" />
+            }
+        </div>
+    </label>
+</InputFieldFrame>

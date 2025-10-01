@@ -1,0 +1,11 @@
+﻿<InputFieldFrame Size="@Size" Description="@Description" ShowDescription="@ShowDescription" Caption="@Caption" For="@InputId" ShowLabel="@ShowLabel" IsValid="@IsValid" Message="@ValidationMessage">
+    <div class="@CssClasses">
+        @if(DisplayIcon) {
+            <Icon CssClass="context" Key="@Icon" />
+        }
+        <input id="@InputId" class="value" title="@Caption" type="text" @bind:get="Value" @bind:set="OnValueChanged" @bind:event="oninput" readonly="@ReadOnly" placeholder="@Placeholder" maxlength="@MaxLength" />
+        @if(DisplayAffordance) {
+            <Icon CssClass="affordance" Key="@Affordance" />
+        }
+    </div>
+</InputFieldFrame>

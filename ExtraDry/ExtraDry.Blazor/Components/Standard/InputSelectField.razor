@@ -1,0 +1,21 @@
+﻿@using ExtraDry.Core
+@implements IInputField<string?>
+
+<InputFieldFrame Size="@Size" Description="@Description" ShowDescription="@ShowDescription" Caption="@Caption" For="@InputId" ShowLabel="@ShowLabel">
+    <div class="@CssClasses">
+        @if(DisplayIcon) {
+            <Icon CssClass="context" Key="@Icon" />
+        }
+        <select id="@InputId" class="value" title="@Caption" type="text" @bind:get="Value" @bind:set="OnValueChanged" @bind:event="oninput" readonly="@ReadOnly" placeholder="@Placeholder">
+            @if(DisplayOptions) {
+                foreach(var item in Data) {
+                    var selected = Value == item.Key;
+                    <option value="@item.Key" selected="@selected">@item.Value</option>
+                }
+            }
+        </select>
+        @if(DisplayAffordance) {
+            <Icon CssClass="affordance" Key="@Affordance" />
+        }
+    </div>
+</InputFieldFrame>

@@ -1,0 +1,22 @@
+.ranges {
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-medium);
+  padding: 0 0 0 var(--spacing-large);
+}
+
+  .ranges .range {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+  }
+
+    .ranges .range input {
+      padding: var(--spacing-tiny);
+      border-radius: var(--input-rounding);
+      border: solid 1px black;
+    }
+
+      .ranges .range input:read-only {
+        background-color: var(--neutral-2);
+      }

@@ -1,0 +1,27 @@
+<InputFieldFrame Size="@Size" Description="@Description" ShowDescription="@ShowDescription" Caption="@Caption" For="@InputId" ShowLabel="@ShowLabel" IsValid="@IsValid" Message="@ValidationMessage">
+    <div class="@CssClasses">
+        @if(DisplayIcon) {
+            <Icon CssClass="context" Key="@Icon" />
+        }
+        <select id="@InputId" class="value" title="@Caption" type="text" @bind:get="SelectValue" @bind:set="OnSelectValueSet" @bind:event="oninput" readonly="@ReadOnly" placeholder="@Placeholder">
+            @foreach(var item in SelectData) {
+                Console.WriteLine($"Writing {SelectValue} for {item.Key}/{item.Value}");
+                var selected = SelectValue == item.Key;
+                <option value="@item.Key" selected="@selected">@item.Value</option>
+            }
+        </select>
+        @if(DisplayAffordance) {
+            <Icon CssClass="affordance" Key="@Affordance" />
+        }
+    </div>
+</InputFieldFrame>
+<div class="ranges field medium">
+    <div class="range">
+        <label for="@FromInputId" class="label">@FromCaption</label>
+        <input id="@FromInputId" class="value" type="date" value="@FromDate" @onchange="OnFromDateChanged" readonly="@FromReadOnly" />
+    </div>
+    <div class="range">
+        <label for="@ToInputId" class="label">@ToCaption</label>
+        <input id="@ToInputId" class="value" type="date" value="@ToDate" @onchange="OnToDateChanged" readonly="@ToReadOnly" />
+    </div>
+</div>
