@@ -11,7 +11,7 @@ namespace ExtraDry.Core;
 /// <remarks>
 /// Create a Blob service with the specified configuration. This service should not be manually
 /// added to the IServiceCollection. Instead, use the <see
-/// cref="ServiceCollectionExtensions.AddBlobClient(Microsoft.Extensions.DependencyInjection.IServiceCollection,
+/// cref="EndpointServiceCollectionExtensions.AddBlobClient(Microsoft.Extensions.DependencyInjection.IServiceCollection,
 /// Action{BlobClientOptions})" /> extension method.
 /// </remarks>
 public class BlobClient<TBlob>(

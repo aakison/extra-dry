@@ -8,16 +8,13 @@ namespace ExtraDry.Core;
 /// Provides extension methods to simplify the registration of Extra Dry clients to the service
 /// collection for dependency injection.
 /// </summary>
-public static class ServiceCollectionExtensions
+/// <remarks>
+/// While AddCrudClient is defined in ExtraDry.Core, AddListClient is defined separately in
+/// ExtraDry.Blazor and ExtraDry.Server so that Blazor specific extensions are registered only in
+/// Blazor projects.
+/// </remarks>
+public static class EndpointServiceCollectionExtensions
 {
-    ///// <summary>
-    ///// Add the core Extra Dry services to the Blazor application.
-    ///// </summary>
-    //public static IServiceCollection AddExtraDry(this IServiceCollection services)
-    //{
-    //    services.AddScoped<ExtraDryJavascriptModule>();
-    //    return services;
-    //}
 
     /// <summary>
     /// Adds a strongly typed <see cref="CrudClient{T}" /> to the service collection. See <see
@@ -73,96 +70,6 @@ public static class ServiceCollectionExtensions
         });
         return services;
     }
-
-    ///// <summary>
-    ///// Adds a strongly typed <see cref="StatService{T}" /> to the service collection.
-    ///// </summary>
-    //public static IServiceCollection AddStatService<T>(this IServiceCollection services, string endpointTemplate)
-    //{
-    //    services.AddStatService<T>(options => {
-    //        options.StatEndpoint = endpointTemplate;
-    //    });
-    //    return services;
-    //}
-
-    //public static IServiceCollection AddStatService<T>(this IServiceCollection services, Action<StatServiceOptions> config)
-    //{
-    //    var options = new StatServiceOptions();
-    //    config(options);
-
-    // DataValidator.ThrowIfInvalid(options);
-
-    //    services.AddScoped(e => {
-    //        var client = GetHttpClient(e, options);
-    //        var logger = e.GetRequiredService<ILogger<StatService<T>>>();
-    //        var service = new StatService<T>(client, options, logger);
-    //        return service;
-    //    });
-    //    return services;
-    //}
-
-    ///// <summary>
-    ///// Adds a strongly typed <see cref="ListService{TItem}" /> that provides a <see
-    ///// cref="FilteredCollection{T}" /> to the service collection. Also registers the service using
-    ///// the interfaces <see cref="IListService{T}" /> and <see cref="IOptionProvider{T}" />.
-    ///// </summary>
-    //public static IServiceCollection AddFilteredListService<T>(this IServiceCollection services, string endpoint)
-    //{
-    //    services.AddListService<T>(options => {
-    //        options.ListEndpoint = endpoint;
-    //        options.ListMode = ListServiceMode.Filter;
-    //    });
-    //    return services;
-    //}
-
-    ///// <summary>
-    ///// Adds a strongly typed <see cref="ListService{TItem}" /> that provides a <see
-    ///// cref="SortedCollection{T}" /> to the service collection. Also registers the service using
-    ///// the interfaces <see cref="IListService{T}" /> and <see cref="IOptionProvider{T}" />.
-    ///// </summary>
-    //public static IServiceCollection AddSortedListService<T>(this IServiceCollection services, string endpoint)
-    //{
-    //    services.AddListService<T>(options => {
-    //        options.ListEndpoint = endpoint;
-    //        options.ListMode = ListServiceMode.FilterAndSort;
-    //    });
-    //    return services;
-    //}
-
-    ///// <summary>
-    ///// Adds a strongly typed <see cref="ListService{TItem}" /> to the service collection. Also
-    ///// registers the service using the interfaces <see cref="IListService{T}" /> and <see
-    ///// cref="IOptionProvider{T}" />.
-    ///// </summary>
-    //public static IServiceCollection AddPagedListService<T>(this IServiceCollection services, string endpoint)
-    //{
-    //    services.AddListService<T>(options => {
-    //        options.ListEndpoint = endpoint;
-    //        options.ListMode = ListServiceMode.FilterSortAndPage;
-    //    });
-    //    return services;
-    //}
-
-    ///// <summary>
-    ///// Adds a strongly typed <see cref="ListService{TItem}" /> to the service collection. Also
-    ///// registers the service using the interfaces <see cref="IListService{T}" /> and <see
-    ///// cref="IOptionProvider{T}" />.
-    ///// </summary>
-    //public static IServiceCollection AddListService<T>(this IServiceCollection services, Action<ListServiceOptions> config)
-    //{
-    //    var options = new ListServiceOptions();
-    //    config(options);
-
-    // new DataValidator().ValidateObject(options);
-
-    // services.AddScoped(e => { var client = GetHttpClient(e, options); var logger =
-    // e.GetRequiredService<ILogger<ListService<T>>>(); var service = new ListService<T>(client,
-    // options, logger); return service; }); services.AddScoped(e => { IListService<T> upcasted =
-    // e.GetRequiredService<ListService<T>>(); return upcasted; }); services.AddScoped(e => {
-    // IOptionProvider<T> upcasted = e.GetRequiredService<ListService<T>>(); return upcasted; });
-
-    //    return services;
-    //}
 
     /// <summary>
     /// Adds a strongly typed <see cref="BlobClient{TBlob}" /> to the service collection. Use with

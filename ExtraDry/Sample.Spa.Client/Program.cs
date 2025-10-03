@@ -17,14 +17,14 @@ services.AddHttpClient("api", client => {
     client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
 });
 
-services.AddFilteredListService<Sector>("/api/sectors");
+services.AddFilteredListClient<Sector>("/api/sectors");
 
-services.AddFilteredListService<Company>("/api/companies");
-services.AddPagedListService<Employee>("/api/employees");
+services.AddFilteredListClient<Company>("/api/companies");
+services.AddPagedListClient<Employee>("/api/employees");
 
-services.AddFilteredListService<Content>("/api/contents");
+services.AddFilteredListClient<Content>("/api/contents");
 
-services.AddListService<Region>(options => {
+services.AddListClient<Region>(options => {
     options.ListEndpoint = "/api/regions";
     options.HierarchyEndpoint = "/api/regions/hierarchy";
     options.HierarchyMethod = HttpMethod.Get;
