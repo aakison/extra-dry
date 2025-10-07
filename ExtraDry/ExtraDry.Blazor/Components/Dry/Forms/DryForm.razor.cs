@@ -102,7 +102,9 @@ public partial class DryForm<T>(
 
     private string[] HiddenFieldsetNames { get; set; } = [];
 
-    private IEnumerable<FormFieldset> VisibleFieldsets => FormDescription?.Fieldsets
-        .Where(e => !HiddenFieldsetNames.Contains(e.Name, StringComparer.OrdinalIgnoreCase))
+    private IEnumerable<FormFieldset> VisibleFieldsets => 
+        HiddenFieldsets == "*" 
+        ? [] 
+        : FormDescription?.Fieldsets.Where(e => !HiddenFieldsetNames.Contains(e.Name, StringComparer.OrdinalIgnoreCase)) 
         ?? [];
 }
