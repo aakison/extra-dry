@@ -311,9 +311,10 @@ public partial class DryDeck<TItem> : ComponentBase, IDisposable, IExtraDryCompo
     /// </summary>
     private async ValueTask<ItemsProviderResult<ListItemInfo<TItem>>> GetItemsAsync(ItemsProviderRequest request)
     {
-        if(ItemsService == null || QueryBuilderAccessor == null) {
+        if((Items == null && ItemsService == null) || QueryBuilderAccessor == null) { 
             return new ItemsProviderResult<ListItemInfo<TItem>>();
         }
+        var accessor = Items == null ? ItemsService! : new InMemoryListClient<TItem>(Items);
         await serviceLock.WaitAsync();
         var builder = QueryBuilderAccessor.QueryBuilder;
         try {
@@ -323,7 +324,7 @@ public partial class DryDeck<TItem> : ComponentBase, IDisposable, IExtraDryCompo
                 var firstPage = PageFor(request.StartIndex);
                 var firstIndex = FirstItemOnPage(firstPage);
                 builder.Skip = firstIndex;
-                var items = await ItemsService.GetItemsAsync(builder.Build(), request.CancellationToken);
+                var items = await accessor.GetItemsAsync(builder.Build(), request.CancellationToken);
                 var infos = new ListItemsProviderResult<TItem>(items);
                 var count = infos.ItemInfos.Count;
                 var total = infos.Total;
@@ -342,8 +343,8 @@ public partial class DryDeck<TItem> : ComponentBase, IDisposable, IExtraDryCompo
                 for(int pageNumber = firstPage; pageNumber <= lastPage; ++pageNumber) {
                     var firstIndex = FirstItemOnPage(pageNumber);
                     builder.Skip = firstIndex;
-                    if(!AllItemsCached(firstIndex, ItemsService.PageSize)) {
-                        var items = await ItemsService.GetItemsAsync(builder.Build(), request.CancellationToken);
+                    if(!AllItemsCached(firstIndex, accessor.PageSize)) {
+                        var items = await accessor.GetItemsAsync(builder.Build(), request.CancellationToken);
                         var infos = new ListItemsProviderResult<TItem>(items);
                         var count = infos.ItemInfos.Count;
                         var total = infos.Total;
@@ -356,7 +357,7 @@ public partial class DryDeck<TItem> : ComponentBase, IDisposable, IExtraDryCompo
                             info.GroupDepth = item.GroupDepth;
                             info.IsGroup = item.IsGroup;
                         }
-                        var lastIndex = firstIndex + ItemsService.PageSize;
+                        var lastIndex = firstIndex + accessor.PageSize;
                         Logger.LogPartialResults(typeof(TItem), firstIndex, count, total);
                     }
                 }
@@ -399,9 +400,9 @@ public partial class DryDeck<TItem> : ComponentBase, IDisposable, IExtraDryCompo
 
         bool AllItemsCached(int start, int count) => InternalItems.Skip(start).Take(count).All(e => e.IsLoaded);
 
-        int PageFor(int index) => index / ItemsService.PageSize;
+        int PageFor(int index) => index / accessor.PageSize;
 
-        int FirstItemOnPage(int page) => ItemsService.PageSize * page;
+        int FirstItemOnPage(int page) => accessor.PageSize * page;
     }
 
     private readonly List<ListItemInfo<TItem>> InternalItems = [];

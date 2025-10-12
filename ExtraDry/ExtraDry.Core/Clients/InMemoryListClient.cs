@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Core;
 
 public class InMemoryListClient<T>(
-    IList<T> items,
+    ICollection<T> items,
     Func<T, bool>? filter = null)
     : IListClient<T>
 {

@@ -538,9 +538,19 @@ public class RuleEngine(
             // collection will change destination)
             return;
         }
+
+        var listItemType = property.PropertyType.GetGenericArguments()[0];
+        if(listItemType.IsValueType && sourceList != null && destinationList != null) {
+            // Value types are always copied, never linked.  Make them behave like strings.
+            destinationList.Clear();
+            foreach(var item in sourceList) {
+                destinationList.Add(item);
+            }
+            return;
+        }
+
         var sourceEntities = new List<object?>();
         if(sourceList != null) {
-            var listItemType = property.PropertyType.GetGenericArguments()[0];
             foreach(var item in sourceList) {
                 (var _, var value) = await ResolveEntityValue(listItemType, item);
                 sourceEntities.Add(value);
