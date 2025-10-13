@@ -1,0 +1,14 @@
+﻿@typeparam T
+@inherits DryFieldBase<T>
+
+<TextField CssClass="@CssClasses" @attributes="UnmatchedAttributes"
+    Affordance="@ResolvedAffordance"
+    Description="@ResolvedDescription"
+    Icon="@ResolvedIcon" 
+    Label="@ResolvedLabel" 
+    Placeholder="@ResolvedPlaceholder" 
+    ReadOnly="@ResolvedReadOnly"
+    Value="@Value" OnChange="HandleChange" OnInput="HandleInput"
+    Size="@Property.Size" MaxLength="@ResolvedMaxLength" 
+    />
+

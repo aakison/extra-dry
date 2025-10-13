@@ -1,0 +1,14 @@
+<div class="@CssClasses">
+    @if(DisplayLabel) {
+        <label class="title" @onclick="ToggleDescription" title="@Description" for="@For">
+            <span>@Label</span>
+        </label>
+    }
+    @if(DisplayDescription) {
+        <span class="description">@((MarkupString)HtmlDescription)</span>
+    }
+    @ChildContent
+    @if(!IsValid) {
+        <span class="invalid message">@Message</span>
+    }
+</div>

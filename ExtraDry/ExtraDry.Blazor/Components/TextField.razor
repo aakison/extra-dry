@@ -1,0 +1,14 @@
+﻿@inherits FieldBase<string>
+
+<FieldFrame Size="@Size" Description="@Description" ShowDescription="@ShowDescription" Label="@Label" For="@InputId" ShowLabel="@ShowLabel" IsValid="@IsValid" Message="@ValidationMessage">
+    <div class="@CssClasses">
+        @if(DisplayIcon) {
+            <Icon CssClass="context" Key="@Icon" />
+        }
+        <input id="@InputId" class="value" title="@Label" type="text" readonly="@ReadOnly" placeholder="@Placeholder" maxlength="@MaxLength"
+               value="@Value" @onchange="NotifyChange" @oninput="NotifyInput" />
+        @if(DisplayAffordance) {
+            <Icon CssClass="affordance" Key="@Affordance" />
+        }
+    </div>
+</FieldFrame>
