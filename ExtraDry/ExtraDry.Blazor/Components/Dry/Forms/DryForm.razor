@@ -16,19 +16,23 @@
                         <label>@GetEntityInfoCaption()</label>
                     </div>
                 }
-                <div class="@ModelNameSlug fixed-fieldsets">
-                    @foreach(var fieldset in DisplayFixedFieldsets) {
-                        <DryFieldset GroupName="@fieldset.Name" />
-                    }
-                </div>
-                <div class="@ModelNameSlug variable-fieldsets">
-                    @foreach(var fieldset in DisplayVariableFieldsets) {
-                        <DryFieldset GroupName="@fieldset.Name" />
-                    }
-                    <div class="content">
-                        @ChildContent
+                @if(DisplayFixedFieldsets.Any()) {
+                    <div class="@ModelNameSlug fixed-fieldsets">
+                        @foreach(var fieldset in DisplayFixedFieldsets) {
+                            <DryFieldset GroupName="@fieldset.Name" />
+                        }
                     </div>
-                </div>
+                }
+                @if(DisplayVariableFieldsets.Any() || ChildContent != null) {
+                    <div class="@ModelNameSlug variable-fieldsets">
+                        @foreach(var fieldset in DisplayVariableFieldsets) {
+                            <DryFieldset GroupName="@fieldset.Name" />
+                        }
+                        <div class="content">
+                            @ChildContent
+                        </div>
+                    </div>
+                }
                 <ValidationBoundary>
                     <div class="@ModelNameSlug entity-actions">
                         <DryButtonBar Decorator="@Decorator" Commands="@Description?.Commands" Model="@Model" />
