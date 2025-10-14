@@ -4,7 +4,7 @@ public partial class TextField : FieldBase<string>
 {
 
     [Parameter]
-    public int MaxLength { get; set; } = 1_000_000;
+    public int MaxLength { get; set; } = 100;
 
     [Parameter]
     public override PropertySize Size { get; set; } = PropertySize.Large;
