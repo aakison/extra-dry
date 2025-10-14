@@ -11,10 +11,10 @@ namespace ExtraDry.Blazor.Components;
 /// * Chain the unmatched attributes to the enclosing DIV
 /// * Set single class names on the inner elements, e.g. 'value' for the input element.
 /// </summary>
-/// <typeparam name="T">The type of the property on the model the derived input handles.</typeparam>
-public class DryFieldBase<T>
-    : ComponentBase, IDryInput<T>, IExtraDryComponent
-    where T : class
+/// <typeparam name="TModel">The type of the property on the model the derived input handles.</typeparam>
+public class DryFieldBase<TModel>
+    : ComponentBase, IDryInput<TModel>, IExtraDryComponent
+    where TModel : class
 {
     /// <inheritdoc />
     [Parameter]
@@ -22,7 +22,7 @@ public class DryFieldBase<T>
 
     /// <inheritdoc />
     [Parameter, EditorRequired]
-    public T Model { get; set; } = null!;
+    public TModel Model { get; set; } = null!;
 
     /// <inheritdoc />
     [Parameter, EditorRequired]
@@ -89,7 +89,7 @@ public class DryFieldBase<T>
     /// messages between a component and its children.
     /// </summary>
     [Inject]
-    protected ILogger<DryFieldBase<T>> Logger { get; set; } = null!;
+    protected ILogger<DryFieldBase<TModel>> Logger { get; set; } = null!;
 
     [Parameter]
     public string Placeholder { get; set; } = "";

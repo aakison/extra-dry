@@ -4,7 +4,7 @@
 /// A DRY wrapper around a text input field. Prefer the use of DryField instead
 /// of this component as it is more flexible and supports more data types.
 /// </summary>
-public partial class DryTextField<T> : DryFieldBase<T> where T : class
+public partial class DryTextField<TModel> : DryFieldBase<TModel> where TModel : class
 {
     protected override void OnParametersSet()
     {
