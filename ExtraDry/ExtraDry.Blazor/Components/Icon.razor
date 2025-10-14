@@ -1,0 +1,11 @@
+﻿@if(!string.IsNullOrWhiteSpace(Key)) {
+    if(string.IsNullOrWhiteSpace(ImagePath)) {
+        <i class="@CssClasses" />
+    }
+    else if(RenderSvg) {
+        @Svg
+    }
+    else {
+        <img class="@CssClasses" src="@VersionImagePath" alt="@IconAlternateText" />
+    }
+}

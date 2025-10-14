@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace ExtraDry.Blazor.Components;
 
+/// <summary>
+/// A frame for input fields that wraps the input element with a label, description and validation message.
+/// </summary>
 public partial class FieldFrame : ComponentBase
 {
 
@@ -12,38 +15,62 @@ public partial class FieldFrame : ComponentBase
     [Parameter]
     public PropertySize Size { get; set; } = PropertySize.Medium;
 
-    /// <inheritdoc />
+    /// <inheritdoc cref="IExtraDryComponent.CssClass" />
     [Parameter]
     public string CssClass { get; set; } = "";
 
-    /// <inheritdoc />
+    /// <summary>
+    /// The description text for the field, typically one or two sentences to prompt first time users.
+    /// </summary>
     [Parameter]
     public string Description { get; set; } = "";
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Indicates if the field should show the description if one is available.  The description can
+    /// only be shown if one is provided in <see cref="Description"/>, the label itself is shown 
+    /// <see cref="ShowLabel"/> and <see cref="ShowDescription"/> is true.
+    /// </summary>>
     [Parameter]
     public bool ShowDescription { get; set; } = false;
 
+    /// <summary>
+    /// The label text for the field.
+    /// </summary>
     [Parameter]
     public string Label { get; set; } = "";
 
+    /// <summary>
+    /// Indicates if the label should be shown.  Without a label, the description cannot be shown.
+    /// </summary>
     [Parameter]
     public bool ShowLabel { get; set; } = true;
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Indicates if the field is valid.  This will change the styles of the field to indicate invalid state to user.
+    /// </summary>
     [Parameter]
     public bool IsValid { get; set; } = true;
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Indicates if the field is required.  This will add a visual indicator to the label.
+    /// </summary>
+    public bool IsRequired { get; set; }
+
+    /// <summary>
+    /// The message to show when the field is invalid.  This is not shown if the field is valid.
+    /// </summary>
     [Parameter]
     public string Message { get; set; } = "";
 
     /// <summary>
-    /// The ID for the target input element.
+    /// The ID for the target input element.  This element is typically provided as the child content of this component.
     /// </summary>
     [Parameter, EditorRequired]
     public string For { get; set; } = "";
 
+    /// <summary>
+    /// The content of the field, typically an input element.
+    /// </summary>
     [Parameter]
     public RenderFragment ChildContent { get; set; } = null!;
 
@@ -51,7 +78,7 @@ public partial class FieldFrame : ComponentBase
 
     private bool HasDescription => !string.IsNullOrWhiteSpace(Description);
 
-    private bool DisplayDescription => ShowDescription && HasDescription;
+    private bool DisplayDescription { get; set; }
 
     private bool DisplayLabel => ShowLabel;
 
@@ -61,7 +88,9 @@ public partial class FieldFrame : ComponentBase
 
     private void ToggleDescription(MouseEventArgs _)
     {
-        ShowDescription = !ShowDescription;
+        if(HasDescription && ShowDescription && ShowLabel) {
+            DisplayDescription = !DisplayDescription;
+        }
     }
 
 }

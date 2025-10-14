@@ -116,7 +116,9 @@ public partial class Theme : ComponentBase
             Logger.LogConsoleError("Theme requires an HttpClient to load SVG icons, please register one in DI.");
             return;
         }
-        foreach(var icon in Icons) {
+        // Ensure we have all icons, including fallbacks, but do not duplicate any, prefering user-supplied instead of fallback.
+        var allIcons = Icons.Union(Icon.FallbackIcons.Values.Where(e => !Icons.Any(i => i.Key == e.Key)));
+        foreach(var icon in allIcons) {
             await LoadIconConcurrentAsync(icon);
         }
         // Above loop can be done concurrently as follows.  However, in practice it appears to be
@@ -191,7 +193,7 @@ public partial class Theme : ComponentBase
     [GeneratedRegex(@"<defs.*</defs>", RegexOptions.Singleline)]
     private partial Regex DefsRegex();
 
-    private IEnumerable<IconInfo> SvgIcons => Icons
+    private IEnumerable<IconInfo> SvgIcons => Icon.FallbackIcons.Values.Union(Icons ?? [])
         ?.Where(e => !string.IsNullOrEmpty(e.SvgDatabaseBody))
         ?? [];
 }

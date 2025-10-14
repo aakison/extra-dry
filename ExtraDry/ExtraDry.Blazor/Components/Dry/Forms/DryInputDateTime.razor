@@ -8,6 +8,8 @@
     }
     <input class="value" title="@ResolvedTitle" type="@HtmlDisplayMode" value="@Value" readonly="@ReadOnly" @onchange="HandleChange" onkeydown="@DisableSpaceWhenReadOnlyHack" />
     @if(ResolvedAffordance != "" && !ReadOnly) {
-        <Icon CssClass="affordance" Key="@ResolvedAffordance" onclick="this.parentNode.getElementsByTagName('input')[0].showPicker()" />
+        <div onclick="this.parentNode.getElementsByTagName('input')[0].showPicker()">
+            <Icon CssClass="affordance" Key="@ResolvedAffordance" />
+        </div>
     }
 </div>

@@ -1,7 +1,13 @@
 <div class="@CssClasses">
     @if(DisplayLabel) {
-        <label class="title" @onclick="ToggleDescription" title="@Description" for="@For">
-            <span>@Label</span>
+        <label class="label" @onclick="ToggleDescription" title="@Description" for="@For">
+            <span class="text">@Label</span>
+            @if(HasDescription) {
+                <Icon CssClass="description" Key="has-description" />
+            }
+            @if(IsRequired) {
+                <Icon CssClass="required" Key="is-required" />
+            }
         </label>
     }
     @if(DisplayDescription) {
