@@ -51,7 +51,7 @@ public abstract class FieldBase<T> : ComponentBase
 
     /// <inheritdoc />
     [Parameter]
-    public PropertySize Size { get; set; } = PropertySize.Medium;
+    public virtual PropertySize Size { get; set; } = PropertySize.Medium;
 
     /// <inheritdoc />
     [Parameter]

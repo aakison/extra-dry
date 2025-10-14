@@ -5,8 +5,14 @@
         @if(DisplayIcon) {
             <Icon CssClass="context" Key="@Icon" />
         }
-        <input id="@InputId" class="value" title="@Label" type="text" readonly="@ReadOnly" placeholder="@Placeholder" maxlength="@MaxLength"
-               value="@Value" @onchange="NotifyChange" @oninput="NotifyInput" />
+        @if(IsMultiline) {
+            <textarea id="@InputId" class="value @TextSize" title="@Label" readonly="@ReadOnly" placeholder="@Placeholder" maxlength="@MaxLength"
+                      @onchange="NotifyChange" @oninput="NotifyInput">@Value</textarea>
+        }
+        else {
+            <input id="@InputId" class="value" title="@Label" type="text" readonly="@ReadOnly" placeholder="@Placeholder" maxlength="@MaxLength"
+                   value="@Value" @onchange="NotifyChange" @oninput="NotifyInput" />
+        }
         @if(DisplayAffordance) {
             <Icon CssClass="affordance" Key="@Affordance" />
         }

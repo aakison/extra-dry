@@ -1,7 +1,7 @@
 ﻿namespace ExtraDry.Blazor.Components;
 
 /// <summary>
-/// A DRY wrapper around a text input field. Prefer the use of <see cref="DryField{T}" /> instead
+/// A DRY wrapper around a text input field. Prefer the use of DryField instead
 /// of this component as it is more flexible and supports more data types.
 /// </summary>
 public partial class DryTextField<T> : DryFieldBase<T> where T : class

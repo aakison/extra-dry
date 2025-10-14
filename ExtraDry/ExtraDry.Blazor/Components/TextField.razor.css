@@ -1,0 +1,29 @@
+@layer extra-dry {
+  div.input.text {
+  }
+
+  form div.field div.input.textarea {
+    padding: 0;
+    height: initial;
+  }
+
+  textarea {
+    width: 100%;
+    border: none;
+    height: 3rem;
+    resize: vertical;
+  }
+
+    textarea.paragraph {
+      height: 5rem;
+    }
+
+    textarea.page, textarea.book {
+      height: 10rem;
+    }
+
+    textarea:focus-visible {
+      border: none;
+      outline: none;
+    }
+}

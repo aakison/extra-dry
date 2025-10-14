@@ -6,6 +6,8 @@ public partial class TextField : FieldBase<string>
     [Parameter]
     public int MaxLength { get; set; } = 1_000_000;
 
+    [Parameter]
+    public override PropertySize Size { get; set; } = PropertySize.Large;
 
     #region For IValidatableField ??? To create if good idea...
 
@@ -21,13 +23,41 @@ public partial class TextField : FieldBase<string>
 
     public string ValidationMessage { get; set; } = "";
 
-
     private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", "text", ReadOnlyCss, IsValidCss, CssClass);
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", ModeCss, ReadOnlyCss, IsValidCss, CssClass);
+
+    private string ModeCss => IsMultiline ? "textarea" : "text";
 
     private string IsValidCss => IsValid ? "valid" : "invalid";
 
+    private bool IsMultiline => MaxLength > StringLength.Line;
+
+    private string TextSize {
+        get {
+            if(MaxLength <= StringLength.Word) {
+                return nameof(StringLength.Word).ToLowerInvariant();
+            }
+            else if(MaxLength <= StringLength.Words) {
+                return nameof(StringLength.Words).ToLowerInvariant();
+            }
+            else if(MaxLength <= StringLength.Line) {
+                return nameof(StringLength.Line).ToLowerInvariant();
+            }
+            else if(MaxLength <= StringLength.Sentence) {
+                return nameof(StringLength.Sentence).ToLowerInvariant();
+            } 
+            else if(MaxLength <= StringLength.Paragraph) {
+                return nameof(StringLength.Paragraph).ToLowerInvariant();
+            }
+            else if(MaxLength <= StringLength.Page) {
+                return nameof(StringLength.Page).ToLowerInvariant();
+            }
+            else {
+                return nameof(StringLength.Book).ToLowerInvariant();
+            }
+        }
+    }
 
     private void Validate()
     {
