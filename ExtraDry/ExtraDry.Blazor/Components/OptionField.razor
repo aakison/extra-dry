@@ -1,0 +1,22 @@
+@typeparam T
+@inherits FieldBase<T>
+
+<FieldFrame Size="@Size" Description="@Description" ShowDescription="@ShowDescription" Label="@Label" For="@InputId" ShowLabel="@ShowLabel" IsValid="@IsValid" Message="@ValidationMessage">
+    <div class="@CssClasses">
+        @if(DisplayIcon) {
+            <Icon CssClass="context" Key="@Icon" />
+        }
+        <select id="@InputId" class="value" title="@Label" @onchange="NotifyChangeByUuid" @oninput="NotifyInputByUuid" readonly="@ReadOnly">
+            @if(Value == null && !string.IsNullOrEmpty(Placeholder)) {
+                <option value="" disabled selected>@Placeholder</option>
+            }
+            @foreach(var option in Options) {
+                var selected = false;// Value == option.Value;
+                <option value="@option.Key" selected="@selected">@option.DisplayText</option>
+            }
+        </select>
+        @if(DisplayAffordance) {
+            <Icon CssClass="affordance" Key="@Affordance" />
+        }
+    </div>
+</FieldFrame>

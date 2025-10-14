@@ -83,7 +83,7 @@ public abstract class FieldBase<T> : ComponentBase
         };
     }
 
-    protected async Task NotifyChange(ChangeEventArgs args)
+    protected virtual async Task NotifyChange(ChangeEventArgs args)
     {
         if(args.Value != null) {
             Value = (T)args.Value;
@@ -93,8 +93,9 @@ public abstract class FieldBase<T> : ComponentBase
         //Validate();
     }
 
-    protected async Task NotifyInput(ChangeEventArgs args)
+    protected virtual async Task NotifyInput(ChangeEventArgs args)
     {
+        Console.WriteLine($"Notifying input change... {args.Value} of type {args.Value?.GetType()}");
         if(args.Value != null) {
             Value = (T)args.Value;
         }

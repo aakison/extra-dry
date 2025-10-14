@@ -1,0 +1,19 @@
+@layer extra-dry {
+  div.input.select {
+  }
+
+  div.input.select select.value {
+    width: 100%;
+    border: none;
+    cursor: pointer;
+  }
+
+    div.input.select select.value:focus-visible {
+      border: none;
+      outline: none;
+    }
+
+    div.input.select.readonly select.value {
+      cursor: default;
+    }
+}

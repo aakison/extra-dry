@@ -103,6 +103,27 @@ public partial class DataConverter
         return displayAttribute?.Name ?? member.Name;
     }
 
+    public static IList<TEnum> EnumValues<TEnum>()
+    {
+        var type = typeof(TEnum);
+        if(!type.IsEnum) {
+            throw new ArgumentException("Generic Type must be an enum");
+        }
+        var values = new List<TEnum>();
+        var enumValues = type.GetEnumValues();
+        foreach(var value in enumValues) {
+            Console.WriteLine($"Checking enum value {value}");
+            if(value != null) {
+                var memberInfo = type.GetMember(value.ToString()!).First();
+                var displayAttribute = memberInfo?.GetCustomAttribute<DisplayAttribute>();
+                if(displayAttribute?.GetAutoGenerateField() ?? true) {
+                    values.Add((TEnum)value);
+                }
+            }
+        }
+        return values;
+    }
+
     /// <summary>
     /// Works like the normal string.join, except any args that are null or only whitespace are
     /// ignored. Convenient for use when joining lists of things that might have some optional or
