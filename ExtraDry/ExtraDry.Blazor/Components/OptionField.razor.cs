@@ -1,13 +1,31 @@
 namespace ExtraDry.Blazor.Components;
 
-public partial class OptionField<T> : FieldBase<T> 
+public partial class OptionField<TValue> : FieldBase<TValue> 
 {
+    public OptionField() {
+        if(typeof(TValue).IsEnum) {
+            KeyFunc = EnumKeyFunc;
+        }
+        else {
+            KeyFunc = IdentifierKeyFunc;
+        }
+        if(typeof(TValue).IsAssignableTo(typeof(IResourceIdentifiers))) {
+            TitleFunc = ResourceTitleFunc;
+        }
+        else if(typeof(TValue).IsEnum) {
+            TitleFunc = EnumTitleFunc;
+        }
+        else {
+            TitleFunc = ObjectTitleFunc;
+        }
+    }
+
     /// <summary>
     /// Set of values to select from, any object can be used and the display text is either
     /// IResourceIdentifiers.Title or object.ToString() value.
     /// </summary>
     [Parameter, EditorRequired]
-    public IList<T> Values { get; set; } = null!;
+    public IList<TValue> Values { get; set; } = null!;
 
     #region For IValidatableField
 
@@ -16,6 +34,20 @@ public partial class OptionField<T> : FieldBase<T>
 
     [Parameter]
     public string ValidationProperty { get; set; } = "";
+
+    /// <summary>
+    /// A function that maps an option value to a display title for the user.  Default functions
+    /// are provided for Enum, <see cref="IResourceIdentifiers"/>, or falls back to Object.ToString()
+    /// </summary>
+    [Parameter]
+    public Func<TValue, string> TitleFunc { get; set; }
+
+    /// <summary>
+    /// A function that maps an option value to a key for the value (not shown to users put potentially
+    /// useful for debugging).  Defaults map to known UUID, enum values, or falls back to random Guid.
+    /// </summary>
+    [Parameter]
+    public Func<TValue, string> KeyFunc { get; set; }
 
     #endregion
 
@@ -33,7 +65,7 @@ public partial class OptionField<T> : FieldBase<T>
     {
         base.OnParametersSet();
         
-        Options = Values.Select(e => new Option(e)).ToList();
+        Options = Values.Select(e => new Option { Value = e, Key = KeyFunc(e), Title = TitleFunc(e) }).ToList();
     }
 
     private void Validate()
@@ -59,33 +91,28 @@ public partial class OptionField<T> : FieldBase<T>
         StateHasChanged();
     }
 
+    private const string EmptyDisplayText = "--empty--";
+
+    private static string EnumTitleFunc(TValue value) => value is Enum enumValue ? DataConverter.DisplayEnum(enumValue) : EmptyDisplayText;
+
+    private static string ResourceTitleFunc(TValue value) => (value as IResourceIdentifiers)?.Title ?? EmptyDisplayText;
+
+    private static string ObjectTitleFunc(TValue value) => value?.ToString() ?? EmptyDisplayText;
+
+    private static string EnumKeyFunc(TValue value) => $"{typeof(TValue).Name}-{value}";
+
+    private static string IdentifierKeyFunc(TValue value) => ((value as IUniqueIdentifier)?.Uuid ?? new Guid()).ToString();
+
     public class Option
     {
-        public Option(T source)
-        {
-            if(source is IResourceIdentifiers resource) {
-                Key = resource.Uuid.ToString();
-                DisplayText = resource.Title ?? source.ToString() ?? "--empty--";
-            }
-            else if(source is Enum enumValue) {
-                Key = $"{source.GetType().Name}-{enumValue}";
-                DisplayText = DataConverter.DisplayEnum(enumValue);
-            }
-            else {
-                Key = Guid.NewGuid().ToString();
-                DisplayText = source?.ToString() ?? "--empty--";
-            }
-            Value = source;
-        }
+        public required string Key { get; init; }
 
-        public string Key { get; init; }
+        public required string Title { get; init; }
 
-        public string DisplayText { get; init; }
-
-        public T Value { get; init; }
+        public required TValue Value { get; init; }
     }
 
-    private async Task NotifyInputByUuid(ChangeEventArgs args)
+    private async Task NotifyInputByKey(ChangeEventArgs args)
     {
         var selected = Options.FirstOrDefault(e => e.Key == (string?)args.Value);
         var objectArgs = selected == null 
@@ -94,7 +121,7 @@ public partial class OptionField<T> : FieldBase<T>
         await NotifyInput(objectArgs);
     }
 
-    private async Task NotifyChangeByUuid(ChangeEventArgs args)
+    private async Task NotifyChangeByKey(ChangeEventArgs args)
     {
         var selected = Options.FirstOrDefault(e => e.Key == (string?)args.Value);
         var objectArgs = selected == null

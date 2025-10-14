@@ -112,7 +112,6 @@ public partial class DataConverter
         var values = new List<TEnum>();
         var enumValues = type.GetEnumValues();
         foreach(var value in enumValues) {
-            Console.WriteLine($"Checking enum value {value}");
             if(value != null) {
                 var memberInfo = type.GetMember(value.ToString()!).First();
                 var displayAttribute = memberInfo?.GetCustomAttribute<DisplayAttribute>();
