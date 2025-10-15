@@ -95,7 +95,6 @@ public abstract class FieldBase<T> : ComponentBase
 
     protected virtual async Task NotifyInput(ChangeEventArgs args)
     {
-        Console.WriteLine($"Notifying input change... {args.Value} of type {args.Value?.GetType()}");
         if(args.Value != null) {
             Value = (T)args.Value;
         }

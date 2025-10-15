@@ -193,7 +193,6 @@ public partial class DryButton : ComponentBase, IExtraDryComponent
             await ResolvedCommand.ExecuteAsync(SelectionAccessor.SelectionSet.Items.First());
         }
         else if(ResolvedCommand.Arguments == CommandArguments.None) {
-            Console.WriteLine("No Args");
             await ResolvedCommand.ExecuteAsync();
         }
     }

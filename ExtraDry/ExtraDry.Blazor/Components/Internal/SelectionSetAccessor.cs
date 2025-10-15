@@ -24,17 +24,12 @@ public class SelectionSetAccessor(object decorator)
 
     private static SelectionSet Register(object decorator)
     {
-        //Console.WriteLine($"Cleaning collection of {SelectionSets.Count} items");
         SelectionSets.RemoveAll(r => !r.Decorator.TryGetTarget(out _));
-        //Console.WriteLine($"Collection now has {SelectionSets.Count} items");
-        //Console.WriteLine($"Looking up {decorator} in collection ");
         var existing = SelectionSets.FirstOrDefault(r => r.Decorator.TryGetTarget(out var target) && target == decorator);
         if(existing == null) {
-            //Console.WriteLine($"Not found, adding new Selection Set ");
             existing = new WeakRegistration(decorator);
             SelectionSets.Add(existing);
         }
-        //Console.WriteLine($"Registration finished with {SelectionSets.Count} items");
         return existing.SelectionSet;
     }
 }
