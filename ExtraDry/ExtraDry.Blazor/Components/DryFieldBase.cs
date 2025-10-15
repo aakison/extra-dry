@@ -8,13 +8,10 @@ namespace ExtraDry.Blazor.Components;
 /// inherit from this class:
 /// * Have an enclosing DIV for the input.
 /// * Set the CssClass on the DIV with full semantic class names.
-/// * Chain the unmatched attributes to the enclosing DIV
 /// * Set single class names on the inner elements, e.g. 'value' for the input element.
 /// </summary>
 /// <typeparam name="TModel">The type of the property on the model the derived input handles.</typeparam>
-public class DryFieldBase<TModel>
-    : ComponentBase, IDryInput<TModel>, IExtraDryComponent
-    where TModel : class
+public class DryFieldBase<TModel> : OwningComponentBase where TModel : class
 {
     /// <inheritdoc />
     [Parameter]
@@ -32,16 +29,13 @@ public class DryFieldBase<TModel>
     [CascadingParameter]
     public EditMode EditMode { get; set; } = EditMode.Create;
 
-    /// <inheritdoc />
-    [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object>? UnmatchedAttributes { get; set; }
+    [Parameter]
+    public EventCallback<ChangeEventArgs> OnInput { get; set; }
+
 
     /// <inheritdoc />
     [Parameter]
     public EventCallback<ChangeEventArgs> OnChange { get; set; }
-
-    [Parameter]
-    public EventCallback<ChangeEventArgs> OnInput { get; set; }
 
     /// <summary>
     /// Event that is raised when the input is validated using internal rules. Does not check

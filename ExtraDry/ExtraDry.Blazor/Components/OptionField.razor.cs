@@ -1,7 +1,6 @@
 namespace ExtraDry.Blazor.Components;
 
-public partial class OptionField<TValue> : FieldBase<TValue> 
-{
+public partial class OptionField<TValue> : FieldBase<TValue> {
     public OptionField() {
         if(typeof(TValue).IsEnum) {
             KeyFunc = EnumKeyFunc;
@@ -25,7 +24,7 @@ public partial class OptionField<TValue> : FieldBase<TValue>
     /// IResourceIdentifiers.Title or object.ToString() value.
     /// </summary>
     [Parameter, EditorRequired]
-    public IList<TValue> Values { get; set; } = null!;
+    public IList<TValue> Options { get; set; } = null!;
 
     #region For IValidatableField
 
@@ -59,13 +58,13 @@ public partial class OptionField<TValue> : FieldBase<TValue>
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", "select", ReadOnlyCss, CssClass);
 
-    private List<Option> Options { get; set; } = [];
+    private List<Option> InternalOptions { get; set; } = [];
 
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
         
-        Options = Values.Select(e => new Option { Value = e, Key = KeyFunc(e), Title = TitleFunc(e) }).ToList();
+        InternalOptions = Options.Select(e => new Option { Value = e, Key = KeyFunc(e), Title = TitleFunc(e) }).ToList();
     }
 
     private void Validate()
@@ -114,7 +113,7 @@ public partial class OptionField<TValue> : FieldBase<TValue>
 
     private async Task NotifyInputByKey(ChangeEventArgs args)
     {
-        var selected = Options.FirstOrDefault(e => e.Key == (string?)args.Value);
+        var selected = InternalOptions.FirstOrDefault(e => e.Key == (string?)args.Value);
         var objectArgs = selected == null 
             ? new ChangeEventArgs { Value = null }
             : new ChangeEventArgs { Value = selected.Value };
@@ -123,7 +122,7 @@ public partial class OptionField<TValue> : FieldBase<TValue>
 
     private async Task NotifyChangeByKey(ChangeEventArgs args)
     {
-        var selected = Options.FirstOrDefault(e => e.Key == (string?)args.Value);
+        var selected = InternalOptions.FirstOrDefault(e => e.Key == (string?)args.Value);
         var objectArgs = selected == null
             ? new ChangeEventArgs { Value = null }
             : new ChangeEventArgs { Value = selected.Value };

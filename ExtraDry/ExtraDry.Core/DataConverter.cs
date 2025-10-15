@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace ExtraDry.Core;
@@ -117,6 +118,25 @@ public partial class DataConverter
                 var displayAttribute = memberInfo?.GetCustomAttribute<DisplayAttribute>();
                 if(displayAttribute?.GetAutoGenerateField() ?? true) {
                     values.Add((TEnum)value);
+                }
+            }
+        }
+        return values;
+    }
+
+    public static IList<Enum> EnumValues(Type type)
+    {
+        if(!type.IsEnum) {
+            throw new ArgumentException("Generic Type must be an enum");
+        }
+        var values = new List<Enum>();
+        var enumValues = type.GetEnumValues();
+        foreach(var value in enumValues) {
+            if(value != null) {
+                var memberInfo = type.GetMember(value.ToString()!).First();
+                var displayAttribute = memberInfo?.GetCustomAttribute<DisplayAttribute>();
+                if(displayAttribute?.GetAutoGenerateField() ?? true) {
+                    values.Add((Enum)value);
                 }
             }
         }

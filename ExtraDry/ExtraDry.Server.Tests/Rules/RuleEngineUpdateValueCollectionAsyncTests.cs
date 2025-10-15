@@ -152,6 +152,6 @@ public class RuleEngineUpdateValueCollectionAsyncTests
         public List<Guid>? Guids { get; set; }
         public List<int>? Ints { get; set; }
         public List<string>? Strings { get; set; }
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext) => Enumerable.Empty<ValidationResult>();
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext) => [];
     }
 }

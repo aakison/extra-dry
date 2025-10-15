@@ -10,8 +10,8 @@
             @if(Value == null && !string.IsNullOrEmpty(Placeholder)) {
                 <option value="" disabled selected>@Placeholder</option>
             }
-            @foreach(var option in Options) {
-                var selected = false;// Value == option.Value;
+            @foreach(var option in InternalOptions) {
+                var selected = option.Value.Equals(Value);
                 <option value="@option.Key" selected="@selected">@option.Title</option>
             }
         </select>

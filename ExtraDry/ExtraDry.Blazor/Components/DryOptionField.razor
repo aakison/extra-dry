@@ -1,0 +1,17 @@
+@typeparam TModel
+@inherits DryFieldBase<TModel>
+
+<OptionField TValue="Option" CssClass="@CssClasses"
+    Affordance="@ResolvedAffordance"
+    Description="@ResolvedDescription"
+    Icon="@ResolvedIcon" 
+    Label="@ResolvedLabel" 
+    Placeholder="@ResolvedPlaceholder" 
+    ReadOnly="@ResolvedReadOnly"
+    @bind-Value="Value" 
+    Options="@Options"
+    OnChange="HandleChange" 
+    OnInput="HandleInput"
+    ValidationModel="@Model"
+    ValidationProperty="@(Property?.Property.Name ?? string.Empty)"
+    />
