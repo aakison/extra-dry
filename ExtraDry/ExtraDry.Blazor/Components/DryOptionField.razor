@@ -10,8 +10,8 @@
     ReadOnly="@ResolvedReadOnly"
     @bind-Value="Value" 
     Options="@Options"
+    Validator="Validator"
     OnChange="HandleChange" 
     OnInput="HandleInput"
-    ValidationModel="@Model"
-    ValidationProperty="@(Property?.Property.Name ?? string.Empty)"
+    OnValidate="HandleValidate"
     />

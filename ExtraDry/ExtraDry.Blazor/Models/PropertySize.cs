@@ -7,6 +7,11 @@
 public enum PropertySize
 {
     /// <summary>
+    /// The size is determined automatically based on context.
+    /// </summary>
+    Auto = 0,
+
+    /// <summary>
     /// A small property, such as an int field, small enough to fit four fields on a single line.
     /// </summary>
     Small = 1,

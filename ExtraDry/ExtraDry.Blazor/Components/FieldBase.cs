@@ -1,4 +1,6 @@
-﻿namespace ExtraDry.Blazor.Components;
+﻿using System.Threading.Tasks;
+
+namespace ExtraDry.Blazor.Components;
 
 public abstract class FieldBase<T> : ComponentBase
 {
@@ -13,6 +15,9 @@ public abstract class FieldBase<T> : ComponentBase
 
     [Parameter]
     public EventCallback<ChangeEventArgs> OnInput { get; set; }
+
+    [Parameter]
+    public EventCallback<ValidationEventArgs> OnValidate { get; set; }
 
     /// <inheritdoc />
     [Parameter]
@@ -69,11 +74,20 @@ public abstract class FieldBase<T> : ComponentBase
     [Parameter]
     public bool ShowLabel { get; set; } = true;
 
+    [Parameter]
+    public IValidator? Validator { get; set; }
+
     protected bool DisplayIcon => ShowIcon && Icon != "";
 
     protected bool DisplayAffordance => ShowAffordance && Affordance != "" && !ReadOnly;
 
     protected string InputId { get; set; } = "";
+
+    protected bool IsValid { get; set; } = true;
+
+    protected string ValidationMessage { get; set; } = "";
+
+    protected string IsValidCss => IsValid ? "valid" : "invalid";
 
     protected override void OnInitialized()
     {
@@ -90,7 +104,7 @@ public abstract class FieldBase<T> : ComponentBase
         }
         await ValueChanged.InvokeAsync(Value);
         await OnChange.InvokeAsync(args);
-        //Validate();
+        await ValidateAsync(showError: true);
     }
 
     protected virtual async Task NotifyInput(ChangeEventArgs args)
@@ -100,6 +114,34 @@ public abstract class FieldBase<T> : ComponentBase
         }
         await ValueChanged.InvokeAsync(Value);
         await OnInput.InvokeAsync(args);
+        await ValidateAsync(showError: false);
+    }
+
+    private async Task ValidateAsync(bool showError)
+    {
+        if(Validator == null) {
+            return;
+        }
+        if(Validator.Validate(Value)) {
+            // If valid, clear any errors on both input and change events.
+            await UpdateValidationAsync(true);
+        }
+        else if(showError) {
+            // If invalid, only show the error on change events.
+            await UpdateValidationAsync(false);
+        }
+    }
+
+    private async Task UpdateValidationAsync(bool valid)
+    {
+        IsValid = valid;
+        ValidationMessage = Validator?.Message ?? "";
+        await OnValidate.InvokeAsync(new ValidationEventArgs {
+            IsValid = valid,
+            MemberName = "",
+            Message = ValidationMessage,
+        });
+        StateHasChanged();
     }
 
     private static int instanceCount;

@@ -8,7 +8,11 @@
     Label="@ResolvedLabel" 
     Placeholder="@ResolvedPlaceholder" 
     ReadOnly="@ResolvedReadOnly"
-    Value="@Value" OnChange="HandleChange" OnInput="HandleInput"
-    Size="@Property.Size" MaxLength="@ResolvedMaxLength" 
+    Value="@Value" 
+    OnChange="HandleChange" 
+    OnInput="HandleInput"
+    OnValidate="HandleValidate"
+    Size="@Property.Size" 
+    MaxLength="@ResolvedMaxLength" 
     />
 

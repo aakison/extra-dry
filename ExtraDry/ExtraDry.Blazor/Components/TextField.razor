@@ -1,6 +1,6 @@
 ﻿@inherits FieldBase<string>
 
-<FieldFrame Size="@Size" Description="@Description" ShowDescription="@ShowDescription" Label="@Label" For="@InputId" ShowLabel="@ShowLabel" IsValid="@IsValid" Message="@ValidationMessage">
+<FieldFrame Size="@ResolvedSize" Description="@Description" ShowDescription="@ShowDescription" Label="@Label" For="@InputId" ShowLabel="@ShowLabel" IsValid="@IsValid" Message="@ValidationMessage">
     <div class="@CssClasses">
         @if(DisplayIcon) {
             <Icon CssClass="context" Key="@Icon" />

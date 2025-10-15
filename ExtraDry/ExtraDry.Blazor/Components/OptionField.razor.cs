@@ -26,14 +26,6 @@ public partial class OptionField<TValue> : FieldBase<TValue> {
     [Parameter, EditorRequired]
     public IList<TValue> Options { get; set; } = null!;
 
-    #region For IValidatableField
-
-    [Parameter]
-    public object? ValidationModel { get; set; }
-
-    [Parameter]
-    public string ValidationProperty { get; set; } = "";
-
     /// <summary>
     /// A function that maps an option value to a display title for the user.  Default functions
     /// are provided for Enum, <see cref="IResourceIdentifiers"/>, or falls back to Object.ToString()
@@ -48,12 +40,6 @@ public partial class OptionField<TValue> : FieldBase<TValue> {
     [Parameter]
     public Func<TValue, string> KeyFunc { get; set; }
 
-    #endregion
-
-    private bool IsValid { get; set; } = true;
-
-    public string ValidationMessage { get; set; } = "";
-
     private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", "select", ReadOnlyCss, CssClass);
@@ -67,29 +53,6 @@ public partial class OptionField<TValue> : FieldBase<TValue> {
         InternalOptions = Options.Select(e => new Option { Value = e, Key = KeyFunc(e), Title = TitleFunc(e) }).ToList();
     }
 
-    private void Validate()
-    {
-        if(ValidationModel == null) {
-            return;
-        }
-        var validator = new DataValidator();
-        if(validator.ValidateProperties(ValidationModel, ValidationProperty)) {
-            UpdateValidationUI(true, string.Empty);
-        }
-        else {
-            UpdateValidationUI(false, string.Join("; ", validator.Errors.Select(e => e.ErrorMessage)));
-        }
-    }
-
-    private void UpdateValidationUI(bool valid, string message)
-    {
-        // Remove common redundant portions of messages
-        Console.WriteLine($"Validating UI... {valid} {message}");
-        IsValid = valid;
-        ValidationMessage = DryValidationSummary.FormatMessage(ValidationProperty, message);
-        StateHasChanged();
-    }
-
     private const string EmptyDisplayText = "--empty--";
 
     private static string EnumTitleFunc(TValue value) => value is Enum enumValue ? DataConverter.DisplayEnum(enumValue) : EmptyDisplayText;
@@ -101,6 +64,8 @@ public partial class OptionField<TValue> : FieldBase<TValue> {
     private static string EnumKeyFunc(TValue value) => $"{typeof(TValue).Name}-{value}";
 
     private static string IdentifierKeyFunc(TValue value) => ((value as IUniqueIdentifier)?.Uuid ?? new Guid()).ToString();
+
+    private bool IsSelected(Option option) => (option.Value is null && Value is null) || (option.Value?.Equals(Value) ?? false);
 
     public class Option
     {

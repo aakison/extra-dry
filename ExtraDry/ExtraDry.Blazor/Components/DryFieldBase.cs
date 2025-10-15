@@ -42,7 +42,7 @@ public class DryFieldBase<TModel> : OwningComponentBase where TModel : class
     /// global rules that might be set on the model using data annotations.
     /// </summary>
     [Parameter]
-    public EventCallback<ValidationEventArgs> OnValidation { get; set; }
+    public EventCallback<ValidationEventArgs> OnValidate { get; set; }
 
     /// <summary>
     /// The icon to display next to the input field. If not set, the icon from the property's
@@ -109,6 +109,15 @@ public class DryFieldBase<TModel> : OwningComponentBase where TModel : class
     protected string ResolvedAffordance =>
         Affordance == "" ? Property?.InputField?.Affordance ?? "" : Affordance;
 
+
+    protected DataModelPropertyValidator Validator { get; set; } = null!;
+
+    protected override Task OnParametersSetAsync()
+    {
+        Validator = new DataModelPropertyValidator(Model, Property.Property.Name);
+        return base.OnParametersSetAsync();
+    }
+
     /// <summary>
     /// The title for the input field. If not set, the field caption from the property is used.
     /// </summary>
@@ -124,39 +133,4 @@ public class DryFieldBase<TModel> : OwningComponentBase where TModel : class
         ? Property?.FieldCaption ?? ""
         : Label;
 
-    /// <summary>
-    /// Retrieve the event args by calling <see cref="ValidateProperty" />.
-    /// </summary>
-    protected async Task InvokeOnValidationAsync(ValidationEventArgs args)
-    {
-        await OnValidation.InvokeAsync(args);
-    }
-
-    protected async Task InvokeOnChangeAsync(object? value)
-    {
-        var args = new ChangeEventArgs {
-            Value = value,
-        };
-        await OnChange.InvokeAsync(args);
-    }
-
-    /// <summary>
-    /// Checks the property against the data annotations and returns true if the property is valid.
-    /// </summary>
-    /// <returns>True if property is valid</returns>
-    protected ValidationEventArgs ValidateProperty()
-    {
-        var args = new ValidationEventArgs {
-            IsValid = true,
-            MemberName = Property!.Property.Name,
-            Message = "",
-        };
-        var validator = new DataValidator();
-        validator.ValidateProperties(Model!, Property!.Property.Name);
-        args.IsValid = validator.Errors.Count == 0;
-        if(!args.IsValid) {
-            args.Message = validator.Errors.FirstOrDefault()?.ErrorMessage ?? "Value is not valid";
-        }
-        return args;
-    }
 }

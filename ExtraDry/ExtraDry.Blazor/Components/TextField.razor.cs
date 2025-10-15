@@ -1,27 +1,24 @@
 ﻿namespace ExtraDry.Blazor.Components;
 
+/// <summary>
+/// Represents a text field that can be single line or multi-line depending on the MaxLength property.
+/// </summary>
 public partial class TextField : FieldBase<string>
 {
 
+    /// <summary>
+    /// The maximum length of the text. If greater than 100 then a multi-line text area is used.
+    /// This is a hard limit to the text field and is separate from the validation model.  For
+    /// user consistency, it is recommended to align this with the string length of the property.
+    /// </summary>
     [Parameter]
     public int MaxLength { get; set; } = 100;
 
+    /// <summary>
+    /// The size of the field. If set to Auto (the default) then the size is determined based on the /// <see cref="MaxLength"/>.
+    /// </summary>
     [Parameter]
-    public override PropertySize Size { get; set; } = PropertySize.Large;
-
-    #region For IValidatableField ??? To create if good idea...
-
-    [Parameter]
-    public object? ValidationModel { get; set; }
-
-    [Parameter]
-    public string ValidationProperty { get; set; } = "";
-
-    #endregion
-
-    private bool IsValid { get; set; } = true;
-
-    public string ValidationMessage { get; set; } = "";
+    public override PropertySize Size { get; set; } = PropertySize.Auto;
 
     private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
 
@@ -29,57 +26,30 @@ public partial class TextField : FieldBase<string>
 
     private string ModeCss => IsMultiline ? "textarea" : "text";
 
-    private string IsValidCss => IsValid ? "valid" : "invalid";
-
     private bool IsMultiline => MaxLength > StringLength.Line;
 
-    private string TextSize {
+    private PropertySize ResolvedSize {
         get {
-            if(MaxLength <= StringLength.Word) {
-                return nameof(StringLength.Word).ToLowerInvariant();
+            if(Size != PropertySize.Auto) {
+                return Size;
             }
-            else if(MaxLength <= StringLength.Words) {
-                return nameof(StringLength.Words).ToLowerInvariant();
-            }
-            else if(MaxLength <= StringLength.Line) {
-                return nameof(StringLength.Line).ToLowerInvariant();
-            }
-            else if(MaxLength <= StringLength.Sentence) {
-                return nameof(StringLength.Sentence).ToLowerInvariant();
-            } 
-            else if(MaxLength <= StringLength.Paragraph) {
-                return nameof(StringLength.Paragraph).ToLowerInvariant();
-            }
-            else if(MaxLength <= StringLength.Page) {
-                return nameof(StringLength.Page).ToLowerInvariant();
-            }
-            else {
-                return nameof(StringLength.Book).ToLowerInvariant();
-            }
+            return MaxLength switch {
+                <= StringLength.Word => PropertySize.Small,
+                <= StringLength.Words => PropertySize.Medium,
+                <= StringLength.Line => PropertySize.Large,
+                _ => PropertySize.Jumbo,
+            };
         }
     }
 
-    private void Validate()
-    {
-        if(ValidationModel == null) {
-            return;
-        }
-        var validator = new DataValidator();
-        if(validator.ValidateProperties(ValidationModel, ValidationProperty)) {
-            UpdateValidationUI(true, string.Empty);
-        }
-        else {
-            UpdateValidationUI(false, string.Join("; ", validator.Errors.Select(e => e.ErrorMessage)));
-        }
-    }
-
-    private void UpdateValidationUI(bool valid, string message)
-    {
-        // Remove common redundant portions of messages
-        Console.WriteLine($"Validating UI... {valid} {message}");
-        IsValid = valid;
-        ValidationMessage = DryValidationSummary.FormatMessage(ValidationProperty, message);
-        StateHasChanged();
-    }
+    private string TextSize => MaxLength switch {
+        <= StringLength.Word => nameof(StringLength.Word).ToLowerInvariant(),
+        <= StringLength.Words => nameof(StringLength.Words).ToLowerInvariant(),
+        <= StringLength.Line => nameof(StringLength.Line).ToLowerInvariant(),
+        <= StringLength.Sentence => nameof(StringLength.Sentence).ToLowerInvariant(),
+        <= StringLength.Paragraph => nameof(StringLength.Paragraph).ToLowerInvariant(),
+        <= StringLength.Page => nameof(StringLength.Page).ToLowerInvariant(),
+        _ => nameof(StringLength.Book).ToLowerInvariant()
+    };
 
 }

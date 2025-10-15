@@ -20,24 +20,20 @@ public partial class DryTextField<TModel> : DryFieldBase<TModel> where TModel : 
 
     private async Task HandleChange(ChangeEventArgs args)
     {
-        if(Property == null || Model == null) {
-            return;
-        }
         var value = args.Value;
         Property.SetValue(Model, value);
-        var valid = ValidateProperty();
-
         await OnChange.InvokeAsync(args);
-        await InvokeOnValidationAsync(valid);
     }
 
     private async Task HandleInput(ChangeEventArgs args)
     {
-        if(Property == null || Model == null) {
-            return;
-        }
         var value = args.Value;
         Property.SetValue(Model, value);
         await OnInput.InvokeAsync(args);
+    }
+
+    private async Task HandleValidate(ValidationEventArgs args)
+    {
+        await OnValidate.InvokeAsync(args);
     }
 }

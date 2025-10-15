@@ -11,7 +11,7 @@
                 <option value="" disabled selected>@Placeholder</option>
             }
             @foreach(var option in InternalOptions) {
-                var selected = option.Value.Equals(Value);
+                var selected = IsSelected(option);
                 <option value="@option.Key" selected="@selected">@option.Title</option>
             }
         </select>

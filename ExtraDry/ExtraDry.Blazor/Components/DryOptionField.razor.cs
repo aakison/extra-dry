@@ -10,12 +10,10 @@ public partial class DryOptionField<TModel> : DryFieldBase<TModel> where TModel 
 {
     protected override async Task OnParametersSetAsync()
     {
-        if(Model == null || Property == null) {
-            return;
-        }
         await LoadOptionsForPropertyAsync();
         var value = Property.GetValue(Model);
         Value = Options.FirstOrDefault(e => e.Value?.Equals(value) ?? value == null);
+        await base.OnParametersSetAsync();
     }
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", "option", ReadOnlyCss, CssClass);
@@ -27,15 +25,18 @@ public partial class DryOptionField<TModel> : DryFieldBase<TModel> where TModel 
     private async Task HandleChange(ChangeEventArgs args)
     {
         UpdateModelProperty(args.Value);
-        var valid = ValidateProperty();
         await OnChange.InvokeAsync(args);
-        await InvokeOnValidationAsync(valid);
     }
 
     private async Task HandleInput(ChangeEventArgs args)
     {
         UpdateModelProperty(args.Value);
         await OnInput.InvokeAsync(args);
+    }
+
+    private async Task HandleValidate(ValidationEventArgs args)
+    {
+        await OnValidate.InvokeAsync(args);
     }
 
     private void UpdateModelProperty(object? value)
