@@ -1,0 +1,16 @@
+@typeparam TModel
+@inherits DryFieldBase<TModel>
+
+<ToggleField CssClass="@CssClasses"
+    Affordance="@ResolvedAffordance"
+    Description="@ResolvedDescription"
+    Icon="@ResolvedIcon" 
+    Label="@ResolvedLabel" 
+    Placeholder="@ResolvedPlaceholder" 
+    ReadOnly="@ResolvedReadOnly"
+    Value="@Value" 
+    OnChange="HandleChange" 
+    OnInput="HandleInput"
+    OnValidate="HandleValidate"
+    Size="@Property.Size" 
+    />
