@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace ExtraDry.Blazor;
+namespace ExtraDry.Blazor.Components;
 
 /// <summary>
 /// A non-visual component that provides global keyboard shortcut functionality. When the specified

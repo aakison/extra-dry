@@ -5,7 +5,9 @@
       "wwwroot/js/attribution.js",
       "Components/Standard/TriCheck.razor.js",
       "Components/Standard/CodeBlock.razor.js",
-      "Components/Standard/ComboBox.razor.js"
+      "Components/Standard/ComboBox.razor.js",
+      "Components/ToggleField.razor.js",
+      "Components/Shortcut.razor.js"
     ],
     "minify": {
       "enabled": true,

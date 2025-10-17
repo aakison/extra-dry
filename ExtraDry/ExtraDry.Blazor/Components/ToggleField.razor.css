@@ -1,0 +1,4 @@
+input {
+  width: var(--text-large);
+  height: var(--text-large);
+}

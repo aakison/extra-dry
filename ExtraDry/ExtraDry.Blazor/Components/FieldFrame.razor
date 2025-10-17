@@ -1,19 +1,45 @@
 <div class="@CssClasses">
-    @if(DisplayLabel) {
-        <label class="label" @onclick="ToggleDescription" title="@Description" for="@For">
-            <span class="text">@Label</span>
-            @if(HasDescription) {
-                <Icon CssClass="description" Key="has-description" />
-            }
-            @if(IsRequired) {
-                <Icon CssClass="required" Key="is-required" />
-            }
-        </label>
+    @if(RenderMode == FieldFrameRenderMode.Standard) {
+        @if(DisplayLabel) {
+            <label class="label" @onclick="ToggleDescription" title="@Description" for="@For">
+                <span class="text">@Label</span>
+                @if(HasDescription) {
+                    <Icon CssClass="description" Key="has-description" />
+                }
+                @if(IsRequired) {
+                    <Icon CssClass="required" Key="is-required" />
+                }
+            </label>
+        }
+        @if(DisplayDescription) {
+            <span class="description">@((MarkupString)HtmlDescription)</span>
+        }
+        @ChildContent
     }
-    @if(DisplayDescription) {
-        <span class="description">@((MarkupString)HtmlDescription)</span>
+    else if(RenderMode == FieldFrameRenderMode.Inline) {
+        <div class="inline-child">
+            @ChildContent
+            @if(DisplayLabel) {
+                <label class="label" title="@Description" for="@For">
+                    <span class="text">@Label</span>
+                </label>
+                <label class="label" @onclick="ToggleDescription">
+                    @if(HasDescription) {
+                        <Icon CssClass="description" Key="has-description" />
+                    }
+                    @if(IsRequired) {
+                        <Icon CssClass="required" Key="is-required" />
+                    }
+                </label>
+            }
+        </div>
+        @if(DisplayDescription) {
+            <span class="description">@((MarkupString)HtmlDescription)</span>
+        }
     }
-    @ChildContent
+    else {
+        <div>Unrecognized RenderMode in FieldFrame</div>
+    }
     @if(!IsValid) {
         <span class="invalid message">@Message</span>
     }

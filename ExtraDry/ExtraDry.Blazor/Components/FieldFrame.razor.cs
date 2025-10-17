@@ -63,6 +63,13 @@ public partial class FieldFrame : ComponentBase
     public string Message { get; set; } = "";
 
     /// <summary>
+    /// Determines the rendering mode for the field frame.  Standard mode stacks the label, input and description vertically.
+    /// Inline mode places the label and content side by side (e.g. for checkboxes).
+    /// </summary>
+    [Parameter]
+    public FieldFrameRenderMode RenderMode { get; set; } = FieldFrameRenderMode.Standard;
+
+    /// <summary>
     /// The ID for the target input element.  This element is typically provided as the child content of this component.
     /// </summary>
     [Parameter, EditorRequired]
@@ -82,9 +89,15 @@ public partial class FieldFrame : ComponentBase
 
     private bool DisplayLabel => ShowLabel;
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", "field", SizeClass, /* StateCss, */ /* ValidCss, */ CssClass);
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "field", SizeClass, ModeCss, /* StateCss, */ /* ValidCss, */ CssClass);
 
     private string SizeClass => Size.ToString()?.ToLowerInvariant() ?? "";
+
+    private string ModeCss => RenderMode switch {
+        FieldFrameRenderMode.Inline => "inline",
+        FieldFrameRenderMode.Standard => "standard",
+        _ => "unknown-render-mode",
+    };
 
     private void ToggleDescription(MouseEventArgs _)
     {
@@ -93,4 +106,11 @@ public partial class FieldFrame : ComponentBase
         }
     }
 
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum FieldFrameRenderMode
+{
+    Standard,
+    Inline,
 }

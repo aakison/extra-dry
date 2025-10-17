@@ -1,12 +1,10 @@
 console.log(`Blazor Extra Dry by @aakison - https://github.com/akison/extra-dry License - https://github.com/akison/extra-dry/blob/main/LICENSE (MIT License)`);
-
 export function TriCheck_SetIndeterminate(id, value) {
     var checkbox = document.getElementById(id);
     if (checkbox != null) {
         checkbox.indeterminate = value;
     }
 }
-
 var loading = false;
 var loaded = false;
 
@@ -68,6 +66,7 @@ function LoadScriptAndFormat(id) {
 export function CodeBlock_AfterRender(id) {
     LoadScriptAndFormat(id);
 }
+
 export function DropDown_ScrollIntoView(id) {
     var element = document.getElementById(id);
     var options = { behavior: 'auto', block: 'nearest', inline: 'nearest' };
@@ -75,6 +74,13 @@ export function DropDown_ScrollIntoView(id) {
         element.scrollIntoView(options);
     }
 }
+export function ToggleField_SetIndeterminate(id, value) {
+    var checkbox = document.getElementById(id);
+    if (checkbox != null) {
+        checkbox.indeterminate = value;
+    }
+}
+
 
 // Keyboard shortcut handling
 var shortcutHandlers = new Map();
@@ -88,7 +94,7 @@ function parseShortcut(shortcut) {
         meta: false,
         key: ''
     };
-    
+
     parts.forEach(part => {
         part = part.trim();
         if (part === 'ctrl' || part === 'control') {
@@ -103,22 +109,22 @@ function parseShortcut(shortcut) {
             result.key = part;
         }
     });
-    
+
     return result;
 }
 
 function handleKeyDown(event) {
     var key = event.key.toLowerCase();
-    
+
     shortcutHandlers.forEach((dotnetRef, shortcut) => {
         var parsed = parseShortcut(shortcut);
-        
+
         if (parsed.key === key &&
             parsed.ctrl === event.ctrlKey &&
             parsed.shift === event.shiftKey &&
             parsed.alt === event.altKey &&
             parsed.meta === event.metaKey) {
-            
+
             event.preventDefault();
             dotnetRef.invokeMethodAsync('OnShortcutPressed');
         }
@@ -128,7 +134,7 @@ function handleKeyDown(event) {
 export function Shortcut_RegisterShortcut(shortcut, dotnetRef) {
     if (!shortcutHandlers.has(shortcut)) {
         shortcutHandlers.set(shortcut, dotnetRef);
-        
+
         // Only add the event listener once
         if (shortcutHandlers.size === 1) {
             document.addEventListener('keydown', handleKeyDown, true);
@@ -139,7 +145,7 @@ export function Shortcut_RegisterShortcut(shortcut, dotnetRef) {
 export function Shortcut_UnregisterShortcut(shortcut) {
     if (shortcutHandlers.has(shortcut)) {
         shortcutHandlers.delete(shortcut);
-        
+
         // Remove the event listener if no more shortcuts are registered
         if (shortcutHandlers.size === 0) {
             document.removeEventListener('keydown', handleKeyDown, true);
@@ -147,11 +153,3 @@ export function Shortcut_UnregisterShortcut(shortcut) {
     }
 }
 
-// Keep the old function names for backward compatibility
-export function Button_RegisterShortcut(shortcut, dotnetRef) {
-    return Shortcut_RegisterShortcut(shortcut, dotnetRef);
-}
-
-export function Button_UnregisterShortcut(shortcut) {
-    return Shortcut_UnregisterShortcut(shortcut);
-}

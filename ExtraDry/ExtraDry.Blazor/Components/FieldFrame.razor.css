@@ -6,3 +6,18 @@
   color: var(--danger);
   font-size: var(--text-small);
 }
+
+/* Formatting changes for when inline instead of standard (not simple top down flex) */
+div.inline {
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+  gap: 0;
+}
+
+  div.inline div.inline-child {
+    display: flex;
+    flex-direction: row;
+    gap: var(--spacing-small);
+    align-items: center;
+  }
