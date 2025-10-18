@@ -405,12 +405,7 @@ public class PropertyDescription
         return PropertySize.Small;
     }
 
-    private static decimal? PercentageToDecimal(string percent) =>
-        decimal.TryParse(percent.Replace("%", ""), out var result) ? result / 100m : null;
-
-    private static decimal? StringToDecimal(string value) =>
-        decimal.TryParse(value, out var result) ? result : null;
-
+    [Obsolete("Move functionality into NumberField and DryNumberField")]
     private InputValueFormatter CreateFormatter()
     {
         return (AllowsNull, PropertyType) switch {
@@ -422,5 +417,6 @@ public class PropertyDescription
         };
     }
 
+    [Obsolete("Move functionality into NumberField and DryNumberField")]
     public InputValueFormatter Formatter { get; set; }
 }

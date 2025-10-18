@@ -27,6 +27,13 @@ public partial class NumberField<TValue> : FieldBase<TValue>
     public override PropertySize Size { get; set; } = PropertySize.Medium;
 
     /// <summary>
+    /// Provide an explicit number formatter instead of the default one for the type.  Default
+    /// formatters are provided for common numeric types.
+    /// </summary>
+    [Parameter]
+    public INumberFormatter? Formatter { get; set; }
+
+    /// <summary>
     /// Only allow digits, commas, periods and dollar signs. Injected into onkeypress event (not
     /// onkeydown!) to prevent invalid characters from being displayed, but not stopping control
     /// sequences like Ctrl-A from being typed.
@@ -39,25 +46,22 @@ public partial class NumberField<TValue> : FieldBase<TValue>
 
     private string DisplayValue { get; set; } = "";
 
-    protected override void OnInitialized()
-    {
-        Formatter = typeof(TValue) switch {
-            Type t when t == typeof(int) => new IntFormatter(),
-            Type t when t == typeof(int?) => new NullableIntFormatter(),
-            Type t when t == typeof(double) => new DoubleFormatter(),
-            Type t when t == typeof(double?) => new NullableDoubleFormatter(),
-            Type t when t == typeof(decimal) => new DecimalFormatter(),
-            Type t when t == typeof(decimal?) => new NullableDecimalFormatter(),
-            _ => new IdentityFormatter(),
-        };
-        DisplayValue = Formatter.Format(null);
-        base.OnInitialized();
-    }
-
     protected override void OnParametersSet()
     {
+        if(ResolvedFormatter == null) {
+            ResolvedFormatter = Formatter ?? typeof(TValue) switch {
+                Type t when t == typeof(int) => new IntFormatter(),
+                Type t when t == typeof(int?) => new NullableIntFormatter(),
+                Type t when t == typeof(double) => new DoubleFormatter(),
+                Type t when t == typeof(double?) => new NullableDoubleFormatter(),
+                Type t when t == typeof(decimal) => new DecimalFormatter(),
+                Type t when t == typeof(decimal?) => new NullableDecimalFormatter(),
+                _ => new IdentityFormatter(),
+            };
+            DisplayValue = ResolvedFormatter.Format(null);
+        }
         if(!inputing) {
-            DisplayValue = Formatter.Format(Value);
+            DisplayValue = ResolvedFormatter.Format(Value);
         }
         base.OnParametersSet();
     }
@@ -80,13 +84,13 @@ public partial class NumberField<TValue> : FieldBase<TValue>
     protected override async Task NotifyChange(ChangeEventArgs args)
     {
         DisplayValue = (string)(args.Value ?? "");
-        if(Formatter.TryParse(DisplayValue, out var result)) {
+        if(ResolvedFormatter.TryParse(DisplayValue, out var result)) {
             args.Value = (TValue)result!;
         }
         else {
             // Set arg/model value *and* display value to last valid value
             args.Value = Value;
-            DisplayValue = Formatter.Format(Value);
+            DisplayValue = ResolvedFormatter.Format(Value);
         }
         await base.NotifyChange(args);
         inputing = false;
@@ -96,7 +100,7 @@ public partial class NumberField<TValue> : FieldBase<TValue>
     {
         Console.WriteLine($"NotifyInput: Entering DisplayValue: {DisplayValue}");
         DisplayValue = (string)(args.Value ?? "");
-        if(Formatter.TryParse(DisplayValue, out var result)) {
+        if(ResolvedFormatter.TryParse(DisplayValue, out var result)) {
             args.Value = (TValue)result!;
         }
         else {
@@ -107,8 +111,8 @@ public partial class NumberField<TValue> : FieldBase<TValue>
         Console.WriteLine($"NotifyInput: Exiting DisplayValue: {DisplayValue}");
     }
 
-    private string Pattern => Formatter.RegexPattern;
+    private string Pattern => ResolvedFormatter.RegexPattern;
 
-    private INumberFormatter Formatter { get; set; } = null!;
+    private INumberFormatter ResolvedFormatter { get; set; } = null!;
 
 }

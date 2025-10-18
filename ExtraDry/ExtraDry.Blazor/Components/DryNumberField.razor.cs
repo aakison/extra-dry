@@ -1,3 +1,4 @@
+using ExtraDry.Blazor.Components.Formatting;
 using ExtraDry.Blazor.Models.InputValueFormatters;
 
 namespace ExtraDry.Blazor.Components;
@@ -25,59 +26,43 @@ public partial class DryNumberField<TModel> : DryFieldBase<TModel> where TModel 
 
     protected double ResolvedMax => Max ?? double.MaxValue;
 
-    private InputValueFormatter Formatter { get; set; } = null!;
-
     protected override void OnParametersSet()
     {
-        Formatter = Property.Formatter;
         if(Model == null || Property == null) {
             return;
         }
-        var objValue = Property.GetValue(Model);
-        Value = Formatter.Format(objValue);
+        Formatter = (Property.PropertyType, Property.AllowsNull) switch {
+            (Type t, false) when t == typeof(int) => new IntFormatter(),
+            (Type t, true) when t == typeof(int) => new NullableIntFormatter(),
+            (Type t, false) when t == typeof(double) => new DoubleFormatter(),
+            (Type t, true) when t == typeof(double) => new NullableDoubleFormatter(),
+            (Type t, false) when t == typeof(decimal) => new DecimalFormatter(),
+            (Type t, true) when t == typeof(decimal) => new NullableDecimalFormatter(),
+            _ => null,
+        };
+        Value = Property.GetValue(Model);
     }
+
+    private INumberFormatter? Formatter { get; set; }
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", "number", ReadOnlyCss, CssClass);
 
-    private string Value { get; set; } = "";
+    private object? Value { get; set; }
 
     private async Task HandleChange(ChangeEventArgs args)
     {
-        if(Property.Formatter.TryParse(args.Value?.ToString(), out var value)) {
-            Property.SetValue(Model, value);
-            var newValue = Property.Formatter.Format(value);
-            if(newValue == Value) {
-                // rare case where Value property doesn't change because of formatting issues. E.g.
-                // 123.45 written as 1,2,3.45 won't trigger Value change refresh.
-                Value = $" {newValue}"; // stringly different but minimize UI flicker
-                StateHasChanged();
-                await Task.Yield(); // let the UI update
-            }
-            Value = newValue;
-            StateHasChanged();
-            var isValid = Validator.Validate(value);
-            await OnChange.InvokeAsync(new ChangeEventArgs { Value = value });
-            await OnValidate.InvokeAsync(new ValidationEventArgs { IsValid = isValid, MemberName = Property.Property.Name, Message = Validator.Message });
-        }
-        else {
-            var validation = new ValidationEventArgs() {
-                IsValid = false,
-                MemberName = Property.Property.Name,
-                Message = "Invalid number format."
-            };
-            await OnValidate.InvokeAsync(validation);
-        }
+        Property.SetValue(Model, args.Value);
+        await OnChange.InvokeAsync(args);
     }
 
     private async Task HandleInput(ChangeEventArgs args)
     {
-        var stringValue = args.Value?.ToString() ?? "";
-        if(Formatter.TryParse(stringValue, out var value)) {
-            Property.SetValue(Model, value);
-            await OnInput.InvokeAsync(new ChangeEventArgs { Value = value });
-        }
-        else {
-            // Invalid, but don't set
-        }
+        Property.SetValue(Model, args.Value);
+        await OnInput.InvokeAsync(args);
+    }
+
+    private async Task HandleValidate(ValidationEventArgs args)
+    {
+        await OnValidate.InvokeAsync(args);
     }
 }
