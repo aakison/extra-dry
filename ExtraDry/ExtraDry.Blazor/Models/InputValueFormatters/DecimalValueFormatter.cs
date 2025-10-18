@@ -1,5 +1,6 @@
 ﻿namespace ExtraDry.Blazor.Models.InputValueFormatters;
 
+[Obsolete("Use DecimalFormatter instead")]
 public class DecimalValueFormatter(
     PropertyDescription property)
     : InputValueFormatter(property)

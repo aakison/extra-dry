@@ -1,0 +1,17 @@
+@typeparam TModel
+@inherits DryFieldBase<TModel>
+
+<NumberField CssClass="@CssClasses"
+    Affordance="@ResolvedAffordance"
+    Description="@ResolvedDescription"
+    Icon="@ResolvedIcon" 
+    Label="@ResolvedLabel" 
+    Placeholder="@ResolvedPlaceholder" 
+    ReadOnly="@ResolvedReadOnly"
+    Value="@Value" 
+    OnChange="HandleChange" 
+    OnInput="HandleInput"
+    Size="@Property.Size" 
+    Min="@ResolvedMin" 
+    Max="@ResolvedMax" 
+    />

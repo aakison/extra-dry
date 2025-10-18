@@ -1,5 +1,6 @@
 ﻿namespace ExtraDry.Blazor.Models.InputValueFormatters;
 
+[Obsolete("Use IdentityFormatter instead")]
 public class IdentityValueFormatter(
     PropertyDescription property)
     : InputValueFormatter(property)

@@ -1,5 +1,6 @@
 ﻿namespace ExtraDry.Blazor.Models.InputValueFormatters;
 
+[Obsolete("Use NullableIntFormatter instead")]
 public class NullableIntValueFormatter(
     PropertyDescription property)
     : InputValueFormatter(property)

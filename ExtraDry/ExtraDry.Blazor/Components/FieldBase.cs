@@ -4,6 +4,7 @@ namespace ExtraDry.Blazor.Components;
 
 public abstract class FieldBase<T> : ComponentBase
 {
+
     [Parameter]
     public T Value { get; set; } = default!;
 
@@ -89,7 +90,7 @@ public abstract class FieldBase<T> : ComponentBase
 
     protected string IsValidCss => IsValid ? "valid" : "invalid";
 
-    protected override void OnInitialized()
+    protected override void OnParametersSet()
     {
         InputId = Id switch {
             "" => $"{this.GetType().Name}{++instanceCount}",
@@ -99,22 +100,28 @@ public abstract class FieldBase<T> : ComponentBase
 
     protected virtual async Task NotifyChange(ChangeEventArgs args)
     {
-        if(args.Value != null) {
-            Value = (T)args.Value;
-        }
-        await ValueChanged.InvokeAsync(Value);
+        await UpdateValue(args);
         await OnChange.InvokeAsync(args);
         await ValidateAsync(showError: true);
     }
 
     protected virtual async Task NotifyInput(ChangeEventArgs args)
     {
-        if(args.Value != null) {
-            Value = (T)args.Value;
-        }
-        await ValueChanged.InvokeAsync(Value);
+        await UpdateValue(args);
         await OnInput.InvokeAsync(args);
         await ValidateAsync(showError: false);
+    }
+
+    private async Task UpdateValue(ChangeEventArgs args)
+    {
+        // Special check for nullable types, when arg.Value is just null it doesn't have type to match T when T is nullable.
+        if(args.Value == null && Nullable.GetUnderlyingType(typeof(T)) != null) {
+            Value = default!;
+        }
+        else if(args.Value is T tValue) {
+            Value = tValue;
+        }
+        await ValueChanged.InvokeAsync(Value);
     }
 
     private async Task ValidateAsync(bool showError)

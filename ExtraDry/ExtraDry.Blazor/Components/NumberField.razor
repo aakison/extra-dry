@@ -1,0 +1,15 @@
+@typeparam TValue
+@inherits FieldBase<TValue>
+
+<FieldFrame Size="@Size" Description="@Description" ShowDescription="@ShowDescription" Label="@Label" For="@InputId" ShowLabel="@ShowLabel" IsValid="@IsValid" Message="@ValidationMessage">
+    <div class="@CssClasses">
+        @if(DisplayIcon) {
+            <Icon CssClass="context" Key="@Icon" />
+        }
+        <input id="@InputId" class="value" title="@Label" type="text" readonly="@ReadOnly" placeholder="@Placeholder" value="@DisplayValue" @onchange="NotifyChange" @oninput="NotifyInput" 
+            @onfocus="LockFormatting" @onblur="UnlockFormatting" pattern="@Pattern" inputmode="numeric" onkeypress="@DisableInvalidCharacters" />
+        @if(DisplayAffordance) {
+            <Icon CssClass="affordance" Key="@Affordance" />
+        }
+    </div>
+</FieldFrame>

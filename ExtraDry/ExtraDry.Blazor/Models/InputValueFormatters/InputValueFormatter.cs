@@ -1,5 +1,6 @@
 ﻿namespace ExtraDry.Blazor.Models.InputValueFormatters;
 
+[Obsolete("Use INumberFormatter instead")]
 public abstract class InputValueFormatter(
     PropertyDescription property)
 {
