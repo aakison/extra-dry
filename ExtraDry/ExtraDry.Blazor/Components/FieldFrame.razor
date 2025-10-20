@@ -3,7 +3,7 @@
         @if(DisplayLabel) {
             <label class="label" @onclick="ToggleDescription" title="@Description" for="@For">
                 <span class="text">@Label</span>
-                @if(HasDescription) {
+                @if(HasDescription && ShowDescription) {
                     <Icon CssClass="description" Key="has-description" />
                 }
                 @if(IsRequired) {
