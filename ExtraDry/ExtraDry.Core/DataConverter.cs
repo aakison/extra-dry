@@ -104,6 +104,25 @@ public partial class DataConverter
         return displayAttribute?.Name ?? member.Name;
     }
 
+    /// <summary>
+    /// Gets the DataAnnotation DisplayName attribute for a given enum (for displaying enums values
+    /// nicely to users)
+    /// </summary>
+    public static string DisplayShortEnum(Enum value)
+    {
+        ArgumentNullException.ThrowIfNull(value);
+        var enumType = value.GetType();
+        var enumValue = Enum.GetName(enumType, value);
+        if(enumValue == null) {
+            // can't find member any more, e.g. it was removed from enum but in value still around.
+            return value.ToString();
+        }
+        var member = enumType.GetMember(enumValue)[0];
+
+        var displayAttribute = member.GetCustomAttribute<DisplayAttribute>();
+        return displayAttribute?.GetShortName() ?? displayAttribute?.GetName() ?? member.Name;
+    }
+
     public static IList<TEnum> EnumValues<TEnum>()
     {
         var type = typeof(TEnum);
