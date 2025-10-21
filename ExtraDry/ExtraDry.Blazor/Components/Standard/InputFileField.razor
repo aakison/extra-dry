@@ -6,7 +6,7 @@
             @if(DisplayIcon) {
                 <Icon CssClass="context" Key="@Icon" />
             }
-            <InputFile id="@InputId" class="actual" OnChange="@OnChangeAsync" accept="@Accept" />
+            <InputFile id="@InputId" class="actual" OnChange="@OnChangeAsync" accept="@Accept" disabled="@ReadOnly" />
             <div class="@DisplayValueCssClasses" title="@Caption">@DisplayValue</div>
             @if(DisplayAffordance) {
                 <Icon CssClass="affordance" Key="@Affordance" />
