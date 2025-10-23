@@ -28,7 +28,6 @@ public partial class DryMenu : IExtraDryComponent
     [Parameter, EditorRequired]
     public RenderFragment ChildContent { get; set; } = null!;
 
-    /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 

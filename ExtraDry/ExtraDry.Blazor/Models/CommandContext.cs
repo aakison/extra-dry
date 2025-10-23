@@ -17,18 +17,19 @@ public enum CommandContext
     Regular = 0,
 
     /// <summary>
-    /// The primary command, should only be one per ViewModel, e.g. 'Save'.
+    /// The primary command, should only be one per Decorator, e.g. 'Save'.  Occasionally multiple if 
+    /// commands are used with category separation.
     /// </summary>
     Primary,
 
     /// <summary>
     /// The default command which indicates the double-click behavior on tables. Should only be one
-    /// per ViewModel.
+    /// per Decorator.
     /// </summary>
     Default,
 
     /// <summary>
-    /// A command that might have adverse consequences, e.g. 'Delete'
+    /// A command that might have adverse consequences, e.g. 'Delete'.
     /// </summary>
     Danger,
 

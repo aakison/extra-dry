@@ -17,7 +17,7 @@
         Title="Select Filters"Placeholder="Filters" OnSubmit="DoFiltersSubmit" OnCancel="DoFiltersCancel" 
         Icon="@Icon" Affordance="@Affordance" ShowPreview="@ShowPreview" />
     <div class="filter-commands">
-        <Button @onclick="DoFiltersReset" Caption="Reset" CssClass="filter-reset unobtrusive" />
+        <Button @onclick="DoFiltersReset" Caption="Reset" Theme="ButtonTheme.Unobtrusive" CssClass="filter-reset" />
     </div>
     @ChildContent
 </div>

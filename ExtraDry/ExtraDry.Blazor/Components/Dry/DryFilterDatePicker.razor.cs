@@ -16,7 +16,6 @@ public partial class DryFilterDatePicker : ComponentBase, IExtraDryComponent, ID
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
-    /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 

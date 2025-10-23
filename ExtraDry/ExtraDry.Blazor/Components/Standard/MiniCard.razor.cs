@@ -29,7 +29,6 @@ public partial class MiniCard : ComponentBase, IExtraDryComponent
     [Parameter]
     public string? Subtitle { get; set; }
 
-    /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 

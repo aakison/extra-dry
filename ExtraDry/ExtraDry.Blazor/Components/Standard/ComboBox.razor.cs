@@ -99,7 +99,6 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent, IDispo
     [Parameter]
     public bool DebugCss { get; set; }
 
-    /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 

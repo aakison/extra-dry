@@ -121,7 +121,6 @@ public partial class FlexiSelect<TItem>
     [Parameter]
     public bool DebugCss { get; set; }
 
-    /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 

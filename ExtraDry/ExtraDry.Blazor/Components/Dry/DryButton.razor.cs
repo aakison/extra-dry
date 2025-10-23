@@ -3,7 +3,7 @@
 namespace ExtraDry.Blazor;
 
 /// <summary>
-/// An Extra Dry button executes a command, typically from a ViewModel, with a Model as the
+/// An Extra Dry button executes a command, typically from a Decorator, with a Model as the
 /// argument. This is typically used from within `DryCommandBar` or `DryForm`, but can be used
 /// directly. If using manually, populate ViewModel and MethodName, and optionally Model.
 /// </summary>
@@ -44,12 +44,6 @@ public partial class DryButton : ComponentBase, IExtraDryComponent
     /// </summary>
     [Parameter]
     public object? Model { get; set; }
-
-    /// <summary>
-    /// If both an icon and a caption are available (as defined in the `CommandAttribute` on the
-    /// method), then display as an Icon only.
-    /// </summary>
-    public bool IconOnly => ShowIcon && !ShowCaption && !ShowAffordance;
 
     /// <summary>
     /// Determines if the icon is shown, use with ShowCaption and ShowAffordance.
@@ -125,17 +119,23 @@ public partial class DryButton : ComponentBase, IExtraDryComponent
     }
 
     /// <summary>
+    /// If both an icon and a caption are available (as defined in the `CommandAttribute` on the
+    /// method), then display as an Icon only.
+    /// </summary>
+    private bool ResolvedIconOnly => ShowIcon && !ShowCaption && !ShowAffordance;
+
+    /// <summary>
     /// The information, retrieved through reflection, about the method to execute, along with
     /// display attributes.
     /// </summary>
     //[Parameter]
     private CommandInfo? ResolvedCommand { get; set; }
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass, ResolvedCommand?.DisplayClass, IconOnly ? "unobtrusive" : "");
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass, ResolvedCommand?.DisplayClass);
 
     private bool HasIcon => !string.IsNullOrWhiteSpace(ResolvedCommand?.Icon);
 
-    private bool DisplayCaption => !string.IsNullOrWhiteSpace(ResolvedCommand?.Caption) && !(HasIcon && IconOnly);
+    private bool DisplayCaption => !string.IsNullOrWhiteSpace(ResolvedCommand?.Caption) && !(HasIcon && ResolvedIconOnly);
 
     private string ButtonCaption => DisplayCaption ? ResolvedCommand?.Caption! : string.Empty;
 

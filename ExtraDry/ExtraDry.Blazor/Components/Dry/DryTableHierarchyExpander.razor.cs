@@ -15,7 +15,6 @@ public partial class DryTableHierarchyExpander<TItem> : ComponentBase, IExtraDry
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
-    /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 

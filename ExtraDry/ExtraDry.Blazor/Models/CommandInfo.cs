@@ -51,7 +51,10 @@ public partial class CommandInfo
     /// The type which determines how this command relates to other commands. This semantic
     /// information is used to determine UI layout.
     /// </summary>
-    public CommandContext Context { get; set; }
+    public CommandContext Context { get; set; } = CommandContext.Regular;
+
+    /// <inheritdoc cref="ButtonTheme" />
+    public ButtonTheme Theme { get; set; } = ButtonTheme.Normal;
 
     /// <summary>
     /// The category for this command which is used for filters.
@@ -113,7 +116,7 @@ public partial class CommandInfo
     /// A CSS class that is added to elements that can trigger the command. This has no intrinsic
     /// meaning but can be used by app to change appearance.
     /// </summary>
-    public string DisplayClass => DataConverter.JoinNonEmpty(" ", CssClass, Context.ToString().ToLowerInvariant());
+    public string DisplayClass => DataConverter.JoinNonEmpty(" ", CssClass);
 
     public Func<bool> IsVisible { get; set; } = () => true;
 
@@ -179,6 +182,7 @@ public partial class CommandInfo
             Icon = attribute.Icon;
             Affordance = attribute.Affordance;
             Context = attribute.Context;
+            Theme = attribute.Theme;
             Category = attribute.Category;
             Title = attribute.Title;
             Roles = attribute.Roles;

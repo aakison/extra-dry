@@ -25,7 +25,6 @@ public partial class DryFilterEnumSelect : ComponentBase, IExtraDryComponent, ID
     [Parameter, EditorRequired]
     public object Decorator { get; set; } = null!;
 
-    /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 

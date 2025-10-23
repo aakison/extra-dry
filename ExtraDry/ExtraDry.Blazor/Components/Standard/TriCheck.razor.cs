@@ -69,7 +69,6 @@ public partial class TriCheck : ComponentBase, IExtraDryComponent
     [Parameter]
     public string IndeterminateIcon { get; set; } = "option-indeterminate";
 
-    /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 

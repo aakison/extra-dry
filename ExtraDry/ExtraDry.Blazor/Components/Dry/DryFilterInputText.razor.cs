@@ -35,7 +35,6 @@ public partial class DryFilterInputText : ComponentBase, IExtraDryComponent, IDi
     [Parameter]
     public bool AutoFocus { get; set; }
 
-    /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 

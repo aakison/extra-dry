@@ -14,7 +14,6 @@ public partial class Spinner : ComponentBase, IExtraDryComponent
     [Parameter]
     public IndicatorSize Size { get; set; } = IndicatorSize.Standard;
 
-    /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 

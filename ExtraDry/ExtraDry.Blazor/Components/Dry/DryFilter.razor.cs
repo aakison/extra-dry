@@ -58,7 +58,6 @@ public partial class DryFilter<TItem> : ComponentBase, IExtraDryComponent
     [Parameter]
     public List<string> VisibleFilters { get; set; } = [];
 
-    /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 

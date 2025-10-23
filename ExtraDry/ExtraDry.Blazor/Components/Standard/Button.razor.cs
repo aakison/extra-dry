@@ -81,6 +81,10 @@ public partial class Button : ComponentBase, IExtraDryComponent
     [Parameter]
     public ButtonTheme Theme { get; set; } = ButtonTheme.Normal;
 
+    /// <inheritdoc cref="CommandContext" />
+    [Parameter]
+    public CommandContext Context { get; set; } = CommandContext.Regular;
+
     /// <summary>
     /// Indicates if the button is currently enabled. Note: this is the inverse of the HTML
     /// disabled logic.
@@ -94,15 +98,11 @@ public partial class Button : ComponentBase, IExtraDryComponent
     [Parameter]
     public EventCallback<MouseEventArgs> OnClick { get; set; }
 
-    /// <inheritdoc />
-    [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object>? UnmatchedAttributes { get; set; }
-
     /// <inheritdoc cref="Blazor.ThemeInfo" />
     [CascadingParameter]
     protected ThemeInfo? ThemeInfo { get; set; }
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", Slug.ToTitleSlug(Theme.ToString()), CssClass);
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", Slug.ToTitleSlug(Theme.ToString()), Slug.ToTitleSlug(Context.ToString()), CssClass);
 
     private bool DisplayIcon => ShowIcon && !string.IsNullOrWhiteSpace(Icon);
 

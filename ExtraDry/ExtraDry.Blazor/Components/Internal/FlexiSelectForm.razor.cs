@@ -70,7 +70,6 @@ public partial class FlexiSelectForm<TItem>
     [Parameter]
     public EventCallback<List<TItem>?> ValuesChanged { get; set; }
 
-    /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 

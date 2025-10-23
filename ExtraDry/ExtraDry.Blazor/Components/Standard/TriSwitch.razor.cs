@@ -36,7 +36,6 @@ public partial class TriSwitch : ComponentBase, IExtraDryComponent
     [Parameter]
     public EventCallback<ChangeEventArgs> OnChange { get; set; }
 
-    /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 

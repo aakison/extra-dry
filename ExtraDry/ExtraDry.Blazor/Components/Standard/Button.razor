@@ -1,6 +1,6 @@
 ﻿@namespace ExtraDry.Blazor
 
-<button type="button" title="@DisplayTitle" class="@CssClasses" @attributes="@UnmatchedAttributes" disabled="@Disabled" @onclick="HandleClick">
+<button type="button" title="@DisplayTitle" class="@CssClasses" disabled="@Disabled" @onclick="HandleClick">
     @if(DisplayIcon) {
         <Icon CssClass="icon" Key="@Icon" />
     }

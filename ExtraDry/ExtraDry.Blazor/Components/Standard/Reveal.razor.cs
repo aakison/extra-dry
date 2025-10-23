@@ -46,7 +46,6 @@ public partial class Reveal : ComponentBase, IExtraDryComponent
     [Parameter]
     public RevealMode Mode { get; set; } = RevealMode.Fade;
 
-    /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 

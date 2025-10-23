@@ -20,7 +20,6 @@ public partial class DryHierarchyFilter<TItem> : ComponentBase, IExtraDryCompone
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 
-    /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 

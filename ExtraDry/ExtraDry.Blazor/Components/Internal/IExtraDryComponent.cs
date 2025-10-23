@@ -11,9 +11,4 @@ public interface IExtraDryComponent
     /// </summary>
     string CssClass { get; set; }
 
-    /// <summary>
-    /// Additional attributes that are not captured by the control are chained to the root element
-    /// of the component.
-    /// </summary>
-    Dictionary<string, object>? UnmatchedAttributes { get; set; }
 }

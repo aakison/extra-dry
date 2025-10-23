@@ -50,7 +50,6 @@ public partial class DryFlexiSelect : DryPropertyComponentBase, IExtraDryCompone
     [Parameter]
     public int AnimationDuration { get; set; } = 100;
 
-    /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 

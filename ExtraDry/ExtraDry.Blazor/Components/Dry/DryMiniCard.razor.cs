@@ -15,7 +15,6 @@ public partial class DryMiniCard<TItem> : ComponentBase, IExtraDryComponent wher
     [Parameter]
     public ISubjectViewModel<TItem>? ViewModel { get; set; }
 
-    /// <inheritdoc cref="IExtraDryComponent.UnmatchedAttributes" />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
