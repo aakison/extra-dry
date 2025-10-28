@@ -116,7 +116,7 @@ public partial class CommandInfo
     /// A CSS class that is added to elements that can trigger the command. This has no intrinsic
     /// meaning but can be used by app to change appearance.
     /// </summary>
-    public string DisplayClass => DataConverter.JoinNonEmpty(" ", CssClass);
+    public string DisplayClass => DataConverter.JoinNonEmpty(" ", CssClass, DataConverter.DisplayEnum(Context).ToLowerInvariant());
 
     public Func<bool> IsVisible { get; set; } = () => true;
 
