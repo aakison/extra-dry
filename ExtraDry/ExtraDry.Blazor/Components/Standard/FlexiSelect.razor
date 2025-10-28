@@ -2,7 +2,7 @@
 @typeparam TItem where TItem : notnull
 
 <div class="@CssClasses" @attributes="@UnmatchedAttributes">
-    <Button Caption="@Placeholder" @onclick="@DoClick" Icon="@Icon" Affordance="@Affordance" ShowContent="@DisplayContent" ShowCaption="@DisplayPlaceholder">
+    <Button Caption="@Placeholder" @onclick="@DoClick" Icon="@Icon" Affordance="@Affordance" ShowContent="@DisplayContent" ShowCaption="@DisplayPlaceholder" Theme="@ButtonTheme.Unobtrusive">
         @if(ShowPreview) {
             if(Values?.Any() ?? false) {
                 <DryMiniCard CssClass="value many" Model="@Values.First()" />
