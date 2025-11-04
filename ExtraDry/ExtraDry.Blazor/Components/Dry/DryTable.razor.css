@@ -7,6 +7,11 @@
     display: grid;
   }
 
+    dry-table ::deep dry-tr dry-td {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
   dry-table ::deep dry-tr.state dry-td {
     align-items: center;
     justify-content: center;

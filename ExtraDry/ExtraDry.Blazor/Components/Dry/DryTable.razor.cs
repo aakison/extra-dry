@@ -44,11 +44,17 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
 
     private static int TableCount { get; set; }
 
-    private string CustomStyle => $@"
-        #{TableId} dry-tr {{
-            grid-template-columns: 1fr 1fr 1fr;
-        }}
-        ";
+    private string CustomStyle {
+        get {
+            var widths = string.Join(" ", description.TableProperties.Select(e => $"{10 * (int)e.Size}fr"));
+            var styles = $@"
+            #{TableId} dry-tr {{
+                grid-template-columns: {widths};
+            }}
+            ";
+            return styles;
+        }
+    }
 
     private bool HasCheckboxColumn => description.ListSelectMode == ListSelectMode.Multiple;
 
