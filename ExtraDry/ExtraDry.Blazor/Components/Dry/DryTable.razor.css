@@ -1,80 +1,37 @@
 ﻿@layer extra-dry {
-  table ::deep span.group {
+  dry-table ::deep span.group {
     display: flex;
   }
 
-    table ::deep span.group span.dry-hierarchy-expander {
-      display: flex;
-      align-items: center;
-      justify-content: end;
-    }
+  dry-table ::deep dry-tr {
+    display: grid;
+  }
 
-      table ::deep span.group span.dry-hierarchy-expander.level-0 {
-        width: 32px;
-      }
-
-      table ::deep span.group span.dry-hierarchy-expander.level-1 {
-        width: 48px;
-      }
-
-      table ::deep span.group span.dry-hierarchy-expander.level-2 {
-        width: 64px;
-      }
-
-      table ::deep span.group span.dry-hierarchy-expander.level-3 {
-        width: 80px;
-      }
-
-      table ::deep span.group span.dry-hierarchy-expander.level-4 {
-        width: 96px;
-      }
-
-      table ::deep span.group span.dry-hierarchy-expander.level-5 {
-        width: 112px;
-      }
-
-      table ::deep span.group span.dry-hierarchy-expander.level-6 {
-        width: 128px;
-      }
-
-      table ::deep span.group span.dry-hierarchy-expander.level-7 {
-        width: 144px;
-      }
-
-      table ::deep span.group span.dry-hierarchy-expander button {
-        display: flex;
-        width: 32px;
-        height: 32px;
-        padding: 0;
-        align-items: center;
-        justify-content: center;
-      }
-
-  table tr.state td {
-    min-height: 48px;
+  dry-table ::deep dry-tr.state dry-td {
     align-items: center;
     justify-content: center;
   }
 
-    table tr.state td div {
+    dry-table ::deep dry-tr.state dry-td div {
       display: none;
-      min-height: 48px;
     }
 
-  table tr.state.loading div {
+  dry-table ::deep dry-tr.state.loading div {
     display: flex;
     padding: var(--spacing-large);
   }
 
-  table tr.full, table tr.changing, table tr.invalid-filter {
+  dry-table ::deep dry-tr.state.full,
+  dry-table ::deep dry-tr.state.changing,
+  dry-table ::deep dry-tr.state.invalid-filter {
     display: none;
   }
 
-  table tr.empty {
+  dry-table ::deep dry-tr.state.empty {
     /* background-color: blue; */
   }
 
-  table tr.loading td progress {
+  dry-table ::deep dry-tr.state.loading dry-td progress {
     display: initial;
   }
 }

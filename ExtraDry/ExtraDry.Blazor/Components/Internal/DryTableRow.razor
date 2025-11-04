@@ -1,12 +1,12 @@
 ﻿@typeparam T
 
-<tr data-uuid="@UuidValue" class="@CssClasses" @onclick="RowClick" @ondblclick="RowDoubleClick" style="height: @($"{Height}px")">
+<dry-tr data-uuid="@UuidValue" class="@CssClasses" @onclick="RowClick" @ondblclick="RowDoubleClick" style="height: @($"{Height}px")">
     @switch(Description.ListSelectMode) {
         case ListSelectMode.Multiple:
-            <td class="checkbox"><input type="checkbox" checked="@IsSelected" /></td>
+            <dry-td class="checkbox"><input type="checkbox" checked="@IsSelected" /></dry-td>
             break;
         case ListSelectMode.Single:
-            <td class="radio"><input type="radio" checked="@IsSelected" name="@RadioButtonScope" /></td>
+            <dry-td class="radio"><input type="radio" checked="@IsSelected" name="@RadioButtonScope" /></dry-td>
             break;
         default:
             break;
@@ -19,7 +19,7 @@
             var enumValue = column.GetValue(Item.Item);
             cssClass += $" {enumValue?.ToString()?.ToLowerInvariant()}";
         }
-        <td class="@cssClass" data-label="@column.ColumnCaption">
+        <dry-td class="@cssClass" data-label="@column.ColumnCaption">
             @if(column.Property.Name == GroupColumn) {
                 var cssAction = (Item.IsGroup, Item.IsExpanded) switch {
                     (false, _) => "child",
@@ -43,15 +43,15 @@
                     <span class="@cssClass"><a class="@context.DisplayClass" href="@context.Href" title="@context.Title">@displayValue</a></span>
                 }
             }
-        </td>
+        </dry-td>
     }
     @if(Description.ContextCommands.Any()) {
-        <td class="commands">
+        <dry-td class="commands">
             <div class="contextCommands">
                 @foreach(var command in Description.ContextCommands) {
                     <DryButton Command="@command" Model="@Item.Item" ShowIcon="true" ShowCaption="false" ShowAffordance="false" />
                 }
             </div>
-        </td>
+        </dry-td>
     }
-</tr>
+</dry-tr>

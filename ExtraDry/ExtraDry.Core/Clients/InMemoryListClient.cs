@@ -12,6 +12,13 @@ public class InMemoryListClient<T>(
     /// </remarks>
     public int PageSize => Math.Max(1, items.Count);
 
+    /// <summary>
+    /// Indicates if the client is currently loading data.  As this is an in-memory client, it is never loading.
+    /// </summary>
+    public bool IsLoading => false;
+
+    /// <inheritdoc />
+    public bool? IsEmpty => items.Count == 0;
 
     public ValueTask<ListClientResult<T>> GetItemsAsync(Query query, CancellationToken cancellationToken)
     {

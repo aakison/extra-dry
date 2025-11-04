@@ -1,6 +1,5 @@
 using ExtraDry.Blazor.Components.Internal;
 using Microsoft.AspNetCore.Components.Web.Virtualization;
-using System.Globalization;
 
 namespace ExtraDry.Blazor;
 

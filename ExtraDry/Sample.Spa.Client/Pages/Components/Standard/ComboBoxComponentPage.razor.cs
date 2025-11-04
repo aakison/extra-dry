@@ -1,6 +1,4 @@
-﻿using ExtraDry.Blazor.Internal;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web.Virtualization;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace Sample.Spa.Client.Pages.Components.Standard;
 
@@ -170,6 +168,10 @@ public partial class ComboBoxComponentPage : ComponentBase, IListItemViewModel<S
         public object[] UriArguments { get; set; } = null!;
 
         public int PageSize { get; set; } = 20;
+
+        public bool IsLoading => false;
+
+        public bool? IsEmpty => Sectors.Count == 0;
 
         private List<Sector> Sectors { get; set; } = [];
 

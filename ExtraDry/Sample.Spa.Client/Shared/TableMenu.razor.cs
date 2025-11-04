@@ -1,6 +1,7 @@
 #nullable enable
 
 using ExtraDry.Blazor.Models;
+using ExtraDry.Core;
 using Microsoft.AspNetCore.Components;
 
 namespace Sample.Spa.Client.Shared;

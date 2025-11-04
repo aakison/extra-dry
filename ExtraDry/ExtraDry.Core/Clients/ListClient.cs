@@ -1,9 +1,8 @@
-﻿using ExtraDry.Core.Extensions;
-using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Net;
 using System.Text.Json;
+using ExtraDry.Core.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace ExtraDry.Core;
 
@@ -50,6 +49,10 @@ public class ListClient<TItem> : IListClient<TItem>
 
     public int PageSize => Options.PageSize;
 
+    public bool IsLoading { get; private set; }
+
+    public bool? IsEmpty { get; private set; }
+
     private ListClientOptions Options { get; set; }
 
     private Type ListType { get; set; }
@@ -73,7 +76,7 @@ public class ListClient<TItem> : IListClient<TItem>
             AddIf(keys, Options.FilterParameterName, query.Filter);
             AddIf(keys, Options.SortParameterName, query.Sort);
             AddIf(keys, Options.SkipParameterName, query.Skip);
-            AddIf(keys, Options.TakeParameterName, Options.PageSize);
+            AddIf(keys, Options.TakeParameterName, query.Take ?? Options.PageSize);
             return ConstructPathAndQuery(Options.ListEndpoint, keys);
         }
         catch(FormatException ex) {
@@ -118,6 +121,7 @@ public class ListClient<TItem> : IListClient<TItem>
 
     internal async ValueTask<(object, ICollection<TItem>, int)> GetItemsInternalAsync(Query query, CancellationToken cancellationToken)
     {
+        IsLoading = true;
         if(string.IsNullOrWhiteSpace(Options.ListEndpoint)) {
             throw new DryException(HttpStatusCode.NotFound, "No endpoints defined", "When configuring a ListService, either or both of ListEndpoint and/or HierarchyEndpoint must be provided.");
         }
@@ -129,12 +133,14 @@ public class ListClient<TItem> : IListClient<TItem>
         var response = await http.GetAsync(endpoint, cancellationToken);
         await response.AssertSuccess(logger);
         var body = await response.Content.ReadAsStringAsync(cancellationToken);
-        logger.LogEndpointResult(typeof(TItem), endpoint, body);
+        logger.LogEndpointResult(typeof(TItem), endpoint, body[0..100]);
         var packedResult = JsonSerializer.Deserialize(body, ListType, JsonSerializerOptions)
             ?? throw new DryException($"Call to endpoint returned nothing or couldn't be converted to a result.");
         var items = ListUnpacker!(packedResult);
         var total = ListCounter!(packedResult);
         OnItemsLoaded?.Invoke(this, EventArgs.Empty);
+        IsLoading = false;
+        IsEmpty = total == 0;
         return (packedResult, items, total);
     }
 

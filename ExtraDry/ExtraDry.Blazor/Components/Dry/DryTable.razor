@@ -1,55 +1,44 @@
 ﻿@namespace ExtraDry.Blazor
 @typeparam TItem
 
-<table class="@CssClasses" @attributes="@UnmatchedAttributes">
-    <colgroup>
-        @if(HasCheckboxColumn) {
-        <col class="checkbox" />
-        }
-        @if(HasRadioColumn) {
-        <col class="radio" />
-        }
-        @foreach(var column in description.TableProperties) {
-        <col class="@column.DisplayClass" />
-        }
-        @if(HasCommandsColumn) {
-        <col class="commands" />
-        }
-    </colgroup>
-    <thead>
-        <tr>
+<style>
+    @CustomStyle
+</style>
+<dry-table id="@TableId" class="@CssClasses" @attributes="@UnmatchedAttributes">
+    <dry-thead>
+        <dry-tr>
             @if(HasCheckboxColumn) {
-                <th class="checkbox"><input type="checkbox" checked="@AllSelected" @onclick="@(() => ToggleSelectAll())" /></th>
+                <dry-th class="checkbox"><input type="checkbox" checked="@AllSelected" @onclick="@(() => ToggleSelectAll())" /></dry-th>
             }
             @if(HasRadioColumn) {
-                <th class="radio"></th>
+                <dry-th class="radio"></dry-th>
             }
             @foreach(var column in description.TableProperties) {
                 var builder = QueryBuilderAccessor?.QueryBuilder;
                 var direction = builder?.Sort.Ascending ?? true ? "ascending" : "descending";
                 var sortClasses = column.Property.Name == builder?.Sort.SortProperty ? $"sort {direction}" : "";
-                <th class="@column.DisplayClass @sortClasses" @onclick="@(e => SortBy(column))">
+                <dry-th class="@column.DisplayClass @sortClasses" @onclick="@(e => SortBy(column))">
                     <span>@column.ColumnCaption</span>
                     <sup class="@sortClasses"></sup>
-                </th>
+                </dry-th>
             }
             @if(HasCommandsColumn) {
-                <th class="commands"></th>
+                <dry-th class="commands"></dry-th>
             }
-        </tr>
-    </thead>
-    <tbody>
-        <tr class="state @StateClass">
-            <td colspan="@TotalColumns">
+        </dry-tr>
+    </dry-thead>
+    <dry-tbody>
+        <dry-tr class="state @StateClass">
+            <dry-td style="grid-column: 1 / @TotalColumns">
                 <div>
                     <progress />
                 </div>
-            </td>
-        </tr>
+            </dry-td>
+        </dry-tr>
         <Virtualize ItemsProvider="GetItemsAsync" ItemSize="45" @ref="VirtualContainer">
-        <ItemContent>
-            <DryTableRow Item="@context" Description="@description" Selection="@SelectionAccessor?.SelectionSet" Height="45" GroupColumn="@GroupColumn" />
-        </ItemContent>
+            <ItemContent>
+                <DryTableRow Item="@context" Description="@description" Selection="@SelectionAccessor?.SelectionSet" Height="45" GroupColumn="@GroupColumn" />
+            </ItemContent>
         </Virtualize>
-    </tbody>
-</table>
+    </dry-tbody>
+</dry-table>

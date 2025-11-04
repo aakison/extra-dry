@@ -35,7 +35,7 @@ public class QueryBuilder
             Filter = BuildFilter(),
             Sort = BuildSort(),
             Skip = Skip,
-            Take = 50,
+            Take = Take,
             Level = BuildLevel(),
             Expand = Hierarchy.ExpandNodes.ToArray(),
             Collapse = Hierarchy.CollapseNodes.ToArray(),
@@ -95,6 +95,8 @@ public class QueryBuilder
     public SortBuilder Sort { get; } = new();
 
     public int? Skip { get; set; }
+
+    public int? Take { get; set; }
 
     public void ParseFilters(string[] filters)
     {
