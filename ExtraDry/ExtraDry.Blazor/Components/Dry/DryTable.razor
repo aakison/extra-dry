@@ -28,13 +28,15 @@
         </dry-tr>
     </dry-thead>
     <dry-tbody>
-        <dry-tr class="state @StateClass">
-            <dry-td style="grid-column: 1 / @TotalColumns">
-                <div>
-                    <progress />
-                </div>
-            </dry-td>
-        </dry-tr>
+        @if(ItemsListClient?.IsEmpty == null) {
+            <dry-tr class="state @StateClass">
+                <dry-td style="grid-column: 1 / @TotalColumns">
+                    <div>
+                        <progress />
+                    </div>
+                </dry-td>
+            </dry-tr>
+        }
         <Virtualize ItemsProvider="GetItemsAsync" ItemSize="45" @ref="VirtualContainer">
             <ItemContent>
                 <DryTableRow Item="@context" Description="@description" Selection="@SelectionAccessor?.SelectionSet" Height="45" GroupColumn="@GroupColumn" />

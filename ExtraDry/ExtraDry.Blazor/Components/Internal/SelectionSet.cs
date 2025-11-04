@@ -32,9 +32,9 @@ public class SelectionSet
         if(selectedItems.Contains(item)) {
             return;
         }
-        if(!visibleItems.Contains(item)) {
-            return;
-        }
+        //if(!visibleItems.Contains(item)) {
+        //    return;
+        //}
         var args = new SelectionSetChangedEventArgs() { Type = SelectionSetChangedType.Added };
         if(!MultipleSelect) {
             args.Removed.AddRange(selectedItems);
@@ -102,7 +102,11 @@ public class SelectionSet
     [SuppressMessage("Naming", "CA1720:Identifier contains type name", Justification = "Good enough for LINQ, good enough here.")]
     public bool Single() => selectedItems.Count == 1;
 
+    /// <summary>
+    /// The list of all currently selected items.  Call Add, Remove, or Clear to modify this list.
+    /// </summary>
     private readonly List<object> selectedItems = [];
+
 
     private readonly List<object> visibleItems = [];
 }

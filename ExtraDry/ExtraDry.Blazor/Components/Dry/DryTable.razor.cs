@@ -47,9 +47,11 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     private string CustomStyle {
         get {
             var widths = string.Join(" ", description.TableProperties.Select(e => $"{10 * (int)e.Size}fr"));
+            var check = HasCheckboxColumn | HasRadioColumn ? "auto " : "";
+            var commands = HasCommandsColumn ? " auto" : "";
             var styles = $@"
             #{TableId} dry-tr {{
-                grid-template-columns: {widths};
+                grid-template-columns: {check}{widths}{commands};
             }}
             ";
             return styles;
@@ -140,12 +142,11 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     {
         changing = true;
         StateHasChanged();
-        //InternalItems.Clear();
+        CachingItemsListClient?.ClearCache();
         if(VirtualContainer != null) {
             await VirtualContainer.RefreshDataAsync();
         }
         changing = false;
-        //SelectionAccessor?.SelectionSet.SetVisible(InternalItems.Where(e => e.Item is not null).Select(e => (object)e.Item!));
         StateHasChanged();
     }
 
