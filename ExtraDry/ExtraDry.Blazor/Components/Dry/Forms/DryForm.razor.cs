@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics.Contracts;
+using System.Reflection;
 
 namespace ExtraDry.Blazor;
 
@@ -56,6 +57,9 @@ public partial class DryForm<T>(
 
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string CommandCategory { get; set; } = "*";
 
     /// <inheritdoc />
     [Parameter(CaptureUnmatchedValues = true)]
