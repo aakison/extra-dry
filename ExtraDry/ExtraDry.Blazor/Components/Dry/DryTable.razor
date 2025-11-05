@@ -7,13 +7,10 @@
 <dry-table id="@TableId" class="@CssClasses" @attributes="@UnmatchedAttributes">
     <dry-thead>
         <dry-tr>
-            @if(HasCheckboxColumn) {
-                <dry-th class="checkbox"><input type="checkbox" checked="@AllSelected" @onclick="@(() => ToggleSelectAll())" /></dry-th>
+            @if(HasCheckboxColumn || HasRadioColumn) {
+                <dry-th class="checkbox"></dry-th>
             }
-            @if(HasRadioColumn) {
-                <dry-th class="radio"></dry-th>
-            }
-            @foreach(var column in description.TableProperties) {
+            @foreach(var column in decorator.TableProperties) {
                 var builder = QueryBuilderAccessor?.QueryBuilder;
                 var direction = builder?.Sort.Ascending ?? true ? "ascending" : "descending";
                 var sortClasses = column.Property.Name == builder?.Sort.SortProperty ? $"sort {direction}" : "";
@@ -29,17 +26,18 @@
     </dry-thead>
     <dry-tbody>
         @if(ItemsListClient?.IsEmpty == null) {
-            <dry-tr class="state @StateClass">
-                <dry-td style="grid-column: 1 / @TotalColumns">
-                    <div>
-                        <progress />
-                    </div>
-                </dry-td>
-            </dry-tr>
+            <div class="loading">
+                <progress />
+            </div>
+        }
+        else if(ItemsListClient?.IsEmpty == true) {
+            <div class="empty">
+                <Icon Key="collection-empty" />
+            </div>
         }
         <Virtualize ItemsProvider="GetItemsAsync" ItemSize="45" @ref="VirtualContainer">
             <ItemContent>
-                <DryTableRow Item="@context" Description="@description" Selection="@SelectionAccessor?.SelectionSet" Height="45" GroupColumn="@GroupColumn" />
+                <DryTableRow Item="@context" Decorator="@decorator" Selection="@SelectionAccessor?.SelectionSet" Height="45" GroupColumn="@GroupColumn" />
             </ItemContent>
         </Virtualize>
     </dry-tbody>

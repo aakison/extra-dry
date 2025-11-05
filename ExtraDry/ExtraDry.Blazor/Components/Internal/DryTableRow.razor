@@ -1,9 +1,9 @@
 ﻿@typeparam T
 
 <dry-tr data-uuid="@UuidValue" class="@CssClasses" @onclick="RowClick" @ondblclick="RowDoubleClick" style="height: @($"{Height}px")">
-    @switch(Description.ListSelectMode) {
+    @switch(Decorator.ListSelectMode) {
         case ListSelectMode.Multiple:
-            <dry-td class="checkbox"><input type="checkbox" checked="@IsSelected" /></dry-td>
+            <dry-td class="checkbox"><input type="checkbox" checked="@IsSelected" @onclick="@(e => CheckboxClick(e))" @onclick:stopPropagation="true" /></dry-td>
             break;
         case ListSelectMode.Single:
             <dry-td class="radio"><input type="radio" checked="@IsSelected" name="@RadioButtonScope" /></dry-td>
@@ -11,10 +11,10 @@
         default:
             break;
     }
-    @foreach(var column in Description.TableProperties) {
+    @foreach(var column in Decorator.TableProperties) {
         var cssClass = column.ItemDisplayClass(Item.Item);
         var displayValue = column.DisplayValue(Item.Item);
-        var hyperlink = Description.HyperLinkFor(column.Property.Name);
+        var hyperlink = Decorator.HyperLinkFor(column.Property.Name);
         if(column.HasDiscreteValues) {
             var enumValue = column.GetValue(Item.Item);
             cssClass += $" {enumValue?.ToString()?.ToLowerInvariant()}";
@@ -45,10 +45,10 @@
             }
         </dry-td>
     }
-    @if(Description.ContextCommands.Any()) {
+    @if(Decorator.ContextCommands.Any()) {
         <dry-td class="commands">
             <div class="contextCommands">
-                @foreach(var command in Description.ContextCommands) {
+                @foreach(var command in Decorator.ContextCommands) {
                     <DryButton Command="@command" Model="@Item.Item" ShowIcon="true" ShowCaption="false" ShowAffordance="false" />
                 }
             </div>

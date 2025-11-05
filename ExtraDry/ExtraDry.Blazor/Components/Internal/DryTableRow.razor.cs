@@ -9,7 +9,7 @@ public partial class DryTableRow<T> : ComponentBase, IDisposable
     /// Required parameter which is the view model description passed from the DryTable.
     /// </summary>
     [Parameter, EditorRequired]
-    public DecoratorInfo Description { get; set; } = null!; // Only used in DryTable
+    public DecoratorInfo Decorator { get; set; } = null!; // Only used in DryTable
 
     /// <summary>
     /// Required parameter which is the selection set for all items, passed from the DryTable.
@@ -39,8 +39,8 @@ public partial class DryTableRow<T> : ComponentBase, IDisposable
 
     protected override void OnParametersSet()
     {
-        if(Description == null) {
-            throw new InvalidOperationException("The parameter `Description` is required in DryTableRow.");
+        if(Decorator == null) {
+            throw new InvalidOperationException("The parameter `Decorator` is required in DryTableRow.");
         }
         if(Selection == null) {
             throw new InvalidOperationException("The parameter `Selection` is required in DryTableRow.");
@@ -54,37 +54,52 @@ public partial class DryTableRow<T> : ComponentBase, IDisposable
         }
     }
 
-    private string ClickableClass => Description.ListSelectMode == ListSelectMode.Action ? "clickable" : "";
+    private string ClickableClass => Decorator.ListSelectMode == ListSelectMode.Action ? "clickable" : "";
 
     private string SelectedClass => IsSelected ? "selected" : "";
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", CssClass, ClickableClass, SelectedClass, LevelCss);
 
-    private string RadioButtonScope => $"{Description.GetHashCode()}";
+    private string RadioButtonScope => $"{Decorator.GetHashCode()}";
 
     private bool IsSelected => Item.Item != null && Selection.Contains(Item.Item);
 
-    private string UuidValue => Description.UuidProperty?.GetValue(Item.Item)?.ToString() ?? string.Empty;
+    private string UuidValue => Decorator.UuidProperty?.GetValue(Item.Item)?.ToString() ?? string.Empty;
 
-    private async Task RowClick(MouseEventArgs _)
+    private async Task RowClick(MouseEventArgs args)
     {
-        if(Description.ListSelectMode == ListSelectMode.Action) {
-            if(Description.SelectCommand != null && Item.Item != null) {
-                await Description.SelectCommand.ExecuteAsync(Item.Item);
+        if(Decorator.ListSelectMode == ListSelectMode.Action) {
+            if(Decorator.SelectCommand != null && Item.Item != null) {
+                await Decorator.SelectCommand.ExecuteAsync(Item.Item);
             }
         }
-        CheckChanged(new());
+        if(args.CtrlKey) {
+            // same as clicking the checkbox
+            CheckChanged(new());
+        }
+        else if(args.ShiftKey) {
+
+        }
+        else {
+            Selection.Clear();
+            Select();
+        }
     }
 
     private async Task RowDoubleClick(MouseEventArgs _)
     {
-        if(Description.DefaultCommand != null && Item.Item != null) {
-            await Description.DefaultCommand.ExecuteAsync(Item.Item);
+        if(Decorator.DefaultCommand != null && Item.Item != null) {
+            await Decorator.DefaultCommand.ExecuteAsync(Item.Item);
         }
         StateHasChanged();
     }
 
-    private void CheckChanged(ChangeEventArgs _)
+    private void CheckboxClick(MouseEventArgs _)
+    {
+        CheckChanged(new());
+    }
+
+    private void CheckChanged(ChangeEventArgs args)
     {
         if(IsSelected) {
             Deselect();

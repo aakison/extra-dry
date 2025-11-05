@@ -111,6 +111,8 @@ public partial class Icon : ComponentBase
 
             new("is-required", $"{glyphPath}/asterisk-alone-full.svg", "Required", "icon", SvgRenderType.Document),
             new("has-description", $"{glyphPath}/info-alone-full.svg", "See Description", "icon", SvgRenderType.Document),
+
+            new("collection-empty", $"{glyphPath}/xmark-regular.svg", "No Items", "icon", SvgRenderType.Reference),
         }).ToDictionary(e => e.Key, e => e);
 
     private static readonly IconInfo placeholderIcon = new("placeholder", $"{glyphPath}/loading-placeholder.svg", "Placeholder", "glyph");

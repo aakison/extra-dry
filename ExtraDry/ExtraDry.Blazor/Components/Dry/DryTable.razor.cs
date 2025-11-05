@@ -32,10 +32,15 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
-    private DecoratorInfo description = null!; // Set in OnInitialized
+    private DecoratorInfo decorator = null!; // Set in OnInitialized
 
     [Inject]
     private ILogger<DryTable<TItem>> Logger { get; set; } = null!;
+
+    /// <summary>
+    /// The total number of items in the list.  If -1, the total is unknown.
+    /// </summary>
+    public int Total { get; set; } = -1;
 
     /// <summary>
     /// Every table gets a unique identifier to allow multiple tables on one page, each with custom styles for that table only.
@@ -46,7 +51,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
 
     private string CustomStyle {
         get {
-            var widths = string.Join(" ", description.TableProperties.Select(e => $"{10 * (int)e.Size}fr"));
+            var widths = string.Join(" ", decorator.TableProperties.Select(e => $"{10 * (int)e.Size}fr"));
             var check = HasCheckboxColumn | HasRadioColumn ? "auto " : "";
             var commands = HasCommandsColumn ? " auto" : "";
             var styles = $@"
@@ -58,15 +63,15 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
         }
     }
 
-    private bool HasCheckboxColumn => description.ListSelectMode == ListSelectMode.Multiple;
+    private bool HasCheckboxColumn => decorator.ListSelectMode == ListSelectMode.Multiple;
 
-    private bool HasRadioColumn => description.ListSelectMode == ListSelectMode.Single;
+    private bool HasRadioColumn => decorator.ListSelectMode == ListSelectMode.Single;
 
-    private bool HasCommandsColumn => description.ContextCommands.Any();
+    private bool HasCommandsColumn => decorator.ContextCommands.Any();
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "sortable", ModelClass, FilteredClass, StateClass, CssClass);
 
-    private string ModelClass => description.ModelType?.Name?.ToLowerInvariant() ?? "";
+    private string ModelClass => decorator.ModelType?.Name?.ToLowerInvariant() ?? "";
 
     private string FilteredClass => string.IsNullOrWhiteSpace(QueryBuilderAccessor?.QueryBuilder.Build().Filter) ? "unfiltered" : "filtered";
 
@@ -85,14 +90,14 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
 
     private SelectionSetAccessor? SelectionAccessor { get; set; }
 
-    private int ColumnCount => description.TableProperties.Count +
+    private int ColumnCount => decorator.TableProperties.Count +
         ((HasCheckboxColumn || HasRadioColumn) ? 1 : 0) +
         (HasCommandsColumn ? 1 : 0);
 
     protected override void OnInitialized()
     {
         Decorator ??= this;
-        description = new DecoratorInfo(typeof(TItem), Decorator);
+        decorator = new DecoratorInfo(typeof(TItem), Decorator);
     }
 
     protected override void OnParametersSet()
@@ -100,7 +105,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
         AssertItemsMutualExclusivity();
         if(SelectionAccessor == null) {
             SelectionAccessor = new SelectionSetAccessor(Decorator);
-            SelectionAccessor.SelectionSet.MultipleSelect = description.ListSelectMode == ListSelectMode.Multiple;
+            SelectionAccessor.SelectionSet.MultipleSelect = decorator.ListSelectMode == ListSelectMode.Multiple;
             SelectionAccessor.SelectionSet.Changed += Selection_Changed;
         }
         if(QueryBuilderAccessor == null) {
@@ -160,7 +165,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     private void PerformInitialSort()
     {
         if(!string.IsNullOrWhiteSpace(QueryBuilderAccessor?.QueryBuilder.Sort.SortProperty)) {
-            var property = description.TableProperties.FirstOrDefault(e => string.Equals(e.Property.Name, QueryBuilderAccessor.QueryBuilder.Sort.SortProperty, StringComparison.OrdinalIgnoreCase));
+            var property = decorator.TableProperties.FirstOrDefault(e => string.Equals(e.Property.Name, QueryBuilderAccessor.QueryBuilder.Sort.SortProperty, StringComparison.OrdinalIgnoreCase));
             if(property == null) {
                 QueryBuilderAccessor.QueryBuilder.Sort.SortProperty = "";
             }
@@ -190,19 +195,6 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
 
 
     private bool AllSelected => SelectionAccessor?.SelectionSet.All() ?? false;
-
-    private void ToggleSelectAll()
-    {
-        if(SelectionAccessor == null) {
-            return;
-        }
-        if(AllSelected) {
-            SelectionAccessor.SelectionSet.Clear();
-        }
-        else {
-            SelectionAccessor.SelectionSet.SelectAll();
-        }
-    }
 
     private void SortBy(PropertyDescription property, bool reverseOrder = true)
     {
@@ -382,7 +374,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     private int TotalColumns => (HasCheckboxColumn ? 1 : 0) +
         (HasRadioColumn ? 1 : 0) +
         (HasCommandsColumn ? 1 : 0) +
-        description.TableProperties.Count;
+        decorator.TableProperties.Count;
 
     public void Dispose()
     {
