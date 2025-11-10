@@ -1,17 +1,18 @@
+@namespace ExtraDry.Blazor.Components
 @typeparam TModel
 @inherits DryFieldBase<TModel>
 
-<OptionField TValue="Option" CssClass="@CssClasses"
+<ToggleField CssClass="@CssClasses"
     Affordance="@ResolvedAffordance"
     Description="@ResolvedDescription"
     Icon="@ResolvedIcon" 
     Label="@ResolvedLabel" 
     Placeholder="@ResolvedPlaceholder" 
     ReadOnly="@ResolvedReadOnly"
-    @bind-Value="Value" 
-    Options="@Options"
+    Value="@Value" 
     Validator="Validator"
     OnChange="HandleChange" 
     OnInput="HandleInput"
     OnValidate="HandleValidate"
+    Size="@Property.Size" 
     />

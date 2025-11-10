@@ -3,7 +3,7 @@ namespace ExtraDry.Blazor.Components.Formatting;
 /// <summary>
 /// Represents a roundtrip mechanism for formatting a Double? to a string for user editing.
 /// </summary>
-public class NullableDoubleFormatter : INumberFormatter
+public class NullableDoubleFormatter : IValueFormatter
 {
     /// <inheritdoc />
     public string RegexPattern { get; set; } = @"-?[0-9]{0,10}(\.[0-9]{0,9})?";

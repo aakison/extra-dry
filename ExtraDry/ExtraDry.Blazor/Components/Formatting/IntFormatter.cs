@@ -3,7 +3,7 @@ namespace ExtraDry.Blazor.Components.Formatting;
 /// <summary>
 /// Represents a roundtrip mechanism for formatting a Int32 to a string for user editing.
 /// </summary>
-public class IntFormatter : INumberFormatter
+public class IntFormatter : IValueFormatter
 {
     /// <inheritdoc />
     public string RegexPattern { get; set; } = @"-?[0-9]{0,9}";

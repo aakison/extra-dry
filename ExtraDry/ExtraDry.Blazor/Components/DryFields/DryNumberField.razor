@@ -1,8 +1,8 @@
-﻿@namespace ExtraDry.Blazor.Components
+@namespace ExtraDry.Blazor.Components
 @typeparam TModel
 @inherits DryFieldBase<TModel>
 
-<TextField CssClass="@CssClasses"
+<NumberField CssClass="@CssClasses"
     Affordance="@ResolvedAffordance"
     Description="@ResolvedDescription"
     Icon="@ResolvedIcon" 
@@ -15,7 +15,7 @@
     OnInput="HandleInput"
     OnValidate="HandleValidate"
     Size="@Property.Size" 
-    MaxLength="@ResolvedMaxLength" 
-    MemberName="@Property.Property.Name"
+    Min="@ResolvedMin" 
+    Max="@ResolvedMax" 
+    Formatter="Formatter"
     />
-

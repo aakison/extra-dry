@@ -43,7 +43,7 @@ public partial class DryNumberField<TModel> : DryFieldBase<TModel> where TModel 
         Value = Property.GetValue(Model);
     }
 
-    private INumberFormatter? Formatter { get; set; }
+    private IValueFormatter? Formatter { get; set; }
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", "number", ReadOnlyCss, CssClass);
 

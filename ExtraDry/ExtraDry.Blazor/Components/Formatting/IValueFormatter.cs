@@ -3,7 +3,7 @@ namespace ExtraDry.Blazor.Components.Formatting;
 /// <summary>
 /// Represents a roundtrip mechanism for formatting a number to a string for user editing.
 /// </summary>
-public interface INumberFormatter
+public interface IValueFormatter
 {
     /// <summary>
     /// A regular expression to apply to the string representation to show validation issues to users.

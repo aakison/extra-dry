@@ -31,7 +31,7 @@ public partial class NumberField<TValue> : FieldBase<TValue>
     /// formatters are provided for common numeric types.
     /// </summary>
     [Parameter]
-    public INumberFormatter? Formatter { get; set; }
+    public IValueFormatter? Formatter { get; set; }
 
     /// <summary>
     /// Only allow digits, commas, periods and dollar signs. Injected into onkeypress event (not
@@ -113,6 +113,6 @@ public partial class NumberField<TValue> : FieldBase<TValue>
 
     private string Pattern => ResolvedFormatter.RegexPattern;
 
-    private INumberFormatter ResolvedFormatter { get; set; } = null!;
+    private IValueFormatter ResolvedFormatter { get; set; } = null!;
 
 }

@@ -6,7 +6,7 @@
       "Components/Standard/TriCheck.razor.js",
       "Components/Standard/CodeBlock.razor.js",
       "Components/Standard/ComboBox.razor.js",
-      "Components/ToggleField.razor.js",
+      "Components/Fields/ToggleField.razor.js",
       "Components/Shortcut.razor.js"
     ],
     "minify": {

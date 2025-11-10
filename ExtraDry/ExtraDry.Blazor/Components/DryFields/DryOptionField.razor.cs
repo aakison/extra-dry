@@ -1,4 +1,3 @@
-
 namespace ExtraDry.Blazor.Components;
 
 /// <summary>

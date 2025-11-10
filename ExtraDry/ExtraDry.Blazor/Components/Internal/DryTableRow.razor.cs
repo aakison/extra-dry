@@ -99,7 +99,7 @@ public partial class DryTableRow<T> : ComponentBase, IDisposable
         CheckChanged(new());
     }
 
-    private void CheckChanged(ChangeEventArgs args)
+    private void CheckChanged(ChangeEventArgs _)
     {
         if(IsSelected) {
             Deselect();

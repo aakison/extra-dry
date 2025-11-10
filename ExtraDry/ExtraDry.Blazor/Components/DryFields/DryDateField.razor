@@ -1,7 +1,8 @@
+@namespace ExtraDry.Blazor.Components
 @typeparam TModel
 @inherits DryFieldBase<TModel>
 
-<ToggleField CssClass="@CssClasses"
+<DateField CssClass="@CssClasses"
     Affordance="@ResolvedAffordance"
     Description="@ResolvedDescription"
     Icon="@ResolvedIcon" 
@@ -9,8 +10,10 @@
     Placeholder="@ResolvedPlaceholder" 
     ReadOnly="@ResolvedReadOnly"
     Value="@Value" 
+    Validator="Validator"
     OnChange="HandleChange" 
     OnInput="HandleInput"
     OnValidate="HandleValidate"
     Size="@Property.Size" 
+    Formatter="Formatter"
     />
