@@ -1,0 +1,31 @@
+﻿@namespace ExtraDry.Blazor.Components
+
+<CascadingValue Value="Context">
+    @ChildContent
+</CascadingValue>
+
+@code {
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public EventCallback<ValidationStatus> OnStatusChange { get; set; }
+
+    protected override void OnInitialized() {
+        Context.OnStatusChanged = EventCallback.Factory.Create<ValidationStatus>(this, NotifyStatusChanged);
+        base.OnInitialized();
+    }
+
+    private async Task NotifyStatusChanged(ValidationStatus status) {
+        Console.WriteLine($"ValidationScope: Status changed to {status}");
+        await OnStatusChange.InvokeAsync(status);
+    }
+
+    public bool Success => Context.Results.Where(e => e.Status != ValidationStatus.Passed).Count() == 0;
+
+    public IList<ValidationInfo> Results => Context.Results;
+
+    private ValidationScopeContext Context { get; } = new ValidationScopeContext();
+
+}

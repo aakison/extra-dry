@@ -54,7 +54,6 @@ public abstract class FieldBase<T> : ComponentBase
     [Parameter]
     public string Id { get; set; } = "";
 
-
     /// <inheritdoc />
     [Parameter]
     public virtual PropertySize Size { get; set; } = PropertySize.Medium;
@@ -78,6 +77,12 @@ public abstract class FieldBase<T> : ComponentBase
     [Parameter]
     public IValidator? Validator { get; set; }
 
+    [Parameter]
+    public string MemberName { get; set; } = Guid.NewGuid().ToString();
+
+    [CascadingParameter]
+    public ValidationScopeContext? ValidationScopeContext { get; set; }
+
     protected bool DisplayIcon => ShowIcon && Icon != "";
 
     protected bool DisplayAffordance => ShowAffordance && Affordance != "" && !ReadOnly;
@@ -92,10 +97,21 @@ public abstract class FieldBase<T> : ComponentBase
 
     protected override void OnParametersSet()
     {
-        InputId = Id switch {
-            "" => $"{this.GetType().Name}{++instanceCount}",
-            _ => Id,
-        };
+        if(InputId == "") {
+            InputId = Id switch {
+                "" => $"{GetType().Name}{++instanceCount}",
+                _ => Id,
+            };
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender) {
+            Console.WriteLine($"FieldBase: OnAfterRenderAsync for Id '{Id}' and InputId '{InputId}'.");
+            await ValidateAsync(showError: false);
+        }
+        base.OnAfterRender(firstRender);
     }
 
     protected virtual async Task NotifyChange(ChangeEventArgs args)
@@ -131,24 +147,36 @@ public abstract class FieldBase<T> : ComponentBase
         }
         if(Validator.Validate(Value)) {
             // If valid, clear any errors on both input and change events.
+            if(ValidationScopeContext != null) {
+                await ValidationScopeContext.RemoveAsync(MemberName);
+            }
             await UpdateValidationAsync(true);
         }
         else if(showError) {
             // If invalid, only show the error on change events.
+            if(ValidationScopeContext != null) {
+                await ValidationScopeContext.ReplaceAsync(MemberName, ValidationStatus.Failed, Validator.Message);
+            }
             await UpdateValidationAsync(false);
         }
-    }
+        else {
+            // Don't show error, but record that it's not valid
+            if(ValidationScopeContext != null) {
+                await ValidationScopeContext.ReplaceAsync(MemberName, ValidationStatus.Silent, Validator.Message);
+            }
+        }
 
-    private async Task UpdateValidationAsync(bool valid)
-    {
-        IsValid = valid;
-        ValidationMessage = Validator?.Message ?? "";
-        await OnValidate.InvokeAsync(new ValidationEventArgs {
-            IsValid = valid,
-            MemberName = "",
-            Message = ValidationMessage,
-        });
-        StateHasChanged();
+        async Task UpdateValidationAsync(bool valid)
+        {
+            IsValid = valid;
+            ValidationMessage = Validator?.Message ?? "";
+            await OnValidate.InvokeAsync(new ValidationEventArgs {
+                IsValid = valid,
+                MemberName = MemberName,
+                Message = ValidationMessage,
+            });
+            StateHasChanged();
+        }
     }
 
     private static int instanceCount;

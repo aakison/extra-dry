@@ -28,14 +28,20 @@ public class DataModelPropertyValidator : IValidator
 
     public string Property { get; }
 
+    public string Message { get; private set; } = "";
+
     public bool Validate(object? target)
     {
         var validator = new DataValidator();
-        return validator.ValidateProperties(Model, Property);
+        var result = validator.ValidateProperties(Model, Property);
+        if(result == true) {
+            Message = "";
+        }
+        else {
+            Message = string.Join(" \r\n", validator.Errors.Select(e => e.ErrorMessage)) + " \r\n";
+        }
+        return result;
     }
-
-    public string Message => Errors.Count == 0 ? "" 
-        : "  * " + string.Join("\r\n  * ", Errors.Select(e => e.ErrorMessage)) + "\r\n";
 
     public IReadOnlyCollection<ValidationResult> Errors => [..validator.Errors];
 

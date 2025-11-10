@@ -17,8 +17,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     public ICollection<TItem>? Items { get; set; }
 
     [Parameter]
-    // TODO: Should rename to ItemsClient.
-    public IListClient<TItem>? ItemsService { get; set; }
+    public IListClient<TItem>? ItemsClient { get; set; }
 
     [Parameter]
     public Func<TItem, TItem>? GroupFunc { get; set; }
@@ -75,7 +74,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
 
     private string FilteredClass => string.IsNullOrWhiteSpace(QueryBuilderAccessor?.QueryBuilder.Build().Filter) ? "unfiltered" : "filtered";
 
-    private string StateClass => (ItemsService?.IsEmpty, ItemsService?.IsLoading) switch {
+    private string StateClass => (ItemsClient?.IsEmpty, ItemsClient?.IsLoading) switch {
         (null, _) => "loading",
         (false, _) => "full",
         (true, _) => "empty",
@@ -112,9 +111,8 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
             QueryBuilderAccessor = new QueryBuilderAccessor(Decorator);
             QueryBuilderAccessor.QueryBuilder.OnChanged += Query_Changed;
         }
-        if(ItemsListClient == null && ItemsService != null) {
-            CachingItemsListClient = new CachingListClient<TItem>(ItemsService);
-            //var mappingListClient = new ListItemInfoProvider<TItem>(cachingListClient);
+        if(ItemsListClient == null && ItemsClient != null) {
+            CachingItemsListClient = new CachingListClient<TItem>(ItemsClient);
             var projectionListClient = new ProjectionListClient<TItem, ListItemInfo<TItem>>(CachingItemsListClient, 
                 e => new ListItemInfo<TItem> { Item = e, IsLoaded = true });
             ItemsListClient = projectionListClient;
@@ -157,7 +155,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
 
     private void AssertItemsMutualExclusivity()
     {
-        if(Items != null && ItemsService != null) {
+        if(Items != null && ItemsClient != null) {
             throw new DryException("Only one of `Items` and `ItemsService` is allowed to be set");
         }
     }
@@ -267,7 +265,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
 
     private async ValueTask<ItemsProviderResult<ListItemInfo<TItem>>> GetItemsAsync(ItemsProviderRequest request)
     {
-        if(ItemsService == null || ItemsListClient == null || QueryBuilderAccessor == null) {
+        if(ItemsClient == null || ItemsListClient == null || QueryBuilderAccessor == null) {
             return new ItemsProviderResult<ListItemInfo<TItem>>();
         }
         await serviceLock.WaitAsync();

@@ -1,4 +1,5 @@
-﻿@typeparam TModel
+﻿@namespace ExtraDry.Blazor.Components
+@typeparam TModel
 @inherits DryFieldBase<TModel>
 
 <TextField CssClass="@CssClasses"
@@ -9,10 +10,12 @@
     Placeholder="@ResolvedPlaceholder" 
     ReadOnly="@ResolvedReadOnly"
     Value="@Value" 
+    Validator="@Validator"
     OnChange="HandleChange" 
     OnInput="HandleInput"
     OnValidate="HandleValidate"
     Size="@Property.Size" 
     MaxLength="@ResolvedMaxLength" 
+    MemberName="@Property.Property.Name"
     />
 

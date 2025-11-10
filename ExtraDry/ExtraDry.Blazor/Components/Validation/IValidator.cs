@@ -21,4 +21,5 @@ public interface IValidator
     /// If the last validation failed, this contains the validation results.  Otherwise empty.
     /// </summary>
     IReadOnlyCollection<ValidationResult> Errors { get; }
+
 }

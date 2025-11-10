@@ -12,6 +12,7 @@ public partial class DryTextField<TModel> : DryFieldBase<TModel> where TModel : 
             return;
         }
         Value = Property.DisplayValue(Model);
+        base.OnParametersSet();
     }
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", "text", ReadOnlyCss, CssClass);
@@ -22,6 +23,7 @@ public partial class DryTextField<TModel> : DryFieldBase<TModel> where TModel : 
     {
         var value = args.Value;
         Property.SetValue(Model, value);
+        Value = Property.DisplayValue(Model);
         await OnChange.InvokeAsync(args);
     }
 
@@ -29,6 +31,7 @@ public partial class DryTextField<TModel> : DryFieldBase<TModel> where TModel : 
     {
         var value = args.Value;
         Property.SetValue(Model, value);
+        Value = value?.ToString() ?? "";
         await OnInput.InvokeAsync(args);
     }
 

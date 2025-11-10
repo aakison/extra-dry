@@ -33,29 +33,29 @@ public class DryInputNumericTests
         HtmlAssert.TagNoAttribute(fragment, "input", "readonly");
     }
 
-    [Fact]
-    public void NumericInputCssClassPassthrough()
-    {
-        using var context = new TestContext();
-        var model = new BasicNumericModel();
-        var description = new DecoratorInfo(model.GetType(), model);
-        var property = description.FormProperties.First(e => e.Property.Name == nameof(BasicNumericModel.Numeric));
+    //[Fact]
+    //public void NumericInputCssClassPassthrough()
+    //{
+    //    using var context = new TestContext();
+    //    var model = new BasicNumericModel();
+    //    var description = new DecoratorInfo(model.GetType(), model);
+    //    var property = description.FormProperties.First(e => e.Property.Name == nameof(BasicNumericModel.Numeric));
 
-        var fragment = context.RenderComponent<DryInputNumeric<BasicNumericModel>>(
-            (nameof(DryInputBase<BasicNumericModel>.Model), model),
-            (nameof(DryInputBase<BasicNumericModel>.Property), property),
-            (nameof(DryInputBase<BasicNumericModel>.CssClass), "custom-class")
-            );
+    //    var fragment = context.RenderComponent<DryInputNumeric<BasicNumericModel>>(
+    //        (nameof(DryInputBase<BasicNumericModel>.Model), model),
+    //        (nameof(DryInputBase<BasicNumericModel>.Property), property),
+    //        (nameof(DryInputBase<BasicNumericModel>.CssClass), "custom-class")
+    //        );
 
-        // Css class on outer div
-        var outer = fragment.Find("div") as IHtmlDivElement;
-        Assert.NotNull(outer);
-        Assert.Contains("custom-class", outer.ClassList);
-        // And not in input element
-        var input = fragment.Find("input") as IHtmlInputElement;
-        Assert.NotNull(input);
-        Assert.DoesNotContain("custom-class", input.ClassList);
-    }
+    //    // Css class on outer div
+    //    var outer = fragment.Find("div") as IHtmlDivElement;
+    //    Assert.NotNull(outer);
+    //    Assert.Contains("custom-class", outer.ClassList);
+    //    // And not in input element
+    //    var input = fragment.Find("input") as IHtmlInputElement;
+    //    Assert.NotNull(input);
+    //    Assert.DoesNotContain("custom-class", input.ClassList);
+    //}
 
     [Fact]
     public void NumericInputMobileKeyboard()

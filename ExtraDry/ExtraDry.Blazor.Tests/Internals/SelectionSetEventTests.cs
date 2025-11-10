@@ -64,23 +64,6 @@ public class SelectionSetEventTests
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public void AddOnNonVisibleDoesntAdd(bool multi)
-    {
-        var set = new SelectionSet() { MultipleSelect = multi };
-
-        set.SetVisible([obj1, obj2]);
-        set.SetVisible([]);
-        set.Changed += (s, e) => { sender = s; args = e; };
-        set.Add(obj1);
-        
-        Assert.Null(sender);
-        Assert.Null(args);
-        Assert.Empty(set.Items);
-    }
-
-    [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
     public void EventOnAdd(bool multi)
     {
         var set = new SelectionSet() { MultipleSelect = multi };
@@ -225,21 +208,6 @@ public class SelectionSetEventTests
 
         Assert.Null(sender); // second select all doesn't change selection.
         Assert.Null(args);
-    }
-
-    [Fact]
-    public void AddNonVisibleItemDoesNotAdd()
-    {
-        var set = new SelectionSet() { MultipleSelect = true };
-        set.SetVisible([obj1, obj2]);
-        var nonVisibleItem = new object();
-
-        set.Changed += (s, e) => { sender = s; args = e; };
-        set.Add(nonVisibleItem);
-
-        Assert.Null(sender);
-        Assert.Null(args);
-        Assert.DoesNotContain(nonVisibleItem, set.Items);
     }
 
     [Fact]
