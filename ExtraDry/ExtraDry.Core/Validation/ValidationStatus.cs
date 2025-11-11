@@ -3,6 +3,7 @@
 /// <summary>
 /// The result of a validation check.
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ValidationStatus
 {
     /// <summary>

@@ -54,16 +54,13 @@ public partial class DateField<TValue> : FieldBase<TValue>
             DisplayValue = ResolvedFormatter.Format(Value);
         }
         await base.NotifyChange(args);
-        Console.WriteLine($"NotifyChange: Exiting Value: {args.Value}");
         inputing = false;
     }
 
     protected override async Task NotifyInput(ChangeEventArgs args)
     {
-        Console.WriteLine($"NotifyInput: Entering DisplayValue: {args.Value}, Type: {args.Value.GetType().Name}");
         DisplayValue = (string)(args.Value ?? "");
         if(ResolvedFormatter.TryParse(DisplayValue, out var result)) {
-            Console.WriteLine($"Casting result {result?.GetType().Name} to {typeof(TValue).Name}");
             args.Value = (TValue)result!;
         }
         else {
@@ -71,7 +68,6 @@ public partial class DateField<TValue> : FieldBase<TValue>
             args.Value = Value;
         }
         await base.NotifyInput(args);
-        Console.WriteLine($"NotifyInput: Exiting Value: {args.Value}");
     }
 
     // Formatting lock so that we don't overwrite user input while they are typing, hooks to focus/blur events.

@@ -133,8 +133,6 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
         StateHasChanged();
     }
 
-    private bool changing;
-
     private async void Query_Changed(object? sender, EventArgs e)
     {
         Logger.LogConsoleVerbose("Got notification");
@@ -143,13 +141,11 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
 
     public async Task RefreshAsync()
     {
-        changing = true;
         StateHasChanged();
         CachingItemsListClient?.ClearCache();
         if(VirtualContainer != null) {
             await VirtualContainer.RefreshDataAsync();
         }
-        changing = false;
         StateHasChanged();
     }
 
@@ -249,7 +245,6 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
 
     public async Task<bool> TryRemoveItemAsync(TItem removedItem, IEqualityComparer<TItem>? comparer = null)
     {
-        changing = true;
         StateHasChanged();
 
         var removed = CachingItemsListClient?.TryRemoveItem(removedItem) ?? false;
@@ -257,7 +252,6 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
             await VirtualContainer.RefreshDataAsync();
         }
 
-        changing = false;
         StateHasChanged();
 
         return removed;
@@ -276,64 +270,6 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
             builder.Take = request.Count;
             var infos = await ItemsListClient.GetItemsAsync(builder.Build(), request.CancellationToken);
             var result = new ItemsProviderResult<ListItemInfo<TItem>>(infos.Items, infos.Total);
-            //if(InternalItems.Count == 0) {
-            //    Logger.LogConsoleVerbose("Loading initial items from remote service.");
-            //    var firstPage = PageFor(request.StartIndex);
-            //    var firstIndex = FirstItemOnPage(firstPage);
-            //    builder.Skip = firstIndex;
-            //    var items = await ItemsService.GetItemsAsync(builder.Build(), request.CancellationToken);
-            //    var infos = new ListItemsProviderResult<TItem>(items);
-            //    var count = infos.ItemInfos.Count;
-            //    var total = items.Total;
-
-            //    InternalItems.AddRange(infos.ItemInfos);
-            //    InternalItems.AddRange(Enumerable.Range(0, total - count).Select(e => new ListItemInfo<TItem>()));
-            //    Logger.LogPartialResults(typeof(TItem), 0, count, total);
-            //}
-            //if(AllItemsCached(request.StartIndex, request.Count)) {
-            //    Logger.LogConsoleVerbose("Returning cached results");
-            //}
-            //else {
-            //    Logger.LogConsoleVerbose("Loading page of items from remote service.");
-            //    var firstPage = PageFor(request.StartIndex);
-            //    var lastPage = PageFor(request.StartIndex + request.Count);
-            //    for(int pageNumber = firstPage; pageNumber <= lastPage; ++pageNumber) {
-            //        var firstIndex = FirstItemOnPage(pageNumber);
-            //        builder.Skip = firstIndex;
-            //        if(!AllItemsCached(firstIndex, ItemsService.PageSize)) {
-            //            var items = await ItemsService.GetItemsAsync(builder.Build(), request.CancellationToken);
-            //            var infos = new ListItemsProviderResult<TItem>(items);
-            //            var count = infos.ItemInfos.Count;
-            //            var total = infos.Total;
-            //            var index = firstIndex;
-            //            foreach(var item in infos.ItemInfos) {
-            //                var info = InternalItems[index++];
-            //                info.Item = item.Item;
-            //                info.IsLoaded = item.IsLoaded;
-            //                info.IsExpanded = item.IsExpanded;
-            //                info.GroupDepth = item.GroupDepth;
-            //                info.IsGroup = item.IsGroup;
-            //            }
-            //            var lastIndex = firstIndex + ItemsService.PageSize;
-            //            Logger.LogPartialResults(typeof(TItem), firstIndex, count, total);
-            //        }
-            //    }
-            //}
-            //ItemsProviderResult<ListItemInfo<TItem>> result;
-            //if(InternalItems.Count > 0) {
-            //    var count = Math.Min(request.Count, InternalItems.Count);
-            //    var items = InternalItems.GetRange(request.StartIndex, count);
-            //    if(!IsHierarchyList) {
-            //        PerformInitialSort();
-            //    }
-            //    result = new ItemsProviderResult<ListItemInfo<TItem>>(items, InternalItems.Count);
-            //}
-            //else {
-            //    result = new();
-            //}
-            //firstLoadCompleted = true;
-            //validationError = false;
-            //SelectionAccessor?.SelectionSet.SetVisible(ShownItems.Where(e => e.Item is not null).Select(e => (object)e.Item!));
             return result;
         }
         catch(OperationCanceledException) {
@@ -345,7 +281,6 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
         }
         catch(DryException dex) {
             if(dex.ProblemDetails != null && dex.ProblemDetails.Status == 400) {
-                validationError = true;
                 Logger.LogConsoleError($"Error applying filter: {dex?.ProblemDetails?.Title}");
                 return new ItemsProviderResult<ListItemInfo<TItem>>();
             }
@@ -357,17 +292,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
             serviceLock.Release();
             StateHasChanged(); // update classes affected by InternalItems
         }
-
-        //bool AllItemsCached(int start, int count) => InternalItems.Skip(start).Take(count).All(e => e.IsLoaded);
-
-        //int PageFor(int index) => index / ItemsService.PageSize;
-
-        //int FirstItemOnPage(int page) => ItemsService.PageSize * page;
     }
-
-    private bool firstLoadCompleted;
-
-    private bool validationError;
 
     private int TotalColumns => (HasCheckboxColumn ? 1 : 0) +
         (HasRadioColumn ? 1 : 0) +
