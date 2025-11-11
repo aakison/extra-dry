@@ -34,12 +34,14 @@ public partial class DryDateField<TModel> : DryFieldBase<TModel> where TModel : 
     private async Task HandleChange(ChangeEventArgs args)
     {
         Property.SetValue(Model, args.Value);
+        Value = args.Value;
         await OnChange.InvokeAsync(args);
     }
 
     private async Task HandleInput(ChangeEventArgs args)
     {
         Property.SetValue(Model, args.Value);
+        Value = args.Value;
         await OnInput.InvokeAsync(args);
     }
 
