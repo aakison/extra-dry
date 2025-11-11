@@ -28,7 +28,7 @@ public class SelectionSet
 
     public void Add(object item)
     {
-        Console.WriteLine($"Add {item.GetHashCode()}");
+        //Console.WriteLine($"Add {item.GetHashCode()}");
         if(selectedItems.Contains(item)) {
             return;
         }
@@ -54,7 +54,7 @@ public class SelectionSet
 
     public void Clear()
     {
-        Console.WriteLine($"Clear");
+        //Console.WriteLine($"Clear");
         if(selectedItems.Count == 0) {
             return;
         }
@@ -68,7 +68,7 @@ public class SelectionSet
 
     public void Remove(object item)
     {
-        Console.WriteLine($"Remove {item.GetHashCode()}");
+        //Console.WriteLine($"Remove {item.GetHashCode()}");
         if(Contains(item)) {
             var args = new SelectionSetChangedEventArgs() { Type = SelectionSetChangedType.Removed };
             args.Removed.Add(item);
@@ -82,7 +82,7 @@ public class SelectionSet
     /// </summary>
     public void SelectAll()
     {
-        Console.WriteLine($"Select All");
+        //Console.WriteLine($"Select All");
         if(MultipleSelect == false) { 
             throw new InvalidOperationException("Can't perform SelectAll() on a single selection set.");
         }
