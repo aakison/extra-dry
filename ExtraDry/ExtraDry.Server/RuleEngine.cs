@@ -504,9 +504,10 @@ public class RuleEngine(
             // Don't modify destination, source is in default state.
             return;
         }
-        foreach(var key in sourceDict.Keys) {
+        foreach(var key in sourceDict.Keys) {   
             var value = sourceDict[key];
-            if(!(value?.GetType()?.IsPrimitive ?? true) && value is not string) {
+            // Only allow primitive values, strings, or JsonElements as values.  JsonElements are for trees that end up stored as JSON blobs in database.
+            if(!(value?.GetType()?.IsPrimitive ?? true) && value is not string && value is not JsonElement) {
                 throw new DryException("Dictionary values do no support reference types or arrays.");
             }
             if(value == null) {

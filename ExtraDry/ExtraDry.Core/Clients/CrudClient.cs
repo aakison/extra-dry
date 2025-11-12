@@ -40,6 +40,7 @@ public class CrudClient<T>(
         var endpoint = ApiEndpoint(string.Empty);
         //logger.LogEndpointCall(typeof(T), endpoint);
         var response = await client.PostAsync(endpoint, content, cancellationToken);
+        var body = await response.Content.ReadAsStringAsync(cancellationToken);
         await response.AssertSuccess(logger);
         var reference = await response.Content.ReadFromJsonAsync<ResourceReference>(cancellationToken: cancellationToken);
         return reference ?? new();
