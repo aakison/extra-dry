@@ -45,7 +45,7 @@
             }
         </dry-td>
     }
-    @if(Decorator.ContextCommands.Any()) {
+    @if(ShowCommands && Decorator.ContextCommands.Any()) {
         <dry-td class="commands">
             <div class="contextCommands">
                 @foreach(var command in Decorator.ContextCommands) {

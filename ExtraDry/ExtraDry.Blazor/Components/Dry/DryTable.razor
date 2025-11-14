@@ -19,7 +19,7 @@
                     <sup class="@sortClasses"></sup>
                 </dry-th>
             }
-            @if(HasCommandsColumn) {
+            @if(ShowCommands && HasCommandsColumn) {
                 <dry-th class="commands"></dry-th>
             }
         </dry-tr>
@@ -37,7 +37,7 @@
         }
         <Virtualize ItemsProvider="GetItemsAsync" ItemSize="45" @ref="VirtualContainer">
             <ItemContent>
-                <DryTableRow Item="@context" Decorator="@decorator" Selection="@SelectionAccessor?.SelectionSet" Height="45" GroupColumn="@GroupColumn" />
+                <DryTableRow Item="@context" Decorator="@decorator" Selection="@SelectionAccessor?.SelectionSet" Height="45" GroupColumn="@GroupColumn" ShowCommands="@ShowCommands" />
             </ItemContent>
         </Virtualize>
     </dry-tbody>

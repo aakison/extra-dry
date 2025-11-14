@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -6,6 +7,18 @@ namespace ExtraDry.Core;
 
 public partial class DataConverter
 {
+    public static string DateToDisplayDate(DateTime dateTime)
+    {
+        // Assume Unspecified is UTC, which is how we store dates in databases.
+        var utc = dateTime.Kind switch {
+            DateTimeKind.Utc => dateTime,
+            DateTimeKind.Local => dateTime.ToUniversalTime(),
+            _ => DateTime.SpecifyKind(dateTime, DateTimeKind.Utc)
+        };
+        var localTime = utc.ToLocalTime();
+        return localTime.ToString(CultureInfo.CurrentCulture);
+    }
+
     /// <summary>
     /// Given a date, formats it for display using a relative time. For example, 5 minutes ago, or
     /// Yesterday.
@@ -20,6 +33,7 @@ public partial class DataConverter
         };
         var current = CurrentDateTime().ToUniversalTime();
         var delta = current - utc;
+        var localTime = utc.ToLocalTime();
         var today = current.Date == utc.Date;
         var yesterday = current.Date == utc.Date.AddDays(1);
         if(delta.TotalSeconds < 30) {
@@ -40,13 +54,13 @@ public partial class DataConverter
             return $"{hours} hours ago";
         }
         else if(yesterday) {
-            return $"Yesterday {dateTime:hh:mm tt}";
+            return $"Yesterday {localTime:hh:mm tt}";
         }
         else if(delta.TotalDays < 6) {
-            return $"{dateTime:ddd hh:mm tt}";
+            return $"{localTime:ddd hh:mm tt}";
         }
         else {
-            return $"{dateTime:MMM dd hh:mm tt}";
+            return $"{localTime:MMM dd hh:mm tt}";
         }
     }
 

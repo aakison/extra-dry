@@ -25,6 +25,13 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     [Parameter]
     public string? GroupColumn { get; set; }
 
+    /// <summary>
+    /// Indicates if command buttons should be shown for each row.  Commands must be contextual
+    /// commands to appear on each row.  That is, they take a single item as a parameter.
+    /// </summary>
+    [Parameter]
+    public bool ShowCommands { get; set; } = true;
+
     private QueryBuilderAccessor? QueryBuilderAccessor { get; set; }
 
     /// <inheritdoc />

@@ -26,6 +26,13 @@ public partial class DryTableRow<T> : ComponentBase, IDisposable
     [Parameter]
     public string GroupColumn { get; set; } = null!; // Only used in DryTable
 
+    /// <summary>
+    /// Indicates if command buttons should be shown for this row.  Commands must be contextual
+    /// commands to appear here.  That is, they take a single item as a parameter.
+    /// </summary>
+    [Parameter]
+    public bool ShowCommands { get; set; } = true;
+
     [Parameter]
     public int Height { get; set; } = 40;
 
