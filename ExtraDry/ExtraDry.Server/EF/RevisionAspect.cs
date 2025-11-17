@@ -7,8 +7,9 @@ public class RevisionAspect(
     RevisionAspectOptions options)
     : IDbAspect
 {
-    public void EntitiesChanging(EntitiesChanged args)
+    public Task EntitiesChangingAsync(EntitiesChanged args)
     {
+        return Task.CompletedTask;
         // no-op
     }
 

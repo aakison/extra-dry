@@ -19,8 +19,9 @@ public abstract class AspectDbContext(
     /// <remarks>Only need to override 2 of the 4 SaveChanges as the other 2 call these.</remarks>
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
     {
-        OnEntitiesChanging();
-        return base.SaveChanges(acceptAllChangesOnSuccess);
+        // Hmm, should be exception instead?
+        throw new NotImplementedException();
+        //return base.SaveChanges(acceptAllChangesOnSuccess);
     }
 
     /// <summary>
@@ -28,18 +29,18 @@ public abstract class AspectDbContext(
     /// necessary.
     /// </summary>
     /// <remarks>Only need to override 2 of the 4 SaveChanges as the other 2 call these.</remarks>
-    public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+    public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
     {
-        OnEntitiesChanging();
-        return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        await OnEntitiesChanging();
+        return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
     }
 
-    private void OnEntitiesChanging()
+    private async Task OnEntitiesChanging()
     {
         if(aspects.Any()) {
             var changed = GetChanges();
             foreach(var aspect in aspects) {
-                aspect.EntitiesChanging(changed);
+                await aspect.EntitiesChangingAsync(changed);
             }
             var saving = GetChanges();
             saving.Timestamp = changed.Timestamp; // align the timestamp to the same value
@@ -55,6 +56,7 @@ public abstract class AspectDbContext(
 
     private EntitiesChanged GetChanges()
     {
+        ChangeTracker.DetectChanges();
         var entries = ChangeTracker.Entries();
         var added = entries.Where(e => e.State == EntityState.Added).Select(e => e.Entity);
         var modified = entries.Where(e => e.State == EntityState.Modified).Select(e => e.Entity);

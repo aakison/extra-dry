@@ -12,9 +12,10 @@ public class AuditAspect(
     : IDbAspect
 {
     /// <inheritdoc />
-    public void EntitiesChanging(EntitiesChanged args)
+    public Task EntitiesChangingAsync(EntitiesChanged args)
     {
         // no-op
+        return Task.CompletedTask;
     }
 
     /// <inheritdoc />
