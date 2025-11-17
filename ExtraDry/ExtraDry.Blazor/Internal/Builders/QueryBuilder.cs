@@ -7,66 +7,11 @@
 /// </summary>
 public class QueryBuilder
 {
-    /// <inheritdoc cref="QueryBuilder" />
-    internal QueryBuilder()
-    {
-        TextFilter = new TextFilterBuilder() { FilterName = "Keywords" };
-        Filters.Add(TextFilter);
-    }
-
     /// <summary>
     /// Event to subscribe to be notified when the page query has changed and views should be
     /// refreshed.
     /// </summary>
     public event EventHandler? OnChanged;
-
-    /// <summary>
-    /// Manually rebuilds the query and notifies all observers that changes have been made.
-    /// </summary>
-    public void NotifyChanged()
-    {
-        Query = Build();
-        OnChanged?.Invoke(this, EventArgs.Empty);
-    }
-
-    public Query Build()
-    {
-        Query = new Query() {
-            Filter = BuildFilter(),
-            Sort = BuildSort(),
-            Skip = Skip,
-            Take = Take,
-            Level = BuildLevel(),
-            Expand = Hierarchy.ExpandNodes.ToArray(),
-            Collapse = Hierarchy.CollapseNodes.ToArray(),
-        };
-        return Query;
-    }
-
-    private string BuildFilter()
-    {
-        return string.Join(' ', Filters.Select(e => e.Build()).Where(e => !string.IsNullOrWhiteSpace(e))).Trim();
-    }
-
-    private string BuildSort()
-    {
-        return Sort.Build();
-    }
-
-    private int? BuildLevel()
-    {
-        return Level.Build();
-    }
-
-    public void Reset()
-    {
-        Hierarchy.Reset();
-        Level.Reset();
-        foreach(var filter in Filters) {
-            filter.Reset();
-        }
-        NotifyChanged();
-    }
 
     /// <summary>
     /// A list of all filterable items that this page query supports. These supports any filter
@@ -98,6 +43,53 @@ public class QueryBuilder
 
     public int? Take { get; set; }
 
+    public void AddEnumFilter(string filterName, Enum filterValue)
+    {
+        var filter = Filters.FirstOrDefault(e => e.FilterName == filterName);
+        if(filter is null) {
+            var enumFilter = new EnumFilterBuilder() { FilterName = filterName };
+            enumFilter.Values.Add(filterValue.ToString());
+            filter = enumFilter;
+            Filters.Add(enumFilter);
+        }
+        else if(filter is not EnumFilterBuilder) {
+            throw new NotSupportedException($"Filter with name {filterName} already exists and is not an enum filter.");
+        }
+    }
+
+    /// <summary>
+    /// Manually rebuilds the query and notifies all observers that changes have been made.
+    /// </summary>
+    public void NotifyChanged()
+    {
+        Query = Build();
+        OnChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public Query Build()
+    {
+        Query = new Query() {
+            Filter = BuildFilter(),
+            Sort = BuildSort(),
+            Skip = Skip,
+            Take = Take,
+            Level = BuildLevel(),
+            Expand = Hierarchy.ExpandNodes.ToArray(),
+            Collapse = Hierarchy.CollapseNodes.ToArray(),
+        };
+        return Query;
+    }
+
+    public void Reset()
+    {
+        Hierarchy.Reset();
+        Level.Reset();
+        foreach(var filter in Filters) {
+            filter.Reset();
+        }
+        NotifyChanged();
+    }
+
     public void ParseFilters(string[] filters)
     {
         var notifyChanged = false;
@@ -120,13 +112,21 @@ public class QueryBuilder
                 case DateTimeFilterBuilder dateTimeFilterBuilder:
                     if(dateTimeFilterBuilder.TryParseFilter(filter)) {
                         notifyChanged = true;
-                    };
+                    }
+                    ;
                     break;
             }
         }
         if(notifyChanged) {
             NotifyChanged();
         }
+    }
+
+    /// <inheritdoc cref="QueryBuilder" />
+    internal QueryBuilder()
+    {
+        TextFilter = new TextFilterBuilder() { FilterName = "Keywords" };
+        Filters.Add(TextFilter);
     }
 
     private static bool UpdateEnumFilter(EnumFilterBuilder enumFilter, string queryValue)
@@ -139,5 +139,20 @@ public class QueryBuilder
         }
 
         return true;
+    }
+
+    private string BuildFilter()
+    {
+        return string.Join(' ', Filters.Select(e => e.Build()).Where(e => !string.IsNullOrWhiteSpace(e))).Trim();
+    }
+
+    private string BuildSort()
+    {
+        return Sort.Build();
+    }
+
+    private int? BuildLevel()
+    {
+        return Level.Build();
     }
 }
