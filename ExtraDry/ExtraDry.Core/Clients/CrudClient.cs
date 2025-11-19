@@ -61,22 +61,28 @@ public class CrudClient<T>(
             return cachedItem;
         }
 
-        var response = await client.GetAsync(endpoint, cancellationToken);
-        await response.AssertSuccess(logger);
-        var item = await response.Content.ReadFromJsonAsync<T>(cancellationToken: cancellationToken);
-        if(options.OnRead != null && item != null) {
-            options.OnRead(item);
-        }
-        if(options.OnReadAsync != null && item != null) {
-            await options.OnReadAsync(item);
-        }
+        try {
+            var response = await client.GetAsync(endpoint, cancellationToken);
+            await response.AssertSuccess(logger);
+            var item = await response.Content.ReadFromJsonAsync<T>(cancellationToken: cancellationToken);
+            if(options.OnRead != null && item != null) {
+                options.OnRead(item);
+            }
+            if(options.OnReadAsync != null && item != null) {
+                await options.OnReadAsync(item);
+            }
 
-        // Cache the item if it was successfully read
-        if(item != null) {
-            Cache.Write(endpoint, item);
-        }
+            // Cache the item if it was successfully read
+            if(item != null) {
+                Cache.Write(endpoint, item);
+            }
 
-        return item;
+            return item;
+        }
+        catch(Exception ex) {
+            logger.LogDebug(ex, "Error reading item of type {Type} with key {Key} from endpoint {Endpoint}", typeof(T).Name, key, endpoint);
+            return default;
+        }
     }
 
     /// <summary>
