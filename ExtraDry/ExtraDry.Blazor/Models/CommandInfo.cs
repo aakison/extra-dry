@@ -54,7 +54,7 @@ public partial class CommandInfo
     public CommandContext Context { get; set; } = CommandContext.Regular;
 
     /// <inheritdoc cref="ButtonTheme" />
-    public ButtonTheme Theme { get; set; } = ButtonTheme.Normal;
+    public ButtonTheme Theme { get; set; } = ButtonTheme.Solid;
 
     /// <summary>
     /// The category for this command which is used for filters.
@@ -116,7 +116,7 @@ public partial class CommandInfo
     /// A CSS class that is added to elements that can trigger the command. This has no intrinsic
     /// meaning but can be used by app to change appearance.
     /// </summary>
-    public string DisplayClass => DataConverter.JoinNonEmpty(" ", CssClass, DataConverter.DisplayEnum(Context).ToLowerInvariant());
+    public string DisplayClass => DataConverter.JoinNonEmpty(" ", CssClass);
 
     public Func<bool> IsVisible { get; set; } = () => true;
 

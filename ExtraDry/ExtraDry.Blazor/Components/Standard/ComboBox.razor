@@ -14,7 +14,7 @@
         @if(ShowProgress) {
             <progress></progress>
         }
-        <button class="unobtrusive" @onclick="DoButtonClick" type="button" tabindex="-1"><Icon Key="select" /></button>
+        <button class="ghost" @onclick="DoButtonClick" type="button" tabindex="-1"><Icon Key="select" /></button>
     </label>
     @if(ShowOptions || DebugCss) {
         var debugStyle = DebugCss && !ShowOptions ? "display: none;" : "";

@@ -9,7 +9,7 @@
                     <div class="filter">
                         <input @bind-value="Filter" @bind-value:event="oninput" placeholder="@FilterPlaceholder" />
                         <Icon Key="search" />
-                        <button class="unobtrusive button clearFilter" type="button" @onclick="ClearFilter">
+                        <button class="ghost button clearFilter" type="button" @onclick="ClearFilter">
                             <Icon Key="clear" />
                         </button>
                     </div>
@@ -17,7 +17,7 @@
                 @if(MultiSelect) {
                     <div class="commands">
                         <TriCheck Value="@TriCheckValue" Label="Select All" @onchange="SelectAllChange" />
-                        <button class="unobtrusive button clearSelected" type="button" @onclick="ClearAll">Clear</button>
+                        <button class="ghost button clearSelected" type="button" @onclick="ClearAll">Clear</button>
                     </div>
                 }
             </div>

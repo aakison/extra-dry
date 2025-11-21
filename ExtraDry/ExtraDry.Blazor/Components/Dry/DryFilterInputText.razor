@@ -6,6 +6,6 @@
     }
     <InputText @ref="InputText" type="text" Name="@FakeName" @bind-Value="@FreeTextFilter" placeholder="@Placeholder" @oninput="OnInput" @onfocusout="OnFocusOut" @onkeypress="OnKeyPress" spellcheck="false" />
     @if(DisplayReset) {
-        <Button Icon="@ResetIcon" @onclick="OnReset" Theme="ButtonTheme.Unobtrusive" CssClass="reset" Caption="" />
+        <Button Icon="@ResetIcon" @onclick="OnReset" Theme="ButtonTheme.Ghost" CssClass="reset" Caption="" />
     }
 </div>

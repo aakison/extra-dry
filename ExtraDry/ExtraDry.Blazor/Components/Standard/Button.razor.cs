@@ -79,7 +79,7 @@ public partial class Button : ComponentBase, IExtraDryComponent
 
     /// <inheritdoc cref="ButtonTheme" />
     [Parameter]
-    public ButtonTheme Theme { get; set; } = ButtonTheme.Normal;
+    public ButtonTheme Theme { get; set; } = ButtonTheme.Solid;
 
     /// <inheritdoc cref="CommandContext" />
     [Parameter]

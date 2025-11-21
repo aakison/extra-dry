@@ -10,17 +10,17 @@ public enum ButtonTheme
     /// <summary>
     /// A normal looking button that is used for most actions. Solid buttons with clear affordance.
     /// </summary>
-    Normal,
+    Solid,
 
     /// <summary>
     /// A button which hides away a bit but is still visually a button. Typically rendered with an
     /// outline and transparent background.
     /// </summary>
-    Ghost,
+    Outline,
 
     /// <summary>
     /// A button which doesn't present as a button but has a click action. Typically rendered as
     /// just a piece of text or an icon.  May have hover effects to indicate clickability.
     /// </summary>
-    Unobtrusive,
+    Ghost,
 }

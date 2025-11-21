@@ -1,7 +1,7 @@
 ﻿@namespace ExtraDry.Blazor
 
 <div class="@CssClasses" @attributes="@UnmatchedAttributes">
-    <button type="button" class="unobtrusive" @onclick="@DoClick">
+    <button type="button" class="ghost" @onclick="@DoClick">
         @ChildContent
     </button>
     <MiniDialog @ref="MiniDialog" CssClass="@CssClass" LoseFocusAction="MiniDialogAction.Cancel" 

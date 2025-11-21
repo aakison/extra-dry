@@ -40,6 +40,7 @@
                 @if(HasCommands && item != null) {
                     <div class="commands">
                         @foreach (var command in description.ContextCommands) {
+                            command.Theme = ButtonTheme.Ghost;
                             <DryButton Command="@command" Model="@item" ShowIcon="true" ShowCaption="false" ShowAffordance="false" />
                         }
                     </div>

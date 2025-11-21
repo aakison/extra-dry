@@ -7,7 +7,7 @@
 [AttributeUsage(AttributeTargets.Method)]
 public sealed class CommandAttribute(
     CommandContext context = CommandContext.Regular,
-    ButtonTheme theme = ButtonTheme.Normal)
+    ButtonTheme theme = ButtonTheme.Solid)
     : Attribute
 {
     /// <inheritdoc cref="CommandContext"/>
