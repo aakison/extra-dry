@@ -9,8 +9,35 @@ using Sample.Components.Api;
 using Sample.Components.Api.Options;
 using Sample.Components.Api.Security;
 using Sample.Components.Api.Services;
+using Scalar.AspNetCore;
+using System.Security.Cryptography.X509Certificates;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Ensure Kestrel uses the correct HTTPS development certificate
+if(builder.Environment.IsDevelopment()) {
+    builder.WebHost.ConfigureKestrel(options => {
+        options.ConfigureHttpsDefaults(httpsOptions => {
+            // Find the ASP.NET Core development certificate by friendly name
+            using var store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
+            store.Open(OpenFlags.ReadOnly);
+            var certs = store.Certificates.Find(
+                X509FindType.FindBySubjectName,
+                "localhost",
+                validOnly: false);
+            
+            // Filter to only ASP.NET Core HTTPS development certificates
+            var devCert = certs
+                .OfType<X509Certificate2>()
+                .FirstOrDefault(c => c.FriendlyName == "ASP.NET Core HTTPS development certificate");
+            
+            if(devCert != null) {
+                httpsOptions.ServerCertificate = devCert;
+            }
+            store.Close();
+        });
+    });
+}
 
 // Add services to the container.
 
@@ -27,29 +54,39 @@ builder.Services.AddExtraDry(options => {
 // Add the actual API endpoints
 builder.Services.AddControllers();
 
-// Add services for configuring Swagger and SwaggerUI (nee Swashbuckle)
-// https://aka.ms/aspnetcore/swashbuckle
+// Add services for configuring OpenAPI and Scalar UI
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options => {
-    options.AddSecurityDefinition(name: "Bearer", securityScheme: new OpenApiSecurityScheme {
-        Name = "Authorization",
-        Description = "Enter the Bearer Authorization string as following: `Bearer Generated-JWT-Token`",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
-    });
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement {
-        {
-            new OpenApiSecurityScheme {
-            Name = "Bearer",
-            In = ParameterLocation.Header,
-            Reference = new OpenApiReference {
-                Id = "Bearer",
-                Type = ReferenceType.SecurityScheme
+builder.Services.AddOpenApi(options => {
+    options.AddDocumentTransformer((document, context, cancellationToken) => {
+        document.Info = new OpenApiInfo {
+            Version = "v1",
+            Title = "Sample Components API",
+            Description = "API for managing components"
+        };
+        document.Servers = [new OpenApiServer { Url = "/" }];
+        
+        document.SecurityRequirements.Add(new OpenApiSecurityRequirement {
+            {
+                new OpenApiSecurityScheme {
+                    Reference = new OpenApiReference {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                Array.Empty<string>()
             }
-        },
-        new List<string>()
-    }
+        });
+        
+        document.Components ??= new OpenApiComponents();
+        document.Components.SecuritySchemes["Bearer"] = new OpenApiSecurityScheme {
+            Name = "Authorization",
+            Description = "Enter the Bearer Authorization string as following: `Bearer Generated-JWT-Token`",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer"
+        };
+        
+        return Task.CompletedTask;
     });
 });
 
@@ -88,8 +125,18 @@ var host = builder.Build();
 
 // Configure the HTTP request pipeline.
 if(host.Environment.IsDevelopment()) {
-    host.UseSwagger();
-    host.UseSwaggerUI();
+    host.UseDeveloperExceptionPage();
+    host.MapOpenApi();
+    host.MapScalarApiReference(options => {
+        options
+            .WithTitle("Sample Components API")
+            .WithTheme(ScalarTheme.Default)
+            .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
+    });
+}
+else {
+    host.UseExceptionHandler("/Error");
+    host.UseHsts();
 }
 
 // HealthCheck middleware

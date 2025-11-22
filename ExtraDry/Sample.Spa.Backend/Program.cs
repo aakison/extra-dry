@@ -1,7 +1,6 @@
 using ExtraDry.Core.Models;
 using ExtraDry.Server.DataWarehouse;
 using ExtraDry.Server.EF;
-using ExtraDry.Swashbuckle;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +9,7 @@ using Sample.Spa.Backend;
 using Sample.Spa.Backend.Components;
 using Sample.Spa.Backend.SampleData;
 using Sample.Spa.Backend.Security;
+using Scalar.AspNetCore;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,40 +19,46 @@ builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
 builder.Services.AddControllers()
-    .AddExtraDry()
     .AddJsonOptions(e => {
         e.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     });
 
-builder.Services.AddSwaggerGen(openapi => {
-    openapi.AddExtraDry(options => {
-        options.XmlComments.Files.Add("Sample.Shared.xml");
-        options.XmlComments.Files.Add("Sample.Spa.Backend.Xml");
-    });
-    openapi.SwaggerDoc(ApiGroupNames.SampleApi, new OpenApiInfo {
-        Version = "v1",
-        Title = "Sample APIs",
-        Description = @"A sample API for Blazor.ExtraDry",
-    });
-    openapi.SwaggerDoc(ApiGroupNames.ReferenceCodes, new OpenApiInfo {
-        Version = "v1",
-        Title = "Reference Codes",
-        Description = @"A sample API for Blazor.ExtraDry",
-    });
-    openapi.SwaggerDoc(ApiGroupNames.InternalUseOnly, new OpenApiInfo {
-        Version = "v1",
-        Title = "Internal Use Only",
-        Description = @"An Internal Use Only set of APIs for our own interfaces.",
+builder.Services.AddExtraDry();
+
+builder.Services.AddOpenApi(options => {
+    options.AddDocumentTransformer((document, context, cancellationToken) => {
+        document.Info = new OpenApiInfo {
+            Version = "v1",
+            Title = "Sample Blazor.ExtraDry APIs",
+            Description = "A sample API for Blazor.ExtraDry"
+        };
+        document.Servers = [new OpenApiServer { Url = "/" }];
+
+        document.SecurityRequirements.Add(new OpenApiSecurityRequirement {
+            {
+                new OpenApiSecurityScheme {
+                    Reference = new OpenApiReference {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "http"
+                    }
+                },
+                Array.Empty<string>()
+            }
+        });
+
+        document.Components ??= new OpenApiComponents();
+        document.Components.SecuritySchemes["http"] = new OpenApiSecurityScheme {
+            Description = "Basic",
+            Name = "Authorization",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.Http,
+            Scheme = "basic",
+        };
+
+        return Task.CompletedTask;
     });
 
-    openapi.AddSecurityDefinition("http", new OpenApiSecurityScheme {
-        Description = "Basic",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.Http,
-        Scheme = "basic",
-    });
-    openapi.OperationFilter<BasicAuthOperationFilter>();
+    options.AddOperationTransformer<BasicAuthOperationFilter>();
 });
 
 builder.Services.AddAuthentication("WorthlessAuthentication")
@@ -79,8 +85,6 @@ builder.Services.AddScoped(services => {
     //_ = new SearchIndexAspect(context, services.GetService<SearchService>());
     return context;
 });
-
-builder.Services.AddExtraDry();
 
 builder.Services.AddScoped<EmployeeService>();
 builder.Services.AddScoped<CompanyService>();
@@ -122,20 +126,16 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
-app.UseSwagger();
-app.UseSwaggerUI(swagger => {
-    swagger.UseExtraDry();
-    swagger.SwaggerEndpoint($"/swagger/{ApiGroupNames.SampleApi}/swagger.json", "Sample APIs");
-    swagger.SwaggerEndpoint($"/swagger/{ApiGroupNames.ReferenceCodes}/swagger.json", "Reference Codes");
-    swagger.InjectStylesheet("/css/swagger-ui-extensions.css");
-    swagger.InjectJavascript("/js/swagger-ui-extensions.js");
-    swagger.DocumentTitle = "Sample Blazor.ExtraDry APIs";
-    swagger.EnableDeepLinking();
+app.MapOpenApi();
+app.MapScalarApiReference(options => {
+    options
+        .WithTitle("Sample Blazor.ExtraDry APIs")
+        .WithTheme(ScalarTheme.Default)
+        .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
 });
 
 app.UseAntiforgery();
 
-app.MapSwagger();
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(Sample.Spa.Client._Imports).Assembly);
