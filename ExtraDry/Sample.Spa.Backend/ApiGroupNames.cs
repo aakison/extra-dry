@@ -1,8 +1,7 @@
 ﻿namespace Sample.Spa.Backend;
 
 /// <summary>
-/// The ApiExplorer and Swagger classes use Stringly typed names, map to consistent names
-/// throughout.
+/// The ApiExplorer use Stringly typed names, map to consistent names throughout.
 /// </summary>
 public static class ApiGroupNames
 {

@@ -285,7 +285,7 @@ public class AppViewModel(NavigationManager navigation)
                 Icon = "api-module",
                 Title = "Integration APIs",
                 Subtitle = "A set of APIs for programmatic integration with other applications.",
-                NavLink = "/swagger",
+                NavLink = "/scalar/v1",
             },
         ]
     };

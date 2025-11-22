@@ -49,9 +49,7 @@ This API has a health check endpoint at `/healthcheck`.  This uses the built-in 
 
 ### Debugging
 
-Swagger is included in the API project, but is only made available during development.  This is to keep the microservice lean during production.  
-
-There are a set of .http files in the `HttpTests` folder which provide manual testing scenarios to use during development and debugging.  These provide a fast way to test the API without needing to write a client or use the Swagger UI.  Additionally, these automatically use user secrets for the `Authorization` header of requests.
+There are a set of .http files in the `HttpTests` folder which provide manual testing scenarios to use during development and debugging.  These provide a fast way to test the API without needing to write a client or use the Postman.  Additionally, these automatically use user secrets for the `Authorization` header of requests.
 
 See [HttpTests README](./HttpTests/README.md) for more details, including some Powershell snippets to configure the JWT tokens in user secrets.
 

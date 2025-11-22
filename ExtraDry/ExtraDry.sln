@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.32014.148
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11217.181 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A5A1CB4E-B995-47B9-8EBE-0009C0B97805}"
 	ProjectSection(SolutionItems) = preProject
@@ -38,8 +38,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtraDry.Blazor", "ExtraDry
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtraDry.Blazor.Tests", "ExtraDry.Blazor.Tests\ExtraDry.Blazor.Tests.csproj", "{FD70787D-C9B9-49B2-80A9-4E6C83DC9027}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtraDry.Swashbuckle", "ExtraDry.Swashbuckle\ExtraDry.Swashbuckle.csproj", "{B67BB00A-EB80-4639-810A-50A19FE7250A}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtraDry.Server", "ExtraDry.Server\ExtraDry.Server.csproj", "{3D9D55DC-77BE-473A-A0F7-4CE4856DF94E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtraDry.Server.Tests", "ExtraDry.Server.Tests\ExtraDry.Server.Tests.csproj", "{A4414229-507A-4F50-B573-FEE24071AE73}"
@@ -49,8 +47,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Tests", "Sample.Tests\Sample.Tests.csproj", "{75C4867C-65AF-40F0-83A2-54CD91377279}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtraDry.Blazor.Experimental", "ExtraDry.Blazor.Experimental\ExtraDry.Blazor.Experimental.csproj", "{7B9FEC78-072D-4D09-8E26-7A4B07B6FFCF}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtraDry.Swashbuckle.Tests", "ExtraDry.Swashbuckle.Tests\ExtraDry.Swashbuckle.Tests.csproj", "{C271B8E0-17FB-477C-AA87-D8BCCD9226C6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Spa.Client", "Sample.Spa.Client\Sample.Spa.Client.csproj", "{922E2B34-02DE-4138-AAC1-21112A1D0A14}"
 EndProject
@@ -94,10 +90,6 @@ Global
 		{FD70787D-C9B9-49B2-80A9-4E6C83DC9027}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD70787D-C9B9-49B2-80A9-4E6C83DC9027}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD70787D-C9B9-49B2-80A9-4E6C83DC9027}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B67BB00A-EB80-4639-810A-50A19FE7250A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B67BB00A-EB80-4639-810A-50A19FE7250A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B67BB00A-EB80-4639-810A-50A19FE7250A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B67BB00A-EB80-4639-810A-50A19FE7250A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3D9D55DC-77BE-473A-A0F7-4CE4856DF94E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3D9D55DC-77BE-473A-A0F7-4CE4856DF94E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D9D55DC-77BE-473A-A0F7-4CE4856DF94E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -118,10 +110,6 @@ Global
 		{7B9FEC78-072D-4D09-8E26-7A4B07B6FFCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B9FEC78-072D-4D09-8E26-7A4B07B6FFCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B9FEC78-072D-4D09-8E26-7A4B07B6FFCF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C271B8E0-17FB-477C-AA87-D8BCCD9226C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C271B8E0-17FB-477C-AA87-D8BCCD9226C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C271B8E0-17FB-477C-AA87-D8BCCD9226C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C271B8E0-17FB-477C-AA87-D8BCCD9226C6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{922E2B34-02DE-4138-AAC1-21112A1D0A14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{922E2B34-02DE-4138-AAC1-21112A1D0A14}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{922E2B34-02DE-4138-AAC1-21112A1D0A14}.Release|Any CPU.ActiveCfg = Release|Any CPU

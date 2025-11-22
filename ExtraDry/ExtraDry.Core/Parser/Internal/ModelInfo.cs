@@ -20,7 +20,7 @@ public class ModelInfo
 
     /// <summary>
     /// Determines if a given property is treated as sortable. This applies to the constructions of
-    /// expressions as well as to Swagger documention.
+    /// expressions as well as to OpenAPI documention.
     /// </summary>
     /// <remarks>
     /// 1. Ignore properties with specific attributes.

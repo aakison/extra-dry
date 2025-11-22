@@ -36,8 +36,6 @@ Write-Host "Semenatic version is $semanticVersion"
 
 dotnet pack .\ExtraDry.Core\ExtraDry.Core.csproj -p:PackageVersion=$semanticVersion
 dotnet pack .\ExtraDry.Blazor\ExtraDry.Blazor.csproj -p:PackageVersion=$semanticVersion
-dotnet pack .\ExtraDry.Swashbuckle\ExtraDry.Swashbuckle.csproj -p:PackageVersion=$semanticVersion
 
 nuget add .\ExtraDry.Core\bin\Debug\ExtraDry.Core.$semanticVersion.nupkg -source $env:USERPROFILE\Repos\Nuget\
 nuget add .\ExtraDry.Blazor\bin\Debug\ExtraDry.Blazor.$semanticVersion.nupkg -source $env:USERPROFILE\Repos\Nuget\
-nuget add .\ExtraDry.Swashbuckle\bin\Debug\ExtraDry.Swashbuckle.$semanticVersion.nupkg -source $env:USERPROFILE\Repos\Nuget\

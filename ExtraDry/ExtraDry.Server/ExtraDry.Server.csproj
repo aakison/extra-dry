@@ -11,7 +11,7 @@
 		<PackageProjectUrl>https://github.com/akison/extra-dry</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/akison/extra-dry.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageTags>blazor spa microsoft dry don't repeat yourself low-code swashbuckle openapi</PackageTags>
+		<PackageTags>blazor spa microsoft dry don't repeat yourself low-code openapi</PackageTags>
 		<NeutralLanguage />
     <Copyright>Copyright ©️ 2024 Adrian Akison</Copyright>
   </PropertyGroup>

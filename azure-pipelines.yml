@@ -19,9 +19,9 @@ variables:
   - name: projectsGlob
     value: '**/ExtraDry.**.csproj' # don't build samples
   - name: nugetProjectsGlob
-    value: '**/ExtraDry.+(Core|Server|Blazor|Swashbuckle|Blazor.Experimental).csproj' # don't build samples
+    value: '**/ExtraDry.+(Core|Server|Blazor|Blazor.Experimental).csproj' # don't build samples
   - name: testProjectsGlob
-    value: '**/ExtraDry.+(Core|Server|Blazor|Swashbuckle).Tests.csproj'
+    value: '**/ExtraDry.+(Core|Server|Blazor).Tests.csproj'
   - name: isForDeployment
     value: $[in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/develop', 'refs/heads/release')]
   # Semantic Version details
@@ -99,7 +99,6 @@ steps:
       dotnet list ExtraDry/ExtraDry.Blazor.Experimental package --vulnerable --include-transitive | Scan-Line-For-Vulnerability
       dotnet list ExtraDry/ExtraDry.Core package --vulnerable --include-transitive | Scan-Line-For-Vulnerability
       dotnet list ExtraDry/ExtraDry.Server package --vulnerable --include-transitive | Scan-Line-For-Vulnerability
-      dotnet list ExtraDry/ExtraDry.Swashbuckle package --vulnerable --include-transitive | Scan-Line-For-Vulnerability
       if($global:failedLines > 0) {
         Write-Host
         Write-Host "Vulnerabilities in dependant package have been found, please upgrade or replace." -ForegroundColor Red

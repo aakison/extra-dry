@@ -9,4 +9,3 @@
 [assembly: InternalsVisibleTo("ExtraDry.Server")]
 [assembly: InternalsVisibleTo("ExtraDry.Server.Tests")]
 [assembly: InternalsVisibleTo("ExtraDry.Core.Tests")]
-[assembly: InternalsVisibleTo("ExtraDry.Swashbuckle")]
