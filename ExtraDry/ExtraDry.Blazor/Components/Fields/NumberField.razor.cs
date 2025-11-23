@@ -48,6 +48,7 @@ public partial class NumberField<TValue> : FieldBase<TValue>
 
     protected override void OnParametersSet()
     {
+        // TODO: Move to PropertyDescription
         if(ResolvedFormatter == null) {
             ResolvedFormatter = Formatter ?? typeof(TValue) switch {
                 Type t when t == typeof(int) => new IntFormatter(),

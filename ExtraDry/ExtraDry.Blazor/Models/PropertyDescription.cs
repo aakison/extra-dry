@@ -405,7 +405,6 @@ public class PropertyDescription
         return PropertySize.Small;
     }
 
-    [Obsolete("Move functionality into NumberField and DryNumberField")]
     private InputValueFormatter CreateFormatter()
     {
         return (AllowsNull, PropertyType) switch {
@@ -417,6 +416,5 @@ public class PropertyDescription
         };
     }
 
-    [Obsolete("Move functionality into NumberField and DryNumberField")]
     public InputValueFormatter Formatter { get; set; }
 }
