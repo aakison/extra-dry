@@ -20,19 +20,7 @@ public static class BlobSerializer
     public static ByteArrayContent SerializeBlob<T>(T blob) where T : IBlob
     {
         var bytes = new ByteArrayContent(blob.Content ?? throw new ArgumentException("Blob must have content."));
-        var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-        foreach(var property in properties) {
-            var jsonIgnore = property.GetCustomAttribute<JsonIgnoreAttribute>();
-            var ignore = jsonIgnore?.Condition ?? JsonIgnoreCondition.WhenWritingDefault;
-            if(ignore == JsonIgnoreCondition.Always || property.Name == nameof(IBlob.Content)) {
-                continue;
-            }
-            var headerName = property.GetCustomAttribute<HttpHeaderAttribute>()?.Name ?? $"X-Blob-{property.Name}";
-            var headerValue = property.GetValue(blob)?.ToString() ?? "";
-            if(!string.IsNullOrEmpty(headerValue) || ignore == JsonIgnoreCondition.Never) {
-                bytes.Headers.Add(headerName, headerValue);
-            }
-        }
+        AddProperties(blob, bytes.Headers.Add);
         return bytes;
     }
 
@@ -71,6 +59,13 @@ public static class BlobSerializer
                 }
             }
         }
+        if(blob is IRevisioned revisioned) {
+            var userHeader = HeaderValue("X-Blob-Revision-User");
+            var timestampHeader = HeaderValue("X-Blob-Revision-Timestamp");
+            if(userHeader != null && timestampHeader != null && DateTime.TryParse(timestampHeader, out var timestamp)) {
+                revisioned.Revision = new UserTimestamp { User = userHeader, Timestamp = timestamp };
+            }
+        }
         blob.Content = await response.Content.ReadAsByteArrayAsync(cancellationToken);
         blob.Length = blob.Content.Length;
         return blob;
@@ -88,19 +83,7 @@ public static class BlobSerializer
     /// </summary>
     public static async Task SerializeBlobAsync<T>(HttpResponse response, T blob, CancellationToken cancellationToken = default) where T : IBlob
     {
-        var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-        foreach(var property in properties) {
-            var jsonIgnore = property.GetCustomAttribute<JsonIgnoreAttribute>();
-            var ignore = jsonIgnore?.Condition ?? JsonIgnoreCondition.WhenWritingDefault;
-            if(ignore == JsonIgnoreCondition.Always || property.Name == nameof(IBlob.Content)) {
-                continue;
-            }
-            var headerName = property.GetCustomAttribute<HttpHeaderAttribute>()?.Name ?? $"X-Blob-{property.Name}";
-            var headerValue = property.GetValue(blob)?.ToString() ?? "";
-            if(!string.IsNullOrEmpty(headerValue) || ignore == JsonIgnoreCondition.Never) {
-                response.Headers.Append(headerName, headerValue);
-            }
-        }
+        AddProperties(blob, (key, value) => response.Headers.Append(key, value));
         await response.Body.WriteAsync(blob.Content, cancellationToken);
     }
 
@@ -138,11 +121,43 @@ public static class BlobSerializer
                 }
             }
         }
+        if(blob is IRevisioned revisioned) {
+            var userHeader = request.Headers["X-Blob-Revision-User"].FirstOrDefault();
+            var timestampHeader = request.Headers["X-Blob-Revision-Timestamp"].FirstOrDefault();
+            if(userHeader != null && timestampHeader != null && DateTime.TryParse(timestampHeader, out var timestamp)) {
+                revisioned.Revision = new UserTimestamp { User = userHeader, Timestamp = timestamp };
+            }
+        }
         var memoryStream = new MemoryStream();
         await request.Body.CopyToAsync(memoryStream, cancellationToken);
         var bytes = memoryStream.ToArray();
         blob.Content = bytes;
         blob.Length = bytes.Length;
         return blob;
+    }
+
+    private static void AddProperties<T>(T blob, Action<string, string> keyValueAdder) where T : IBlob
+    {
+        var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        foreach(var property in properties) {
+            var jsonIgnore = property.GetCustomAttribute<JsonIgnoreAttribute>();
+            var ignore = jsonIgnore?.Condition ?? JsonIgnoreCondition.WhenWritingDefault;
+            if(ignore == JsonIgnoreCondition.Always || property.Name == nameof(IBlob.Content)) {
+                continue;
+            }
+            var headerName = property.GetCustomAttribute<HttpHeaderAttribute>()?.Name ?? $"X-Blob-{property.Name}";
+            var headerValue = property.GetValue(blob)?.ToString() ?? "";
+            if(headerName == "X-Blob-Revision") {
+                // skip revision property, handled below
+                continue;
+            }
+            if(!string.IsNullOrEmpty(headerValue) || ignore == JsonIgnoreCondition.Never) {
+                keyValueAdder(headerName, headerValue);
+            }
+        }
+        if(blob is IRevisioned revisioned) {
+            keyValueAdder("X-Blob-Revision-User", revisioned.Revision.User);
+            keyValueAdder("X-Blob-Revision-Timestamp", revisioned.Revision.Timestamp.ToString("o", CultureInfo.InvariantCulture));
+        }
     }
 }
