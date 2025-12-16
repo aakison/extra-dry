@@ -133,7 +133,7 @@ public class ListClient<TItem> : IListClient<TItem>
         var response = await http.GetAsync(endpoint, cancellationToken);
         await response.AssertSuccess(logger);
         var body = await response.Content.ReadAsStringAsync(cancellationToken);
-        logger.LogEndpointResult(typeof(TItem), endpoint, body[0..100]);
+        logger.LogEndpointResult(typeof(TItem), endpoint, body, 100);
         var packedResult = JsonSerializer.Deserialize(body, ListType, JsonSerializerOptions)
             ?? throw new DryException($"Call to endpoint returned nothing or couldn't be converted to a result.");
         var items = ListUnpacker!(packedResult);

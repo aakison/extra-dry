@@ -18,6 +18,14 @@ internal static partial class LoggerPartials
         Message = "{Method} for type {EntityType} on endpoint {Endpoint}")]
     internal static partial void LogEndpointCall(this ILogger logger, Type entityType, string endpoint, [CallerMemberName] string? method = null);
 
+    internal static void LogEndpointResult(this ILogger logger, Type entityType, string endpoint, string? body, int maxBodyLength, [CallerMemberName] string? method = null)
+    {
+        if(body != null && body.Length > maxBodyLength) {
+            body = body[0..maxBodyLength] + "...(truncated)";
+        }
+        LogEndpointResult(logger, entityType, endpoint, body, method);
+    }
+
     [LoggerMessage(Level = LogLevel.Information, EventId = 21,
         Message = "{Method} for type {EntityType} on endpoint {Endpoint} returned {Body}")]
     internal static partial void LogEndpointResult(this ILogger logger, Type entityType, string endpoint, string? body, [CallerMemberName] string? method = null);
