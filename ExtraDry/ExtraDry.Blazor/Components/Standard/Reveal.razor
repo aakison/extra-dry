@@ -1,10 +1,12 @@
 ﻿@namespace ExtraDry.Blazor
 
-@if(AutoReveal) {
-    <a href="#" title="Show @Caption" @onclick="ToggleAsync" @onclick:preventDefault="true">@Caption</a>
-}
-<div class="@CssClasses" @attributes="@UnmatchedAttributes" style="@InlineStyle">
-    @if(ShouldRenderChild) {
-        @ChildContent
+<div class="reveal">
+    @if(AutoReveal) {
+        <a href="#" title="Show @Caption" @onclick="ToggleAsync" @onclick:preventDefault="true">@Caption</a>
     }
+    <div class="@CssClasses" @attributes="@UnmatchedAttributes" style="@InlineStyle">
+        @if(ShouldRenderChild) {
+            @ChildContent
+        }
+    </div>
 </div>
