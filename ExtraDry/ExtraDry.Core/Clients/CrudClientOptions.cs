@@ -14,6 +14,8 @@ public class CrudClientOptions<T> : IHttpClientOptions, IValidatableObject
     /// <summary>
     /// The endpoint template for the service. This is required. If a HttpClientName or
     /// HttpClientType is specified then this endpoint is relative the base address of that client.
+    /// The key for the CRUD operations will be appended to this endpoint using the KeyFormatter.
+    /// To control the position, insert '{key}' into the endpoint string.
     /// </summary>
     [Required, StringLength(StringLength.Sentence)]
     public string CrudEndpoint { get; set; } = string.Empty;

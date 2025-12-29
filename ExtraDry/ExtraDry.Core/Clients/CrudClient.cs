@@ -156,7 +156,13 @@ public class CrudClient<T>(
     private string ApiEndpoint(object key)
     {
         var formattedKey = options.KeyFormatter(key);
-        var url = $"{options.CrudEndpoint.TrimEnd('/')}/{formattedKey}".TrimEnd('/');
-        return url;
+        var url = options.CrudEndpoint;
+        if(url.Contains("{key}")) {
+            url = url.Replace("{key}", formattedKey);
+        }
+        else {
+            url = $"{url.TrimEnd('/')}/{formattedKey}";
+        }
+        return url.TrimEnd('/');
     }
 }

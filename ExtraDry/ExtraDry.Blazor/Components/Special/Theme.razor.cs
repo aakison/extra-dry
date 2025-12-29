@@ -31,7 +31,8 @@ public partial class Theme : ComponentBase
 
     /// <summary>
     /// If set, will append this version string to any SVG icons loaded. Combine this with
-    /// server-side identification and 
+    /// server-side versioning that adds cache control directives.  I.e. works when server has
+    /// `CacheControlMiddleware` registered.
     /// </summary>
     [Parameter]
     public string Version { get; set; } = "";
