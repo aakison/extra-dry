@@ -96,7 +96,7 @@ public static class QueryableExtensions
     public static async Task<BaseCollection<T>> ToBaseCollectionAsync<T>(this IQueryable<T> source, CancellationToken cancellationToken = default)
     {
         var baseQuery = new BaseQueryable<T>(source);
-        return await baseQuery.ToBaseCollectionInternalAsync(cancellationToken);
+        return await baseQuery.ToBaseCollectionAsync(cancellationToken);
     }
 
     internal static ExtraDryOptions Options { get; set; } = new ExtraDryOptions();
