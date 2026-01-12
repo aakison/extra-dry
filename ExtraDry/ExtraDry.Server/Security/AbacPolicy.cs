@@ -31,4 +31,12 @@ public class AbacPolicy
     /// conditions is met, the policy is satisfied. If empty, the policy will always fail.
     /// </summary>
     public List<string> Conditions { get; set; } = [];
+
+    public override string ToString()
+    {
+        var types = string.Join(", ", Types);
+        var operations = string.Join(", ", Operations);
+        var conditions = string.Join(", ", Conditions);
+        return $"ABAC Policy: {Name}; Conditions: {conditions}; Types: {types}; Operations: {operations}";
+    }
 }

@@ -26,4 +26,12 @@ public class AbacCondition
     /// Returns true if the condition allows anonymous access.
     /// </summary>
     public bool AllowAnonymous => Roles.Count == 0 && Claims.Count == 0 && Attributes.Count == 0;
+
+    public override string ToString()
+    {
+        var roles = string.Join(", ", Roles);
+        var claims = string.Join(", ", Claims.Select(e => $"{e.Key} is {e.Value}"));
+        var attributes = string.Join(", ", Attributes.Select(e => $"{e.Key} = {e.Value}"));
+        return $"ABAC Condition: {roles}; {claims}; {attributes}";
+    }
 }
