@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Net;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.DependencyInjection;
+using ExtraDry.Server.Security;
 
 namespace ExtraDry.Server;
 
@@ -17,7 +20,8 @@ public class EarlyAuthorizationFailureMiddleware(RequestDelegate next)
 
         switch((HttpStatusCode)context.Response.StatusCode) {
             case HttpStatusCode.Forbidden:
-                ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.Forbidden);
+                var policyDetails = AuthorizationPolicyDetailsHelper.GetAuthorizationPolicyDetails(context);
+                ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.Forbidden, details: policyDetails);
                 break;
 
             case HttpStatusCode.Unauthorized:
@@ -25,4 +29,5 @@ public class EarlyAuthorizationFailureMiddleware(RequestDelegate next)
                 break;
         }
     }
+
 }

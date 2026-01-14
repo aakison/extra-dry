@@ -31,7 +31,8 @@ public class ApiExceptionStatusCodesAttribute : ExceptionFilterAttribute
             ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.NotImplemented);
         }
         else if(context.Exception is SecurityException) {
-            ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.Forbidden);
+            var policyDetails = AuthorizationPolicyDetailsHelper.GetAuthorizationPolicyDetails(context.HttpContext);
+            ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.Forbidden, details: policyDetails);
         }
         else if(context.Exception is DryException dryException) {
             int code = dryException.ProblemDetails.Status ?? (int)HttpStatusCode.BadRequest;
@@ -39,7 +40,8 @@ public class ApiExceptionStatusCodesAttribute : ExceptionFilterAttribute
                 dryException.ProblemDetails.Title, dryException.ProblemDetails.Detail);
         }
         else if(context.Exception is UnauthorizedAccessException) {
-            ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.Forbidden);
+            var policyDetails = AuthorizationPolicyDetailsHelper.GetAuthorizationPolicyDetails(context.HttpContext);
+            ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.Forbidden, details: policyDetails);
         }
         else {
             ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.InternalServerError, context.Exception.Message, context.Exception.StackTrace);
@@ -47,3 +49,4 @@ public class ApiExceptionStatusCodesAttribute : ExceptionFilterAttribute
         context.ExceptionHandled = true;
     }
 }
+
