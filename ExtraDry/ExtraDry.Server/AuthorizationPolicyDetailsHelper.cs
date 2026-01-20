@@ -35,8 +35,7 @@ internal static class AuthorizationPolicyDetailsHelper
             return null;
         }
 
-        var abacOptions = context.RequestServices.GetService(typeof(AbacOptions)) as AbacOptions;
-        if(abacOptions == null) {
+        if(context.RequestServices.GetService(typeof(AbacOptions)) is not AbacOptions abacOptions) {
             return $"Access denied. Required policy: {string.Join(", ", policies)}";
         }
 
@@ -69,7 +68,7 @@ internal static class AuthorizationPolicyDetailsHelper
         }
         else {
             var allButLast = values.Take(values.Count - 1);
-            var last = values[values.Count - 1];
+            var last = values[^1];
             return $"{string.Join(", ", allButLast)}, {conjunction} {last}";
         }
     }
