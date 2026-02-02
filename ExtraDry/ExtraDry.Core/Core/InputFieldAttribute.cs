@@ -29,5 +29,5 @@ public class InputFieldAttribute : Attribute
     // then the presentation layer will automatically determine the size.  Setting this property
     // explicitly allows an override of the default behavior of the presentation layer.
     // </summary>
-    //public PropertySize SizeOverride { get; set; }
+    public PropertySize Size { get; set; } = PropertySize.Auto;
 }

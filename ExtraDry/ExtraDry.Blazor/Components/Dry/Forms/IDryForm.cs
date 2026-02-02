@@ -2,7 +2,7 @@
 
 public interface IDryForm
 {
-    public object? UntypedModel { get; }
+    public object UntypedModel { get; }
 
     public string ModelNameSlug { get; }
 

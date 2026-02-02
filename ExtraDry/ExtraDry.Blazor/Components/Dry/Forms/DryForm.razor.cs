@@ -14,13 +14,13 @@ public partial class DryForm<T>(
 {
     /// <inheritdoc />
     [Parameter]
-    public string CssClass { get; set; } = string.Empty;
+    public string CssClass { get; set; } = "";
 
     /// <summary>
     /// The target model for the form that is being edited.
     /// </summary>
     [Parameter, EditorRequired]
-    public T? Model { get; set; }
+    public required T Model { get; set; }
 
     /// <summary>
     /// Determines if the form has a title with descriptive information
@@ -28,7 +28,7 @@ public partial class DryForm<T>(
     [Parameter]
     public bool ShowTitle { get; set; } = true;
 
-    public object? UntypedModel {
+    public object UntypedModel {
         get => Model;
     }
 
@@ -88,10 +88,8 @@ public partial class DryForm<T>(
             return;
         }
         Description ??= new DecoratorInfo(typeof(T), Decorator);
-        if(Model != null) {
-            Description = new DecoratorInfo(Model.GetType(), Decorator); // override the Description with the actual Description when we have the Model, which will account for polymorphism issues
-            FormDescription = new FormDescription(Description, Model);
-        }
+        Description = new DecoratorInfo(Model.GetType(), Decorator); // override the Description with the actual Description when we have the Model, which will account for polymorphism issues
+        FormDescription = new FormDescription(Description, Model);
     }
 
     private bool DisplayTitle => ShowTitle;

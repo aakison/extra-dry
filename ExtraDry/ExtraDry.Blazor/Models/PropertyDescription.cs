@@ -387,6 +387,9 @@ public class PropertyDescription
 
     private PropertySize PredictSize()
     {
+        if(InputField != null && InputField.Size != PropertySize.Auto) {
+            return InputField.Size;
+        }
         if(Property.PropertyType == typeof(string)) {
             var length = FieldLength ?? 1000;
             if(length <= 25) {
