@@ -25,7 +25,7 @@ public partial class DryDeck<TItem> : ComponentBase, IDisposable, IExtraDryCompo
     /// Direct collection of items to display. Mutually exclusive with ItemsService.
     /// </summary>
     [Parameter]
-    public ICollection<TItem>? Items { get; set; }
+    public IList<TItem>? Items { get; set; }
 
     /// <summary>
     /// Service for loading items dynamically. Mutually exclusive with Items.

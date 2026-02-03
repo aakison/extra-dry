@@ -58,7 +58,7 @@ public partial class DryFieldset : ComponentBase, IExtraDryComponent
         var type = items.GetType().SingleGenericType();
         var instance = type.CreateDefaultInstance();
         items.Add(instance);
-        if(Form.Description != null) {
+        if(Form.Description is not null && Form.UntypedModel is not null) {
             Form.FormDescription = new FormDescription(Form.Description, Form.UntypedModel); // re-build description to add/remove UI elements.
         }
         StateHasChanged();
@@ -71,7 +71,7 @@ public partial class DryFieldset : ComponentBase, IExtraDryComponent
         if(items is IList list) {
             Console.WriteLine("  A list");
             list.Remove(item);
-            if(Form.Description != null) {
+            if(Form.Description is not null && Form.UntypedModel is not null) {
                 Form.FormDescription = new FormDescription(Form.Description, Form.UntypedModel); // re-build description to add/remove UI elements.
             }
             StateHasChanged();

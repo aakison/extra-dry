@@ -20,7 +20,7 @@ public partial class DryForm<T>(
     /// The target model for the form that is being edited.
     /// </summary>
     [Parameter, EditorRequired]
-    public required T Model { get; set; }
+    public T? Model { get; set; }
 
     /// <summary>
     /// Determines if the form has a title with descriptive information
@@ -28,7 +28,7 @@ public partial class DryForm<T>(
     [Parameter]
     public bool ShowTitle { get; set; } = true;
 
-    public object UntypedModel {
+    public object? UntypedModel {
         get => Model;
     }
 

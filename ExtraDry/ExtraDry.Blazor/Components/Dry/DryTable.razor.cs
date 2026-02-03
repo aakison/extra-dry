@@ -236,18 +236,11 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
 
     //private IEnumerable<ListItemInfo<TItem>> ShownItems => InternalItems.Where(e => e.IsShown);
 
-    public bool TryRefreshItem(TItem updatedItem, IEqualityComparer<TItem>? comparer = null)
+    public bool TryRefreshItem(TItem updatedItem, Func<TItem, bool>? matchPredicate = null)
     {
-        //var itemInfo = (comparer, updatedItem) switch {
-        //    (var c, _) when c is not null => InternalItems.FirstOrDefault(itemInfo => c.Equals(itemInfo.Item, updatedItem)),
-        //    (_, var item) when item is IUniqueIdentifier uniquelyIdentifiableItem => InternalItems.FirstOrDefault(itemInfo => (itemInfo.Item as IUniqueIdentifier)?.Uuid == uniquelyIdentifiableItem.Uuid),
-        //    (_, _) => throw new DryException($"Refreshing requires {nameof(TItem)} to implement {nameof(IUniqueIdentifier)} or an {nameof(IEqualityComparer)} to be provided.")
-        //};
-        //if(itemInfo == null) {
-        //    return false;
-        //}
-        //itemInfo.Item = updatedItem;
-        return true;
+        var replaced = CachingItemsListClient?.TryRefreshItem(updatedItem, matchPredicate) ?? false;
+        StateHasChanged();
+        return replaced;
     }
 
     public async Task<bool> TryRemoveItemAsync(TItem removedItem, IEqualityComparer<TItem>? comparer = null)

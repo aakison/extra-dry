@@ -56,7 +56,7 @@ public class DataConverterTests
     [InlineData(-240 * 60 * 60, "{0:MMM dd hh:mm tt}")]
     public void RelativeDatesDisplay(int secondOffset, string expected)
     {
-        DataConverter.CurrentDateTime = () => new DateTime(2022, 06, 30, 8, 0, 0, DateTimeKind.Utc);
+        DataConverter.CurrentDateTime = () => new DateTime(2022, 06, 30, 8, 0, 0, DateTimeKind.Local);
         var current = DataConverter.CurrentDateTime().AddSeconds(secondOffset);
 
         var display = DataConverter.DateToRelativeTime(current);

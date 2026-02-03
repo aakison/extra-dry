@@ -3,9 +3,8 @@ using System.Diagnostics.CodeAnalysis;
 namespace ExtraDry.Core;
 
 /// <summary>
-/// A <see cref="IListClient{T}"/> that adds caching to another list client.
+/// A <see cref="IListClient{T}"/> that wrap another list client and adds caching.
 /// </summary>
-/// <typeparam name="TItem"></typeparam>
 public class CachingListClient<TItem>(
     IListClient<TItem> itemsClient) 
     : IListClient<TItem>
@@ -82,6 +81,26 @@ public class CachingListClient<TItem>(
     {
         cache.Clear();
         Console.WriteLine("Cache invalidated, clearing.");
+    }
+
+    public bool TryRefreshItem(TItem updatedItem, Func<TItem, bool>? matchPredicate = null)
+    {
+        if(matchPredicate is null && updatedItem is IUniqueIdentifier uniqueItem) {
+            matchPredicate = e => (e as IUniqueIdentifier)?.Uuid == uniqueItem.Uuid;
+        }
+        if(matchPredicate is null) {
+            throw new InvalidOperationException("Either a match predicate must be provided, or TItem must implement IUniqueIdentifier.");
+        }
+        var keyToReplace = cache
+            .Where(kvp => matchPredicate(kvp.Value))
+            .FirstOrDefault();
+        if(keyToReplace.Value is not null) {
+            cache[keyToReplace.Key] = updatedItem;
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     /// <summary>

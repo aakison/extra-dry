@@ -1,7 +1,11 @@
 ﻿namespace ExtraDry.Core;
 
+/// <summary>
+/// Creates an IListClient from an in-memory list of items.  This can be used sets of data that
+/// are small enough to fit in memory and are disconnected from a remote API or database.
+/// </summary>
 public class InMemoryListClient<T>(
-    ICollection<T> items,
+    IList<T> items,
     Func<T, bool>? filter = null)
     : IListClient<T>
 {
@@ -20,10 +24,29 @@ public class InMemoryListClient<T>(
     /// <inheritdoc />
     public bool? IsEmpty => items.Count == 0;
 
+    /// <inheritdoc />
     public ValueTask<ListClientResult<T>> GetItemsAsync(Query query, CancellationToken cancellationToken)
     {
         var adjusted = FilterAndSort(query);
         return ValueTask.FromResult(new ListClientResult<T>(adjusted, adjusted.Count, adjusted.Count));
+    }
+
+    public bool TryRefreshItem(T updatedItem, Func<T, bool>? matchPredicate = null)
+    {
+        if(matchPredicate is null && updatedItem is IUniqueIdentifier uniqueItem) {
+            matchPredicate = e => (e as IUniqueIdentifier)?.Uuid == uniqueItem.Uuid;
+        }
+        if(matchPredicate is null) {
+            throw new InvalidOperationException("Either a match predicate must be provided, or TItem must implement IUniqueIdentifier.");
+        }
+        var existingItem = items.FirstOrDefault(matchPredicate);
+        var index = items.IndexOf(existingItem);
+        if(index == -1) {
+            // Item not found, cannot refresh.
+            return false;
+        }
+        items[index] = updatedItem;
+        return true;
     }
 
     public IList<T> FilterAndSort(Query query)

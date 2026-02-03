@@ -12,7 +12,7 @@ public class NakedSingleParameterCommandInfoTests
         var command = method == null ? null : new CommandInfo(this, method);
 
         Assert.Equal(CommandContext.Regular, command?.Context);
-        Assert.Equal("regular", command?.DisplayClass);
+        Assert.Equal("", command?.DisplayClass);
         Assert.Equal(CommandArguments.Single, command?.Arguments);
         Assert.Null(command?.Icon);
         Assert.Equal("NakedSingleCommand", command?.Method.Name);
