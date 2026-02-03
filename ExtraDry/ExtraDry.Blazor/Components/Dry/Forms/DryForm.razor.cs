@@ -88,8 +88,10 @@ public partial class DryForm<T>(
             return;
         }
         Description ??= new DecoratorInfo(typeof(T), Decorator);
-        Description = new DecoratorInfo(Model.GetType(), Decorator); // override the Description with the actual Description when we have the Model, which will account for polymorphism issues
-        FormDescription = new FormDescription(Description, Model);
+        if(Model is not null) {
+            Description = new DecoratorInfo(Model.GetType(), Decorator); // override the Description with the actual Description when we have the Model, which will account for polymorphism issues
+            FormDescription = new FormDescription(Description, Model);
+        }
     }
 
     private bool DisplayTitle => ShowTitle;
