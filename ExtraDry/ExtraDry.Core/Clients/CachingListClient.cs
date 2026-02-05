@@ -6,7 +6,7 @@ namespace ExtraDry.Core;
 /// A <see cref="IListClient{T}"/> that wrap another list client and adds caching.
 /// </summary>
 public class CachingListClient<TItem>(
-    IListClient<TItem> itemsClient) 
+    IListClient<TItem> itemsClient)
     : IListClient<TItem>
 {
 

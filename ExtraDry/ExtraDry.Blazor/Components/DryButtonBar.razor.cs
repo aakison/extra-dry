@@ -5,7 +5,7 @@ namespace ExtraDry.Blazor;
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "DRY1500:Extra DRY Blazor components should have an interface.", Justification = "Pending decision on fate of component.")]
 public partial class DryButtonBar(
-    AuthenticationStateProvider AuthProvider) 
+    AuthenticationStateProvider AuthProvider)
     : ComponentBase, IExtraDryComponent
 {
     /// <inheritdoc />

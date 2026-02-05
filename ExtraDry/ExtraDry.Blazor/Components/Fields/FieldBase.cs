@@ -48,7 +48,7 @@ public abstract class FieldBase<T> : ComponentBase
     public string Placeholder { get; set; } = "";
 
 
-    [Parameter] 
+    [Parameter]
     public bool ShowPlaceholder { get; set; } = true;
 
     [Parameter]

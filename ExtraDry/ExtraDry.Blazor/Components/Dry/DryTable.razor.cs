@@ -86,11 +86,11 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
         (false, _) => "full",
         (true, _) => "empty",
     };
-        //!ItemsService.IsEmpty ? "full" : 
-        //changing ? "changing"
-        //: validationError ? "invalid-filter"
-        //: firstLoadCompleted ? "empty"
-        //: "loading";
+    //!ItemsService.IsEmpty ? "full" : 
+    //changing ? "changing"
+    //: validationError ? "invalid-filter"
+    //: firstLoadCompleted ? "empty"
+    //: "loading";
 
     private Virtualize<ListItemInfo<TItem>>? VirtualContainer { get; set; }
 
@@ -120,7 +120,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
         }
         if(ItemsListClient == null && ItemsClient != null) {
             CachingItemsListClient = new CachingListClient<TItem>(ItemsClient);
-            var projectionListClient = new ProjectionListClient<TItem, ListItemInfo<TItem>>(CachingItemsListClient, 
+            var projectionListClient = new ProjectionListClient<TItem, ListItemInfo<TItem>>(CachingItemsListClient,
                 e => new ListItemInfo<TItem> { Item = e, IsLoaded = true });
             ItemsListClient = projectionListClient;
         }

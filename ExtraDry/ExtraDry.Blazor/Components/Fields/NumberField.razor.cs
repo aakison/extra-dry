@@ -106,7 +106,7 @@ public partial class NumberField<TValue> : FieldBase<TValue>
         }
         else {
             // Set arg value (and therefore model value) to last valid value
-            args.Value = Value; 
+            args.Value = Value;
         }
         await base.NotifyInput(args);
         Console.WriteLine($"NotifyInput: Exiting DisplayValue: {DisplayValue}");

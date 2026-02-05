@@ -1,7 +1,9 @@
 namespace ExtraDry.Blazor.Components;
 
-public partial class OptionField<TValue> : FieldBase<TValue> {
-    public OptionField() {
+public partial class OptionField<TValue> : FieldBase<TValue>
+{
+    public OptionField()
+    {
         if(typeof(TValue).IsEnum) {
             KeyFunc = EnumKeyFunc;
         }
@@ -49,7 +51,7 @@ public partial class OptionField<TValue> : FieldBase<TValue> {
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        
+
         InternalOptions = Options.Select(e => new Option { Value = e, Key = KeyFunc(e), Title = TitleFunc(e) }).ToList();
     }
 
@@ -79,7 +81,7 @@ public partial class OptionField<TValue> : FieldBase<TValue> {
     private async Task NotifyInputByKey(ChangeEventArgs args)
     {
         var selected = InternalOptions.FirstOrDefault(e => e.Key == (string?)args.Value);
-        var objectArgs = selected == null 
+        var objectArgs = selected == null
             ? new ChangeEventArgs { Value = null }
             : new ChangeEventArgs { Value = selected.Value };
         await NotifyInput(objectArgs);

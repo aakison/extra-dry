@@ -323,7 +323,7 @@ public partial class ComboBox<TItem> : ComponentBase, IExtraDryComponent, IDispo
     /// </summary>
     private async Task ConfirmInputAsync(TItem? selectedItem)
     {
-        Console.WriteLine("ConfirmInputAsync"); 
+        Console.WriteLine("ConfirmInputAsync");
         Assert(ShowOptions == true, "ConfirmInputAsync expects that the options are shown.");
         if(selectedItem != null) {
             // Valid Item selected and want to lock it in

@@ -20,7 +20,7 @@ internal static class AuthorizationPolicyDetailsHelper
     {
         var endpoint = context.GetEndpoint();
         var authorizeData = endpoint?.Metadata.GetOrderedMetadata<IAuthorizeData>();
-        
+
         if(authorizeData == null || authorizeData.Count == 0) {
             return null;
         }

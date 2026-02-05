@@ -21,7 +21,7 @@ namespace ExtraDry.Core;
 public class CrudClient<T>(
     HttpClient client,
     CrudClientOptions<T> options,
-    ILogger<CrudClient<T>> logger) 
+    ILogger<CrudClient<T>> logger)
     where T : notnull
 {
 

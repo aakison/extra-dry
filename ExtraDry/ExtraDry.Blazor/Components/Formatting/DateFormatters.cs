@@ -81,7 +81,7 @@ public class DateOnlyFormatter : IValueFormatter
 {
     /// <inheritdoc />
     public string RegexPattern { get; set; } = @"-?[0-9]{0,10}(\.[0-9]{0,2})?";
-    
+
     public string DataFormat { get; set; } = "yyyy-MM-dd";
 
     /// <inheritdoc />

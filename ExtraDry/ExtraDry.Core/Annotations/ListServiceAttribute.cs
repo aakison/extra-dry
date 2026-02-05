@@ -15,6 +15,6 @@ public class ListServiceAttribute(Type providerType) : Attribute
     /// Indicates whether the property is required. If true, the property must have a value when the form is submitted.
     /// If false the string entered by the user will be used.
     /// </summary>
-    public bool Required { get; set; } = true; 
+    public bool Required { get; set; } = true;
 
 }

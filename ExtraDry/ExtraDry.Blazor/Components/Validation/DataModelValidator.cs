@@ -4,7 +4,7 @@
 /// Validator that validates an entire data model instance using data annotations.
 /// </summary>
 public class DataModelValidator(
-    object model) 
+    object model)
     : IValidator
 {
 

@@ -43,7 +43,7 @@ public class DataModelPropertyValidator : IValidator
         return result;
     }
 
-    public IReadOnlyCollection<ValidationResult> Errors => [..validator.Errors];
+    public IReadOnlyCollection<ValidationResult> Errors => [.. validator.Errors];
 
     private readonly DataValidator validator = new();
 }

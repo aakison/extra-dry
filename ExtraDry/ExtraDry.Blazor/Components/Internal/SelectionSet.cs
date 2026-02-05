@@ -9,7 +9,7 @@ namespace ExtraDry.Blazor.Components.Internal;
 /// cref="SelectionSetAccessor" /> which is a lightweight object for accessing the shared
 /// SelectionSet in multiple locations.
 /// </summary>
-public class SelectionSet 
+public class SelectionSet
 {
     internal SelectionSet() { }
 
@@ -83,7 +83,7 @@ public class SelectionSet
     public void SelectAll()
     {
         //Console.WriteLine($"Select All");
-        if(MultipleSelect == false) { 
+        if(MultipleSelect == false) {
             throw new InvalidOperationException("Can't perform SelectAll() on a single selection set.");
         }
         var args = new SelectionSetChangedEventArgs() { Type = SelectionSetChangedType.SelectAll };

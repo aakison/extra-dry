@@ -132,13 +132,13 @@ public class DataFactory(
         logger.LogTableChange("Modified entities, processing upserts.", table.Name);
         foreach(var item in batch) {
             var sql = Upsert(table, item);
-            logger.LogTextVerbose($"Executing Upsert SQL: {sql}"); 
+            logger.LogTextVerbose($"Executing Upsert SQL: {sql}");
             await target.Database.ExecuteSqlRawAsync(sql);
         }
         batchStats.SyncTimestamp = table.Generator?.GetSyncTimestamp()
             ?? batch.Max(e => GetVersionInfo(e)?.DateModified ?? DateTime.MinValue);
         await target.SaveChangesAsync();
-        logger.LogTextVerbose($"Processed {batch.Count} upserts on [{table.Name}], updating sync timestamp to {batchStats.SyncTimestamp}."); 
+        logger.LogTextVerbose($"Processed {batch.Count} upserts on [{table.Name}], updating sync timestamp to {batchStats.SyncTimestamp}.");
     }
 
     private async Task<List<object>> GetBatchAfterTimestampAsync(PropertyInfo entitiesDbSet, DataTableSync batchStats)

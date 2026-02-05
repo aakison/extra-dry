@@ -58,14 +58,16 @@ public partial class DryInputSingleSelect<T>
 
     private DryInputOption? SelectedOption { get; set; }
 
-    public class DryInputOption { 
-    
+    public class DryInputOption
+    {
+
         public DryInputOption(object source, int index)
         {
             if(source is IResourceIdentifiers resource) {
                 Key = resource.Uuid.ToString();
                 DisplayText = resource.Title ?? source.ToString() ?? "--empty--";
-            } else {
+            }
+            else {
                 Key = Guid.NewGuid().ToString();
                 DisplayText = source.ToString() ?? "--empty--";
             }

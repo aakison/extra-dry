@@ -72,10 +72,10 @@ public partial class Icon : ComponentBase
     private string? ImagePath => IconInfo.ImagePath;
 
     private string? VersionImagePath => (ThemeInfo?.Version, ImagePath) switch {
-            (null, _) => ImagePath,
-            (_, null) => null,
-            ("", _) => ImagePath,
-            _ => $"{ImagePath}{(ImagePath.Contains('?') ? '&' : '?')}v={ThemeInfo.Version}"
+        (null, _) => ImagePath,
+        (_, null) => null,
+        ("", _) => ImagePath,
+        _ => $"{ImagePath}{(ImagePath.Contains('?') ? '&' : '?')}v={ThemeInfo.Version}"
     };
 
     private bool RenderSvg => IconInfo.SvgRenderType != SvgRenderType.Reference && !string.IsNullOrEmpty(IconInfo.SvgInlineBody);

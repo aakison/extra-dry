@@ -99,7 +99,8 @@ public class TimeInterval
             case TimeIntervalType.Years:
                 SetYears();
                 break;
-        };
+        }
+        ;
     }
 
     private void SetDays()
@@ -274,7 +275,8 @@ public class TimeInterval
                 }
                 SetYearsDescription();
                 break;
-        };
+        }
+        ;
     }
 
     public TimeInterval Clone() => new(this, startDate, endDate);

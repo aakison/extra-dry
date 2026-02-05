@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace ExtraDry.Blazor;
 
 public partial class CommandBar(
-    AuthenticationStateProvider AuthProvider) 
+    AuthenticationStateProvider AuthProvider)
     : ComponentBase, IExtraDryComponent
 {
     [Parameter, EditorRequired]

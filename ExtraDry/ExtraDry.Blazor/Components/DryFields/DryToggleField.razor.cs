@@ -21,7 +21,7 @@ public partial class DryToggleField<TModel> : DryFieldBase<TModel> where TModel 
     private async Task HandleChange(ChangeEventArgs args)
     {
         bool? newValue = args.Value as bool?;
-        if (!Property.AllowsNull && newValue == null) {
+        if(!Property.AllowsNull && newValue == null) {
             newValue = false;
         }
         Property.SetValue(Model, newValue);
@@ -33,7 +33,7 @@ public partial class DryToggleField<TModel> : DryFieldBase<TModel> where TModel 
     private async Task HandleInput(ChangeEventArgs args)
     {
         bool? newValue = args.Value as bool?;
-        if (!Property.AllowsNull && newValue == null) {
+        if(!Property.AllowsNull && newValue == null) {
             newValue = false;
         }
         Property.SetValue(Model, newValue);

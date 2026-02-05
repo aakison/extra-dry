@@ -49,7 +49,7 @@ public class ValidationScopeContext
         if(oldStatus != Status) {
             Console.WriteLine($"Validation status changed from {oldStatus} to {Status}");
             await OnStatusChanged.InvokeAsync(Status);
-        }   
+        }
     }
 
 }

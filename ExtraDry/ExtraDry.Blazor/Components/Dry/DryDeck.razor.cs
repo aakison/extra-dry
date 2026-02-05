@@ -310,7 +310,7 @@ public partial class DryDeck<TItem> : ComponentBase, IDisposable, IExtraDryCompo
     /// </summary>
     private async ValueTask<ItemsProviderResult<ListItemInfo<TItem>>> GetItemsAsync(ItemsProviderRequest request)
     {
-        if((Items == null && ItemsService == null) || QueryBuilderAccessor == null) { 
+        if((Items == null && ItemsService == null) || QueryBuilderAccessor == null) {
             return new ItemsProviderResult<ListItemInfo<TItem>>();
         }
         var accessor = Items == null ? ItemsService! : new InMemoryListClient<TItem>(Items);
