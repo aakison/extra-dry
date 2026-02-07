@@ -408,7 +408,6 @@ public class PropertyDescription
         return PropertySize.Small;
     }
 
-    [Obsolete]
     private InputValueFormatter CreateFormatter()
     {
         return (AllowsNull, PropertyType) switch {
@@ -420,6 +419,5 @@ public class PropertyDescription
         };
     }
 
-    [Obsolete]
     public InputValueFormatter Formatter { get; set; }
 }
