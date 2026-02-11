@@ -20,6 +20,7 @@ public static class EndpointServiceCollectionExtensions
     public static IServiceCollection AddExtraDry(this IServiceCollection services)
     {
         services.AddScoped<ExtraDryJavascriptModule>();
+        services.AddScoped<MarkdownEditorInterop>();
         return services;
     }
 
