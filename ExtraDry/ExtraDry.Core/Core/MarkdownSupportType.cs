@@ -6,4 +6,5 @@ public enum MarkdownSupportType
     None,
     Character,
     Block,
+    CommonMark,
 }
