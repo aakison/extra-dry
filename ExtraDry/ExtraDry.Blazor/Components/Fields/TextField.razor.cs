@@ -7,6 +7,14 @@ public partial class TextField : FieldBase<string>
 {
 
     /// <summary>
+    /// The type of markdown support for this field. When set to <see cref="MarkdownSupportType.Character"/>
+    /// or <see cref="MarkdownSupportType.Block"/>, the field renders a markdown editor instead of a
+    /// standard input or textarea.
+    /// </summary>
+    [Parameter]
+    public MarkdownSupportType MarkdownSupportType { get; set; } = MarkdownSupportType.None;
+
+    /// <summary>
     /// The maximum length of the text. If greater than 100 then a multi-line text area is used.
     /// This is a hard limit to the text field and is separate from the validation model.  For
     /// user consistency, it is recommended to align this with the string length of the property.
@@ -24,7 +32,9 @@ public partial class TextField : FieldBase<string>
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", ModeCss, ReadOnlyCss, IsValidCss, CssClass);
 
-    private string ModeCss => IsMultiline ? "textarea" : "text";
+    private bool IsMarkdown => MarkdownSupportType != MarkdownSupportType.None;
+
+    private string ModeCss => IsMarkdown ? "markdown" : IsMultiline ? "textarea" : "text";
 
     private bool IsMultiline => MaxLength > StringLength.Line;
 
@@ -51,5 +61,14 @@ public partial class TextField : FieldBase<string>
         <= StringLength.Page => nameof(StringLength.Page).ToLowerInvariant(),
         _ => nameof(StringLength.Book).ToLowerInvariant()
     };
+
+    private async Task OnMarkdownValueChanged(string value)
+    {
+        Value = value;
+        await ValueChanged.InvokeAsync(Value);
+        var args = new ChangeEventArgs { Value = value };
+        await OnChange.InvokeAsync(args);
+        await OnInput.InvokeAsync(args);
+    }
 
 }

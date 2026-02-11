@@ -1,4 +1,5 @@
 ﻿@namespace ExtraDry.Blazor.Components
+@using ExtraDry.Blazor.Components.Standard
 @inherits FieldBase<string>
 
 <FieldFrame Size="@ResolvedSize" Description="@Description" ShowDescription="@ShowDescription" Label="@Label" For="@InputId" ShowLabel="@ShowLabel" IsValid="@IsValid" Message="@ValidationMessage">
@@ -6,7 +7,14 @@
         @if(DisplayIcon) {
             <Icon CssClass="context" Key="@Icon" />
         }
-        @if(IsMultiline) {
+        @if(IsMarkdown) {
+            <Markdown Value="@Value"
+                      ValueChanged="@OnMarkdownValueChanged"
+                      MarkdownSupport="@MarkdownSupportType"
+                      ReadOnly="@ReadOnly"
+                      Placeholder="@Placeholder" />
+        }
+        else if(IsMultiline) {
             <textarea id="@InputId" class="value @TextSize" title="@Label" readonly="@ReadOnly" placeholder="@Placeholder" maxlength="@MaxLength"
                       @onchange="NotifyChange" @oninput="NotifyInput">@Value</textarea>
         }
