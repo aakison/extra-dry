@@ -5,13 +5,8 @@ namespace ExtraDry.Blazor;
 /// Manages the lifecycle of SunEditor instances tied to DOM elements and
 /// communicates content changes back to Blazor via .NET object references.
 /// </summary>
-public sealed class MarkdownEditorInterop : IAsyncDisposable
+public sealed class MarkdownEditorInterop(IJSRuntime jsRuntime) : IAsyncDisposable
 {
-    public MarkdownEditorInterop(IJSRuntime jsRuntime)
-    {
-        moduleTask = new(() => jsRuntime.InvokeAsync<IJSObjectReference>(
-            "import", "./_content/ExtraDry.Blazor/js/markdown-editor.js").AsTask());
-    }
 
     /// <summary>
     /// Initializes a SunEditor instance on the specified DOM element.
@@ -58,5 +53,6 @@ public sealed class MarkdownEditorInterop : IAsyncDisposable
         }
     }
 
-    private readonly Lazy<Task<IJSObjectReference>> moduleTask;
+    private readonly Lazy<Task<IJSObjectReference>> moduleTask = new(() => jsRuntime.InvokeAsync<IJSObjectReference>(
+            "import", "./_content/ExtraDry.Blazor/js/markdown-editor.js").AsTask());
 }

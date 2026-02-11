@@ -3,14 +3,9 @@ using System.Text.RegularExpressions;
 namespace ExtraDry.Core;
 
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-public partial class MarkdownAttribute : ValidationAttribute
+public partial class MarkdownAttribute(MarkdownSupportType supportType) : ValidationAttribute
 {
-    public MarkdownAttribute(MarkdownSupportType supportType)
-    {
-        SupportType = supportType;
-    }
-
-    public MarkdownSupportType SupportType { get; }
+    public MarkdownSupportType SupportType { get; } = supportType;
 
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {

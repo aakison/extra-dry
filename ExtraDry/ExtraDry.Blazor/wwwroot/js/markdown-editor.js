@@ -112,7 +112,7 @@ export async function initialize(elementId, dotNetRef, options) {
 
     const editor = SUNEDITOR.create(element, {
         buttonList: buttonList,
-        mode: 'balloon',
+        mode: 'inline',
         placeholder: placeholder,
         width: '100%',
         minHeight: '100px',
