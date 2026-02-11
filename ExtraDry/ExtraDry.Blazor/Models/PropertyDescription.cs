@@ -67,6 +67,7 @@ public class PropertyDescription
         InputField = Property.GetCustomAttribute<InputFieldAttribute>();
         Sort = Property.GetCustomAttribute<SortAttribute>();
         Options = Property.GetCustomAttribute<ListServiceAttribute>();
+        Markdown = Property.GetCustomAttribute<MarkdownAttribute>();
 
         FieldCaption = Display?.Name ?? DataConverter.CamelCaseToTitleCase(Property.Name);
         ColumnCaption = Display?.ShortName ?? DataConverter.CamelCaseToTitleCase(Property.Name);
@@ -138,6 +139,10 @@ public class PropertyDescription
     public SortAttribute? Sort { get; }
 
     public ListServiceAttribute? Options { get; }
+
+    public MarkdownAttribute? Markdown { get; }
+
+    public MarkdownSupportType MarkdownSupportType => Markdown?.SupportType ?? MarkdownSupportType.None;
 
     /// <summary>
     /// Use FieldLength instead.
@@ -408,6 +413,7 @@ public class PropertyDescription
         return PropertySize.Small;
     }
 
+    [Obsolete]
     private InputValueFormatter CreateFormatter()
     {
         return (AllowsNull, PropertyType) switch {
@@ -419,5 +425,6 @@ public class PropertyDescription
         };
     }
 
+    [Obsolete]
     public InputValueFormatter Formatter { get; set; }
 }
