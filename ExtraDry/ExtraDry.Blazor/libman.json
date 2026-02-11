@@ -1,0 +1,15 @@
+{
+  "version": "1.0",
+  "defaultProvider": "jsdelivr",
+  "libraries": [
+    {
+      "library": "suneditor@2.47.8",
+      "destination": "wwwroot/js/suneditor",
+      "files": [
+        "LICENSE.txt",
+        "README.md",
+        "dist/**"
+      ]
+    }
+  ]
+}
