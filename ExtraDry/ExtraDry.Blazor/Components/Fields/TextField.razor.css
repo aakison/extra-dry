@@ -26,4 +26,8 @@
       border: none;
       outline: none;
     }
+
+  div.input.markdown ::deep .markdown {
+    border: none;
+  }
 }

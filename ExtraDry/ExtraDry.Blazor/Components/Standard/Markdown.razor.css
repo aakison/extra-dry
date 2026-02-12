@@ -1,3 +1,68 @@
-div.markdown ::deep .sun-editor-editable {
-  padding: 0;
+/*
+    Update the defaults for the embedded sun editor to match the styles of the rest of the application.
+    Can't put in layer because the sun editor doesn't use layers.
+*/
+
+div {
+  width: 100%;
 }
+
+  div ::deep .sun-editor {
+    font-family: inherit;
+    border: none;
+    background-color: initial;
+    color: inherit;
+  }
+
+  div ::deep .se-btn-module-border .se-btn-select.se-btn-tool-format {
+    min-width: 120px;
+  }
+
+  div ::deep .sun-editor-editable {
+    padding: 0;
+  }
+    
+    div ::deep .sun-editor-editable p {
+      margin: 0;
+      padding-bottom: var(--spacing-tiny);
+    }
+
+    div ::deep .sun-editor .se-list-layer ul h2, div ::deep .sun-editor-editable h2 {
+      font-size: 1.50em;
+      margin-block-start: initial;
+      margin-block-end: initial;
+      margin: 0;
+      padding-bottom: var(--spacing-small);
+    }
+
+    div ::deep .sun-editor .se-list-layer ul h3, div ::deep .sun-editor-editable h3 {
+      font-size: 1.36em;
+      margin-block-start: initial;
+      margin-block-end: initial;
+      margin: 0;
+      padding-bottom: var(--spacing-small);
+    }
+
+    div ::deep .sun-editor .se-list-layer ul h4, div ::deep .sun-editor-editable h4 {
+      font-size: 1.22em;
+      margin-block-start: initial;
+      margin-block-end: initial;
+      margin: 0;
+      padding-bottom: var(--spacing-tiny);
+    }
+
+    div ::deep .sun-editor .se-list-layer ul h5, div ::deep .sun-editor-editable h5 {
+      font-size: 1.11em;
+      margin-block-start: initial;
+      margin-block-end: initial;
+      margin: 0;
+      padding-bottom: var(--spacing-tiny);
+    }
+
+    div ::deep .sun-editor .se-list-layer ul h6, div ::deep .sun-editor-editable h6 {
+      font-size: 1.00em;
+      margin-block-start: initial;
+      margin-block-end: initial;
+      margin: 0;
+      padding-bottom: var(--spacing-tiny);
+    }

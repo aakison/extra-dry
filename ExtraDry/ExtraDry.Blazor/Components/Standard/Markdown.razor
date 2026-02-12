@@ -86,7 +86,7 @@ else {
 
     private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", "markdown", ReadOnlyCss, CssClass);
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", ReadOnlyCss, CssClass);
 
     public async ValueTask DisposeAsync()
     {
