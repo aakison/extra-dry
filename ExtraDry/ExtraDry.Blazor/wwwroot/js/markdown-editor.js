@@ -355,17 +355,44 @@ export async function initialize(elementId, dotNetRef, options) {
     const linkBookmarks = options?.linkBookmarks || null;
     const buttonList = buildButtonList(mode, enableImage);
 
+    const isCharacterMode = mode === 'Character';
+
     const editor = SUNEDITOR.create(element, {
         plugins: buildCustomPlugins(),
         buttonList: buttonList,
         mode: 'inline',
-        formats: ['p', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote'],
+        formats: isCharacterMode ? ['p'] : ['p', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote'],
         placeholder: placeholder,
         width: '100%',
-        minHeight: '100px',
+        minHeight: isCharacterMode ? '1em' : '100px',
         defaultStyle: 'font-family: inherit; font-size: inherit;',
         linkNoPrefix: true,
     });
+
+    // In Character mode, prevent Enter/Tab and strip newlines from pasted content.
+    // Use capture phase so our handler fires before SunEditor's keydown handler.
+    if (isCharacterMode) {
+        const wysiwygBody = editor.core.context.element.wysiwyg;
+        if (wysiwygBody) {
+            wysiwygBody.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                }
+                if (e.key === 'Tab') {
+                    e.stopImmediatePropagation();
+                }
+            }, true);
+            wysiwygBody.addEventListener('paste', function (e) {
+                const paste = (e.clipboardData || window.clipboardData)?.getData('text');
+                if (paste && /[\r\n]/.test(paste)) {
+                    e.preventDefault();
+                    const cleaned = paste.replace(/[\r\n]+/g, ' ');
+                    document.execCommand('insertText', false, cleaned);
+                }
+            });
+        }
+    }
 
     customizeLinkDialog(editor, linkBookmarks);
 

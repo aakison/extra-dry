@@ -94,7 +94,9 @@ else {
 
     private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", ReadOnlyCss, CssClass);
+    private string ModeCss => MarkdownSupport == MarkdownSupportType.Character ? "character" : "block";
+
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", ReadOnlyCss, ModeCss, CssClass);
 
     public async ValueTask DisposeAsync()
     {

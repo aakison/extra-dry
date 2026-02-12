@@ -22,6 +22,20 @@ div {
     padding: 0;
   }
 
+  /*
+    Character mode: single-line input without vertical expansion and no toolbar.
+  */
+  div.character ::deep .sun-editor-editable {
+    min-height: 1em !important;
+    max-height: 1.5em;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  div.character ::deep .se-toolbar {
+    display: none !important;
+  }
+
     div ::deep .sun-editor-editable p {
       margin: 0;
       padding-bottom: var(--spacing-tiny);
