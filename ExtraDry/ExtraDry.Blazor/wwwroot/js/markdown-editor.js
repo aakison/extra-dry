@@ -85,7 +85,7 @@ function buildButtonList(mode, enableImage) {
     const buttons = [
         ['bold', 'italic', 'strike', 'subscript', 'superscript', 'link'],
         ['formatBlock'],
-        ['bulletList', 'numberedList']
+        ['bulletList', 'numberedList', 'removeFormat']
     ];
     if (enableImage) {
         buttons.push(['image']);
