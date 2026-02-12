@@ -79,19 +79,69 @@ function ensureSunEditorLoaded() {
 
 function buildButtonList(mode, enableImage) {
     if (mode === 'Character') {
-        return [['bold', 'italic', 'strike', 'link']];
+        return [['bold', 'italic', 'strike']];
     }
     // Block mode
     const buttons = [
-        ['bold', 'italic', 'strike', 'link'],
-        ['formatBlock', 'blockquote'],
-        ['list'],
-        ['codeView']
+        ['bold', 'italic', 'strike', 'subscript', 'superscript', 'link'],
+        ['formatBlock'],
+        ['bulletList', 'numberedList']
     ];
     if (enableImage) {
         buttons.push(['image']);
     }
     return buttons;
+}
+
+function buildCustomPlugins() {
+    return [
+        {
+            name: 'bulletList',
+            display: 'command',
+            title: 'Bullet List',
+            buttonClass: '',
+            innerHTML: '<svg viewBox="0 0 24 24"><path d="M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5S3.17 7.5 4 7.5 5.5 6.83 5.5 6 4.83 4.5 4 4.5zm0 12c-.83 0-1.5.68-1.5 1.5s.68 1.5 1.5 1.5 1.5-.68 1.5-1.5-.67-1.5-1.5-1.5zM8 19h12v-2H8v2zm0-6h12v-2H8v2zm0-8v2h12V5H8z"/></svg>',
+            add: function (core, targetElement) {
+                core.context.bulletList = { targetButton: targetElement };
+            },
+            active: function (element) {
+                if (element && /^UL$/i.test(element.nodeName)) {
+                    this.util.addClass(this.context.bulletList.targetButton, 'active');
+                    return true;
+                }
+                this.util.removeClass(this.context.bulletList.targetButton, 'active');
+                return false;
+            },
+            action: function () {
+                const range = this.plugins.list.editList.call(this, 'UL', null, false);
+                if (range) this.setRange(range.sc, range.so, range.ec, range.eo);
+                this.history.push(false);
+            }
+        },
+        {
+            name: 'numberedList',
+            display: 'command',
+            title: 'Numbered List',
+            buttonClass: '',
+            innerHTML: '<svg viewBox="0 0 24 24"><path d="M2 17h2v.5H3v1h1v.5H2v1h3v-4H2v1zm1-9h1V4H2v1h1v3zm-1 3h1.8L2 13.1v.9h3v-1H3.2L5 10.9V10H2v1zm5-6v2h14V5H7zm0 14h14v-2H7v2zm0-6h14v-2H7v2z"/></svg>',
+            add: function (core, targetElement) {
+                core.context.numberedList = { targetButton: targetElement };
+            },
+            active: function (element) {
+                if (element && /^OL$/i.test(element.nodeName)) {
+                    this.util.addClass(this.context.numberedList.targetButton, 'active');
+                    return true;
+                }
+                this.util.removeClass(this.context.numberedList.targetButton, 'active');
+                return false;
+            },
+            action: function () {
+                const range = this.plugins.list.editList.call(this, 'OL', null, false);
+                if (range) this.setRange(range.sc, range.so, range.ec, range.eo);
+                this.history.push(false);
+            }
+        }
+    ];
 }
 
 let debounceTimers = {};
@@ -111,8 +161,10 @@ export async function initialize(elementId, dotNetRef, options) {
     const buttonList = buildButtonList(mode, enableImage);
 
     const editor = SUNEDITOR.create(element, {
+        plugins: buildCustomPlugins(),
         buttonList: buttonList,
         mode: 'inline',
+        formats: ['p', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote'],
         placeholder: placeholder,
         width: '100%',
         minHeight: '100px',

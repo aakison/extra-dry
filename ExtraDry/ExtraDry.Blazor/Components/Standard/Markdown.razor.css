@@ -21,10 +21,19 @@ div {
   div ::deep .sun-editor-editable {
     padding: 0;
   }
-    
+
     div ::deep .sun-editor-editable p {
       margin: 0;
       padding-bottom: var(--spacing-tiny);
+    }
+
+    div ::deep .sun-editor-editable ul, div ::deep .sun-editor-editable ol {
+      margin: 0;
+      padding-inline-start: 24px;
+    }
+
+    div ::deep .sun-editor-editable li {
+      margin: 0;
     }
 
     div ::deep .sun-editor .se-list-layer ul h2, div ::deep .sun-editor-editable h2 {
@@ -66,3 +75,28 @@ div {
       margin: 0;
       padding-bottom: var(--spacing-tiny);
     }
+
+  /*
+    Tooltips are styled poorly.
+  */
+  div ::deep .sun-editor .se-tooltip .se-tooltip-inner .se-tooltip-text {
+    background-color: var(--neutral-2);
+    color: var(--neutral-9);
+    border: solid 1px var(--neutral-7);
+    border-radius: var(--input-rounding);
+  }
+
+    div ::deep .sun-editor .se-tooltip .se-tooltip-inner .se-tooltip-text .se-shortcut,
+    div ::deep .sun-editor .se-tooltip .se-tooltip-inner .se-tooltip-text .se-shortcut-key {
+      font-size: 12px;
+    }
+
+  /*
+    Toolbar is crowded left, center and round.
+  */
+  div ::deep .se-toolbar.sun-editor-common.se-toolbar-inline {
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: var(--input-rounding);
+    box-shadow: 0 3px 5px rgba(0, 0, 0, .25);
+  }
