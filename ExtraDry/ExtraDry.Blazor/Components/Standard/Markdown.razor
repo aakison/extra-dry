@@ -31,6 +31,13 @@ else {
     [Parameter]
     public string Placeholder { get; set; } = "";
 
+    /// <summary>
+    /// A dictionary of bookmark entries shown in the link dialog. Keys are display names and
+    /// values are URLs/paths. When provided, these appear as suggestions in the link URL field.
+    /// </summary>
+    [Parameter]
+    public Dictionary<string, string>? LinkBookmarks { get; set; }
+
     [Inject]
     private MarkdownEditorInterop EditorInterop { get; set; } = null!;
 
@@ -59,6 +66,7 @@ else {
             var options = new MarkdownEditorOptions {
                 Mode = MarkdownSupport == MarkdownSupportType.Character ? "Character" : "Block",
                 Placeholder = Placeholder,
+                LinkBookmarks = LinkBookmarks,
             };
             await EditorInterop.InitializeAsync(editorId, dotNetRef, options);
             initialized = true;

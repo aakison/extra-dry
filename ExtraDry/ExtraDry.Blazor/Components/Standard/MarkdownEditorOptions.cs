@@ -19,4 +19,10 @@ public class MarkdownEditorOptions
     /// Placeholder text displayed when the editor is empty.
     /// </summary>
     public string Placeholder { get; set; } = "";
+
+    /// <summary>
+    /// A dictionary of bookmark entries shown in the link dialog. Keys are display names and
+    /// values are URLs/paths. When provided, these replace the default header-based bookmarks.
+    /// </summary>
+    public Dictionary<string, string>? LinkBookmarks { get; set; }
 }

@@ -12,7 +12,8 @@
                       ValueChanged="@OnMarkdownValueChanged"
                       MarkdownSupport="@MarkdownSupportType"
                       ReadOnly="@ReadOnly"
-                      Placeholder="@Placeholder" />
+                      Placeholder="@Placeholder"
+                      LinkBookmarks="@LinkBookmarks" />
         }
         else if(IsMultiline) {
             <textarea id="@InputId" class="value @TextSize" title="@Label" readonly="@ReadOnly" placeholder="@Placeholder" maxlength="@MaxLength"

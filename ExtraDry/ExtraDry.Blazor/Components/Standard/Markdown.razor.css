@@ -100,3 +100,47 @@ div {
     border-radius: var(--input-rounding);
     box-shadow: 0 3px 5px rgba(0, 0, 0, .25);
   }
+
+  /*
+    Center the link dialog vertically on screen and fix width.
+  */
+  div ::deep .se-dialog .se-dialog-inner {
+    align-items: center;
+    justify-content: center;
+  }
+
+    div ::deep .se-dialog .se-dialog-inner .se-dialog-content {
+      margin: 0;
+      width: 500px;
+    }
+
+  /*
+      Style the embedded dialog box.
+  */
+
+  /*
+    Hide the URL preview below the input as it is redundant and resizes the dialog.
+  */
+  div ::deep .sun-editor .se-dialog .se-dialog-inner .se-anchor-preview-form {
+    display: none;
+  }
+
+  /* 
+    Better checkbox alignment and sizing.
+  */
+  div ::deep .sun-editor .se-dialog .se-dialog-inner .se-dialog-form-footer {
+    display: flex;
+    height: 40px;
+    align-items: center;
+  }
+
+    div ::deep .sun-editor .se-dialog .se-dialog-inner .se-dialog-form-footer label {
+      display: flex;
+      align-items: center;
+      flex: 1 1 10px;
+    }
+
+      div ::deep .sun-editor .se-dialog .se-dialog-inner .se-dialog-form-footer label input {
+        width: 18px;
+        height: 18px;
+      }

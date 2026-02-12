@@ -15,6 +15,13 @@ public partial class TextField : FieldBase<string>
     public MarkdownSupportType MarkdownSupportType { get; set; } = MarkdownSupportType.None;
 
     /// <summary>
+    /// A dictionary of bookmark entries shown in the markdown editor's link dialog. Keys are
+    /// display names and values are URLs/paths.
+    /// </summary>
+    [Parameter]
+    public Dictionary<string, string>? LinkBookmarks { get; set; }
+
+    /// <summary>
     /// The maximum length of the text. If greater than 100 then a multi-line text area is used.
     /// This is a hard limit to the text field and is separate from the validation model.  For
     /// user consistency, it is recommended to align this with the string length of the property.
