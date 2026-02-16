@@ -63,12 +63,15 @@
 	<Import Project="..\VulnerabilityFixes.targets" />
 
 	<ItemGroup>
-		<Content Update="libman.json">
-		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-		</Content>
 		<Content Update="_Imports.razor">
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 		</Content>
 	</ItemGroup>
 
+  <ItemGroup>
+    <None Include="libman.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  
 </Project>
