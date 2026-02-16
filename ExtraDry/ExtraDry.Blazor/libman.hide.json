@@ -1,3 +1,10 @@
+/* Problem with Blazor client generation where the libman.json file gets included twice.  This 
+   happens even if the file is not copied to output (some different pipeline?).  This is not 
+   used during CI, files are checked in to prevent CDN issues blocking build.  So, this is just
+   a reminder of what libraries are used and where they are.  
+
+   Change the extension to update, then change back when done to prevent collisions.
+*/
 {
   "version": "1.0",
   "defaultProvider": "jsdelivr",
