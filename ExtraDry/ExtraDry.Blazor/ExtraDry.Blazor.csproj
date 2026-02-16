@@ -66,12 +66,9 @@
 		<Content Update="_Imports.razor">
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 		</Content>
-	</ItemGroup>
-
-  <ItemGroup>
-    <None Include="libman.json">
+    <Content Update="libman.json">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
   
 </Project>
