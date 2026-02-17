@@ -1,0 +1,82 @@
+﻿@using ExtraDry.Core
+@implements IInputField
+
+<InputFieldFrame Size="@Size" Description="@Description" ShowDescription="@ShowDescription" Caption="@Caption" For="@InputId">
+    <div class="@CssClasses">
+        <textarea id="@InputId" rows="@Rows" class="value" title="@Caption" type="text" @bind:get="Value" @bind:set="OnValueChanged" @bind:event="oninput" readonly="@ReadOnly" placeholder="@Placeholder" />
+    </div>
+</InputFieldFrame>
+
+@code {
+    [Parameter]
+    public string Value { get; set; } = "";
+
+    [Parameter]
+    public EventCallback<string> ValueChanged { get; set; }
+
+    [Parameter]
+    public bool ReadOnly { get; set; }
+
+    [Parameter]
+    public string CssClass { get; set; } = "";
+
+    [Parameter]
+    public string Icon { get; set; } = "";
+
+    [Parameter]
+    public string Affordance { get; set; } = "";
+
+    [Parameter]
+    public string Placeholder { get; set; } = "";
+
+    [Parameter]
+    public string Id { get; set; } = "";
+
+    #region For Frame
+    [Parameter]
+    public PropertySize Size { get; set; } = PropertySize.Medium;
+
+    [Parameter]
+    public string Description { get; set; } = "";
+
+    [Parameter]
+    public bool ShowDescription { get; set; } = false;
+
+    [Parameter]
+    public string Caption { get; set; } = "";
+    #endregion
+
+    [Parameter]
+    public int Rows { get; set; } = 5;
+
+    private bool DisplayIcon => Icon != "";
+
+    private bool DisplayAffordance => Affordance != "" && !ReadOnly;
+
+    private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
+
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", "markdown", ReadOnlyCss, CssClass);
+
+    private string InputId { get; set; } = "";
+
+    protected override void OnInitialized()
+    {
+        InputId = Id switch {
+            "" => $"inputTextAreaField{++instanceCount}",
+            _ => Id,
+        };
+    }
+
+    private void OnValueChanged(string? value)
+    {
+        Value = value ?? "";
+        //var value = args.Value;
+        //var valid = ValidateProperty();
+        ValueChanged.InvokeAsync(value);
+        //await InvokeOnChangeAsync(value);
+        //await InvokeOnValidationAsync(valid);
+    }
+
+    private static int instanceCount = 0;
+
+}
