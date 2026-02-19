@@ -9,17 +9,17 @@ public partial class MarkdownAttribute(MarkdownSupportType supportType) : Valida
 
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
-        if (value is not string text || string.IsNullOrWhiteSpace(text)) {
+        if(value is not string text || string.IsNullOrWhiteSpace(text)) {
             return ValidationResult.Success;
         }
 
-        if (SupportType == MarkdownSupportType.CommonMark) {
+        if(SupportType == MarkdownSupportType.CommonMark) {
             return ValidationResult.Success;
         }
 
         var stripped = StripCodeBlocks(text);
 
-        if (ContainsHtmlTags(stripped)) {
+        if(ContainsHtmlTags(stripped)) {
             return new ValidationResult(
                 "Markdown content must not contain HTML tags. Use Markdown syntax instead.",
                 [validationContext.MemberName!]);
@@ -41,11 +41,11 @@ public partial class MarkdownAttribute(MarkdownSupportType supportType) : Valida
 
     private static bool ContainsHtmlTags(string text)
     {
-        if (HtmlCommentRegex().IsMatch(text)) {
+        if(HtmlCommentRegex().IsMatch(text)) {
             return true;
         }
 
-        if (HtmlTagRegex().IsMatch(text)) {
+        if(HtmlTagRegex().IsMatch(text)) {
             return true;
         }
 
