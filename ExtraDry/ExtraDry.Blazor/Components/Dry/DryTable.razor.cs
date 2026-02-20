@@ -124,6 +124,9 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
                 e => new ListItemInfo<TItem> { Item = e, IsLoaded = true });
             ItemsListClient = projectionListClient;
         }
+        // TODO: To support in-memory Items.  When Items is provided instead of ItemsClient, make the ItemsListClient
+        // an instance of new class InMemoryListClient that wraps the Items collection and supports sorting and
+        // filtering.  This will allow us to use the same Virtualize component regardless of how the data is provided.
     }
 
     [SuppressMessage("Performance", "CA1859:Use concrete types when possible for improved performance", Justification = "Enforce that there are many options.")]
