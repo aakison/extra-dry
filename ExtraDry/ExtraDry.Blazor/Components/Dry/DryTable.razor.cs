@@ -215,11 +215,12 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
         }
 
         if(Items != null) {
+            throw new NotImplementedException("Client side sorting is not implemented.");
             // Client side sort, we've got all items.
-            IComparer<ListItemInfo<TItem>> comparer = new ItemComparer<TItem>(property, QueryBuilderAccessor.QueryBuilder.Sort.Ascending);
-            if(GroupFunc != null) {
-                comparer = new GroupComparer<TItem>(comparer);
-            }
+            //IComparer<ListItemInfo<TItem>> comparer = new ItemComparer<TItem>(property, QueryBuilderAccessor.QueryBuilder.Sort.Ascending);
+            //if(GroupFunc != null) {
+            //    comparer = new GroupComparer<TItem>(comparer);
+            //}
             //InternalItems.Sort(comparer);
         }
         else {
