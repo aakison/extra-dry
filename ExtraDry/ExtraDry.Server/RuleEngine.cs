@@ -489,15 +489,12 @@ public class RuleEngine(
         // 5. key:null => create
         // 6. null:key => ignore (use key with null value to delete)
         var destinationValue = property.GetValue(destination);
-        var destinationDict = destinationValue as IDictionary;
         if(sourceDict == null) {
             return;
         }
-        if(destinationDict == null) {
-            destinationDict = Activator.CreateInstance(property.PropertyType) as IDictionary;
-            if(destinationDict == null) {
-                throw new DryException("Unable to create an instance of destination dictionary.");
-            }
+        if(destinationValue is not IDictionary destinationDict) {
+            destinationDict = Activator.CreateInstance(property.PropertyType) as IDictionary 
+                ?? throw new DryException("Unable to create an instance of destination dictionary.");
             property.SetValue(destination, destinationDict);
         }
         if(action == RuleAction.Ignore && sourceDict.Count == 0) {
