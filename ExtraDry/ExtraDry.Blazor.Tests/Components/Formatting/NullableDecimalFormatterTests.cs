@@ -9,15 +9,31 @@ public class NullableDecimalFormatterTests
     public void FormatNull()
     {
         var formatter = new NullableDecimalFormatter();
+
         var result = formatter.Format(null);
-        Assert.Equal("", result);
+
+        Assert.Equal(formatter.NullFormat, result);
+    }
+
+    [Fact]
+    public void ChangeNullFormat()
+    {
+        var formatter = new NullableDecimalFormatter {
+            NullFormat = "N/A"
+        };
+
+        var result = formatter.Format(null);
+
+        Assert.Equal("N/A", result);
     }
 
     [Fact]
     public void FormatZero()
     {
         var formatter = new NullableDecimalFormatter();
+
         var result = formatter.Format(0m);
+
         Assert.Equal("0.00", result);
     }
 
@@ -25,7 +41,9 @@ public class NullableDecimalFormatterTests
     public void FormatPositive()
     {
         var formatter = new NullableDecimalFormatter();
+
         var result = formatter.Format(1234.56m);
+
         Assert.Equal("1,234.56", result);
     }
 
@@ -33,7 +51,9 @@ public class NullableDecimalFormatterTests
     public void FormatNegative()
     {
         var formatter = new NullableDecimalFormatter();
+
         var result = formatter.Format(-1234.56m);
+
         Assert.Equal("-1,234.56", result);
     }
 
@@ -41,7 +61,9 @@ public class NullableDecimalFormatterTests
     public void TryParseNull()
     {
         var formatter = new NullableDecimalFormatter();
+
         var success = formatter.TryParse(null, out var result);
+
         Assert.True(success);
         Assert.Null(result);
     }
@@ -50,7 +72,9 @@ public class NullableDecimalFormatterTests
     public void TryParseEmpty()
     {
         var formatter = new NullableDecimalFormatter();
+
         var success = formatter.TryParse("", out var result);
+
         Assert.True(success);
         Assert.Null(result);
     }
@@ -59,7 +83,9 @@ public class NullableDecimalFormatterTests
     public void TryParseWhitespace()
     {
         var formatter = new NullableDecimalFormatter();
+
         var success = formatter.TryParse("   ", out var result);
+
         Assert.True(success);
         Assert.Null(result);
     }
@@ -68,7 +94,9 @@ public class NullableDecimalFormatterTests
     public void TryParseValid()
     {
         var formatter = new NullableDecimalFormatter();
+
         var success = formatter.TryParse("1234.56", out var result);
+
         Assert.True(success);
         Assert.Equal(1234.56m, result);
     }
@@ -77,7 +105,9 @@ public class NullableDecimalFormatterTests
     public void TryParseWithCommas()
     {
         var formatter = new NullableDecimalFormatter();
+
         var success = formatter.TryParse("1,234.56", out var result);
+
         Assert.True(success);
         Assert.Equal(1234.56m, result);
     }
@@ -86,7 +116,9 @@ public class NullableDecimalFormatterTests
     public void TryParseInvalid()
     {
         var formatter = new NullableDecimalFormatter();
+
         var success = formatter.TryParse("abc", out var result);
+
         Assert.False(success);
         Assert.Null(result);
     }
