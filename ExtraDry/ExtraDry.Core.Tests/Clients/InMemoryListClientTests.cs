@@ -56,7 +56,7 @@ public class InMemoryListClientTests
             new() { Uuid = Guid.NewGuid(), Name = "Item1", Value = 10 },
             new() { Uuid = Guid.NewGuid(), Name = "Item2", Value = 20 }
         };
-        Func<TestItem, bool> filter = item => item.Value > 15;
+        static bool filter(TestItem item) => item.Value > 15;
 
         var client = new InMemoryListClient<TestItem>(items, filter);
 
@@ -228,7 +228,7 @@ public class InMemoryListClientTests
             new() { Uuid = Guid.NewGuid(), Name = "Item2", Value = 20 },
             new() { Uuid = Guid.NewGuid(), Name = "Item3", Value = 30 }
         };
-        Func<TestItem, bool> filter = item => item.Value > 15;
+        static bool filter(TestItem item) => item.Value > 15;
         var client = new InMemoryListClient<TestItem>(items, filter);
         var query = new Query();
 
@@ -456,7 +456,7 @@ public class InMemoryListClientTests
             new() { Uuid = Guid.NewGuid(), Name = "Item2", Value = 20 },
             new() { Uuid = Guid.NewGuid(), Name = "Item3", Value = 30 }
         };
-        Func<TestItem, bool> filter = item => item.Value >= 20;
+        static bool filter(TestItem item) => item.Value >= 20;
         var client = new InMemoryListClient<TestItem>(items, filter);
         var query = new Query();
 
@@ -475,7 +475,7 @@ public class InMemoryListClientTests
             new() { Uuid = Guid.NewGuid(), Name = "Apricot", Value = 20 },
             new() { Uuid = Guid.NewGuid(), Name = "Banana", Value = 30 }
         };
-        Func<TestItem, bool> filter = item => item.Value >= 15;
+        static bool filter(TestItem item) => item.Value >= 15;
         var client = new InMemoryListClient<TestItem>(items, filter);
         var query = new Query { Filter = "Value:[18,25)" }; // Query filter for range 18-25
 

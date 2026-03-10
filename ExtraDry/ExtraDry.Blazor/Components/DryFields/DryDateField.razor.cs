@@ -1,5 +1,4 @@
 using ExtraDry.Blazor.Components.Formatting;
-using ExtraDry.Blazor.Models.InputValueFormatters;
 
 namespace ExtraDry.Blazor.Components;
 

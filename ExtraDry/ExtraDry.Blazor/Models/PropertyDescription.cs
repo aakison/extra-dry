@@ -1,4 +1,4 @@
-using ExtraDry.Blazor.Models.InputValueFormatters;
+using ExtraDry.Blazor.Components.Formatting;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -413,18 +413,16 @@ public class PropertyDescription
         return PropertySize.Small;
     }
 
-    [Obsolete]
-    private InputValueFormatter CreateFormatter()
+    private IValueFormatter CreateFormatter()
     {
         return (AllowsNull, PropertyType) switch {
-            (false, Type t) when t == typeof(decimal) => new DecimalValueFormatter(this),
-            (true, Type t) when t == typeof(decimal) => new NullableDecimalValueFormatter(this),
-            (false, Type t) when t == typeof(int) => new IntValueFormatter(this),
-            (true, Type t) when t == typeof(int) => new NullableIntValueFormatter(this),
-            _ => new IdentityValueFormatter(this)
+            (false, Type t) when t == typeof(decimal) => new DecimalFormatter(),
+            (true, Type t) when t == typeof(decimal) => new NullableDecimalFormatter(),
+            (false, Type t) when t == typeof(int) => new IntFormatter(),
+            (true, Type t) when t == typeof(int) => new NullableIntFormatter(),
+            _ => new IdentityFormatter()
         };
     }
 
-    [Obsolete]
-    public InputValueFormatter Formatter { get; set; }
+    public IValueFormatter Formatter { get; set; }
 }

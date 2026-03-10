@@ -75,10 +75,17 @@ public class BaseQueryableTests
 
             private int index = -1;
 
-            public required List<Model> Models { get; init; }
+            public required List<Model> Models { get; init; } = [];
         }
 
-        public required List<Model> Models { get; init; }
+        public required List<Model> Models {
+            get => models;
+            init {
+                models = value;
+                PagedQuery = FilteredQuery = SortedQuery = value.AsQueryable();
+            }
+        }
+        private List<Model> models = [];
     }
 
     private readonly List<Model> Models = [

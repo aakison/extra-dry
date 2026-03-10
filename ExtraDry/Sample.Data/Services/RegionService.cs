@@ -38,10 +38,8 @@ public class RegionService(
             if(exemplar.Parent == null) {
                 throw new ArgumentException("A region must have a parent if it is not at the global level.");
             }
-            parent = await TryRetrieveAsync(exemplar.Parent.Slug);
-            if(parent == null) {
-                throw new ArgumentException("Invalid parent");
-            }
+            parent = await TryRetrieveAsync(exemplar.Parent.Slug) 
+                ?? throw new ArgumentException("Invalid parent");
         }
 
         await SetParent(region, parent);
