@@ -247,7 +247,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
         return replaced;
     }
 
-    public async Task<bool> TryRemoveItemAsync(TItem removedItem, IEqualityComparer<TItem>? comparer = null)
+    public async Task<bool> TryRemoveItemAsync(TItem removedItem)
     {
         StateHasChanged();
 
