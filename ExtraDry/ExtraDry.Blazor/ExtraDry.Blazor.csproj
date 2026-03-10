@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
 	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
     <NoWarn>ENC0033;ENC0047</NoWarn>
@@ -49,9 +49,9 @@
 
 	<ItemGroup>
 		<PackageReference Include="Markdig" Version="0.40.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.3" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.3" />
-		<PackageReference Include="Microsoft.Extensions.Http" Version="9.0.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="10.0.3" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="10.0.3" />
 		<PackageReference Include="ReverseMarkdown" Version="4.6.0" />
 	</ItemGroup>
 
