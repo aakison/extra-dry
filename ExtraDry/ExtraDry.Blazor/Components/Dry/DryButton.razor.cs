@@ -78,9 +78,7 @@ public partial class DryButton : ComponentBase, IExtraDryComponent
     {
         GC.SuppressFinalize(this);
 
-        if(SelectionAccessor != null) {
-            SelectionAccessor.SelectionSet.Changed -= SelectionChanged;
-        }
+        SelectionAccessor?.SelectionSet.Changed -= SelectionChanged;
     }
 
     private SelectionSetAccessor? SelectionAccessor { get; set; }

@@ -107,10 +107,8 @@ public partial class DryFilterEnumSelect : ComponentBase, IExtraDryComponent, ID
     public void Dispose()
     {
         GC.SuppressFinalize(this);
-        if(QueryBuilderAccessor != null) {
-            QueryBuilderAccessor.QueryBuilder.OnChanged -= PageQueryBuilder_OnChanged;
-            QueryBuilderAccessor = null;
-        }
+        QueryBuilderAccessor?.QueryBuilder.OnChanged -= PageQueryBuilder_OnChanged;
+        QueryBuilderAccessor = null;
     }
 
     private Task SyncWithPageQuery()

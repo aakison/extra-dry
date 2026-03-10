@@ -56,7 +56,7 @@ public class PagedHierarchyQueryable<T> : FilteredHierarchyQueryable<T> where T 
         return new PagedHierarchyCollection<T> {
             Items = items,
             Filter = Query.Filter,
-            Sort = nameof(IHierarchyEntity<T>.Lineage).ToLowerInvariant(),
+            Sort = nameof(IHierarchyEntity<>.Lineage).ToLowerInvariant(),
             Start = previousSkip,
             Total = total,
             MaxLevels = maxLevels,

@@ -122,7 +122,7 @@ public class FilteredHierarchyQueryable<T> : FilteredListQueryable<T> where T : 
         new() {
             Filter = Query.Filter,
             Items = items,
-            Sort = nameof(IHierarchyEntity<T>.Lineage).ToLowerInvariant(),
+            Sort = nameof(IHierarchyEntity<>.Lineage).ToLowerInvariant(),
             Level = Query.Level,
             Expand = Query.Expand.Count != 0 ? Query.Expand : null,
             Collapse = Query.Collapse.Count != 0 ? Query.Collapse : null,

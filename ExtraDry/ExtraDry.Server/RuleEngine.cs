@@ -99,9 +99,7 @@ public class RuleEngine(
             var schema = await ResolveExpandoSchema(source);
             if(schema != null) {
                 var prop = (ExpandoValues?)expandoProperty.GetValue(source);
-                if(prop != null) {
-                    prop.Schema = schema;
-                }
+                prop?.Schema = schema;
             }
         }
     }

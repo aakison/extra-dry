@@ -190,10 +190,8 @@ public partial class DryFilterDatePicker : ComponentBase, IExtraDryComponent, ID
     public void Dispose()
     {
         GC.SuppressFinalize(this);
-        if(QueryBuilderAccessor != null) {
-            QueryBuilderAccessor.QueryBuilder.OnChanged -= QueryBuilder_OnChanged;
-            QueryBuilderAccessor = null;
-        }
+        QueryBuilderAccessor?.QueryBuilder.OnChanged -= QueryBuilder_OnChanged;
+        QueryBuilderAccessor = null;
     }
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "dry-field-filter", "filter-date", CssClass);
