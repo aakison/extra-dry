@@ -40,9 +40,13 @@ public class InMemoryListClient<T>(
             throw new InvalidOperationException("Either a match predicate must be provided, or TItem must implement IUniqueIdentifier.");
         }
         var existingItem = items.FirstOrDefault(matchPredicate);
+        if(existingItem == null) {
+            // Item not found, cannot refresh.
+            return false;
+        }
         var index = items.IndexOf(existingItem);
         if(index == -1) {
-            // Item not found, cannot refresh.
+            // Item not found, cannot refresh. (should be redundant check)
             return false;
         }
         items[index] = updatedItem;
