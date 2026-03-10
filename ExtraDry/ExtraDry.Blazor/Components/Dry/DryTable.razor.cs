@@ -307,14 +307,10 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     {
         GC.SuppressFinalize(this);
         // If table is removed but decorator remains, disconnect from events.
-        if(SelectionAccessor != null) {
-            SelectionAccessor.SelectionSet.Changed -= Selection_Changed;
-            SelectionAccessor = null;
-        }
-        if(QueryBuilderAccessor != null) {
-            QueryBuilderAccessor.QueryBuilder.OnChanged -= Query_Changed;
-            QueryBuilderAccessor = null;
-        }
+        SelectionAccessor?.SelectionSet.Changed -= Selection_Changed;
+        SelectionAccessor = null;
+        QueryBuilderAccessor?.QueryBuilder.OnChanged -= Query_Changed;
+        QueryBuilderAccessor = null;
     }
 
     private readonly SemaphoreSlim serviceLock = new(1, 1);

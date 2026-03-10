@@ -68,10 +68,8 @@ public partial class DryFilterInputText : ComponentBase, IExtraDryComponent, IDi
     public void Dispose()
     {
         GC.SuppressFinalize(this);
-        if(QueryBuilderAccessor != null) {
-            QueryBuilderAccessor.QueryBuilder.OnChanged -= PageQueryBuilder_OnChanged;
-            QueryBuilderAccessor = null;
-        }
+        QueryBuilderAccessor?.QueryBuilder.OnChanged -= PageQueryBuilder_OnChanged;
+        QueryBuilderAccessor = null;
     }
 
     private bool DisplayIcon => ShowIcon && !string.IsNullOrWhiteSpace(Icon);

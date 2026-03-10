@@ -121,15 +121,11 @@ public partial class DryDeck<TItem> : ComponentBase, IDisposable, IExtraDryCompo
         GC.SuppressFinalize(this);
 
         // Disconnect from events if accessors exist
-        if(SelectionAccessor != null) {
-            SelectionAccessor.SelectionSet.Changed -= Selection_Changed;
-            SelectionAccessor = null;
-        }
+        SelectionAccessor?.SelectionSet.Changed -= Selection_Changed;
+        SelectionAccessor = null;
 
-        if(QueryBuilderAccessor != null) {
-            QueryBuilderAccessor.QueryBuilder.OnChanged -= Query_Changed;
-            QueryBuilderAccessor = null;
-        }
+        QueryBuilderAccessor?.QueryBuilder.OnChanged -= Query_Changed;
+        QueryBuilderAccessor = null;
 
         serviceLock.Dispose();
     }
