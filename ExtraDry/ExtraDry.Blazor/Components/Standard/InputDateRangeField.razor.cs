@@ -1,9 +1,3 @@
-using ExtraDry.Blazor;
-using ExtraDry.Core;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
-using System.Globalization;
-
 namespace ExtraDry.Blazor.Components.Standard;
 
 public partial class InputDateRangeField : ComponentBase, IInputField<string>

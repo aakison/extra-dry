@@ -1,7 +1,4 @@
-﻿using System.Diagnostics.Contracts;
-using System.Reflection;
-
-namespace ExtraDry.Blazor;
+﻿namespace ExtraDry.Blazor;
 
 /// <summary>
 /// Generates a generic form for the creation and updating of a model. Form layout is based on the

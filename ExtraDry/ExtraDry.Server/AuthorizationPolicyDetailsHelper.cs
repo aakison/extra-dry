@@ -1,7 +1,6 @@
+using ExtraDry.Server.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using ExtraDry.Server.Security;
 
 namespace ExtraDry.Server;
 

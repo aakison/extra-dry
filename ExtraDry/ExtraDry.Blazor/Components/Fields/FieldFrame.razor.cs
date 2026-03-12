@@ -1,9 +1,4 @@
-﻿using ExtraDry.Blazor;
-using ExtraDry.Core;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-
-namespace ExtraDry.Blazor.Components;
+﻿namespace ExtraDry.Blazor.Components;
 
 /// <summary>
 /// A frame for input fields that wraps the input element with a label, description and validation message.

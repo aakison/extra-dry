@@ -1,8 +1,4 @@
-﻿using ExtraDry.Blazor;
-using ExtraDry.Core;
-using Microsoft.AspNetCore.Components;
-
-namespace ExtraDry.Blazor.Components.Standard;
+﻿namespace ExtraDry.Blazor.Components.Standard;
 
 public partial class InputSelectField : ComponentBase
 {

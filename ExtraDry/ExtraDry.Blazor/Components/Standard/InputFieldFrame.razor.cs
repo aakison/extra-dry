@@ -1,9 +1,4 @@
-﻿using ExtraDry.Blazor;
-using ExtraDry.Core;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-
-namespace ExtraDry.Blazor.Components.Standard;
+﻿namespace ExtraDry.Blazor.Components.Standard;
 
 public partial class InputFieldFrame : ComponentBase
 {

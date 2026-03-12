@@ -1,6 +1,4 @@
-﻿using ExtraDry.Core.Models;
-
-namespace ExtraDry.Blazor.Components;
+﻿namespace ExtraDry.Blazor.Components;
 
 /// <summary>
 /// Represents an icon in the system, rendered using a global repository of icons which are either

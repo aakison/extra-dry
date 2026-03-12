@@ -1,6 +1,6 @@
-using System.Diagnostics.CodeAnalysis;
 using ExtraDry.Blazor.Components.Internal;
 using Microsoft.AspNetCore.Components.Web.Virtualization;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ExtraDry.Blazor;
 

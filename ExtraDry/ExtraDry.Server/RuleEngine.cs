@@ -1,5 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using Pidgin;
 using System.Collections;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
@@ -491,7 +490,7 @@ public class RuleEngine(
             return;
         }
         if(destinationValue is not IDictionary destinationDict) {
-            destinationDict = Activator.CreateInstance(property.PropertyType) as IDictionary 
+            destinationDict = Activator.CreateInstance(property.PropertyType) as IDictionary
                 ?? throw new DryException("Unable to create an instance of destination dictionary.");
             property.SetValue(destination, destinationDict);
         }
