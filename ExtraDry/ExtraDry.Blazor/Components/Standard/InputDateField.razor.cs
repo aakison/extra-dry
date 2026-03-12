@@ -1,8 +1,3 @@
-using ExtraDry.Blazor;
-using ExtraDry.Core;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
-
 namespace ExtraDry.Blazor.Components.Standard;
 
 public partial class InputDateField : ComponentBase, IInputField<string>

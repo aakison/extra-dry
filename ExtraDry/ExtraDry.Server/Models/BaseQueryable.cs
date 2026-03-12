@@ -9,7 +9,7 @@ namespace ExtraDry.Server;
 public class BaseQueryable<T> : IQueryable<T>
 {
     protected BaseQueryable()
-    { 
+    {
     }
 
     public BaseQueryable(IQueryable<T> queryable)

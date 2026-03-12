@@ -1,8 +1,8 @@
-﻿using System.Collections.ObjectModel;
+﻿using ExtraDry.Core.Extensions;
+using Microsoft.Extensions.Logging;
+using System.Collections.ObjectModel;
 using System.Net;
 using System.Text.Json;
-using ExtraDry.Core.Extensions;
-using Microsoft.Extensions.Logging;
 
 namespace ExtraDry.Core;
 

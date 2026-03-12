@@ -1,7 +1,6 @@
 ﻿using ExtraDry.Core.Extensions;
 using ExtraDry.Core.Internal;
 using Microsoft.Extensions.Logging;
-using System.Reflection.Metadata;
 
 namespace ExtraDry.Core;
 

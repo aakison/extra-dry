@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using System.Diagnostics.CodeAnalysis;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 
 namespace ExtraDry.Blazor;
 

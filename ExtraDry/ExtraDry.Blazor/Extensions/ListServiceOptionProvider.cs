@@ -1,6 +1,4 @@
-﻿using ExtraDry.Core;
-using Microsoft.AspNetCore.Components.Web.Virtualization;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Components.Web.Virtualization;
 
 namespace ExtraDry.Blazor;
 

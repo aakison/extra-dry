@@ -1,12 +1,11 @@
-﻿using Microsoft.Extensions.Configuration.EnvironmentVariables;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Configuration.Memory;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
-using System;
 
 namespace ExtraDry.Core;
 
