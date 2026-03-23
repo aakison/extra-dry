@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor;
+namespace ExtraDry.Blazor;
 
 /// <summary>
 /// If the user clicks outside of the dialog and it loses focus, determines what the dialog should

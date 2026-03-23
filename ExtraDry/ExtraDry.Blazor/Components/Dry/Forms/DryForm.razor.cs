@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor;
+namespace ExtraDry.Blazor;
 
 /// <summary>
 /// Generates a generic form for the creation and updating of a model. Form layout is based on the
@@ -57,6 +57,15 @@ public partial class DryForm<T>(
 
     [Parameter]
     public string CommandCategory { get; set; } = "*";
+
+    /// <summary>
+    /// An event callback that is invoked whenever any field value in the form changes. The event
+    /// is relayed through each <see cref="Forms.DryFieldset" /> from the constituent DryInput
+    /// components. The callback fires after the bound model property has been updated, ensuring
+    /// the latest form state is available to the handler.
+    /// </summary>
+    [Parameter]
+    public EventCallback<ChangeEventArgs> OnChange { get; set; }
 
     /// <inheritdoc />
     [Parameter(CaptureUnmatchedValues = true)]

@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor;
+namespace ExtraDry.Blazor;
 
 /// <summary>
 /// Represents a type of navigation that is controlled using a menu.

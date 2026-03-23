@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor;
+namespace ExtraDry.Blazor;
 
 /// <summary>
 /// The cascading theme information for the application. This is used to provide a consistent set

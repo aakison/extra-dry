@@ -1,4 +1,4 @@
-﻿using ExtraDry.Core.Models;
+using ExtraDry.Core.Models;
 
 namespace ExtraDry.Blazor;
 

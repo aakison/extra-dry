@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor;
+namespace ExtraDry.Blazor;
 
 /// <summary>
 /// Represents the state of a Reveal component as it cycles from not being loaded, through

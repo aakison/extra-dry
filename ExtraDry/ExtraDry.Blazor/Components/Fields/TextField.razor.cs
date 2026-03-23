@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Components;
+namespace ExtraDry.Blazor.Components;
 
 /// <summary>
 /// Represents a text field that can be single line or multi-line depending on the MaxLength property.

@@ -1,4 +1,4 @@
-﻿using ExtraDry.Blazor.Components.Internal;
+using ExtraDry.Blazor.Components.Internal;
 using Microsoft.AspNetCore.Components.Forms;
 
 namespace ExtraDry.Blazor;

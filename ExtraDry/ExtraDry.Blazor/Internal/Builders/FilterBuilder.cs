@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Internal;
+namespace ExtraDry.Blazor.Internal;
 
 /// <summary>
 /// A base filter builder as used by the PageQueryBuilder. Base classes support each of the

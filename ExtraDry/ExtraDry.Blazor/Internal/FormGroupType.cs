@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Internal;
+namespace ExtraDry.Blazor.Internal;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum FormGroupType

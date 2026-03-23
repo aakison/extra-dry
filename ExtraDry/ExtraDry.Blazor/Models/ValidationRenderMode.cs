@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Models;
+namespace ExtraDry.Blazor.Models;
 
 /// <summary>
 /// The location of the validation message in relation to the input control.

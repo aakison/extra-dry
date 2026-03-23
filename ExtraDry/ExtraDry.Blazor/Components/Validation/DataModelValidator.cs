@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Components;
+namespace ExtraDry.Blazor.Components;
 
 /// <summary>
 /// Validator that validates an entire data model instance using data annotations.

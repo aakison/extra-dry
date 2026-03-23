@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Internal;
+namespace ExtraDry.Blazor.Internal;
 
 internal static class TypeExtensions
 {

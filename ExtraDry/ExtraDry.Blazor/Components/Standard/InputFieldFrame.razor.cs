@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Components.Standard;
+namespace ExtraDry.Blazor.Components.Standard;
 
 public partial class InputFieldFrame : ComponentBase
 {

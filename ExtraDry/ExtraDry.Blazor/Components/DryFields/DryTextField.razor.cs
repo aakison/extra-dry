@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Components;
+namespace ExtraDry.Blazor.Components;
 
 /// <summary>
 /// A DRY wrapper around a text input field. Prefer the use of DryField instead

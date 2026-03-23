@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Forms;
+namespace ExtraDry.Blazor.Forms;
 
 /// <summary>
 /// A DRY wrapper around a datetime-local, date, or time input field. Prefer the use of <see

@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Components.Internal;
+namespace ExtraDry.Blazor.Components.Internal;
 
 internal class ItemComparer<T>(
     PropertyDescription property,

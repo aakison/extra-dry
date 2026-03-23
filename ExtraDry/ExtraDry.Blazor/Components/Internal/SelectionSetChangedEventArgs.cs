@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Components.Internal;
+namespace ExtraDry.Blazor.Components.Internal;
 
 /// <summary>
 /// The event arguments used by the `SelectionSet.Changed` event handler

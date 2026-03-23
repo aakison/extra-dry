@@ -19,14 +19,14 @@
                 @if(DisplayFixedFieldsets.Any()) {
                     <div class="@ModelNameSlug fixed-fieldsets">
                         @foreach(var fieldset in DisplayFixedFieldsets) {
-                            <DryFieldset GroupName="@fieldset.Name" />
+                            <DryFieldset GroupName="@fieldset.Name" OnChange="OnChange" />
                         }
                     </div>
                 }
                 @if(DisplayVariableFieldsets.Any() || ChildContent != null) {
                     <div class="@ModelNameSlug variable-fieldsets">
                         @foreach(var fieldset in DisplayVariableFieldsets) {
-                            <DryFieldset GroupName="@fieldset.Name" />
+                            <DryFieldset GroupName="@fieldset.Name" OnChange="OnChange" />
                         }
                         <div class="content">
                             @ChildContent

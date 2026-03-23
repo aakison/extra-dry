@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor;
+namespace ExtraDry.Blazor;
 
 public partial class DryMiniCard<TItem> : ComponentBase, IExtraDryComponent where TItem : notnull
 {

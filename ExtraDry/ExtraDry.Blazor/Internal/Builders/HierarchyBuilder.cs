@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Internal;
+namespace ExtraDry.Blazor.Internal;
 
 /// <summary>
 /// A hierarchy builder as used by the <see cref="QueryBuilder" />. Supports expanding and

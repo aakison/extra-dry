@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Internal;
+namespace ExtraDry.Blazor.Internal;
 
 /// <summary>
 /// The internal form for the Flexi-Select component. Do not use directly.

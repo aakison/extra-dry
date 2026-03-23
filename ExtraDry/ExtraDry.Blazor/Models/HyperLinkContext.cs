@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Models;
+namespace ExtraDry.Blazor.Models;
 
 /// <summary>
 /// Context passed through to create a hyper link

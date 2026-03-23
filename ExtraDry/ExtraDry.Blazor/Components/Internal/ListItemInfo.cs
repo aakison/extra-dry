@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Components.Internal;
+namespace ExtraDry.Blazor.Components.Internal;
 
 /// <summary>
 /// Inside of visual collections, a list item that includes information for display and grouping,
