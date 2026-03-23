@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor;
+namespace ExtraDry.Blazor;
 
 /// <summary>
 /// The states that cycle through as the dialog is moved through states with Show(), Hide(), and

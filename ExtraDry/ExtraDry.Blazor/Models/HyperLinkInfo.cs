@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Models;
+namespace ExtraDry.Blazor.Models;
 
 /// <summary>
 /// Represents a hyperlink which wraps a method call and additional information about how to

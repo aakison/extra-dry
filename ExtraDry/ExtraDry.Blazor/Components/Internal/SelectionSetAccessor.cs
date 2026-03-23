@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Components.Internal;
+namespace ExtraDry.Blazor.Components.Internal;
 
 /// <summary>
 /// Create an instance to access the <see cref="SelectionSet"/> that is associated with the Decorator.

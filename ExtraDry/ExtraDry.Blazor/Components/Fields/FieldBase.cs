@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Components;
+namespace ExtraDry.Blazor.Components;
 
 public abstract class FieldBase<T> : ComponentBase
 {

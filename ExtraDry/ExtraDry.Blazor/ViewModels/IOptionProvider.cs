@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Web.Virtualization;
+using Microsoft.AspNetCore.Components.Web.Virtualization;
 
 namespace ExtraDry.Blazor;
 

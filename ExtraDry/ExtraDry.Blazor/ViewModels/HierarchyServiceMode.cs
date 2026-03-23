@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor;
+namespace ExtraDry.Blazor;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum HierarchyServiceMode

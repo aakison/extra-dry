@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Internal;
+namespace ExtraDry.Blazor.Internal;
 
 /// <summary>
 /// A filter builder used by the PageQueryBuilder that supports date and times.

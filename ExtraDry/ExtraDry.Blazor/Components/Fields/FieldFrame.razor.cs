@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Components;
+namespace ExtraDry.Blazor.Components;
 
 /// <summary>
 /// A frame for input fields that wraps the input element with a label, description and validation message.

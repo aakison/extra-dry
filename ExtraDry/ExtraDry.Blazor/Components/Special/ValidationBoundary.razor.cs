@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor;
+namespace ExtraDry.Blazor;
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "DRY1501:Blazor components should have a common properties.", Justification = "Inherited with DryErrorBoundary")]
 public partial class ValidationBoundary : DryErrorBoundary

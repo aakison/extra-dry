@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor;
+namespace ExtraDry.Blazor;
 
 /// <summary>
 /// An interface not to be used by classes, but provides a target for `inheritdoc` XML comments.

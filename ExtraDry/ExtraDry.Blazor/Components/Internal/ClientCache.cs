@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Components.Internal;
+namespace ExtraDry.Blazor.Components.Internal;
 
 internal class ClientCache<TKey, TItem>(
     TimeSpan timeoutWindow)

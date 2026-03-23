@@ -1,4 +1,4 @@
-﻿using ExtraDry.Blazor.Components.Formatting;
+using ExtraDry.Blazor.Components.Formatting;
 
 namespace ExtraDry.Blazor.Components;
 

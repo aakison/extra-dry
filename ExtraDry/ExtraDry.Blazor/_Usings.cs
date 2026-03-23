@@ -1,4 +1,4 @@
-﻿global using ExtraDry.Blazor.Components;
+global using ExtraDry.Blazor.Components;
 global using ExtraDry.Blazor.Components.Dry;
 global using ExtraDry.Blazor.Internal;
 global using ExtraDry.Blazor.Models;

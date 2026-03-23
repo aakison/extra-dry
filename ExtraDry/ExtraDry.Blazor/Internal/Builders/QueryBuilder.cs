@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Internal;
+namespace ExtraDry.Blazor.Internal;
 
 /// <summary>
 /// Builds a PageQuery for posting back to a server using a set of filters. This also has change

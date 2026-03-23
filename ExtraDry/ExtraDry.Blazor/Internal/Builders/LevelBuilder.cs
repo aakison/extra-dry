@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Internal;
+namespace ExtraDry.Blazor.Internal;
 
 /// <summary>
 /// A level builder as used by the <see cref="QueryBuilder" />. Supports expanding and collapsing

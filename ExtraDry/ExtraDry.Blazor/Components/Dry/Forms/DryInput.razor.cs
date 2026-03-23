@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Forms;
+namespace ExtraDry.Blazor.Forms;
 
 /// <summary>
 /// A single input field for a property of a model. This is used by <see cref="DryForm{T}" /> to

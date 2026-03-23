@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Components.Internal;
+namespace ExtraDry.Blazor.Components.Internal;
 
 /// <summary>
 /// Used with `SelectionSetChangedEventArgs` to indicate the type of the change for the event.

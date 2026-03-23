@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Forms;
+namespace ExtraDry.Blazor.Forms;
 
 /// <summary>
 /// A representation of a fieldset in a form, typically rendered automatically by an enclosing <see
@@ -12,6 +12,10 @@ public partial class DryFieldset : ComponentBase, IExtraDryComponent
     [Parameter]
     public string CssClass { get; set; } = string.Empty;
 
+    /// <summary>
+    /// An event callback that is invoked whenever any input field in the fieldset changes. This
+    /// relays the change events from the constituent DryInput components to the parent component.
+    /// </summary>
     [Parameter]
     public EventCallback<ChangeEventArgs> OnChange { get; set; }
 
