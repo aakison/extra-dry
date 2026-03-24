@@ -58,11 +58,11 @@
             }
             else { *@
                 var values = Property.GetDiscreteValues().ToList();
-                <DryInputFlexiSelect Model="@Model" Property="@Property" ReadOnly="@ReadOnly" OnValidation="@ValidationChanged" />
+                <DryInputFlexiSelect Model="@Model" Property="@Property" ReadOnly="@ReadOnly" OnValidation="@ValidationChanged" OnChange="HandleChange" />
             @* } *@ 
         }
         else if(Property.HasDateTimeRepresentation) {
-            <DryInputDateTime Model="@Model" Property="@Property" ReadOnly="@ReadOnly" OnValidation="@ValidationChanged" />
+            <DryInputDateTime Model="@Model" Property="@Property" ReadOnly="@ReadOnly" OnValidation="@ValidationChanged" OnChange="HandleChange" />
         }
         else if(Property.HasFreshnessRepresentation) {
             <DryInputFreshnessIndicator Model="@Model" Property="@Property" ReadOnly="@ReadOnly" />
@@ -77,15 +77,15 @@
             }
         } 
         else if(Property.HasNumericRepresentation) {
-            <DryInputNumeric Model="@Model" Property="@Property" ReadOnly="@ReadOnly" OnValidation="@ValidationChanged" />
+            <DryInputNumeric Model="@Model" Property="@Property" ReadOnly="@ReadOnly" OnValidation="@ValidationChanged" OnChange="HandleChange" />
         }
         else if(LookupProviderOptions != null) {
             var selectedValue = Property.GetValue(Model);
             @if(Property.HasArrayValues) {
-                <DryInputMultipleSelect Model="@Model" Property="@Property" Values="@LookupValues" />
+                <DryInputMultipleSelect Model="@Model" Property="@Property" Values="@LookupValues" OnChange="HandleChange" />
             }
             else {
-                <DryInputSingleSelect Model="@Model" Property="@Property" Values="@LookupValues" />
+                <DryInputSingleSelect Model="@Model" Property="@Property" Values="@LookupValues" OnChange="HandleChange" />
             }
         }
         else if(ReadOnly) {

@@ -48,7 +48,7 @@ public partial class DryInputNumeric<T>
             Value = newValue;
             StateHasChanged();
             var validation = ValidateProperty();
-            await InvokeOnChangeAsync(new ChangeEventArgs { Value = value });
+            await InvokeOnChangeAsync(value);
             await InvokeOnValidationAsync(validation);
         }
         else {
