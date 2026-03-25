@@ -1,4 +1,4 @@
-﻿using ExtraDry.Core.Parser.Internal;
+using ExtraDry.Core.Parser.Internal;
 using ExtraDry.Server.DataWarehouse.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

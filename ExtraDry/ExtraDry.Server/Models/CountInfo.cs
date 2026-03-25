@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server;
+namespace ExtraDry.Server;
 
 /// <summary>
 /// Supports the IPartialQueryable ToStatistics method.

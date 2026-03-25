@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core;
+namespace ExtraDry.Core;
 
 /// <summary>
 /// The base data type for an expansion field. Closely follows the JSON data types, but adds

@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core.Models;
+namespace ExtraDry.Core.Models;
 
 /// <summary>
 /// A machine-readable format for specifying errors in HTTP API responses based on

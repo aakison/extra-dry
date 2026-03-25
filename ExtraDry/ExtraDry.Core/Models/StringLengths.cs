@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core;
+namespace ExtraDry.Core;
 
 /// <summary>
 /// Common string lengths for aligning the length of strings in the system. Aligned lengths improve

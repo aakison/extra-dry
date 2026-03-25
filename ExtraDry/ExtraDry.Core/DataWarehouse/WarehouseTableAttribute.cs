@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core.DataWarehouse;
+namespace ExtraDry.Core.DataWarehouse;
 
 public abstract class WarehouseTableAttribute : Attribute
 {

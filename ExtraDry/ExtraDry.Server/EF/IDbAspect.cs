@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server.EF;
+namespace ExtraDry.Server.EF;
 
 /// <summary>
 /// A database aspect that can be used to intercept and modify entities as they are being saved.

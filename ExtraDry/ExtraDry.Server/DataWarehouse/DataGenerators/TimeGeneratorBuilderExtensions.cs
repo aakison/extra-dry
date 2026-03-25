@@ -1,4 +1,4 @@
-﻿using ExtraDry.Server.DataWarehouse.Builder;
+using ExtraDry.Server.DataWarehouse.Builder;
 
 namespace ExtraDry.Server.DataWarehouse;
 

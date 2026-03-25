@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core;
+namespace ExtraDry.Core;
 
 /// <summary>
 /// The processing rule to be applied to a property when a <see cref="FilterQuery" />, <see

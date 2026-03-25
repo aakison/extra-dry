@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server.EF;
+namespace ExtraDry.Server.EF;
 
 /// <summary>
 /// Options for configuring the <see cref="AuditAspect" />. Use with the <see

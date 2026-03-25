@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server.Agents;
+namespace ExtraDry.Server.Agents;
 
 /// <summary>
 /// Internal Cron Job that wraps another ICronJob to allow chaining of jobs, used to attach the

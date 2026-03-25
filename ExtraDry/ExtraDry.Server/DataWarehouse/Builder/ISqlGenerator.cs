@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server.DataWarehouse.Builder;
+namespace ExtraDry.Server.DataWarehouse.Builder;
 
 /// <summary>
 /// Interface for data warehouse system to generate SQL from data warehouse concepts.

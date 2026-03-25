@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server.DataWarehouse;
+namespace ExtraDry.Server.DataWarehouse;
 
 internal static class StandardConversions
 {

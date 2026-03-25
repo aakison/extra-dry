@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core;
+namespace ExtraDry.Core;
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 public class FormatAttribute : Attribute

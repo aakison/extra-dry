@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core;
+namespace ExtraDry.Core;
 
 /// <summary>
 /// Provides a type of a <see cref="IListClient{T}"/> that can be used to populate a list of options for a property in a form.

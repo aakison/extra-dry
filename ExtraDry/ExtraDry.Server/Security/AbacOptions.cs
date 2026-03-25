@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server.Security;
+namespace ExtraDry.Server.Security;
 
 /// <summary>
 /// Collection of options for Attribute-Based Access Control (ABAC) rules. These are typically

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Routing;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using System.Text.RegularExpressions;

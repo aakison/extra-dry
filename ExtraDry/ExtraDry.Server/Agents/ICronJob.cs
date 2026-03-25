@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server.Agents;
+namespace ExtraDry.Server.Agents;
 
 /// <summary>
 /// Represents an interface for jobs that can be run on a specific schedule.

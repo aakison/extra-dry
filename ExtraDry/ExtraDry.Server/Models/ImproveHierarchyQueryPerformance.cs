@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using System.Data.Common;
 
 namespace ExtraDry.Server;

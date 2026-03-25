@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server.EF;
+namespace ExtraDry.Server.EF;
 
 /// <summary>
 /// Arguments with information on the entities that have changed.

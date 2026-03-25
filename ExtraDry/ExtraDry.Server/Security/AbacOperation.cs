@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server.Security;
+namespace ExtraDry.Server.Security;
 
 /// <summary>
 /// The ABAC operation that is being checked for authorization purposes. This is used to determine

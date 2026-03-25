@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core;
+namespace ExtraDry.Core;
 
 /// <summary>
 /// Defines the decorated entities behavior when the RuleEngine's Delete, Expunge, or Undelete

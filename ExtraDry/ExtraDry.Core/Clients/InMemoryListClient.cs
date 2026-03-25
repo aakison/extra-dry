@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core;
+namespace ExtraDry.Core;
 
 /// <summary>
 /// Creates an IListClient from an in-memory list of items.  This can be used sets of data that

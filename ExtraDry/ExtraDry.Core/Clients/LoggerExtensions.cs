@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using System.Runtime.CompilerServices;
 
 namespace ExtraDry.Core;

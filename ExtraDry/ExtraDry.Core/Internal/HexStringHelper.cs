@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core.Internal;
+namespace ExtraDry.Core.Internal;
 
 internal static class HexStringHelper
 {

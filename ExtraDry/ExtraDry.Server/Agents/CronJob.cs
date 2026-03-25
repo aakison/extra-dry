@@ -1,4 +1,4 @@
-﻿using NCrontab;
+using NCrontab;
 
 namespace ExtraDry.Server.Agents;
 

@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core;
+namespace ExtraDry.Core;
 
 /// <summary>
 /// For the serialization of Blobs, the HTTP headers are used for properties instead of a JSON
