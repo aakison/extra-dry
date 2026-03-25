@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core;
+namespace ExtraDry.Core;
 
 /// <summary>
 /// A version sub-object for objects in the ORM that are versioned.

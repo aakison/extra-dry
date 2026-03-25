@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core;
+namespace ExtraDry.Core;
 
 /// <summary>
 /// Indicate that the property should be used to collect statistically information on the entity.

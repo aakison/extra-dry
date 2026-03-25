@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 
 namespace ExtraDry.Server.DataWarehouse.Builder;

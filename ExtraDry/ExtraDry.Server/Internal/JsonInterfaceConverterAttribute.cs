@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server.Internal;
+namespace ExtraDry.Server.Internal;
 
 [AttributeUsage(AttributeTargets.Interface, AllowMultiple = false)]
 public class JsonInterfaceConverterAttribute(

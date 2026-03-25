@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core;
+namespace ExtraDry.Core;
 
 /// <summary>
 /// Indicates the condition that a validation rule is applied. This is typically used to limit

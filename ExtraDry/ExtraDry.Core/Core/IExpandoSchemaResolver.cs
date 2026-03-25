@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core;
+namespace ExtraDry.Core;
 
 /// <summary>
 /// Resolves an ExpandoSchema on the server for a given type. Only one Expando Schema should be

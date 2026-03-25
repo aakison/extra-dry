@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server;
+namespace ExtraDry.Server;
 
 public class ExtraDryOptions
 {

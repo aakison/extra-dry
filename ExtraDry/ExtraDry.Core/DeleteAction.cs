@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core;
+namespace ExtraDry.Core;
 
 /// <summary>
 /// Defines the deletion action for an entity. In general, a Recycle rule produces a API that is

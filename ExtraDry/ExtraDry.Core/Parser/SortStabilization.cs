@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core;
+namespace ExtraDry.Core;
 
 /// <summary>
 /// Defines the behaviour of ExtraDry when providing a sort method to an underlying data store.

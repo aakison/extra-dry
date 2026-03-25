@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 
 namespace ExtraDry.Server.DataWarehouse;

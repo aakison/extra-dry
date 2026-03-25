@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server.Security;
+namespace ExtraDry.Server.Security;
 
 public class RbacPolicyBuilder
 {

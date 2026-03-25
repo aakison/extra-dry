@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.Reflection;
 
 namespace ExtraDry.Core.Parser.Internal;

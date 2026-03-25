@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server.DataWarehouse.Builder;
+namespace ExtraDry.Server.DataWarehouse.Builder;
 
 /// <summary>
 /// Represents the possible expansion of an Enum into a Dimension when Enums are annotated with

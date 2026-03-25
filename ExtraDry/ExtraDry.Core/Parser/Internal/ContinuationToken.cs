@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core.Parser.Internal;
+namespace ExtraDry.Core.Parser.Internal;
 
 /// <summary>
 /// Represents a token that can be used to help keep pages of results in a stable order when

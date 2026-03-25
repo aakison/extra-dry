@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server.DataWarehouse.Builder;
+namespace ExtraDry.Server.DataWarehouse.Builder;
 
 public class SqlServerSqlGenerator : ISqlGenerator
 {

@@ -1,4 +1,4 @@
-﻿using ExtraDry.Server.Security;
+using ExtraDry.Server.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

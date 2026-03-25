@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server.DataWarehouse;
+namespace ExtraDry.Server.DataWarehouse;
 
 /// <summary>
 /// Declares the type of day for a Date in the data warehouse.

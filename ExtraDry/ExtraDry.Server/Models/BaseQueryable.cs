@@ -1,4 +1,4 @@
-﻿using ExtraDry.Core.Parser.Internal;
+using ExtraDry.Core.Parser.Internal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using System.Collections;

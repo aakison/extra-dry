@@ -1,4 +1,4 @@
-﻿using ExtraDry.Core.Models;
+using ExtraDry.Core.Models;
 using ExtraDry.Server.EF;
 using Microsoft.Extensions.Logging;
 

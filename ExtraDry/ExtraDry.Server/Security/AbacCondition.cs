@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server.Security;
+namespace ExtraDry.Server.Security;
 
 /// <summary>
 /// A 'conjunctive' condition for an Attribute Based Access Control (ABAC) policy. All properties

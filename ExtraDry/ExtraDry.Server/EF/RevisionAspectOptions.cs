@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server.EF;
+namespace ExtraDry.Server.EF;
 
 /// <summary>
 /// Options for configuring the <see cref="RevisionAspect" />. Use with the <see

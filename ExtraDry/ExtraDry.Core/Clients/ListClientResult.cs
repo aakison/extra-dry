@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core;
+namespace ExtraDry.Core;
 
 public readonly struct ListClientResult<TItem>(IEnumerable<TItem> items, int count, int total)
 {

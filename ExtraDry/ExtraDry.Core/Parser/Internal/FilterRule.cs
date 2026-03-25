@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core.Parser.Internal;
+namespace ExtraDry.Core.Parser.Internal;
 
 public class FilterRule
 {

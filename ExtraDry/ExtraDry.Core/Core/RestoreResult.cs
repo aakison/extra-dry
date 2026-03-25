@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core;
+namespace ExtraDry.Core;
 
 /// <summary>
 /// When a `RuleEngine` RestoreAsync method is called, indicates the result of the action.

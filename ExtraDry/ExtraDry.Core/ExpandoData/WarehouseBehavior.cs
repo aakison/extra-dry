@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core;
+namespace ExtraDry.Core;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum WarehouseBehavior

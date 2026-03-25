@@ -1,4 +1,4 @@
-﻿using ExtraDry.Core.Models;
+using ExtraDry.Core.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Globalization;

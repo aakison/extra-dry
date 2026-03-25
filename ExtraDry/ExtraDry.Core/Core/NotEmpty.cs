@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core;
+namespace ExtraDry.Core;
 
 /// <summary>
 /// Ensures that a Guid or Decimal is not the empty or default value. Distinct from null in that it

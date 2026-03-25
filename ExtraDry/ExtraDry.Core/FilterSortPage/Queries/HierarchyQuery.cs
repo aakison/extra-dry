@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core;
+namespace ExtraDry.Core;
 
 /// <summary>
 /// Represents a hierarchy query to filter against a hierarchy of items. Can only be used with

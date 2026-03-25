@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core;
+namespace ExtraDry.Core;
 
 /// <summary>
 /// An identifier can contain unicode letters, underscores and digits, but may not start with a

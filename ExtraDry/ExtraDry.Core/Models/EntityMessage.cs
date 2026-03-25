@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core.Models;
+namespace ExtraDry.Core.Models;
 
 /// <summary>
 /// A message for queuing transports to indicate an event has occurred on an entity type.

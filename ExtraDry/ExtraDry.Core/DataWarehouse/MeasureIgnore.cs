@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core.DataWarehouse;
+namespace ExtraDry.Core.DataWarehouse;
 
 /// <summary>
 /// Prevents a property from being a data warehouse measure of a fact table. Overrides [Measure] if

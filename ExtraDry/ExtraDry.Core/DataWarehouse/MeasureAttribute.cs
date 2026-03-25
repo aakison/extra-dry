@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core.DataWarehouse;
+namespace ExtraDry.Core.DataWarehouse;
 
 /// <summary>
 /// A data warehouse measure of a fact table.

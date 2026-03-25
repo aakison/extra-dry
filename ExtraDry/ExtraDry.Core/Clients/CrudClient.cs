@@ -1,4 +1,4 @@
-﻿using ExtraDry.Core.Extensions;
+using ExtraDry.Core.Extensions;
 using Microsoft.Extensions.Logging;
 using System.Net.Http.Json;
 using System.Text;

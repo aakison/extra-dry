@@ -1,4 +1,4 @@
-﻿using Pidgin;
+using Pidgin;
 using static Pidgin.Parser<char>;
 using static Pidgin.Parser;
 

@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server.Agents;
+namespace ExtraDry.Server.Agents;
 
 /// <summary>
 /// Internal Cron Job that wraps an anonymous function that was set using a lambda expression

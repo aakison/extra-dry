@@ -1,4 +1,4 @@
-﻿using ExtraDry.Core.Internal;
+using ExtraDry.Core.Internal;
 using System.Text;
 
 namespace ExtraDry.Core;

@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server.DataWarehouse;
+namespace ExtraDry.Server.DataWarehouse;
 
 /// <summary>
 /// Options for configuring a `ServiceBusSender-T`.

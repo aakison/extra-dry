@@ -1,4 +1,4 @@
-﻿using ExtraDry.Core.Parser.Internal;
+using ExtraDry.Core.Parser.Internal;
 using System.Linq.Expressions;
 
 namespace ExtraDry.Server;

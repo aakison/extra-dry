@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server.Security;
+namespace ExtraDry.Server.Security;
 
 /// <summary>
 /// Represents an ABAC policy that can be used to authorize access to resources. All properties are

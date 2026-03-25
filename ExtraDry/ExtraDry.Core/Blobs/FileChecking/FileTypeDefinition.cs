@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core;
+namespace ExtraDry.Core;
 
 /// <summary>
 /// Definition of a file type that links extensions with mime types and optionally 'magic bytes'

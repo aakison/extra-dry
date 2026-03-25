@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core.ExpandoData;
+namespace ExtraDry.Core.ExpandoData;
 
 public interface IExpandoDecorator
 {
