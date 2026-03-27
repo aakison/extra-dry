@@ -1,0 +1,43 @@
+@layer extra-dry {
+
+    div {
+        display: flex;
+        align-items: stretch;
+        gap: var(--spacing-small);
+        border: 1px solid var(--dry-border-color, #ccc);
+        border-radius: 4px;
+        background: var(--dry-surface-color, #f9f9f9);
+    }
+
+    div ::deep pre {
+        flex: 1;
+        margin: 0;
+        padding: var(--spacing-small), var(--spacing-medium);
+        font-family: monospace;
+        white-space: pre-wrap;
+        word-break: break-all;
+        user-select: all;
+        overflow-x: hidden;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        font-weight: bold;
+    }
+
+    div ::deep .actions {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-tiny);
+        padding-inline-end: var(--spacing-small);
+        flex-shrink: 0;
+    }
+
+    div ::deep .actions button {
+        opacity: 0.6;
+        cursor: pointer;
+    }
+
+    div ::deep .actions button:hover {
+        opacity: 1;
+    }
+}
