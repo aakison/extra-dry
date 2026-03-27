@@ -5,6 +5,12 @@ export function TriCheck_SetIndeterminate(id, value) {
         checkbox.indeterminate = value;
     }
 }
+export function CopyHelper_CopyToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text);
+    }
+}
+
 var loading = false;
 var loaded = false;
 
