@@ -31,24 +31,6 @@ public partial class DryForm<T>(
     public EditMode EditMode { get; set; } = EditMode.Update;
 
     /// <summary>
-    /// Represents the number of fieldsets that are rendered in the first collection of fieldsets.
-    /// The remainder are rendered in a second collection of fieldsets. CSS styles can render these
-    /// two separately, e.g. my making the second set scrollable.
-    /// </summary>
-    [Parameter]
-    [Obsolete("Remove entirely, all future fieldsets are fixed.")]
-    public int FixedFieldsets { get; set; }
-
-    /// <summary>
-    /// A comma-separate list of fieldsets that are not displayed by the form. This is useful if
-    /// those fieldsets are not used for the view (e.g. no advanced settings during creation), or
-    /// if an alternate visualization is used (e.g. using a DryFieldset in tab).
-    /// </summary>
-    [Parameter]
-    [Obsolete("Use Fieldsets (the inverse) instead")]
-    public string HiddenFieldsets { get; set; } = "";
-
-    /// <summary>
     /// A comma-separate list of fieldsets that are displayed by the form. This is useful to limit
     /// the form to a subset and allow others to be rendered separately. 
     /// </summary>
