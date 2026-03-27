@@ -10,12 +10,6 @@
             @if(Model == null) {
                 <progress>Loading...</progress>
             } else {
-                @if(DisplayTitle) {
-                    <div class="@ModelNameSlug entity-info">
-                        <Icon Key="@Description?.Icon" />
-                        <label>@GetEntityInfoCaption()</label>
-                    </div>
-                }
                 @if(DisplayFixedFieldsets.Any()) {
                     <div class="@ModelNameSlug fixed-fieldsets">
                         @foreach(var fieldset in DisplayFixedFieldsets) {
