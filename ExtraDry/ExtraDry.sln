@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.0.11217.181 d18.0
+VisualStudioVersion = 18.0.11217.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A5A1CB4E-B995-47B9-8EBE-0009C0B97805}"
 	ProjectSection(SolutionItems) = preProject
@@ -43,8 +43,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtraDry.Server.Tests", "ExtraDry.Server.Tests\ExtraDry.Server.Tests.csproj", "{A4414229-507A-4F50-B573-FEE24071AE73}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.WebJobs", "Sample.WebJobs\Sample.WebJobs.csproj", "{FEAFDA36-0C8D-4369-B632-C8A847DD25E4}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Tests", "Sample.Tests\Sample.Tests.csproj", "{75C4867C-65AF-40F0-83A2-54CD91377279}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtraDry.Blazor.Experimental", "ExtraDry.Blazor.Experimental\ExtraDry.Blazor.Experimental.csproj", "{7B9FEC78-072D-4D09-8E26-7A4B07B6FFCF}"
 EndProject
@@ -102,10 +100,6 @@ Global
 		{FEAFDA36-0C8D-4369-B632-C8A847DD25E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEAFDA36-0C8D-4369-B632-C8A847DD25E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEAFDA36-0C8D-4369-B632-C8A847DD25E4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{75C4867C-65AF-40F0-83A2-54CD91377279}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{75C4867C-65AF-40F0-83A2-54CD91377279}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{75C4867C-65AF-40F0-83A2-54CD91377279}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{75C4867C-65AF-40F0-83A2-54CD91377279}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7B9FEC78-072D-4D09-8E26-7A4B07B6FFCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7B9FEC78-072D-4D09-8E26-7A4B07B6FFCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B9FEC78-072D-4D09-8E26-7A4B07B6FFCF}.Release|Any CPU.ActiveCfg = Release|Any CPU

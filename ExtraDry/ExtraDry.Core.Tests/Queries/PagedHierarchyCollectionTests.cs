@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 
 namespace ExtraDry.Core.Tests.Models;
 
@@ -23,11 +23,11 @@ public class PagedHierarchyCollectionTests
     }
 
     [Theory]
-    [InlineData(nameof(PagedHierarchyCollection<object>.Filter), "Any")]
-    [InlineData(nameof(PagedHierarchyCollection<object>.Sort), "Any")]
-    [InlineData(nameof(PagedHierarchyCollection<object>.Level), 3)]
-    [InlineData(nameof(PagedHierarchyCollection<object>.Start), 3)]
-    [InlineData(nameof(PagedHierarchyCollection<object>.Total), 3)]
+    [InlineData(nameof(PagedHierarchyCollection<>.Filter), "Any")]
+    [InlineData(nameof(PagedHierarchyCollection<>.Sort), "Any")]
+    [InlineData(nameof(PagedHierarchyCollection<>.Level), 3)]
+    [InlineData(nameof(PagedHierarchyCollection<>.Start), 3)]
+    [InlineData(nameof(PagedHierarchyCollection<>.Total), 3)]
     public void RoundtripProperties(string propertyName, object propertyValue)
     {
         var target = new PagedHierarchyCollection<object>();
@@ -41,8 +41,8 @@ public class PagedHierarchyCollectionTests
     }
 
     [Theory]
-    [InlineData(nameof(PagedHierarchyCollection<object>.Expand))]
-    [InlineData(nameof(PagedHierarchyCollection<object>.Collapse))]
+    [InlineData(nameof(PagedHierarchyCollection<>.Expand))]
+    [InlineData(nameof(PagedHierarchyCollection<>.Collapse))]
     public void RoundtripStringArrayProperties(string propertyName)
     {
         var target = new HierarchyCollection<object>();

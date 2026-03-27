@@ -1,4 +1,4 @@
-﻿using AngleSharp.Html.Dom;
+using AngleSharp.Html.Dom;
 using ExtraDry.Blazor.Forms;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
@@ -16,8 +16,8 @@ public class DryInputTextTests
         var property = description.FormProperties.First(e => e.Property.Name == nameof(Model.Name));
 
         var fragment = context.RenderComponent<DryInputText<Model>>(
-            (nameof(DryInputText<Model>.Model), model),
-            (nameof(DryInputText<Model>.Property), property)
+            (nameof(DryInputText<>.Model), model),
+            (nameof(DryInputText<>.Property), property)
             );
 
         var input = fragment.Find("input") as IHtmlInputElement;
@@ -36,7 +36,7 @@ public class DryInputTextTests
         };
 
         var fragment = context.RenderComponent<DryInputText<Model>>(
-            (nameof(DryInputText<Model>.UnmatchedAttributes), attributes)
+            (nameof(DryInputText<>.UnmatchedAttributes), attributes)
             );
 
         var outerDiv = fragment.Nodes.First() as IHtmlDivElement;

@@ -1,4 +1,4 @@
-﻿using AngleSharp.Html.Dom;
+using AngleSharp.Html.Dom;
 using ExtraDry.Blazor.Forms;
 using ExtraDry.Core;
 using System.ComponentModel.DataAnnotations;
@@ -17,8 +17,8 @@ public class DryInputNumericTests
         var property = description.FormProperties.First(e => e.Property.Name == nameof(BasicNumericModel.Numeric));
 
         var fragment = context.RenderComponent<DryInputNumeric<BasicNumericModel>>(
-            (nameof(DryInputBase<BasicNumericModel>.Model), model),
-            (nameof(DryInputBase<BasicNumericModel>.Property), property)
+            (nameof(DryInputNumeric<>.Model), model),
+            (nameof(DryInputNumeric<>.Property), property)
             );
 
         HtmlAssert.TagHasClass(fragment, "div", "input");
@@ -66,8 +66,8 @@ public class DryInputNumericTests
         var property = description.FormProperties.First(e => e.Property.Name == nameof(BasicNumericModel.Numeric));
 
         var fragment = context.RenderComponent<DryInputNumeric<BasicNumericModel>>(
-            (nameof(DryInputBase<BasicNumericModel>.Model), model),
-            (nameof(DryInputBase<BasicNumericModel>.Property), property)
+            (nameof(DryInputNumeric<>.Model), model),
+            (nameof(DryInputNumeric<>.Property), property)
             );
 
         HtmlAssert.TagAttributeValue(fragment, "input", "pattern", @"\d*");
@@ -83,8 +83,8 @@ public class DryInputNumericTests
         var property = description.FormProperties.First(e => e.Property.Name == nameof(BasicNumericModel.Numeric));
 
         var fragment = context.RenderComponent<DryInputNumeric<BasicNumericModel>>(
-            (nameof(DryInputBase<BasicNumericModel>.Model), model),
-            (nameof(DryInputBase<BasicNumericModel>.Property), property),
+            (nameof(DryInputNumeric<>.Model), model),
+            (nameof(DryInputNumeric<>.Property), property),
             ("aria-attribute", "custom-value")
             );
 
@@ -108,8 +108,8 @@ public class DryInputNumericTests
         var property = description.FormProperties.First(e => e.Property.Name == nameof(NullNumericModel.Numeric));
 
         var fragment = context.RenderComponent<DryInputNumeric<NullNumericModel>>(
-            (nameof(DryInputBase<NullNumericModel>.Model), model),
-            (nameof(DryInputBase<NullNumericModel>.Property), property)
+            (nameof(DryInputNumeric<>.Model), model),
+            (nameof(DryInputNumeric<>.Property), property)
             );
 
         HtmlAssert.TagAttributeValue(fragment, "input", "placeholder", "Enter a number");
@@ -125,8 +125,8 @@ public class DryInputNumericTests
         var property = description.FormProperties.First(e => e.Property.Name == nameof(NullNumericModel.Numeric));
 
         var fragment = context.RenderComponent<DryInputNumeric<NullNumericModel>>(
-            (nameof(DryInputBase<NullNumericModel>.Model), model),
-            (nameof(DryInputBase<NullNumericModel>.Property), property)
+            (nameof(DryInputBase<>.Model), model),
+            (nameof(DryInputBase<>.Property), property)
             );
 
         var icon = fragment.Find("img") as IHtmlImageElement;
@@ -146,9 +146,9 @@ public class DryInputNumericTests
         var property = description.FormProperties.First(e => e.Property.Name == nameof(NullNumericModel.Numeric));
 
         var fragment = context.RenderComponent<DryInputNumeric<NullNumericModel>>(
-            (nameof(DryInputBase<NullNumericModel>.Model), model),
-            (nameof(DryInputBase<NullNumericModel>.Property), property),
-            (nameof(DryInputNumeric<NullNumericModel>.ReadOnly), true)
+            (nameof(DryInputNumeric<>.Model), model),
+            (nameof(DryInputNumeric<>.Property), property),
+            (nameof(DryInputNumeric<>.ReadOnly), true)
             );
 
         // classes and attributers

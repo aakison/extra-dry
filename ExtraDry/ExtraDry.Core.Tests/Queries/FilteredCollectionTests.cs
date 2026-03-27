@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 
 namespace ExtraDry.Core.Tests.Models;
 
@@ -17,7 +17,7 @@ public class FilteredCollectionTests
     }
 
     [Theory]
-    [InlineData(nameof(FilteredCollection<object>.Filter), "Any")]
+    [InlineData(nameof(FilteredCollection<>.Filter), "Any")]
     public void RoundtripProperties(string propertyName, object propertyValue)
     {
         var target = new FilteredCollection<object>();
