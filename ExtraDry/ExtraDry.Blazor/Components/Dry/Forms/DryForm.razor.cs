@@ -19,12 +19,6 @@ public partial class DryForm<T>(
     [Parameter, EditorRequired]
     public T? Model { get; set; }
 
-    /// <summary>
-    /// Determines if the form has a title with descriptive information
-    /// </summary>
-    [Parameter]
-    public bool ShowTitle { get; set; } = true;
-
     public object? UntypedModel {
         get => Model;
     }
@@ -99,8 +93,6 @@ public partial class DryForm<T>(
             FormDescription = new FormDescription(Description, Model);
         }
     }
-
-    private bool DisplayTitle => ShowTitle;
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "dry-form", ModelNameSlug, CssClass);
 
