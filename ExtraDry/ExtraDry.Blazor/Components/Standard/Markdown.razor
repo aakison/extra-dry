@@ -64,7 +64,7 @@ else {
         if(firstRender && !ReadOnly) {
             dotNetRef = DotNetObjectReference.Create(this);
             var options = new MarkdownEditorOptions {
-                Mode = MarkdownSupport == MarkdownSupportType.Character ? "Character" : "Block",
+                Mode = MarkdownSupport,
                 Placeholder = Placeholder,
                 LinkBookmarks = LinkBookmarks,
             };
