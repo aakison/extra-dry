@@ -6,9 +6,9 @@ namespace ExtraDry.Blazor;
 public class MarkdownEditorOptions
 {
     /// <summary>
-    /// The toolbar mode: "Character" for inline controls, "Block" for full block-level controls.
+    /// The toolbar mode: Character for inline controls, Block for full block-level controls.
     /// </summary>
-    public string Mode { get; set; } = "Block";
+    public MarkdownSupportType Mode { get; set; } = MarkdownSupportType.Block;
 
     /// <summary>
     /// Whether to include the image button in the toolbar (Block mode only).
