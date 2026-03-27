@@ -1,4 +1,4 @@
-﻿using AngleSharp.Html.Dom;
+using AngleSharp.Html.Dom;
 using ExtraDry.Blazor.Forms;
 using ExtraDry.Core;
 using System.Globalization;
@@ -17,8 +17,8 @@ public class DryInputDateTimeTests
         var property = description.FormProperties.First(e => e.Property.Name == nameof(DateTimeModel.DateTime));
 
         var fragment = context.RenderComponent<DryInputDateTime<DateTimeModel>>(
-            (nameof(DryInputDateTime<DateTimeModel>.Model), model),
-            (nameof(DryInputDateTime<DateTimeModel>.Property), property)
+            (nameof(DryInputDateTime<>.Model), model),
+            (nameof(DryInputDateTime<>.Property), property)
             );
 
         var input = fragment.Find("input") as IHtmlInputElement;
@@ -37,8 +37,8 @@ public class DryInputDateTimeTests
         var property = description.FormProperties.First(e => e.Property.Name == nameof(DateTimeModel.DateTime));
 
         var fragment = context.RenderComponent<DryInputDateTime<DateTimeModel>>(
-            (nameof(DryInputDateTime<DateTimeModel>.Model), model),
-            (nameof(DryInputDateTime<DateTimeModel>.Property), property)
+            (nameof(DryInputDateTime<>.Model), model),
+            (nameof(DryInputDateTime<>.Property), property)
             );
 
         var input = fragment.Find("input") as IHtmlInputElement;
@@ -57,8 +57,8 @@ public class DryInputDateTimeTests
         var property = description.FormProperties.First(e => e.Property.Name == nameof(DateTimeModel.DateOnly));
 
         var fragment = context.RenderComponent<DryInputDateTime<DateTimeModel>>(
-            (nameof(DryInputDateTime<DateTimeModel>.Model), model),
-            (nameof(DryInputDateTime<DateTimeModel>.Property), property)
+            (nameof(DryInputDateTime<>.Model), model),
+            (nameof(DryInputDateTime<>.Property), property)
             );
 
         var input = fragment.Find("input") as IHtmlInputElement;
@@ -77,8 +77,8 @@ public class DryInputDateTimeTests
         var property = description.FormProperties.First(e => e.Property.Name == nameof(DateTimeModel.TimeOnly));
 
         var fragment = context.RenderComponent<DryInputDateTime<DateTimeModel>>(
-            (nameof(DryInputDateTime<DateTimeModel>.Model), model),
-            (nameof(DryInputDateTime<DateTimeModel>.Property), property)
+            (nameof(DryInputDateTime<>.Model), model),
+            (nameof(DryInputDateTime<>.Property), property)
             );
 
         var input = fragment.Find("input") as IHtmlInputElement;
@@ -98,8 +98,8 @@ public class DryInputDateTimeTests
         var property = description.FormProperties.First(e => e.Property.Name == nameof(DateTimeAttributedModel.DateOnly));
 
         var fragment = context.RenderComponent<DryInputDateTime<DateTimeAttributedModel>>(
-            (nameof(DryInputDateTime<DateTimeAttributedModel>.Model), model),
-            (nameof(DryInputDateTime<DateTimeAttributedModel>.Property), property)
+            (nameof(DryInputDateTime<>.Model), model),
+            (nameof(DryInputDateTime<>.Property), property)
             );
 
         var input = fragment.Find("input") as IHtmlInputElement;
@@ -118,8 +118,8 @@ public class DryInputDateTimeTests
         var property = description.FormProperties.First(e => e.Property.Name == nameof(DateTimeAttributedModel.DateTime));
 
         var fragment = context.RenderComponent<DryInputDateTime<DateTimeAttributedModel>>(
-            (nameof(DryInputDateTime<DateTimeAttributedModel>.Model), model),
-            (nameof(DryInputDateTime<DateTimeAttributedModel>.Property), property)
+            (nameof(DryInputDateTime<>.Model), model),
+            (nameof(DryInputDateTime<>.Property), property)
             );
 
         var input = fragment.Find("input") as IHtmlInputElement;

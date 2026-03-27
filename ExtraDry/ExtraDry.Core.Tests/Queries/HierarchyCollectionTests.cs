@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 
 namespace ExtraDry.Core.Tests.Models;
 
@@ -21,9 +21,9 @@ public class HierarchyCollectionTests
     }
 
     [Theory]
-    [InlineData(nameof(HierarchyCollection<object>.Filter), "Any")]
-    [InlineData(nameof(HierarchyCollection<object>.Sort), "Any")]
-    [InlineData(nameof(HierarchyCollection<object>.Level), 3)]
+    [InlineData(nameof(HierarchyCollection<>.Filter), "Any")]
+    [InlineData(nameof(HierarchyCollection<>.Sort), "Any")]
+    [InlineData(nameof(HierarchyCollection<>.Level), 3)]
     public void RoundtripProperties(string propertyName, object propertyValue)
     {
         var target = new HierarchyCollection<object>();
@@ -37,8 +37,8 @@ public class HierarchyCollectionTests
     }
 
     [Theory]
-    [InlineData(nameof(HierarchyCollection<object>.Expand))]
-    [InlineData(nameof(HierarchyCollection<object>.Collapse))]
+    [InlineData(nameof(HierarchyCollection<>.Expand))]
+    [InlineData(nameof(HierarchyCollection<>.Collapse))]
     public void RoundtripStringListProperties(string propertyName)
     {
         var target = new HierarchyCollection<object>();
