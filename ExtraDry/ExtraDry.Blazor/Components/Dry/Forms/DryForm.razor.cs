@@ -36,6 +36,7 @@ public partial class DryForm<T>(
     /// two separately, e.g. my making the second set scrollable.
     /// </summary>
     [Parameter]
+    [Obsolete("Remove entirely, all future fieldsets are fixed.")]
     public int FixedFieldsets { get; set; }
 
     /// <summary>
@@ -44,7 +45,15 @@ public partial class DryForm<T>(
     /// if an alternate visualization is used (e.g. using a DryFieldset in tab).
     /// </summary>
     [Parameter]
+    [Obsolete("Use Fieldsets (the inverse) instead")]
     public string HiddenFieldsets { get; set; } = "";
+
+    /// <summary>
+    /// A comma-separate list of fieldsets that are displayed by the form. This is useful to limit
+    /// the form to a subset and allow others to be rendered separately. 
+    /// </summary>
+    [Parameter]
+    public string Fieldsets { get; set; } = "*";
 
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
@@ -82,7 +91,7 @@ public partial class DryForm<T>(
 
     protected override void OnParametersSet()
     {
-        HiddenFieldsetNames = HiddenFieldsets.Split(',');
+        FieldsetNames = Fieldsets.Split(',');
         if(Decorator == null) {
             Logger.LogConsoleError("DryForm requires a Decorator");
             return;
@@ -96,17 +105,10 @@ public partial class DryForm<T>(
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "dry-form", ModelNameSlug, CssClass);
 
-    private List<string> AlertMessages { get; set; } = [];
+    private string[] FieldsetNames { get; set; } = [];
 
-    private IEnumerable<FormFieldset> DisplayFixedFieldsets => VisibleFieldsets.Take(FixedFieldsets) ?? [];
-
-    private IEnumerable<FormFieldset> DisplayVariableFieldsets => VisibleFieldsets.Skip(FixedFieldsets) ?? [];
-
-    private string[] HiddenFieldsetNames { get; set; } = [];
-
-    private IEnumerable<FormFieldset> VisibleFieldsets =>
-        HiddenFieldsets == "*"
-        ? []
-        : FormDescription?.Fieldsets.Where(e => !HiddenFieldsetNames.Contains(e.Name, StringComparer.OrdinalIgnoreCase))
+    private IEnumerable<FormFieldset> VisibleFieldsets => (FieldsetNames.Any(e => e == "*")
+        ? FormDescription?.Fieldsets
+        : FormDescription?.Fieldsets.Where(e => FieldsetNames.Contains(e.Name, StringComparer.OrdinalIgnoreCase)))
         ?? [];
 }

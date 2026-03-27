@@ -10,23 +10,16 @@
             @if(Model == null) {
                 <progress>Loading...</progress>
             } else {
-                @if(DisplayFixedFieldsets.Any()) {
+                @if(VisibleFieldsets.Any()) {
                     <div class="@ModelNameSlug fixed-fieldsets">
-                        @foreach(var fieldset in DisplayFixedFieldsets) {
+                        @foreach(var fieldset in VisibleFieldsets) {
                             <DryFieldset GroupName="@fieldset.Name" OnChange="OnChange" />
                         }
                     </div>
                 }
-                @if(DisplayVariableFieldsets.Any() || ChildContent != null) {
-                    <div class="@ModelNameSlug variable-fieldsets">
-                        @foreach(var fieldset in DisplayVariableFieldsets) {
-                            <DryFieldset GroupName="@fieldset.Name" OnChange="OnChange" />
-                        }
-                        <div class="content">
-                            @ChildContent
-                        </div>
-                    </div>
-                }
+                <div class="content">
+                    @ChildContent
+                </div>
                 <ValidationBoundary>
                     <div class="@ModelNameSlug entity-actions">
                         <DryButtonBar Decorator="Decorator" Model="Model" Category="@CommandCategory" />
