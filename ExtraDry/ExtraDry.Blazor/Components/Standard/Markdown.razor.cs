@@ -1,0 +1,108 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace ExtraDry.Blazor.Components.Standard;
+
+public partial class Markdown : ComponentBase
+{
+    [Parameter]
+    public string Value { get; set; } = "";
+
+    [Parameter]
+    public EventCallback<string> ValueChanged { get; set; }
+
+    [Parameter]
+    public MarkdownSupportType MarkdownSupport { get; set; } = MarkdownSupportType.Block;
+
+    [Parameter]
+    public bool ReadOnly { get; set; }
+
+    [Parameter]
+    public string CssClass { get; set; } = "";
+
+    [Parameter]
+    public string Placeholder { get; set; } = "";
+
+    /// <summary>
+    /// A dictionary of bookmark entries shown in the link dialog. Keys are display names and
+    /// values are URLs/paths. When provided, these appear as suggestions in the link URL field.
+    /// </summary>
+    [Parameter]
+    public Dictionary<string, string>? LinkBookmarks { get; set; }
+
+    [Inject]
+    private MarkdownEditorInterop EditorInterop { get; set; } = null!;
+
+    private string renderedHtml = "";
+    private string editorId = "";
+    private DotNetObjectReference<Markdown>? dotNetRef;
+    private bool initialized;
+    private string? lastPushedMarkdown;
+
+    protected override void OnInitialized()
+    {
+        editorId = $"markdown-editor-{++instanceCount}";
+    }
+
+    protected override void OnParametersSet()
+    {
+        if(ReadOnly) {
+            renderedHtml = MarkdownConverter.ToHtml(Value);
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender && !ReadOnly) {
+            dotNetRef = DotNetObjectReference.Create(this);
+            var options = new MarkdownEditorOptions {
+                Mode = MarkdownSupport,
+                Placeholder = Placeholder,
+                LinkBookmarks = LinkBookmarks,
+            };
+            await EditorInterop.InitializeAsync(editorId, dotNetRef, options);
+            initialized = true;
+            var html = MarkdownConverter.ToHtml(Value);
+            await EditorInterop.SetContentAsync(editorId, html);
+            lastPushedMarkdown = Value;
+        }
+        else if(initialized && !ReadOnly && Value != lastPushedMarkdown) {
+            var html = MarkdownConverter.ToHtml(Value);
+            await EditorInterop.SetContentAsync(editorId, html);
+            lastPushedMarkdown = Value;
+        }
+    }
+
+    [JSInvokable]
+    public async Task OnContentChanged(string html)
+    {
+        var markdown = MarkdownConverter.ToMarkdown(html);
+        if(markdown != Value) {
+            Value = markdown;
+            lastPushedMarkdown = markdown;
+            await ValueChanged.InvokeAsync(Value);
+        }
+    }
+
+    private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
+
+    private string ModeCss => MarkdownSupport == MarkdownSupportType.Character ? "character" : "block";
+
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", ReadOnlyCss, ModeCss, CssClass);
+
+    public async ValueTask DisposeAsync()
+    {
+        if(initialized) {
+            try {
+                await EditorInterop.DestroyAsync(editorId);
+            }
+            catch(JSDisconnectedException) {
+                // Circuit already disconnected, no cleanup needed
+            }
+        }
+        dotNetRef?.Dispose();
+    }
+
+    private static int instanceCount;
+}

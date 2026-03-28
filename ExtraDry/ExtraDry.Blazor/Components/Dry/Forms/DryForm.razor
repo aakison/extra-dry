@@ -13,7 +13,7 @@
                 @if(VisibleFieldsets.Any()) {
                     <div class="@ModelNameSlug fixed-fieldsets">
                         @foreach(var fieldset in VisibleFieldsets) {
-                            <DryFieldset GroupName="@fieldset.Name" OnChange="OnChange" />
+                            <DryFieldset UseFields="@UseFields" GroupName="@fieldset.Name" OnChange="OnChange" />
                         }
                     </div>
                 }
