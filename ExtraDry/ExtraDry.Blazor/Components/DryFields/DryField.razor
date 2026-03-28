@@ -1,0 +1,71 @@
+﻿@namespace ExtraDry.Blazor.DryFields
+@typeparam T
+@inherits OwningComponentBase
+
+@if(Property == null) {
+    <progress>loading...</progress>
+}
+else {
+    @if(Property.HasBooleanValues) {
+        //var value = ((bool?)Property.GetValue(Model) ?? false) == true;
+        //<input type="checkbox" checked="@value" @onchange="HandleChange" />
+    }
+    else if(IsOptionField) {
+        <DryOptionField Model="Model" Property="Property" OnInput="OnInput" OnChange="OnChange" OnValidate="OnValidate" />
+    }
+    else if(Property.HasDiscreteStringValues) {
+        //<DryInputComboBox Model="@Model" Property="@Property" />
+    }
+    else if(Property.HasDiscreteValues) {
+        //var selectedValue = Property.GetValue(Model);
+        @* @if(Property.ControlType == ControlType.RadioButtons) {
+            <div class="radio-buttons @Property.DisplayClass">
+                @foreach (var value in Property.GetDiscreteValues()) {
+                    var selected = value.Key.ToString() == selectedValue?.ToString(); // force object to enum compare
+                    var valueClassName = value.Key.ToString()?.ToLower();
+                    var selectedClassName = selected ? $"selected {valueClassName}" : $"{valueClassName}";
+                    <button class="@selectedClassName" @onclick="@(e => HandleClick(value.Key))">
+                        @if(!string.IsNullOrWhiteSpace(Property.Icon)) {
+                            var source = string.Format(Property.Icon, valueClassName);
+                            <img class="@valueClassName" src="@source" />
+                        }
+                        <span class="@valueClassName">@value.Title</span>
+                    </button>
+                }
+            </div>
+        }
+        else { 
+            var values = Property.GetDiscreteValues().ToList();
+            <DryInputFlexiSelect Model="@Model" Property="@Property" ReadOnly="@ReadOnly" OnValidation="@ValidationChanged" OnChange="HandleChange" />
+        } *@ 
+    }
+    else if(Property.HasDateTimeRepresentation) {
+        // <DryInputDateTime Model="@Model" Property="@Property" ReadOnly="@ReadOnly" OnValidation="@ValidationChanged" OnChange="HandleChange" />
+    }
+    else if(Property.HasFreshnessRepresentation) {
+        // <DryInputFreshnessIndicator Model="@Model" Property="@Property" ReadOnly="@ReadOnly" />
+    }
+    else if(IsTextField) {
+        <DryTextField Model="Model" Property="Property" OnInput="OnInput" OnChange="OnChange" OnValidate="OnValidate" />
+    } 
+    else if(Property.HasNumericRepresentation) {
+        //<DryInputNumeric Model="@Model" Property="@Property" ReadOnly="@ReadOnly" OnValidation="@ValidationChanged" OnChange="HandleChange" />
+    }
+    //else if(LookupProviderOptions != null) {
+        //var selectedValue = Property.GetValue(Model);
+       // @if(Property.HasArrayValues) {
+        //    <DryInputMultipleSelect Model="@Model" Property="@Property" Values="@LookupValues" OnChange="HandleChange" />
+        //}
+        //else {
+        //    <DryInputSingleSelect Model="@Model" Property="@Property" Values="@LookupValues" OnChange="HandleChange" />
+        //}
+    //}
+    //else if(ReadOnly) {
+        //var selectedValue = Property.GetValue(Model);
+        //<span class="readonly">@selectedValue?.ToString()</span>
+    //}
+    else { 
+        <div>Unresolved control type @Property.Property.Name</div>
+    }
+}
+

@@ -9,6 +9,11 @@ public partial class DryForm<T>(
     : ComponentBase, IExtraDryComponent, IDryForm
     where T : class
 {
+
+    [Parameter]
+    //[Obsolete("This will go away when everything uses fields")]
+    public bool UseFields { get; set; } = false;
+
     /// <inheritdoc />
     [Parameter]
     public string CssClass { get; set; } = "";

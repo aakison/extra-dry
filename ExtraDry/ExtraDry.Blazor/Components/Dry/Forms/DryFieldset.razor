@@ -1,4 +1,5 @@
 ﻿@namespace ExtraDry.Blazor.Forms
+@using ExtraDry.Blazor.DryFields
 @using ExtraDry.Blazor.Internal
 
 <fieldset class="@CssClasses">
@@ -19,7 +20,12 @@
             @foreach(var line in group.Lines) {
                 <div class="line properties @redundant">
                     @foreach(var property in line.FormProperties) {
-                        <DryInput Model="@line.Model" Property="@property" OnChange="@InputChanged" />
+                        @if(UseFields) {
+                            <DryField Model="line.Model" Property="property" OnChange="InputChanged" />
+                        }
+                        else {
+                            <DryInput Model="line.Model" Property="property" OnChange="InputChanged" />
+                        }
                     }
                     @foreach(var command in line.Commands) {
                         if(command == Internal.FormCommand.AddNew) {

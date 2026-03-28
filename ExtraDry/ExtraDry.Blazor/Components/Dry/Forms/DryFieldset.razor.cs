@@ -8,6 +8,11 @@ namespace ExtraDry.Blazor.Forms;
 /// </summary>
 public partial class DryFieldset : ComponentBase, IExtraDryComponent
 {
+
+    [Parameter]
+    //[Obsolete("This will go away when everything uses fields")]
+    public bool UseFields { get; set; } = false;
+
     /// <inheritdoc />
     [Parameter]
     public string CssClass { get; set; } = string.Empty;

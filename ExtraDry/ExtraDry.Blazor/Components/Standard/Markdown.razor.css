@@ -115,6 +115,17 @@ div {
     box-shadow: 0 3px 5px rgba(0, 0, 0, .25);
   }
 
+    div ::deep .se-toolbar.sun-editor-common.se-toolbar-inline .se-btn-tray {
+      display:flex;
+      flex-direction: row;
+      padding: 0;
+    }
+
+      div ::deep .se-toolbar.sun-editor-common.se-toolbar-inline .se-btn-tray ul {
+        display: flex;
+        flex-direction: row;
+      }
+
   /*
     Center the link dialog vertically on screen and fix width.
   */
