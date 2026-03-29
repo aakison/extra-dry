@@ -9,7 +9,7 @@ public partial class DryField<T>
     : OwningComponentBase, IDisposable
     where T : class
 {
-    /// <inheritdoc />
+    // <inheritdoc />
     //[Parameter]
     //public string CssClass { get; set; } = "";
 
@@ -33,7 +33,7 @@ public partial class DryField<T>
     [Parameter]
     public EventCallback<ValidationEventArgs> OnValidate { get; set; }
 
-    /// <inheritdoc />
+    // <inheritdoc />
     //[CascadingParameter]
     //public EditMode EditMode { get; set; } = EditMode.Create;
 
