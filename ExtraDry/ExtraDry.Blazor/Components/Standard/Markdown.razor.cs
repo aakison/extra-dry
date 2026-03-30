@@ -102,6 +102,7 @@ public partial class Markdown : ComponentBase
             }
         }
         dotNetRef?.Dispose();
+        GC.SuppressFinalize(this);
     }
 
     private static int instanceCount;
