@@ -55,7 +55,7 @@ public partial class InputFileField : ComponentBase, IInputField
 
     private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", "text", ReadOnlyCss, CssClass);
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", "file", ReadOnlyCss, CssClass);
 
     private string DisplayValue => string.IsNullOrWhiteSpace(Value) ? Placeholder : Value;
 
