@@ -29,6 +29,27 @@ public class MarkdownConverter
     }
 
     /// <summary>
+    /// Converts markdown text to ready to render HTML markup. Optionally sanitizes links to
+    /// prevent navigation when clicked, which is useful for live preview scenarios.
+    /// </summary>
+    public static MarkupString ToMarkup(string markdown, bool sanitizeLinks = false)
+    {
+        var html = ToHtml(markdown);
+        if(sanitizeLinks) {
+            html = SanitizeLinks(html);
+        }
+        return new MarkupString(html);
+    }
+
+    public static string SanitizeLinks(string html)
+    {
+        return System.Text.RegularExpressions.Regex.Replace(
+            html,
+            @"href=""([^""]*)""",
+            @"href=""$1"" onclick=""event.preventDefault();""");
+    }
+
+    /// <summary>
     /// Converts HTML text to Markdown.
     /// </summary>
     public static string ToMarkdown(string html)
