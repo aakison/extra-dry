@@ -117,14 +117,12 @@ public partial class Theme : ComponentBase
         }
         // Ensure we have all icons, including fallbacks, but do not duplicate any, prefering user-supplied instead of fallback.
         var allIcons = Icons.Union(Icon.FallbackIcons.Values.Where(e => !Icons.Any(i => i.Key == e.Key)));
-        foreach(var icon in allIcons) {
-            await LoadIconConcurrentAsync(icon);
+        // Load icons in batches to balance performance and not block all fetch threads at once.
+        foreach(var batch in allIcons.Chunk(15)) {
+            var loadTasks = batch.Select(LoadIconConcurrentAsync);
+            await Task.WhenAll(loadTasks);
         }
-        // Above loop can be done concurrently as follows.  However, in practice it appears to be
-        // worse for the user experience.  By blocking all fetch threads, some javascript is
-        // deferred causing the entire page to stay blank longer.  Leaving as it might change...
-        //var loadTasks = Icons.Select(LoadIconConcurrentAsync);
-        //await Task.WhenAll(loadTasks);
+        
         loaded = true;
         ThemeInfo.Loading = false;
     }
