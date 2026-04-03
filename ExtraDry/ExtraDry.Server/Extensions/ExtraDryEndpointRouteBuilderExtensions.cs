@@ -24,7 +24,7 @@ public static partial class ExtraDryEndpointRouteBuilderExtensions
     /// element following the same rules as the Blazor <c>Theme</c> component. The atlas is
     /// generated once at startup.
     /// </summary>
-    public static IEndpointRouteBuilder MapSvgAtlas(this IEndpointRouteBuilder endpoints, IEnumerable<IconInfo> icons, string? debugOutputPath = null)
+    public static IEndpointRouteBuilder MapSvgAtlas(this IEndpointRouteBuilder endpoints, IEnumerable<IconInfo> icons)
     {
         var services = endpoints.ServiceProvider;
         var env = services.GetRequiredService<IWebHostEnvironment>();
