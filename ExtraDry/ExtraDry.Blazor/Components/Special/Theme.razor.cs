@@ -9,7 +9,9 @@ namespace ExtraDry.Blazor;
 /// Note: this does not cover styles like colors which should be done in CSS.
 /// </summary>
 [SuppressMessage("Usage", "DRY1500:Extra DRY Blazor components should have an interface.", Justification = "Theme does not render a root tag, purpose is to register cascading values.")]
-public partial class Theme : ComponentBase
+public partial class Theme(
+    ILogger<Theme> Logger)
+    : ComponentBase
 {
     /// <summary>
     /// The content that this theme applies to.
@@ -100,34 +102,28 @@ public partial class Theme : ComponentBase
 
         ThemeInfo.Version = Version;
 
-        await LoadSvgDatabaseAsync();
+        LoadSvgReferences();
         ThemeInfo.Icons = CachedIcons.ToDictionary(e => e.Key, e => e.Value);
     }
 
-    private async Task LoadSvgDatabaseAsync()
+    private void LoadSvgReferences()
     {
         if(loaded) {
             return;
         }
-        ThemeInfo.Loading = true;
         Icons ??= [];
-        if(Http == null) {
-            Logger.LogConsoleError("Theme requires an HttpClient to load SVG icons, please register one in DI.");
-            return;
-        }
+
         // Ensure we have all icons, including fallbacks, but do not duplicate any, prefering user-supplied instead of fallback.
-        var allIcons = Icons.Union(Icon.FallbackIcons.Values.Where(e => !Icons.Any(i => i.Key == e.Key)));
-        // Load icons in batches to balance performance and not block all fetch threads at once.
-        foreach(var batch in allIcons.Chunk(15)) {
-            var loadTasks = batch.Select(LoadIconConcurrentAsync);
-            await Task.WhenAll(loadTasks);
+        var fallbackIcons = IconInfo.FallbackIcons.Values.Where(e => !Icons.Any(i => i.Key == e.Key));
+        var allIcons = Icons.Union(fallbackIcons);
+        foreach(var icon in allIcons) {
+            LoadIcon(icon);
         }
         
         loaded = true;
-        ThemeInfo.Loading = false;
     }
 
-    private async Task LoadIconConcurrentAsync(IconInfo icon)
+    private void LoadIcon(IconInfo icon)
     {
         if(CachedIcons.ContainsKey(icon.Key)) {
             Logger.LogDuplicateIcon(icon.Key);
@@ -148,23 +144,11 @@ public partial class Theme : ComponentBase
                 ? icon.ImagePath
                 : $"{icon.ImagePath}?{VersionPrefix}={Version}";
 
-            var content = await Http.GetStringAsync(path);
-
-            icon.SvgInlineBody = content;
-            if(icon.SvgRenderType == SvgRenderType.Document) {
-                var svgTag = SvgTagRegex().Match(content).Value;
-                var viewBox = ViewBoxRegex().Match(svgTag).Value;
-                var svgBody = SvgTagRegex().Replace(content, "").Replace("</svg>", "");
-                var symbol = $@"<symbol id=""{icon.Key}"" {viewBox}>{svgBody}</symbol>";
-                var defs = DefsRegex().Match(svgBody).Value;
-                if(!string.IsNullOrWhiteSpace(defs)) {
-                    // defs included in the SVG, typically for gradient fills and the like. Need to
-                    // keep these defs inline and not in the symbol.
-                    symbol = symbol.Replace(defs, "");
-                }
-                icon.SvgDatabaseBody = symbol;
-                icon.SvgInlineBody = $@"<svg class=""{icon.CssClass} additional-classes""><title>{icon.AlternateText}</title><use href=""#{icon.Key}""></use>{defs}</svg>";
+            if(icon.SvgRenderType == SvgRenderType.Atlas) {
+                var version = $"?v={Version}";
+                icon.SvgInlineBody = $@"<svg class=""{icon.CssClass}"" additional-classes><title>{icon.AlternateText}</title><use href=""/bundles/atlas.svg{version}#{icon.Key}""></use></svg>";
             }
+
         }
         catch(Exception ex) {
             Logger.LogIconFailed(icon.Key, icon.ImagePath, ex);
@@ -175,12 +159,6 @@ public partial class Theme : ComponentBase
 
     private static readonly ConcurrentDictionary<string, IconInfo> CachedIcons = new();
 
-    [Inject]
-    private HttpClient Http { get; set; } = null!;
-
-    [Inject]
-    private ILogger<Theme> Logger { get; set; } = null!;
-
     [GeneratedRegex(@"<svg[^>]*>")]
     private partial Regex SvgTagRegex();
 
@@ -190,7 +168,4 @@ public partial class Theme : ComponentBase
     [GeneratedRegex(@"<defs.*</defs>", RegexOptions.Singleline)]
     private partial Regex DefsRegex();
 
-    private IEnumerable<IconInfo> SvgIcons => Icon.FallbackIcons.Values.Union(Icons ?? [])
-        ?.Where(e => !string.IsNullOrEmpty(e.SvgDatabaseBody))
-        ?? [];
 }

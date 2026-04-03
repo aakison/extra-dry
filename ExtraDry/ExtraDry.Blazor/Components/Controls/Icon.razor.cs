@@ -46,7 +46,7 @@ public partial class Icon : ComponentBase
             else if(ThemeInfo?.Icons?.TryGetValue(Key, out var themeIcon) ?? false) {
                 return themeIcon;
             }
-            else if(FallbackIcons.TryGetValue(Key, out var icon)) {
+            else if(IconInfo.FallbackIcons.TryGetValue(Key, out var icon)) {
                 return icon;
             }
             else {
@@ -55,13 +55,8 @@ public partial class Icon : ComponentBase
                     return new IconInfo(Key, "no-theme") { ImagePath = $"/img/themeless/{Key}.svg", AlternateText = "" };
                 }
                 else {
-                    if(ThemeInfo.Loading) {
-                        return placeholderIcon;
-                    }
-                    else {
-                        Logger.LogMissingIcon(Key);
-                        return new IconInfo(Key, "no-key") { ImagePath = $"/img/no-icon-for-{Key}.svg", AlternateText = "" };
-                    }
+                    Logger.LogMissingIcon(Key);
+                    return new IconInfo(Key, "no-key") { ImagePath = $"/img/no-icon-for-{Key}.svg", AlternateText = "" };
                 }
             }
         }
@@ -93,30 +88,4 @@ public partial class Icon : ComponentBase
     [Inject]
     private ILogger<Icon> Logger { get; set; } = null!;
 
-    private static readonly string glyphPath = "/_content/ExtraDry.Blazor/img/glyphs";
-
-    internal static readonly Dictionary<string, IconInfo> FallbackIcons = (new IconInfo[] {
-            new("search", $"{glyphPath}/magnifying-glass-regular.svg", "Search", "affordance", SvgRenderType.Reference),
-            new("select", $"{glyphPath}/chevron-down-regular.svg", "Select", "affordance", SvgRenderType.Reference),
-            new("clear", $"{glyphPath}/xmark-regular.svg", "Clear", "affordance", SvgRenderType.Reference),
-            new("expand", $"{glyphPath}/chevron-right-regular.svg", "Expand", "affordance", SvgRenderType.Reference),
-            new("collapse", $"{glyphPath}/chevron-down-regular.svg", "Collapse", "affordance", SvgRenderType.Reference),
-            new("select-date", $"{glyphPath}/calendar-day-light.svg", "Select Date", "affordance", SvgRenderType.Reference),
-            new("select-datetime", $"{glyphPath}/calendar-clock-light.svg", "Select Date/Time", "affordance", SvgRenderType.Reference),
-            new("select-time", $"{glyphPath}/clock-light.svg", "Select Time", "affordance", SvgRenderType.Reference),
-
-            new("currency", $"{glyphPath}/dollar-sign-light.svg", "Enter dollar amount", "affordance", SvgRenderType.Reference),
-
-            new("is-required", $"{glyphPath}/asterisk-alone-full.svg", "Required", "icon", SvgRenderType.Document),
-            new("has-description", $"{glyphPath}/info-alone-full.svg", "See Description", "icon", SvgRenderType.Document),
-
-            new("collection-empty", $"{glyphPath}/xmark-regular.svg", "No Items", "icon", SvgRenderType.Reference),
-
-            new("copy", $"{glyphPath}/copy-light-full.svg", "Copy", "affordance", SvgRenderType.Reference),
-            new("show", $"{glyphPath}/eye-light-full.svg", "Show", "affordance", SvgRenderType.Reference),
-            new("hide", $"{glyphPath}/eye-slash-light-full.svg", "Hide", "affordance", SvgRenderType.Reference),
-
-        }).ToDictionary(e => e.Key, e => e);
-
-    private static readonly IconInfo placeholderIcon = new("placeholder", $"{glyphPath}/loading-placeholder.svg", "Placeholder", "glyph");
 }

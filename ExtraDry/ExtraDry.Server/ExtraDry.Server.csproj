@@ -52,5 +52,5 @@
 
 	<Import Project="..\CommonAnalyzers.targets" />
 	<Import Project="..\VulnerabilityFixes.targets" />
-
+  
 </Project>
