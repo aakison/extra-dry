@@ -22,9 +22,9 @@ public static partial class ExtraDryEndpointRouteBuilderExtensions
     /// available at configuration time. Only icons with <see cref="SvgRenderType.Atlas"/> are
     /// included. Each qualifying SVG file is transformed into a named <c>&lt;symbol&gt;</c>
     /// element following the same rules as the Blazor <c>Theme</c> component. The atlas is
-    /// generated once at startup and saved to <c>wwwroot/bundles/atlas.svg</c>.
+    /// generated once at startup.
     /// </summary>
-    public static IEndpointRouteBuilder MapSvgAtlas(this IEndpointRouteBuilder endpoints, IEnumerable<IconInfo> icons)
+    public static IEndpointRouteBuilder MapSvgAtlas(this IEndpointRouteBuilder endpoints, IEnumerable<IconInfo> icons, string? debugOutputPath = null)
     {
         var services = endpoints.ServiceProvider;
         var env = services.GetRequiredService<IWebHostEnvironment>();
@@ -85,10 +85,6 @@ public static partial class ExtraDryEndpointRouteBuilderExtensions
         }
 
         var atlas = $@"<svg xmlns=""http://www.w3.org/2000/svg"">{allDefs}{symbols}</svg>";
-
-        var atlasPath = Path.Combine(env.WebRootPath, "bundles", "atlas.svg");
-        Directory.CreateDirectory(Path.GetDirectoryName(atlasPath)!);
-        File.WriteAllText(atlasPath, atlas);
 
         endpoints.MapGet("/bundles/atlas.svg", () => Results.Content(atlas, "image/svg+xml"))
             .AllowAnonymous()
