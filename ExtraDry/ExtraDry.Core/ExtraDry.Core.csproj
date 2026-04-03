@@ -38,7 +38,7 @@
 	<Import Project="..\CommonAnalyzers.targets" />
 	<Import Project="..\VulnerabilityFixes.targets" />
 
-	<ItemGroup>
+  <ItemGroup>
 		<None Include="..\extradry-logo.png">
 			<Pack>True</Pack>
 			<PackagePath></PackagePath>

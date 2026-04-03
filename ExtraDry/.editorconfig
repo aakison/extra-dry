@@ -4,6 +4,12 @@ end_of_line = crlf
 [*.json]
 indent_size = 2
 
+[*.{cs,csproj,sln,resx,xml,json,config}]
+charset = utf-8
+end_of_line = crlf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
 [*.cs]
 indent_style = space
 indent_size = 4

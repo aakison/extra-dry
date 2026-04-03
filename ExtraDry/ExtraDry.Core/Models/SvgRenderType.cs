@@ -7,12 +7,12 @@ namespace ExtraDry.Core;
 public enum SvgRenderType
 {
     /// <summary>
-    /// Downloads the SVG from the server and stores the image in a non-visible and global SVG tag
-    /// in the document. Each time the image it is rendered inline as an SVG with an embedded USE
-    /// tag which references common content from the global SVG. This is useful for small images
-    /// that are used repeatedly across pages, e.g. a dropdown chevron.
+    /// Generates a "atlas.svg" file on the server that contains all atlas SVGs.  Each time the
+    /// image is used, it is rendered inline as an SVG with a USE element which references common
+    /// content from the global SVG. This is useful for small images that are used repeatedly
+    /// across pages, e.g. a dropdown chevron.
     /// </summary>
-    Document,
+    Atlas,
 
     /// <summary>
     /// Renders the SVG as the reference SRC target of an IMG tag. This will fetch the SVG from the
@@ -21,9 +21,4 @@ public enum SvgRenderType
     /// </summary>
     Reference,
 
-    /// <summary>
-    /// Renders the SVG inline in the page. This will fetch the SVG from the server using a local
-    /// in-app cache which is fetched at startup.
-    /// </summary>
-    Inline,
 }

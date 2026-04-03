@@ -79,11 +79,11 @@ public class AppViewModel(NavigationManager navigation)
         new("logo", "/img/icons/logo.svg", "Site Logo", "icon", SvgRenderType.Reference),
         new("companies-module", "/img/icons/companies-icon.svg", "Company Module", "icon"),
         new("components-module", "/img/icons/components-icon.svg", "Component Module", "icon"),
-        new("standard-components", "/img/icons/components-icon-2.svg", "Standard Components", "icon", SvgRenderType.Inline),
-        new("dry-components", "/img/icons/components-icon-3.svg", "DRY Components", "icon", SvgRenderType.Inline),
-        new("special-components", "/img/icons/components-icon-1.svg", "Special Components", "icon", SvgRenderType.Inline),
+        new("standard-components", "/img/icons/components-icon-2.svg", "Standard Components", "icon", SvgRenderType.Reference),
+        new("dry-components", "/img/icons/components-icon-3.svg", "DRY Components", "icon", SvgRenderType.Reference),
+        new("special-components", "/img/icons/components-icon-1.svg", "Special Components", "icon", SvgRenderType.Reference),
         new("api-module", "/img/icons/api-icon.svg", "Integration APIs", "icon"),
-        new("overdue", "/img/icons/overdue.svg", "Overdue", "icon", SvgRenderType.Document),
+        new("overdue", "/img/icons/overdue.svg", "Overdue", "icon", SvgRenderType.Atlas),
 
         // Loader icons
         new("loader-error", "fa fa-circle-exclamation"),
