@@ -119,7 +119,7 @@ public partial class Theme(
         foreach(var icon in allIcons) {
             LoadIcon(icon);
         }
-        
+
         loaded = true;
     }
 
