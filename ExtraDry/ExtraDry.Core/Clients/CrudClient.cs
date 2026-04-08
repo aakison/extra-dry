@@ -158,7 +158,7 @@ public class CrudClient<T>(
     {
         var url = options.CrudEndpoint;
         if(options.KeyMode == KeyMode.Append) {
-            url = $"{url.TrimEnd('/')}/{url}";
+            url = $"{url.TrimEnd('/')}/{key}";
         }
         else if(options.KeyMode == KeyMode.Formatters) {
             foreach(var formatter in options.EndpointFormatters) {
