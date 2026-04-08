@@ -1,6 +1,7 @@
 using ExtraDry.Core.Extensions;
 using Microsoft.Extensions.Logging;
 using System.Net.Http.Json;
+using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
 
@@ -155,13 +156,18 @@ public class CrudClient<T>(
 
     private string ApiEndpoint(object key)
     {
-        var formattedKey = options.KeyFormatter(key);
         var url = options.CrudEndpoint;
-        if(url.Contains("{key}")) {
-            url = url.Replace("{key}", formattedKey);
+        if(options.KeyMode == KeyMode.Append) {
+            url = $"{url.TrimEnd('/')}/{url}";
+        }
+        else if(options.KeyMode == KeyMode.Formatters) {
+            foreach(var formatter in options.EndpointFormatters) {
+                var parameterValue = formatter.Value(key);
+                url = url.Replace($"{{{formatter.Key}}}", parameterValue);
+            }
         }
         else {
-            url = $"{url.TrimEnd('/')}/{formattedKey}";
+            // no-op.
         }
         return url.TrimEnd('/');
     }

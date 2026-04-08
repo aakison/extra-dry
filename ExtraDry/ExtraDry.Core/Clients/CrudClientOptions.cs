@@ -27,11 +27,24 @@ public class CrudClientOptions<T> : IHttpClientOptions, IValidatableObject
     public TimeSpan ReadCache { get; set; } = TimeSpan.Zero;
 
     /// <summary>
+    /// Indicates how keys are expanded into or appended onto the endpoint URL.
+    /// </summary>
+    public KeyMode KeyMode { get; set; } = KeyMode.Append;
+
+    /// <summary>
     /// A formatting function that translates the `key` object taken by the CRUD endpoints into a
     /// string which is appended to the `CrudEndpoint` to create the full endpoint URL. The default
     /// implementation is the object's built in string transformation.
     /// </summary>
-    public Func<object, string> KeyFormatter { get; set; } = e => e.ToString() ?? "";
+    //public Func<object, string> KeyFormatter { get; set; } = e => e.ToString() ?? "";
+
+    public Dictionary<string, Func<object, string>> EndpointFormatters { get; set; } = new();
+
+    public void AddEndpointFormatter(string parameterName, Func<object, string> formatter)
+    {
+        KeyMode = KeyMode.Formatters;
+        EndpointFormatters.Add(parameterName, formatter);
+    }
 
     /// <summary>
     /// Validates the inter-dependant options for the CrudClient.
