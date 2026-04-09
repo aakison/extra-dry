@@ -33,7 +33,7 @@ public class CrudClientOptions<T> : IHttpClientOptions, IValidatableObject
     /// </summary>
     //public Func<object, string> KeyFormatter { get; set; } = e => e.ToString() ?? "";
 
-    public List<EndpointFormatter> EndpointFormatters { get; set; } = [
+    internal List<EndpointFormatter> EndpointFormatters { get; set; } = [
         new EndpointFormatter {
                 ParmeterName = "key",
                 Formatter = e => e.ToString() ?? "",
@@ -93,6 +93,8 @@ public class CrudClientOptions<T> : IHttpClientOptions, IValidatableObject
         });
     }
 
+    public void ClearEndpointFormatters() => EndpointFormatters.Clear();
+
     /// <summary>
     /// Validates the inter-dependant options for the CrudClient.
     /// </summary>
@@ -138,55 +140,3 @@ public class CrudClientOptions<T> : IHttpClientOptions, IValidatableObject
     public Func<T, Task>? OnUpdateAsync { get; set; }
 
 }
-
-public class EndpointFormatter {
-    public string ParmeterName { get; set; } = "";
-
-    public Func<object, string> Formatter { get; set; } = e => e.ToString() ?? "";
-
-    public EndpointMode Mode { get; set; } = EndpointMode.Append;
-
-    public CrudOperation Operations { get; set; } = CrudOperation.All;
-}
-
-[Flags]
-[JsonConverter(typeof(JsonStringEnumConverter))]
-public enum CrudOperation
-{
-    /// <summary>
-    /// The operation is a HTTP POST to create a new resource.
-    /// </summary>
-    Create = 1,
-
-    /// <summary>
-    /// The operation is a HTTP GET to read an existing resource.
-    /// </summary>
-    Read = 2,
-
-    /// <summary>
-    /// The operation is a HTTP PUT to update an existing resource.
-    /// </summary>
-    Update = 4,
-
-    /// <summary>
-    /// The operation is a HTTP DELETE to delete an existing resource.
-    /// </summary>
-    Delete = 8,
-
-    /// <summary>
-    /// The operation is a HTTP POST to a custom RPC endpoint that does not fit into the standard RESTful principles.
-    /// </summary>
-    Rpc = 16,
-
-    Existing = Read | Update | Delete,
-    Mutating = Create | Update | Delete,
-    All = Create | Read | Update | Delete
-}
-
-[JsonConverter(typeof(JsonStringEnumConverter))]
-public enum EndpointMode {
-    Append,
-    Replace,
-    Generate,
-}
-
