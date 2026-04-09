@@ -27,23 +27,70 @@ public class CrudClientOptions<T> : IHttpClientOptions, IValidatableObject
     public TimeSpan ReadCache { get; set; } = TimeSpan.Zero;
 
     /// <summary>
-    /// Indicates how keys are expanded into or appended onto the endpoint URL.
-    /// </summary>
-    public KeyMode KeyMode { get; set; } = KeyMode.Append;
-
-    /// <summary>
     /// A formatting function that translates the `key` object taken by the CRUD endpoints into a
     /// string which is appended to the `CrudEndpoint` to create the full endpoint URL. The default
     /// implementation is the object's built in string transformation.
     /// </summary>
     //public Func<object, string> KeyFormatter { get; set; } = e => e.ToString() ?? "";
 
-    public Dictionary<string, Func<object, string>> EndpointFormatters { get; set; } = new();
+    public List<EndpointFormatter> EndpointFormatters { get; set; } = [
+        new EndpointFormatter {
+                ParmeterName = "key",
+                Formatter = e => e.ToString() ?? "",
+                Mode = EndpointMode.Append,
+                Operations = CrudOperation.Existing
+            },
+        ];
 
-    public void AddEndpointFormatter(string parameterName, Func<object, string> formatter)
+
+    /// <summary>
+    /// Adds a endpoint function that takes a key and creates the endpoint from it for the given operations.
+    /// If used, the CrudEndpoint is ignored.
+    /// </summary>
+    /// <param name="generator">Function that generates the entire endpoint from the key.</param>
+    /// <param name="operations">Operations that this formatter is used on.</param>
+    public void AddEndpointGenerator(Func<object, string> generator, CrudOperation operations = CrudOperation.All)
     {
-        KeyMode = KeyMode.Formatters;
-        EndpointFormatters.Add(parameterName, formatter);
+        EndpointFormatters.Add(new EndpointFormatter {
+            ParmeterName = "",
+            Formatter = generator,
+            Mode = EndpointMode.Generate,
+            Operations = operations
+        });
+    }
+
+    /// <summary>
+    /// Adds a endpoint function that will replace a specific parameter (like in an interpolated string)
+    /// with the result of the function.
+    /// </summary>
+    /// <param name="parameterName">The name of the parameter, e.g. "uuid" in "/commerce/carts/{uuid}</param>
+    /// <param name="formatter">Function that returns the key-value from the key.</param>
+    /// <param name="operations">Operations that this formatter is used on.</param>
+    public void AddEndpointReplacer(string parameterName, Func<object, string> formatter, CrudOperation operations = CrudOperation.All)
+    {
+        EndpointFormatters.Add(new EndpointFormatter {
+            ParmeterName = parameterName,
+            Formatter = formatter,
+            Mode = EndpointMode.Replace,
+            Operations = operations
+        });
+    }
+
+    /// <summary>
+    /// Add and endpoint function that will append the key value to the end of the CrudEndpoint.
+    /// As order is not guaranteed, only a single appender can be used, and it will remove any existing appender when added.
+    /// </summary>
+    /// <param name="appender">Function that returns the key-value from the key.</param>
+    /// <param name="operations">Operations that this formatter is used on.</param>
+    public void AddEndpointAppender(Func<object, string> appender, CrudOperation operations = CrudOperation.Existing)
+    {
+        EndpointFormatters.RemoveAll(e => e.Mode == EndpointMode.Append);
+        EndpointFormatters.Add(new EndpointFormatter {
+            ParmeterName = "",
+            Formatter = appender,
+            Mode = EndpointMode.Append,
+            Operations = operations,
+        });
     }
 
     /// <summary>
@@ -91,3 +138,55 @@ public class CrudClientOptions<T> : IHttpClientOptions, IValidatableObject
     public Func<T, Task>? OnUpdateAsync { get; set; }
 
 }
+
+public class EndpointFormatter {
+    public string ParmeterName { get; set; } = "";
+
+    public Func<object, string> Formatter { get; set; } = e => e.ToString() ?? "";
+
+    public EndpointMode Mode { get; set; } = EndpointMode.Append;
+
+    public CrudOperation Operations { get; set; } = CrudOperation.All;
+}
+
+[Flags]
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum CrudOperation
+{
+    /// <summary>
+    /// The operation is a HTTP POST to create a new resource.
+    /// </summary>
+    Create = 1,
+
+    /// <summary>
+    /// The operation is a HTTP GET to read an existing resource.
+    /// </summary>
+    Read = 2,
+
+    /// <summary>
+    /// The operation is a HTTP PUT to update an existing resource.
+    /// </summary>
+    Update = 4,
+
+    /// <summary>
+    /// The operation is a HTTP DELETE to delete an existing resource.
+    /// </summary>
+    Delete = 8,
+
+    /// <summary>
+    /// The operation is a HTTP POST to a custom RPC endpoint that does not fit into the standard RESTful principles.
+    /// </summary>
+    Rpc = 16,
+
+    Existing = Read | Update | Delete,
+    Mutating = Create | Update | Delete,
+    All = Create | Read | Update | Delete
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum EndpointMode {
+    Append,
+    Replace,
+    Generate,
+}
+
