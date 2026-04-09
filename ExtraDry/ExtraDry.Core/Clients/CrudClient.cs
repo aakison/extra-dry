@@ -38,7 +38,7 @@ public class CrudClient<T>(
         }
         var json = JsonSerializer.Serialize(item);
         using var content = new StringContent(json, Encoding.UTF8, "application/json");
-        var endpoint = ApiEndpoint(string.Empty);
+        var endpoint = ApiEndpoint(item, CrudOperation.Create);
         //logger.LogEndpointCall(typeof(T), endpoint);
         var response = await client.PostAsync(endpoint, content, cancellationToken);
         var body = await response.Content.ReadAsStringAsync(cancellationToken);
@@ -54,7 +54,7 @@ public class CrudClient<T>(
     /// </summary>
     public async Task<T?> TryReadAsync(object key, CancellationToken cancellationToken = default)
     {
-        var endpoint = ApiEndpoint(key);
+        var endpoint = ApiEndpoint(key, CrudOperation.Read);
 
         // Try to read from cache first
         var cachedItem = Cache.Read(endpoint);
@@ -106,7 +106,7 @@ public class CrudClient<T>(
         if(options.OnUpdateAsync != null) {
             await options.OnUpdateAsync(item);
         }
-        var endpoint = ApiEndpoint(key);
+        var endpoint = ApiEndpoint(key, CrudOperation.Update);
         //logger.LogEndpointCall(typeof(T), endpoint);
         var response = await client.PutAsJsonAsync(endpoint, item, cancellationToken);
         await response.AssertSuccess(logger);
@@ -122,7 +122,7 @@ public class CrudClient<T>(
     /// </summary>
     public async Task DeleteAsync(object key, CancellationToken cancellationToken = default)
     {
-        var endpoint = ApiEndpoint(key);
+        var endpoint = ApiEndpoint(key, CrudOperation.Delete);
         //logger.LogEndpointCall(typeof(T), endpoint);
         var response = await client.DeleteAsync(endpoint, cancellationToken);
         await response.AssertSuccess(logger);
@@ -142,7 +142,7 @@ public class CrudClient<T>(
     /// </remarks>
     public async Task<HttpResponseMessage> ExecuteAsync(object key, string operation, object? payload = null, CancellationToken cancellationToken = default)
     {
-        var endpoint = ApiEndpoint(key);
+        var endpoint = ApiEndpoint(key, CrudOperation.Rpc);
         endpoint = $"{endpoint}:{operation}";
         var json = JsonSerializer.Serialize(payload);
         using var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -154,20 +154,20 @@ public class CrudClient<T>(
 
     private MemoryCache<T> Cache { get; set; } = new MemoryCache<T>(options.ReadCache);
 
-    private string ApiEndpoint(object key)
+    private string ApiEndpoint(object key, CrudOperation operation)
     {
         var url = options.CrudEndpoint;
-        if(options.KeyMode == KeyMode.Append) {
-            url = $"{url.TrimEnd('/')}/{key}";
-        }
-        else if(options.KeyMode == KeyMode.Formatters) {
-            foreach(var formatter in options.EndpointFormatters) {
-                var parameterValue = formatter.Value(key);
-                url = url.Replace($"{{{formatter.Key}}}", parameterValue);
+        foreach(var formatter in options.EndpointFormatters) {
+            var parameterValue = formatter.Formatter(key);
+            if(formatter.Operations.HasFlag(operation) == false) {
+                continue;
             }
-        }
-        else {
-            // no-op.
+            url = formatter.Mode switch {
+                EndpointMode.Append => $"{url.TrimEnd('/')}/{key}",
+                EndpointMode.Replace => url.Replace($"{{{formatter.ParmeterName}}}", parameterValue),
+                EndpointMode.Generate => parameterValue,
+                _ => url
+            };
         }
         return url.TrimEnd('/');
     }
