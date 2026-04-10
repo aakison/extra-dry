@@ -158,12 +158,12 @@ public class CrudClient<T>(
     {
         var url = options.CrudEndpoint;
         foreach(var formatter in options.EndpointFormatters) {
-            var parameterValue = formatter.Formatter(key);
             if(formatter.Operations.HasFlag(operation) == false) {
                 continue;
             }
+            var parameterValue = formatter.Formatter(key);
             url = formatter.Mode switch {
-                EndpointMode.Append => $"{url.TrimEnd('/')}/{key}",
+                EndpointMode.Append => $"{url.TrimEnd('/')}/{parameterValue}",
                 EndpointMode.Replace => url.Replace($"{{{formatter.ParmeterName}}}", parameterValue),
                 EndpointMode.Generate => parameterValue,
                 _ => url
