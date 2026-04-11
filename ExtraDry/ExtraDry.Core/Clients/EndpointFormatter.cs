@@ -1,6 +1,7 @@
 namespace ExtraDry.Core;
 
-internal class EndpointFormatter {
+internal class EndpointFormatter
+{
     public string ParmeterName { get; set; } = "";
 
     public Func<object, string> Formatter { get; set; } = e => e.ToString() ?? "";
