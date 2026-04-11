@@ -1,7 +1,8 @@
 namespace ExtraDry.Core;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
-internal enum EndpointMode {
+internal enum EndpointMode
+{
     Append,
     Replace,
     Generate,
