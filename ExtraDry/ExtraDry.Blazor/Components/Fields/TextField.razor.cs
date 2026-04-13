@@ -1,3 +1,5 @@
+using ExtraDry.Blazor.Components.Standard;
+
 namespace ExtraDry.Blazor.Components;
 
 /// <summary>
@@ -77,5 +79,14 @@ public partial class TextField : FieldBase<string>
         await OnChange.InvokeAsync(args);
         await OnInput.InvokeAsync(args);
     }
+
+    private async Task ToggleMarkdownToolbar()
+    {
+        if(markdownRef != null) {
+            await markdownRef.ToggleToolbar();
+        }
+    }
+
+    private Markdown? markdownRef;
 
 }

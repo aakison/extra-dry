@@ -8,7 +8,8 @@
             <Icon CssClass="context" Key="@Icon" />
         }
         @if(IsMarkdown) {
-            <Markdown Value="@Value"
+            <Markdown @ref="markdownRef"
+                      Value="@Value"
                       ValueChanged="@OnMarkdownValueChanged"
                       MarkdownSupport="@MarkdownSupportType"
                       ReadOnly="@ReadOnly"
@@ -24,7 +25,14 @@
                    value="@Value" @onchange="NotifyChange" @oninput="NotifyInput" />
         }
         @if(DisplayAffordance) {
-            <Icon CssClass="affordance" Key="@Affordance" />
+            @if(IsMarkdown) {
+                <span @onclick="ToggleMarkdownToolbar" style="cursor: pointer; display: contents;">
+                    <Icon CssClass="affordance" Key="@Affordance" />
+                </span>
+            }
+            else {
+                <Icon CssClass="affordance" Key="@Affordance" />
+            }
         }
     </div>
 </FieldFrame>

@@ -44,6 +44,17 @@ public sealed class MarkdownEditorInterop(IJSRuntime jsRuntime) : IAsyncDisposab
         await module.InvokeVoidAsync("destroy", elementId);
     }
 
+    /// <summary>
+    /// Toggles the toolbar visibility for the SunEditor instance. When shown,
+    /// the toolbar automatically hides when the editor loses focus.
+    /// </summary>
+    public async ValueTask ToggleToolbarAsync(string elementId)
+    {
+        Console.WriteLine("ToggleToolbarAsync called"); 
+        var module = await moduleTask.Value;
+        await module.InvokeVoidAsync("toggleToolbar", elementId);
+    }
+
     /// <inheritdoc />
     public async ValueTask DisposeAsync()
     {
