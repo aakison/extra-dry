@@ -1,5 +1,3 @@
-using System.Reflection.Metadata;
-
 namespace ExtraDry.Blazor.Forms;
 
 /// <summary>
@@ -18,21 +16,34 @@ public partial class DryInputFreshnessIndicator<T>
     {
         var property = Property?.GetValue(Model) ?? new UserTimestamp();
 
-        var userGuid = ((UserTimestamp)property).User;
-        var timeStamp = ((UserTimestamp)property).Timestamp;
+        var timestamp = ((UserTimestamp)property).Timestamp;
+        var userId = ((UserTimestamp)property).User;
 
-        Value = $"updated {DataConverter.DateToRelativeTime(timeStamp)}";
+        if(timestamp == DateTime.MinValue) {
+            Value = "not saved yet";
+            return;
+        }
 
-        var user = DisplayNameProvider == null
-            ? userGuid
-            : await DisplayNameProvider.ResolveDisplayNameAsync(userGuid);
-
-        Value = $"{user} updated {DataConverter.DateToRelativeTime(timeStamp)}";
+        var relativeTime = DataConverter.DateToRelativeTime(timestamp);
+        var user = await ResolveUserDisplayName(userId);
+        Value = $"{relativeTime} by {user}";
     }
 
-    private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
+    private async Task<string> ResolveUserDisplayName(string userId)
+    {
+        if(string.IsNullOrWhiteSpace(userId)) {
+            return "...";
+        }
+        if(Guid.TryParse(userId, out _)) {
+            if(DisplayNameProvider != null) {
+                return await DisplayNameProvider.ResolveDisplayNameAsync(userId);
+            }
+            return "...";
+        }
+        return userId;
+    }
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", ReadOnlyCss, CssClass);
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", "user-timestamp", "readonly", CssClass);
 
     private string? Value { get; set; } = "";
 
