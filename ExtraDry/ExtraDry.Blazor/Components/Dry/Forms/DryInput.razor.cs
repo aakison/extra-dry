@@ -41,7 +41,7 @@ public partial class DryInput<T>
         if(Property.Rules?.UpdateAction == RuleAction.Block) {
             return;
         }
-        if(Property.HasTextRepresentation == false && Property?.HasDateTimeRepresentation == false && Property.HasNumericRepresentation == false) {
+        if(Property.HasTextRepresentation == false && Property?.HasDateTimeRepresentation == false && Property.HasNumericRepresentation == false && Property.HasFreshnessRepresentation == false && Property.HasBooleanValues == false) {
             await FetchTypedOptionProvider();
         }
     }
