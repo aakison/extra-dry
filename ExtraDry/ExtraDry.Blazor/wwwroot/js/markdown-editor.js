@@ -387,8 +387,36 @@ export async function initialize(elementId, dotNetRef, options) {
                 const paste = (e.clipboardData || window.clipboardData)?.getData('text');
                 if (paste && /[\r\n]/.test(paste)) {
                     e.preventDefault();
+                    e.stopImmediatePropagation();
                     const cleaned = paste.replace(/[\r\n]+/g, ' ');
-                    document.execCommand('insertText', false, cleaned);
+                    const textNode = wysiwygBody.ownerDocument.createTextNode(cleaned);
+                    editor.core.insertNode(textNode, null, false);
+                    editor.core.setRange(textNode, textNode.length, textNode, textNode.length);
+                    editor.core.history.push(false);
+                }
+            }, true);
+
+            // Auto-hide the toolbar when focus leaves via keyboard (e.g. Tab).
+            // Mouse-based dismissal is handled by a document mousedown listener
+            // registered in toggleToolbar, so no timeouts are needed.
+            const wrapperDiv = element.parentElement;
+            const inputContainer = wrapperDiv ? (wrapperDiv.closest('.input') || wrapperDiv) : null;
+            wysiwygBody.addEventListener('focusout', function (e) {
+                if (!editors[elementId] || !editors[elementId].toolbarForceShown) return;
+                // relatedTarget is null for mouse clicks on non-focusable elements;
+                // those are handled by the document mousedown listener instead.
+                if (!e.relatedTarget) return;
+                if (inputContainer && inputContainer.contains(e.relatedTarget)) return;
+                // Focus moved to a focusable element outside the editor.
+                if (wrapperDiv) {
+                    wrapperDiv.classList.remove('toolbar-visible');
+                }
+                if (editors[elementId]) {
+                    editors[elementId].toolbarForceShown = false;
+                }
+                if (editors[elementId] && editors[elementId]._hideOnClickOutside) {
+                    document.removeEventListener('mousedown', editors[elementId]._hideOnClickOutside, true);
+                    editors[elementId]._hideOnClickOutside = null;
                 }
             });
         }
@@ -443,10 +471,50 @@ export function setContent(elementId, html) {
     entry.editor.setContents(html);
 }
 
+export function toggleToolbar(elementId) {
+    console.log("Toggling toolbar for", elementId);
+    const entry = editors[elementId];
+    if (!entry) return;
+
+    const element = document.getElementById(elementId);
+    const wrapperDiv = element?.parentElement;
+    if (!wrapperDiv) return;
+
+    if (entry.toolbarForceShown) {
+        wrapperDiv.classList.remove('toolbar-visible');
+        entry.toolbarForceShown = false;
+        if (entry._hideOnClickOutside) {
+            document.removeEventListener('mousedown', entry._hideOnClickOutside, true);
+            entry._hideOnClickOutside = null;
+        }
+    } else {
+        wrapperDiv.classList.add('toolbar-visible');
+        entry.toolbarForceShown = true;
+        entry.editor.core.context.element.wysiwyg.focus();
+
+        // Dismiss immediately when clicking outside the input container
+        // (which includes both the editor and the affordance icon).
+        const inputContainer = wrapperDiv.closest('.input') || wrapperDiv;
+        const hideOnClickOutside = function (e) {
+            if (!inputContainer.contains(e.target)) {
+                wrapperDiv.classList.remove('toolbar-visible');
+                entry.toolbarForceShown = false;
+                document.removeEventListener('mousedown', hideOnClickOutside, true);
+                entry._hideOnClickOutside = null;
+            }
+        };
+        entry._hideOnClickOutside = hideOnClickOutside;
+        document.addEventListener('mousedown', hideOnClickOutside, true);
+    }
+}
+
 export function destroy(elementId) {
     const entry = editors[elementId];
     if (!entry) {
         return;
+    }
+    if (entry._hideOnClickOutside) {
+        document.removeEventListener('mousedown', entry._hideOnClickOutside, true);
     }
     if (debounceTimers[elementId]) {
         clearTimeout(debounceTimers[elementId]);

@@ -36,6 +36,10 @@ div {
     display: none !important;
   }
 
+  div.character.toolbar-visible ::deep .se-toolbar {
+    display: block !important;
+  }
+
     div ::deep .sun-editor-editable p {
       margin: 0;
       padding-bottom: var(--spacing-tiny);

@@ -146,7 +146,7 @@ public partial class Theme(
 
             if(icon.SvgRenderType == SvgRenderType.Atlas) {
                 var version = $"?v={Version}";
-                icon.SvgInlineBody = $@"<svg class=""{icon.CssClass}"" additional-classes><title>{icon.AlternateText}</title><use href=""/bundles/atlas.svg{version}#{icon.Key}""></use></svg>";
+                icon.SvgInlineBody = $@"<svg class=""{icon.CssClass} additional-classes""><title>{icon.AlternateText}</title><use href=""/bundles/atlas.svg{version}#{icon.Key}""></use></svg>";
             }
 
         }

@@ -91,6 +91,18 @@ public partial class Markdown : ComponentBase
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", ReadOnlyCss, ModeCss, CssClass);
 
+    /// <summary>
+    /// Toggles the inline toolbar visibility. When shown, the toolbar
+    /// automatically hides when the editor loses focus.
+    /// </summary>
+    public async Task ToggleToolbar()
+    {
+        Console.WriteLine("ToggleToolbar called");
+        if(initialized && !ReadOnly) {
+            await EditorInterop.ToggleToolbarAsync(editorId);
+        }
+    }
+
     public async ValueTask DisposeAsync()
     {
         if(initialized) {
