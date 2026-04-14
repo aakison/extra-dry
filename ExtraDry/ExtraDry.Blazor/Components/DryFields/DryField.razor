@@ -7,8 +7,7 @@
 }
 else {
     @if(Property.HasBooleanValues) {
-        //var value = ((bool?)Property.GetValue(Model) ?? false) == true;
-        //<input type="checkbox" checked="@value" @onchange="HandleChange" />
+        <DryToggleField Model="Model" Property="Property" OnInput="OnInput" OnChange="OnChange" OnValidate="OnValidate" />
     }
     else if(IsOptionField) {
         <DryOptionField Model="Model" Property="Property" OnInput="OnInput" OnChange="OnChange" OnValidate="OnValidate" />

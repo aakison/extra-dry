@@ -23,7 +23,7 @@
             @ChildContent
             @if(DisplayLabel) {
                 <label class="label" title="@Description" for="@For">
-                    <span class="text">@Label</span>
+                    <span class="text">@((MarkupString)Label)</span>
                 </label>
                 <label class="label" @onclick="ToggleDescription">
                     @if(HasDescription) {
