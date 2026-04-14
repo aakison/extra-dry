@@ -10,6 +10,11 @@ public partial class DryForm<T>(
     where T : class
 {
 
+    /// <summary>
+    /// Indicates that the form should use fields instead of old input controls.
+    /// Set to True on new forms, Everything will migrate this way.
+    /// Then this parameter will be removed and fields will be the default and only option.
+    /// </summary>
     [Parameter]
     //[Obsolete("This will go away when everything uses fields")]
     public bool UseFields { get; set; } = false;
@@ -57,6 +62,9 @@ public partial class DryForm<T>(
     [Parameter]
     public EventCallback<ChangeEventArgs> OnChange { get; set; }
 
+    [Parameter]
+    public bool ShowCommands { get; set; } = true;
+
     /// <inheritdoc />
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
@@ -98,4 +106,6 @@ public partial class DryForm<T>(
         ? FormDescription?.Fieldsets
         : FormDescription?.Fieldsets.Where(e => FieldsetNames.Contains(e.Name, StringComparer.OrdinalIgnoreCase)))
         ?? [];
+
+    private bool DisplayCommands => ShowCommands && EditMode != EditMode.ReadOnly;
 }

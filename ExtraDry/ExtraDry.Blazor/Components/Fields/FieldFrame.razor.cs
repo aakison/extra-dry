@@ -106,6 +106,13 @@ public partial class FieldFrame : ComponentBase
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum FieldFrameRenderMode
 {
+    /// <summary>
+    /// Render the field normally, with label before the input.  Text, and most other fields.
+    /// </summary>
     Standard,
+
+    /// <summary>
+    /// Render the field in in (aka reverse), with the input before thel labels.  Radio buttons and checkboxes.
+    /// </summary>
     Inline,
 }

@@ -11,7 +11,7 @@
                 <progress>Loading...</progress>
             } else {
                 @if(VisibleFieldsets.Any()) {
-                    <div class="@ModelNameSlug fixed-fieldsets">
+                    <div class="@ModelNameSlug fieldsets">
                         @foreach(var fieldset in VisibleFieldsets) {
                             <DryFieldset UseFields="@UseFields" GroupName="@fieldset.Name" OnChange="OnChange" />
                         }
@@ -20,11 +20,13 @@
                 <div class="content">
                     @ChildContent
                 </div>
-                <ValidationBoundary>
-                    <div class="@ModelNameSlug entity-actions">
-                        <DryButtonBar Decorator="Decorator" Model="Model" Category="@CommandCategory" />
-                    </div>
-                </ValidationBoundary>
+                @if(DisplayCommands) {
+                    <ValidationBoundary>
+                        <div class="@ModelNameSlug entity-actions">
+                            <DryButtonBar Decorator="Decorator" Model="Model" Category="@CommandCategory" />
+                        </div>
+                    </ValidationBoundary>
+                }
             }
         </CascadingValue>
     </CascadingValue>

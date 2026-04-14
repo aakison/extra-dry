@@ -19,5 +19,5 @@ div.inline {
     display: flex;
     flex-direction: row;
     gap: var(--spacing-small);
-    align-items: center;
+    align-items: start;
   }

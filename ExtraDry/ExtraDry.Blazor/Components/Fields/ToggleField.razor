@@ -2,6 +2,7 @@
 @inherits FieldBase<bool?>
 
 <FieldFrame RenderMode="FieldFrameRenderMode.Inline" Size="@Size" Description="@Description" ShowDescription="@ShowDescription" Label="@Label" For="@InputId" ShowLabel="@ShowLabel" IsValid="@IsValid" Message="@ValidationMessage">
-    <input id="@InputId" class="value" title="@Label" type="checkbox" disabled="@ReadOnly" 
-            checked="@Checked" @onchange="HandleChange" @oninput="HandleInput" />
+    <div class="@CssClasses">
+        <input id="@InputId" class="value" title="@Label" type="checkbox" disabled="@ReadOnly" checked="@Checked" @onchange="HandleChange" @oninput="HandleInput" />
+    </div>
 </FieldFrame>
