@@ -11,7 +11,7 @@ public class DryInputNumericTests
     [Fact]
     public void NumericInputBasicRenderingCorrectness()
     {
-        using var context = new TestContext();
+        using var context = new Bunit.TestContext();
         var model = new BasicNumericModel();
         var description = new DecoratorInfo(model.GetType(), model);
         var property = description.FormProperties.First(e => e.Property.Name == nameof(BasicNumericModel.Numeric));
@@ -60,7 +60,7 @@ public class DryInputNumericTests
     [Fact]
     public void NumericInputMobileKeyboard()
     {
-        using var context = new TestContext();
+        using var context = new Bunit.TestContext();
         var model = new BasicNumericModel();
         var description = new DecoratorInfo(model.GetType(), model);
         var property = description.FormProperties.First(e => e.Property.Name == nameof(BasicNumericModel.Numeric));
@@ -77,7 +77,7 @@ public class DryInputNumericTests
     [Fact]
     public void NumericInputAriaPassthrough()
     {
-        using var context = new TestContext();
+        using var context = new Bunit.TestContext();
         var model = new BasicNumericModel();
         var description = new DecoratorInfo(model.GetType(), model);
         var property = description.FormProperties.First(e => e.Property.Name == nameof(BasicNumericModel.Numeric));
@@ -102,7 +102,7 @@ public class DryInputNumericTests
     [InlineData(null, "empty")]
     public void NullableDecimalShowsProperValue(double? value, string expected)
     {
-        using var context = new TestContext();
+        using var context = new Bunit.TestContext();
         var model = new NullNumericModel() { Numeric = (decimal?)value };
         var description = new DecoratorInfo(model.GetType(), model);
         var property = description.FormProperties.First(e => e.Property.Name == nameof(NullNumericModel.Numeric));
@@ -119,7 +119,7 @@ public class DryInputNumericTests
     [Fact]
     public void NumericInputExplicitIcon()
     {
-        using var context = new TestContext();
+        using var context = new Bunit.TestContext();
         var model = new NullNumericModel();
         var description = new DecoratorInfo(model.GetType(), model);
         var property = description.FormProperties.First(e => e.Property.Name == nameof(NullNumericModel.Numeric));
@@ -140,7 +140,7 @@ public class DryInputNumericTests
     [Fact]
     public void NumericInputReadOnly()
     {
-        using var context = new TestContext();
+        using var context = new Bunit.TestContext();
         var model = new NullNumericModel();
         var description = new DecoratorInfo(model.GetType(), model);
         var property = description.FormProperties.First(e => e.Property.Name == nameof(NullNumericModel.Numeric));

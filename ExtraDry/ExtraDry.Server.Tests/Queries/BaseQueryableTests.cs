@@ -1,4 +1,4 @@
-﻿using ExtraDry.Server.Internal;
+using ExtraDry.Server.Internal;
 
 namespace ExtraDry.Server.Tests.Models;
 
@@ -33,7 +33,7 @@ public class BaseQueryableTests
         var query = new BaseQueryable<Model>(Models.AsQueryable());
         var expected = Models.ToList();
 
-        var actual = await query.ToBaseCollectionAsync();
+        var actual = await query.ToBaseCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(expected, actual.Items);
     }
@@ -44,7 +44,7 @@ public class BaseQueryableTests
         var models = new ModelsBaseCollection { Models = Models };
         var expected = Models.OrderBy(e => e.Id).ToList();
 
-        var actual = await models.ToBaseCollectionAsync();
+        var actual = await models.ToBaseCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(expected, actual.Items.OrderBy(e => e.Id)); // async collection is not sorted
     }

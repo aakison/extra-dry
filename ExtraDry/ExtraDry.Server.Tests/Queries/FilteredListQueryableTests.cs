@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server.Tests.Models;
+namespace ExtraDry.Server.Tests.Models;
 
 public class FilteredListQueryableTests
 {
@@ -27,7 +27,7 @@ public class FilteredListQueryableTests
         var models = Samples.Models;
         var expected = models.ToList();
 
-        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync();
+        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(expected, actual.Items);
     }
@@ -39,7 +39,7 @@ public class FilteredListQueryableTests
         var models = Samples.Models;
         var expected = models.Where(e => e.Name.Equals("Bob", StringComparison.OrdinalIgnoreCase)).ToList();
 
-        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync();
+        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(expected, actual.Items);
     }
@@ -51,7 +51,7 @@ public class FilteredListQueryableTests
         var models = Samples.Models;
         var expected = models.Where(e => e.Name.Equals("Bravo", StringComparison.OrdinalIgnoreCase)).ToList();
 
-        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync();
+        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(expected, actual.Items);
     }
@@ -63,7 +63,7 @@ public class FilteredListQueryableTests
         var models = Samples.Models;
         var expected = models.Where(e => e.Name.Equals("Alpha", StringComparison.OrdinalIgnoreCase)).ToList();
 
-        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync();
+        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(expected, actual.Items);
     }
@@ -75,7 +75,7 @@ public class FilteredListQueryableTests
         var models = Samples.Models;
         var expected = models.Where(e => e.Id == 1).ToList();
 
-        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync();
+        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(expected, actual.Items);
     }
@@ -87,7 +87,7 @@ public class FilteredListQueryableTests
         var models = Samples.Models;
         var expected = models.Where(e => e.Id is 1 or 8).ToList();
 
-        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync();
+        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(expected, actual.Items);
     }
@@ -99,7 +99,7 @@ public class FilteredListQueryableTests
         var models = Samples.Models;
         var expected = models.Where(e => e.Id is >= -2 and < -1).ToList();
 
-        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync();
+        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(expected, actual.Items);
     }
@@ -111,7 +111,7 @@ public class FilteredListQueryableTests
         var models = Samples.Models;
         var expected = models.Where(e => e.Id is >= 2 and < 5).ToList();
 
-        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync();
+        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(expected, actual.Items);
     }
@@ -123,7 +123,7 @@ public class FilteredListQueryableTests
         var models = Samples.Models;
         var expected = models.Where(e => e.Type == ModelType.Latin).ToList();
 
-        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync();
+        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(expected, actual.Items);
     }
@@ -134,7 +134,7 @@ public class FilteredListQueryableTests
         var filter = new FilterQuery { Filter = "invalid:latin" };
         var models = Samples.Models;
 
-        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync();
+        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Empty(actual.Items);
     }
@@ -145,7 +145,7 @@ public class FilteredListQueryableTests
         var filter = new FilterQuery { Filter = "type:invalid" };
         var models = Samples.Models;
 
-        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync();
+        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Empty(actual.Items);
     }
@@ -157,7 +157,7 @@ public class FilteredListQueryableTests
         var models = Samples.Models;
         var expected = models.Where(e => e.Type == ModelType.Hendrix).ToList();
 
-        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync();
+        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(expected, actual.Items);
     }
@@ -169,7 +169,7 @@ public class FilteredListQueryableTests
         var models = Samples.Models;
         var expected = models.Where(e => e.Type == ModelType.Greek).ToList();
 
-        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync();
+        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(expected, actual.Items);
     }
@@ -181,7 +181,7 @@ public class FilteredListQueryableTests
         var models = Samples.Models;
         var expected = models.Where(e => e.Name == "bob" || e.Soundex.StartsWith("bob", StringComparison.OrdinalIgnoreCase)).ToList();
 
-        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync();
+        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(expected, actual.Items);
     }
@@ -195,7 +195,7 @@ public class FilteredListQueryableTests
         var models = Samples.Models;
         var expected = models.Where(e => e.Name.Equals(keyword, StringComparison.OrdinalIgnoreCase) || e.Soundex.StartsWith(keyword, StringComparison.OrdinalIgnoreCase)).ToList();
 
-        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync();
+        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(expected, actual.Items);
     }
@@ -207,7 +207,7 @@ public class FilteredListQueryableTests
         var models = Samples.Models;
         var expected = models.Where(e => e.Id == 10).ToList();
 
-        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync();
+        var actual = await models.AsQueryable().QueryWith(filter).ToFilteredCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(expected, actual.Items);
     }
@@ -219,7 +219,7 @@ public class FilteredListQueryableTests
         var models = Samples.Models;
         var expected = models.Where(e => e.Name == "nothing" && e.Type == ModelType.Phonetic).ToList();
 
-        var actual = await models.AsQueryable().QueryWith(filter, e => e.Type == ModelType.Phonetic).ToFilteredCollectionAsync();
+        var actual = await models.AsQueryable().QueryWith(filter, e => e.Type == ModelType.Phonetic).ToFilteredCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(expected, actual.Items);
     }
@@ -234,7 +234,7 @@ public class FilteredListQueryableTests
         var models = Samples.Models;
         var expected = models.Where(e => e.Type == ModelType.Phonetic).ToList();
 
-        var actual = await models.AsQueryable().QueryWith(filter, e => e.Type == ModelType.Phonetic).ToFilteredCollectionAsync();
+        var actual = await models.AsQueryable().QueryWith(filter, e => e.Type == ModelType.Phonetic).ToFilteredCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(expected, actual.Items);
     }
@@ -246,7 +246,7 @@ public class FilteredListQueryableTests
         var models = Samples.Models;
         var expected = models.Where(e => e.Name == "Alpha" && e.Type == ModelType.Phonetic).ToList();
 
-        var actual = await models.AsQueryable().QueryWith(filter, e => e.Type == ModelType.Phonetic).ToFilteredCollectionAsync();
+        var actual = await models.AsQueryable().QueryWith(filter, e => e.Type == ModelType.Phonetic).ToFilteredCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(expected, actual.Items);
     }
@@ -258,7 +258,7 @@ public class FilteredListQueryableTests
         var models = Samples.Models;
         var expected = models.Where(e => e.Id >= 5 && e.Id <= 8 && e.Type == ModelType.Phonetic).ToList();
 
-        var actual = await models.AsQueryable().QueryWith(filter, e => e.Type == ModelType.Phonetic).ToFilteredCollectionAsync();
+        var actual = await models.AsQueryable().QueryWith(filter, e => e.Type == ModelType.Phonetic).ToFilteredCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(expected, actual.Items);
     }
@@ -270,7 +270,7 @@ public class FilteredListQueryableTests
         var models = Samples.Models;
         var expected = models.Where(e => e.Type == ModelType.Greek).ToList();
 
-        var actual = await models.AsQueryable().QueryWith(filter, e => e.Type == ModelType.Phonetic).ToFilteredCollectionAsync();
+        var actual = await models.AsQueryable().QueryWith(filter, e => e.Type == ModelType.Phonetic).ToFilteredCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(expected, actual.Items);
     }

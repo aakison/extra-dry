@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Tests.Components;
+namespace ExtraDry.Blazor.Tests.Components;
 
 public class DryButtonTests : IDisposable
 {
@@ -76,7 +76,7 @@ public class DryButtonTests : IDisposable
         context?.Dispose();
     }
 
-    private readonly TestContext context = new();
+    private readonly Bunit.TestContext context = new();
 
     private string LastMethodClicked { get; set; } = string.Empty;
 }

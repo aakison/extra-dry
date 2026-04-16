@@ -1,4 +1,4 @@
-﻿using ExtraDry.Core.Parser.Internal;
+using ExtraDry.Core.Parser.Internal;
 
 namespace ExtraDry.Server.Tests.Models;
 
@@ -208,7 +208,7 @@ public class PagedListQueryableTests
         var query = new PageQuery { Skip = 5, Take = 5, Sort = nameof(Model.Name), Filter = "phonetic" };
         var expected = Models.ToList().Where(e => e.Type == ModelType.Phonetic).OrderBy(e => e.Name);
 
-        var actual = await Models.AsQueryable().QueryWith(query).ToFilteredCollectionAsync();
+        var actual = await Models.AsQueryable().QueryWith(query).ToFilteredCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(expected, actual.Items);
     }
@@ -219,7 +219,7 @@ public class PagedListQueryableTests
         var query = new PageQuery { Skip = 5, Take = 5, Sort = nameof(Model.Name) };
         var expected = Models.ToList();
 
-        var actual = await Models.AsQueryable().QueryWith(query).ToFilteredCollectionAsync();
+        var actual = await Models.AsQueryable().QueryWith(query).ToFilteredCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(expected, actual.Items);
     }
