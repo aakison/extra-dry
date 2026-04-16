@@ -1,4 +1,4 @@
-﻿using ExtraDry.Server.Internal;
+using ExtraDry.Server.Internal;
 
 namespace ExtraDry.Server.Tests.Models;
 
@@ -29,7 +29,7 @@ public class SortedListQueryableTests
         var query = new SortQuery { Filter = "phonetic", Sort = sort };
         var expected = Models.ToList().Where(e => e.Type == ModelType.Phonetic).OrderBy(e => e.Name);
 
-        var actual = await Models.AsQueryable().QueryWith(query).ToSortedCollectionAsync();
+        var actual = await Models.AsQueryable().QueryWith(query).ToSortedCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(expected, actual.Items);
     }
@@ -57,7 +57,7 @@ public class SortedListQueryableTests
         var query = new SortQuery { Filter = "phonetic", Sort = sort };
         var expected = Models.ToList().Where(e => e.Type == ModelType.Phonetic).OrderByDescending(e => e.Name);
 
-        var actual = await Models.AsQueryable().QueryWith(query).ToSortedCollectionAsync();
+        var actual = await Models.AsQueryable().QueryWith(query).ToSortedCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(expected, actual.Items);
     }
@@ -71,7 +71,7 @@ public class SortedListQueryableTests
         var query = new SortQuery { Sort = sort };
         var expected = Models.ToList();
 
-        var actual = await Models.AsQueryable().QueryWith(query).ToSortedCollectionAsync();
+        var actual = await Models.AsQueryable().QueryWith(query).ToSortedCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(expected, actual.Items);
     }
@@ -82,7 +82,7 @@ public class SortedListQueryableTests
         var query = new SortQuery { Sort = nameof(Model.Name) };
         var expected = Models.ToList();
 
-        var actual = await Models.AsQueryable().QueryWith(query).ToFilteredCollectionAsync();
+        var actual = await Models.AsQueryable().QueryWith(query).ToFilteredCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(expected, actual.Items);
     }

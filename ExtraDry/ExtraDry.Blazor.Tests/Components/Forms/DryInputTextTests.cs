@@ -10,7 +10,7 @@ public class DryInputTextTests
     [Fact]
     public void StaticComponents()
     {
-        using var context = new TestContext();
+        using var context = new Bunit.TestContext();
         var model = new Model { Id = 1, Name = "TheModel" };
         var description = new DecoratorInfo(typeof(Model), model);
         var property = description.FormProperties.First(e => e.Property.Name == nameof(Model.Name));
@@ -30,7 +30,7 @@ public class DryInputTextTests
     [Fact]
     public void UnmatchedAttributesPassthrough()
     {
-        using var context = new TestContext();
+        using var context = new Bunit.TestContext();
         var attributes = new Dictionary<string, object>() {
             { "data-foo", "bar" },
         };

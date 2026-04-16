@@ -1,4 +1,4 @@
-﻿using ExtraDry.Server.Internal;
+using ExtraDry.Server.Internal;
 
 namespace ExtraDry.Server.Tests.Models;
 
@@ -60,7 +60,7 @@ public class PagedHierarchyQueryableTests
             .OrderBy(e => e.Lineage)
             .Skip(skip).Take(take);
 
-        var actual = await regions.AsQueryable().QueryWith(query).ToPagedHierarchyCollectionAsync();
+        var actual = await regions.AsQueryable().QueryWith(query).ToPagedHierarchyCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(count, actual.Count);
         Assert.Equal(expected, actual.Items);

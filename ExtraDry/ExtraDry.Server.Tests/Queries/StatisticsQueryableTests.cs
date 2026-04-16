@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server.Tests.Models;
+namespace ExtraDry.Server.Tests.Models;
 
 public class StatisticsQueryableTests
 {
@@ -36,7 +36,7 @@ public class StatisticsQueryableTests
         var phoneticCount = models.Count(e => e.Type == ModelType.Phonetic);
         var hendrixCount = models.Count(e => e.Type == ModelType.Hendrix);
 
-        var actual = await models.AsQueryable().QueryWith(filter).ToStatisticsAsync();
+        var actual = await models.AsQueryable().QueryWith(filter).ToStatisticsAsync(TestContext.Current.CancellationToken);
 
         var byModelType = actual.Distributions!.First(e => e.PropertyName == nameof(Model.Type)).Counts;
         Assert.Equal(greekCount, byModelType[nameof(ModelType.Greek)]);
@@ -57,7 +57,7 @@ public class StatisticsQueryableTests
         var phoneticCount = subset.Count(e => e.Type == ModelType.Phonetic);
         var hendrixCount = subset.Count(e => e.Type == ModelType.Hendrix);
 
-        var actual = await models.AsQueryable().QueryWith(filter).ToStatisticsAsync();
+        var actual = await models.AsQueryable().QueryWith(filter).ToStatisticsAsync(TestContext.Current.CancellationToken);
 
         var byModelType = actual.Distributions!.First(e => e.PropertyName == nameof(Model.Type)).Counts;
         Assert.Equal(greekCount, byModelType[nameof(ModelType.Greek)]);
@@ -74,7 +74,7 @@ public class StatisticsQueryableTests
         var alphaCount = models.Count(e => e.Name == "Alpha");
         var betaCount = models.Count(e => e.Name == "Beta");
 
-        var actual = await models.AsQueryable().QueryWith(filter).ToStatisticsAsync();
+        var actual = await models.AsQueryable().QueryWith(filter).ToStatisticsAsync(TestContext.Current.CancellationToken);
 
         var byName = actual.Distributions!.First(e => e.PropertyName == nameof(Model.Name)).Counts;
         Assert.Equal(alphaCount, byName["Alpha"]);

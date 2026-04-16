@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Tests.Components;
+namespace ExtraDry.Blazor.Tests.Components;
 
 public class GravatarTests : IDisposable
 {
@@ -90,5 +90,5 @@ public class GravatarTests : IDisposable
 
     private const string exampleHash = "b58996c504c5638798eb6b511e6f49af";
 
-    private readonly TestContext context = new();
+    private readonly Bunit.TestContext context = new();
 }
