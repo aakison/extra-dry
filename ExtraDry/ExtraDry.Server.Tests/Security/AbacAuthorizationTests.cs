@@ -1,4 +1,4 @@
-﻿using ExtraDry.Server.Security;
+using ExtraDry.Server.Security;
 using Microsoft.AspNetCore.Routing;
 using System.Security.Claims;
 
@@ -140,7 +140,7 @@ public class AbacAuthorizationTests
     [Theory]
     [InlineData("acme-corp")] // match static value
     [InlineData("{route.tenant}")] // match route parameter
-    [InlineData("{target.Tenant}")] // match property in target
+    [InlineData("{resource.Tenant}")] // match property in target
     [InlineData("{attribute.tenant}")] // match attribute on target
     public void ConditionClaimMatchesValue(string claimValue)
     {

@@ -23,7 +23,8 @@ public class RbacRequirementHandler
         if(policy == null) {
             return Task.CompletedTask;
         }
-        if(helper.IsAuthorized(user, route, Empty, policy)) {
+        var resource = context.Resource ?? Empty;
+        if(helper.IsAuthorized(user, route, resource, policy)) {
             context.Succeed(requirement);
         }
         return Task.CompletedTask;

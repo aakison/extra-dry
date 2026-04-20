@@ -68,8 +68,13 @@ internal class AbacAuthorizationHelper(AbacOptions options)
         }
         if(condition.Roles.All(user.IsInRole) &&
             condition.Claims.All(claim => {
+                var claimKey = claim.Key switch {
+                    "sub" => "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier",
+                    "unique_name" => "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
+                    _ => claim.Key
+                };                
                 return user.HasClaim(c => {
-                    if(c.Type != claim.Key) {
+                    if(c.Type != claimKey) {
                         return false;
                     }
 
@@ -102,9 +107,9 @@ internal class AbacAuthorizationHelper(AbacOptions options)
                 expanded = expanded.Replace($"{{route.{key}}}", route[key]?.ToString() ?? "");
             }
         }
-        if(expanded.Contains("{target.")) {
+        if(expanded.Contains("{resource.")) {
             foreach(var property in target.GetType().GetProperties()) {
-                expanded = expanded.Replace($"{{target.{property.Name}}}", property.GetValue(target)?.ToString() ?? "");
+                expanded = expanded.Replace($"{{resource.{property.Name}}}", property.GetValue(target)?.ToString() ?? "");
             }
         }
         if(expanded.Contains("{attribute.") && target is IAttributed attributed) {

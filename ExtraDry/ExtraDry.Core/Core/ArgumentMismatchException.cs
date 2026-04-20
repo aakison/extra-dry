@@ -35,10 +35,11 @@ public sealed class ArgumentMismatchException : ArgumentException
     /// <summary>
     /// Throws an exception if UUID parameters do not match.
     /// </summary>
-    public static void ThrowIfMismatch(Guid uriUuid, Guid? bodyUuid, string paramName)
+    public static void ThrowIfMismatch(Guid uriUuid, Guid? bodyUuid, string paramName, string? message = null)
     {
         if(!bodyUuid.HasValue || uriUuid != bodyUuid.Value) {
-            throw new ArgumentMismatchException("UUID in URL does not match UUID in body of request.", paramName);
+            message ??= "UUID in URL does not match UUID in body of request.";
+            throw new ArgumentMismatchException(message, paramName);
         }
     }
 
@@ -49,6 +50,14 @@ public sealed class ArgumentMismatchException : ArgumentException
     {
         if(uriString != bodyString) {
             throw new ArgumentMismatchException("Parameter in URL does not match parameter in body of request.", paramName);
+        }
+    }
+
+    public static void ThrowIfMismatch(Enum uriEnum, Enum? bodyEnum, string paramName, string? message = null)
+    {
+        if(uriEnum != bodyEnum) {
+            message ??= "Enum in URL does not match enum in body of request.";
+            throw new ArgumentMismatchException(message, paramName);
         }
     }
 }
