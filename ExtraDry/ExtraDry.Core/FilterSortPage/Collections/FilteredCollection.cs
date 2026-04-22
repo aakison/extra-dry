@@ -22,12 +22,25 @@ public class FilteredCollection<T> : BaseCollection<T>
     private string? filter;
 
     /// <summary>
+    /// The order and name of the Property the sort is performed on.
+    /// </summary>
+    /// <example>property</example>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public string? Sort {
+        get => sort;
+        set => sort = string.IsNullOrWhiteSpace(value) ? null : value;
+    }
+
+    private string? sort;
+
+    /// <summary>
     /// Create a new <see cref="FilteredCollection{T}" /> with the items cast to a base class or
     /// interface.
     /// </summary>
     public new FilteredCollection<TCast> Cast<TCast>() => new() {
         Filter = Filter,
         Created = Created,
+        Sort = Sort,
         Items = Items.Cast<TCast>().ToList(),
     };
 }
