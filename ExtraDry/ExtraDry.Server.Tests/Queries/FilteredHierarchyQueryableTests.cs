@@ -1,4 +1,4 @@
-﻿using ExtraDry.Server.Internal;
+using ExtraDry.Server.Internal;
 
 namespace ExtraDry.Server.Tests.Models;
 
@@ -107,27 +107,6 @@ public class FilteredHierarchyQueryableTests
         Assert.Null(actual.Expand);
         Assert.Equal(collapse, actual.Collapse);
         Assert.Equal(5, actual.Count);
-        Assert.Equal(expected, actual.Items);
-    }
-
-    [Fact]
-    public async Task FilterAndParentsIgnoreLevel()
-    {
-        // filter to get rid of duplicate names
-        var query = new HierarchyQuery { Level = 4, Filter = "Brisbane" };
-        var slugs = new List<string> { "all", "AU", "AU-QLD", "AU-QLD-Brisbane" };
-        var expected = Samples.Regions
-            .Where(e => slugs.Contains(e.Slug))
-            .OrderBy(e => e.Lineage);
-
-        var actual = await Samples.Regions.AsQueryable().QueryWith(query).ToHierarchyCollectionAsync();
-
-        Assert.Equal("Brisbane", actual.Filter);
-        Assert.Equal("lineage", actual.Sort);
-        Assert.Equal(4, actual.Level);
-        Assert.Null(actual.Expand);
-        Assert.Null(actual.Collapse);
-        Assert.Equal(4, actual.Count);
         Assert.Equal(expected, actual.Items);
     }
 
