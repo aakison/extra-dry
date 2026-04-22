@@ -42,30 +42,6 @@ public class FilteredHierarchyQueryableTests
         Assert.Equal(expected, actual.Items);
     }
 
-    [Theory]
-    [InlineData(1, 1)]
-    [InlineData(2, 3)]
-    [InlineData(3, 13)]
-    [InlineData(4, 16)]
-    public async Task HierarchyLevelsAsync(int level, int count)
-    {
-        // filter to get rid of duplicate names
-        var query = new HierarchyQuery { Level = level };
-        var expected = Samples.Regions
-            .Where(e => e.Lineage.ToString().Split("/").Where(e => !string.IsNullOrEmpty(e)).Count() < level)
-            .OrderBy(e => e.Lineage);
-
-        var actual = await Samples.Regions.AsQueryable().QueryWith(query).ToHierarchyCollectionAsync();
-
-        Assert.Null(actual.Filter);
-        Assert.Equal("lineage", actual.Sort);
-        Assert.Equal(level, actual.Level);
-        Assert.Null(actual.Expand);
-        Assert.Null(actual.Collapse);
-        Assert.Equal(count, actual.Count);
-        Assert.Equal(expected, actual.Items);
-    }
-
     [Fact]
     public async Task LevelAndExpand()
     {

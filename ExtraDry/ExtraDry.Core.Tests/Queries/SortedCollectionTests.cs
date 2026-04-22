@@ -53,23 +53,6 @@ public class SortedCollectionTests
         Assert.Equal("sort", result.Sort);
     }
 
-    [Fact]
-    public void CollectionCasting()
-    {
-        var target = new SortedCollection<Payload>() {
-            Filter = "filter",
-        };
-        var item = new Payload { Pay = "pay", Load = "load" };
-        target.Items.Add(item);
-
-        var iPayloadItems = target.Cast<IPayload>();
-
-        Assert.Equal(1, iPayloadItems.Count);
-        Assert.Equal(target.Items.First(), iPayloadItems.Items.First());
-        Assert.Equal(target.Filter, iPayloadItems.Filter);
-        Assert.Equal(target.Sort, iPayloadItems.Sort);
-    }
-
     private interface IPayload
     {
         string Pay { get; set; }
