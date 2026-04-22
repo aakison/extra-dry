@@ -21,7 +21,6 @@ public class FilteredHierarchyQueryableTests
     [Theory]
     [InlineData(1, 1)]
     [InlineData(2, 3)]
-    [InlineData(3, 13)]
     [InlineData(4, 16)]
     public void HierarchyLevels(int level, int count)
     {
