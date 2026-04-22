@@ -1,5 +1,6 @@
 @namespace ExtraDry.Blazor.Components
-@inherits FieldBase<bool?>
+@typeparam TValue
+@inherits FieldBase<TValue>
 
 <FieldFrame RenderMode="FieldFrameRenderMode.Inline" Size="@Size" Description="@Description" ShowDescription="@ShowDescription" Label="@Label" For="@InputId" ShowLabel="@ShowLabel" IsValid="@IsValid" Message="@ValidationMessage">
     <div class="@CssClasses">
