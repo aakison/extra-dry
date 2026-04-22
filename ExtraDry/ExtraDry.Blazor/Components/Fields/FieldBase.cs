@@ -95,12 +95,11 @@ public abstract class FieldBase<T> : ComponentBase
 
     protected override void OnParametersSet()
     {
-        if(InputId == "") {
-            InputId = Id switch {
-                "" => $"{GetType().Name}{++instanceCount}",
-                _ => Id,
-            };
-        }
+        InputId = (InputId, Id) switch {
+            ("", "") => $"Field{FieldIndex.Next()}",
+            ("", _) => Id,
+            (_, _) => InputId,
+        };
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -177,6 +176,10 @@ public abstract class FieldBase<T> : ComponentBase
         }
     }
 
-    private static int instanceCount;
+}
 
+internal static class FieldIndex
+{
+    private static int index;
+    public static int Next() => ++index;
 }

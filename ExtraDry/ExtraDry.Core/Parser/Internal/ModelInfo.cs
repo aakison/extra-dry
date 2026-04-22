@@ -66,7 +66,7 @@ public class ModelInfo
 
     private void GetReflectedModelProperties(Type modelType)
     {
-        var properties = modelType.GetProperties();
+        var properties = modelType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
         SortProperty? stabilizerPropertyByConvention = default;
         foreach(var property in properties) {
             var externalName = ExternalName(property);
@@ -95,7 +95,7 @@ public class ModelInfo
                 }
             }
 
-            if(property.Name == "Id") {
+            if(property.Name == "Id" || property.Name == "Uuid") {
                 stabilizerPropertyByConvention = new SortProperty(property, externalName);
             }
             else if(stabilizerPropertyByConvention == default && property.Name == $"{modelType.Name}Id") {

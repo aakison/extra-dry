@@ -42,7 +42,7 @@ public partial class NumberField<TValue> : FieldBase<TValue>
 
     private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", ReadOnlyCss, IsValidCss, CssClass);
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", "number", ReadOnlyCss, IsValidCss, CssClass);
 
     private string DisplayValue { get; set; } = "";
 
