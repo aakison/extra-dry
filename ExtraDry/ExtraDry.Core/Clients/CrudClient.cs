@@ -152,6 +152,26 @@ public class CrudClient<T>(
         return response;
     }
 
+    /// <summary>
+    /// Sends an RPC request to the resource identified by the key. As this is not strictly
+    /// RESTful, it should be used sparingly and only when the operation is not a standard CRUD
+    /// operation.
+    /// </summary>
+    /// <remarks>
+    /// The execution endpoint is the standard resource endpoint with string operation appended
+    /// after a colon.
+    /// </remarks>
+    public async Task<TResult> ExecuteAsync<TResult>(object key, string operation, object? payload = null, CancellationToken cancellationToken = default)
+    {
+        var response = await ExecuteAsync(key, operation, payload, cancellationToken);
+        var body = await response.Content.ReadAsStringAsync(cancellationToken);
+        var result = JsonSerializer.Deserialize<TResult>(body);
+        if(result is null) {
+            throw new InvalidOperationException("No result returned");
+        }
+        return result;
+    }
+
     private MemoryCache<T> Cache { get; set; } = new MemoryCache<T>(options.ReadCache);
 
     private string ApiEndpoint(object key, CrudOperation operation)
