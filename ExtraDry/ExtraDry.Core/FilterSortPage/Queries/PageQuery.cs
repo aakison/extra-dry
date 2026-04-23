@@ -3,7 +3,7 @@ namespace ExtraDry.Core;
 /// <summary>
 /// Standard payload for list controllers endpoints that return paged results.
 /// </summary>
-public class PageQuery : SortQuery, IPageQuery
+public class PageQuery : FilterQuery, IPageQuery
 {
     /// <inheritdoc cref="IPageQuery.Skip" />
     public int Skip { get; set; }

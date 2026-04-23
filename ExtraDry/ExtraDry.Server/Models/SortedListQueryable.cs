@@ -7,11 +7,11 @@ public class SortedListQueryable<T> : FilteredListQueryable<T>
     protected SortedListQueryable()
     { }
 
-    public SortedListQueryable(IQueryable<T> queryable, SortQuery sortQuery, Expression<Func<T, bool>>? defaultFilter)
+    public SortedListQueryable(IQueryable<T> queryable, FilterQuery query, Expression<Func<T, bool>>? defaultFilter)
     {
-        Query = sortQuery;
-        FilteredQuery = ApplyKeywordFilter(queryable, sortQuery, defaultFilter);
-        SortedQuery = ApplyPropertySort(FilteredQuery, sortQuery);
+        Query = query;
+        FilteredQuery = ApplyKeywordFilter(queryable, query, defaultFilter);
+        SortedQuery = ApplyPropertySort(FilteredQuery, query);
         PagedQuery = SortedQuery;
     }
 
@@ -30,11 +30,11 @@ public class SortedListQueryable<T> : FilteredListQueryable<T>
         return new() {
             Items = items,
             Filter = Query.Filter,
-            Sort = (Query as SortQuery)?.Sort,
+            Sort = (Query as FilterQuery)?.Sort,
         };
     }
 
-    protected IQueryable<T> ApplyPropertySort(IQueryable<T> queryable, SortQuery query)
+    protected IQueryable<T> ApplyPropertySort(IQueryable<T> queryable, FilterQuery query)
     {
         return queryable.Sort(query);
     }

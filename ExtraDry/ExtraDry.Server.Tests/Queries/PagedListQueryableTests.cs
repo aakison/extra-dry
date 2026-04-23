@@ -7,7 +7,7 @@ public class PagedListQueryableTests
     [Fact]
     public void QueryableInterfacePublished()
     {
-        var filter = new SortQuery();
+        var filter = new FilterQuery();
 
         var queryable = Models.AsQueryable().QueryWith(filter);
 

@@ -7,7 +7,7 @@ public class SortedListQueryableTests
     [Fact]
     public void QueryableInterfacePublished()
     {
-        var filter = new SortQuery();
+        var filter = new FilterQuery();
 
         var queryable = Models.AsQueryable().QueryWith(filter);
 
@@ -26,7 +26,7 @@ public class SortedListQueryableTests
     public async Task StringToSortedSortsAscending(string sort)
     {
         // filter to get rid of duplicate names
-        var query = new SortQuery { Filter = "phonetic", Sort = sort };
+        var query = new FilterQuery { Filter = "phonetic", Sort = sort };
         var expected = Models.ToList().Where(e => e.Type == ModelType.Phonetic).OrderBy(e => e.Name);
 
         var actual = await Models.AsQueryable().QueryWith(query).ToSortedCollectionAsync(TestContext.Current.CancellationToken);
@@ -40,7 +40,7 @@ public class SortedListQueryableTests
     public void StringToSortedSortsDescending(string sort)
     {
         // filter to get rid of duplicate names
-        var query = new SortQuery { Filter = "phonetic", Sort = sort };
+        var query = new FilterQuery { Filter = "phonetic", Sort = sort };
         var expected = Models.ToList().Where(e => e.Type == ModelType.Phonetic).OrderByDescending(e => e.Name);
 
         var actual = Models.AsQueryable().QueryWith(query).ToSortedCollection();
@@ -54,7 +54,7 @@ public class SortedListQueryableTests
     public async Task StringToSortedSortsDescendingAsync(string sort)
     {
         // filter to get rid of duplicate names
-        var query = new SortQuery { Filter = "phonetic", Sort = sort };
+        var query = new FilterQuery { Filter = "phonetic", Sort = sort };
         var expected = Models.ToList().Where(e => e.Type == ModelType.Phonetic).OrderByDescending(e => e.Name);
 
         var actual = await Models.AsQueryable().QueryWith(query).ToSortedCollectionAsync(TestContext.Current.CancellationToken);
@@ -68,7 +68,7 @@ public class SortedListQueryableTests
     [InlineData(" ")]
     public async Task EmptyStringToSortIgnoresSort(string? sort)
     {
-        var query = new SortQuery { Sort = sort };
+        var query = new FilterQuery { Sort = sort };
         var expected = Models.ToList();
 
         var actual = await Models.AsQueryable().QueryWith(query).ToSortedCollectionAsync(TestContext.Current.CancellationToken);
@@ -79,7 +79,7 @@ public class SortedListQueryableTests
     [Fact]
     public async Task StringToFilteredIgnoresSort()
     {
-        var query = new SortQuery { Sort = nameof(Model.Name) };
+        var query = new FilterQuery { Sort = nameof(Model.Name) };
         var expected = Models.ToList();
 
         var actual = await Models.AsQueryable().QueryWith(query).ToFilteredCollectionAsync(TestContext.Current.CancellationToken);
