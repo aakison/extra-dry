@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace ExtraDry.Server;
 
-public class PagedListQueryable<T> : SortedListQueryable<T>
+public class PagedListQueryable<T> : FilteredListQueryable<T>
 {
     public PagedListQueryable(IQueryable<T> queryable, PageQuery pageQuery, Expression<Func<T, bool>>? defaultFilter)
     {
