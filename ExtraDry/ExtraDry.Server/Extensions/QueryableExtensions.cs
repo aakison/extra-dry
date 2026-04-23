@@ -9,10 +9,6 @@ namespace ExtraDry.Server;
 /// </summary>
 public static class QueryableExtensions
 {
-    public static FilteredListQueryable<T> QueryWith<T>(this IQueryable<T> source, FilterQuery query, Expression<Func<T, bool>>? defaultFilter = null) where T : class
-    {
-        return new FilteredListQueryable<T>(source.AsNoTracking(), query, defaultFilter);
-    }
 
     /// <summary>
     /// Given a `FilterQuery`, dynamically constructs an expression query that applies the
@@ -25,7 +21,7 @@ public static class QueryableExtensions
     /// An expression that provides default filtering support, which can be overridden by
     /// `filterQuery`.
     /// </param>
-    public static SortedListQueryable<T> QueryWith<T>(this IQueryable<T> source, SortQuery query, Expression<Func<T, bool>>? defaultFilter = null) where T : class
+    public static SortedListQueryable<T> QueryWith<T>(this IQueryable<T> source, FilterQuery query, Expression<Func<T, bool>>? defaultFilter = null) where T : class
     {
         query.Stabilization = Options.Stabilization;
         return new SortedListQueryable<T>(source.AsNoTracking(), query, defaultFilter);

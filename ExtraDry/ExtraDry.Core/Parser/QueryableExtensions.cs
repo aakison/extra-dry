@@ -42,13 +42,13 @@ public static class QueryableExtensions
     }
 
     /// <summary>
-    /// Given a `SortQuery`, dynamically constructs an expression query that applies the indicated
+    /// Given a <see cref="FilterQuery"/>, dynamically constructs an expression query that applies the indicated
     /// sorting but not the indicated filtering.
     /// </summary>
     /// <typeparam name="T">The type of objects in the collection.</typeparam>
     /// <param name="source">The extension source</param>
     /// <param name="query">A filter query that contains sorting information.</param>
-    public static IQueryable<T> Sort<T>(this IQueryable<T> source, SortQuery query)
+    public static IQueryable<T> Sort<T>(this IQueryable<T> source, FilterQuery query)
     {
         var token = (query as PageQuery)?.Token; // Only need the token if it's a PageQuery, null if FilterQuery.
         return source.Sort(query.Sort, query.Stabilization, token);

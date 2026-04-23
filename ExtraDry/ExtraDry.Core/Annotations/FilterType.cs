@@ -1,8 +1,8 @@
 namespace ExtraDry.Core;
 
 /// <summary>
-/// The processing rule to be applied to a property when a <see cref="FilterQuery" />, <see
-/// cref="SortQuery" /> or <see cref="PageQuery" /> has a <see cref="FilterAttribute" /> provided.
+/// The processing rule to be applied to a property when a <see cref="FilterQuery" /> or
+/// <see cref="PageQuery" /> has a <see cref="FilterAttribute" /> provided.
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum FilterType
