@@ -11,7 +11,7 @@ public class ListClientOptions : IHttpClientOptions, IValidatableObject
     [Range(1, int.MaxValue)]
     public int PageSize { get; set; } = 100;
 
-    public ListClientMode ListMode { get; set; } = ListClientMode.FilterSortAndPage;
+    public ListClientMode ListMode { get; set; } = ListClientMode.Paged;
 
     public HttpMethod HierarchyMethod { get; set; } = HttpMethod.Post;
 
