@@ -60,21 +60,7 @@ public static class EndpointServiceCollectionExtensions
     {
         services.AddListClient<T>(options => {
             options.ListEndpoint = endpoint;
-            options.ListMode = ListClientMode.Filter;
-        });
-        return services;
-    }
-
-    /// <summary>
-    /// Adds a strongly typed <see cref="ListClient{TItem}" /> that provides a <see
-    /// cref="SortedCollection{T}" /> to the service collection. Also registers the service using
-    /// the interfaces <see cref="IListClient{T}" /> and <see cref="IOptionProvider{T}" />.
-    /// </summary>
-    public static IServiceCollection AddSortedListClient<T>(this IServiceCollection services, string endpoint)
-    {
-        services.AddListClient<T>(options => {
-            options.ListEndpoint = endpoint;
-            options.ListMode = ListClientMode.FilterAndSort;
+            options.ListMode = ListClientMode.Filtered;
         });
         return services;
     }
@@ -88,7 +74,7 @@ public static class EndpointServiceCollectionExtensions
     {
         services.AddListClient<T>(options => {
             options.ListEndpoint = endpoint;
-            options.ListMode = ListClientMode.FilterSortAndPage;
+            options.ListMode = ListClientMode.Paged;
         });
         return services;
     }

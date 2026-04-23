@@ -5,9 +5,13 @@ public enum ListClientMode
 {
     FullCollection,
 
-    Filter,
+    /// <summary>
+    /// The server returns Filtered Collections, items are in Items property.
+    /// </summary>
+    Filtered,
 
-    FilterAndSort,
-
-    FilterSortAndPage,
+    /// <summary>
+    /// The server returns Paged Collections, items are in Items property.
+    /// </summary>
+    Paged,
 }

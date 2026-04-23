@@ -25,17 +25,12 @@ public class ListClient<TItem> : IListClient<TItem>
         };
         ListType = typeof(Collection<TItem>);
         if(options.ListEndpoint != string.Empty) {
-            if(options.ListMode == ListClientMode.FilterSortAndPage) {
+            if(options.ListMode == ListClientMode.Paged) {
                 ListType = typeof(PagedCollection<TItem>);
                 ListUnpacker = e => (e as PagedCollection<TItem>)?.Items ?? [];
                 ListCounter = e => (e as PagedCollection<TItem>)?.Total ?? 0;
             }
-            else if(options.ListMode == ListClientMode.FilterAndSort) {
-                ListType = typeof(SortedCollection<TItem>);
-                ListUnpacker = e => (e as SortedCollection<TItem>)?.Items ?? [];
-                ListCounter = e => (e as SortedCollection<TItem>)?.Count ?? 0;
-            }
-            else if(options.ListMode == ListClientMode.Filter) {
+            else if(options.ListMode == ListClientMode.Filtered) {
                 ListType = typeof(FilteredCollection<TItem>);
                 ListUnpacker = e => (e as FilteredCollection<TItem>)?.Items ?? [];
                 ListCounter = e => (e as FilteredCollection<TItem>)?.Count ?? 0;
@@ -136,8 +131,12 @@ public class ListClient<TItem> : IListClient<TItem>
         logger.LogEndpointResult(typeof(TItem), endpoint, body, 100);
         var packedResult = JsonSerializer.Deserialize(body, ListType, JsonSerializerOptions)
             ?? throw new DryException($"Call to endpoint returned nothing or couldn't be converted to a result.");
+        Console.WriteLine($"{this.ListType.GetType().Name} - {this.Options.ListMode}");
         var items = ListUnpacker!(packedResult);
+        Console.WriteLine($"items.count: {items.Count}");
         var total = ListCounter!(packedResult);
+        total = Math.Max(items.Count, total); // If deserializing a FilterCollection as a PagedCollection, use count as total.
+        Console.WriteLine($"total: {total}");
         OnItemsLoaded?.Invoke(this, EventArgs.Empty);
         IsLoading = false;
         IsEmpty = total == 0;

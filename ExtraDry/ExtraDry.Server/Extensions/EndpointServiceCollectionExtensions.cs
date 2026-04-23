@@ -14,48 +14,6 @@ namespace ExtraDry.Server;
 public static class EndpointServiceCollectionExtensions
 {
     /// <summary>
-    /// Adds a strongly typed <see cref="ListClient{TItem}" /> that provides a <see
-    /// cref="FilteredCollection{T}" /> to the service collection. Also registers the service using
-    /// the interfaces <see cref="IListClient{T}" /> and <see cref="IOptionProvider{T}" />.
-    /// </summary>
-    public static IServiceCollection AddFilteredListClient<T>(this IServiceCollection services, string endpoint)
-    {
-        services.AddListClient<T>(options => {
-            options.ListEndpoint = endpoint;
-            options.ListMode = ListClientMode.Filter;
-        });
-        return services;
-    }
-
-    /// <summary>
-    /// Adds a strongly typed <see cref="ListClient{TItem}" /> that provides a <see
-    /// cref="SortedCollection{T}" /> to the service collection. Also registers the service using
-    /// the interfaces <see cref="IListClient{T}" /> and <see cref="IOptionProvider{T}" />.
-    /// </summary>
-    public static IServiceCollection AddSortedListClient<T>(this IServiceCollection services, string endpoint)
-    {
-        services.AddListClient<T>(options => {
-            options.ListEndpoint = endpoint;
-            options.ListMode = ListClientMode.FilterAndSort;
-        });
-        return services;
-    }
-
-    /// <summary>
-    /// Adds a strongly typed <see cref="ListClient{TItem}" /> to the service collection. Also
-    /// registers the service using the interfaces <see cref="IListClient{T}" /> and <see
-    /// cref="IOptionProvider{T}" />.
-    /// </summary>
-    public static IServiceCollection AddPagedListClient<T>(this IServiceCollection services, string endpoint)
-    {
-        services.AddListClient<T>(options => {
-            options.ListEndpoint = endpoint;
-            options.ListMode = ListClientMode.FilterSortAndPage;
-        });
-        return services;
-    }
-
-    /// <summary>
     /// Adds a strongly typed <see cref="ListClient{TItem}" /> to the service collection. Also
     /// registers the service using the interfaces <see cref="IListClient{T}" /> and <see
     /// cref="IOptionProvider{T}" />.
