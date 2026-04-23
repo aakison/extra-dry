@@ -7,27 +7,7 @@ public interface IHierarchyQueryable<T> : IFilteredQueryable<T>
     Task<HierarchyCollection<T>> ToHierarchyCollectionAsync(CancellationToken cancellationToken = default);
 }
 
-//public interface IPagedHierarchyQueryable<T> : IHierarchyQueryable<T>
-//{
-//    PagedHierarchyCollection<T> ToPagedHierarchyCollection();
-
-//    Task<PagedHierarchyCollection<T>> ToPagedHierarchyCollectionAsync(CancellationToken cancellationToken = default);
-//}
-
-public interface ISortedQueryable<T> : IFilteredQueryable<T>
-{
-    /// <summary>
-    /// Return a Paged Collection suitable for serialization that represents a single page of the
-    /// total results along with a continuation token and additional page information.
-    /// </summary>
-    /// <returns>The page of the collection.</returns>
-    SortedCollection<T> ToSortedCollection();
-
-    /// <inheritdoc cref="ToPagedCollection" />
-    Task<SortedCollection<T>> ToSortedCollectionAsync(CancellationToken cancellationToken = default);
-}
-
-public interface IPagedQueryable<T> : ISortedQueryable<T>
+public interface IPagedQueryable<T> : IFilteredQueryable<T>
 {
     /// <summary>
     /// Return a Paged Collection suitable for serialization that represents a single page of the
