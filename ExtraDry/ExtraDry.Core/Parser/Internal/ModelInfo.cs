@@ -95,7 +95,7 @@ public class ModelInfo
                 }
             }
 
-            if(property.Name == "Id" || property.Name == "Uuid") {
+            if(property.Name == "Id") {
                 stabilizerPropertyByConvention = new SortProperty(property, externalName);
             }
             else if(stabilizerPropertyByConvention == default && property.Name == $"{modelType.Name}Id") {
