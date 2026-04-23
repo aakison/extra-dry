@@ -7,7 +7,7 @@ namespace ExtraDry.Core;
 /// other pages.
 /// </summary>
 [SuppressMessage("Naming", "CA1711:Identifiers should not have incorrect suffix", Justification = "Not a C# collection, but an over-the-wire collection.")]
-public class PagedCollection<T> : SortedCollection<T>
+public class PagedCollection<T> : FilteredCollection<T>
 {
     /// <summary>
     /// The starting index of this partial collection within the full collection.

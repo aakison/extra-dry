@@ -1,5 +1,6 @@
 using ExtraDry.Core.Parser.Internal;
 using System.Linq.Expressions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace ExtraDry.Server;
 
@@ -9,11 +10,11 @@ public class FilteredListQueryable<T> : StatisticsQueryable<T>
     protected FilteredListQueryable()
     { }
 
-    public FilteredListQueryable(IQueryable<T> queryable, FilterQuery filterQuery, Expression<Func<T, bool>>? defaultFilter)
+    public FilteredListQueryable(IQueryable<T> queryable, FilterQuery query, Expression<Func<T, bool>>? defaultFilter)
     {
-        Query = filterQuery;
-        FilteredQuery = ApplyKeywordFilter(queryable, filterQuery, defaultFilter);
-        SortedQuery = FilteredQuery;
+        Query = query;
+        FilteredQuery = ApplyKeywordFilter(queryable, query, defaultFilter);
+        SortedQuery = ApplyPropertySort(FilteredQuery, query);
         PagedQuery = SortedQuery;
     }
 
@@ -43,6 +44,11 @@ public class FilteredListQueryable<T> : StatisticsQueryable<T>
         }
     }
 
+    protected IQueryable<T> ApplyPropertySort(IQueryable<T> queryable, FilterQuery query)
+    {
+        return queryable.Sort(query);
+    }
+
     /// <summary>
     /// Given a collection of items retrieved from a data store, create a filtered collection. Base
     /// classes will use their knowledge of the queries to fill in the correct details.
@@ -51,13 +57,14 @@ public class FilteredListQueryable<T> : StatisticsQueryable<T>
         new() {
             Filter = Query.Filter,
             Items = items,
+            Sort = Query.Sort,
         };
 
     /// <inheritdoc cref="IFilteredQueryable{T}.ToFilteredCollection" />
     public FilteredCollection<T> ToFilteredCollection() =>
-        CreateFilteredCollection(FilteredQuery.ToList());
+        CreateFilteredCollection(SortedQuery.ToList());
 
     /// <inheritdoc cref="IFilteredQueryable{T}.ToFilteredCollectionAsync(CancellationToken)" />
     public async Task<FilteredCollection<T>> ToFilteredCollectionAsync(CancellationToken cancellationToken = default) =>
-        CreateFilteredCollection(await ToListAsync(FilteredQuery, cancellationToken));
+        CreateFilteredCollection(await ToListAsync(SortedQuery, cancellationToken));
 }

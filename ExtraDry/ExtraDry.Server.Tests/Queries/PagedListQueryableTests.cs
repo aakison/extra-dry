@@ -217,7 +217,7 @@ public class PagedListQueryableTests
     public async Task ToFilteredIgnoresPaging()
     {
         var query = new PageQuery { Skip = 5, Take = 5, Sort = nameof(Model.Name) };
-        var expected = Models.ToList();
+        var expected = Models.OrderBy(e => e.Name).ToList();
 
         var actual = await Models.AsQueryable().QueryWith(query).ToFilteredCollectionAsync(TestContext.Current.CancellationToken);
 

@@ -2,12 +2,12 @@ using System.Text.Json;
 
 namespace ExtraDry.Core.Tests.Models;
 
-public class SortedCollectionTests
+public class FilteredCollectionSortTests
 {
     [Fact]
     public void DefaultConstructor()
     {
-        var collection = new SortedCollection<object>();
+        var collection = new FilteredCollection<object>();
 
         Assert.Empty(collection.Items);
         Assert.Equal(0, collection.Count);
@@ -18,11 +18,11 @@ public class SortedCollectionTests
     }
 
     [Theory]
-    [InlineData(nameof(SortedCollection<>.Filter), "Any")]
-    [InlineData(nameof(SortedCollection<>.Sort), "Any")]
+    [InlineData(nameof(FilteredCollection<>.Filter), "Any")]
+    [InlineData(nameof(FilteredCollection<>.Sort), "Any")]
     public void RoundtripProperties(string propertyName, object propertyValue)
     {
-        var target = new SortedCollection<object>();
+        var target = new FilteredCollection<object>();
         var property = target.GetType().GetProperty(propertyName)
             ?? throw new ArgumentException("Bad argument", nameof(propertyValue));
 
@@ -35,7 +35,7 @@ public class SortedCollectionTests
     [Fact]
     public void JsonSerializable()
     {
-        var target = new SortedCollection<Payload>() {
+        var target = new FilteredCollection<Payload>() {
             Filter = "filter",
             Sort = "sort",
         };
@@ -43,7 +43,7 @@ public class SortedCollectionTests
         target.Items.Add(item);
 
         var json = JsonSerializer.Serialize(target);
-        var result = JsonSerializer.Deserialize<SortedCollection<Payload>>(json) ?? throw new ArgumentException();
+        var result = JsonSerializer.Deserialize<FilteredCollection<Payload>>(json) ?? throw new ArgumentException();
 
         Assert.NotSame(result, target);
         Assert.NotSame(result.Items.First(), target.Items.First());

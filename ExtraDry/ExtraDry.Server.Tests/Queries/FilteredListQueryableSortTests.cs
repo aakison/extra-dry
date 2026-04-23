@@ -2,7 +2,7 @@ using ExtraDry.Server.Internal;
 
 namespace ExtraDry.Server.Tests.Models;
 
-public class SortedListQueryableTests
+public class FilteredListQueryableSortTests
 {
     [Fact]
     public void QueryableInterfacePublished()
@@ -29,7 +29,7 @@ public class SortedListQueryableTests
         var query = new FilterQuery { Filter = "phonetic", Sort = sort };
         var expected = Models.ToList().Where(e => e.Type == ModelType.Phonetic).OrderBy(e => e.Name);
 
-        var actual = await Models.AsQueryable().QueryWith(query).ToSortedCollectionAsync(TestContext.Current.CancellationToken);
+        var actual = await Models.AsQueryable().QueryWith(query).ToFilteredCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(expected, actual.Items);
     }
@@ -43,7 +43,7 @@ public class SortedListQueryableTests
         var query = new FilterQuery { Filter = "phonetic", Sort = sort };
         var expected = Models.ToList().Where(e => e.Type == ModelType.Phonetic).OrderByDescending(e => e.Name);
 
-        var actual = Models.AsQueryable().QueryWith(query).ToSortedCollection();
+        var actual = Models.AsQueryable().QueryWith(query).ToFilteredCollection();
 
         Assert.Equal(expected, actual.Items);
     }
@@ -57,7 +57,7 @@ public class SortedListQueryableTests
         var query = new FilterQuery { Filter = "phonetic", Sort = sort };
         var expected = Models.ToList().Where(e => e.Type == ModelType.Phonetic).OrderByDescending(e => e.Name);
 
-        var actual = await Models.AsQueryable().QueryWith(query).ToSortedCollectionAsync(TestContext.Current.CancellationToken);
+        var actual = await Models.AsQueryable().QueryWith(query).ToFilteredCollectionAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(expected, actual.Items);
     }
@@ -69,17 +69,6 @@ public class SortedListQueryableTests
     public async Task EmptyStringToSortIgnoresSort(string? sort)
     {
         var query = new FilterQuery { Sort = sort };
-        var expected = Models.ToList();
-
-        var actual = await Models.AsQueryable().QueryWith(query).ToSortedCollectionAsync(TestContext.Current.CancellationToken);
-
-        Assert.Equal(expected, actual.Items);
-    }
-
-    [Fact]
-    public async Task StringToFilteredIgnoresSort()
-    {
-        var query = new FilterQuery { Sort = nameof(Model.Name) };
         var expected = Models.ToList();
 
         var actual = await Models.AsQueryable().QueryWith(query).ToFilteredCollectionAsync(TestContext.Current.CancellationToken);

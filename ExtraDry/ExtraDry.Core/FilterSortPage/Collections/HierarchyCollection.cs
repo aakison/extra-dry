@@ -6,7 +6,7 @@ namespace ExtraDry.Core;
 /// A filtered collection of hierarcy items sorted depth-first from the API.
 /// </summary>
 [SuppressMessage("Naming", "CA1711:Identifiers should not have incorrect suffix", Justification = "Not a C# collection, but an over-the-wire collection.")]
-public class HierarchyCollection<T> : SortedCollection<T>
+public class HierarchyCollection<T> : FilteredCollection<T>
 {
     /// <summary>
     /// The depth of the hierarchy included in the results as defined in the request. If the
