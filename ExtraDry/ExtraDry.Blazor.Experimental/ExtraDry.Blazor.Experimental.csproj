@@ -87,8 +87,4 @@
 		</Content>
 	</ItemGroup>
 
-	<ItemGroup>
-		<Folder Include="wwwroot\lib\roosterjs\" />
-	</ItemGroup>
-
 </Project>
