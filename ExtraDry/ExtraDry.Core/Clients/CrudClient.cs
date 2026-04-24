@@ -165,10 +165,8 @@ public class CrudClient<T>(
     {
         var response = await ExecuteAsync(key, operation, payload, cancellationToken);
         var body = await response.Content.ReadAsStringAsync(cancellationToken);
-        var result = JsonSerializer.Deserialize<TResult>(body);
-        if(result is null) {
-            throw new InvalidOperationException("No result returned");
-        }
+        var result = JsonSerializer.Deserialize<TResult>(body)
+            ?? throw new InvalidOperationException("No result returned");
         return result;
     }
 
