@@ -4,20 +4,31 @@
 
 <FieldFrame Size="@Size" Description="@Description" ShowDescription="@ShowDescription" Label="@Label" For="@InputId" ShowLabel="@ShowLabel" IsValid="@IsValid" Message="@ValidationMessage">
     <div class="@CssClasses">
-        @if(DisplayIcon) {
-            <Icon CssClass="context" Key="@Icon" />
-        }
-        <select id="@InputId" class="value" title="@Label" @onchange="NotifyChangeByKey" @oninput="NotifyInputByKey" readonly="@ReadOnly">
-            @if(Value == null && !string.IsNullOrEmpty(Placeholder)) {
-                <option value="" disabled selected>@Placeholder</option>
-            }
+        @if(IsRadioButtons) {
             @foreach(var option in InternalOptions) {
                 var selected = IsSelected(option);
-                <option value="@option.Key" selected="@selected">@option.Title</option>
+                <label class="radio-option">
+                    <input type="radio" name="@InputId" value="@option.Key" checked="@selected" @onchange="@(() => NotifyChangeByKey(new ChangeEventArgs { Value = option.Key }))" readonly="@ReadOnly" />
+                    <span class="label">@option.Title</span>
+                </label>
             }
-        </select>
-        @if(DisplayAffordance) {
-            <Icon CssClass="affordance" Key="@Affordance" />
+        }
+        else {
+            @if(DisplayIcon) {
+                <Icon CssClass="context" Key="@Icon" />
+            }
+            <select id="@InputId" class="value" title="@Label" @onchange="NotifyChangeByKey" @oninput="NotifyInputByKey" readonly="@ReadOnly">
+                @if(Value == null && !string.IsNullOrEmpty(Placeholder)) {
+                    <option value="" disabled selected>@Placeholder</option>
+                }
+                @foreach(var option in InternalOptions) {
+                    var selected = IsSelected(option);
+                    <option value="@option.Key" selected="@selected">@option.Title</option>
+                }
+            </select>
+            @if(DisplayAffordance) {
+                <Icon CssClass="affordance" Key="@Affordance" />
+            }
         }
     </div>
 </FieldFrame>

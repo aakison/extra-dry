@@ -10,7 +10,7 @@ else {
         <DryToggleField Model="Model" Property="Property" OnInput="OnInput" OnChange="OnChange" OnValidate="OnValidate" />
     }
     else if(IsOptionField) {
-        <DryOptionField Model="Model" Property="Property" OnInput="OnInput" OnChange="OnChange" OnValidate="OnValidate" />
+        <DryOptionField Model="Model" Property="Property" ControlType="@(Property.InputField?.ControlType ?? ControlType.Default)" OnInput="OnInput" OnChange="OnChange" OnValidate="OnValidate" />
     }
     else if(Property.HasDiscreteStringValues) {
         //<DryInputComboBox Model="@Model" Property="@Property" />
@@ -39,7 +39,7 @@ else {
         } *@ 
     }
     else if(Property.HasDateTimeRepresentation) {
-        // <DryInputDateTime Model="@Model" Property="@Property" ReadOnly="@ReadOnly" OnValidation="@ValidationChanged" OnChange="HandleChange" />
+        <DryDateField Model="Model" Property="Property" OnInput="OnInput" OnChange="OnChange" OnValidate="OnValidate" />
     }
     else if(Property.HasFreshnessRepresentation) {
         // <DryInputFreshnessIndicator Model="@Model" Property="@Property" ReadOnly="@ReadOnly" />

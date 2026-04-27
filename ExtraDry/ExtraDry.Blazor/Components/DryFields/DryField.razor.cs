@@ -216,5 +216,5 @@ public partial class DryField<T>
 
     private bool IsTextField => Property?.HasTextRepresentation == true;
 
-    private bool IsOptionField => Property?.HasReferenceDataTypeRepresentation == true;
+    private bool IsOptionField => Property?.HasReferenceDataTypeRepresentation == true || Property?.HasDiscreteValues == true;
 }

@@ -17,6 +17,15 @@ public partial class DryOptionField<TModel> : DryFieldBase<TModel> where TModel 
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", "option", ReadOnlyCss, CssClass);
 
+    /// <summary>
+    /// Controls how the option field is rendered. When not set, the value from the property's
+    /// <see cref="InputFieldAttribute.ControlType"/> is used, defaulting to a drop-down.
+    /// </summary>
+    [Parameter]
+    public ControlType ControlType { get; set; } = ControlType.Default;
+
+    private ControlType ResolvedControlType => ControlType != ControlType.Default ? ControlType : Property?.InputField?.ControlType ?? ControlType.Default;
+
     private Option? Value { get; set; }
 
     private IList<Option> Options { get; set; } = [];
