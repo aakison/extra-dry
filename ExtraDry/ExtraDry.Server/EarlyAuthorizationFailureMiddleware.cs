@@ -18,11 +18,11 @@ public class EarlyAuthorizationFailureMiddleware(RequestDelegate next)
         switch((HttpStatusCode)context.Response.StatusCode) {
             case HttpStatusCode.Forbidden:
                 var policyDetails = AuthorizationPolicyDetailsHelper.GetAuthorizationPolicyDetails(context);
-                ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.Forbidden, details: policyDetails);
+                await ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.Forbidden, details: policyDetails);
                 break;
 
             case HttpStatusCode.Unauthorized:
-                ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.Unauthorized);
+                await ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.Unauthorized);
                 break;
         }
     }
