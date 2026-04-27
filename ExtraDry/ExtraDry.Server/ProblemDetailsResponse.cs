@@ -8,18 +8,18 @@ namespace ExtraDry.Server;
 
 public static class ProblemDetailsResponse
 {
-    internal static void RewriteResponse(ExceptionContext context, HttpStatusCode httpStatusCode, string? title = null, string? details = null)
+    internal static Task RewriteResponse(ExceptionContext context, HttpStatusCode httpStatusCode, string? title = null, string? details = null)
     {
-        RewriteResponse(context.HttpContext, context.Exception.GetType().Name, (int)httpStatusCode, title ?? context.Exception.Message, details);
+        return RewriteResponse(context.HttpContext, context.Exception.GetType().Name, (int)httpStatusCode, title ?? context.Exception.Message, details);
     }
 
-    internal static void RewriteResponse(HttpContext httpContext, HttpStatusCode httpStatusCode, string? title = null, string? details = null)
+    internal static Task RewriteResponse(HttpContext httpContext, HttpStatusCode httpStatusCode, string? title = null, string? details = null)
     {
         string statusCode = httpStatusCode.ToString();
-        RewriteResponse(httpContext, statusCode.ToLower(CultureInfo.InvariantCulture), httpContext.Response.StatusCode, title ?? statusCode, details);
+        return RewriteResponse(httpContext, statusCode.ToLower(CultureInfo.InvariantCulture), httpContext.Response.StatusCode, title ?? statusCode, details);
     }
 
-    private static void RewriteResponse(HttpContext httpContext, string problem, int code, string title, string? details = null)
+    private static async Task RewriteResponse(HttpContext httpContext, string problem, int code, string title, string? details = null)
     {
         var problemDetails = CreateProblemDetails(httpContext, problem, code, title, details);
         var body = JsonSerializer.Serialize(problemDetails, SerializerOptions);
@@ -28,7 +28,7 @@ public static class ProblemDetailsResponse
         response.StatusCode = code;
         response.ContentType = "application/problem+json";
         response.ContentLength = body.Length;
-        response.WriteAsync(body);
+        await response.WriteAsync(body);
     }
 
     private static ProblemDetails CreateProblemDetails(HttpContext httpContext, string problem, int code, string title, string? details = null)
