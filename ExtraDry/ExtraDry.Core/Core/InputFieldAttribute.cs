@@ -13,6 +13,12 @@ public class InputFieldAttribute : Attribute
     public Type? DataType { get; set; }
 
     /// <summary>
+    /// Provides additional information about how the input for this property should be rendered,
+    /// such as whether it should be displayed as a drop-down list or radio buttons.
+    /// </summary>
+    public ControlType ControlType { get; set; } = ControlType.Default;
+
+    /// <summary>
     /// The icon to be used in the display of this property's input, typically on the left of the
     /// input
     /// </summary>
@@ -30,4 +36,10 @@ public class InputFieldAttribute : Attribute
     // explicitly allows an override of the default behavior of the presentation layer.
     // </summary>
     public PropertySize Size { get; set; } = PropertySize.Auto;
+}
+
+public enum ControlType {
+    Default,
+    DropDown,
+    RadioButtons
 }

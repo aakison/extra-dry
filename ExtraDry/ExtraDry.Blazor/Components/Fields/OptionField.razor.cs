@@ -42,9 +42,24 @@ public partial class OptionField<TValue> : FieldBase<TValue>
     [Parameter]
     public Func<TValue, string> KeyFunc { get; set; }
 
+    /// <summary>
+    /// Controls how the option field is rendered. Defaults to a drop-down select list.
+    /// When set to <see cref="ControlType.RadioButtons"/>, renders a list of radio buttons.
+    /// </summary>
+    [Parameter]
+    public ControlType ControlType { get; set; } = ControlType.Default;
+
+    private bool IsRadioButtons => ControlType == ControlType.RadioButtons;
+
     private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
 
-    private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", "select", ReadOnlyCss, CssClass);
+    private string ControlTypeCss => ControlType switch {
+        ControlType.RadioButtons => "radio-buttons",
+        ControlType.DropDown => "drop-down",
+        _ => "drop-down",
+    };
+
+    private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", "option", ControlTypeCss, ReadOnlyCss, CssClass);
 
     private List<Option> InternalOptions { get; set; } = [];
 
