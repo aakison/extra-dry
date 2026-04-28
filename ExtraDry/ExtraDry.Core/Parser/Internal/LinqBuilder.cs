@@ -218,7 +218,11 @@ public static class LinqBuilder
     {
         try {
             var property = Expression.Property(parameter, propertyInfo);
-            var valueConstant = Expression.Constant(ParseToType(propertyInfo.PropertyType, value));
+            var propertyType = propertyInfo.PropertyType;
+            Expression valueConstant = Expression.Constant(ParseToType(propertyType, value));
+            if(propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(Nullable<>)) {
+                valueConstant = Expression.Convert(valueConstant, propertyType);
+            }
             var equality = Expression.Equal(property, valueConstant);
             return equality;
         }
