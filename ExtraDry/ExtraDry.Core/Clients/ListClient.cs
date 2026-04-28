@@ -131,12 +131,9 @@ public class ListClient<TItem> : IListClient<TItem>
         logger.LogEndpointResult(typeof(TItem), endpoint, body, 100);
         var packedResult = JsonSerializer.Deserialize(body, ListType, JsonSerializerOptions)
             ?? throw new DryException($"Call to endpoint returned nothing or couldn't be converted to a result.");
-        Console.WriteLine($"{this.ListType.GetType().Name} - {this.Options.ListMode}");
         var items = ListUnpacker!(packedResult);
-        Console.WriteLine($"items.count: {items.Count}");
         var total = ListCounter!(packedResult);
         total = Math.Max(items.Count, total); // If deserializing a FilterCollection as a PagedCollection, use count as total.
-        Console.WriteLine($"total: {total}");
         OnItemsLoaded?.Invoke(this, EventArgs.Empty);
         IsLoading = false;
         IsEmpty = total == 0;
