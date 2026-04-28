@@ -29,25 +29,20 @@ public class ResourceReference
     /// <summary>
     /// The type of resource that has been created.
     /// </summary>
-    [ReadOnly(true)]
     public string Type { get; set; } = string.Empty;
 
-    /// <inheritdoc />
-    [ReadOnly(true)]
+    /// <inheritdoc cref="ITenanted.Tenant" />
+    public string? Tenant { get; set; }
+
+    /// <inheritdoc cref="IUniqueIdentifier.Uuid" />
     public Guid Uuid { get; set; } = Guid.Empty;
 
-    /// <inheritdoc />
-    [ReadOnly(true)]
+    /// <inheritdoc cref="IResourceIdentifiers.Slug" />
     public string? Slug { get; set; }
 
-    /// <inheritdoc />
-    [ReadOnly(true)]
+    /// <inheritdoc cref="IResourceIdentifiers.Title" />
     public string? Title { get; set; }
 
-    /// <summary>
-    /// The tenant that the resource is assigned to.
-    /// </summary>
-    public string? Tenant { get; set; }
 }
 
 /// <summary>
