@@ -30,7 +30,7 @@ public class CrudClient<T>(
     /// Create a new resource in the resource. The item will be serialized to JSON and sent to the
     /// POST endpoint for the resource collection.
     /// </summary>
-    public async Task<ResourceReference> CreateAsync(T item, CancellationToken cancellationToken = default)
+    public async Task<ResourceReference> CreateAsync(T item, CancellationToken ct = default)
     {
         options.OnCreate?.Invoke(item);
         if(options.OnCreateAsync != null) {
@@ -40,10 +40,10 @@ public class CrudClient<T>(
         using var content = new StringContent(json, Encoding.UTF8, "application/json");
         var endpoint = ApiEndpoint(item, CrudOperation.Create);
         //logger.LogEndpointCall(typeof(T), endpoint);
-        var response = await client.PostAsync(endpoint, content, cancellationToken);
-        var body = await response.Content.ReadAsStringAsync(cancellationToken);
+        var response = await client.PostAsync(endpoint, content, ct);
+        var body = await response.Content.ReadAsStringAsync(ct);
         await response.AssertSuccess(logger);
-        var reference = await response.Content.ReadFromJsonAsync<ResourceReference>(cancellationToken: cancellationToken);
+        var reference = await response.Content.ReadFromJsonAsync<ResourceReference>(cancellationToken: ct);
         return reference ?? new();
     }
 
@@ -52,7 +52,7 @@ public class CrudClient<T>(
     /// resource which is retrieved from the GET endpoint for the resource. Return null if not
     /// found.
     /// </summary>
-    public async Task<T?> TryReadAsync(object key, CancellationToken cancellationToken = default)
+    public async Task<T?> TryReadAsync(object key, CancellationToken ct = default)
     {
         var endpoint = ApiEndpoint(key, CrudOperation.Read);
 
@@ -63,9 +63,9 @@ public class CrudClient<T>(
         }
 
         try {
-            var response = await client.GetAsync(endpoint, cancellationToken);
+            var response = await client.GetAsync(endpoint, ct);
             await response.AssertSuccess(logger);
-            var item = await response.Content.ReadFromJsonAsync<T>(cancellationToken: cancellationToken);
+            var item = await response.Content.ReadFromJsonAsync<T>(cancellationToken: ct);
             if(options.OnRead != null && item != null) {
                 options.OnRead(item);
             }
@@ -90,9 +90,9 @@ public class CrudClient<T>(
     /// Read an existing resource from the resource collection. The key is used to identify the
     /// resource which is retrieved from the GET endpoint for the resource.
     /// </summary>
-    public async Task<T> ReadAsync(object key, CancellationToken cancellationToken = default)
+    public async Task<T> ReadAsync(object key, CancellationToken ct = default)
     {
-        return await TryReadAsync(key, cancellationToken)
+        return await TryReadAsync(key, ct)
             ?? throw new ArgumentOutOfRangeException(nameof(key), $"Item not found for key {key}");
     }
 
@@ -100,7 +100,7 @@ public class CrudClient<T>(
     /// Update an existing resource in the resource collection. The key is used to identify the
     /// resource which is updated with the PUT endpoint for the resource.
     /// </summary>
-    public async Task UpdateAsync(object key, T item, CancellationToken cancellationToken = default)
+    public async Task UpdateAsync(object key, T item, CancellationToken ct = default)
     {
         options.OnUpdate?.Invoke(item);
         if(options.OnUpdateAsync != null) {
@@ -108,7 +108,7 @@ public class CrudClient<T>(
         }
         var endpoint = ApiEndpoint(key, CrudOperation.Update);
         //logger.LogEndpointCall(typeof(T), endpoint);
-        var response = await client.PutAsJsonAsync(endpoint, item, cancellationToken);
+        var response = await client.PutAsJsonAsync(endpoint, item, ct);
         await response.AssertSuccess(logger);
 
         // Invalidate cache entry after update
@@ -120,11 +120,11 @@ public class CrudClient<T>(
     /// resource which is deleted using the DELETE endpoint for the resource. This operation may or
     /// may not delete the resource permanently, see the endpoint documentation for details.
     /// </summary>
-    public async Task DeleteAsync(object key, CancellationToken cancellationToken = default)
+    public async Task DeleteAsync(object key, CancellationToken ct = default)
     {
         var endpoint = ApiEndpoint(key, CrudOperation.Delete);
         //logger.LogEndpointCall(typeof(T), endpoint);
-        var response = await client.DeleteAsync(endpoint, cancellationToken);
+        var response = await client.DeleteAsync(endpoint, ct);
         await response.AssertSuccess(logger);
 
         // Invalidate cache entry after delete
@@ -140,14 +140,16 @@ public class CrudClient<T>(
     /// The execution endpoint is the standard resource endpoint with string operation appended
     /// after a colon.
     /// </remarks>
-    public async Task<HttpResponseMessage> ExecuteAsync(object key, string operation, object? payload = null, CancellationToken cancellationToken = default)
+    public async Task<HttpResponseMessage> ExecuteAsync(object key, string operation, object? payload = null, CancellationToken ct = default)
     {
         var endpoint = ApiEndpoint(key, CrudOperation.Rpc);
         endpoint = $"{endpoint}:{operation}";
         var json = JsonSerializer.Serialize(payload);
         using var content = new StringContent(json, Encoding.UTF8, "application/json");
+        Console.WriteLine("Sending");
+        Console.WriteLine(content);
         //logger.LogEndpointCall(typeof(T), endpoint);
-        var response = await client.PostAsync(endpoint, content, cancellationToken);
+        var response = await client.PostAsync(endpoint, content, ct);
         await response.AssertSuccess(logger);
         return response;
     }
@@ -161,12 +163,12 @@ public class CrudClient<T>(
     /// The execution endpoint is the standard resource endpoint with string operation appended
     /// after a colon.
     /// </remarks>
-    public async Task<TResult> ExecuteAsync<TResult>(object key, string operation, object? payload = null, CancellationToken cancellationToken = default)
+    public async Task<TResult> ExecuteAsync<TResult>(object key, string operation, object? payload = null, CancellationToken ct = default)
     {
-        var response = await ExecuteAsync(key, operation, payload, cancellationToken);
-        var body = await response.Content.ReadAsStringAsync(cancellationToken);
-        var result = JsonSerializer.Deserialize<TResult>(body)
+        var response = await ExecuteAsync(key, operation, payload, ct);
+        var result = await response.Content.ReadFromJsonAsync<TResult>(ct)
             ?? throw new InvalidOperationException("No result returned");
+        Console.WriteLine(JsonSerializer.Serialize(result));
         return result;
     }
 
