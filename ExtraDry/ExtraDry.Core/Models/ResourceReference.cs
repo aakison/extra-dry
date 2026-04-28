@@ -44,19 +44,3 @@ public class ResourceReference
     public string? Title { get; set; }
 
 }
-
-/// <summary>
-/// A strongly typed version of a ResourceReference to a resource suitable for sending through an
-/// API, as for example the return value of a Create method.
-/// </summary>
-public class ResourceReference<T> : ResourceReference where T : IUniqueIdentifier
-{
-    /// <inheritdoc cref="ResourceReference" />
-    public ResourceReference()
-    { }
-
-    /// <summary>
-    /// Create a reference to an entity that implements IWebIdentifier
-    /// </summary>
-    public ResourceReference(T entity) : base(entity) { }
-}
