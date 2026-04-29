@@ -1,4 +1,4 @@
-﻿using ExtraDry.Core.DataWarehouse;
+using ExtraDry.Core.DataWarehouse;
 using ExtraDry.Server.DataWarehouse;
 
 namespace ExtraDry.Server.Tests.WarehouseTests;

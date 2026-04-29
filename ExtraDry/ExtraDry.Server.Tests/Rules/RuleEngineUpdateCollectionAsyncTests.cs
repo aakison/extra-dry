@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core.Tests.Rules;
+namespace ExtraDry.Core.Tests.Rules;
 
 public class RuleEngineUpdateCollectionAsyncTests
 {

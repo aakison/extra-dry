@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Tests.Internals.Builders;
+namespace ExtraDry.Blazor.Tests.Internals.Builders;
 
 public class DateTimeFilterBuilderTests
 {

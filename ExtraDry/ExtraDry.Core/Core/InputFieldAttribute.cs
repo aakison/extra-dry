@@ -38,7 +38,8 @@ public class InputFieldAttribute : Attribute
     public PropertySize Size { get; set; } = PropertySize.Auto;
 }
 
-public enum ControlType {
+public enum ControlType
+{
     Default,
     DropDown,
     RadioButtons

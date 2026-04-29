@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using ExtraDry.Core.DataWarehouse;
 

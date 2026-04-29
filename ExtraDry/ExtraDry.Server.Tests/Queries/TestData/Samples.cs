@@ -1,4 +1,4 @@
-﻿using ExtraDry.Server.Tests.Models;
+using ExtraDry.Server.Tests.Models;
 using ExtraDry.Server.Tests.WarehouseTests;
 
 namespace ExtraDry.Server.Tests;

@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server.Tests.Rules;
+namespace ExtraDry.Server.Tests.Rules;
 
 public class EntityFrameworkTests
 {

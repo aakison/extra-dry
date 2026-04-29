@@ -1,4 +1,4 @@
-﻿global using Bunit;
+global using Bunit;
 global using ExtraDry.Blazor.Internal;
 global using ExtraDry.Blazor.Models;
 global using Microsoft.AspNetCore.Components.Web;

@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server.Tests.WarehouseTests;
+namespace ExtraDry.Server.Tests.WarehouseTests;
 
 /// <summary>
 /// Represents the level of region in the ISO-3166 tree of geopolitical regions.

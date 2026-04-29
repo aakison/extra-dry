@@ -188,7 +188,7 @@ public class SelectionSetTests
     public void SetVisibleDoesNetSetItems()
     {
         var set = new SelectionSet() { MultipleSelect = true };
-        
+
         set.SetVisible([obj1, obj2]);
 
         Assert.Empty(set.Items);

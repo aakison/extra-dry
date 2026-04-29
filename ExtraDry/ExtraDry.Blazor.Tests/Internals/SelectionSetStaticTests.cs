@@ -1,4 +1,4 @@
-﻿using Bunit;
+using Bunit;
 using ExtraDry.Blazor.Components.Internal;
 
 namespace ExtraDry.Blazor.Tests.Internals;
@@ -10,7 +10,7 @@ public class SelectionSetStaticTests
     public void AccessorHasSelectionSet()
     {
         var key1 = new object();
-        
+
         var accessor = new SelectionSetAccessor(key1);
 
         Assert.NotNull(accessor.SelectionSet);

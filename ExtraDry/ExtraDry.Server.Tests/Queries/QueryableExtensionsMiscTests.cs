@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server.Tests;
+namespace ExtraDry.Server.Tests;
 
 public class QueryableExtensionsMiscTests
 {

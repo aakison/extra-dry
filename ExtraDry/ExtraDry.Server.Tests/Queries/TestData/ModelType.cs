@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server.Tests.Models;
+namespace ExtraDry.Server.Tests.Models;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ModelType
