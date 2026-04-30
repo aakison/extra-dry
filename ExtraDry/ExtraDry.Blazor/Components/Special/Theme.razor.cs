@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 
 namespace ExtraDry.Blazor;
@@ -10,7 +11,8 @@ namespace ExtraDry.Blazor;
 /// </summary>
 [SuppressMessage("Usage", "DRY1500:Extra DRY Blazor components should have an interface.", Justification = "Theme does not render a root tag, purpose is to register cascading values.")]
 public partial class Theme(
-    ILogger<Theme> Logger)
+    ILogger<Theme> Logger,
+    HttpClient Http)
     : ComponentBase
 {
     /// <summary>
@@ -102,28 +104,43 @@ public partial class Theme(
 
         ThemeInfo.Version = Version;
 
-        LoadSvgReferences();
+        await LoadSvgReferencesAsync();
         ThemeInfo.Icons = CachedIcons.ToDictionary(e => e.Key, e => e.Value);
     }
 
-    private void LoadSvgReferences()
+    private async Task LoadSvgReferencesAsync()
     {
         if(loaded) {
             return;
         }
         Icons ??= [];
 
+        Dictionary<string, string>? viewBoxManifest = null;
+        if(OperatingSystem.IsBrowser()) {
+            try {
+                var atlasUrl = $"/bundles/atlas.svg?v={Version}";
+                var atlasContent = await Http.GetStringAsync(atlasUrl);
+                viewBoxManifest = SymbolViewBoxRegex().Matches(atlasContent)
+                    .ToDictionary(
+                        m => m.Groups[1].Value,
+                        m => m.Groups[2].Value);
+            }
+            catch(Exception ex) {
+                Logger.LogWarning(ex, "Failed to load SVG atlas.");
+            }
+        }
+
         // Ensure we have all icons, including fallbacks, but do not duplicate any, prefering user-supplied instead of fallback.
         var fallbackIcons = IconInfo.FallbackIcons.Values.Where(e => !Icons.Any(i => i.Key == e.Key));
         var allIcons = Icons.Union(fallbackIcons);
         foreach(var icon in allIcons) {
-            LoadIcon(icon);
+            LoadIcon(icon, viewBoxManifest);
         }
 
         loaded = true;
     }
 
-    private void LoadIcon(IconInfo icon)
+    private void LoadIcon(IconInfo icon, Dictionary<string, string>? viewBoxManifest = null)
     {
         if(CachedIcons.ContainsKey(icon.Key)) {
             Logger.LogDuplicateIcon(icon.Key);
@@ -146,7 +163,8 @@ public partial class Theme(
 
             if(icon.SvgRenderType == SvgRenderType.Atlas) {
                 var version = $"?v={Version}";
-                icon.SvgInlineBody = $@"<svg class=""{icon.CssClass} additional-classes""><title>{icon.AlternateText}</title><use href=""/bundles/atlas.svg{version}#{icon.Key}""></use></svg>";
+                var viewBox = (viewBoxManifest?.TryGetValue(icon.Key, out var vb) ?? false) ? $" {vb}" : "";
+                icon.SvgInlineBody = $@"<svg class=""{icon.CssClass} additional-classes""{viewBox}><title>{icon.AlternateText}</title><use href=""/bundles/atlas.svg{version}#{icon.Key}""></use></svg>";
             }
 
         }
@@ -158,6 +176,9 @@ public partial class Theme(
     private static bool loaded;
 
     private static readonly ConcurrentDictionary<string, IconInfo> CachedIcons = new();
+
+    [GeneratedRegex(@"<symbol\b[^>]*\bid=""([^""]+)""[^>]*\b(viewBox=""[^""]+"")")]
+    private partial Regex SymbolViewBoxRegex();
 
     [GeneratedRegex(@"<svg[^>]*>")]
     private partial Regex SvgTagRegex();
