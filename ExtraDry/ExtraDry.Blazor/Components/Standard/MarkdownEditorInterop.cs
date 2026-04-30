@@ -50,7 +50,7 @@ public sealed class MarkdownEditorInterop(IJSRuntime jsRuntime) : IAsyncDisposab
     /// </summary>
     public async ValueTask ToggleToolbarAsync(string elementId)
     {
-        Console.WriteLine("ToggleToolbarAsync called"); 
+        Console.WriteLine("ToggleToolbarAsync called");
         var module = await moduleTask.Value;
         await module.InvokeVoidAsync("toggleToolbar", elementId);
     }

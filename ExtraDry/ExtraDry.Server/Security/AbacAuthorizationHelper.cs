@@ -72,7 +72,7 @@ internal class AbacAuthorizationHelper(AbacOptions options)
                     "sub" => "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier",
                     "unique_name" => "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
                     _ => claim.Key
-                };                
+                };
                 return user.HasClaim(c => {
                     if(c.Type != claimKey) {
                         return false;

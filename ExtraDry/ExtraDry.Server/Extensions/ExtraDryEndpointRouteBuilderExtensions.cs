@@ -62,6 +62,13 @@ public static partial class ExtraDryEndpointRouteBuilderExtensions
             // Same transformation rules as Theme.razor.cs
             var svgTag = SvgTagRegex().Match(content).Value;
             var viewBox = ViewBoxRegex().Match(svgTag).Value;
+            if(string.IsNullOrWhiteSpace(viewBox)) {
+                var widthMatch = WidthRegex().Match(svgTag);
+                var heightMatch = HeightRegex().Match(svgTag);
+                if(widthMatch.Success && heightMatch.Success) {
+                    viewBox = $@"viewBox=""0 0 {widthMatch.Groups[1].Value} {heightMatch.Groups[1].Value}""";
+                }
+            }
             var svgBody = SvgTagRegex().Replace(content, "").Replace("</svg>", "");
 
             // Strip editor metadata, comments, namespaced elements, and namespaced attributes.
@@ -119,4 +126,10 @@ public static partial class ExtraDryEndpointRouteBuilderExtensions
 
     [GeneratedRegex(@"\n\s*\n")]
     private static partial Regex BlankLinesRegex();
+
+    [GeneratedRegex(@"\bwidth=""([\d.]+)""")]
+    private static partial Regex WidthRegex();
+
+    [GeneratedRegex(@"\bheight=""([\d.]+)""")]
+    private static partial Regex HeightRegex();
 }

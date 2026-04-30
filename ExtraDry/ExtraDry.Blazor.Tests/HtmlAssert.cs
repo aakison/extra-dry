@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Blazor.Tests;
+namespace ExtraDry.Blazor.Tests;
 
 internal static class HtmlAssert
 {

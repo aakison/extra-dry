@@ -1,4 +1,4 @@
-﻿using ExtraDry.Server.Security;
+using ExtraDry.Server.Security;
 
 namespace ExtraDry.Server.Tests.Security;
 

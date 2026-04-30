@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core.Tests;
+namespace ExtraDry.Core.Tests;
 
 public class FileValidationServiceTests
 {

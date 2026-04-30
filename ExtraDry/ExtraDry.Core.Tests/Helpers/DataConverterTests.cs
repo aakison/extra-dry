@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Core.Tests.Helpers;
+namespace ExtraDry.Core.Tests.Helpers;
 
 public class DataConverterTests
 {

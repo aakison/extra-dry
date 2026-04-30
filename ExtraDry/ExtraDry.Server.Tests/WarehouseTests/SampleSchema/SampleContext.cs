@@ -1,4 +1,4 @@
-﻿using ExtraDry.Server.EF;
+using ExtraDry.Server.EF;
 using System.Text.Json;
 
 namespace ExtraDry.Server.Tests.WarehouseTests;

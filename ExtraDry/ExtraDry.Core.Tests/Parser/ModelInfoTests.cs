@@ -1,4 +1,4 @@
-﻿using ExtraDry.Core.Parser.Internal;
+using ExtraDry.Core.Parser.Internal;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ExtraDry.Core.Tests.Internals;

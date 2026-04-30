@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server.Tests.Rules;
+namespace ExtraDry.Server.Tests.Rules;
 
 [DeleteRule(DeleteAction.Recycle, nameof(Active), ActiveType.Deleted, ActiveType.Active)]
 public class Address

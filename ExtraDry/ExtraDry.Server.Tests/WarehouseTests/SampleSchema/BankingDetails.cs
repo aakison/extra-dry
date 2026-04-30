@@ -1,4 +1,4 @@
-﻿namespace ExtraDry.Server.Tests.WarehouseTests;
+namespace ExtraDry.Server.Tests.WarehouseTests;
 
 public class BankingDetails
 {
