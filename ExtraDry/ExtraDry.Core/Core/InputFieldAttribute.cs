@@ -38,6 +38,7 @@ public class InputFieldAttribute : Attribute
     public PropertySize Size { get; set; } = PropertySize.Auto;
 }
 
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ControlType
 {
     Default,

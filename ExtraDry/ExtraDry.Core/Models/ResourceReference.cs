@@ -18,8 +18,10 @@ public class ResourceReference
         Type = target.GetType().Name;
         Uuid = target.Uuid;
         if(target is IResourceIdentifiers resource) {
-            Slug = resource.Slug;
             Title = resource.Title;
+        }
+        if(target is ISlug slug) {
+            Slug = slug.Slug;
         }
         if(target is ITenanted tenanted) {
             Tenant = tenanted.Tenant;
@@ -37,7 +39,7 @@ public class ResourceReference
     /// <inheritdoc cref="IUniqueIdentifier.Uuid" />
     public Guid Uuid { get; set; } = Guid.Empty;
 
-    /// <inheritdoc cref="IResourceIdentifiers.Slug" />
+    /// <inheritdoc cref="ISlug.Slug" />
     public string? Slug { get; set; }
 
     /// <inheritdoc cref="IResourceIdentifiers.Title" />

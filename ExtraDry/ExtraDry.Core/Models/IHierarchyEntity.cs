@@ -9,7 +9,7 @@ namespace ExtraDry.Core;
 /// </summary>
 public interface IHierarchyEntity
 {
-    /// <inheritdoc cref="IResourceIdentifiers.Slug" />
+    /// <inheritdoc cref="ISlug.Slug" />
     string Slug { get; }
 
     /// <summary>
