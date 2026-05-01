@@ -3,7 +3,7 @@ namespace ExtraDry.Core;
 /// <summary>
 /// The interface for Extra Dry support for Blobs. 
 /// </summary>
-public interface IBlob : IResourceIdentifiers
+public interface IBlob : IResourceIdentifiers, ISlug
 {
     /// <summary>
     /// The content of the Blob. This is the actual file data. This allows for nulls to support

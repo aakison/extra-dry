@@ -7,13 +7,6 @@ namespace ExtraDry.Core;
 public interface IResourceIdentifiers : IUniqueIdentifier
 {
     /// <summary>
-    /// A user readable reference to the created resource. Used in the URL to access the new
-    /// resource, but may change.
-    /// </summary>
-    /// <example>acme-widget</example>
-    public string Slug { get; set; }
-
-    /// <summary>
     /// The title of the resource that is suitable for displaying to users as a named reference.
     /// </summary>
     /// <remarks>
@@ -25,4 +18,14 @@ public interface IResourceIdentifiers : IUniqueIdentifier
     /// </remarks>
     /// <example>Acme Widget</example>
     public string Title { get; set; }
+}
+
+public interface ISlug : IUniqueIdentifier
+{
+    /// <summary>
+    /// A user readable reference to the created resource. Used in the URL to access the new
+    /// resource, but may change.
+    /// </summary>
+    /// <example>acme-widget</example>
+    public string Slug { get; set; }
 }
