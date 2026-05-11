@@ -9,7 +9,7 @@ public abstract class FilterBuilder
     /// <summary>
     /// The name of the filter as will be sent to the server.
     /// </summary>
-    public string FilterName { get; set; } = string.Empty;
+    public string FilterName { get; set; } = "";
 
     /// <summary>
     /// When the filter has changed, builds up the ExtraDry filter query fragment that is to be

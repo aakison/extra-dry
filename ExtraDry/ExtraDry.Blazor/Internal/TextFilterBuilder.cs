@@ -8,12 +8,17 @@ public class TextFilterBuilder : FilterBuilder
     /// <summary>
     /// The free-text to be sent to the server, typically just space separated keywords.
     /// </summary>
-    public string Keywords { get; set; } = string.Empty;
+    public string Keywords { get; set; } = "";
 
     /// <inheritdoc cref="FilterBuilder.Build" />
     public override string Build()
     {
-        return Keywords.Trim();
+        if(FilterName == "") {
+            return Keywords.Trim();
+        }
+        else {
+            return $"{FilterName}:{Keywords.Trim()}";
+        }
     }
 
     /// <inheritdoc cref="FilterBuilder.Reset" />

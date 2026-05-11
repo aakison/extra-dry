@@ -63,6 +63,35 @@ public partial class DataConverter
         }
     }
 
+
+    /// <summary>
+    /// Given a date, formats it for display using a relative day. For example, Today, Yesterday, or
+    /// a specific date.
+    /// </summary>
+    public static string DateToRelativeDay(DateTime dateTime)
+    {
+        // Assume Unspecified is UTC, which is how we store dates in databases.
+        var utc = dateTime.Kind switch {
+            DateTimeKind.Utc => dateTime,
+            DateTimeKind.Local => dateTime.ToUniversalTime(),
+            _ => DateTime.SpecifyKind(dateTime, DateTimeKind.Utc)
+        };
+        var current = CurrentDateTime().ToUniversalTime();
+        var delta = current - utc;
+        var localTime = utc.ToLocalTime();
+        var today = current.Date == utc.Date;
+        var yesterday = current.Date == utc.Date.AddDays(1);
+        if(today) {
+            return "Today";
+        }
+        else if(yesterday) {
+            return $"Yesterday";
+        }
+        else {
+            return $"{localTime:d MMM yyyy}";
+        }
+    }
+
     /// <summary>
     /// A function which returns the current date and time. Defaults to UTC which should match date
     /// storage format in databases.
