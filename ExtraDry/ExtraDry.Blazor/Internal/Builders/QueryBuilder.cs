@@ -57,6 +57,21 @@ public class QueryBuilder
         }
     }
 
+    public void AddTextFilter(string filterName, string filterValues)
+    {
+        var filter = Filters.FirstOrDefault(e => e.FilterName == filterName);
+        if(filter is null) {
+            filter = new TextFilterBuilder() { FilterName = filterName, Keywords = filterValues };
+            Filters.Add(filter);
+        }
+        else if(filter is not TextFilterBuilder) {
+            throw new NotSupportedException($"Filter with name {filterName} already exists and is not a text filter.");
+        }
+        else {
+            ((TextFilterBuilder)filter).Keywords = filterValues;
+        }
+    }
+
     /// <summary>
     /// Manually rebuilds the query and notifies all observers that changes have been made.
     /// </summary>
@@ -125,7 +140,7 @@ public class QueryBuilder
     /// <inheritdoc cref="QueryBuilder" />
     internal QueryBuilder()
     {
-        TextFilter = new TextFilterBuilder() { FilterName = "Keywords" };
+        TextFilter = new TextFilterBuilder();
         Filters.Add(TextFilter);
     }
 
