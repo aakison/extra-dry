@@ -77,7 +77,6 @@ public partial class DataConverter
             _ => DateTime.SpecifyKind(dateTime, DateTimeKind.Utc)
         };
         var current = CurrentDateTime().ToUniversalTime();
-        var delta = current - utc;
         var localTime = utc.ToLocalTime();
         var today = current.Date == utc.Date;
         var yesterday = current.Date == utc.Date.AddDays(1);

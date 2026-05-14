@@ -73,7 +73,7 @@ public class DryFieldBase<TModel> : OwningComponentBase where TModel : class
     [Parameter]
     public bool? ReadOnly { get; set; }
 
-    protected bool ResolvedReadOnly => ReadOnly /*?? Property.IsReadOnly */?? false;
+    protected bool ResolvedReadOnly => ReadOnly ?? Property.IsReadOnly;
 
 
     protected string ReadOnlyCss => ResolvedReadOnly ? "readonly" : "";

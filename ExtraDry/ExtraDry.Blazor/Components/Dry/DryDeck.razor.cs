@@ -264,8 +264,9 @@ public partial class DryDeck<TItem> : ComponentBase, IDisposable, IExtraDryCompo
     /// </summary>
     private bool IsSelected(TItem? item)
     {
-        if(item == null || SelectionAccessor == null)
+        if(item == null || SelectionAccessor == null) {
             return false;
+        }
 
         return SelectionAccessor.SelectionSet.Contains(item);
     }
