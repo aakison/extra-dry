@@ -75,6 +75,7 @@ public class PropertyDescription
         HasDescription = !string.IsNullOrWhiteSpace(Description);
         Size = PredictSize();
         NullDisplayText = Format?.NullDisplayText ?? "";
+        IsReadOnly = Rules?.UpdateAction == RuleAction.Block;
         if(HasDiscreteValues) {
             var enumValues = Property.PropertyType.GetFields(BindingFlags.Public | BindingFlags.Static);
             foreach(var enumValue in enumValues) {
@@ -161,6 +162,8 @@ public class PropertyDescription
     public int? Order { get; set; }
 
     public bool IsRequired { get; }
+
+    public bool IsReadOnly { get; }
 
     public bool HasDescription { get; }
 

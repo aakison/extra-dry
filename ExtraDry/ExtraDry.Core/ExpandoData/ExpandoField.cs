@@ -124,7 +124,9 @@ public class ExpandoField
 
     private void ValidateDataType(object? value, ref List<ValidationResult> results)
     {
-        if(value == null) return;
+        if(value == null) {
+            return;
+        }
 
         switch(DataType) {
             case ExpandoDataType.Boolean:
