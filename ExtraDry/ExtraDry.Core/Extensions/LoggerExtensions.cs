@@ -72,9 +72,9 @@ public static class LoggerExtensions
         displayOptions.ReadAndExpand(target);
         var list = displayOptions.Properties.Select(e => $"{e.Key}: {e.Value}");
 
-        logger.LogInformation("Resolved Configuration for '{Name}':\n  * {List}",
-            displayOptions.Name, string.Join($"\n  * ", list));
-        var bullets = "  * " + string.Join($"\n  * ", list);
+        logger.LogInformation("Resolved Configuration for '{Name}':\n        * {List}",
+            displayOptions.Name, string.Join($"\n        * ", list));
+        var bullets = "        * " + string.Join($"\n        * ", list);
         File.AppendAllText(logfile, $"\nResolved Configuration for '{displayOptions.Name}':\n{bullets}\n");
         if(displayOptions.ValidationErrors.Count > 0) {
             var results = string.Join($"\n  * ", displayOptions.ValidationErrors);
