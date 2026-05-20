@@ -65,13 +65,24 @@ public class PropertyDescription
         Filter = Property.GetCustomAttribute<FilterAttribute>();
         InputField = Property.GetCustomAttribute<InputFieldAttribute>();
         Sort = Property.GetCustomAttribute<SortAttribute>();
+        TableColumn = Property.GetCustomAttribute<TableColumnAttribute>();
+        var columnFormatterAttribute = Property.GetCustomAttribute<TableColumnAttribute>();
+        if(columnFormatterAttribute != null) {
+            var formatterType = columnFormatterAttribute.FormatterType switch {
+                null => typeof(IdentityFormatter),
+                Type t when typeof(IValueFormatter).IsAssignableFrom(t) => t,
+                Type t => throw new InvalidOperationException($"ColumnFormatterAttribute on {property.DeclaringType?.Name}.{property.Name} specifies type '{t.Name}' which does not implement IValueFormatter.")
+            };
+            ColumnFormatter = (IValueFormatter)Activator.CreateInstance(formatterType)!;
+        }
         Options = Property.GetCustomAttribute<ListServiceAttribute>();
         Markdown = Property.GetCustomAttribute<MarkdownAttribute>();
 
         FieldCaption = Display?.Name ?? DataConverter.CamelCaseToTitleCase(Property.Name);
-        ColumnCaption = Display?.ShortName ?? DataConverter.CamelCaseToTitleCase(Property.Name);
+        ColumnCaption = TableColumn?.Caption ?? Display?.ShortName ?? DataConverter.CamelCaseToTitleCase(Property.Name);
         Description = Display?.Description;
         Order = Display?.GetOrder();
+        TableOrder = TableColumn?.GetOrder() ?? Order;
         HasDescription = !string.IsNullOrWhiteSpace(Description);
         Size = PredictSize();
         NullDisplayText = Format?.NullDisplayText ?? "";
@@ -128,6 +139,8 @@ public class PropertyDescription
 
     public DisplayAttribute? Display { get; }
 
+    public TableColumnAttribute? TableColumn { get; set; }
+
     public DisplayFormatAttribute? Format { get; }
 
     public RulesAttribute? Rules { get; }
@@ -161,6 +174,8 @@ public class PropertyDescription
     /// </summary>
     public int? Order { get; set; }
 
+    public int? TableOrder { get; set; }
+
     public bool IsRequired { get; }
 
     public bool IsReadOnly { get; }
@@ -173,6 +188,13 @@ public class PropertyDescription
 
     public string NullDisplayText { get; set; }
 
+    /// <summary>
+    /// A display-only formatter for table column rendering, specified via
+    /// <see cref="TableColumnAttribute" />. Takes precedence over
+    /// <see cref="DisplayFormatAttribute.DataFormatString" /> when rendering columns.
+    /// </summary>
+    public IValueFormatter? ColumnFormatter { get; private set; }
+
     public string DisplayValue(object? item)
     {
         if(item == null) {
@@ -182,6 +204,9 @@ public class PropertyDescription
             var value = Property?.GetValue(item);
             if(value == null) {
                 return Format?.NullDisplayText ?? "null";
+            }
+            if(ColumnFormatter != null) {
+                return ColumnFormatter.Format(value);
             }
             if(HasDiscreteValues && discreteDisplayAttributes.TryGetValue((int)value, out var display)) {
                 value = display?.GetName() ?? value;
@@ -396,6 +421,9 @@ public class PropertyDescription
     {
         if(InputField != null && InputField.Size != PropertySize.Auto) {
             return InputField.Size;
+        }
+        if(Property.PropertyType == typeof(DateTime) || Property.PropertyType == typeof(DateTime?)) {
+            return PropertySize.Medium;
         }
         if(Property.PropertyType == typeof(string)) {
             var length = FieldLength ?? 1000;

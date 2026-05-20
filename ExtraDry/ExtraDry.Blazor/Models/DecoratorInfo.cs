@@ -72,13 +72,15 @@ public class DecoratorInfo
         var properties = modelType.GetProperties().ToList();
         var descriptions = properties.Select(PropertyDescription.Lookup).ToList();
         var ordered = descriptions.OrderBy(e => e.Order ?? 10_000 + descriptions.IndexOf(e));
+        var tableColumns = new List<PropertyDescription>();
         foreach(var property in ordered) {
             var display = property.Display;
+            var table = property.TableColumn;
             if(display?.GetAutoGenerateField() ?? true) {
                 FormProperties.Add(property);
             }
-            if(!string.IsNullOrEmpty(display?.ShortName)) {
-                TableProperties.Add(property);
+            if(!string.IsNullOrEmpty(display?.ShortName) || !string.IsNullOrEmpty(table?.Caption)) {
+                tableColumns.Add(property);
             }
             if(property.Filter != null) {
                 FilterProperties.Add(property);
@@ -86,6 +88,11 @@ public class DecoratorInfo
             if(UuidProperty == null && property.PropertyType == typeof(Guid)) {
                 UuidProperty = property;
             }
+        }
+        foreach(var property in tableColumns.OrderBy(e => e.TableOrder ?? 10_000 + descriptions.IndexOf(e))) {
+            var order = property.TableOrder ?? 10_000 + descriptions.IndexOf(property);
+            Console.WriteLine($"Adding {property.Property.Name} to table properties because of caption with order {order}");
+            TableProperties.Add(property);
         }
     }
 
