@@ -21,7 +21,7 @@ public static class QueryableExtensions
     /// An expression that provides default filtering support, which can be overridden by
     /// `filterQuery`.
     /// </param>
-    public static FilteredListQueryable<T> QueryWith<T>(this IQueryable<T> source, FilterQuery query, Expression<Func<T, bool>>? defaultFilter = null) where T : class
+    public static FilteredListQueryable<T> QueryWith<T>(this IQueryable<T> source, FilterQuery query, Expression<Func<T, bool>>? defaultFilter = null, string? defaultSort = null) where T : class
     {
         query.Stabilization = Options.Stabilization;
         return new FilteredListQueryable<T>(source.AsNoTracking(), query, defaultFilter);
