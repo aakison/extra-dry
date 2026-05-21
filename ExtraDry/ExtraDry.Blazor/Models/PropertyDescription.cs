@@ -195,6 +195,8 @@ public class PropertyDescription
     /// </summary>
     public IValueFormatter? ColumnFormatter { get; private set; }
 
+    public string ColumnWidth => string.IsNullOrWhiteSpace(TableColumn?.Width) ? $"{10 * (int)Size}fr" : TableColumn.Width;
+
     public string DisplayValue(object? item)
     {
         if(item == null) {
