@@ -57,7 +57,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
 
     private string CustomStyle {
         get {
-            var widths = string.Join(" ", decorator.TableProperties.Select(e => $"{10 * (int)e.Size}fr"));
+            var widths = string.Join(" ", decorator.TableProperties.Select(e => e.ColumnWidth));
             var check = HasCheckboxColumn | HasRadioColumn ? "auto " : "";
             var commands = HasCommandsColumn ? " auto" : "";
             var styles = $@"

@@ -48,4 +48,11 @@ public class TableColumnAttribute : Attribute
     public int? GetOrder() => order;
 
     public string? Caption { get; set; }
+
+    /// <summary>
+    /// The width of the column, e.g. "10fr" or "8em". Uses CSS grid syntax for column sizing.
+    /// If not specified, the column will auto-size based on property settings.  Use "em" sizing
+    /// when content is relatively stable width, e.g. phone numbers.
+    /// </summary>
+    public string? Width { get; set; }
 }
