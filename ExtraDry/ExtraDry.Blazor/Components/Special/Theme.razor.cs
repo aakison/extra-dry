@@ -151,8 +151,7 @@ public partial class Theme(
             return;
         }
         try {
-            var onServer = !OperatingSystem.IsBrowser();
-            if(onServer || icon == null || icon.ImagePath == null || icon.SvgRenderType == SvgRenderType.Reference
+            if(icon == null || icon.ImagePath == null || icon.SvgRenderType == SvgRenderType.Reference
                 || !icon.ImagePath.EndsWith(".svg", StringComparison.InvariantCultureIgnoreCase)) {
                 return;
             }
