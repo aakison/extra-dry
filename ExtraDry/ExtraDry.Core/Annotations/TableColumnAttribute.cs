@@ -24,7 +24,7 @@ public class TableColumnAttribute : Attribute
         Caption = caption;
         FormatterType = formatterType;
     }
-    
+
     /// <summary>
     /// The type of the formatter to use for column display. Must implement
     /// <c>IValueFormatter</c>.
