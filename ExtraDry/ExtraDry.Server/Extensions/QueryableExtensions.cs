@@ -24,7 +24,7 @@ public static class QueryableExtensions
     public static FilteredListQueryable<T> QueryWith<T>(this IQueryable<T> source, FilterQuery query, Expression<Func<T, bool>>? defaultFilter = null, string? defaultSort = null) where T : class
     {
         query.Stabilization = Options.Stabilization;
-        query.Sort ??= defaultSort ; 
+        query.Sort ??= defaultSort;
         return new FilteredListQueryable<T>(source.AsNoTracking(), query, defaultFilter);
     }
 
@@ -44,7 +44,7 @@ public static class QueryableExtensions
     public static PagedListQueryable<T> QueryWith<T>(this IQueryable<T> source, PageQuery query, Expression<Func<T, bool>>? defaultFilter = null, string? defaultSort = null) where T : class
     {
         query.Stabilization = Options.Stabilization;
-        query.Sort ??= defaultSort ; 
+        query.Sort ??= defaultSort;
         return new PagedListQueryable<T>(source.AsNoTracking(), query, defaultFilter);
     }
 
