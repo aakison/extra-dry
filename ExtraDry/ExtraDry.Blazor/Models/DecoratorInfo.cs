@@ -91,7 +91,6 @@ public class DecoratorInfo
         }
         foreach(var property in tableColumns.OrderBy(e => e.TableOrder ?? 10_000 + descriptions.IndexOf(e))) {
             var order = property.TableOrder ?? 10_000 + descriptions.IndexOf(property);
-            Console.WriteLine($"Adding {property.Property.Name} to table properties because of caption with order {order}");
             TableProperties.Add(property);
         }
     }
