@@ -80,8 +80,6 @@ public partial class Theme(
 
     protected override async Task OnParametersSetAsync()
     {
-        await base.OnParametersSetAsync();
-
         if(ErrorComponent != null) {
             ThemeInfo.ErrorComponent = ErrorComponent;
         }
@@ -104,17 +102,37 @@ public partial class Theme(
 
         ThemeInfo.Version = Version;
 
-        await LoadSvgReferencesAsync();
+        LoadSvgReferencesAsync();
         ThemeInfo.Icons = CachedIcons.ToDictionary(e => e.Key, e => e.Value);
+
+        // Only call async methods after ThemeInfo is populated, otherwise downstream components
+        // will get broken information.
+        await SetSvgAtlasViewboxes();
     }
 
-    private async Task LoadSvgReferencesAsync()
+    private void LoadSvgReferencesAsync()
     {
         if(loaded) {
             return;
         }
         Icons ??= [];
 
+        // Ensure we have all icons, including fallbacks, but do not duplicate any, prefering user-supplied instead of fallback.
+        var fallbackIcons = IconInfo.FallbackIcons.Values.Where(e => !Icons.Any(i => i.Key == e.Key));
+        var allIcons = Icons.Union(fallbackIcons);
+        foreach(var icon in allIcons) {
+            LoadIcon(icon);
+        }
+        loaded = true;
+    }
+
+    /// <summary>
+    /// Some icons need the SVG viewbox set to display correctly.  This is only a minority of icons that use non-standard viewboxes.
+    /// The data for the viewbox needs to be extracted from the SVG file, which is only available on the server.  To work around this,
+    /// we load the atlas SVG file as text and extract the viewbox values using regex.  This is done **after** the icons are loaded to
+    /// ensure that the inline SVG bodies are populated and can be updated with the viewbox values.
+    /// </summary>
+    private async Task SetSvgAtlasViewboxes() {
         Dictionary<string, string>? viewBoxManifest = null;
         if(OperatingSystem.IsBrowser()) {
             try {
@@ -130,17 +148,17 @@ public partial class Theme(
             }
         }
 
-        // Ensure we have all icons, including fallbacks, but do not duplicate any, prefering user-supplied instead of fallback.
-        var fallbackIcons = IconInfo.FallbackIcons.Values.Where(e => !Icons.Any(i => i.Key == e.Key));
-        var allIcons = Icons.Union(fallbackIcons);
-        foreach(var icon in allIcons) {
-            LoadIcon(icon, viewBoxManifest);
+        foreach(var icon in Icons!) {
+            if(icon.SvgRenderType == SvgRenderType.Atlas) {
+                var viewBox = (viewBoxManifest?.TryGetValue(icon.Key, out var vb) ?? false) ? $" {vb}" : "";
+                icon.SvgInlineBody = icon.SvgInlineBody.Replace("data-viewbox", viewBox);
+            }
         }
 
-        loaded = true;
     }
 
-    private void LoadIcon(IconInfo icon, Dictionary<string, string>? viewBoxManifest = null)
+
+    private void LoadIcon(IconInfo icon)
     {
         if(CachedIcons.ContainsKey(icon.Key)) {
             Logger.LogDuplicateIcon(icon.Key);
@@ -162,8 +180,7 @@ public partial class Theme(
 
             if(icon.SvgRenderType == SvgRenderType.Atlas) {
                 var version = $"?v={Version}";
-                var viewBox = (viewBoxManifest?.TryGetValue(icon.Key, out var vb) ?? false) ? $" {vb}" : "";
-                icon.SvgInlineBody = $@"<svg class=""{icon.CssClass} additional-classes""{viewBox}><title>{icon.AlternateText}</title><use href=""/bundles/atlas.svg{version}#{icon.Key}""></use></svg>";
+                icon.SvgInlineBody = $@"<svg class=""{icon.CssClass} additional-classes"" data-viewbox><title>{icon.AlternateText}</title><use href=""/bundles/atlas.svg{version}#{icon.Key}""></use></svg>";
             }
 
         }
