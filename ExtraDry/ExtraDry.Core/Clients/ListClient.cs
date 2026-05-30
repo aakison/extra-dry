@@ -64,7 +64,7 @@ public class ListClient<TItem> : IListClient<TItem>
 
     public JsonSerializerOptions JsonSerializerOptions { get; set; }
 
-    internal string ConstructApiEndpoint(object? key, Query query)
+    internal string ConstructApiEndpoint(Query query)
     {
         try {
             var queryParams = new Dictionary<string, List<string>>();
@@ -72,16 +72,16 @@ public class ListClient<TItem> : IListClient<TItem>
             AddIf(queryParams, Options.SortParameterName, query.Sort);
             AddIf(queryParams, Options.SkipParameterName, query.Skip);
             AddIf(queryParams, Options.TakeParameterName, query.Take ?? Options.PageSize);
-            return ConstructPathAndQuery(key, queryParams);
+            return ConstructPathAndQuery(queryParams);
         }
         catch(FormatException ex) {
             throw new DryException("Formatting problem while construction List Endpoint", ex);
         }
     }
 
-    private string ConstructPathAndQuery(object? key, Dictionary<string, List<string>> queryParams)
+    private string ConstructPathAndQuery(Dictionary<string, List<string>> queryParams)
     {
-        var endpoint = BaseApiEndpoint(key);
+        var endpoint = BaseApiEndpoint();
         if(queryParams.Count != 0) {
             var queries = queryParams.SelectMany(e => e.Value.Select(v => $"{e.Key}={Uri.EscapeDataString(v)}"));
             var query = string.Join("&", queries);
@@ -90,12 +90,12 @@ public class ListClient<TItem> : IListClient<TItem>
         return endpoint;
     }
 
-    private string BaseApiEndpoint(object? key)
+    private string BaseApiEndpoint()
     {
         var url = Options.ListEndpoint;
-        if(key is not null) {
+        if(EndpointKey is not null) {
             foreach(var formatter in Options.EndpointFormatters) {
-                var parameterValue = formatter.Formatter(key);
+                var parameterValue = formatter.Formatter(EndpointKey);
                 url = formatter.Mode switch {
                     EndpointMode.Append => $"{url.TrimEnd('/')}/{parameterValue}",
                     EndpointMode.Replace => url.Replace($"{{{formatter.ParmeterName}}}", parameterValue),
@@ -143,7 +143,7 @@ public class ListClient<TItem> : IListClient<TItem>
         if(Options.EndpointFormatters.Count > 0 && EndpointKey is null) {
             throw new DryException($"Endpoint formatters defined but no EndpointKey was provided for endpoint template: {Options.ListEndpoint}");
         }
-        var endpoint = ConstructApiEndpoint(EndpointKey, query);
+        var endpoint = ConstructApiEndpoint(query);
         logger.LogEndpointCall(typeof(TItem), endpoint);
         var response = await http.GetAsync(endpoint, cancellationToken);
         await response.AssertSuccess(logger);

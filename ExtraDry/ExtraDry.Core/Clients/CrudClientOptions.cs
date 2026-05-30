@@ -93,11 +93,11 @@ public class CrudClientOptions<T> : IHttpClientOptions, IValidatableObject
         });
     }
 
-    private static Func<object, string> TypeSafeWrapper<TKey>(Func<TKey, string> func)
+    private Func<object, string> TypeSafeWrapper<TKey>(Func<TKey, string> func)
     {
         return key => {
             if(key is not TKey) {
-                throw new ArgumentException($"Key must be of type {typeof(TKey).Name} for this endpoint.");
+                throw new ArgumentException($"Key must be of type {typeof(TKey).Name} for this CRUD endpoint. {CrudEndpoint}");
             }
             var result = func((TKey)key);
             Console.WriteLine($"Replacing value with {result}");
