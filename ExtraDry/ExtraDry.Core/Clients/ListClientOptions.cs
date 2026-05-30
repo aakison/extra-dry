@@ -79,11 +79,11 @@ public class ListClientOptions : IHttpClientOptions, IValidatableObject
         });
     }
 
-    private static Func<object, string> TypeSafeWrapper<T>(Func<T, string> func)
+    private Func<object, string> TypeSafeWrapper<T>(Func<T, string> func)
     {
         return key => {
             if(key is not T) {
-                throw new ArgumentException($"Key must be of type {typeof(T).Name} for this endpoint.");
+                throw new ArgumentException($"Key must be of type {typeof(T).Name} for this List endpoint. {ListEndpoint}");
             }
             var result = func((T)key);
             Console.WriteLine($"Replacing value with {result}");
