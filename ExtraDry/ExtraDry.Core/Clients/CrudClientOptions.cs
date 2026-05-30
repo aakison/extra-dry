@@ -49,11 +49,11 @@ public class CrudClientOptions<T> : IHttpClientOptions, IValidatableObject
     /// </summary>
     /// <param name="generator">Function that generates the entire endpoint from the key.</param>
     /// <param name="operations">Operations that this formatter is used on.</param>
-    public void AddEndpointGenerator(Func<object, string> generator, CrudOperation operations = CrudOperation.All)
+    public void AddEndpointGenerator<TKey>(Func<TKey, string> generator, CrudOperation operations = CrudOperation.All)
     {
         EndpointFormatters.Add(new EndpointFormatter {
             ParmeterName = "",
-            Formatter = generator,
+            Formatter = TypeSafeWrapper(generator),
             Mode = EndpointMode.Generate,
             Operations = operations
         });
@@ -66,11 +66,11 @@ public class CrudClientOptions<T> : IHttpClientOptions, IValidatableObject
     /// <param name="parameterName">The name of the parameter, e.g. "uuid" in "/commerce/carts/{uuid}</param>
     /// <param name="formatter">Function that returns the key-value from the key.</param>
     /// <param name="operations">Operations that this formatter is used on.</param>
-    public void AddEndpointReplacer(string parameterName, Func<object, string> formatter, CrudOperation operations = CrudOperation.All)
+    public void AddEndpointReplacer<TKey>(string parameterName, Func<TKey, string> formatter, CrudOperation operations = CrudOperation.All)
     {
         EndpointFormatters.Add(new EndpointFormatter {
             ParmeterName = parameterName,
-            Formatter = formatter,
+            Formatter = TypeSafeWrapper(formatter),
             Mode = EndpointMode.Replace,
             Operations = operations
         });
@@ -82,15 +82,27 @@ public class CrudClientOptions<T> : IHttpClientOptions, IValidatableObject
     /// </summary>
     /// <param name="appender">Function that returns the key-value from the key.</param>
     /// <param name="operations">Operations that this formatter is used on.</param>
-    public void AddEndpointAppender(Func<object, string> appender, CrudOperation operations = CrudOperation.Existing)
+    public void AddEndpointAppender<TKey>(Func<T, string> appender, CrudOperation operations = CrudOperation.Existing)
     {
         EndpointFormatters.RemoveAll(e => e.Mode == EndpointMode.Append);
         EndpointFormatters.Add(new EndpointFormatter {
             ParmeterName = "",
-            Formatter = appender,
+            Formatter = TypeSafeWrapper(appender),
             Mode = EndpointMode.Append,
             Operations = operations,
         });
+    }
+
+    private static Func<object, string> TypeSafeWrapper<TKey>(Func<TKey, string> func)
+    {
+        return key => {
+            if(key is not TKey) {
+                throw new ArgumentException($"Key must be of type {typeof(TKey).Name} for this endpoint.");
+            }
+            var result = func((TKey)key);
+            Console.WriteLine($"Replacing value with {result}");
+            return result;
+        };
     }
 
     public void ClearEndpointFormatters() => EndpointFormatters.Clear();
