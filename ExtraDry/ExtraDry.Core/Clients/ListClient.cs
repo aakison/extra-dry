@@ -1,7 +1,9 @@
 using ExtraDry.Core.Extensions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Collections.ObjectModel;
 using System.Net;
+using System.Runtime.Serialization;
 using System.Text.Json;
 
 namespace ExtraDry.Core;
@@ -62,31 +64,49 @@ public class ListClient<TItem> : IListClient<TItem>
 
     public JsonSerializerOptions JsonSerializerOptions { get; set; }
 
-    public Dictionary<string, string> Variables { get; } = [];
-
-    internal string ListEndpoint(Query query)
+    internal string ConstructApiEndpoint(object? key, Query query)
     {
         try {
-            var keys = new Dictionary<string, List<string>>();
-            AddIf(keys, Options.FilterParameterName, query.Filter);
-            AddIf(keys, Options.SortParameterName, query.Sort);
-            AddIf(keys, Options.SkipParameterName, query.Skip);
-            AddIf(keys, Options.TakeParameterName, query.Take ?? Options.PageSize);
-            return ConstructPathAndQuery(Options.ListEndpoint, keys);
+            var queryParams = new Dictionary<string, List<string>>();
+            AddIf(queryParams, Options.FilterParameterName, query.Filter);
+            AddIf(queryParams, Options.SortParameterName, query.Sort);
+            AddIf(queryParams, Options.SkipParameterName, query.Skip);
+            AddIf(queryParams, Options.TakeParameterName, query.Take ?? Options.PageSize);
+            return ConstructPathAndQuery(key, queryParams);
         }
         catch(FormatException ex) {
             throw new DryException("Formatting problem while construction List Endpoint", ex);
         }
     }
 
-    private static string ConstructPathAndQuery(string path, Dictionary<string, List<string>> keys)
+    private string ConstructPathAndQuery(object? key, Dictionary<string, List<string>> queryParams)
     {
-        if(keys.Count != 0) {
-            var queries = keys.SelectMany(e => e.Value.Select(v => $"{e.Key}={Uri.EscapeDataString(v)}"));
+        var endpoint = BaseApiEndpoint(key);
+        if(queryParams.Count != 0) {
+            var queries = queryParams.SelectMany(e => e.Value.Select(v => $"{e.Key}={Uri.EscapeDataString(v)}"));
             var query = string.Join("&", queries);
-            path = $"{path}?{query}";
+            endpoint = $"{endpoint}?{query}";
         }
-        return path;
+        return endpoint;
+    }
+
+    private string BaseApiEndpoint(object? key)
+    {
+        var url = Options.ListEndpoint;
+        if(key is not null) {
+            foreach(var formatter in Options.EndpointFormatters) {
+                var parameterValue = formatter.Formatter(key);
+                url = formatter.Mode switch {
+                    EndpointMode.Append => $"{url.TrimEnd('/')}/{parameterValue}",
+                    EndpointMode.Replace => url.Replace($"{{{formatter.ParmeterName}}}", parameterValue),
+                    EndpointMode.Generate => parameterValue,
+                    _ => url
+                };
+                Console.WriteLine($"FUNC: {formatter.ParmeterName} {parameterValue}");
+            }
+        }
+        Console.WriteLine($"FUNC: Result: {url}");
+        return url.TrimEnd('/');
     }
 
     private static void AddIf(Dictionary<string, List<string>> keys, string key, string? value)
@@ -118,12 +138,12 @@ public class ListClient<TItem> : IListClient<TItem>
     {
         IsLoading = true;
         if(string.IsNullOrWhiteSpace(Options.ListEndpoint)) {
-            throw new DryException(HttpStatusCode.NotFound, "No endpoints defined", "When configuring a ListService, either or both of ListEndpoint and/or HierarchyEndpoint must be provided.");
+            throw new DryException(HttpStatusCode.NotFound, "No endpoints defined", "When configuring a ListService, must define ListEndpoint");
         }
-        var endpoint = ListEndpoint(query);
-        foreach(var variable in Variables) {
-            endpoint = endpoint.Replace($"{{{variable.Key}}}", variable.Value, StringComparison.OrdinalIgnoreCase);
+        if(Options.EndpointFormatters.Count > 0 && EndpointKey is null) {
+            throw new DryException($"Endpoint formatters defined but no EndpointKey was provided for endpoint template: {Options.ListEndpoint}");
         }
+        var endpoint = ConstructApiEndpoint(EndpointKey, query);
         logger.LogEndpointCall(typeof(TItem), endpoint);
         var response = await http.GetAsync(endpoint, cancellationToken);
         await response.AssertSuccess(logger);
@@ -139,6 +159,12 @@ public class ListClient<TItem> : IListClient<TItem>
         IsEmpty = total == 0;
         return (packedResult, items, total);
     }
+
+    /// <summary>
+    /// Use with Endpoint Formatters to provide contextual information for the endpoint.
+    /// Required if formatters are used, ignored if not.
+    /// </summary>
+    public object? EndpointKey { get; set; }
 
     /// <summary>
     /// Event to subscribe to be notified when a list has returned results.
