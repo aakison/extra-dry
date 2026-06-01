@@ -308,7 +308,7 @@ public class PropertyDescription
         return typeClass;
     }
 
-    public bool HasReferenceDataTypeRepresentation => Property.PropertyType == typeof(Guid) && InputType.IsClass;
+    public bool HasReferenceDataTypeRepresentation => PropertyType == typeof(Guid) && InputType.IsClass;
 
     public bool HasDiscreteStringValues {
         get {
