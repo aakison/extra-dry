@@ -11,7 +11,12 @@ public partial class DryOptionField<TModel> : DryFieldBase<TModel> where TModel 
     {
         await LoadOptionsForPropertyAsync();
         var value = Property.GetValue(Model);
-        Value = Options.FirstOrDefault(e => e.Value?.Equals(value) ?? value == null);
+        if(Property.HasReferenceDataTypeRepresentation && value is Guid uuid) {
+            Value = Options.FirstOrDefault(e => (e.Value as IUniqueIdentifier)?.Uuid == uuid);
+        }
+        else {
+            Value = Options.FirstOrDefault(e => e.Value?.Equals(value) ?? value == null);
+        }
         await base.OnParametersSetAsync();
     }
 

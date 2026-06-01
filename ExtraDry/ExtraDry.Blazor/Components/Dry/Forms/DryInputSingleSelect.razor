@@ -13,7 +13,7 @@
         </select>
     }
     else {
-        <select class="@CssClasses" title="@Property?.FieldCaption" @onchange="SelectOption" @attributes="@UnmatchedAttributes">
+        <select class="@CssClasses" title="@Property?.FieldCaption" value="@SelectedOption?.Key" @onchange="SelectOption" @attributes="@UnmatchedAttributes">
             @if(SelectedValue == null) {
                 <option value="" disabled selected>@Property?.Display?.Prompt</option>
             }

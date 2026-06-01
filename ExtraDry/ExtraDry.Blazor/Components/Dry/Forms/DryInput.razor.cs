@@ -101,7 +101,7 @@ public partial class DryInput<T>
             dynamic task = method!.Invoke(optionProvider, [token])!;
             var optList = (await task).Items as ICollection;
             var options = optList?.Cast<object>()?.ToList() ?? [];
-            if(options.FirstOrDefault() is IndexOutOfRangeException resource) {
+            if(options.FirstOrDefault() is IResourceIdentifiers) {
                 LookupProviderOptions = options
                     .Select(e => new { Key = (e as IResourceIdentifiers)?.Uuid.ToString() ?? Guid.NewGuid().ToString(), Item = e })
                     .ToDictionary(e => e.Key.ToString(CultureInfo.InvariantCulture), e => e.Item);
