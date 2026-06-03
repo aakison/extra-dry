@@ -70,7 +70,7 @@ public class PropertyDescription
         TableColumn = Property.GetCustomAttribute<TableColumnAttribute>();
         var columnFormatterAttribute = Property.GetCustomAttribute<TableColumnAttribute>();
         if(columnFormatterAttribute != null) {
-            var formatterType = columnFormatterAttribute.FormatterType switch {
+            var formatterType = columnFormatterAttribute.Formatter switch {
                 null => typeof(IdentityFormatter),
                 Type t when typeof(IValueFormatter).IsAssignableFrom(t) => t,
                 Type t => throw new InvalidOperationException($"ColumnFormatterAttribute on {property.DeclaringType?.Name}.{property.Name} specifies type '{t.Name}' which does not implement IValueFormatter.")

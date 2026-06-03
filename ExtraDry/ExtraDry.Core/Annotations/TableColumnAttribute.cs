@@ -19,17 +19,17 @@ public class TableColumnAttribute : Attribute
     {
     }
 
-    public TableColumnAttribute(string caption, Type? formatterType = null)
+    public TableColumnAttribute(string caption, Type? formatter = null)
     {
         Caption = caption;
-        FormatterType = formatterType;
+        Formatter = formatter;
     }
 
     /// <summary>
     /// The type of the formatter to use for column display. Must implement
     /// <c>IValueFormatter</c>.
     /// </summary>
-    public Type? FormatterType { get; set; }
+    public Type? Formatter { get; set; }
 
     /// <summary>
     /// The order in the DryTable to display the column.
