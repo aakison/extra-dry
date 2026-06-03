@@ -1,4 +1,4 @@
-namespace ExtraDry.Core;
+namespace ExtraDry.Core.Formatters;
 
 /// <summary>
 /// Represents a roundtrip mechanism for formatting a value to a string for user editing or

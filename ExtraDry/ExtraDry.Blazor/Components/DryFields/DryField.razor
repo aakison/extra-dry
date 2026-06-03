@@ -48,7 +48,7 @@ else {
         <DryTextField Model="Model" Property="Property" OnInput="OnInput" OnChange="OnChange" OnValidate="OnValidate" />
     } 
     else if(Property.HasNumericRepresentation) {
-        //<DryInputNumeric Model="@Model" Property="@Property" ReadOnly="@ReadOnly" OnValidation="@ValidationChanged" OnChange="HandleChange" />
+        <DryNumberField Model="@Model" Property="@Property" OnInput="OnInput" OnChange="OnChange" OnValidate="OnValidate" />
     }
     //else if(LookupProviderOptions != null) {
         //var selectedValue = Property.GetValue(Model);

@@ -1,15 +1,16 @@
 using Xunit;
 using ExtraDry.Blazor.Components.Formatting;
 using System.Globalization;
+using ExtraDry.Core.Formatters;
 
-namespace ExtraDry.Blazor.Tests.Components.Formatting;
+namespace ExtraDry.Core.Tests.Formatters;
 
-public class NullableDateTimeFormatterTests
+public class DateTimeFormatterTests
 {
     [Fact]
     public void FormatNull()
     {
-        var formatter = new NullableDateTimeFormatter();
+        var formatter = new DateTimeFormatter();
         var result = formatter.Format(null);
         Assert.Equal("", result);
     }
@@ -17,7 +18,7 @@ public class NullableDateTimeFormatterTests
     [Fact]
     public void FormatMinValue()
     {
-        var formatter = new NullableDateTimeFormatter();
+        var formatter = new DateTimeFormatter();
         var result = formatter.Format(DateTime.MinValue);
         Assert.Equal("", result);
     }
@@ -25,7 +26,7 @@ public class NullableDateTimeFormatterTests
     [Fact]
     public void FormatValidDateTime()
     {
-        var formatter = new NullableDateTimeFormatter();
+        var formatter = new DateTimeFormatter();
         var result = formatter.Format(new DateTime(2023, 10, 15));
         Assert.Equal("2023-10-15", result);
     }
@@ -33,34 +34,34 @@ public class NullableDateTimeFormatterTests
     [Fact]
     public void TryParseNull()
     {
-        var formatter = new NullableDateTimeFormatter();
+        var formatter = new DateTimeFormatter();
         var success = formatter.TryParse(null, out var result);
         Assert.True(success);
-        Assert.Null(result);
+        Assert.Equal(DateTime.MinValue, result);
     }
 
     [Fact]
     public void TryParseEmpty()
     {
-        var formatter = new NullableDateTimeFormatter();
+        var formatter = new DateTimeFormatter();
         var success = formatter.TryParse("", out var result);
         Assert.True(success);
-        Assert.Null(result);
+        Assert.Equal(DateTime.MinValue, result);
     }
 
     [Fact]
     public void TryParseWhitespace()
     {
-        var formatter = new NullableDateTimeFormatter();
+        var formatter = new DateTimeFormatter();
         var success = formatter.TryParse("   ", out var result);
         Assert.True(success);
-        Assert.Null(result);
+        Assert.Equal(DateTime.MinValue, result);
     }
 
     [Fact]
     public void TryParseValid()
     {
-        var formatter = new NullableDateTimeFormatter();
+        var formatter = new DateTimeFormatter();
         var success = formatter.TryParse("2023-10-15", out var result);
         Assert.True(success);
         Assert.Equal(new DateTime(2023, 10, 15), result);
@@ -69,9 +70,9 @@ public class NullableDateTimeFormatterTests
     [Fact]
     public void TryParseInvalid()
     {
-        var formatter = new NullableDateTimeFormatter();
+        var formatter = new DateTimeFormatter();
         var success = formatter.TryParse("abc", out var result);
         Assert.False(success);
-        Assert.Null(result);
+        Assert.Equal(DateTime.MinValue, result);
     }
 }

@@ -1,23 +1,25 @@
-namespace ExtraDry.Blazor.Components.Formatting;
+using System.Globalization;
+
+namespace ExtraDry.Core.Formatters;
 
 /// <summary>
-/// Represents a roundtrip mechanism for formatting a Int? to a string for user editing.
+/// Represents a roundtrip mechanism for formatting a Double to a string for user editing.
 /// </summary>
-public class NullableIntFormatter : IValueFormatter
+public class DoubleFormatter : IValueFormatter
 {
     /// <inheritdoc />
-    public string RegexPattern { get; set; } = @"-?[0-9]{0,9}";
+    public string RegexPattern { get; set; } = @"-?[0-9]{0,10}(\.[0-9]{0,10})?";
 
     /// <inheritdoc />
-    public string DataFormat { get; set; } = "#,#";
+    public string DataFormat { get; set; } = "#,#.##";
 
     /// <inheritdoc />
     public string Format(object? value)
     {
         if(value == null) {
-            return "";
+            return "0";
         }
-        var val = (int)value;
+        var val = (double)value;
         var formatted = val == 0 ? "0" : val.ToString(DataFormat, CultureInfo.CurrentCulture);
         return formatted;
     }
@@ -26,16 +28,16 @@ public class NullableIntFormatter : IValueFormatter
     public bool TryParse(string? value, out object? result)
     {
         if(string.IsNullOrWhiteSpace(value)) {
-            result = null;
+            result = 0.0;
             return true;
         }
         value = value.Replace(",", "");
-        if(int.TryParse(value, out var intResult)) {
-            result = intResult;
+        if(double.TryParse(value, out var doubleResult)) {
+            result = doubleResult;
             return true;
         }
         else {
-            result = null;
+            result = 0.0;
             return false;
         }
     }

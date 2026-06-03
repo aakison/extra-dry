@@ -1,4 +1,6 @@
 using ExtraDry.Blazor.Components.Formatting;
+using ExtraDry.Core.Formatters;
+using System.ComponentModel.Design;
 using System.Linq.Expressions;
 
 namespace ExtraDry.Blazor;
@@ -447,6 +449,12 @@ public class PropertyDescription
 
     private IValueFormatter CreateFormatter()
     {
+        if(InputField?.Formatter is not null) {
+            var formatter = Activator.CreateInstance(InputField.Formatter) as IValueFormatter;
+            if(formatter is not null) {
+                return formatter;
+            }
+        }
         return (AllowsNull, PropertyType) switch {
             (false, Type t) when t == typeof(decimal) => new DecimalFormatter(),
             (true, Type t) when t == typeof(decimal) => new NullableDecimalFormatter(),

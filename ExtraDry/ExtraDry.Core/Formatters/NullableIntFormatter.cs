@@ -1,9 +1,12 @@
+using ExtraDry.Core.Formatters;
+using System.Globalization;
+
 namespace ExtraDry.Blazor.Components.Formatting;
 
 /// <summary>
-/// Represents a roundtrip mechanism for formatting a Int32 to a string for user editing.
+/// Represents a roundtrip mechanism for formatting a Int? to a string for user editing.
 /// </summary>
-public class IntFormatter : IValueFormatter
+public class NullableIntFormatter : IValueFormatter
 {
     /// <inheritdoc />
     public string RegexPattern { get; set; } = @"-?[0-9]{0,9}";
@@ -15,7 +18,7 @@ public class IntFormatter : IValueFormatter
     public string Format(object? value)
     {
         if(value == null) {
-            return "0";
+            return "";
         }
         var val = (int)value;
         var formatted = val == 0 ? "0" : val.ToString(DataFormat, CultureInfo.CurrentCulture);
@@ -26,7 +29,7 @@ public class IntFormatter : IValueFormatter
     public bool TryParse(string? value, out object? result)
     {
         if(string.IsNullOrWhiteSpace(value)) {
-            result = 0;
+            result = null;
             return true;
         }
         value = value.Replace(",", "");
@@ -35,7 +38,7 @@ public class IntFormatter : IValueFormatter
             return true;
         }
         else {
-            result = 0;
+            result = null;
             return false;
         }
     }

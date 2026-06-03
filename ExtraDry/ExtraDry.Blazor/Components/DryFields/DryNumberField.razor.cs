@@ -1,4 +1,5 @@
 using ExtraDry.Blazor.Components.Formatting;
+using ExtraDry.Core.Formatters;
 
 namespace ExtraDry.Blazor.Components;
 
@@ -30,15 +31,7 @@ public partial class DryNumberField<TModel> : DryFieldBase<TModel> where TModel 
         if(Model == null || Property == null) {
             return;
         }
-        Formatter = (Property.PropertyType, Property.AllowsNull) switch {
-            (Type t, false) when t == typeof(int) => new IntFormatter(),
-            (Type t, true) when t == typeof(int) => new NullableIntFormatter(),
-            (Type t, false) when t == typeof(double) => new DoubleFormatter(),
-            (Type t, true) when t == typeof(double) => new NullableDoubleFormatter(),
-            (Type t, false) when t == typeof(decimal) => new DecimalFormatter(),
-            (Type t, true) when t == typeof(decimal) => new NullableDecimalFormatter(),
-            _ => null,
-        };
+        Formatter = Property.Formatter;
         Value = Property.GetValue(Model);
     }
 
