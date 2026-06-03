@@ -12,9 +12,6 @@ else {
     else if(IsOptionField) {
         <DryOptionField Model="Model" Property="Property" ControlType="@(Property.InputField?.ControlType ?? ControlType.Default)" OnInput="OnInput" OnChange="OnChange" OnValidate="OnValidate" />
     }
-    else if(Property.HasDiscreteStringValues) {
-        //<DryInputComboBox Model="@Model" Property="@Property" />
-    }
     else if(Property.HasDiscreteValues) {
         //var selectedValue = Property.GetValue(Model);
         @* @if(Property.ControlType == ControlType.RadioButtons) {

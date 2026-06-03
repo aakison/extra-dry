@@ -90,36 +90,39 @@ public partial class DryOptionField<TModel> : DryFieldBase<TModel> where TModel 
             Options = [.. enumValues.Select(e => new Option { Uuid = UuidFunc(e), Title = DataConverter.DisplayEnum(e), Value = e })];
             return;
         }
-        else {
-            var untypedOptionProvider = typeof(IOptionProvider<>);
-            var propertyType = Property.InputType;
-            if(propertyType.IsAssignableTo(typeof(IList))) {
-                propertyType = propertyType.GetGenericArguments().FirstOrDefault();
-                if(propertyType == null) {
-                    Logger.LogError("Could not determine generic argument of IList for property {PropertyName} on {ModelType}", Property.Property.Name, typeof(TModel).Name);
-                    return;
-                }
-            }
-            var typedOptionProvider = untypedOptionProvider.MakeGenericType(propertyType);
-            var optionProvider = ScopedServices.GetService(typedOptionProvider);
-            if(optionProvider != null) {
-                var method = typedOptionProvider.GetMethod("GetItemsAsync");
-                var token = new CancellationTokenSource().Token;
-                dynamic task = method!.Invoke(optionProvider, [token])!;
-                var optList = (await task).Items as ICollection;
-                var options = optList?.Cast<object>()?.ToList() ?? [];
-                //if(options.FirstOrDefault() is IndexOutOfRangeException resource) {
-                Options = [.. options.Select(e => new Option { Uuid = UuidFunc(e), Title = TitleFunc(e), Value = e })];
-                //}
-                //else {
-                //    LookupProviderOptions = options
-                //        .Select((e, i) => new { Key = i, Item = e })
-                //        .ToDictionary(e => e.Key.ToString(CultureInfo.InvariantCulture), e => e.Item);
-                //}
+        if(Property.HasDiscreteStringValues && Property.Options != null) {
+            var listClient = ScopedServices.GetService(Property.Options.ProviderType) as IListClient<string>
+                ?? Activator.CreateInstance(Property.Options.ProviderType) as IListClient<string>;
+            if(listClient != null) {
+                var result = await listClient.GetItemsAsync(new Query(), CancellationToken.None);
+                Options = [.. result.Items.Select(s => new Option { Uuid = Guid.NewGuid(), Title = s, Value = s })];
             }
             else {
-                Logger.LogMissingOptionProvider(Property.InputType.Name);
+                Logger.LogWarning("Property {PropertyName} has a ListService of type {ProviderType} but it could not be resolved as IListClient<string>.", Property.Property.Name, Property.Options.ProviderType);
             }
+            return;
+        }
+        var untypedOptionProvider = typeof(IOptionProvider<>);
+        var propertyType = Property.InputType;
+        if(propertyType.IsAssignableTo(typeof(IList))) {
+            propertyType = propertyType.GetGenericArguments().FirstOrDefault();
+            if(propertyType == null) {
+                Logger.LogError("Could not determine generic argument of IList for property {PropertyName} on {ModelType}", Property.Property.Name, typeof(TModel).Name);
+                return;
+            }
+        }
+        var typedOptionProvider = untypedOptionProvider.MakeGenericType(propertyType);
+        var optionProvider = ScopedServices.GetService(typedOptionProvider);
+        if(optionProvider != null) {
+            var method = typedOptionProvider.GetMethod("GetItemsAsync");
+            var token = new CancellationTokenSource().Token;
+            dynamic task = method!.Invoke(optionProvider, [token])!;
+            var optList = (await task).Items as ICollection;
+            var options = optList?.Cast<object>()?.ToList() ?? [];
+            Options = [.. options.Select(e => new Option { Uuid = UuidFunc(e), Title = TitleFunc(e), Value = e })];
+        }
+        else {
+            Logger.LogMissingOptionProvider(Property.InputType.Name);
         }
     }
 }
