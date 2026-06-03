@@ -36,12 +36,6 @@ public class InputFieldAttribute : Attribute
     // explicitly allows an override of the default behavior of the presentation layer.
     // </summary>
     public PropertySize Size { get; set; } = PropertySize.Auto;
-
-    /// <summary>
-    /// Defines a formatter to be used when editing or displaying this property.  The formatter
-    /// must be a class that implements IValueFormatter.
-    /// </summary>
-    public Type? Formatter { get; set; }
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]

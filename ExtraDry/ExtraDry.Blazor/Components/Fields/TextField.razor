@@ -22,7 +22,7 @@
         }
         else {
             <input id="@InputId" class="value" title="@Label" type="text" readonly="@ReadOnly" placeholder="@Placeholder" maxlength="@MaxLength"
-                   value="@Value" @onchange="NotifyChange" @oninput="NotifyInput" />
+                   value="@DisplayValue" @onchange="NotifyChange" @oninput="NotifyInput" />
         }
         @if(DisplayAffordance) {
             @if(IsMarkdown) {

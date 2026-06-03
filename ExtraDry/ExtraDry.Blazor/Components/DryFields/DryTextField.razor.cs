@@ -1,3 +1,5 @@
+using ExtraDry.Core.Formatters;
+
 namespace ExtraDry.Blazor.Components;
 
 /// <summary>
@@ -11,9 +13,12 @@ public partial class DryTextField<TModel> : DryFieldBase<TModel> where TModel : 
         if(Model == null || Property == null) {
             return;
         }
-        Value = Property.DisplayValue(Model);
+        Formatter = Property.Formatter;
+        Value = Formatter != null ? Formatter.Format(Property.GetValue(Model)) : Property.DisplayValue(Model);
         base.OnParametersSet();
     }
+
+    private IValueFormatter? Formatter { get; set; }
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", "text", ReadOnlyCss, CssClass);
 
@@ -23,7 +28,7 @@ public partial class DryTextField<TModel> : DryFieldBase<TModel> where TModel : 
     {
         var value = args.Value;
         Property.SetValue(Model, value);
-        Value = Property.DisplayValue(Model);
+        Value = Formatter != null ? Formatter.Format(Property.GetValue(Model)) : Property.DisplayValue(Model);
         await OnChange.InvokeAsync(args);
     }
 

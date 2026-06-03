@@ -68,15 +68,8 @@ public class PropertyDescription
         InputField = Property.GetCustomAttribute<InputFieldAttribute>();
         Sort = Property.GetCustomAttribute<SortAttribute>();
         TableColumn = Property.GetCustomAttribute<TableColumnAttribute>();
-        var columnFormatterAttribute = Property.GetCustomAttribute<TableColumnAttribute>();
-        if(columnFormatterAttribute != null) {
-            var formatterType = columnFormatterAttribute.Formatter switch {
-                null => typeof(IdentityFormatter),
-                Type t when typeof(IValueFormatter).IsAssignableFrom(t) => t,
-                Type t => throw new InvalidOperationException($"ColumnFormatterAttribute on {property.DeclaringType?.Name}.{property.Name} specifies type '{t.Name}' which does not implement IValueFormatter.")
-            };
-            ColumnFormatter = (IValueFormatter)Activator.CreateInstance(formatterType)!;
-        }
+        DisplayFormatter = Property.GetCustomAttribute<DisplayFormatterAttribute>();
+
         Options = Property.GetCustomAttribute<ListServiceAttribute>();
         Markdown = Property.GetCustomAttribute<MarkdownAttribute>();
 
@@ -145,6 +138,8 @@ public class PropertyDescription
 
     public DisplayFormatAttribute? Format { get; }
 
+    public DisplayFormatterAttribute? DisplayFormatter { get; }
+
     public RulesAttribute? Rules { get; }
 
     public FilterAttribute? Filter { get; }
@@ -190,13 +185,6 @@ public class PropertyDescription
 
     public string NullDisplayText { get; set; }
 
-    /// <summary>
-    /// A display-only formatter for table column rendering, specified via
-    /// <see cref="TableColumnAttribute" />. Takes precedence over
-    /// <see cref="DisplayFormatAttribute.DataFormatString" /> when rendering columns.
-    /// </summary>
-    public IValueFormatter? ColumnFormatter { get; private set; }
-
     public string ColumnWidth => string.IsNullOrWhiteSpace(TableColumn?.Width) ? $"{10 * (int)Size}fr" : TableColumn.Width;
 
     public string DisplayValue(object? item)
@@ -209,8 +197,8 @@ public class PropertyDescription
             if(value == null) {
                 return Format?.NullDisplayText ?? "null";
             }
-            if(ColumnFormatter != null) {
-                return ColumnFormatter.Format(value);
+            if(Formatter != null) {
+                return Formatter.Format(value);
             }
             if(HasDiscreteValues && discreteDisplayAttributes.TryGetValue((int)value, out var display)) {
                 value = display?.GetName() ?? value;
@@ -449,8 +437,8 @@ public class PropertyDescription
 
     private IValueFormatter CreateFormatter()
     {
-        if(InputField?.Formatter is not null) {
-            var formatter = Activator.CreateInstance(InputField.Formatter) as IValueFormatter;
+        if(DisplayFormatter?.Formatter is not null) {
+            var formatter = Activator.CreateInstance(DisplayFormatter.Formatter) as IValueFormatter;
             if(formatter is not null) {
                 return formatter;
             }

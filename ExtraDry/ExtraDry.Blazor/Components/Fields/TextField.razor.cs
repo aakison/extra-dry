@@ -1,4 +1,5 @@
 using ExtraDry.Blazor.Components.Standard;
+using ExtraDry.Core.Formatters;
 
 namespace ExtraDry.Blazor.Components;
 
@@ -7,6 +8,13 @@ namespace ExtraDry.Blazor.Components;
 /// </summary>
 public partial class TextField : FieldBase<string>
 {
+
+    /// <summary>
+    /// Provide an explicit value formatter for display and parsing. When set, the formatted
+    /// value is shown to the user and input is parsed through the formatter on change.
+    /// </summary>
+    [Parameter]
+    public IValueFormatter? Formatter { get; set; }
 
     /// <summary>
     /// The type of markdown support for this field. When set to <see cref="MarkdownSupportType.Character"/>
@@ -36,6 +44,55 @@ public partial class TextField : FieldBase<string>
     /// </summary>
     [Parameter]
     public override PropertySize Size { get; set; } = PropertySize.Auto;
+
+    protected override void OnParametersSet()
+    {
+        if(Formatter != null) {
+            DisplayValue = Formatter.Format(Value);
+        }
+        else {
+            DisplayValue = Value;
+        }
+        base.OnParametersSet();
+    }
+
+    protected override async Task NotifyChange(ChangeEventArgs args)
+    {
+        if(Formatter != null) {
+            var input = (string)(args.Value ?? "");
+            if(Formatter.TryParse(input, out var result)) {
+                args.Value = (string?)result;
+                DisplayValue = Formatter.Format(result);
+            }
+            else {
+                args.Value = Value;
+                DisplayValue = Formatter.Format(Value);
+            }
+        }
+        else {
+            DisplayValue = (string)(args.Value ?? "");
+        }
+        await base.NotifyChange(args);
+    }
+
+    protected override async Task NotifyInput(ChangeEventArgs args)
+    {
+        if(Formatter != null) {
+            var input = (string)(args.Value ?? "");
+            if(Formatter.TryParse(input, out var result)) {
+                args.Value = (string?)result;
+            }
+            else {
+                args.Value = Value;
+            }
+        }
+        else {
+            DisplayValue = (string)(args.Value ?? "");
+        }
+        await base.NotifyInput(args);
+    }
+
+    private string DisplayValue { get; set; } = "";
 
     private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
 
