@@ -1,15 +1,16 @@
 using Xunit;
 using ExtraDry.Blazor.Components.Formatting;
 using System.Globalization;
+using ExtraDry.Core.Formatters;
 
-namespace ExtraDry.Blazor.Tests.Components.Formatting;
+namespace ExtraDry.Core.Tests.Formatters;
 
-public class DateTimeFormatterTests
+public class DateOnlyFormatterTests
 {
     [Fact]
     public void FormatNull()
     {
-        var formatter = new DateTimeFormatter();
+        var formatter = new DateOnlyFormatter();
         var result = formatter.Format(null);
         Assert.Equal("", result);
     }
@@ -17,61 +18,61 @@ public class DateTimeFormatterTests
     [Fact]
     public void FormatMinValue()
     {
-        var formatter = new DateTimeFormatter();
-        var result = formatter.Format(DateTime.MinValue);
+        var formatter = new DateOnlyFormatter();
+        var result = formatter.Format(DateOnly.MinValue);
         Assert.Equal("", result);
     }
 
     [Fact]
-    public void FormatValidDateTime()
+    public void FormatValidDate()
     {
-        var formatter = new DateTimeFormatter();
-        var result = formatter.Format(new DateTime(2023, 10, 15));
+        var formatter = new DateOnlyFormatter();
+        var result = formatter.Format(new DateOnly(2023, 10, 15));
         Assert.Equal("2023-10-15", result);
     }
 
     [Fact]
     public void TryParseNull()
     {
-        var formatter = new DateTimeFormatter();
+        var formatter = new DateOnlyFormatter();
         var success = formatter.TryParse(null, out var result);
         Assert.True(success);
-        Assert.Equal(DateTime.MinValue, result);
+        Assert.Equal(DateOnly.MinValue, result);
     }
 
     [Fact]
     public void TryParseEmpty()
     {
-        var formatter = new DateTimeFormatter();
+        var formatter = new DateOnlyFormatter();
         var success = formatter.TryParse("", out var result);
         Assert.True(success);
-        Assert.Equal(DateTime.MinValue, result);
+        Assert.Equal(DateOnly.MinValue, result);
     }
 
     [Fact]
     public void TryParseWhitespace()
     {
-        var formatter = new DateTimeFormatter();
+        var formatter = new DateOnlyFormatter();
         var success = formatter.TryParse("   ", out var result);
         Assert.True(success);
-        Assert.Equal(DateTime.MinValue, result);
+        Assert.Equal(DateOnly.MinValue, result);
     }
 
     [Fact]
     public void TryParseValid()
     {
-        var formatter = new DateTimeFormatter();
+        var formatter = new DateOnlyFormatter();
         var success = formatter.TryParse("2023-10-15", out var result);
         Assert.True(success);
-        Assert.Equal(new DateTime(2023, 10, 15), result);
+        Assert.Equal(new DateOnly(2023, 10, 15), result);
     }
 
     [Fact]
     public void TryParseInvalid()
     {
-        var formatter = new DateTimeFormatter();
+        var formatter = new DateOnlyFormatter();
         var success = formatter.TryParse("abc", out var result);
         Assert.False(success);
-        Assert.Equal(DateTime.MinValue, result);
+        Assert.Equal(DateOnly.MinValue, result);
     }
 }

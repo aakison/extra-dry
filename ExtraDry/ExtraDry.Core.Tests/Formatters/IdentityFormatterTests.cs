@@ -1,7 +1,8 @@
 using Xunit;
 using ExtraDry.Blazor.Components.Formatting;
+using ExtraDry.Core.Formatters;
 
-namespace ExtraDry.Blazor.Tests.Components.Formatting;
+namespace ExtraDry.Core.Tests.Formatters;
 
 public class IdentityFormatterTests
 {
