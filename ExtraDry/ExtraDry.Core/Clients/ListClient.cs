@@ -102,10 +102,8 @@ public class ListClient<TItem> : IListClient<TItem>
                     EndpointMode.Generate => parameterValue,
                     _ => url
                 };
-                Console.WriteLine($"FUNC: {formatter.ParmeterName} {parameterValue}");
             }
         }
-        Console.WriteLine($"FUNC: Result: {url}");
         return url.TrimEnd('/');
     }
 
