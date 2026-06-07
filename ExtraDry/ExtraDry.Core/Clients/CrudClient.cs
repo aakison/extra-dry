@@ -81,7 +81,7 @@ public class CrudClient<T>(
             return item;
         }
         catch(Exception ex) {
-            logger.LogDebug(ex, "Error reading item of type {Type} with key {Key} from endpoint {Endpoint}", typeof(T).Name, key, endpoint);
+            logger.LogWarning(ex, "Error reading item of type {Type} with key {Key} from endpoint {Endpoint}", typeof(T).Name, key, endpoint);
             return default;
         }
     }
@@ -93,7 +93,7 @@ public class CrudClient<T>(
     public async Task<T> ReadAsync(object key, CancellationToken ct = default)
     {
         return await TryReadAsync(key, ct)
-            ?? throw new ArgumentOutOfRangeException(nameof(key), $"Item not found for key {key}");
+            ?? throw new ArgumentOutOfRangeException(nameof(key), $"Item not found for {typeof(T).Name} key {key}");
     }
 
     /// <summary>
