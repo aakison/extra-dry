@@ -9,19 +9,19 @@ public partial class DryTableRow<T> : ComponentBase, IDisposable
     /// Required parameter which is the view model description passed from the DryTable.
     /// </summary>
     [Parameter, EditorRequired]
-    public DecoratorInfo Decorator { get; set; } = null!; // Only used in DryTable
+    public required DecoratorInfo Decorator { get; set; }
 
     /// <summary>
     /// Required parameter which is the selection set for all items, passed from the DryTable.
     /// </summary>
     [Parameter, EditorRequired]
-    public SelectionSet Selection { get; set; } = null!; // Only used in DryTable
+    public required SelectionSet Selection { get; set; }
 
     /// <summary>
     /// Required parameter which is the current item, passed from the DryTable.
     /// </summary>
     [Parameter, EditorRequired]
-    public ListItemInfo<T> Item { get; set; } = null!; // Only used in DryTable
+    public required ListItemInfo<T> Item { get; set; }
 
     [Parameter]
     public string GroupColumn { get; set; } = null!; // Only used in DryTable
