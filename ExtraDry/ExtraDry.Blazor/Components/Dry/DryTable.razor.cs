@@ -8,10 +8,10 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
 {
     /// <inheritdoc />
     [Parameter]
-    public string CssClass { get; set; } = string.Empty;
+    public string CssClass { get; set; } = "";
 
     [Parameter, EditorRequired]
-    public object Decorator { get; set; } = null!;
+    public required object Decorator { get; set; }
 
     [Parameter]
     public ICollection<TItem>? Items { get; set; }

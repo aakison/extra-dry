@@ -21,17 +21,19 @@ public partial class DryInputNumeric<T>
     }
 
     /// <summary>
-    /// Only allow digits, commas, periods and dollar signs. Injected into onkeypress event (not
+    /// Only allow digits, commas, periods, dollar signs, and percent signs. Injected into onkeypress event (not
     /// onkeydown!) to prevent invalid characters from being displayed, but not stopping control
     /// sequences like Ctrl-A from being typed.
     /// </summary>
-    private static string DisableInvalidCharacters => @"if(/[^0-9.,$]/gm.test(event.key)) { event.preventDefault(); }";
+    private static string DisableInvalidCharacters => @"if(/[^0-9.,$%]/gm.test(event.key)) { event.preventDefault(); }";
 
     private string ReadOnlyCss => ReadOnly ? "readonly" : string.Empty;
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", ReadOnlyCss, CssClass);
 
     private string Value { get; set; } = "";
+
+    private string InputPattern => Property.Formatter.RegexPattern;
 
     private async Task HandleChange(ChangeEventArgs args)
     {
