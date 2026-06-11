@@ -144,12 +144,21 @@ public class CrudClient<T>(
     {
         var endpoint = ApiEndpoint(key, CrudOperation.Rpc);
         endpoint = $"{endpoint}:{operation}";
-        var json = JsonSerializer.Serialize(payload);
-        using var content = new StringContent(json, Encoding.UTF8, "application/json");
-        Console.WriteLine("Sending");
-        Console.WriteLine(content);
-        //logger.LogEndpointCall(typeof(T), endpoint);
-        var response = await client.PostAsync(endpoint, content, ct);
+        HttpResponseMessage response;
+        if(payload is Stream stream) {
+            using var content = new StreamContent(stream);
+            Console.WriteLine("Sending Binary");
+            //logger.LogEndpointCall(typeof(T), endpoint);
+            response = await client.PostAsync(endpoint, content, ct);
+        }
+        else {
+            var json = JsonSerializer.Serialize(payload);
+            using var content = new StringContent(json, Encoding.UTF8, "application/json");
+            Console.WriteLine("Sending JSON");
+            Console.WriteLine(content);
+            //logger.LogEndpointCall(typeof(T), endpoint);
+            response = await client.PostAsync(endpoint, content, ct);
+        }
         await response.AssertSuccess(logger);
         return response;
     }
