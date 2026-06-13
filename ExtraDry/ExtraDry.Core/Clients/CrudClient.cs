@@ -93,7 +93,7 @@ public class CrudClient<T>(
     public async Task<T> ReadAsync(object key, CancellationToken ct = default)
     {
         return await TryReadAsync(key, ct)
-            ?? throw new ArgumentOutOfRangeException(nameof(key), $"Item not found for {typeof(T).Name} key {key}");
+            ?? throw new ArgumentOutOfRangeException(nameof(key), $"Item not found for {typeof(T).Name} key {key} on endpoint {ApiEndpoint(key, CrudOperation.Read)}");
     }
 
     /// <summary>
