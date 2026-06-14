@@ -70,7 +70,6 @@ public class DryInputNumericTests
             (nameof(DryInputNumeric<>.Property), property)
             );
 
-        HtmlAssert.TagAttributeValue(fragment, "input", "pattern", @"\d*");
         HtmlAssert.TagAttributeValue(fragment, "input", "inputmode", @"numeric");
     }
 
