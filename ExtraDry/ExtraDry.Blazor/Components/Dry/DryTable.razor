@@ -7,7 +7,7 @@
 <dry-table id="@TableId" class="@CssClasses" @attributes="@UnmatchedAttributes">
     <dry-thead>
         <dry-tr>
-            @if(HasCheckboxColumn || HasRadioColumn) {
+            @if(DisplaySelection) {
                 <dry-th class="checkbox"></dry-th>
             }
             @foreach(var column in decorator.TableProperties) {
@@ -37,7 +37,7 @@
         }
         <Virtualize ItemsProvider="GetItemsAsync" ItemSize="45" @ref="VirtualContainer">
             <ItemContent>
-                <DryTableRow Item="@context" Decorator="@decorator" Selection="@SelectionAccessor?.SelectionSet" Height="45" GroupColumn="@GroupColumn" ShowCommands="@ShowCommands" />
+                <DryTableRow Item="@context" Decorator="@decorator" Selection="@SelectionAccessor?.SelectionSet" Height="45" GroupColumn="@GroupColumn" ShowCommands="@ShowCommands" ShowSelection="@ShowSelection" />
             </ItemContent>
         </Virtualize>
     </dry-tbody>

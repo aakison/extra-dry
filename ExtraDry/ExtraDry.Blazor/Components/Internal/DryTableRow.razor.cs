@@ -33,6 +33,13 @@ public partial class DryTableRow<T> : ComponentBase, IDisposable
     [Parameter]
     public bool ShowCommands { get; set; } = true;
 
+    /// <summary>
+    /// Indicates if the selection checkbox should be shown for this row.  If false, selection
+    /// will still work by clicking the row, but no checkbox will be rendered.
+    /// </summary>
+    [Parameter]
+    public bool ShowSelection { get; set; } = true;
+
     [Parameter]
     public int Height { get; set; } = 40;
 
@@ -72,6 +79,8 @@ public partial class DryTableRow<T> : ComponentBase, IDisposable
     private bool IsSelected => Item.Item != null && Selection.Contains(Item.Item);
 
     private string UuidValue => Decorator.UuidProperty?.GetValue(Item.Item)?.ToString() ?? string.Empty;
+
+    private ListSelectMode ListSelectMode => ShowSelection ? Decorator.ListSelectMode : ListSelectMode.None;
 
     private async Task RowClick(MouseEventArgs args)
     {

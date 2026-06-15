@@ -32,6 +32,13 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     [Parameter]
     public bool ShowCommands { get; set; } = true;
 
+    /// <summary>
+    /// Indicates if the selection checkbox should be shown for this row.  If false, selection
+    /// will still work by clicking the row, but no checkbox will be rendered.
+    /// </summary>
+    [Parameter]
+    public bool ShowSelection { get; set; } = true;
+
     private QueryBuilderAccessor? QueryBuilderAccessor { get; set; }
 
     /// <inheritdoc />
@@ -58,8 +65,8 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     private string CustomStyle {
         get {
             var widths = string.Join(" ", decorator.TableProperties.Select(e => e.ColumnWidth));
-            var check = HasCheckboxColumn | HasRadioColumn ? "auto " : "";
-            var commands = HasCommandsColumn ? " auto" : "";
+            var check = DisplaySelection ? "48px " : "";
+            var commands = HasCommandsColumn ? " 10fr" : "";
             var styles = $@"
             #{TableId} dry-tr {{
                 grid-template-columns: {check}{widths}{commands};
@@ -80,6 +87,8 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
     private string ModelClass => decorator.ModelType?.Name?.ToLowerInvariant() ?? "";
 
     private string FilteredClass => string.IsNullOrWhiteSpace(QueryBuilderAccessor?.QueryBuilder.Build().Filter) ? "unfiltered" : "filtered";
+
+    private bool DisplaySelection => ShowSelection && (HasCheckboxColumn || HasRadioColumn);
 
     private string StateClass => (ItemsClient?.IsEmpty, ItemsClient?.IsLoading) switch {
         (null, _) => "loading",
