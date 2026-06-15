@@ -1,7 +1,7 @@
 ﻿@typeparam T
 
 <dry-tr data-uuid="@UuidValue" class="@CssClasses" @onclick="RowClick" @ondblclick="RowDoubleClick" style="height: @($"{Height}px")">
-    @switch(Decorator.ListSelectMode) {
+    @switch(ListSelectMode) {
         case ListSelectMode.Multiple:
             <dry-td class="checkbox"><input type="checkbox" checked="@IsSelected" @onclick="@(e => CheckboxClick(e))" @onclick:stopPropagation="true" /></dry-td>
             break;
