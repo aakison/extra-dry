@@ -1,0 +1,18 @@
+@namespace ExtraDry.Blazor.Components
+@using Microsoft.AspNetCore.Components.Forms
+@inherits FieldBase<string>
+
+<FieldFrame Size="@Size" Description="@Description" ShowDescription="@ShowDescription" Label="@Label" For="@InputId" ShowLabel="@ShowLabel" IsValid="@IsValid" Message="@ValidationMessage">
+    <div class="@CssClasses">
+        <label class="focus-for-file-input">
+            @if(DisplayIcon) {
+                <Icon CssClass="context" Key="@Icon" />
+            }
+            <InputFile id="@InputId" class="actual" OnChange="@HandleFileChangeAsync" accept="@Accept" disabled="@ReadOnly" />
+            <div class="@DisplayValueCssClasses" title="@Label">@DisplayValue</div>
+            @if(DisplayAffordance) {
+                <Icon CssClass="affordance" Key="@Affordance" />
+            }
+        </label>
+    </div>
+</FieldFrame>
