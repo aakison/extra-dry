@@ -124,5 +124,8 @@ public partial class DryOptionField<TModel> : DryFieldBase<TModel> where TModel 
         else {
             Logger.LogMissingOptionProvider(Property.InputType.Name);
         }
+        if(Value is null || Value.Uuid == Guid.Empty) {
+            Options.Insert(0, new Option { Uuid = Guid.Empty, Title = "-- Select --", Value = null! });
+        }
     }
 }
