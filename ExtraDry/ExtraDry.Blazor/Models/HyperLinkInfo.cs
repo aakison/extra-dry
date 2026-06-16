@@ -53,8 +53,8 @@ public partial class HyperlinkInfo
             }
 
             var parameters = method.GetParameters();
-            if(parameters.Length != 1 || parameters.First().ParameterType != ModelType) {
-                throw new InvalidOperationException($"The method with the Hyperlink attribute must only take a parameter of type {ModelType}");
+            if(parameters.Length != 1 /*|| parameters.First().ParameterType != ModelType*/) {
+                throw new InvalidOperationException($"The method with the Hyperlink attribute must take a single model parameter");
             }
         }
     }
