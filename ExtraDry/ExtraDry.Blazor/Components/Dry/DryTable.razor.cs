@@ -117,25 +117,24 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
 
     protected override void OnParametersSet()
     {
-        AssertItemsMutualExclusivity();
-        if(SelectionAccessor == null) {
+        if(SelectionAccessor is null) {
             SelectionAccessor = new SelectionSetAccessor(Decorator);
             SelectionAccessor.SelectionSet.MultipleSelect = decorator.ListSelectMode == ListSelectMode.Multiple;
             SelectionAccessor.SelectionSet.Changed += Selection_Changed;
         }
-        if(QueryBuilderAccessor == null) {
+        if(QueryBuilderAccessor is null) {
             QueryBuilderAccessor = new QueryBuilderAccessor(Decorator);
             QueryBuilderAccessor.QueryBuilder.OnChanged += Query_Changed;
         }
-        if(ItemsListClient == null && ItemsClient != null) {
+        if(Items is not null && ItemsClient is null) {
+            ItemsClient = new InMemoryListClient<TItem>([..Items]);
+        }
+        if(ItemsListClient is null && ItemsClient is not null) {
             CachingItemsListClient = new CachingListClient<TItem>(ItemsClient);
             var projectionListClient = new ProjectionListClient<TItem, ListItemInfo<TItem>>(CachingItemsListClient,
                 e => new ListItemInfo<TItem> { Item = e, IsLoaded = true });
             ItemsListClient = projectionListClient;
         }
-        // TODO: To support in-memory Items.  When Items is provided instead of ItemsClient, make the ItemsListClient
-        // an instance of new class InMemoryListClient that wraps the Items collection and supports sorting and
-        // filtering.  This will allow us to use the same Virtualize component regardless of how the data is provided.
     }
 
     [SuppressMessage("Performance", "CA1859:Use concrete types when possible for improved performance", Justification = "Enforce that there are many options.")]
@@ -166,13 +165,6 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
             await VirtualContainer.RefreshDataAsync();
         }
         StateHasChanged();
-    }
-
-    private void AssertItemsMutualExclusivity()
-    {
-        if(Items != null && ItemsClient != null) {
-            throw new DryException("Only one of `Items` and `ItemsService` is allowed to be set");
-        }
     }
 
     private void PerformInitialSort()
