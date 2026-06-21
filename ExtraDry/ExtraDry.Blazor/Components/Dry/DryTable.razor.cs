@@ -95,11 +95,6 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
         (false, _) => "full",
         (true, _) => "empty",
     };
-    //!ItemsService.IsEmpty ? "full" : 
-    //changing ? "changing"
-    //: validationError ? "invalid-filter"
-    //: firstLoadCompleted ? "empty"
-    //: "loading";
 
     private Virtualize<ListItemInfo<TItem>>? VirtualContainer { get; set; }
 
@@ -218,18 +213,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
             QueryBuilderAccessor.QueryBuilder.Sort.Ascending = true;
         }
 
-        if(Items != null) {
-            throw new NotImplementedException("Client side sorting is not implemented.");
-            // Client side sort, we've got all items.
-            //IComparer<ListItemInfo<TItem>> comparer = new ItemComparer<TItem>(property, QueryBuilderAccessor.QueryBuilder.Sort.Ascending);
-            //if(GroupFunc != null) {
-            //    comparer = new GroupComparer<TItem>(comparer);
-            //}
-            //InternalItems.Sort(comparer);
-        }
-        else {
-            QueryBuilderAccessor.QueryBuilder.NotifyChanged();
-        }
+        QueryBuilderAccessor.QueryBuilder.NotifyChanged();
     }
 
     private void Toggle(ListItemInfo<TItem> item)
@@ -238,8 +222,6 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
         item.IsExpanded = !item.IsExpanded;
         StateHasChanged();
     }
-
-    //private IEnumerable<ListItemInfo<TItem>> ShownItems => InternalItems.Where(e => e.IsShown);
 
     public bool TryRefreshItem(TItem updatedItem, Func<TItem, bool>? matchPredicate = null)
     {
