@@ -1,0 +1,45 @@
+﻿@namespace ExtraDry.Blazor
+
+<div style="display: none" data-filter="@DataFilter" data-sort="@DataSort" />
+
+@code {
+
+    [Parameter]
+    public string? FilterField { get; set; }
+
+    [Parameter]
+    public string? FilterValues { get; set; }
+
+    [Parameter]
+    public string? Sort { get; set; }
+
+    [Parameter, EditorRequired]
+    public object Decorator { get; set; } = null!;
+
+    private string DataFilter => $"{FilterField}:{FilterValues}";
+
+    private string DataSort => $"{Sort}";
+
+    private QueryBuilderAccessor? QueryBuilderAccessor { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if(QueryBuilderAccessor == null) {
+            QueryBuilderAccessor = new QueryBuilderAccessor(Decorator);
+        }
+
+        if(FilterField is null && FilterValues is not null || FilterField is not null && FilterValues is null) {
+            throw new InvalidOperationException("Both FilterField and FilterValues must be set together.");
+        }
+
+        if(FilterField is not null && FilterValues is not null) {
+            QueryBuilderAccessor.QueryBuilder.AddTextFilter(FilterField, FilterValues);
+        }
+
+        if (Sort is not null) {
+            QueryBuilderAccessor.QueryBuilder.Sort.SortProperty = Sort.TrimStart('-', '+');
+            QueryBuilderAccessor.QueryBuilder.Sort.Ascending = !Sort.StartsWith('-');
+        }
+    }
+}
