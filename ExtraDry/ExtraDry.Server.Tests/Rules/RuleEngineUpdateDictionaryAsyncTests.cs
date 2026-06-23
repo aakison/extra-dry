@@ -212,11 +212,11 @@ public class RuleEngineUpdateDictionaryAsyncTests
 
     public class Target
     {
-        [Rules(RuleAction.Block)]
+        [Rules(FieldAccess.ReadOnly)]
         [JsonIgnore]
         public int Id { get; set; } = 1;
 
-        [Rules(RuleAction.Ignore)]
+        [Rules(FieldAccess.ReadOnly)]
         public Guid Uuid { get; set; } = Guid.NewGuid();
 
         public string Name { get; set; } = string.Empty;
@@ -225,7 +225,7 @@ public class RuleEngineUpdateDictionaryAsyncTests
 
         public ExpandoValues? NullableValues { get; set; }
 
-        [Rules(RuleAction.Ignore)]
+        [Rules(FieldAccess.ReadOnly)]
         public ExpandoValues IgnoredValues { get; set; } = [];
     }
 

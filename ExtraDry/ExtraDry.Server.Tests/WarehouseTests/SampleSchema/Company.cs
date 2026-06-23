@@ -8,10 +8,10 @@ public class Company
 {
     [Key]
     [JsonIgnore]
-    [Rules(RuleAction.Ignore)]
+    [Rules(FieldAccess.ReadOnly)]
     public int Id { get; set; }
 
-    [Rules(RuleAction.Ignore)]
+    [Rules(FieldAccess.ReadOnly)]
     public Guid Uuid { get; set; } = Guid.NewGuid();
 
     [NotMapped]
@@ -20,34 +20,34 @@ public class Company
 
     [Display(Name = "Name", ShortName = "Name", GroupName = "Summary")]
     [Filter(FilterType.Contains)]
-    [Rules(RuleAction.IgnoreDefaults)]
+    [Rules(FieldAccess.ReadWrite)]
     [StringLength(100)]
     public string Title { get; set; } = "";
 
     [Display(Name = "Code", GroupName = "Summary")]
     [Filter(FilterType.Equals)]
-    [Rules(CreateAction = RuleAction.Allow, UpdateAction = RuleAction.Block)]
+    [Rules(FieldAccess.WriteOnCreate)]
     [Measure("For testing, ignored as type is `string`.")]
     public string Code { get; set; } = "";
 
     [Display(Name = "Status", ShortName = "Status", GroupName = "Status")]
-    [Rules(RuleAction.Allow)]
+    [Rules(FieldAccess.ReadWrite)]
     [Filter]
     public CompanyStatus Status { get; set; }
 
     [Display]
     [StringLength(500)]
-    [Rules(RuleAction.IgnoreDefaults)]
+    [Rules(FieldAccess.ReadWrite)]
     public string Description { get; set; } = "";
 
     [Display]
     [Phone, StringLength(24)]
-    [Rules(RuleAction.IgnoreDefaults)]
+    [Rules(FieldAccess.ReadWrite)]
     public string ContactPhone { get; set; } = "";
 
     [Display]
     [EmailAddress, StringLength(100)]
-    [Rules(RuleAction.IgnoreDefaults)]
+    [Rules(FieldAccess.ReadWrite)]
     public string ContactEmail { get; set; } = "";
 
     [Display]
@@ -64,14 +64,14 @@ public class Company
     public decimal AnnualRevenue { get; set; }
 
     [Display]
-    [Rules(RuleAction.Allow)]
+    [Rules(FieldAccess.ReadWrite)]
     public BankingDetails BankingDetails { get; set; } = new BankingDetails();
 
     /// <summary>
     /// The version info which informs the audit log.
     /// </summary>
     [Display(GroupName = "Status")]
-    [Rules(RuleAction.Block)]
+    [Rules(FieldAccess.ReadOnly)]
     [JsonIgnore]
     public VersionInfo Version { get; set; } = new VersionInfo();
 

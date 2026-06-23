@@ -129,10 +129,10 @@ public class RuleEngineUpdateTreeAsyncTests
 
         public Grandchild Grandchild { get; set; } = new();
 
-        [Rules(RuleAction.Ignore)]
+        [Rules(FieldAccess.ReadOnly)]
         public string DontTouchThis { get; set; } = string.Empty;
 
-        [Rules(RuleAction.Block)]
+        [Rules(FieldAccess.ReadOnly)]
         public string CantTouchThis { get; set; } = string.Empty;
 
         public override bool Equals(object? obj) => (obj as Child)?.Uuid == Uuid;
@@ -157,16 +157,16 @@ public class RuleEngineUpdateTreeAsyncTests
             };
         }
 
-        [Rules(RuleAction.Block)]
+        [Rules(FieldAccess.ReadOnly)]
         [JsonIgnore]
         public int Id { get; set; } = 1;
 
         public Child Child { get; set; } = new();
 
-        [Rules(RuleAction.Allow)]
+        [Rules(FieldAccess.ReadWrite)]
         public Child? AllowChild { get; set; }
 
-        [Rules(RuleAction.Ignore)]
+        [Rules(FieldAccess.ReadOnly)]
         public Child? IgnoreChild { get; set; }
     }
 

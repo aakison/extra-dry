@@ -8,21 +8,21 @@ namespace ExtraDry.Server.Tests.WarehouseTests;
 public class Employee
 {
     [Key]
-    [Rules(RuleAction.Block)]
+    [Rules(FieldAccess.ReadOnly)]
     [JsonIgnore]
     public int Id { get; set; }
 
     public Guid Uuid { get; set; } = Guid.NewGuid();
 
     [Required, StringLength(50)]
-    [Rules(RuleAction.Allow)]
+    [Rules(FieldAccess.ReadWrite)]
     [Display(Name = "First Name", ShortName = "First Name")]
     [Filter(FilterType.Equals)]
     [Measure]
     public string? FirstName { get; set; }
 
     [Required, StringLength(50)]
-    [Rules(RuleAction.Allow)]
+    [Rules(FieldAccess.ReadWrite)]
     [Display(Name = "Last Name", ShortName = "Last Name")]
     [Filter(FilterType.StartsWith)]
     [Measure("Last Name")]

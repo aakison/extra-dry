@@ -263,21 +263,21 @@ public class RuleEngineUpdateIndividualAsyncTests
     public class Entity
     {
         [JsonIgnore]
-        [Rules(RuleAction.Block)]
+        [Rules(FieldAccess.ReadOnly)]
         public int Id { get; set; } = 1;
 
         public string UndecoratedName { get; set; } = "Bob";
 
-        [Rules(RuleAction.Ignore)]
+        [Rules(FieldAccess.ReadOnly)]
         public decimal IgnoreChangesAmount { get; set; } = 123;
 
-        [Rules(RuleAction.IgnoreDefaults)]
+        [Rules(FieldAccess.ReadWrite)]
         public double DefaultIgnoredReal { get; set; } = 1.23;
 
-        [Rules(RuleAction.Allow)]
+        [Rules(FieldAccess.ReadWrite)]
         public Guid ChangeableUuid { get; set; } = new Guid("372844B3-4963-4129-A4DE-AF457FED1A55");
 
-        [Rules(RuleAction.IgnoreDefaults)]
+        [Rules(FieldAccess.ReadWrite)]
         public string? DefaultIgnoredString { get; set; } = "Something";
 
         [JsonIgnore]
@@ -286,10 +286,10 @@ public class RuleEngineUpdateIndividualAsyncTests
         [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public string JsonIgnoredFakeOut { get; set; } = "json";
 
-        [Rules(RuleAction.Block)]
+        [Rules(FieldAccess.ReadOnly)]
         public string? BlockChangesString { get; set; }
 
-        [Rules(RuleAction.Block)]
+        [Rules(FieldAccess.ReadOnly)]
         public int HoursWorked { get; set; }
 
         public int ReadOnly => HoursWorked;

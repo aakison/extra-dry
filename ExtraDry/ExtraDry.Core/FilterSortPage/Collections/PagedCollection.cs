@@ -27,6 +27,8 @@ public class PagedCollection<T> : FilteredCollection<T>
     /// results, don't rely on the `Query` and `Start` indexes alone.
     /// </summary>
     /// <example>AAAAZAAAAGQAAAA=</example>
+    [JsonIgnore] // This is functional per our tests, but we don't want to expose this to the public
+                 // API yet. We'll wait for an integration story from a customer before committing.
     public string? ContinuationToken { get; set; }
 
     /// <summary>

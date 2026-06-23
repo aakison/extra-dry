@@ -15,22 +15,35 @@ public sealed class RulesAttribute : Attribute
     {
     }
 
-    /// <summary>
-    /// Create a Rule that has the same action for both create and update.
-    /// </summary>
-    public RulesAttribute(RuleAction defaultRule)
+    public RulesAttribute(FieldAccess fieldAccess)
     {
-        UpdateAction = defaultRule;
-        CreateAction = defaultRule;
+        switch(fieldAccess) {
+            case FieldAccess.ReadOnly:
+                CreateAction = RuleAction.Ignore;
+                UpdateAction = RuleAction.Block;
+                break;
+            case FieldAccess.ReadWrite:
+                CreateAction = RuleAction.Allow;
+                UpdateAction = RuleAction.Allow;
+                break;
+            case FieldAccess.WriteOnCreate:
+                CreateAction = RuleAction.Allow;
+                UpdateAction = RuleAction.Block;
+                break;
+            case FieldAccess.Computed:
+                CreateAction = RuleAction.Ignore;
+                UpdateAction = RuleAction.Ignore;
+                break;
+        }
     }
 
     /// <summary>
     /// The action that should be take by the Rule Engine during create.
     /// </summary>
-    public RuleAction CreateAction { get; set; } = RuleAction.Allow;
+    public RuleAction CreateAction { get; set; } = RuleAction.Ignore; // aka ReadOnly
 
     /// <summary>
     /// The action that should be take by the Rule Engine during update.
     /// </summary>
-    public RuleAction UpdateAction { get; set; } = RuleAction.Allow;
+    public RuleAction UpdateAction { get; set; } = RuleAction.Block; // aka ReadOnly
 }

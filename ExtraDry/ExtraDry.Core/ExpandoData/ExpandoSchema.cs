@@ -10,7 +10,7 @@ public class ExpandoSchema : IValidatableObject
     /// for.
     /// </summary>
     [Required]
-    [Rules(CreateAction = RuleAction.Allow, UpdateAction = RuleAction.Block)]
+    [Rules(FieldAccess.WriteOnCreate)]
     public string TargetType { get; set; } = string.Empty;
 
     /// <summary>

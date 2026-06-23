@@ -319,7 +319,7 @@ public class ValidatableEntity : IValidatableObject
 
 public class BlockedPropertiesEntity
 {
-    [Rules(RuleAction.Block)]
+    [Rules(FieldAccess.ReadOnly)]
     public string? DefaultBlockString { get; set; }
 
     [Rules(CreateAction = RuleAction.Block)]

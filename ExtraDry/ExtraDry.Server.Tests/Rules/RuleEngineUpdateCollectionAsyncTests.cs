@@ -469,7 +469,7 @@ public class RuleEngineUpdateCollectionAsyncTests
 
     public class Parent : IValidatableObject
     {
-        [Rules(RuleAction.Block)]
+        [Rules(FieldAccess.ReadOnly)]
         [JsonIgnore]
         public int Id { get; set; } = 1;
 
@@ -477,13 +477,13 @@ public class RuleEngineUpdateCollectionAsyncTests
 
         public List<Child>? Children { get; set; }
 
-        [Rules(RuleAction.Ignore)]
+        [Rules(FieldAccess.Computed)]
         public List<Child>? IgnoredChildren { get; set; }
 
-        [Rules(RuleAction.IgnoreDefaults)]
+        [Rules(FieldAccess.ReadWrite)]
         public List<Child>? IgnoredDefaultsChildren { get; set; }
 
-        [Rules(RuleAction.Block)]
+        [Rules(FieldAccess.ReadOnly)]
         public List<Child>? BlockedChildren { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
