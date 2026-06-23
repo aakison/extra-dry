@@ -38,13 +38,13 @@ public class RuleEngine(
     {
         ArgumentNullException.ThrowIfNull(exemplar, nameof(exemplar));
         await AttachSchemaAsync(exemplar);
+        if(exemplar is ICreatingCallback creating) {
+            await creating.OnCreatingAsync();
+        }
         var validator = new DataValidator();
         validator.ValidateObject(exemplar);
         validator.ThrowIfInvalid();
         var destination = Activator.CreateInstance<T>();
-        if(exemplar is ICreatingCallback creating) {
-            await creating.OnCreatingAsync();
-        }
         await UpdatePropertiesAsync(exemplar, destination, MaxRecursionDepth, e => e.CreateAction);
         if(destination != null) {
             validator = new DataValidator();
