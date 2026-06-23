@@ -27,5 +27,4 @@ public enum RuleAction
     /// `default` or `null` do not trigger the exception.
     /// </summary>
     Block,
-
 }

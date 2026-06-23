@@ -9,5 +9,6 @@ public interface IAudited
     /// The last user, system, or agent to update the object. This is automatically populated on
     /// save.
     /// </summary>
+    [Rules(FieldAccess.Computed)]
     public UserTimestamp Audit { get; set; }
 }
