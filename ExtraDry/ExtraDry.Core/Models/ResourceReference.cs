@@ -40,6 +40,7 @@ public class ResourceReference
     public Guid Uuid { get; set; } = Guid.Empty;
 
     /// <inheritdoc cref="ISlug.Slug" />
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Slug { get; set; }
 
     /// <inheritdoc cref="IResourceIdentifiers.Title" />
