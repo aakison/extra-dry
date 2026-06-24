@@ -197,11 +197,11 @@ public class PropertyDescription
             if(value == null) {
                 return Format?.NullDisplayText ?? "null";
             }
-            if(Formatter != null) {
-                return Formatter.Format(value);
-            }
             if(HasDiscreteValues && discreteDisplayAttributes.TryGetValue((int)value, out var display)) {
                 value = display?.GetName() ?? value;
+            }
+            if(Formatter != null) {
+                return Formatter.Format(value);
             }
             var format = Format?.DataFormatString ?? "{0}";
             return string.Format(CultureInfo.InvariantCulture, format, value);
