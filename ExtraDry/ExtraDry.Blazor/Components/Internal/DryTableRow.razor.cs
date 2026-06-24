@@ -97,8 +97,11 @@ public partial class DryTableRow<T> : ComponentBase, IDisposable
 
         }
         else {
+            var wasSelected = IsSelected;
             Selection.Clear();
-            Select();
+            if(!wasSelected) {
+                Select();
+            }
         }
     }
 
