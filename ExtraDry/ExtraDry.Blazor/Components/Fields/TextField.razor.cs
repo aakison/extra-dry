@@ -133,8 +133,8 @@ public partial class TextField : FieldBase<string>
         Value = value;
         await ValueChanged.InvokeAsync(Value);
         var args = new ChangeEventArgs { Value = value };
-        await OnChange.InvokeAsync(args);
-        await OnInput.InvokeAsync(args);
+        await NotifyChange(args);
+        await NotifyInput(args);
     }
 
     private async Task ToggleMarkdownToolbar()
