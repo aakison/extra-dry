@@ -104,7 +104,9 @@ public partial class DryForm<T>(
 
     private IEnumerable<FormFieldset> VisibleFieldsets => (FieldsetNames.Any(e => e == "*")
         ? FormDescription?.Fieldsets
-        : FormDescription?.Fieldsets.Where(e => FieldsetNames.Contains(e.Name, StringComparer.OrdinalIgnoreCase)))
+        : FieldsetNames.Select(e => FormDescription?.Fieldsets
+            .FirstOrDefault(f => f.Legend.Equals(e, StringComparison.OrdinalIgnoreCase)))
+            .OfType<FormFieldset>())
         ?? [];
 
     private bool DisplayCommands => ShowCommands && EditMode != EditMode.ReadOnly;
