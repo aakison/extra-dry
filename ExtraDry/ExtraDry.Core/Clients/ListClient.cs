@@ -128,7 +128,9 @@ public class ListClient<TItem> : IListClient<TItem>
 
     public async ValueTask<ListClientResult<TItem>> GetItemsAsync(Query query, CancellationToken cancellationToken = default)
     {
+        Console.WriteLine($"LISTCLIENT.GetItemsAsync called with query: {JsonSerializer.Serialize(query)}");
         var result = await GetItemsInternalAsync(query, cancellationToken);
+        Console.WriteLine($"LISTCLIENT.GetItemsAsync result:");
         return new ListClientResult<TItem>(result.Item2, result.Item2.Count, result.Item3);
     }
 
@@ -152,7 +154,7 @@ public class ListClient<TItem> : IListClient<TItem>
         var items = ListUnpacker!(packedResult);
         var total = ListCounter!(packedResult);
         total = Math.Max(items.Count, total); // If deserializing a FilterCollection as a PagedCollection, use count as total.
-        OnItemsLoaded?.Invoke(this, EventArgs.Empty);
+        OnItemsLoaded?.Invoke(this, new ItemsLoadedEventArgs<TItem>(items, 0, total));
         IsLoading = false;
         IsEmpty = total == 0;
         return (packedResult, items, total);
@@ -167,9 +169,24 @@ public class ListClient<TItem> : IListClient<TItem>
     /// <summary>
     /// Event to subscribe to be notified when a list has returned results.
     /// </summary>
-    public event EventHandler? OnItemsLoaded;
+    public event EventHandler<ItemsLoadedEventArgs<TItem>>? OnItemsLoaded;
 
     private readonly HttpClient http;
 
     private readonly ILogger<ListClient<TItem>> logger;
+}
+
+public class ItemsLoadedEventArgs<T> : EventArgs
+{
+    public ItemsLoadedEventArgs(ICollection<T> items, int start, int total)
+    {
+        Start = start;
+        Total = total;
+        Items = items;
+    }
+    public int Start { get; set; }
+    public int Count => Items.Count;
+    public int Total { get; set; }
+    public ICollection<T> Items { get; set; }
+
 }

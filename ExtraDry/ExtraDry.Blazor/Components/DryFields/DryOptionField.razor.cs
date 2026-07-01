@@ -35,6 +35,8 @@ public partial class DryOptionField<TModel> : DryFieldBase<TModel> where TModel 
 
     private IList<Option> Options { get; set; } = [];
 
+    private bool isLoadingOptions;
+
     private async Task HandleChange(ChangeEventArgs args)
     {
         UpdateModelProperty(args.Value);
@@ -82,7 +84,8 @@ public partial class DryOptionField<TModel> : DryFieldBase<TModel> where TModel 
 
     private async Task LoadOptionsForPropertyAsync()
     {
-        if(Property == null) {
+        if(Property == null || Options.Count > 0 || isLoadingOptions == true) {
+            // Only load options once per page.
             return;
         }
         if(Property.PropertyType.IsEnum) {
@@ -94,7 +97,9 @@ public partial class DryOptionField<TModel> : DryFieldBase<TModel> where TModel 
             var listClient = ScopedServices.GetService(Property.Options.ProviderType) as IListClient<string>
                 ?? Activator.CreateInstance(Property.Options.ProviderType) as IListClient<string>;
             if(listClient != null) {
+                isLoadingOptions = true;
                 var result = await listClient.GetItemsAsync(new Query(), CancellationToken.None);
+                isLoadingOptions = false;
                 Options = [.. result.Items.Select(s => new Option { Uuid = Guid.NewGuid(), Title = s, Value = s })];
             }
             else {
@@ -116,10 +121,14 @@ public partial class DryOptionField<TModel> : DryFieldBase<TModel> where TModel 
         if(optionProvider != null) {
             var method = typedOptionProvider.GetMethod("GetItemsAsync");
             var token = new CancellationTokenSource().Token;
+            Console.WriteLine("DRYOPTIONFIELD: Invoking GetItemsAsync on option provider");
             dynamic task = method!.Invoke(optionProvider, [token])!;
+            isLoadingOptions = true;
             var optList = (await task).Items as ICollection;
+            isLoadingOptions = false;
             var options = optList?.Cast<object>()?.ToList() ?? [];
             Options = [.. options.Select(e => new Option { Uuid = UuidFunc(e), Title = TitleFunc(e), Value = e })];
+            Console.WriteLine("DRYOPTIONFIELD: Finished GetItemsAsync on option provider");
         }
         else {
             Logger.LogMissingOptionProvider(Property.InputType.Name);
