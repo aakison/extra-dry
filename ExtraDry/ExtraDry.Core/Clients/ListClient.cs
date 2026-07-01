@@ -180,17 +180,11 @@ public class ListClient<TItem> : IListClient<TItem>
     private readonly ILogger<ListClient<TItem>> logger;
 }
 
-public class ItemsLoadedEventArgs<T> : EventArgs
+public class ItemsLoadedEventArgs<T>(ICollection<T> items, int start, int total) : EventArgs
 {
-    public ItemsLoadedEventArgs(ICollection<T> items, int start, int total)
-    {
-        Start = start;
-        Total = total;
-        Items = items;
-    }
-    public int Start { get; set; }
+    public int Start { get; set; } = start;
     public int Count => Items.Count;
-    public int Total { get; set; }
-    public ICollection<T> Items { get; set; }
+    public int Total { get; set; } = total;
+    public ICollection<T> Items { get; set; } = items;
 
 }
