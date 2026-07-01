@@ -22,5 +22,5 @@ public class PageHierarchyQuery : HierarchyQuery, IPageQuery
     /// <summary>
     /// The default number of items to take if none provided.
     /// </summary>
-    public const int DefaultTake = 100;
+    public const int DefaultTake = PageQuery.DefaultTake;
 }
