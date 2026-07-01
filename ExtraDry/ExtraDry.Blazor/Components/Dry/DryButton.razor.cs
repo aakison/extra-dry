@@ -74,6 +74,9 @@ public partial class DryButton : ComponentBase, IExtraDryComponent
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UnmatchedAttributes { get; set; }
 
+    [CascadingParameter]
+    public ValidationScopeContext? ValidationScopeContext { get; set; }
+
     public void Dispose()
     {
         GC.SuppressFinalize(this);
@@ -147,6 +150,11 @@ public partial class DryButton : ComponentBase, IExtraDryComponent
     private void UpdateDisabled()
     {
         if(ResolvedCommand is null) {
+            SetEnabled(false);
+        }
+        else if(ValidationScopeContext != null
+            && ValidationScopeContext.Status != ValidationStatus.Passed
+            && ResolvedCommand.Context == CommandContext.Primary) {
             SetEnabled(false);
         }
         else if(SelectionAccessor is null) {
