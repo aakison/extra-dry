@@ -71,7 +71,11 @@ public class ListClient<TItem> : IListClient<TItem>
             AddIf(queryParams, Options.FilterParameterName, query.Filter);
             AddIf(queryParams, Options.SortParameterName, query.Sort);
             AddIf(queryParams, Options.SkipParameterName, query.Skip);
-            AddIf(queryParams, Options.TakeParameterName, query.Take ?? Options.PageSize);
+            int? take = query.Take ?? Options.PageSize;
+            if(take == PageQuery.DefaultTake) {
+                take = null; // Don't send a take of 50, because that's the default and we don't want to send it.
+            }
+            AddIf(queryParams, Options.TakeParameterName, take);
             return ConstructPathAndQuery(queryParams);
         }
         catch(FormatException ex) {

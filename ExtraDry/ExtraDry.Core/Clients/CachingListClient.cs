@@ -11,7 +11,7 @@ public class CachingListClient<TItem>(
 {
 
     /// <inheritdoc />
-    public int PageSize => 100;
+    public int PageSize => PageQuery.DefaultTake;
 
     /// <inheritdoc />
     public bool IsLoading => itemsClient.IsLoading;

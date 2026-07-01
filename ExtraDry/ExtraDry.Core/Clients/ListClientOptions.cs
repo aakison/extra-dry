@@ -7,7 +7,7 @@ public class ListClientOptions : IHttpClientOptions, IValidatableObject
     public string ListEndpoint { get; set; } = string.Empty;
 
     [Range(1, int.MaxValue)]
-    public int PageSize { get; set; } = 100;
+    public int PageSize { get; set; } = PageQuery.DefaultTake;
 
     public ListClientMode ListMode { get; set; } = ListClientMode.Paged;
 
