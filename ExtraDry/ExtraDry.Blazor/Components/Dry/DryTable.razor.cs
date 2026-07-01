@@ -1,4 +1,5 @@
 using ExtraDry.Blazor.Components.Internal;
+using ExtraDry.Core.Formatters;
 using Microsoft.AspNetCore.Components.Web.Virtualization;
 using System.Diagnostics.CodeAnalysis;
 
@@ -90,7 +91,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
 
     private bool DisplaySelection => ShowSelection && (HasCheckboxColumn || HasRadioColumn);
 
-    private string StateClass => (ItemsClient?.IsEmpty, ItemsClient?.IsLoading) switch {
+    private string StateClass => (ProjectionListClient?.IsEmpty, ProjectionListClient?.IsLoading) switch {
         (null, _) => "loading",
         (false, _) => "full",
         (true, _) => "empty",
@@ -121,23 +122,33 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
             QueryBuilderAccessor = new QueryBuilderAccessor(Decorator);
             QueryBuilderAccessor.QueryBuilder.OnChanged += Query_Changed;
         }
-        if(Items is not null && ItemsClient is null) {
-            ItemsClient = new InMemoryListClient<TItem>([..Items]);
+        if(LocalListClient is null) {
+            if(ItemsClient is not null) {
+                LocalListClient = ItemsClient;
+            }
+            else if(Items is not null) {
+                LocalListClient = new InMemoryListClient<TItem>([.. Items]);
+            }
+            else {
+                throw new InvalidOperationException($"Either Items or ItemsClient must be provided for {typeof(TItem).Name}");
+            }
         }
-        if(ItemsListClient is null && ItemsClient is not null) {
-            CachingItemsListClient = new CachingListClient<TItem>(ItemsClient);
-            var projectionListClient = new ProjectionListClient<TItem, ListItemInfo<TItem>>(CachingItemsListClient,
+        CachingItemsListClient ??= new CachingListClient<TItem>(LocalListClient);
+        ProjectionListClient ??= new ProjectionListClient<TItem, ListItemInfo<TItem>>(CachingItemsListClient,
                 e => new ListItemInfo<TItem> { Item = e, IsLoaded = true });
-            ItemsListClient = projectionListClient;
-        }
     }
 
-    [SuppressMessage("Performance", "CA1859:Use concrete types when possible for improved performance", Justification = "Enforce that there are many options.")]
-    private IListClient<ListItemInfo<TItem>>? ItemsListClient { get; set; }
+    // ItemsClient - optionally passed by user.
+    // LocalListClient - either memory list client around items, or ItemsClient
+    // CachingItemsListClient - caching wrapper around LocalListClient
+    // ProjectionListClient - wrapper around CachingItemsListClient to project TItem to ListItemInfo<TItem>
 
-    // HACK: Keep a reference to the caching client so it we can invalidate portions. 
-    // however it's also wrapped in a ProjectionListClient for the Table.  Would prefer a cleaner way.
+    private IListClient<TItem>? LocalListClient { get; set; }
+
     private CachingListClient<TItem>? CachingItemsListClient { get; set; }
+
+    [SuppressMessage("Performance", "CA1859:Use concrete types when possible for improved performance", Justification = "Enforce that there are many options.")]
+    private ProjectionListClient<TItem, ListItemInfo<TItem>>? ProjectionListClient { get; set; }
 
     private void Selection_Changed(object? sender, SelectionSetChangedEventArgs e)
     {
@@ -246,7 +257,7 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
 
     private async ValueTask<ItemsProviderResult<ListItemInfo<TItem>>> GetItemsAsync(ItemsProviderRequest request)
     {
-        if(ItemsClient == null || ItemsListClient == null || QueryBuilderAccessor == null) {
+        if(isLoading || ProjectionListClient == null || QueryBuilderAccessor == null) {
             return new ItemsProviderResult<ListItemInfo<TItem>>();
         }
         await serviceLock.WaitAsync();
@@ -255,7 +266,9 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
             request.CancellationToken.ThrowIfCancellationRequested();
             builder.Skip = request.StartIndex;
             builder.Take = request.Count;
-            var infos = await ItemsListClient.GetItemsAsync(builder.Build(), request.CancellationToken);
+            isLoading = true;
+            var infos = await ProjectionListClient.GetItemsAsync(builder.Build(), request.CancellationToken);
+            isLoading = false;
             var result = new ItemsProviderResult<ListItemInfo<TItem>>(infos.Items, infos.Total);
             return result;
         }
@@ -276,10 +289,13 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
             }
         }
         finally {
+            isLoading = false;
             serviceLock.Release();
             StateHasChanged(); // update classes affected by InternalItems
         }
     }
+
+    private bool isLoading;
 
     private int TotalColumns => (HasCheckboxColumn ? 1 : 0) +
         (HasRadioColumn ? 1 : 0) +

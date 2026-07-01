@@ -25,12 +25,12 @@
         </dry-tr>
     </dry-thead>
     <dry-tbody>
-        @if(ItemsListClient?.IsEmpty == null) {
+        @if(ProjectionListClient?.IsEmpty == null) {
             <div class="loading">
                 <progress />
             </div>
         }
-        else if(ItemsListClient?.IsEmpty == true) {
+        else if(ProjectionListClient?.IsEmpty == true) {
             <div class="empty">
                 <Icon Key="collection-empty" />
             </div>
