@@ -136,7 +136,7 @@ public class BlobClient<TBlob>(
 
         blob.Length = blob.Content.Length;
         using var bytes = BlobSerializer.SerializeBlob(blob);
-        var endpoint = ApiEndpoint(blob.Uuid, blob.Slug);
+        var endpoint = ApiEndpoint(blob.Uuid);
         var response = await client.PutAsync(endpoint, bytes, cancellationToken);
         await response.AssertSuccess(logger);
     }
