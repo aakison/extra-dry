@@ -3,7 +3,7 @@ namespace ExtraDry.Core;
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum FieldAccess {
     /// <summary>
-    /// The property is read-only, values are ignored on creation and changed blocked on update.
+    /// The property is read-only, values are ignored during creation and changes are blocked on update.
     /// </summary>
     ReadOnly,
 
@@ -18,7 +18,7 @@ public enum FieldAccess {
     WriteOnCreate,
 
     /// <summary>
-    /// The property is computed, values are ignored on creation and update.
+    /// The property is computed and/or system generated, values are ignored during creation and update.
     /// </summary>
     Computed,
 }
