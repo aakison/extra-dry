@@ -42,9 +42,9 @@ public class DecoratorInfo
 
     public Collection<HyperlinkInfo> HyperLinks { get; } = [];
 
-    public CommandInfo? SelectCommand => Commands.FirstOrDefault(e => e.Context == CommandContext.Primary && e.Arguments == CommandArguments.Single);
+    public CommandInfo? SelectCommand => Commands.FirstOrDefault(e => e.Context == CommandContext.Select && e.Arguments == CommandArguments.Single);
 
-    public CommandInfo? DefaultCommand => Commands.FirstOrDefault(e => e.Context == CommandContext.Default && e.Arguments == CommandArguments.Single);
+    public CommandInfo? ActivateCommand => Commands.FirstOrDefault(e => e.Context == CommandContext.Activate && e.Arguments == CommandArguments.Single);
 
     public HyperlinkInfo? HyperLinkFor(string propertyName) => HyperLinks.FirstOrDefault(e => e.PropertyName == propertyName);
 

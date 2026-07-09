@@ -121,6 +121,34 @@ public partial class CommandInfo
     public Func<bool> IsVisible { get; set; } = () => true;
 
     /// <summary>
+    /// Determines if the command supports the provided target. This is used to determine if a
+    /// command should be enabled or visible for a specific item.
+    /// </summary>
+    public bool SupportsTarget(object? target)
+    {
+        // return true if the target is not null and the command takes a single argument and the target is assignable to the parameter type
+        if(target == null) {
+            return Arguments == CommandArguments.None;
+        }
+        if(Arguments == CommandArguments.Single) {
+            var parameterType = Method.GetParameters()[0].ParameterType;
+            return target.GetType().IsAssignableTo(parameterType);
+        }
+        else if(Arguments == CommandArguments.Multiple) {
+            var parameterType = Method.GetParameters()[0].ParameterType;
+            if(!parameterType.IsAssignableTo(typeof(IEnumerable))) {
+                return false;
+            }
+            var type = parameterType.GenericTypeArguments.FirstOrDefault();
+            if(type == null) {
+                return false;
+            }
+            return ((IEnumerable)target).Cast<object>().All(item => type.IsAssignableFrom(item.GetType()));
+        }
+        return false;
+    }
+
+    /// <summary>
     /// Executes the underlying method with the provided arguments, ensuring that the proper number
     /// of arguments are provided.
     /// </summary>

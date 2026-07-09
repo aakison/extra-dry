@@ -4,7 +4,7 @@ namespace ExtraDry.Blazor;
 /// The semantic context of the command which assists in determining layout.
 /// </summary>
 /// <remarks>
-/// There should only be one `Primary` or `Default` command, and `Danger` should be used sparingly.
+/// There should only be one `Primary` or `Activate` command per method signature, and `Danger` should be used sparingly.
 /// `Normal` and `Alternate` can be used freely. `Normal` will typically be the main buttons, while
 /// `Alternate` will be collapable button-icons.
 /// </remarks>
@@ -23,12 +23,6 @@ public enum CommandContext
     Primary,
 
     /// <summary>
-    /// The default command which indicates the double-click behavior on tables. Should only be one
-    /// per Decorator.
-    /// </summary>
-    Default,
-
-    /// <summary>
     /// A command that might have adverse consequences, e.g. 'Delete'.
     /// </summary>
     Danger,
@@ -37,4 +31,17 @@ public enum CommandContext
     /// Alternate commands that are less important and might be button icons or collapsed.
     /// </summary>
     Alternate,
+
+    /// <summary>
+    /// The command that is used to select an item, e.g. 'Select' or 'Choose'.  Should only be one
+    /// per decorator.  Relevant to selection tables where the user is choosing an item from a list.
+    /// </summary>
+    Select,
+
+    /// <summary>
+    /// The command which indicates the double-click behavior on tables. Should only be one
+    /// per Decorator.  Relevant to selection tables where the user is choosing an item from a list.
+    /// </summary>
+    Activate,
+
 }

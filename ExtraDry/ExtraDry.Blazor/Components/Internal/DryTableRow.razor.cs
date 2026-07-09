@@ -107,8 +107,8 @@ public partial class DryTableRow<T> : ComponentBase, IDisposable
 
     private async Task RowDoubleClick(MouseEventArgs _)
     {
-        if(Decorator.DefaultCommand != null && Item.Item != null) {
-            await Decorator.DefaultCommand.ExecuteAsync(Item.Item);
+        if(Decorator.ActivateCommand != null && Item.Item != null) {
+            await Decorator.ActivateCommand.ExecuteAsync(Item.Item);
         }
         StateHasChanged();
     }
