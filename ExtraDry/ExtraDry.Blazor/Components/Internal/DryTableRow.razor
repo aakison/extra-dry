@@ -49,7 +49,9 @@
         <dry-td class="commands">
             <div class="contextCommands">
                 @foreach(var command in Decorator.ContextCommands) {
-                    <DryButton Command="@command" Model="@Item.Item" ShowIcon="true" ShowCaption="false" ShowAffordance="false" />
+                    @if(command.SupportsTarget(Item.Item)) {
+                        <DryButton Command="@command" Model="@Item.Item" ShowIcon="true" ShowCaption="false" ShowAffordance="false" />
+                    }
                 }
             </div>
         </dry-td>
