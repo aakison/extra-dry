@@ -146,6 +146,45 @@ function buildCustomPlugins() {
 
 let debounceTimers = {};
 
+// Hides the "Insert description" (caption) checkbox from the image dialog and
+// relabels the Submit button to Ok. No SunEditor options exist for either.
+function customizeImageDialog(editor) {
+    const imageCtx = editor.core.context.image;
+    if (!imageCtx) return;
+
+    // Hide caption / "Insert description" row — no option, hardcoded in template.
+    const captionCheck = imageCtx.captionCheckEl;
+    if (captionCheck) {
+        const formRow = captionCheck.closest('.se-dialog-form');
+        if (formRow) formRow.style.display = 'none';
+    }
+
+    // Rename Submit → Ok on the image dialog footer button.
+    const modal = imageCtx.modal;
+    if (modal) {
+        const submitBtn = modal.querySelector('.se-dialog-footer .se-btn-primary');
+        if (submitBtn) {
+            const span = submitBtn.querySelector('span');
+            if (span) span.textContent = 'Ok';
+            submitBtn.title = 'Ok';
+            submitBtn.setAttribute('aria-label', 'Ok');
+        }
+    }
+
+    // Hide unwanted image controller buttons (mirror, caption, revert) via scoped CSS.
+    // These are hardcoded in the controller template with no SunEditor option to suppress them.
+    const editorContainer = editor.core.context.element.relative;
+    if (editorContainer && !editorContainer.querySelector('#se-image-controller-overrides')) {
+        const style = document.createElement('style');
+        style.id = 'se-image-controller-overrides';
+        style.textContent =
+            '.se-controller-resizing [data-command="mirror"],' +
+            '.se-controller-resizing [data-command="caption"],' +
+            '.se-controller-resizing [data-command="revert"] { display: none !important; }';
+        editorContainer.appendChild(style);
+    }
+}
+
 function customizeLinkDialog(editor, linkBookmarks) {
     const core = editor.core;
     const dialogEl = core.context.dialog.modal;
@@ -167,7 +206,7 @@ function customizeLinkDialog(editor, linkBookmarks) {
         bookmarkBtn.setAttribute('aria-label', 'Pages');
     }
 
-    // Change "Submit" button to "Ok"
+    // Change "Submit" button to "Ok".
     const submitBtn = linkContent.querySelector('.se-btn-primary');
     if (submitBtn) {
         const span = submitBtn.querySelector('span');
@@ -176,7 +215,7 @@ function customizeLinkDialog(editor, linkBookmarks) {
         submitBtn.setAttribute('aria-label', 'Ok');
     }
 
-    // Observe dialog inner to switch display from block to flex for vertical centering
+    // Observe dialog inner
     const origOpen = core.plugins.dialog.open;
     core.plugins.dialog.open = function (e, t) {
         const result = origOpen.call(this, e, t);
@@ -376,6 +415,11 @@ export async function initialize(elementId, dotNetRef, options) {
         minHeight: isCharacterMode ? '1em' : '100px',
         defaultStyle: 'font-family: inherit; font-size: inherit;',
         linkNoPrefix: true,
+        // Image dialog: only keep URL, alt text and gallery; markdown storage makes
+        // file-upload, resizing, alignment and caption irrelevant.
+        imageFileInput: false,
+        imageResizing: false,
+        imageAlignShow: false,
         imageGalleryUrl: imageGalleryData ? '/_image-gallery_' : null,
         imageGalleryData: imageGalleryData,
     });
@@ -434,6 +478,10 @@ export async function initialize(elementId, dotNetRef, options) {
     }
 
     customizeLinkDialog(editor, linkBookmarks);
+
+    if (imageGalleryData) {
+        customizeImageDialog(editor);
+    }
 
     if (linkBookmarks) {
         setupCustomBookmarks(editor, linkBookmarks);
