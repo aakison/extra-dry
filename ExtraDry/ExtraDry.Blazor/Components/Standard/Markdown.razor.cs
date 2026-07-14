@@ -31,6 +31,13 @@ public partial class Markdown : ComponentBase
     [Parameter]
     public Dictionary<string, string>? LinkBookmarks { get; set; }
 
+    /// <summary>
+    /// A list of image files available for selection via the image picker button in the editor
+    /// toolbar. When provided, a pick-image button appears in Block-mode toolbars.
+    /// </summary>
+    [Parameter]
+    public List<MarkdownImageFile>? ImageFiles { get; set; }
+
     [Inject]
     private MarkdownEditorInterop EditorInterop { get; set; } = null!;
 
@@ -60,6 +67,7 @@ public partial class Markdown : ComponentBase
                 Mode = MarkdownSupport,
                 Placeholder = Placeholder,
                 LinkBookmarks = LinkBookmarks,
+                ImageFiles = ImageFiles,
             };
             await EditorInterop.InitializeAsync(editorId, dotNetRef, options);
             initialized = true;

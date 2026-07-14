@@ -25,4 +25,10 @@ public class MarkdownEditorOptions
     /// values are URLs/paths. When provided, these replace the default header-based bookmarks.
     /// </summary>
     public Dictionary<string, string>? LinkBookmarks { get; set; }
+
+    /// <summary>
+    /// A list of image files available for insertion via the image picker button. When provided,
+    /// a pick-image button appears in the Block-mode toolbar.
+    /// </summary>
+    public List<MarkdownImageFile>? ImageFiles { get; set; }
 }

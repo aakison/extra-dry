@@ -77,7 +77,7 @@ function ensureSunEditorLoaded() {
     });
 }
 
-function buildButtonList(mode, enableImage) {
+function buildButtonList(mode, enableImage, hasImageFiles) {
     if (mode === 'Character') {
         return [['bold', 'italic', 'strike', 'subscript', 'superscript']];
     }
@@ -87,8 +87,8 @@ function buildButtonList(mode, enableImage) {
         ['formatBlock'],
         ['bulletList', 'numberedList', 'removeFormat']
     ];
-    if (enableImage) {
-        buttons.push(['image']);
+    if (hasImageFiles || enableImage) {
+        buttons[0].push('image');
     }
     return buttons;
 }
@@ -353,9 +353,18 @@ export async function initialize(elementId, dotNetRef, options) {
     const enableImage = options?.enableImage || false;
     const placeholder = options?.placeholder || '';
     const linkBookmarks = options?.linkBookmarks || null;
-    const buttonList = buildButtonList(mode, enableImage);
+    const imageFiles = options?.imageFiles || null;
+    const buttonList = buildButtonList(mode, enableImage, imageFiles && imageFiles.length > 0);
 
     const isCharacterMode = mode === 'Character';
+
+    // Build the image gallery data for SunEditor's native gallery browser.
+    // The dialog template renders the gallery button only when imageGalleryUrl is truthy;
+    // the actual data comes from imageGalleryData (directData), which takes priority over
+    // a URL fetch so the placeholder URL is never requested.
+    const imageGalleryData = (imageFiles && imageFiles.length > 0)
+        ? imageFiles.map(f => ({ src: f.url, alt: f.title }))
+        : null;
 
     const editor = SUNEDITOR.create(element, {
         plugins: buildCustomPlugins(),
@@ -367,6 +376,8 @@ export async function initialize(elementId, dotNetRef, options) {
         minHeight: isCharacterMode ? '1em' : '100px',
         defaultStyle: 'font-family: inherit; font-size: inherit;',
         linkNoPrefix: true,
+        imageGalleryUrl: imageGalleryData ? '/_image-gallery_' : null,
+        imageGalleryData: imageGalleryData,
     });
 
     // In Character mode, prevent Enter/Tab and strip newlines from pasted content.
