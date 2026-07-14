@@ -32,6 +32,13 @@ public partial class TextField : FieldBase<string>
     public Dictionary<string, string>? LinkBookmarks { get; set; }
 
     /// <summary>
+    /// A list of image files available for selection via the image picker button in the markdown
+    /// editor toolbar. When provided, a pick-image button appears in Block-mode toolbars.
+    /// </summary>
+    [Parameter]
+    public List<MarkdownImageFile>? ImageFiles { get; set; }
+
+    /// <summary>
     /// The maximum length of the text. If greater than 100 then a multi-line text area is used.
     /// This is a hard limit to the text field and is separate from the validation model.  For
     /// user consistency, it is recommended to align this with the string length of the property.

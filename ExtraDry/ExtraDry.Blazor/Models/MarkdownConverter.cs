@@ -1,4 +1,5 @@
 using Markdig;
+using System.Text.RegularExpressions;
 
 namespace ExtraDry.Blazor.Models;
 
@@ -13,9 +14,24 @@ public class MarkdownConverter
         .Build();
 
     private static readonly ReverseMarkdown.Converter HtmlToMarkdownConverter = new(new ReverseMarkdown.Config {
-        GithubFlavored = true,
+        GithubFlavored = false,
         SmartHrefHandling = true,
     });
+
+    // Matches a <figure> element containing an <img>. SunEditor wraps every inserted image in
+    // a <figure> with many custom data-* attributes that ReverseMarkdown cannot handle.
+    private static readonly Regex FigureImagePattern = new(
+        @"<figure[^>]*>.*?<img\b([^>]*)>.*?</figure>",
+        RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+    // Used inside the replacement to extract individual attributes from the <img> tag.
+    private static readonly Regex SrcPattern = new(
+        @"\bsrc=""([^""]*)""",
+        RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+    private static readonly Regex AltPattern = new(
+        @"\balt=""([^""]*)""",
+        RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     /// <summary>
     /// Converts Markdown text to HTML.
@@ -43,7 +59,7 @@ public class MarkdownConverter
 
     public static string SanitizeLinks(string html)
     {
-        return System.Text.RegularExpressions.Regex.Replace(
+        return Regex.Replace(
             html,
             @"href=""([^""]*)""",
             @"href=""$1"" onclick=""event.preventDefault();""");
@@ -57,6 +73,22 @@ public class MarkdownConverter
         if(string.IsNullOrWhiteSpace(html)) {
             return string.Empty;
         }
+        html = NormalizeFigureImages(html);
         return HtmlToMarkdownConverter.Convert(html).Trim();
+    }
+
+    /// <summary>
+    /// Replaces SunEditor's verbose &lt;figure&gt;&lt;img data-*...&gt;&lt;/figure&gt; blocks
+    /// with a minimal &lt;img src="..." alt="..."&gt; that ReverseMarkdown can convert cleanly
+    /// to standard Markdown image syntax.
+    /// </summary>
+    private static string NormalizeFigureImages(string html)
+    {
+        return FigureImagePattern.Replace(html, m => {
+            var attrs = m.Groups[1].Value;
+            var src = SrcPattern.Match(attrs).Groups[1].Value;
+            var alt = AltPattern.Match(attrs).Groups[1].Value;
+            return $"<img src=\"{src}\" alt=\"{alt}\">";
+        });
     }
 }
