@@ -1,0 +1,49 @@
+@namespace ExtraDry.Blazor.Components
+
+@if(Schema != null && Values != null && Schema.Fields.Count > 0) {
+    <div class="expando-values-field">
+        @foreach(var field in Schema.Fields) {
+            @switch(field.DataType) {
+                case ExpandoDataType.Text:
+                    <TextField Label="@field.Label"
+                               Description="@field.Description"
+                               Placeholder="@(field.Placeholder ?? "")"
+                               ReadOnly="@IsReadOnly"
+                               Value="@GetStringValue(field.Slug)"
+                               MaxLength="@(field.MaxLength > 0 ? field.MaxLength : 100)"
+                               OnChange="@(args => HandleStringChange(field.Slug, args))" />
+                    break;
+                case ExpandoDataType.Number:
+                    <NumberField TValue="double?"
+                                 Label="@field.Label"
+                                 Description="@field.Description"
+                                 Placeholder="@(field.Placeholder ?? "")"
+                                 ReadOnly="@IsReadOnly"
+                                 Value="@GetNumberValue(field.Slug)"
+                                 Min="@(field.RangeMinimum.HasValue ? (double)field.RangeMinimum.Value : double.MinValue)"
+                                 Max="@(field.RangeMaximum.HasValue ? (double)field.RangeMaximum.Value : double.MaxValue)"
+                                 OnChange="@(args => HandleNumberChange(field.Slug, args))" />
+                    break;
+                case ExpandoDataType.Boolean:
+                    <ToggleField TValue="bool?"
+                                 Label="@field.Label"
+                                 Description="@field.Description"
+                                 ReadOnly="@IsReadOnly"
+                                 Value="@GetBoolValue(field.Slug)"
+                                 OnChange="@(args => HandleBoolChange(field.Slug, args))" />
+                    break;
+                case ExpandoDataType.DateTime:
+                    <DateField TValue="DateTime?"
+                               Label="@field.Label"
+                               Description="@field.Description"
+                               Placeholder="@(field.Placeholder ?? "")"
+                               ReadOnly="@IsReadOnly"
+                               Value="@(DateTime.TryParse(GetStringValue(field.Slug), out var dt) ? dt : null)"
+                               OnChange="@(args => HandleStringChange(field.Slug, args))" />
+                    break;
+            }
+        }
+    </div>
+}
+
+@using ExtraDry.Core
