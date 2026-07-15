@@ -5,31 +5,38 @@ namespace ExtraDry.Core;
 /// <summary>
 /// Represents a Field in a User Defined Schema, this defines the name, data type, ordering etc.
 /// </summary>
-public class ExpandoField
+public class ExpandoField : IUniqueIdentifier
 {
+    /// <inheritdoc />
+    [Key]
+    [Rules(FieldAccess.WriteOnCreate)]
+    [Display(AutoGenerateField = false)]
+    public Guid Uuid { get; set; } = Guid.CreateVersion7();
+
     /// <summary>
     /// A unique slug for the field that is auto-generated on create.
     /// </summary>
     /// <example>external_id</example>
     [Required]
     [Identifier]
-    public string Slug { get; set; } = string.Empty;
+    public string Slug { get; set; } = "";
 
     /// <summary>
     /// Display Label
     /// </summary>
-    public string Label { get; set; } = "label";
+    [StringLength(StringLength.Line)]
+    public string Label { get; set; } = "";
 
     /// <summary>
     /// Logical grouping of fields
     /// </summary>
-    public string Section { get; set; } = string.Empty;
+    public string Section { get; set; } = "";
 
     /// <summary>
     /// A description for the field that can present more information than the name. This may be
     /// presented to users in the form of a tooltip or similar.
     /// </summary>
-    public string Description { get; set; } = string.Empty;
+    public string Description { get; set; } = "";
 
     /// <summary>
     /// The data type for the field, these are high level data types like found in JavaScript.
@@ -103,7 +110,7 @@ public class ExpandoField
             if(value == null) {
                 results.Add(new ValidationResult($"{Label} is required, can't remove from fields.", [Label]));
             }
-            else if(value is string str && str == string.Empty) {
+            else if(value is string str && str == "") {
                 results.Add(new ValidationResult($"{Label} is required, can't be empty.", [Label]));
             }
         }

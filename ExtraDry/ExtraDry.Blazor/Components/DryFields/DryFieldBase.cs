@@ -124,13 +124,16 @@ public class DryFieldBase<TModel> : OwningComponentBase where TModel : class
     [Parameter]
     public string Label { get; set; } = "";
 
+    [Parameter]
+    public bool ShowLabel { get; set; } = true;
+
     /// <summary>
     /// The title for the control, resolved from the component parameter, or the InputFormat on the
     /// property.
     /// </summary>
     protected string ResolvedLabel =>
-        Label == ""
-        ? Property?.FieldCaption ?? ""
-        : Label;
+        ShowLabel
+        ? (Label == "" ? Property?.FieldCaption ?? "" : Label)
+        : "";
 
 }
