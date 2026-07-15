@@ -6,14 +6,6 @@ namespace ExtraDry.Core;
 public class ExpandoSchema : IValidatableObject
 {
     /// <summary>
-    /// The target type of the Subject that the <see cref="ExpandoSchema" /> provides custom fields
-    /// for.
-    /// </summary>
-    [Required]
-    [Rules(FieldAccess.WriteOnCreate)]
-    public string TargetType { get; set; } = string.Empty;
-
-    /// <summary>
     /// A collection of fields contained in the schema.
     /// </summary>
     public List<ExpandoField> Fields { get; set; } = [];

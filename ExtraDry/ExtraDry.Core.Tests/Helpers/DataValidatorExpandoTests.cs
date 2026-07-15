@@ -64,7 +64,6 @@ public class DataValidatorExpandoTests
     }
 
     public static ExpandoSchema Schema => new() {
-        TargetType = typeof(Sample).Name,
         Fields = [
             new() { DataType = ExpandoDataType.Text, Slug = "ABN", MaxLength = 10, IsRequired = true },
             new() { DataType = ExpandoDataType.Text, Slug = "ASX_CODE", MaxLength = 10, IsRequired = false },
