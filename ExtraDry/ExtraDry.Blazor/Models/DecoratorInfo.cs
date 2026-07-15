@@ -119,6 +119,8 @@ public class DecoratorInfo
         var decoratorType = decorator.GetType();
         var methods = decoratorType.GetMethods(BindingFlags.Public | BindingFlags.Instance);
         var hyperlinks = methods.Where(e => e.GetParameters().Length < 2 && e.GetCustomAttribute<HyperlinkAttribute>() != null);
+        // subset hyperlinks to those that have a parameter of the model type
+        hyperlinks = hyperlinks.Where(e => e.GetParameters().Length == 1 && e.GetParameters()[0].ParameterType == modelType);
         var infos = hyperlinks.Select(e => new HyperlinkInfo(decorator, modelType, e));
         foreach(var info in infos) {
             HyperLinks.Add(info);
