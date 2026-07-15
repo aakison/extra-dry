@@ -8,7 +8,7 @@ internal static class TypeExtensions
     {
         var arguments = type.GetGenericArguments();
         if(arguments?.Length != 1) {
-            throw new DryException("Generic type used that was expected to have a single type and didn't.", "Bad Type, please contact support. 0x0F67C23E");
+            throw new DryException($"Generic type used that was expected to have a single type and didn't.", $"Bad Type, please contact support.  Expected {type}.  0x0F67C23E");
         }
         return arguments.First();
     }

@@ -92,7 +92,10 @@ public class PropertyDescription
         }
         ++recursionDepth;
         if(recursionDepth < 10 && (Rules?.CreateAction == RuleAction.Allow || Rules?.UpdateAction == RuleAction.Allow || Rules?.CreateAction == RuleAction.IgnoreDefaults || Rules?.CreateAction == RuleAction.IgnoreDefaults)) {
-            if(HasArrayValues) {
+            if(property.PropertyType.IsAssignableTo(typeof(ExpandoValues))) {
+                ChildModel = new DecoratorInfo(typeof(ExpandoValues), this);
+            }
+            else if(HasArrayValues) {
                 var elementProperty = Property.PropertyType.SingleGenericType();
                 ChildModel = new DecoratorInfo(elementProperty, this);
             }
