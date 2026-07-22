@@ -10,6 +10,7 @@
     dry-table ::deep dry-tr dry-td {
       overflow: hidden;
       text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
   dry-table ::deep dry-tr.state dry-td {
