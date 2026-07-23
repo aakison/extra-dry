@@ -82,7 +82,7 @@ public class CrudClientOptions<T> : IHttpClientOptions, IValidatableObject
     /// </summary>
     /// <param name="appender">Function that returns the key-value from the key.</param>
     /// <param name="operations">Operations that this formatter is used on.</param>
-    public void AddEndpointAppender<TKey>(Func<T, string> appender, CrudOperation operations = CrudOperation.Existing)
+    public void AddEndpointAppender<TKey>(Func<TKey, string> appender, CrudOperation operations = CrudOperation.Existing)
     {
         EndpointFormatters.RemoveAll(e => e.Mode == EndpointMode.Append);
         EndpointFormatters.Add(new EndpointFormatter {
