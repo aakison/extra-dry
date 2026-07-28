@@ -32,12 +32,12 @@ public enum CrudOperation
     /// <summary>
     /// Represents a combination of permissions for existing resources, including read, update, and delete operations.
     /// </summary>
-    Existing = Read | Update | Delete,
+    Existing = Read | Update | Delete | Rpc,
 
     /// <summary>
     /// Specifies the set of operations that modify data, including create, update, and delete actions.
     /// </summary>
-    Mutating = Create | Update | Delete,
+    Mutating = Create | Update | Delete | Rpc,
 
     /// <summary>
     /// Represents a combination of all available permissions: Create, Read, Update, and Delete.
