@@ -216,7 +216,7 @@ public class RuleEngineUpdateDictionaryAsyncTests
         [JsonIgnore]
         public int Id { get; set; } = 1;
 
-        [Rules(FieldAccess.ReadOnly)]
+        [Rules(FieldAccess.Computed)]
         public Guid Uuid { get; set; } = Guid.NewGuid();
 
         public string Name { get; set; } = string.Empty;
@@ -225,7 +225,7 @@ public class RuleEngineUpdateDictionaryAsyncTests
 
         public ExpandoValues? NullableValues { get; set; }
 
-        [Rules(FieldAccess.ReadOnly)]
+        [Rules(FieldAccess.Computed)]
         public ExpandoValues IgnoredValues { get; set; } = [];
     }
 

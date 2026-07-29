@@ -129,7 +129,7 @@ public class RuleEngineUpdateTreeAsyncTests
 
         public Grandchild Grandchild { get; set; } = new();
 
-        [Rules(FieldAccess.ReadOnly)]
+        [Rules(FieldAccess.Computed)]
         public string DontTouchThis { get; set; } = string.Empty;
 
         [Rules(FieldAccess.ReadOnly)]

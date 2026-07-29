@@ -14,7 +14,7 @@ public class MarkdownConverter
         .Build();
 
     private static readonly ReverseMarkdown.Converter HtmlToMarkdownConverter = new(new ReverseMarkdown.Config {
-        GithubFlavored = false,
+        GithubFlavored = true, // True for markdown fences to <pre><code>...
         SmartHrefHandling = true,
     });
 

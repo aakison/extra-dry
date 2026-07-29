@@ -262,33 +262,7 @@ public class RuleEngineUpdateCollectionAsyncTests
     }
 
     [Fact]
-    public async Task IgnoreDefaultsChildrenReplaces()
-    {
-        var services = new ServiceProviderStub();
-        var rules = new RuleEngine(services, new ExtraDryOptions());
-        var source = new Parent {
-            IgnoredDefaultsChildren = [
-                new() { Uuid = Guid.NewGuid(), Name = "Child1" },
-                new() { Uuid = Guid.NewGuid(), Name = "Child2" },
-            ]
-        };
-        var destination = new Parent {
-            IgnoredDefaultsChildren = [
-                new() { Uuid = Guid.NewGuid(), Name = "Child3" },
-                new() { Uuid = Guid.NewGuid(), Name = "Child4" },
-            ]
-        };
-
-        await rules.UpdateAsync(source, destination);
-
-        Assert.NotNull(destination.IgnoredDefaultsChildren);
-        Assert.Equal(2, destination.IgnoredDefaultsChildren.Count);
-        Assert.Equal("Child1", destination.IgnoredDefaultsChildren[0].Name);
-        Assert.Equal("Child2", destination.IgnoredDefaultsChildren[1].Name);
-    }
-
-    [Fact]
-    public async Task IgnoreDefaultsChildrenIgnoresNull()
+    public async Task ComputedDefaultsChildrenIgnoresNull()
     {
         var services = new ServiceProviderStubWithChildResolver();
         var rules = new RuleEngine(services, new ExtraDryOptions());
@@ -308,27 +282,6 @@ public class RuleEngineUpdateCollectionAsyncTests
         Assert.Equal(2, destination.IgnoredDefaultsChildren.Count);
         Assert.Equal("Child3", destination.IgnoredDefaultsChildren[0].Name);
         Assert.Equal("Child4", destination.IgnoredDefaultsChildren[1].Name);
-    }
-
-    [Fact]
-    public async Task IgnoreDefaultsChildrenEmptysWhenCollectionEmpty()
-    {
-        var services = new ServiceProviderStubWithChildResolver();
-        var rules = new RuleEngine(services, new ExtraDryOptions());
-        var source = new Parent {
-            IgnoredDefaultsChildren = [],
-        };
-        var destination = new Parent {
-            IgnoredDefaultsChildren = [
-                new() { Uuid = Guid.NewGuid(), Name = "Child3" },
-                new() { Uuid = Guid.NewGuid(), Name = "Child4" },
-            ]
-        };
-
-        await rules.UpdateAsync(source, destination);
-
-        Assert.NotNull(destination.IgnoredDefaultsChildren);
-        Assert.Empty(destination.IgnoredDefaultsChildren);
     }
 
     [Fact]
@@ -480,7 +433,7 @@ public class RuleEngineUpdateCollectionAsyncTests
         [Rules(FieldAccess.Computed)]
         public List<Child>? IgnoredChildren { get; set; }
 
-        [Rules(FieldAccess.ReadWrite)]
+        [Rules(FieldAccess.Computed)]
         public List<Child>? IgnoredDefaultsChildren { get; set; }
 
         [Rules(FieldAccess.ReadOnly)]
