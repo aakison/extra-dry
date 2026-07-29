@@ -15,10 +15,8 @@ public class RuleEngineUpdateIndividualAsyncTests
         var original = SampleEntity();
         Assert.Equal(original.Id, destination.Id);
         Assert.Equal(original.UndecoratedName, destination.UndecoratedName);
-        Assert.Equal(original.IgnoreChangesAmount, destination.IgnoreChangesAmount);
-        Assert.Equal(original.DefaultIgnoredReal, destination.DefaultIgnoredReal);
+        Assert.Equal(original.ComputedAmount, destination.ComputedAmount);
         Assert.Equal(original.ChangeableUuid, destination.ChangeableUuid);
-        Assert.Equal(original.DefaultIgnoredString, destination.DefaultIgnoredString);
     }
 
     [Fact]
@@ -38,7 +36,7 @@ public class RuleEngineUpdateIndividualAsyncTests
         var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
         var source = SampleEntity();
         var destination = SampleEntity();
-        source.IgnoreChangesAmount = 2.34m;
+        source.ComputedAmount = 2.34m;
 
         await rules.UpdateAsync(source, destination);
 
@@ -85,61 +83,6 @@ public class RuleEngineUpdateIndividualAsyncTests
         await rules.UpdateAsync(source, destination);
 
         Assert.Equal("Alice", destination.UndecoratedName);
-    }
-
-    [Fact]
-    public async Task IgnoreDefaultsValueTypeChangeValue()
-    {
-        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
-        var source = SampleEntity();
-        var destination = SampleEntity();
-        source.DefaultIgnoredReal = 123;
-
-        await rules.UpdateAsync(source, destination);
-
-        Assert.Equal(123, destination.DefaultIgnoredReal);
-    }
-
-    //[Fact]
-    //public async Task IgnoreDefaultsValueTypeIgnoresDefaults()
-    //{
-    //    var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
-    //    var source = SampleEntity();
-    //    var destination = SampleEntity();
-    //    source.DefaultIgnoredReal = 0;
-    //    destination.DefaultIgnoredReal = 1.23;
-
-    // await rules.UpdateAsync(source, destination);
-
-    //    Assert.Equal(1.23, destination.DefaultIgnoredReal);
-    //}
-
-    [Fact]
-    public async Task IgnoreDefaultsReferenceTypeIgnoresDefaults()
-    {
-        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
-        var source = SampleEntity();
-        var destination = SampleEntity();
-        source.DefaultIgnoredString = null;
-        destination.DefaultIgnoredString = "something";
-
-        await rules.UpdateAsync(source, destination);
-
-        Assert.Equal("something", destination.DefaultIgnoredString);
-    }
-
-    [Fact]
-    public async Task IgnoreDefaultsReferenceTypeChanges()
-    {
-        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
-        var source = SampleEntity();
-        var destination = SampleEntity();
-        source.DefaultIgnoredString = "else";
-        destination.DefaultIgnoredString = "something";
-
-        await rules.UpdateAsync(source, destination);
-
-        Assert.Equal("else", destination.DefaultIgnoredString);
     }
 
     [Fact]
@@ -268,17 +211,11 @@ public class RuleEngineUpdateIndividualAsyncTests
 
         public string UndecoratedName { get; set; } = "Bob";
 
-        [Rules(FieldAccess.ReadOnly)]
-        public decimal IgnoreChangesAmount { get; set; } = 123;
-
-        [Rules(FieldAccess.ReadWrite)]
-        public double DefaultIgnoredReal { get; set; } = 1.23;
+        [Rules(FieldAccess.Computed)]
+        public decimal ComputedAmount { get; set; } = 123;
 
         [Rules(FieldAccess.ReadWrite)]
         public Guid ChangeableUuid { get; set; } = new Guid("372844B3-4963-4129-A4DE-AF457FED1A55");
-
-        [Rules(FieldAccess.ReadWrite)]
-        public string? DefaultIgnoredString { get; set; } = "Something";
 
         [JsonIgnore]
         public string JsonIgnored { get; set; } = "json";

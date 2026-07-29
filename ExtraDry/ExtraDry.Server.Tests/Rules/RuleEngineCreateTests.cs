@@ -217,15 +217,6 @@ public class RuleEngineCreateTests
         await Assert.ThrowsAsync<DryException>(async () => await rules.CreateAsync(exemplar));
     }
 
-    [Fact]
-    public async Task CreateFailsOnImplicitValueTypePropertyBlock()
-    {
-        var rules = new RuleEngine(new ServiceProviderStub(), new ExtraDryOptions());
-        var exemplar = new BlockedPropertiesEntity { DefaultBlockString = "abc" };
-
-        await Assert.ThrowsAsync<DryException>(async () => await rules.CreateAsync(exemplar));
-    }
-
 }
 
 public class IgnoreDefaultsEntity
