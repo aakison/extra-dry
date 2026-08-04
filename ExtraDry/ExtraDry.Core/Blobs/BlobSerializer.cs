@@ -147,16 +147,16 @@ public static class BlobSerializer
             }
             var headerName = property.GetCustomAttribute<HttpHeaderAttribute>()?.Name ?? $"X-Blob-{property.Name}";
             var headerValue = property.GetValue(blob)?.ToString() ?? "";
-            if(headerName == "X-Blob-Revision") {
+            if(headerName.StartsWith("X-Blob-Revision", StringComparison.OrdinalIgnoreCase)) {
                 // skip revision property, handled below
                 continue;
             }
             if(!string.IsNullOrEmpty(headerValue) || ignore == JsonIgnoreCondition.Never) {
-                keyValueAdder(headerName, headerValue);
+                keyValueAdder(headerName, DataConverter.ToAscii(headerValue));
             }
         }
         if(blob is IRevisioned revisioned) {
-            keyValueAdder("X-Blob-Revision-User", revisioned.Revision.User);
+            keyValueAdder("X-Blob-Revision-User", DataConverter.ToAscii(revisioned.Revision.User));
             keyValueAdder("X-Blob-Revision-Timestamp", revisioned.Revision.Timestamp.ToString("o", CultureInfo.InvariantCulture));
         }
     }
