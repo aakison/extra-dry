@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace ExtraDry.Core;
@@ -113,6 +114,28 @@ public partial class DataConverter
     /// Given a camelCase (or PascalCase) string, converts it to kebab-case.
     /// </summary>
     public static string CamelCaseToKebabCase(string value) => Slug.ToSlug(CamelCaseToTitleCase(value));
+
+    /// <summary>
+    /// Converts a string to ASCII by decomposing Unicode characters to their base ASCII
+    /// equivalents and mapping Unicode whitespace variants to a plain space. Intended for use
+    /// where the target encoding is restricted to ISO-8859-1, such as HTTP header values.
+    /// E.g. "Screenshot\u202Fpm" becomes "Screenshot pm".
+    /// </summary>
+    public static string ToAscii(string value)
+    {
+        var decomposed = value.Normalize(NormalizationForm.FormKD);
+        var sb = new StringBuilder(decomposed.Length);
+        foreach(var c in decomposed) {
+            if(c < 128) {
+                sb.Append(c);
+            }
+            else if(char.IsWhiteSpace(c)) {
+                sb.Append(' ');
+            }
+            // else: non-ASCII combining marks and unmappable characters are dropped
+        }
+        return sb.ToString();
+    }
 
     /// <summary>
     /// Given a kebab-case string, converts it to title case. E.g. "two-words" becomes "Two Words".
