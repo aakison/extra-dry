@@ -34,10 +34,12 @@ public partial class DryButtonBar(
     public object Decorator { get; set; } = null!;
 
     /// <summary>
-    /// Filter the view model's commands by this category.
+    /// A comma-separated list of categories used to filter the view model's commands. This is
+    /// useful to limit the button bar to a subset of commands and allow others to be rendered
+    /// separately. Defaults to the wildcard "*" which matches all categories.
     /// </summary>
     [Parameter]
-    public string? Category { get; set; }
+    public string Category { get; set; } = "*";
 
     /// <inheritdoc />
     [Parameter(CaptureUnmatchedValues = true)]
@@ -47,8 +49,11 @@ public partial class DryButtonBar(
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "buttons", CssClass);
 
+    private string[] CategoryNames { get; set; } = [];
+
     protected override async Task OnParametersSetAsync()
     {
+        CategoryNames = Category.Split(',');
         if(!Commands.Any() && Decorator != null && Description == null) {
             Description = new DecoratorInfo(Decorator);
             Commands = Description.Commands;
@@ -64,6 +69,6 @@ public partial class DryButtonBar(
     {
         return AuthorizedCommands
             .Where(e => e.Context == context)
-            .Where(e => Category == null || Category == e.Category);
+            .Where(e => CategoryNames.Any(c => c == "*") || CategoryNames.Any(c => c.Equals(e.Category, StringComparison.OrdinalIgnoreCase)));
     }
 }
