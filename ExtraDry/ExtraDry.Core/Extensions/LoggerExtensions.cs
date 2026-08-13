@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.Logging;
+using System.Collections;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
@@ -61,6 +62,12 @@ public static class LoggerExtensions
     /// <see cref="SecretAttribute" /> will be dispalyed as "*****" instead of their actual value.
     /// Validation is also checked and any errors are logged.
     /// </summary>
+    /// <remarks>
+    /// This is logged as a single structured log entry: the console (or any text-based sink) sees
+    /// one readable, bulleted, multi-line message, while structured sinks (e.g. Application Insights
+    /// via OpenTelemetry) receive each property as its own field, so they can be queried
+    /// individually (e.g. filtering/grouping by "SqlServer:Server") instead of one opaque blob.
+    /// </remarks>
     /// <param name="logger">The ILogger that the properties are logged to.</param>
     /// <param name="target">The object whose properties are logged.</param>
     public static void LogProperties(this ILogger logger, object? target = null)
@@ -72,14 +79,52 @@ public static class LoggerExtensions
         displayOptions.ReadAndExpand(target);
         var list = displayOptions.Properties.Select(e => $"{e.Key}: {e.Value}");
 
-        logger.LogInformation("Resolved Configuration for '{Name}':\n        * {List}",
-            displayOptions.Name, string.Join($"\n        * ", list));
-        var bullets = "        * " + string.Join($"\n        * ", list);
+        // No indentation is baked in here; the console formatter applies consistent indentation
+        // to every line of a multi-line message, so bullets are indented one level below the
+        // header regardless of the sink's own base indent.
+        var message = $"Resolved Configuration for '{displayOptions.Name}':\n* {string.Join("\n* ", list)}";
+        var state = new PropertyLogState(displayOptions.Name, message, displayOptions.Properties);
+        logger.Log(LogLevel.Information, default, state, null, static (s, _) => s.ToString());
+
+        var bullets = "* " + string.Join("\n* ", list);
         File.AppendAllText(logfile, $"\nResolved Configuration for '{displayOptions.Name}':\n{bullets}\n");
         if(displayOptions.ValidationErrors.Count > 0) {
             var results = string.Join($"\n  * ", displayOptions.ValidationErrors);
             logger.LogWarning("Configuration Failed Validation:\n  * {Results}", results);
         }
+    }
+
+    /// <summary>
+    /// A structured log state that exposes each resolved configuration property as its own
+    /// named field (via <see cref="IReadOnlyList{T}" /> of key/value pairs, the same mechanism
+    /// <see cref="ILogger" /> message templates use). This lets structured logging sinks (e.g.
+    /// OpenTelemetry/Application Insights) capture individual properties, while
+    /// <see cref="ToString" /> still supplies one composed, human-readable message for
+    /// text-based sinks like the console.
+    /// </summary>
+    private sealed class PropertyLogState : IReadOnlyList<KeyValuePair<string, object?>>
+    {
+        private readonly List<KeyValuePair<string, object?>> items;
+
+        private readonly string message;
+
+        public PropertyLogState(string name, string message, IReadOnlyDictionary<string, string> properties)
+        {
+            this.message = message;
+            items = [.. properties.Select(p => new KeyValuePair<string, object?>(p.Key, p.Value)),
+                new("Name", name),
+                new("{OriginalFormat}", message)];
+        }
+
+        public int Count => items.Count;
+
+        public KeyValuePair<string, object?> this[int index] => items[index];
+
+        public IEnumerator<KeyValuePair<string, object?>> GetEnumerator() => items.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        public override string ToString() => message;
     }
 
     private const string logfile = "./appsettings.log";
