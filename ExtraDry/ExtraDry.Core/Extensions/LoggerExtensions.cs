@@ -102,19 +102,11 @@ public static class LoggerExtensions
     /// <see cref="ToString" /> still supplies one composed, human-readable message for
     /// text-based sinks like the console.
     /// </summary>
-    private sealed class PropertyLogState : IReadOnlyList<KeyValuePair<string, object?>>
+    private sealed class PropertyLogState(string name, string message, IReadOnlyDictionary<string, string> properties) : IReadOnlyList<KeyValuePair<string, object?>>
     {
-        private readonly List<KeyValuePair<string, object?>> items;
-
-        private readonly string message;
-
-        public PropertyLogState(string name, string message, IReadOnlyDictionary<string, string> properties)
-        {
-            this.message = message;
-            items = [.. properties.Select(p => new KeyValuePair<string, object?>(p.Key, p.Value)),
+        private readonly List<KeyValuePair<string, object?>> items = [.. properties.Select(p => new KeyValuePair<string, object?>(p.Key, p.Value)),
                 new("Name", name),
                 new("{OriginalFormat}", message)];
-        }
 
         public int Count => items.Count;
 
