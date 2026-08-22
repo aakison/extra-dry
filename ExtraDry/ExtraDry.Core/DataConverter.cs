@@ -297,4 +297,167 @@ public partial class DataConverter
     [GeneratedRegex(@"^\w|\s\w")]
     private static partial Regex FirstLetters();
 
+    private static readonly HashSet<string> StopWords =
+    [
+        "a", "an", "the",
+        "of", "to", "for", "in", "on", "at", "by", "from", "with",
+        "about", "into", "during", "through", "over", "under",
+        "if", "that", "this", "these", "those",
+
+        // Question words
+        "what", "who", "where", "when", "why", "which", "how",
+
+        // Helper verbs
+        "do", "does", "did",
+        "is", "are", "was", "were",
+        "can", "could", "would", "should", "will",
+
+        // Pronouns
+        "you", "your", "yours",
+        "me", "my", "mine",
+        "we", "our", "ours",
+
+        // Common survey noise
+        "please"
+    ];
+
+    private static readonly HashSet<string> LowValueWords =
+    [
+        "current",
+        "existing",
+        "general",
+        "overall",
+        "other",
+        "additional",
+        "various",
+        "different",
+        "provide",
+        "select",
+        "choose",
+        "enter",
+        "indicate",
+        "specify",
+        "think",
+        "currently"
+    ];
+
+    private static readonly Dictionary<string, string> Abbreviations =
+        new(StringComparer.OrdinalIgnoreCase) {
+            ["customer"] = "cust",
+            ["service"] = "svc",
+            ["satisfaction"] = "sat",
+            ["information"] = "info",
+            ["number"] = "num",
+            ["telephone"] = "phone",
+            ["department"] = "dept",
+            ["application"] = "app",
+            ["reference"] = "ref",
+            ["description"] = "desc"
+        };
+
+    private static readonly Dictionary<string, string> CanonicalPhrases =
+        new(StringComparer.OrdinalIgnoreCase) {
+            ["date_birth"] = "birth_date",
+            ["place_birth"] = "birth_place",
+            ["method_payment"] = "payment_method",
+            ["level_education"] = "education_level",
+            ["source_income"] = "income_source"
+        };
+
+    public static string ToColumnName(string text, int maxLength)
+    {
+        if(string.IsNullOrWhiteSpace(text)) {
+            return $"Column_{QuestionHash()}";
+        }
+
+        // Normalize
+        text = text.ToLowerInvariant();
+
+        // Replace non-alphanumeric with spaces
+        text = Regex.Replace(text, @"[^a-z0-9]+", " ");
+
+        var words = text
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+            .Where(w => !StopWords.Contains(w) && w.Length > 1)
+            .ToList();
+
+        if(words.Count == 0) {
+            return $"Column_{QuestionHash()}";
+        }
+
+        string result = string.Join("_", words);
+
+        // Canonical phrase rewrites
+        if(CanonicalPhrases.TryGetValue(result, out var canonical)) {
+            result = canonical;
+        }
+        if(result.Length <= maxLength) {
+            return result;
+        }
+
+        // Remove low-value words
+        words = words.Where(w => !LowValueWords.Contains(w)).ToList();
+
+        if(words.Count > 0) {
+            result = string.Join("_", words);
+            if(CanonicalPhrases.TryGetValue(result, out canonical)) {
+                result = canonical;
+            }
+            if(result.Length <= maxLength) {
+                return result;
+            }
+        }
+
+        // Abbreviate
+        words = words
+            .Select(w => Abbreviations.TryGetValue(w, out var abbr) ? abbr : w)
+            .ToList();
+
+        result = string.Join("_", words);
+
+        if(result.Length > maxLength) {
+            result = result[0..(maxLength - 5)];
+            result = result.TrimEnd('_');
+            result += "_" + QuestionHash();
+        }
+
+        return result;
+
+        string QuestionHash()
+        {
+            var hashi = Math.Abs(GetStableHashCode(text)) % 9997;
+            string hash = $"{hashi}";
+            if(hash.Length < 4) {
+                hash = hash.PadLeft(4, '0');
+            }
+            return hash;
+        }
+    }
+
+    /// <summary>
+    /// Generates a stable hash code for a string that is consistent across different runs of
+    /// the application.
+    /// </summary>
+    /// <remarks>
+    /// See https://stackoverflow.com/questions/36845430/persistent-hashcode-for-strings#:~:text=I%20want%20to%20generate%20an%20integer
+    /// </remarks>
+    public static int GetStableHashCode(string str)
+    {
+        unchecked {
+            int hash1 = 5381;
+            int hash2 = hash1;
+
+            for(int i = 0; i < str.Length && str[i] != '\0'; i += 2) {
+                hash1 = ((hash1 << 5) + hash1) ^ str[i];
+                if(i == str.Length - 1 || str[i + 1] == '\0') {
+                    break;
+                }
+
+                hash2 = ((hash2 << 5) + hash2) ^ str[i + 1];
+            }
+
+            return hash1 + (hash2 * 1566083941);
+        }
+    }
+
 }
