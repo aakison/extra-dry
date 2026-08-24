@@ -63,7 +63,7 @@ public partial class DryForm<T>(
     public EventCallback<ChangeEventArgs> OnChange { get; set; }
 
     [Parameter]
-    public bool ShowCommands { get; set; } = true;
+    public bool ShowCommands { get; set; } = false;
 
     /// <inheritdoc />
     [Parameter(CaptureUnmatchedValues = true)]
