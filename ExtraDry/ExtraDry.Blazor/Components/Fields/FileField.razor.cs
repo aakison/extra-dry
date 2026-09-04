@@ -17,12 +17,13 @@ public partial class FileField : FieldBase<string>
     public string Accept { get; set; } = "*.*";
 
     /// <summary>
-    /// Called when a file is selected. Provides access to the <see cref="InputFileChangeEventArgs"/>
-    /// for reading file content. The <see cref="FieldBase{T}.OnChange"/> callback is also invoked
-    /// with the filename as the change value.
+    /// Called when a file is selected, or cleared. Provides a <see cref="BrowserBlob"/> populated
+    /// from the selected <see cref="IBrowserFile"/>, or null if the selection was cleared. The
+    /// <see cref="FieldBase{T}.OnChange"/> callback is also invoked with the filename as the
+    /// change value.
     /// </summary>
     [Parameter]
-    public EventCallback<InputFileChangeEventArgs> OnFileSelected { get; set; }
+    public EventCallback<BrowserBlob?> OnFileSelected { get; set; }
 
     protected override void OnInitialized()
     {
@@ -34,9 +35,9 @@ public partial class FileField : FieldBase<string>
 
     private async Task HandleFileChangeAsync(InputFileChangeEventArgs e)
     {
-        await OnFileSelected.InvokeAsync(e);
-        var filename = e.FileCount > 0 ? e.File.Name : string.Empty;
-        var args = new ChangeEventArgs { Value = filename };
+        var blob = e.FileCount > 0 ? new BrowserBlob(e.File) : null;
+        await OnFileSelected.InvokeAsync(blob);
+        var args = new ChangeEventArgs { Value = blob?.Title ?? string.Empty };
         await NotifyChange(args);
     }
 
