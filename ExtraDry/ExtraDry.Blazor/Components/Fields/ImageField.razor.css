@@ -1,11 +1,16 @@
 @layer extra-dry {
   div.input.image {
     --preview-size: 64px;
-    display: flex;
-    flex-direction: row;
     padding: var(--spacing-small);
     gap: var(--spacing-small);
+    cursor: pointer;
+    /* */
+    display: flex !important;
+    flex-direction: row !important;
 
+    &.readonly {
+      cursor: default;
+    }
     /* Small inline preview of the selected/captured image. */
     div.preview-frame {
       padding: var(--spacing-small) var(--spacing-tiny) var(--spacing-tiny) var(--spacing-tiny) !important;
@@ -34,6 +39,9 @@
     /* The replacement value display takes up all available space. */
     div.value {
       flex: 1 1 auto;
+      /* */
+      overflow: hidden;
+      white-space: nowrap;
 
       &.placeholder {
         color: var(--neutral-6);

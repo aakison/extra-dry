@@ -24,6 +24,16 @@ public class ExtraDryJavascriptModule
         await module.InvokeVoidAsync(name, args);
     }
 
+    /// <summary>
+    /// Invoke a function inside the 'extra-dry-blazor-module' module and return its result.
+    /// Usage is same as IJSRuntime, but method must be exposed by Extra DRY module.
+    /// </summary>
+    public async ValueTask<T> InvokeAsync<T>(string name, params object?[]? args)
+    {
+        await using var module = await Runtime.InvokeAsync<IJSObjectReference>("import", Filename);
+        return await module.InvokeAsync<T>(name, args);
+    }
+
     private IJSRuntime Runtime { get; set; }
 
     private string Filename => $"/_content/ExtraDry.Blazor/js/extra-dry-blazor-module.js?v={Version}";

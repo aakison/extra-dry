@@ -8,6 +8,7 @@
       "Components/Standard/CodeBlock.razor.js",
       "Components/Standard/ComboBox.razor.js",
       "Components/Fields/ToggleField.razor.js",
+      "Components/Fields/ImageField.razor.js",
       "Components/Shortcut.razor.js"
     ],
     "minify": {

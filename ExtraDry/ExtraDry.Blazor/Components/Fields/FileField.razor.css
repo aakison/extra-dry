@@ -1,19 +1,24 @@
 @layer extra-dry {
-    /*
-        Hide the HTML input file element as it's unstyled by default.
-    */
-    div.input.file ::deep input.actual {
-        display: none;
+  /* Hide the HTML input file element as it's unstyled by default. */
+  div.input.file ::deep input.actual {
+    display: none;
+  }
+
+  /* The replacement value display takes up all available space. */
+  div.input.file {
+    label {
+      flex: 1 1 auto;
+      gap: var(--spacing-tiny);
+      display: flex;
+      flex-direction: row;
     }
 
-    /*
-        The replacement value display takes up all available space.
-    */
-    div.input.file div.value {
-        flex: 1 1 auto;
-    }
+    div.value {
+      flex: 1 1 auto;
 
-    div.input.file div.value.placeholder {
+      &.placeholder {
         color: var(--neutral-6);
+      }
     }
+  }
 }
