@@ -19,7 +19,12 @@ namespace ExtraDry.Blazor;
 /// <see cref="BrowserBlobState.Uploaded"/> and clear <see cref="File"/>/<see cref="Content"/>, or
 /// replace the value with the resulting server-side Blob altogether.
 /// </remarks>
-public class BrowserBlob : IBlob
+/// <remarks>
+/// Creates a <see cref="BrowserBlob"/> representing a file selected by the user, populating
+/// metadata from the <see cref="IBrowserFile"/> immediately so it is available for display
+/// even before the file's content has been read or uploaded.
+/// </remarks>
+public class BrowserBlob(IBrowserFile file) : IBlob
 {
     /// <inheritdoc/>
     public Guid Uuid { get; set; } = Guid.CreateVersion7();
@@ -28,23 +33,23 @@ public class BrowserBlob : IBlob
     /// The title of the Blob, which is the original filename as selected by the user. This is
     /// typically unsafe for web use; see <see cref="Slug"/> for a URL-safe reference.
     /// </summary>
-    public string Title { get; set; } = "";
+    public string Title { get; set; } = file.Name;
 
     /// <summary>
     /// A URL-safe reference derived from <see cref="Title"/>. Some client operating systems allow
     /// filename characters that are not valid in a URI, so the filename is converted to a slug
     /// for use as an actual resource reference.
     /// </summary>
-    public string Slug { get; set; } = "";
+    public string Slug { get; set; } = ToFilenameSlug(file.Name);
 
     /// <inheritdoc/>
-    public string MimeType { get; set; } = "application/octet-stream";
+    public string MimeType { get; set; } = file.ContentType;
 
     /// <inheritdoc/>
     public string MD5Hash { get; set; } = "";
 
     /// <inheritdoc/>
-    public int Length { get; set; }
+    public int Length { get; set; } = (int)file.Size;
 
     /// <summary>
     /// The state of this file, indicating whether it is still pending upload or has already been
@@ -69,21 +74,7 @@ public class BrowserBlob : IBlob
     /// serialization since it has no meaningful representation on the server.
     /// </summary>
     [JsonIgnore]
-    public IBrowserFile? File { get; set; }
-
-    /// <summary>
-    /// Creates a <see cref="BrowserBlob"/> representing a file selected by the user, populating
-    /// metadata from the <see cref="IBrowserFile"/> immediately so it is available for display
-    /// even before the file's content has been read or uploaded.
-    /// </summary>
-    public BrowserBlob(IBrowserFile file)
-    {
-        File = file;
-        Title = file.Name;
-        Slug = ToFilenameSlug(file.Name);
-        MimeType = file.ContentType;
-        Length = (int)file.Size;
-    }
+    public IBrowserFile? File { get; set; } = file;
 
     /// <summary>
     /// Converts a filename into a URI-safe slug that retains its extension, e.g.

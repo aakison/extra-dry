@@ -4,6 +4,7 @@ namespace ExtraDry.Blazor;
 /// The state of a <see cref="BrowserBlob"/> as it progresses from being selected by the user in
 /// the browser through to being uploaded and persisted on the server.
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum BrowserBlobState
 {
     /// <summary>

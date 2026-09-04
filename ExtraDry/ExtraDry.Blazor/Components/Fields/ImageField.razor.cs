@@ -33,16 +33,18 @@ public partial class ImageField : FieldBase<string>
     public bool ShowPreview { get; set; } = true;
 
     /// <summary>
-    /// Whether the affordance to capture a "selfie" using the front-facing camera is displayed,
-    /// in addition to the folder and rear-camera affordances.
+    /// Whether the affordance to capture a photo using the rear-facing camera is displayed, in
+    /// addition to the folder affordance. Defaults to <c>null</c>, which auto-detects whether
+    /// the current device is a mobile device (where the browser's <c>capture</c> attribute is
+    /// honored to open the native camera app). Set explicitly to override the auto-detection,
+    /// e.g. if the heuristic is wrong for a particular device or browser.
     /// </summary>
     [Parameter]
-    public bool ShowSelfieAffordance { get; set; } = true;
+    public bool? ShowCameraAffordance { get; set; }
 
     /// <summary>
     /// The icon key for the affordance that opens the file/folder picker. This icon, along with
-    /// <see cref="CameraIcon"/> and <see cref="SelfieIcon"/>, must be registered with the
-    /// enclosing <c>Theme</c> component.
+    /// <see cref="CameraIcon"/>, must be registered with the enclosing <c>Theme</c> component.
     /// </summary>
     [Parameter]
     public string FolderIcon { get; set; } = "open-folder";
@@ -52,12 +54,6 @@ public partial class ImageField : FieldBase<string>
     /// </summary>
     [Parameter]
     public string CameraIcon { get; set; } = "open-camera";
-
-    /// <summary>
-    /// The icon key for the affordance that captures a photo using the front-facing camera.
-    /// </summary>
-    [Parameter]
-    public string SelfieIcon { get; set; } = "switch-camera";
 
     /// <summary>
     /// The maximum file size, in bytes, allowed when reading the selected file to generate the
@@ -70,6 +66,9 @@ public partial class ImageField : FieldBase<string>
     [Inject]
     private ILogger<ImageField> Logger { get; set; } = null!;
 
+    [Inject]
+    private ExtraDryJavascriptModule Javascript { get; set; } = null!;
+
     protected override void OnInitialized()
     {
         if(Icon == "") {
@@ -81,11 +80,46 @@ public partial class ImageField : FieldBase<string>
         base.OnInitialized();
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if(firstRender) {
+            try {
+                isMobileDevice = await Javascript.InvokeAsync<bool>("ImageField_IsMobileDevice");
+                StateHasChanged();
+            }
+            catch(Exception ex) {
+                Logger.LogWarning(ex, "Failed to detect if the current device is a mobile device.");
+            }
+        }
+    }
+
+    private bool isMobileDevice;
+
     /// <summary>
-    /// Hides the base single-affordance behavior in favor of the three dedicated affordances
+    /// Hides the base single-affordance behavior in favor of the dedicated affordances
     /// (folder, camera, selfie) rendered by this component.
     /// </summary>
     protected new bool DisplayAffordance => ShowAffordance && !ReadOnly;
+
+    private bool DisplayCameraAffordance => ShowCameraAffordance ?? isMobileDevice;
+
+    /// <summary>
+    /// The id of the input that best matches the current device, used so that clicking anywhere
+    /// on the control (not just a specific affordance button) opens the most appropriate picker:
+    /// the rear camera on a mobile device, or the plain file picker on a desktop.
+    /// </summary>
+    private string PrimaryInputId => DisplayCameraAffordance ? CameraInputId : InputId;
+
+    private string CameraInputId => $"{InputId}-camera";
+
+    private async Task HandleControlClickAsync()
+    {
+        if(!DisplayAffordance) {
+            return;
+        }
+        await Javascript.InvokeVoidAsync("ImageField_ClickInput", PrimaryInputId);
+    }
 
     private bool DisplayPreview => ShowPreview && !string.IsNullOrEmpty(PreviewSrc);
 
