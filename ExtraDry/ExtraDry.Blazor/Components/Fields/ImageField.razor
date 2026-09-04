@@ -1,0 +1,32 @@
+@namespace ExtraDry.Blazor.Components
+@using Microsoft.AspNetCore.Components.Forms
+@inherits FieldBase<string>
+
+<FieldFrame Size="@Size" Description="@Description" ShowDescription="@ShowDescription" Label="@Label" For="@InputId" ShowLabel="@ShowLabel" IsValid="@IsValid" Message="@ValidationMessage">
+    <div class="@CssClasses">
+        <div class="preview-frame">
+            <img class="preview" src="@PreviewSrc" alt="@Label" />
+        </div>
+        <div class="display-and-buttons">
+            <div class="@DisplayValueCssClasses" title="@Label">@DisplayValue</div>
+            @if(DisplayAffordance) {
+                <div class="affordances">
+                    <label class="affordance-button folder" title="Choose image from files">
+                        <Icon CssClass="affordance" Key="@FolderIcon" />
+                        <InputFile id="@InputId" class="actual" OnChange="@HandleFileChangeAsync" accept="@Accept" disabled="@ReadOnly" />
+                    </label>
+                    <label class="affordance-button camera" title="Take a photo">
+                        <Icon CssClass="affordance" Key="@CameraIcon" />
+                        <InputFile class="actual" OnChange="@HandleFileChangeAsync" accept="@Accept" capture="environment" disabled="@ReadOnly" />
+                    </label>
+                    @if(ShowSelfieAffordance) {
+                        <label class="affordance-button selfie" title="Take a selfie">
+                            <Icon CssClass="affordance" Key="@SelfieIcon" />
+                            <InputFile class="actual" OnChange="@HandleFileChangeAsync" accept="@Accept" capture="user" disabled="@ReadOnly" />
+                        </label>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</FieldFrame>

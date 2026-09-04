@@ -99,5 +99,8 @@ public class IconInfo
             new("show", $"{glyphPath}/eye-light-full.svg", "Show", "affordance"),
             new("hide", $"{glyphPath}/eye-slash-light-full.svg", "Hide", "affordance"),
 
+            new("picture-placeholder", $"{glyphPath}/camera-on-slide.svg", "Picture Placeholder", "icon"),
+            new("open-camera", $"{glyphPath}/camera-light-full.svg", "Open Camera", "affordance"),
+            new("switch-camera", $"{glyphPath}/camera-rotate-light-full.svg", "Switch Camera", "affordance"),
         }).ToDictionary(e => e.Key, e => e);
 }

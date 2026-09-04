@@ -1,0 +1,82 @@
+@layer extra-dry {
+  div.input.image {
+    --preview-size: 64px;
+    display: flex;
+    flex-direction: row;
+    padding: var(--spacing-small);
+    gap: var(--spacing-small);
+
+    /* Small inline preview of the selected/captured image. */
+    div.preview-frame {
+      padding: var(--spacing-small) var(--spacing-tiny) var(--spacing-tiny) var(--spacing-tiny) !important;
+
+      img.preview {
+        flex: 0 0 var(--preview-size);
+        width: var(--preview-size);
+        height: var(--preview-size);
+        object-fit: cover;
+        border-radius: var(--input-rounding, 4px);
+      }
+    }
+
+    div.display-and-buttons {
+      flex: 1 1 auto;
+      /* */
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-medium);
+      align-items: stretch;
+
+      div.affordances {
+        align-self: end;
+      }
+    }
+    /* The replacement value display takes up all available space. */
+    div.value {
+      flex: 1 1 auto;
+
+      &.placeholder {
+        color: var(--neutral-6);
+      }
+    }
+  }
+
+    /* Hide the HTML input file elements as they're unstyled by default. */
+    div.input.image ::deep input.actual {
+      display: none;
+    }
+
+    /* Group the three capture affordances together. */
+    div.input.image div.affordances {
+      display: flex;
+      flex-direction: row;
+      gap: var(--spacing-tiny, 4px);
+      flex: 0 0 auto;
+    }
+
+    /* Promote each affordance to a full-fledged clickable button rather than a small inline icon, so the buttons are easy targets on touch devices. */
+    div.input.image ::deep label.affordance-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 1px solid var(--neutral-4, #ccc);
+      border-radius: var(--input-rounding, 4px);
+      padding: var(--spacing-tiny, 4px) var(--spacing-small, 8px);
+      background-color: var(--neutral-1, #fff);
+    }
+
+      div.input.image ::deep label.affordance-button:hover {
+        background-color: var(--neutral-2, #f0f0f0);
+      }
+
+      div.input.image ::deep label.affordance-button img.affordance,
+      div.input.image ::deep label.affordance-button svg.affordance {
+        width: var(--icon-small, 24px);
+        height: var(--icon-small, 24px);
+      }
+
+    div.input.image.readonly ::deep label.affordance-button {
+      display: none;
+    }
+}
