@@ -1,4 +1,4 @@
-namespace ExtraDry.Blazor.Components;
+namespace ExtraDry.Core.Validation;
 
 public class RegexValidator : IValidator
 {
