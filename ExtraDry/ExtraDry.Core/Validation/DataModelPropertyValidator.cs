@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
+using System.Reflection;
 
-namespace ExtraDry.Blazor.Components;
+namespace ExtraDry.Core.Validation;
 
 /// <summary>
 /// A validator that validates a specific property on a data model.  Takes a model instance

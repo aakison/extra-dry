@@ -1,4 +1,4 @@
-namespace ExtraDry.Blazor.Components;
+namespace ExtraDry.Core.Validation;
 
 /// <summary>
 /// Represents a validator that can validate an object or a property on an object.

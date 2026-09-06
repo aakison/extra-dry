@@ -1,4 +1,4 @@
-namespace ExtraDry.Core;
+namespace ExtraDry.Core.Validation;
 
 /// <summary>
 /// The result of a validation attempt.
