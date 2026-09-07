@@ -128,8 +128,8 @@ public abstract class FieldBase<T> : ComponentBase
 
     private async Task UpdateValue(ChangeEventArgs args)
     {
-        // Special check for nullable types, when arg.Value is just null it doesn't have type to match T when T is nullable.
-        if(args.Value == null && Nullable.GetUnderlyingType(typeof(T)) != null) {
+        // Special check for nullable/reference types, when arg.Value is just null it doesn't have type to match T when T is nullable or a reference type.
+        if(args.Value == null && (Nullable.GetUnderlyingType(typeof(T)) != null || !typeof(T).IsValueType)) {
             Value = default!;
         }
         else if(args.Value is T tValue) {

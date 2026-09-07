@@ -7,7 +7,7 @@ namespace ExtraDry.Blazor.Components;
 /// The selected filename is stored as the string value. Use <see cref="OnFileSelected"/> to
 /// access the file content.
 /// </summary>
-public partial class FileField : FieldBase<string>
+public partial class FileField : FieldBase<BrowserBlob>
 {
     /// <summary>
     /// The accepted file types for the file input, as a comma-separated list of MIME types or
@@ -27,9 +27,15 @@ public partial class FileField : FieldBase<string>
 
     protected override void OnInitialized()
     {
-        if(Icon == "") Icon = "input-file";
-        if(Affordance == "") Affordance = "open-folder";
-        if(Placeholder == "") Placeholder = "choose file...";
+        if(Icon == "") {
+            Icon = "input-file";
+        }
+        if(Affordance == "") {
+            Affordance = "open-folder";
+        }
+        if(Placeholder == "") {
+            Placeholder = "choose file...";
+        }
         base.OnInitialized();
     }
 
@@ -37,7 +43,7 @@ public partial class FileField : FieldBase<string>
     {
         var blob = e.FileCount > 0 ? new BrowserBlob(e.File) : null;
         await OnFileSelected.InvokeAsync(blob);
-        var args = new ChangeEventArgs { Value = blob?.Title ?? string.Empty };
+        var args = new ChangeEventArgs { Value = blob };
         await NotifyChange(args);
     }
 
@@ -45,9 +51,9 @@ public partial class FileField : FieldBase<string>
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", "file", ReadOnlyCss, IsValidCss, CssClass);
 
-    private string DisplayValue => string.IsNullOrWhiteSpace(Value) ? Placeholder : Value;
+    private string DisplayValue => string.IsNullOrWhiteSpace(Value?.Title) ? Placeholder : Value.Title;
 
-    private string PlaceholderCssClass => string.IsNullOrWhiteSpace(Value) ? "placeholder" : "";
+    private string PlaceholderCssClass => string.IsNullOrWhiteSpace(Value?.Title) ? "placeholder" : "";
 
     private string DisplayValueCssClasses => DataConverter.JoinNonEmpty(" ", "value", PlaceholderCssClass, ReadOnlyCss);
 }

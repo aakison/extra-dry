@@ -8,7 +8,7 @@ namespace ExtraDry.Blazor.Components;
 /// The selected filename is stored as the string value. Use <see cref="OnFileSelected"/> to
 /// access the file content. A small inline preview of the selected image is also displayed.
 /// </summary>
-public partial class ImageField : FieldBase<string>
+public partial class ImageField : FieldBase<BrowserBlob>
 {
     /// <summary>
     /// The accepted file types for the file input, as a comma-separated list of MIME types or
@@ -80,6 +80,25 @@ public partial class ImageField : FieldBase<string>
         base.OnInitialized();
     }
 
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if(!ReferenceEquals(Value, previousValue)) {
+            previousValue = Value;
+            if(Value == null) {
+                PreviewSrc = PreviewPlaceholderSrc;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Tracks the last known <see cref="FieldBase{T}.Value"/> so that external changes (e.g. a
+    /// parent clearing the bound value when a new response is loaded) can be detected and the
+    /// stale preview image reset, since the preview is otherwise only updated when a file is
+    /// selected via <see cref="HandleFileChangeAsync"/>.
+    /// </summary>
+    private BrowserBlob? previousValue;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
@@ -132,7 +151,7 @@ public partial class ImageField : FieldBase<string>
         var blob = e.FileCount > 0 ? new BrowserBlob(e.File) : null;
         await LoadPreviewAsync(blob);
         await OnFileSelected.InvokeAsync(blob);
-        var args = new ChangeEventArgs { Value = blob?.Title ?? string.Empty };
+        var args = new ChangeEventArgs { Value = blob };
         await NotifyChange(args);
     }
 
@@ -163,9 +182,9 @@ public partial class ImageField : FieldBase<string>
 
     private string CssClasses => DataConverter.JoinNonEmpty(" ", "input", "image", ReadOnlyCss, IsValidCss, CssClass);
 
-    private string DisplayValue => string.IsNullOrWhiteSpace(Value) ? Placeholder : Value;
+    private string DisplayValue => string.IsNullOrWhiteSpace(Value?.Title) ? Placeholder : Value.Title;
 
-    private string PlaceholderCssClass => string.IsNullOrWhiteSpace(Value) ? "placeholder" : "";
+    private string PlaceholderCssClass => string.IsNullOrWhiteSpace(Value?.Title) ? "placeholder" : "";
 
     private string DisplayValueCssClasses => DataConverter.JoinNonEmpty(" ", "value", PlaceholderCssClass, ReadOnlyCss);
 }

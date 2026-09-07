@@ -1,6 +1,6 @@
 @namespace ExtraDry.Blazor.Components
 @using Microsoft.AspNetCore.Components.Forms
-@inherits FieldBase<string>
+@inherits FieldBase<BrowserBlob>
 
 <FieldFrame Size="@Size" Description="@Description" ShowDescription="@ShowDescription" Label="@Label" For="@InputId" ShowLabel="@ShowLabel" IsValid="@IsValid" Message="@ValidationMessage">
     <div class="@CssClasses" @onclick="HandleControlClickAsync">
