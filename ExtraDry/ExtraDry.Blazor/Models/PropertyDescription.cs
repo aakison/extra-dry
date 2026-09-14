@@ -376,7 +376,7 @@ public class PropertyDescription
         else if(PropertyType == typeof(string)) {
             return value?.ToString();
         }
-        else if(PropertyType == typeof(decimal) || PropertyType == typeof(int)) {
+        else if(PropertyType == typeof(decimal) || PropertyType == typeof(int) || PropertyType == typeof(double) || PropertyType == typeof(float) || PropertyType == typeof(long)) {
             if(Formatter.TryParse(value?.ToString() ?? "", out var result)) {
                 return result;
             }
@@ -451,6 +451,8 @@ public class PropertyDescription
             (true, Type t) when t == typeof(decimal) => new NullableDecimalFormatter(),
             (false, Type t) when t == typeof(int) => new IntFormatter(),
             (true, Type t) when t == typeof(int) => new NullableIntFormatter(),
+            (false, Type t) when t == typeof(double) => new DoubleFormatter(),
+            (true, Type t) when t == typeof(double) => new NullableDoubleFormatter(),
             _ => new IdentityFormatter()
         };
     }
