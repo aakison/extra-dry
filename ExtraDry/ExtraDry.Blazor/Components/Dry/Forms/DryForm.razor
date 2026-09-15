@@ -15,9 +15,11 @@
                         }
                     </div>
                 }
-                <div class="content">
-                    @ChildContent
-                </div>
+                @if(ChildContent is not null) {
+                    <div class="content">
+                        @ChildContent
+                    </div>
+                }
                 @if(DisplayCommands) {
                     <ValidationBoundary>
                         <div class="@ModelNameSlug entity-actions">
