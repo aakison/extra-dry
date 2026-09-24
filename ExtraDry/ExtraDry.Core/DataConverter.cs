@@ -235,6 +235,28 @@ public partial class DataConverter
         return displayAttribute?.GetShortName() ?? displayAttribute?.GetName() ?? member.Name;
     }
 
+    /// <summary>
+    /// Given the short name (from the DataAnnotation Display attribute) of an enum value,
+    /// returns the matching enum value. This is the inverse of `DisplayShortEnum`.
+    /// </summary>
+    public static T ParseShortEnum<T>(string shortName) where T : struct, Enum
+    {
+        var enumType = typeof(T);
+        foreach(var value in Enum.GetValues<T>()) {
+            var enumValue = Enum.GetName(enumType, value);
+            if(enumValue == null) {
+                continue;
+            }
+            var member = enumType.GetMember(enumValue)[0];
+            var displayAttribute = member.GetCustomAttribute<DisplayAttribute>();
+            var name = displayAttribute?.GetShortName() ?? displayAttribute?.GetName() ?? member.Name;
+            if(string.Equals(name, shortName, StringComparison.Ordinal)) {
+                return value;
+            }
+        }
+        throw new ArgumentException($"No enum value of type {enumType.Name} matches short name '{shortName}'.", nameof(shortName));
+    }
+
     public static IList<TEnum> EnumValues<TEnum>()
     {
         var type = typeof(TEnum);
