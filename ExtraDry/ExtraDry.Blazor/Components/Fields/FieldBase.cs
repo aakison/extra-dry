@@ -2,7 +2,7 @@ using ExtraDry.Core.Validation;
 
 namespace ExtraDry.Blazor.Components;
 
-public abstract class FieldBase<T> : ComponentBase
+public abstract class FieldBase<T> : ComponentBase, IDisposable
 {
 
     [Parameter]
@@ -102,6 +102,21 @@ public abstract class FieldBase<T> : ComponentBase
             ("", _) => Id,
             (_, _) => InputId,
         };
+        if(!ReferenceEquals(registeredScope, ValidationScopeContext)) {
+            registeredScope?.UnregisterField(ForceValidateAsync);
+            registeredScope = ValidationScopeContext;
+            registeredScope?.RegisterField(ForceValidateAsync);
+        }
+    }
+
+    private ValidationScopeContext? registeredScope;
+
+    private Task ForceValidateAsync() => ValidateAsync(showError: true);
+
+    public void Dispose()
+    {
+        registeredScope?.UnregisterField(ForceValidateAsync);
+        GC.SuppressFinalize(this);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

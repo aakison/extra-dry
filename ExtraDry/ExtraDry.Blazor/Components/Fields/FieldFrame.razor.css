@@ -1,5 +1,5 @@
 ::deep div.invalid {
-  background: repeating-linear-gradient(-45deg, var(--danger-light), var(--danger-light) 10px, var(--warning-light) 10px, var(--warning-light) 20px);
+  outline: solid 2px var(--danger);
 }
 
 .invalid.message {
