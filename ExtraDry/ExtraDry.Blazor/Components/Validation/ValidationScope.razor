@@ -27,6 +27,13 @@
 
     public IList<ValidationInfo> Results => Context.Results;
 
+    /// <summary>
+    /// Forces every registered field within this scope to revalidate and reveal any errors,
+    /// converting any currently silent validation results (e.g. untouched, invalid required
+    /// fields) into visible failures. Typically called when a submit is attempted.
+    /// </summary>
+    public Task ForceValidationAsync() => Context.ForceValidationAsync();
+
     private ValidationScopeContext Context { get; } = new ValidationScopeContext();
 
 }
