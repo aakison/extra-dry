@@ -21,3 +21,14 @@ div.inline {
     gap: var(--spacing-small);
     align-items: start;
   }
+
+/* Change for odd case of checkbox where text is after control*/
+  div.inline:has(div.input.checkbox) {
+    justify-content: end;
+
+    div.inline-child {
+      height: var(--input-field-height);
+      justify-content: start;
+      align-items: center;
+    }
+  }
