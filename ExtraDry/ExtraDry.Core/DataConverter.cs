@@ -34,8 +34,9 @@ public partial class DataConverter
         var current = CurrentDateTime().ToUniversalTime();
         var delta = current - utc;
         var localTime = utc.ToLocalTime();
-        var today = current.Date == utc.Date;
-        var yesterday = current.Date == utc.Date.AddDays(1);
+        var currentLocal = current.ToLocalTime();
+        var today = currentLocal.Date == localTime.Date;
+        var yesterday = currentLocal.Date == localTime.Date.AddDays(1);
         if(delta.TotalSeconds < 30) {
             return "Just now";
         }
@@ -54,13 +55,13 @@ public partial class DataConverter
             return $"{hours} hours ago";
         }
         else if(yesterday) {
-            return $"Yesterday {localTime:hh:mm tt}";
+            return $"Yesterday {localTime.ToString("hh:mm tt", CultureInfo.CurrentCulture)}";
         }
         else if(delta.TotalDays < 6) {
-            return $"{localTime:ddd hh:mm tt}";
+            return $"{localTime.ToString("ddd hh:mm tt", CultureInfo.CurrentCulture)}";
         }
         else {
-            return $"{localTime:MMM dd hh:mm tt}";
+            return $"{localTime.ToString("MMM dd hh:mm tt", CultureInfo.CurrentCulture)}";
         }
     }
 
@@ -79,8 +80,9 @@ public partial class DataConverter
         };
         var current = CurrentDateTime().ToUniversalTime();
         var localTime = utc.ToLocalTime();
-        var today = current.Date == utc.Date;
-        var yesterday = current.Date == utc.Date.AddDays(1);
+        var currentLocal = current.ToLocalTime();
+        var today = currentLocal.Date == localTime.Date;
+        var yesterday = currentLocal.Date == localTime.Date.AddDays(1);
         if(today) {
             return "Today";
         }
@@ -88,7 +90,7 @@ public partial class DataConverter
             return $"Yesterday";
         }
         else {
-            return $"{localTime:d MMM yyyy}";
+            return $"{localTime.ToString("d MMM yyyy", CultureInfo.CurrentCulture)}";
         }
     }
 
