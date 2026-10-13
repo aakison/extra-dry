@@ -44,10 +44,10 @@ public class CachingListClient<TItem>(
         }
         if(missingPages.Count == 0) {
             // All cached, nothing to do.
-            Console.WriteLine("All items cached, returning items.");
+            //Console.WriteLine("CACHINGLISTCLIENT: All items cached, returning items.");
         }
         foreach(var page in missingPages) {
-            Console.WriteLine($"CACHINGLISTCLIENT: Cache miss for page {page}, fetching from client.");
+            //Console.WriteLine($"CACHINGLISTCLIENT: Cache miss for page {page}, fetching from client.");
             var pageStartIndex = page * PageSize;
             var pageQuery = new Query {
                 Filter = query.Filter,
@@ -58,7 +58,7 @@ public class CachingListClient<TItem>(
             // CancellationToken not sent to client, cancellations usually request the same page so go ahead and fill the cache.
             var pageItems = await itemsClient.GetItemsAsync(pageQuery);
             total = pageItems.Total;
-            Console.WriteLine($"CACHINGLISTCLIENT: Cache miss for page {page}, fetched {pageItems.Items.Count()} items from client.");
+            //Console.WriteLine($"CACHINGLISTCLIENT: Cache miss for page {page}, fetched {pageItems.Items.Count()} items from client.");
             var index = pageStartIndex;
             foreach(var item in pageItems.Items) {
                 if(!cache.TryAdd(index, item)) {

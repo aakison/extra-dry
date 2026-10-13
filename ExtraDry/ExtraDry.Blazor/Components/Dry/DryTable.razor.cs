@@ -257,18 +257,20 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
 
     private async ValueTask<ItemsProviderResult<ListItemInfo<TItem>>> GetItemsAsync(ItemsProviderRequest request)
     {
-        if(isLoading || ProjectionListClient == null || QueryBuilderAccessor == null) {
+        if(ProjectionListClient == null || QueryBuilderAccessor == null) {
             return new ItemsProviderResult<ListItemInfo<TItem>>();
         }
-        await serviceLock.WaitAsync();
+        // Serialize access instead of bailing out early when a request is already in flight.
+        // Returning an empty/zero-total result here (as a previous implementation did) races
+        // with Virtualize's own concurrent requests during fast scrolling and causes Virtualize
+        // to believe the list is empty, blanking out all rendered rows.
+        await serviceLock.WaitAsync(request.CancellationToken);
         var builder = QueryBuilderAccessor.QueryBuilder;
         try {
             request.CancellationToken.ThrowIfCancellationRequested();
             builder.Skip = request.StartIndex;
             builder.Take = request.Count;
-            isLoading = true;
             var infos = await ProjectionListClient.GetItemsAsync(builder.Build(), request.CancellationToken);
-            isLoading = false;
             var result = new ItemsProviderResult<ListItemInfo<TItem>>(infos.Items, infos.Total);
             return result;
         }
@@ -289,13 +291,10 @@ public partial class DryTable<TItem> : ComponentBase, IDisposable, IExtraDryComp
             }
         }
         finally {
-            isLoading = false;
             serviceLock.Release();
             StateHasChanged(); // update classes affected by InternalItems
         }
     }
-
-    private bool isLoading;
 
     private int TotalColumns => (HasCheckboxColumn ? 1 : 0) +
         (HasRadioColumn ? 1 : 0) +
