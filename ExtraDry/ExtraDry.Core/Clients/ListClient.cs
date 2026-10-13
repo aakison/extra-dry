@@ -132,9 +132,9 @@ public class ListClient<TItem> : IListClient<TItem>
 
     public async ValueTask<ListClientResult<TItem>> GetItemsAsync(Query query, CancellationToken cancellationToken = default)
     {
-        Console.WriteLine($"LISTCLIENT.GetItemsAsync called with query: {JsonSerializer.Serialize(query)}");
+        //Console.WriteLine($"LISTCLIENT.GetItemsAsync called with query: {JsonSerializer.Serialize(query)}");
         var result = await GetItemsInternalAsync(query, cancellationToken);
-        Console.WriteLine($"LISTCLIENT.GetItemsAsync result:");
+        //Console.WriteLine($"LISTCLIENT.GetItemsAsync result:");
         return new ListClientResult<TItem>(result.Item2, result.Item2.Count, result.Item3);
     }
 
