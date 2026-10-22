@@ -186,7 +186,7 @@ public class CrudClient<T>(
     private string ApiEndpoint(object key, CrudOperation operation)
     {
         var url = options.CrudEndpoint;
-        foreach(var formatter in options.EndpointFormatters) {
+        foreach(var formatter in options.EndpointFormatters.Where(e => key.GetType().IsAssignableTo(e.KeyType))) {
             if(formatter.Operations.HasFlag(operation) == false) {
                 continue;
             }
