@@ -52,6 +52,7 @@ public class CrudClientOptions<T> : IHttpClientOptions, IValidatableObject
     public void AddEndpointGenerator<TKey>(Func<TKey, string> generator, CrudOperation operations = CrudOperation.All)
     {
         EndpointFormatters.Add(new EndpointFormatter {
+            KeyType = typeof(TKey),
             ParmeterName = "",
             Formatter = TypeSafeWrapper(generator),
             Mode = EndpointMode.Generate,
@@ -69,6 +70,7 @@ public class CrudClientOptions<T> : IHttpClientOptions, IValidatableObject
     public void AddEndpointReplacer<TKey>(string parameterName, Func<TKey, string> formatter, CrudOperation operations = CrudOperation.All)
     {
         EndpointFormatters.Add(new EndpointFormatter {
+            KeyType = typeof(TKey),
             ParmeterName = parameterName,
             Formatter = TypeSafeWrapper(formatter),
             Mode = EndpointMode.Replace,
@@ -84,8 +86,9 @@ public class CrudClientOptions<T> : IHttpClientOptions, IValidatableObject
     /// <param name="operations">Operations that this formatter is used on.</param>
     public void AddEndpointAppender<TKey>(Func<TKey, string> appender, CrudOperation operations = CrudOperation.Existing)
     {
-        EndpointFormatters.RemoveAll(e => e.Mode == EndpointMode.Append);
+        //EndpointFormatters.RemoveAll(e => e.Mode == EndpointMode.Append);
         EndpointFormatters.Add(new EndpointFormatter {
+            KeyType = typeof(TKey),
             ParmeterName = "",
             Formatter = TypeSafeWrapper(appender),
             Mode = EndpointMode.Append,
