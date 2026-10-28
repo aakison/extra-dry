@@ -56,17 +56,15 @@ public static class LinqBuilder
     private static IOrderedQueryable<T> ApplyOrder<T>(IQueryable<T> source, string property, OrderType methodType)
     {
         var modelDescription = new ModelInfo(typeof(T));
-        string[] props = property.Split('.');
-        var type = typeof(T);
-        var arg = Expression.Parameter(type, "x");
+        var sortProperty = modelDescription.SortProperties.FirstOrDefault(sortProp => string.Equals(sortProp.ExternalName, property, StringComparison.OrdinalIgnoreCase))
+            ?? (string.Equals(modelDescription.StabilizerProperty?.ExternalName, property, StringComparison.OrdinalIgnoreCase)
+                ? modelDescription.StabilizerProperty
+                : throw new DryException($"Could not find sort property `{property}`", "Could not apply requested sort"));
+        var type = sortProperty.ValueType;
+        var arg = Expression.Parameter(typeof(T), "x");
         Expression expr = arg;
-        foreach(string prop in props) {
-            var pi = modelDescription.SortProperties.FirstOrDefault(sortProp => string.Equals(sortProp.ExternalName, prop, StringComparison.OrdinalIgnoreCase))?.Property
-                ?? (string.Equals(modelDescription.StabilizerProperty?.ExternalName, prop, StringComparison.OrdinalIgnoreCase)
-                        ? modelDescription.StabilizerProperty!.Property
-                        : throw new DryException($"Could not find sort property `{prop}`", "Could not apply requested sort"));
-            expr = Expression.Property(expr, pi);
-            type = pi.PropertyType;
+        foreach(var step in sortProperty.QueryPath) {
+            expr = Expression.Property(expr, step);
         }
         var delegateType = typeof(Func<,>).MakeGenericType(typeof(T), type);
         var lambda = Expression.Lambda(delegateType, expr, arg);
@@ -130,11 +128,11 @@ public static class LinqBuilder
     /// `matchValues` must exist in at least one of the properties. The exact comparison function
     /// is also determined by the properties' filter attribute.
     /// </remarks>
-    public static IQueryable<T> WhereFilterConditions<T>(this IQueryable<T> source, FilterProperty[] filterProperties, string filterQuery, StringComparison? stringComparison = null)
+    public static IQueryable<T> WhereFilterConditions<T>(this IQueryable<T> source, FilterProperty[] filterProperties, Filter filter, StringComparison? stringComparison = null)
     {
         var param = Expression.Parameter(typeof(T), "e");
         var terms = new List<Expression>();
-        var filter = FilterParser.Parse(filterQuery);
+        //var filter = FilterParser.Parse(filterQuery);
         foreach(var rule in filter.Rules) {
             var property = filterProperties.FirstOrDefault(e => string.Equals(e.ExternalName, rule.PropertyName, StringComparison.OrdinalIgnoreCase));
             if(rule.PropertyName == "*") {
@@ -160,7 +158,7 @@ public static class LinqBuilder
             else if(property != null) {
                 if(rule.LowerBound != BoundRule.None && rule.UpperBound != BoundRule.None && rule.Values.Count == 2) {
                     // range of values
-                    var fields = RangeExpression(param, property.Property, rule);
+                    var fields = RangeExpression(property.BuildAccess(param), rule);
                     terms.Add(AllOf(fields));
                 }
                 else {
@@ -186,12 +184,13 @@ public static class LinqBuilder
             throw new DryException("Filter expression for property was not provided.", $"Unable to apply filter for Property '{property.Property.Name}'. Make sure there are no spaces after '{property.Property.Name}:'  0x0F4042BE");
         }
 
-        if(property.Property.PropertyType == typeof(string)) {
-            var fields = rule.Values.Select(e => StringExpression(param, property.Property, property.Filter.Type, e, stringComparison)).ToArray();
+        var access = property.BuildAccess(param);
+        if(property.ValueType == typeof(string)) {
+            var fields = rule.Values.Select(e => StringExpression(access, property.Filter.Type, e, stringComparison)).ToArray();
             terms.Add(AnyOf(fields));
         }
         else {
-            var fields = rule.Values.Select(e => ComparisonExpression(param, property.Property, e)).ToArray();
+            var fields = rule.Values.Select(e => ComparisonExpression(access, e)).ToArray();
             terms.Add(AnyOf(fields));
         }
     }
@@ -214,11 +213,10 @@ public static class LinqBuilder
         return left;
     }
 
-    private static Expression ComparisonExpression(ParameterExpression parameter, PropertyInfo propertyInfo, string value)
+    private static Expression ComparisonExpression(Expression property, string value)
     {
         try {
-            var property = Expression.Property(parameter, propertyInfo);
-            var propertyType = propertyInfo.PropertyType;
+            var propertyType = property.Type;
             Expression valueConstant = Expression.Constant(ParseToType(propertyType, value));
             if(propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(Nullable<>)) {
                 valueConstant = Expression.Convert(valueConstant, propertyType);
@@ -236,16 +234,15 @@ public static class LinqBuilder
 
     private static Expression EmptySetExpression => Expression.Equal(Expression.Constant(0), Expression.Constant(1));
 
-    private static Expression[] RangeExpression(ParameterExpression parameter, PropertyInfo propertyInfo, FilterRule rule)
+    private static Expression[] RangeExpression(Expression propertyExpr, FilterRule rule)
     {
-        if(!propertyInfo.PropertyType.IsValueType) {
+        if(!propertyExpr.Type.IsValueType) {
             throw new DryException("Filters that specify a range expression may only be used with value types that have comparisons defined.", "Unable to apply filter. 0x0F4DC1B1");
         }
-        var type = propertyInfo.PropertyType;
+        var type = propertyExpr.Type;
         var expressions = new List<Expression>();
         if(!string.IsNullOrWhiteSpace(rule.Values[0])) {
             var valueExpr = ConstantToExpression(rule.Values[0], type);
-            var propertyExpr = Expression.Property(parameter, propertyInfo);
             var lowerBoundExpr = rule.LowerBound switch {
                 BoundRule.Exclusive => Expression.GreaterThan(propertyExpr, valueExpr),
                 _ => Expression.GreaterThanOrEqual(propertyExpr, valueExpr),
@@ -254,7 +251,6 @@ public static class LinqBuilder
         }
         if(!string.IsNullOrWhiteSpace(rule.Values[1])) {
             var valueExpr = ConstantToExpression(rule.Values[1], type);
-            var propertyExpr = Expression.Property(parameter, propertyInfo);
             var upperBoundExpr = rule.UpperBound switch {
                 BoundRule.Inclusive => Expression.LessThanOrEqual(propertyExpr, valueExpr),
                 _ => Expression.LessThan(propertyExpr, valueExpr),
@@ -301,9 +297,8 @@ public static class LinqBuilder
         }
     }
 
-    private static MethodCallExpression StringExpression(ParameterExpression parameter, PropertyInfo propertyInfo, FilterType filterType, string value, StringComparison? stringComparison)
+    private static MethodCallExpression StringExpression(Expression property, FilterType filterType, string value, StringComparison? stringComparison)
     {
-        var property = Expression.Property(parameter, propertyInfo);
         var valueConstant = Expression.Constant(value);
         if(stringComparison != null) {
             var method = filterType switch {
