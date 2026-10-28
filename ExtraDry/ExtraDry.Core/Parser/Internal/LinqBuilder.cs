@@ -56,11 +56,11 @@ public static class LinqBuilder
     private static IOrderedQueryable<T> ApplyOrder<T>(IQueryable<T> source, string property, OrderType methodType)
     {
         var modelDescription = new ModelInfo(typeof(T));
-        var sortProperty = modelDescription.SortProperties.FirstOrDefault(sortProp => string.Equals(sortProp.ExternalName, property, StringComparison.OrdinalIgnoreCase))
+        var sortProperty = modelDescription.SortProperties.FirstOrDefault(sortProp => sortProp.IsNamed(property))
             ?? (string.Equals(modelDescription.StabilizerProperty?.ExternalName, property, StringComparison.OrdinalIgnoreCase)
                 ? modelDescription.StabilizerProperty
                 : throw new DryException($"Could not find sort property `{property}`", "Could not apply requested sort"));
-        var type = sortProperty.ValueType;
+        var type = sortProperty!.ValueType;
         var arg = Expression.Parameter(typeof(T), "x");
         Expression expr = arg;
         foreach(var step in sortProperty.QueryPath) {
@@ -134,7 +134,7 @@ public static class LinqBuilder
         var terms = new List<Expression>();
         //var filter = FilterParser.Parse(filterQuery);
         foreach(var rule in filter.Rules) {
-            var property = filterProperties.FirstOrDefault(e => string.Equals(e.ExternalName, rule.PropertyName, StringComparison.OrdinalIgnoreCase));
+            var property = filterProperties.FirstOrDefault(e => e.IsNamed(rule.PropertyName));
             if(rule.PropertyName == "*") {
                 var keywords = new List<Expression>();
                 foreach(var filterProperty in filterProperties) {

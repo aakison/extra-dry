@@ -74,12 +74,14 @@ public class ModelInfo
             var externalName = ExternalName(property);
 
             var filter = property.GetCustomAttribute<FilterAttribute>();
+            var queryName = string.IsNullOrWhiteSpace(filter?.Name) ? externalName : filter.Name;
+            var alternateName = queryName == externalName ? null : externalName;
             if(filter != null) {
-                FilterProperties.Add(new FilterProperty(property, filter, externalName));
+                FilterProperties.Add(new FilterProperty(property, filter, queryName, alternateName));
             }
 
             if(IsSortable(property)) {
-                SortProperties.Add(new SortProperty(property, externalName, filter));
+                SortProperties.Add(new SortProperty(property, queryName, filter, alternateName));
             }
 
             var statistics = property.GetCustomAttribute<StatisticsAttribute>();

@@ -9,13 +9,27 @@ namespace ExtraDry.Core.Parser.Internal;
 public class FilterProperty(
     PropertyInfo property,
     FilterAttribute filter,
-    string? externalName = null)
+    string? externalName = null,
+    string? alternateName = null)
 {
     public PropertyInfo Property { get; set; } = property;
 
     public FilterAttribute Filter { get; set; } = filter;
 
     public string ExternalName { get; } = externalName ?? property.Name;
+
+    /// <summary>
+    /// The name of the property when it is aliased by `FilterAttribute.Name`, which is also accepted
+    /// when matching a query to this property.
+    /// </summary>
+    public string? AlternateName { get; } = alternateName;
+
+    /// <summary>
+    /// Determines if the name used in a query refers to this property.
+    /// </summary>
+    public bool IsNamed(string name) =>
+        string.Equals(ExternalName, name, StringComparison.OrdinalIgnoreCase)
+        || string.Equals(AlternateName, name, StringComparison.OrdinalIgnoreCase);
 
     /// <summary>
     /// The chain of properties to traverse to reach the value that is filtered. Is just the
