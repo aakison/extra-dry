@@ -5,11 +5,25 @@ namespace ExtraDry.Core.Parser.Internal;
 public class SortProperty(
     PropertyInfo property,
     string externalName,
-    FilterAttribute? filter = null)
+    FilterAttribute? filter = null,
+    string? alternateName = null)
 {
     public PropertyInfo Property { get; } = property;
 
     public string ExternalName { get; } = externalName;
+
+    /// <summary>
+    /// The name of the property when it is aliased by `FilterAttribute.Name`, which is also accepted
+    /// when matching a query to this property.
+    /// </summary>
+    public string? AlternateName { get; } = alternateName;
+
+    /// <summary>
+    /// Determines if the name used in a query refers to this property.
+    /// </summary>
+    public bool IsNamed(string name) =>
+        string.Equals(ExternalName, name, StringComparison.OrdinalIgnoreCase)
+        || string.Equals(AlternateName, name, StringComparison.OrdinalIgnoreCase);
 
     /// <summary>
     /// The chain of properties to traverse to reach the value that is sorted. Is just the
