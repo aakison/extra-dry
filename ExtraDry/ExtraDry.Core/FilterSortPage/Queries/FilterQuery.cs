@@ -1,7 +1,7 @@
 namespace ExtraDry.Core;
 
 /// <summary>
-/// Represents a basic query to filter against a list or hierarchy of items.
+/// Represents a basic query to filter against a list of items.
 /// </summary>
 public class FilterQuery
 {

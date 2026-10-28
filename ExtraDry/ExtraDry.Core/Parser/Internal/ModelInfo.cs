@@ -37,7 +37,9 @@ public class ModelInfo
         }
         // Note attributes are by name to avoid having to take dependency on EF.
         var disqualifyingAttributes = new string[] { "JsonIgnoreAttribute", "NotMappedAttribute", "KeyAttribute" };
-        var ignore = prop.GetCustomAttributes().Any(e => disqualifyingAttributes.Any(f => f == e.GetType().Name));
+        var hasQueryPath = !string.IsNullOrWhiteSpace(prop.GetCustomAttribute<FilterAttribute>()?.Path);
+        var ignore = prop.GetCustomAttributes().Any(e => disqualifyingAttributes.Any(f => f == e.GetType().Name
+            && !(hasQueryPath && f == "NotMappedAttribute")));
         if(prop.Name == "Id" || prop.Name == $"{prop.DeclaringType?.Name}Id") {
             // EF convention for Key
             ignore = true;
@@ -77,7 +79,7 @@ public class ModelInfo
             }
 
             if(IsSortable(property)) {
-                SortProperties.Add(new SortProperty(property, externalName));
+                SortProperties.Add(new SortProperty(property, externalName, filter));
             }
 
             var statistics = property.GetCustomAttribute<StatisticsAttribute>();
