@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -18,11 +17,9 @@ public static partial class ExtraDryEndpointRouteBuilderExtensions
 {
     /// <summary>
     /// Maps an anonymous endpoint at <c>/bundles/atlas.svg</c> that serves a generated SVG sprite
-    /// atlas. The <paramref name="iconProvider"/> resolves icons from DI so they don't need to be
-    /// available at configuration time. Only icons with <see cref="SvgRenderType.Atlas"/> are
-    /// included. Each qualifying SVG file is transformed into a named <c>&lt;symbol&gt;</c>
-    /// element following the same rules as the Blazor <c>Theme</c> component. The atlas is
-    /// generated once at startup.
+    /// atlas. Only icons with <see cref="SvgRenderType.Atlas" /> are included. Each qualifying SVG
+    /// file is transformed into a named <c>&lt;symbol&gt;</c> element following the same rules as
+    /// the Blazor <c>Theme</c> component. The atlas is generated once at startup.
     /// </summary>
     public static IEndpointRouteBuilder MapSvgAtlas(this IEndpointRouteBuilder endpoints, IEnumerable<IconInfo> icons)
     {
@@ -91,7 +88,7 @@ public static partial class ExtraDryEndpointRouteBuilderExtensions
             logger.LogInformation("Added icon '{Key}' to SVG atlas from file '{ImagePath}'.", icon.Key, icon.ImagePath);
         }
 
-        var atlas = $@"<svg xmlns=""http://www.w3.org/2000/svg"">{allDefs}{symbols}</svg>";
+        var atlas = $@"<svg xmlns=""http://www.w3.org/2000/svg"" id=""svg-atlas"" style=""display:none"">{allDefs}{symbols}</svg>";
 
         endpoints.MapGet("/bundles/atlas.svg", () => Results.Content(atlas, "image/svg+xml"))
             .AllowAnonymous()

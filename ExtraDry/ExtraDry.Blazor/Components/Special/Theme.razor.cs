@@ -133,11 +133,16 @@ public partial class Theme(
     /// ensure that the inline SVG bodies are populated and can be updated with the viewbox values.
     /// </summary>
     private async Task SetSvgAtlasViewboxes() {
+        if(loaded) {
+            return;
+        }
         Dictionary<string, string>? viewBoxManifest = null;
-        if(OperatingSystem.IsBrowser()) {
+        var isBrowser = OperatingSystem.IsBrowser();
+        if(isBrowser) {
             try {
                 var atlasUrl = $"/bundles/atlas.svg?v={Version}";
                 var atlasContent = await Http.GetStringAsync(atlasUrl);
+                InlineSvgAtlas = (MarkupString)atlasContent;
                 viewBoxManifest = SymbolViewBoxRegex().Matches(atlasContent)
                     .ToDictionary(
                         m => m.Groups[1].Value,
@@ -148,10 +153,20 @@ public partial class Theme(
             }
         }
 
+        // Force a re-render so that the InlineSvgAtlas is updated and available to downstream components.
+        StateHasChanged();
+        await Task.Yield();
+
         foreach(var icon in Icons!) {
             if(icon.SvgRenderType == SvgRenderType.Atlas) {
                 var viewBox = (viewBoxManifest?.TryGetValue(icon.Key, out var vb) ?? false) ? $" {vb}" : "";
-                icon.SvgInlineBody = icon.SvgInlineBody.Replace("data-viewbox", viewBox);
+                if(isBrowser) {
+                    // rewrite to reference svg in body to avoid network requests.
+                    icon.SvgInlineBody = $@"<svg class=""{icon.CssClass} additional-classes""><title>{icon.AlternateText}</title><use href=""#{icon.Key}""></use></svg>";
+                }
+                else {
+                    icon.SvgInlineBody = icon.SvgInlineBody.Replace("data-viewbox", viewBox);
+                }
             }
         }
 
@@ -182,12 +197,13 @@ public partial class Theme(
                 var version = $"?v={Version}";
                 icon.SvgInlineBody = $@"<svg class=""{icon.CssClass} additional-classes"" data-viewbox><title>{icon.AlternateText}</title><use href=""/bundles/atlas.svg{version}#{icon.Key}""></use></svg>";
             }
-
         }
         catch(Exception ex) {
             Logger.LogIconFailed(icon.Key, icon.ImagePath, ex);
         }
     }
+
+    private MarkupString InlineSvgAtlas { get; set; } = (MarkupString)"<div style=\"display:none\">SVG Atlas Goes here</div>";
 
     private static bool loaded;
 
