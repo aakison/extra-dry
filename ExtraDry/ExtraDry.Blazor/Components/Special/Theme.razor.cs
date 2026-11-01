@@ -102,19 +102,19 @@ public partial class Theme(
 
         ThemeInfo.Version = Version;
 
-        LoadSvgReferencesAsync();
-        ThemeInfo.Icons = CachedIcons.ToDictionary(e => e.Key, e => e.Value);
+        if(!loaded) {
+            LoadSvgReferencesAsync();
+            ThemeInfo.Icons = CachedIcons.ToDictionary(e => e.Key, e => e.Value);
 
-        // Only call async methods after ThemeInfo is populated, otherwise downstream components
-        // will get broken information.
-        await SetSvgAtlasViewboxes();
+            // Only call async methods after ThemeInfo is populated, otherwise downstream components
+            // will get broken information.
+            await SetSvgAtlasViewboxes();
+        }
+        loaded = true;
     }
 
     private void LoadSvgReferencesAsync()
     {
-        if(loaded) {
-            return;
-        }
         Icons ??= [];
 
         // Ensure we have all icons, including fallbacks, but do not duplicate any, prefering user-supplied instead of fallback.
@@ -123,7 +123,6 @@ public partial class Theme(
         foreach(var icon in allIcons) {
             LoadIcon(icon);
         }
-        loaded = true;
     }
 
     /// <summary>
@@ -133,9 +132,6 @@ public partial class Theme(
     /// ensure that the inline SVG bodies are populated and can be updated with the viewbox values.
     /// </summary>
     private async Task SetSvgAtlasViewboxes() {
-        if(loaded) {
-            return;
-        }
         Dictionary<string, string>? viewBoxManifest = null;
         var isBrowser = OperatingSystem.IsBrowser();
         if(isBrowser) {
@@ -162,13 +158,16 @@ public partial class Theme(
                 var viewBox = (viewBoxManifest?.TryGetValue(icon.Key, out var vb) ?? false) ? $" {vb}" : "";
                 if(isBrowser) {
                     // rewrite to reference svg in body to avoid network requests.
-                    icon.SvgInlineBody = $@"<svg class=""{icon.CssClass} additional-classes""><title>{icon.AlternateText}</title><use href=""#{icon.Key}""></use></svg>";
+                    var classes = DataConverter.JoinNonEmpty(" ", icon.CssClass, "additional-classes");
+                    icon.SvgInlineBody = $@"<svg class=""{classes}""{viewBox}><title>{icon.AlternateText}</title><use href=""#{icon.Key}""></use></svg>";
                 }
                 else {
                     icon.SvgInlineBody = icon.SvgInlineBody.Replace("data-viewbox", viewBox);
                 }
             }
         }
+
+        StateHasChanged();
 
     }
 
