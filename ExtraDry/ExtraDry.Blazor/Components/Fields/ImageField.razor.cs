@@ -47,13 +47,13 @@ public partial class ImageField : FieldBase<BrowserBlob>
     /// <see cref="CameraIcon"/>, must be registered with the enclosing <c>Theme</c> component.
     /// </summary>
     [Parameter]
-    public string FolderIcon { get; set; } = "open-folder";
+    public string FolderIcon { get; set; } = CoreIcons.OpenFolder;
 
     /// <summary>
     /// The icon key for the affordance that captures a photo using the rear-facing camera.
     /// </summary>
     [Parameter]
-    public string CameraIcon { get; set; } = "open-camera";
+    public string CameraIcon { get; set; } = CoreIcons.OpenCamera;
 
     /// <summary>
     /// The maximum file size, in bytes, allowed when reading the selected file to generate the
@@ -72,7 +72,7 @@ public partial class ImageField : FieldBase<BrowserBlob>
     protected override void OnInitialized()
     {
         if(Icon == "") {
-            Icon = "picture-placeholder";
+            Icon = CoreIcons.PicturePlaceholder;
         }
         if(Placeholder == "") {
             Placeholder = "choose or capture image...";

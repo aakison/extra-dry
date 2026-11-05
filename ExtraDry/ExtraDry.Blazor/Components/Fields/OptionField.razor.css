@@ -16,4 +16,29 @@
     div.input.select.readonly select.value {
       cursor: default;
     }
+
+  /* Customize the affordance when dropdown */
+
+  div.input.option.drop-down {
+    display: flex;
+    flex-direction: row !important;
+    align-items: center !important;
+    background-color: var(--neutral-0);
+    height: var(--input-field-height);
+    border-radius: var(--input-rounding);
+    position: relative;
+  }
+
+    div.input.option.drop-down select {
+      flex: 1 1 auto;
+      appearance: none;
+    }
+
+    div.input.option.drop-down ::deep svg {
+      height: 14px;
+      width: 14px;
+      position: absolute;
+      right: var(--spacing-small);
+      pointer-events: none;
+    }
 }

@@ -27,7 +27,7 @@ public partial class InputFileField : ComponentBase, IInputField
     public string Icon { get; set; } = "input-file";
 
     [Parameter]
-    public string Affordance { get; set; } = "open-folder";
+    public string Affordance { get; set; } = CoreIcons.OpenFolder;
 
     [Parameter]
     public string Placeholder { get; set; } = "choose file...";

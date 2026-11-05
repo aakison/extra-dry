@@ -31,7 +31,7 @@ public partial class DryFilterDatePicker : ComponentBase, IExtraDryComponent, ID
 
     /// <inheritdoc cref="Button.Affordance" />
     [Parameter]
-    public string Affordance { get; set; } = "select";
+    public string Affordance { get; set; } = CoreIcons.Select;
 
     [Parameter]
     public string PreviousIcon { get; set; } = "back";

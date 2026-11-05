@@ -32,7 +32,7 @@
         }
         else if(ProjectionListClient?.IsEmpty == true) {
             <div class="empty">
-                <Icon Key="collection-empty" />
+                <Icon Key="@CoreIcons.CollectionEmpty" />
             </div>
         }
         <Virtualize ItemsProvider="GetItemsAsync" ItemSize="45" @ref="VirtualContainer">

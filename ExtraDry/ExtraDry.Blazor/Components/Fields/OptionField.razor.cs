@@ -19,6 +19,8 @@ public partial class OptionField<TValue> : FieldBase<TValue>
         else {
             TitleFunc = ObjectTitleFunc;
         }
+        Affordance = CoreIcons.Select;
+        ShowAffordance = true;
     }
 
     /// <summary>

@@ -79,27 +79,50 @@ public class IconInfo
     private static readonly string glyphPath = "/_content/ExtraDry.Blazor/img/glyphs";
 
     public static readonly Dictionary<string, IconInfo> FallbackIcons = (new IconInfo[] {
-            new("search", $"{glyphPath}/magnifying-glass-regular.svg", "Search", "affordance"),
-            new("select", $"{glyphPath}/chevron-down-regular.svg", "Select", "affordance"),
-            new("clear", $"{glyphPath}/xmark-regular.svg", "Clear", "affordance"),
-            new("expand", $"{glyphPath}/chevron-right-regular.svg", "Expand", "affordance"),
-            new("collapse", $"{glyphPath}/chevron-down-regular.svg", "Collapse", "affordance"),
-            new("select-date", $"{glyphPath}/calendar-day-light.svg", "Select Date", "affordance"),
-            new("select-datetime", $"{glyphPath}/calendar-clock-light.svg", "Select Date/Time", "affordance"),
-            new("select-time", $"{glyphPath}/clock-light.svg", "Select Time", "affordance"),
+            new(CoreIcons.Search, $"{glyphPath}/magnifying-glass-regular.svg", "Search", "affordance"),
+            new(CoreIcons.Select, $"{glyphPath}/chevron-down-regular.svg", "Select", "affordance"),
+            new(CoreIcons.Clear, $"{glyphPath}/xmark-regular.svg", "Clear", "affordance"),
+            new(CoreIcons.Expand, $"{glyphPath}/chevron-right-regular.svg", "Expand", "affordance"),
+            new(CoreIcons.Collapse, $"{glyphPath}/chevron-down-regular.svg", "Collapse", "affordance"),
+            new(CoreIcons.SelectDate, $"{glyphPath}/calendar-day-light.svg", "Select Date", "affordance"),
+            new(CoreIcons.SelectDateTime, $"{glyphPath}/calendar-clock-light.svg", "Select Date/Time", "affordance"),
+            new(CoreIcons.SelectTime, $"{glyphPath}/clock-light.svg", "Select Time", "affordance"),
 
-            new("currency", $"{glyphPath}/dollar-sign-light.svg", "Enter dollar amount", "affordance"),
+            new(CoreIcons.Currency, $"{glyphPath}/dollar-sign-light.svg", "Enter dollar amount", "affordance"),
 
-            new("is-required", $"{glyphPath}/asterisk-alone-full.svg", "Required", "icon"),
-            new("has-description", $"{glyphPath}/info-alone-full.svg", "See Description", "icon"),
+            new(CoreIcons.IsRequired, $"{glyphPath}/asterisk-alone-full.svg", "Required", "icon"),
+            new(CoreIcons.HasDescription, $"{glyphPath}/info-alone-full.svg", "See Description", "icon"),
 
-            new("collection-empty", $"{glyphPath}/xmark-regular.svg", "No Items", "icon"),
+            new(CoreIcons.CollectionEmpty, $"{glyphPath}/xmark-regular.svg", "No Items", "icon"),
 
-            new("copy", $"{glyphPath}/copy-light-full.svg", "Copy", "affordance"),
-            new("show", $"{glyphPath}/eye-light-full.svg", "Show", "affordance"),
-            new("hide", $"{glyphPath}/eye-slash-light-full.svg", "Hide", "affordance"),
+            new(CoreIcons.Copy, $"{glyphPath}/copy-light-full.svg", "Copy", "affordance"),
+            new(CoreIcons.Show, $"{glyphPath}/eye-light-full.svg", "Show", "affordance"),
+            new(CoreIcons.Hide, $"{glyphPath}/eye-slash-light-full.svg", "Hide", "affordance"),
 
-            new("picture-placeholder", $"{glyphPath}/camera-on-slide.svg", "Picture Placeholder", "icon"),
-            new("open-camera", $"{glyphPath}/camera-light-full.svg", "Open Camera", "affordance"),
+            new(CoreIcons.PicturePlaceholder, $"{glyphPath}/camera-on-slide.svg", "Picture Placeholder", "icon"),
+            new(CoreIcons.OpenCamera, $"{glyphPath}/camera-light-full.svg", "Open Camera", "affordance"),
+            new(CoreIcons.OpenFolder, $"{glyphPath}/folder-open-light-full.svg", "Open Folder", "affordance"),
         }).ToDictionary(e => e.Key, e => e);
+}
+
+public static class CoreIcons
+{
+    public const string Search = "core-search";
+    public const string Select = "core-select";
+    public const string Clear = "core-clear";
+    public const string Expand = "core-expand";
+    public const string Collapse = "core-collapse";
+    public const string SelectDate = "core-select-date";
+    public const string SelectDateTime = "core-select-datetime";
+    public const string SelectTime = "core-select-time";
+    public const string Currency = "core-currency";
+    public const string IsRequired = "core-is-required";
+    public const string HasDescription = "core-has-description";
+    public const string CollectionEmpty = "core-collection-empty";
+    public const string Copy = "core-copy";
+    public const string Show = "core-show";
+    public const string Hide = "core-hide";
+    public const string PicturePlaceholder = "core-picture-placeholder";
+    public const string OpenCamera = "core-open-camera";
+    public const string OpenFolder = "core-open-folder";
 }

@@ -35,7 +35,7 @@ public partial class CopyHelper : ComponentBase, IExtraDryComponent
         ? new string('●', Math.Max(Value.Length, 50))
         : Value;
 
-    private string RevealIcon => IsRevealed ? "hide" : "show";
+    private string RevealIcon => IsRevealed ? CoreIcons.Hide : CoreIcons.Show;
 
     private string RevealCaption => IsRevealed ? "Hide" : "Show";
 

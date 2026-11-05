@@ -6,10 +6,10 @@
             <label class="label" @onclick="ToggleDescription" title="@Description" for="@For">
                 <span class="text">@Label</span>
                 @if(HasDescription && ShowDescription) {
-                    <Icon CssClass="description" Key="has-description" />
+                    <Icon CssClass="description" Key="@CoreIcons.HasDescription" />
                 }
                 @if(IsRequired) {
-                    <Icon CssClass="required" Key="is-required" />
+                    <Icon CssClass="required" Key="@CoreIcons.IsRequired" />
                 }
             </label>
         }
@@ -27,10 +27,10 @@
                 </label>
                 <label class="label" @onclick="ToggleDescription">
                     @if(HasDescription) {
-                        <Icon CssClass="description" Key="has-description" />
+                        <Icon CssClass="description" Key="@CoreIcons.HasDescription" />
                     }
                     @if(IsRequired) {
-                        <Icon CssClass="required" Key="is-required" />
+                        <Icon CssClass="required" Key="@CoreIcons.IsRequired" />
                     }
                 </label>
             }
