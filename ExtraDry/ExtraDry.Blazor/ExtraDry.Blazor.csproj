@@ -49,9 +49,9 @@
 
 	<ItemGroup>
 		<PackageReference Include="Markdig" Version="0.40.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.13" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="10.0.13" />
-		<PackageReference Include="Microsoft.Extensions.Http" Version="10.0.13" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.14" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="10.0.14" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="10.0.14" />
 		<PackageReference Include="ReverseMarkdown" Version="4.6.0" />
 	</ItemGroup>
 
@@ -66,5 +66,9 @@
 		<Content Update="_Imports.razor">
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 		</Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="System.Security.Cryptography.Pkcs" Version="10.0.14" />
   </ItemGroup>
 </Project>

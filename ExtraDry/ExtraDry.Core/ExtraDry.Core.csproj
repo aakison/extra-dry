@@ -24,14 +24,14 @@
 	
 	<ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.13" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="10.0.13" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.Abstractions" Version="10.0.13" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="10.0.13" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.13" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.13" />
-		<PackageReference Include="Microsoft.Extensions.Http" Version="10.0.13" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.13" />
-		<PackageReference Include="Microsoft.Extensions.Options" Version="10.0.13" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="10.0.14" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.Abstractions" Version="10.0.14" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="10.0.14" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.14" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.14" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="10.0.14" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.14" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="10.0.14" />
     <PackageReference Include="Pidgin" Version="3.4.0" />
   </ItemGroup>
 
@@ -44,5 +44,9 @@
 			<PackagePath></PackagePath>
 		</None>
 	</ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="System.Security.Cryptography.Pkcs" Version="10.0.14" />
+  </ItemGroup>
 
 </Project>
