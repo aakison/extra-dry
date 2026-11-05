@@ -31,7 +31,7 @@ public partial class FileField : FieldBase<BrowserBlob>
             Icon = "input-file";
         }
         if(Affordance == "") {
-            Affordance = "open-folder";
+            Affordance = CoreIcons.OpenFolder;
         }
         if(Placeholder == "") {
             Placeholder = "choose file...";

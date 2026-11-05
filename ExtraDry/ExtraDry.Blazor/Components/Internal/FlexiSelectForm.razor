@@ -8,9 +8,9 @@
                 @if(ShowFilter) {
                     <div class="filter">
                         <input @bind-value="Filter" @bind-value:event="oninput" placeholder="@FilterPlaceholder" />
-                        <Icon Key="search" />
+                        <Icon Key="@CoreIcons.Search" />
                         <button class="ghost button clearFilter" type="button" @onclick="ClearFilter">
-                            <Icon Key="clear" />
+                            <Icon Key="@CoreIcons.Clear" />
                         </button>
                     </div>
                 }

@@ -63,11 +63,11 @@ public partial class DryInputDateTime<T>
 
         ? Property?.InputField?.Affordance
         ?? Property?.InputType switch {
-            Type t when t == typeof(DateOnly) => "select-date",
-            Type t when t == typeof(DateOnly?) => "select-date",
-            Type t when t == typeof(TimeOnly) => "select-time",
-            Type t when t == typeof(TimeOnly?) => "select-time",
-            _ => "select-datetime"
+            Type t when t == typeof(DateOnly) => CoreIcons.SelectDate,
+            Type t when t == typeof(DateOnly?) => CoreIcons.SelectDate,
+            Type t when t == typeof(TimeOnly) => CoreIcons.SelectTime,
+            Type t when t == typeof(TimeOnly?) => CoreIcons.SelectTime,
+            _ => CoreIcons.SelectDateTime
         }
         : Affordance;
 

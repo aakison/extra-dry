@@ -49,8 +49,8 @@ public partial class DryTableHierarchyExpander<TItem> : ComponentBase, IExtraDry
     private string Icon =>
         (Item.IsGroup, Item.IsExpanded) switch {
             (false, _) => "blank",
-            (_, true) => "collapse",
-            (_, false) => "expand",
+            (_, true) => CoreIcons.Collapse,
+            (_, false) => CoreIcons.Expand,
         };
 
     private string Caption { get; set; } = "Expand";

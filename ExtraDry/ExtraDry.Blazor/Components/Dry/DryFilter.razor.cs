@@ -31,7 +31,7 @@ public partial class DryFilter<TItem> : ComponentBase, IExtraDryComponent
 
     /// <inheritdoc cref="FlexiSelect{TItem}.Affordance" />
     [Parameter]
-    public string Affordance { get; set; } = "select";
+    public string Affordance { get; set; } = CoreIcons.Select;
 
     /// <inheritdoc cref="IComments.Placeholder" />
     [Parameter]
