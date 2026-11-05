@@ -19,6 +19,11 @@ public partial class DataConverter
         return localTime.ToString(CultureInfo.CurrentCulture);
     }
 
+    public static string DateToDisplayDate(DateOnly? date)
+    {
+        return date?.ToString(CultureInfo.CurrentCulture) ?? "";
+    }
+
     /// <summary>
     /// Given a date, formats it for display using a relative time. For example, 5 minutes ago, or
     /// Yesterday.

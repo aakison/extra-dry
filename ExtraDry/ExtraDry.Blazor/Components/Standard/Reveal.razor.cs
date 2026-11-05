@@ -46,9 +46,6 @@ public partial class Reveal : ComponentBase, IExtraDryComponent
     [Parameter]
     public RevealMode Mode { get; set; } = RevealMode.Fade;
 
-    [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object>? UnmatchedAttributes { get; set; }
-
     /// <summary>
     /// The state of the reveal (e.g. expanding or showing). Ties into the styles on the component
     /// to perform CSS based animations. None -&gt; Concealed -&gt; Revealing -&gt; Revealed -&gt;
@@ -131,16 +128,20 @@ public partial class Reveal : ComponentBase, IExtraDryComponent
         get {
             var style = string.Empty;
             if(Mode == RevealMode.Fade) {
-                style = $"transition: opacity {AdjustedDuration / 1000f}s;";
+                style = $"transition: opacity {AdjustedDuration}ms;";
                 style = State is RevealState.Concealing or RevealState.Concealed or RevealState.None
                     ? $"{style} opacity: 0%;"
                     : $"{style} opacity: 100%;";
             }
             else if(Mode == RevealMode.Expand) {
-                style = $"transition: height {AdjustedDuration / 1000f}s; overflow: hidden;";
-                style = State is RevealState.Concealing or RevealState.Concealed or RevealState.None
-                    ? $"{style} height: 0;"
-                    : $"{style} height: {Height}px";
+                style = $"transition: max-height {AdjustedDuration}ms linear;";
+                style += State switch {
+                    RevealState.Revealing => $"overflow: hidden; max-height: {Height}px;",
+                    RevealState.Revealed => $"overflow: visible; max-height: {Height}px;",
+                    RevealState.Concealing => $"overflow: hidden; max-height: 0;",
+                    RevealState.Concealed => $"overflow: hidden; max-height: 0;",
+                    _ => "overflow: hidden; max-height: 0;",
+                };
             }
             return style;
         }
