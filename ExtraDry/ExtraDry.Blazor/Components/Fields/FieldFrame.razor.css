@@ -29,6 +29,6 @@ div.inline {
     div.inline-child {
       height: var(--input-field-height);
       justify-content: start;
-      align-items: center;
+      align-items: start;
     }
   }
