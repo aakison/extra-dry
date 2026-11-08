@@ -77,15 +77,57 @@ function ensureSunEditorLoaded() {
     });
 }
 
+function showEditorToast(anchor, message) {
+    const host = anchor.closest('.input') || anchor.parentElement;
+    if (!host) return;
+    if (!document.getElementById('markdown-editor-toast-styles')) {
+        const style = document.createElement('style');
+        style.id = 'markdown-editor-toast-styles';
+        style.textContent = `
+            .markdown-editor-toast {
+                position: absolute; right: 0.5rem; bottom: 0.5rem; z-index: 10;
+                padding: 0.25rem 0.75rem; border-radius: 0.25rem; font-size: 0.85em;
+                color: var(--warning-dark); background: var(--warning-light);
+                border: 1px solid var(--warning-dark); pointer-events: none;
+                animation: markdown-toast-in 0.4s ease-out both;
+            }
+            .markdown-editor-toast.leaving { animation: markdown-toast-out 0.4s ease-in both; }
+            @keyframes markdown-toast-in {
+                0% { opacity: 0; transform: translateX(0); }
+                20% { opacity: 1; transform: translateX(-6px); }
+                40% { transform: translateX(6px); }
+                60% { transform: translateX(-4px); }
+                80% { transform: translateX(3px); }
+                100% { opacity: 1; transform: translateX(0); }
+            }
+            @keyframes markdown-toast-out {
+                from { opacity: 1; transform: translateY(0); }
+                to { opacity: 0; transform: translateY(-1rem); }
+            }`;
+        document.head.appendChild(style);
+    }
+    if (getComputedStyle(host).position === 'static') {
+        host.style.position = 'relative';
+    }
+    host.querySelectorAll(':scope > .markdown-editor-toast').forEach(t => t.remove());
+    const toast = document.createElement('div');
+    toast.className = 'markdown-editor-toast';
+    toast.setAttribute('role', 'status');
+    toast.textContent = message;
+    host.appendChild(toast);
+    setTimeout(() => toast.classList.add('leaving'), 2000);
+    setTimeout(() => toast.remove(), 2400);
+}
+
 function buildButtonList(mode, enableImage, hasImageFiles) {
     if (mode === 'Character') {
         return [['bold', 'italic', 'strike', 'subscript', 'superscript']];
     }
     // Block mode
     const buttons = [
-        ['bold', 'italic', 'strike', 'subscript', 'superscript', 'link'],
+        ['bold', 'italic', 'link'],
         ['formatBlock'],
-        ['bulletList', 'numberedList', 'removeFormat']
+        ['moreMenu']
     ];
     if (hasImageFiles || enableImage) {
         buttons[0].push('image');
@@ -140,8 +182,88 @@ function buildCustomPlugins() {
                 if (range) this.setRange(range.sc, range.so, range.ec, range.eo);
                 this.history.push(false);
             }
-        }
+        },
+        buildMenuPlugin('moreMenu', 'More',
+            '<svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>',
+            [
+                styleMenuItem('Strikethrough', ['DEL', 'S', 'STRIKE'], 'DEL', null,
+                    '<text x="3" y="18" font-size="16" font-weight="bold" font-family="sans-serif">S</text><rect x="2" y="11" width="20" height="2"/>'),
+                styleMenuItem('Superscript', ['SUP'], 'SUP', ['SUB'],
+                    '<text x="2" y="20" font-size="16" font-weight="bold" font-family="sans-serif">X</text><text x="14" y="10" font-size="10" font-weight="bold" font-family="sans-serif">2</text>'),
+                styleMenuItem('Subscript', ['SUB'], 'SUB', ['SUP'],
+                    '<text x="2" y="16" font-size="16" font-weight="bold" font-family="sans-serif">X</text><text x="14" y="22" font-size="10" font-weight="bold" font-family="sans-serif">2</text>'),
+                { divider: true },
+                {
+                    label: 'Bullets',
+                    icon: '<path d="M4 10.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm0-6a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm0 12a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM8 19h12v-2H8zm0-6h12v-2H8zm0-8v2h12V5z"/>',
+                    run(core) { applyList(core, 'UL'); }
+                },
+                {
+                    label: 'Numbers',
+                    icon: '<path d="M2 17h2v.5H3v1h1v.5H2v1h3v-4H2zm1-9h1V4H2v1h1zm-1 3h1.8L2 13.1v.9h3v-1H3.2L5 10.9V10H2zm5-6v2h14V5zm0 14h14v-2H7zm0-6h14v-2H7z"/>',
+                    run(core) { applyList(core, 'OL'); }
+                },
+                { divider: true },
+                {
+                    label: 'Clear',
+                    icon: '<path d="M16.24 3.56l4.95 4.94c.78.79.78 2.05 0 2.84L12 20.53a4.01 4.01 0 0 1-5.66 0L2.81 17c-.78-.79-.78-2.05 0-2.84l10.6-10.6c.79-.78 2.05-.78 2.83 0zM4.22 15.58l3.54 3.53c.78.79 2.04.79 2.83 0l3.53-3.53-6.36-6.36-3.54 3.36c-.78.79-.78 2.05 0 2.84z"/>',
+                    run(core) { core.removeFormat(); core.focus(); core.history.push(false); }
+                },
+            ]),
     ];
+}
+
+// Menu item that toggles an inline style element (e.g. DEL, SUB, SUP) on the selection.
+function styleMenuItem(label, tags, create, clears, icon) {
+    return {
+        label: label,
+        icon: icon,
+        run(core) {
+            const node = core.getSelectionNode();
+            const active = core.util.getParentElement(node, e => tags.includes((e.nodeName || '').toUpperCase()));
+            if (active) {
+                core.nodeChange(null, null, tags, false);
+            }
+            else {
+                core.nodeChange(core.util.createElement(create), null, clears, false);
+            }
+        }
+    };
+}
+
+function applyList(core, tag) {
+    const range = core.plugins.list.editList.call(core, tag, null, false);
+    if (range) core.setRange(range.sc, range.so, range.ec, range.eo);
+    core.history.push(false);
+}
+
+// Builds a SunEditor submenu plugin: one toolbar button that opens a dropdown of text commands.
+function buildMenuPlugin(name, title, icon, items) {
+    return {
+        name: name,
+        display: 'submenu',
+        title: title,
+        buttonClass: '',
+        innerHTML: icon,
+        add: function (core, targetElement) {
+            const listDiv = core.util.createElement('DIV');
+            listDiv.className = 'se-submenu se-list-layer';
+            const buttons = items.map((item, index) => item.divider
+                ? '<li role="separator" style="border-top:1px solid #ddd;margin:4px 0;height:0;"></li>'
+                : `<li><button type="button" class="se-btn-list" data-index="${index}" title="${item.label}" style="display:flex;align-items:center;justify-content:flex-start;text-align:left;width:100%;gap:8px;"><svg viewBox="0 0 24 24" style="flex:0 0 var(--icon-small);width:var(--icon-small);height:var(--icon-small);fill:currentColor;">${item.icon}</svg><span style="flex:1 1 auto;text-align:left;">${item.label}</span></button></li>`).join('');
+            listDiv.innerHTML = `<div class="se-list-inner"><ul class="se-list-basic">${buttons}</ul></div>`;
+            listDiv.addEventListener('click', e => {
+                const button = e.target.closest('button[data-index]');
+                if (!button) return;
+                e.preventDefault();
+                e.stopPropagation();
+                core.focus();
+                items[Number(button.getAttribute('data-index'))].run(core);
+                core.submenuOff();
+            });
+            core.initMenuTarget(name, targetElement, listDiv);
+        }
+    };
 }
 
 let debounceTimers = {};
@@ -393,6 +515,7 @@ export async function initialize(elementId, dotNetRef, options) {
     const placeholder = options?.placeholder || '';
     const linkBookmarks = options?.linkBookmarks || null;
     const imageFiles = options?.imageFiles || null;
+    const uploadEnabled = options?.enableImageUpload || false;
     const buttonList = buildButtonList(mode, enableImage, imageFiles && imageFiles.length > 0);
 
     const isCharacterMode = mode === 'Character';
@@ -409,7 +532,12 @@ export async function initialize(elementId, dotNetRef, options) {
         plugins: buildCustomPlugins(),
         buttonList: buttonList,
         mode: 'inline',
-        formats: isCharacterMode ? ['p'] : ['p', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote'],
+        formats: isCharacterMode ? ['p'] : [
+            { tag: 'p', command: 'replace', class: '', name: 'Normal Text' },
+            { tag: 'h2', command: 'replace', class: '', name: 'Main Heading' },
+            { tag: 'h3', command: 'replace', class: '', name: 'Subheading' },
+            { tag: 'blockquote', command: 'range', class: '', name: 'Quote' },
+        ],
         placeholder: placeholder,
         width: '100%',
         minHeight: isCharacterMode ? '1em' : '100px',
@@ -417,12 +545,32 @@ export async function initialize(elementId, dotNetRef, options) {
         linkNoPrefix: true,
         // Image dialog: only keep URL, alt text and gallery; markdown storage makes
         // file-upload, resizing, alignment and caption irrelevant.
-        imageFileInput: false,
+        imageFileInput: uploadEnabled,
+        imageMultipleFile: uploadEnabled,
+        imageAccept: 'image/*',
         imageResizing: false,
         imageAlignShow: false,
         imageGalleryUrl: imageGalleryData ? '/_image-gallery_' : null,
         imageGalleryData: imageGalleryData,
     });
+
+    // SunEditor only reports format elements, so text inside a blockquote shows the paragraph caption.
+    // Wrap the format dropdown's active handler so the caption reads Quote inside a blockquote.
+    const formatPlugin = editor.core.plugins.formatBlock;
+    if (formatPlugin && !isCharacterMode) {
+        const originalActive = formatPlugin.active;
+        formatPlugin.active = function (element) {
+            const result = originalActive.call(this, element);
+            if (element && this.util.getParentElement(element, 'blockquote')) {
+                const target = this.context.formatBlock.targetText;
+                this.util.changeTxt(target, 'Quote');
+                target.setAttribute('data-value', 'blockquote');
+                target.setAttribute('data-class', '');
+                return true;
+            }
+            return result;
+        };
+    }
 
     // In Character mode, prevent Enter/Tab and strip newlines from pasted content.
     // Use capture phase so our handler fires before SunEditor's keydown handler.
@@ -499,6 +647,50 @@ export async function initialize(elementId, dotNetRef, options) {
                 e.preventDefault();
             }
         });
+    }
+
+    // Pasted, dropped and chosen image files are uploaded as attachments by .NET, and the
+    // resulting stable URL is inserted. Returning false stops SunEditor embedding base-64.
+    // Without upload support (no image scope) images are rejected outright with a toast.
+    if (!uploadEnabled) {
+        const rejectImages = function (e) {
+            const data = e.clipboardData || e.dataTransfer;
+            if (!data) return;
+            const hasImageFile = Array.from(data.items || []).some(i => i.kind === 'file' && i.type.startsWith('image/'))
+                || Array.from(data.files || []).some(f => f.type.startsWith('image/'));
+            const html = data.getData ? data.getData('text/html') : '';
+            if (hasImageFile || /<img[\s>]/i.test(html)) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                showEditorToast(element, "This field doesn't support images");
+            }
+        };
+        editor.core.context.element.wysiwyg.addEventListener('paste', rejectImages, true);
+        editor.core.context.element.wysiwyg.addEventListener('drop', rejectImages, true);
+    }
+
+    if (uploadEnabled) {
+        editor.onImageUploadBefore = (files, info, core) => {
+            (async () => {
+                const results = [];
+                for (const file of files) {
+                    try {
+                        const content = new Uint8Array(await file.arrayBuffer());
+                        const image = await dotNetRef.invokeMethodAsync('UploadImage', file.name || 'image', file.type || 'application/octet-stream', content);
+                        if (image && image.url) {
+                            results.push({ url: image.url, name: image.title || file.name, size: file.size });
+                        }
+                    } catch (err) {
+                        console.error('[markdown-editor] Image upload failed', err);
+                    }
+                }
+                if (results.length > 0) {
+                    core.plugins.image.register.call(core, info, { result: results });
+                }
+                core.closeLoading();
+            })();
+            return false;
+        };
     }
 
     editor.onChange = (contents) => {

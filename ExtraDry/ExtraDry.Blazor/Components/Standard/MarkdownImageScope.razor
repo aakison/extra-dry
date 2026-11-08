@@ -1,0 +1,28 @@
+@namespace ExtraDry.Blazor.Components.Standard
+
+<CascadingValue Value="this" Name="MarkdownImageScope">
+    @ChildContent
+</CascadingValue>
+
+@code {
+
+    /// <summary>
+    /// The entity that defines this image scope, e.g. a website, a form template or a form
+    /// field. Scopes can be nested. Images pasted into a Markdown editor are stored against the
+    /// nearest scope, while the image gallery shows the images of all enclosing scopes.
+    /// </summary>
+    [Parameter, EditorRequired]
+    public IUniqueIdentifier Scope { get; set; } = null!;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [CascadingParameter(Name = "MarkdownImageScope")]
+    private MarkdownImageScope? Parent { get; set; }
+
+    /// <summary>
+    /// This scope and all enclosing scopes, nearest first.
+    /// </summary>
+    public IReadOnlyList<IUniqueIdentifier> Chain => [Scope, .. Parent?.Chain ?? []];
+
+}

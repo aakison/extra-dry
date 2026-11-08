@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace ExtraDry.Blazor.Components.Standard;
 
 public partial class Markdown : ComponentBase
@@ -32,14 +28,42 @@ public partial class Markdown : ComponentBase
     public Dictionary<string, string>? LinkBookmarks { get; set; }
 
     /// <summary>
-    /// A list of image files available for selection via the image picker button in the editor
-    /// toolbar. When provided, a pick-image button appears in Block-mode toolbars.
+    /// The nearest enclosing
+    /// against the nearest scope, instead of being embedded as base-64 in the markdown, and the
+    /// gallery shows the images of all enclosing scopes.
     /// </summary>
-    [Parameter]
-    public List<MarkdownImageFile>? ImageFiles { get; set; }
+    [CascadingParameter(Name = "MarkdownImageScope")]
+    public MarkdownImageScope? ImageScope { get; set; }
 
     [Inject]
     private MarkdownEditorInterop EditorInterop { get; set; } = null!;
+
+    [Inject]
+    private IServiceProvider Services { get; set; } = null!;
+
+    private IMarkdownImageService? ImageService => Services.GetService(typeof(IMarkdownImageService)) as IMarkdownImageService;
+
+    private bool CanUploadImages => ImageScope != null && ImageService != null;
+
+    /// <summary>
+    /// Called from the editor when an image is pasted or chosen, uploads it as an attachment.
+    /// </summary>
+    [JSInvokable]
+    public async Task<MarkdownImageFile?> UploadImage(string filename, string contentType, byte[] content)
+    {
+        if(!CanUploadImages) {
+            return null;
+        }
+        return await ImageService!.UploadAsync(ImageScope!.Scope, filename, contentType, content);
+    }
+
+    private async Task<List<MarkdownImageFile>?> LoadImagesAsync()
+    {
+        if(!CanUploadImages) {
+            return null;
+        }
+        return await ImageService!.ListAsync(ImageScope!.Chain);
+    }
 
     private string renderedHtml = "";
     private string editorId = "";
@@ -67,7 +91,9 @@ public partial class Markdown : ComponentBase
                 Mode = MarkdownSupport,
                 Placeholder = Placeholder,
                 LinkBookmarks = LinkBookmarks,
-                ImageFiles = ImageFiles,
+                ImageFiles = await LoadImagesAsync(),
+                EnableImage = CanUploadImages,
+                EnableImageUpload = CanUploadImages,
             };
             await EditorInterop.InitializeAsync(editorId, dotNetRef, options);
             initialized = true;
