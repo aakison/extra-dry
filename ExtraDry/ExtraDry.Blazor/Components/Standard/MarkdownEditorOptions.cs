@@ -16,7 +16,12 @@ public class MarkdownEditorOptions
     public bool EnableImage { get; set; }
 
     /// <summary>
-    /// Placeholder text displayed when the editor is empty.
+    /// Whether pasted or chosen image files are uploaded through the .NET UploadImage callback.
+    /// </summary>
+    public bool EnableImageUpload { get; set; }
+
+    /// <summary>
+    /// Placeholder text
     /// </summary>
     public string Placeholder { get; set; } = "";
 
