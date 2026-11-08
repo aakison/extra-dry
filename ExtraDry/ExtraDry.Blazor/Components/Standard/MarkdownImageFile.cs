@@ -17,4 +17,10 @@ public class MarkdownImageFile
     /// &lt;img&gt; tag.
     /// </summary>
     public string Url { get; set; } = "";
+
+    /// <summary>
+    /// Optional URL of a smaller version of the image, used by the picker gallery. Falls back to
+    /// <see cref="Url"/> when empty.
+    /// </summary>
+    public string ThumbnailUrl { get; set; } = "";
 }

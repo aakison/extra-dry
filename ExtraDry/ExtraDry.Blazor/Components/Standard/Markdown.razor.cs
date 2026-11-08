@@ -97,12 +97,12 @@ public partial class Markdown : ComponentBase
             };
             await EditorInterop.InitializeAsync(editorId, dotNetRef, options);
             initialized = true;
-            var html = MarkdownConverter.ToHtml(Value);
+            var html = MarkdownConverter.ToHtml(Value, responsiveImages: false);
             await EditorInterop.SetContentAsync(editorId, html);
             lastPushedMarkdown = Value;
         }
         else if(initialized && !ReadOnly && Value != lastPushedMarkdown) {
-            var html = MarkdownConverter.ToHtml(Value);
+            var html = MarkdownConverter.ToHtml(Value, responsiveImages: false);
             await EditorInterop.SetContentAsync(editorId, html);
             lastPushedMarkdown = Value;
         }

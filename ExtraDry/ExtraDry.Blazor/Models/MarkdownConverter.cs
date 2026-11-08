@@ -33,15 +33,43 @@ public class MarkdownConverter
         @"\balt=""([^""]*)""",
         RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
+    // Matches an <img> whose src is the original of a blob, e.g. /tenant/components/blobs/{uuid}
+    // or /tenant/components/blobs/{uuid}/{filename}.
+    private static readonly Regex BlobImagePattern = new(
+        @"<img\b[^>]*?\bsrc=""([^""]*/blobs/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})(?:/([^""/?]*))?""[^>]*>",
+        RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+    private static readonly Regex VariantTokenPattern = new(
+        @"^(400|800|1200|full|thumb)\.avif$",
+        RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
     /// <summary>
-    /// Converts Markdown text to HTML.
+    /// Converts Markdown text to HTML. When <paramref name="responsiveImages"/> is true, blob images
+    /// are wrapped in picture elements; editors should pass false so the HTML round trips cleanly.
     /// </summary>
-    public static string ToHtml(string markdown)
+    public static string ToHtml(string markdown, bool responsiveImages = true)
     {
         if(string.IsNullOrWhiteSpace(markdown)) {
             return string.Empty;
         }
-        return Markdown.ToHtml(markdown, Pipeline).Trim();
+        var html = Markdown.ToHtml(markdown, Pipeline).Trim();
+        return responsiveImages ? AddBlobPictures(html) : html;
+    }
+
+    /// <summary>
+    /// Wraps images that reference a blob (a URI ending in <c>/blobs/{uuid}</c>) in a picture element
+    /// offering AVIF variants of the blob. The original blob remains the img fallback.
+    /// </summary>
+    private static string AddBlobPictures(string html)
+    {
+        return BlobImagePattern.Replace(html, m => {
+            if(VariantTokenPattern.IsMatch(m.Groups[2].Value)) {
+                return m.Value;
+            }
+            var src = m.Groups[1].Value;
+            var srcset = $"{src}/400.avif 400w, {src}/800.avif 800w, {src}/1200.avif 1200w";
+            return $"<picture><source type=\"image/avif\" srcset=\"{srcset}\">{m.Value}</picture>";
+        });
     }
 
     /// <summary>

@@ -119,6 +119,75 @@ function showEditorToast(anchor, message) {
     setTimeout(() => toast.remove(), 2400);
 }
 
+// Shows an "Uploading Image..." alert if the upload takes longer than 100ms. Returns a function
+// to call when the upload finishes: it cancels the alert if it was never shown, otherwise it
+// swipes the alert up and fades it out.
+function showUploadingToast(anchor) {
+    const host = anchor.closest('.input') || anchor.parentElement;
+    if (!host) return () => { };
+    if (!document.getElementById('markdown-editor-upload-toast-styles')) {
+        const style = document.createElement('style');
+        style.id = 'markdown-editor-upload-toast-styles';
+        style.textContent = `
+            .markdown-editor-upload-toast {
+                position: absolute; right: 0.5rem; bottom: 0.5rem; z-index: 10;
+                padding: 0.25rem 0.75rem; border-radius: 0.25rem; font-size: 0.85em;
+                color: var(--info-dark); background: var(--info-light);
+                border: 1px solid var(--info-dark); pointer-events: none;
+                animation: markdown-upload-toast-in 0.4s ease-out both;
+            }
+            .markdown-editor-upload-toast.leaving { animation: markdown-upload-toast-out 0.4s ease-in both; }
+            @keyframes markdown-upload-toast-in {
+                from { opacity: 0; transform: translateY(1rem); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            @keyframes markdown-upload-toast-out {
+                from { opacity: 1; transform: translateY(0); }
+                to { opacity: 0; transform: translateY(-1rem); }
+            }`;
+        document.head.appendChild(style);
+    }
+    let toast = null;
+    let finished = false;
+    // Resolves after the 100ms delay and, if the alert was shown, after it has been painted. The
+    // upload runs on the same thread as the page (Blazor WASM), so callers must await this before
+    // starting heavy work or the alert would never get a chance to render.
+    const shown = new Promise(resolve => {
+        setTimeout(() => {
+            if (finished) { resolve(); return; }
+            if (getComputedStyle(host).position === 'static') {
+                host.style.position = 'relative';
+            }
+            toast = document.createElement('div');
+            toast.className = 'markdown-editor-upload-toast';
+            toast.setAttribute('role', 'status');
+            toast.textContent = 'Uploading Image...';
+            host.appendChild(toast);
+            requestAnimationFrame(() => requestAnimationFrame(resolve));
+        }, 100);
+    });
+    const done = () => {
+        finished = true;
+        if (!toast) return;
+        const visible = toast;
+        toast = null;
+        visible.classList.add('leaving');
+        setTimeout(() => visible.remove(), 400);
+    };
+    return { shown, done };
+}
+
+// Resolves when the images with the given sources, once inserted, have finished loading.
+function waitForImages(root, urls) {
+    const pending = Array.from(root.querySelectorAll('img'))
+        .filter(img => urls.includes(img.getAttribute('src')) && !img.complete);
+    const loaded = Promise.all(pending.map(img => new Promise(resolve => {
+        img.addEventListener('load', resolve, { once: true });
+        img.addEventListener('error', resolve, { once: true });
+    })));
+    return Promise.race([loaded, new Promise(resolve => setTimeout(resolve, 60000))]);
+}
+
 function buildButtonList(mode, enableImage, hasImageFiles) {
     if (mode === 'Character') {
         return [['bold', 'italic', 'strike', 'subscript', 'superscript']];
@@ -525,7 +594,7 @@ export async function initialize(elementId, dotNetRef, options) {
     // the actual data comes from imageGalleryData (directData), which takes priority over
     // a URL fetch so the placeholder URL is never requested.
     const imageGalleryData = (imageFiles && imageFiles.length > 0)
-        ? imageFiles.map(f => ({ src: f.url, alt: f.title }))
+        ? imageFiles.map(f => ({ src: f.url, thumbnail: f.thumbnailUrl || f.url, name: f.title || '&lt;untitled&gt;', alt: f.title || ' ' }))
         : null;
 
     const editor = SUNEDITOR.create(element, {
@@ -673,6 +742,9 @@ export async function initialize(elementId, dotNetRef, options) {
         editor.onImageUploadBefore = (files, info, core) => {
             (async () => {
                 const results = [];
+                const upload = showUploadingToast(element);
+                await upload.shown;
+                try {
                 for (const file of files) {
                     try {
                         const content = new Uint8Array(await file.arrayBuffer());
@@ -686,8 +758,12 @@ export async function initialize(elementId, dotNetRef, options) {
                 }
                 if (results.length > 0) {
                     core.plugins.image.register.call(core, info, { result: results });
+                    await waitForImages(core.context.element.wysiwyg, results.map(r => r.url));
                 }
-                core.closeLoading();
+                } finally {
+                    upload.done();
+                    core.closeLoading();
+                }
             })();
             return false;
         };
