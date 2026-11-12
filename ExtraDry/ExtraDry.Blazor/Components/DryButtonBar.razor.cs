@@ -54,7 +54,7 @@ public partial class DryButtonBar(
     protected override async Task OnParametersSetAsync()
     {
         CategoryNames = Category.Split(',');
-        if(!Commands.Any() && Decorator != null && Description == null) {
+        if(Commands.Count == 0 && Decorator != null && Description == null) {
             Description = new DecoratorInfo(Decorator);
             Commands = Description.Commands;
         }
