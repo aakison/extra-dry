@@ -76,7 +76,7 @@ public class DataValidator
     /// </summary>
     public void ThrowIfInvalid()
     {
-        if(Errors.Any()) {
+        if(Errors.Count > 0) {
             var message = string.Join(", ", Errors.Select(e => e.ErrorMessage));
             throw new ValidationException(message);
         }
