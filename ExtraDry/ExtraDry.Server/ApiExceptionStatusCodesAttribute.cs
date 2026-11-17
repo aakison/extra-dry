@@ -38,7 +38,17 @@ public class ApiExceptionStatusCodesAttribute : ExceptionFilterAttribute
             await ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.Forbidden, details: policyDetails);
         }
         else {
-            await ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.InternalServerError, context.Exception.Message, context.Exception.StackTrace);
+            // Prefer the innermost exception message as Detail (e.g. SqlException under
+            // DbUpdateException) instead of a stack trace — clients surface Detail to users.
+            var root = context.Exception;
+            while(root.InnerException != null) {
+                root = root.InnerException;
+            }
+            var title = context.Exception.Message;
+            var detail = string.Equals(title, root.Message, StringComparison.Ordinal)
+                ? null
+                : root.Message;
+            await ProblemDetailsResponse.RewriteResponse(context, HttpStatusCode.InternalServerError, title, detail);
         }
         context.ExceptionHandled = true;
     }
