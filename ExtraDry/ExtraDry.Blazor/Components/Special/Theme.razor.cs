@@ -104,12 +104,24 @@ public partial class Theme(
 
         if(!loaded) {
             LoadSvgReferencesAsync();
-            ThemeInfo.Icons = CachedIcons.ToDictionary(e => e.Key, e => e.Value);
-
-            // Only call async methods after ThemeInfo is populated, otherwise downstream components
-            // will get broken information.
-            await SetSvgAtlasViewboxes();
         }
+
+        // Always cascade the cached icons. Skipping this when `loaded` is true left ThemeInfo.Icons
+        // empty on later prerender passes so icons fell through to missing-image paths.
+        ThemeInfo.Icons = CachedIcons.ToDictionary(e => e.Key, e => e.Value);
+
+        if(OperatingSystem.IsBrowser()) {
+            // WASM: load atlas into the DOM once and point <use> at local #ids (unchanged).
+            if(!loaded) {
+                await SetSvgAtlasViewboxesAsync();
+            }
+        }
+        else {
+            // Prerender/server: never use in-DOM #ids — the atlas is not in the HTML. Keep the
+            // classic /bundles/atlas.svg#key references that work without client JS.
+            ApplyServerAtlasReferences();
+        }
+
         loaded = true;
     }
 
@@ -126,27 +138,23 @@ public partial class Theme(
     }
 
     /// <summary>
-    /// Some icons need the SVG viewbox set to display correctly.  This is only a minority of icons that use non-standard viewboxes.
-    /// The data for the viewbox needs to be extracted from the SVG file, which is only available on the server.  To work around this,
-    /// we load the atlas SVG file as text and extract the viewbox values using regex.  This is done **after** the icons are loaded to
-    /// ensure that the inline SVG bodies are populated and can be updated with the viewbox values.
+    /// WASM-only: load the atlas SVG into the document and rewrite atlas icons to local
+    /// <c>#key</c> references so each icon does not fetch the atlas again.
     /// </summary>
-    private async Task SetSvgAtlasViewboxes() {
+    private async Task SetSvgAtlasViewboxesAsync()
+    {
         Dictionary<string, string>? viewBoxManifest = null;
-        var isBrowser = OperatingSystem.IsBrowser();
-        if(isBrowser) {
-            try {
-                var atlasUrl = $"/bundles/atlas.svg?v={Version}";
-                var atlasContent = await Http.GetStringAsync(atlasUrl);
-                InlineSvgAtlas = (MarkupString)atlasContent;
-                viewBoxManifest = SymbolViewBoxRegex().Matches(atlasContent)
-                    .ToDictionary(
-                        m => m.Groups[1].Value,
-                        m => m.Groups[2].Value);
-            }
-            catch(Exception ex) {
-                Logger.LogWarning(ex, "Failed to load SVG atlas.");
-            }
+        try {
+            var atlasUrl = $"/bundles/atlas.svg?v={Version}";
+            var atlasContent = await Http.GetStringAsync(atlasUrl);
+            InlineSvgAtlas = (MarkupString)atlasContent;
+            viewBoxManifest = SymbolViewBoxRegex().Matches(atlasContent)
+                .ToDictionary(
+                    m => m.Groups[1].Value,
+                    m => m.Groups[2].Value);
+        }
+        catch(Exception ex) {
+            Logger.LogWarning(ex, "Failed to load SVG atlas.");
         }
 
         // Force a re-render so that the InlineSvgAtlas is updated and available to downstream components.
@@ -156,19 +164,27 @@ public partial class Theme(
         foreach(var icon in Icons!) {
             if(icon.SvgRenderType == SvgRenderType.Atlas) {
                 var viewBox = (viewBoxManifest?.TryGetValue(icon.Key, out var vb) ?? false) ? $" {vb}" : "";
-                if(isBrowser) {
-                    // rewrite to reference svg in body to avoid network requests.
-                    var classes = DataConverter.JoinNonEmpty(" ", icon.CssClass, "additional-classes");
-                    icon.SvgInlineBody = $@"<svg class=""{classes}""{viewBox}><title>{icon.AlternateText}</title><use href=""#{icon.Key}""></use></svg>";
-                }
-                else {
-                    icon.SvgInlineBody = icon.SvgInlineBody.Replace("data-viewbox", viewBox);
-                }
+                var classes = DataConverter.JoinNonEmpty(" ", icon.CssClass, "additional-classes");
+                icon.SvgInlineBody = $@"<svg class=""{classes}""{viewBox}><title>{icon.AlternateText}</title><use href=""#{icon.Key}""></use></svg>";
             }
         }
 
         StateHasChanged();
+    }
 
+    /// <summary>
+    /// Prerender/server: point atlas icons at the hosted atlas.svg so <c>&lt;use&gt;</c> works
+    /// without an in-DOM sprite.
+    /// </summary>
+    private void ApplyServerAtlasReferences()
+    {
+        var version = $"?v={Version}";
+        foreach(var icon in CachedIcons.Values) {
+            if(icon.SvgRenderType != SvgRenderType.Atlas) {
+                continue;
+            }
+            icon.SvgInlineBody = $@"<svg class=""{icon.CssClass} additional-classes""><title>{icon.AlternateText}</title><use href=""/bundles/atlas.svg{version}#{icon.Key}""></use></svg>";
+        }
     }
 
 
